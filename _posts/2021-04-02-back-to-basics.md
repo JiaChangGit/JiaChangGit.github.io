@@ -2,13 +2,13 @@
 layout: post
 read_time: true
 show_date: true
-title: "So, what is a neural network?"
+title: "So, what is a neural network? (for template)"
 date: 2021-04-02
 img: posts/20210402/post7-header.webp
 tags: [template, testing]
 category: template
 author: Armando Maynez
-description: "ELI5: what is a neural network. (for tmp post)"
+description: "ELI5: what is a neural network. (for testing)"
 ---
 The omnipresence of technology nowadays has made it commonplace to read news about AI, just a quick glance at today's headlines, and I get:
 - [This Powerful AI Technique Led to Clashes at Google and Fierce Debate in Tech.](https://www.morningbrew.com/emerging-tech/stories/2021/03/29/one-biggest-advancements-ai-also-sparked-fierce-debate-heres?utm_source=morning_brew)
