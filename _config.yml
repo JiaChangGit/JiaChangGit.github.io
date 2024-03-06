@@ -57,10 +57,10 @@ extensions:
 comments: utteranc  #[disqus, utteranc]
 comments_opts:
   comments_curtain: yes # leave empty to show the disqus embed directly
-  repo: https://github.com/JiaChangGit/JiaChangGit.github.io.git # The GitHub repo URL.  https://utteranc.es/
-  issue_term: comment # The GitHub issue label
+  repo: JiaChangGit/JiaChangGit.github.io # The GitHub repo URL.  https://utteranc.es/
+  issue_term: pathname # The GitHub issue label
   label: comment # The GitHub comments label
-  theme: github-dark # The GitHub comment's there. e.g. github-dark
+  theme: github-light # The GitHub comment's there. e.g. github-dark
   # Disqus
   discus_identifier: # Add your discus identifier
 
