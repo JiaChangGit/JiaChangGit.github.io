@@ -5,11 +5,10 @@ show_date: true
 title: 編年史
 date: 2024-03-07
 description: 腸功網路編年史
-img: posts/stock/abstract_heart.jpeg
+img: posts/2024/abstract_heart.jpeg
 tags: [history, debug]
 category: history
 author: Jia-Chang
-github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS
 mathjax: yes # leave empty or erase to prevent the mathjax javascript from loading
 toc: yes # leave empty or erase for no TOC
 ---
