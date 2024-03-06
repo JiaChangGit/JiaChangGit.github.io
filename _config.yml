@@ -26,7 +26,7 @@ highlight_theme: syntax-base16.monokai.dark # select a dark theme for the code h
 # Author settings
 author: Jia-Chang # add your name
 author-pic: author-pic.jpg
-about-author: Student
+about-author: Human
 
 # Contact links
 email: vowevogds@mozmail.com # Add your Email address
@@ -48,7 +48,7 @@ fbadmin:
 # Paginate
 paginate: 6
 paginate_path: 'page:num'
-words_per_minute: 200
+words_per_minute: 100
 
 extensions:
   mermaid_enable: true
@@ -74,7 +74,7 @@ compress_html:
   startings: [html, head, body]
 
 # Outputting
-timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+timezone: Asia/Taipei # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 category_archive:
   type: liquid
