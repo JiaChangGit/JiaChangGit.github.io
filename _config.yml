@@ -20,7 +20,7 @@ logo-icon-SEO: "/assets/img/branding/CSIE.png" # must be a non SVG file
 # the browser is closed or not)
 night_mode: "auto"
 
-logo-dark: "/assets/img/branding/CSIE-header.png"
+logo-dark: "/assets/img/branding/ncku-title.jpg"
 highlight_theme: syntax-base16.monokai.dark # select a dark theme for the code highlighter if needed
 
 # Author settings
