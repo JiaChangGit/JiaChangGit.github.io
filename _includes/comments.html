@@ -12,26 +12,26 @@
         {% endif %}
 
         {% if site.comments == 'utteranc' %}
-            {% if site.comments_opts.repo %}
-            <div id="comment-layout">
-                <script src="https://utteranc.es/client.js" repo="{{ site.comments_opts.repo }}"
-                    issue-term="{{ site.comments_opts.issue_term | default : title }}"
-                    label="{{ site.comments_opts.label | default : comments }}" theme="{{ site.comments_opts.theme | default : github-light }}"
-                    crossorigin="anonymous" async>
+        {% if site.comments_opts.repo %}
+        <div id="comment-layout">
+            <script src="https://utteranc.es/client.js" repo="{{ site.comments_opts.repo }}"
+                issue-term="{{ site.comments_opts.issue_term | default : title }}"
+                label="{{ site.comments_opts.label | default : comments }}"
+                theme="{{ site.comments_opts.theme | default : github-light }}" crossorigin="anonymous" async>
                 </script>
-            </div>
-            {% endif %}
+        </div>
+        {% endif %}
         {% elsif site.comments == 'disqus' and site.comments_opts.discus_identifier %}
-            <div id="comment-layout"></div>
-            <script>
-                (function () {
-                    var d = document, s = d.createElement('script');
-                    s.src = '//{{ site.comments.discus_identifier }}.disqus.com/embed.js';
-                    s.setAttribute('data-timestamp', +new Date());
-                    (d.head || d.body).appendChild(s);
-                })();
-            </script>
-            <noscript>Please enable JavaScript to view the comments.</noscript>
+        <div id="comment-layout"></div>
+        <script>
+            (function () {
+                var d = document, s = d.createElement('script');
+                s.src = '//{{ site.comments.discus_identifier }}.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the comments.</noscript>
         {% endif %}
     </div>
 </section> <!-- End Comment Area -->

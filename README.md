@@ -1,7 +1,7 @@
 demo site now [mirrored](https://weathered-bread-8229.on.fleek.co/) in [IPFS](https://github.com/ipfs/ipfs#quick-summary)!
 
 # Jekyll theme: Adam Blog 2.0
-by [Armando Maynez](https://github.com/amaynez) based on [V1.0](https://github.com/artemsheludko/adam-blog) by [Artem Sheludko](https://github.com/artemsheludko). 
+by [Armando Maynez](https://github.com/amaynez) based on [V1.0](https://github.com/artemsheludko/adam-blog) by [Artem Sheludko](https://github.com/artemsheludko).
 
 Adam Blog 2.0 is a Jekyll theme that was built to be 100% compatible with [GitHub Pages](https://pages.github.com/). If you are unfamiliar with GitHub Pages, you can check out [their documentation](https://help.github.com/categories/github-pages-basics/) for more information. [Jonathan McGlone's guide](http://jmcglone.com/guides/github-pages/) on creating and hosting a personal site on GitHub is also a good resource.
 
@@ -35,7 +35,7 @@ The beauty of hosting your website on GitHub is that you don't have to actually 
 - added several themes for code syntax highlight [configurable from the _config.yml file](https://github.com/the-mvm/the-mvm.github.io/blob/e146070e9348c2e8f46cb90e3f0c6eb7b59c041a/_config.yml#L44).
 - responsive footer menu and footer logo ([if setup in the config file](https://github.com/the-mvm/the-mvm.github.io/blob/d4a67258912e411b639bf5acd470441c4c219544/_config.yml#L7))
 - search shows results based on full post content, not just the description
-- smoother menu animations 
+- smoother menu animations
 
 ## Features preserved from v1.0
 - [Google Fonts](https://fonts.google.com/)
@@ -281,7 +281,7 @@ Adam Blog 2.0/
 |  |  └── _sass                # Folder containing SCSS files
 |  |  └── main.css             # Main SCSS file
 |  |  └── highlighter          # Style sheet for code syntax highlighting
-|  └── img                     # 
+|  └── img                     #
 |     └── posts                # Images go here
 ├── _pages                     # Website pages (that are not posts)
 ├── _config.yml                # Site settings

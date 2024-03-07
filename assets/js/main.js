@@ -2,13 +2,13 @@ $(function () {
   'use strict';
 
   /* -------- Scroll to top button ------- */
-  $(".top").click(function() {
+  $(".top").click(function () {
     $("html, body")
       .stop()
       .animate({ scrollTop: 0 }, "slow", "swing");
   });
 
-  $(window).scroll(function() {
+  $(window).scroll(function () {
     if ($(this).scrollTop() > $(window).height()) {
       $(".top").addClass("is-active");
     } else {
@@ -27,7 +27,7 @@ $(function () {
   $('.menu-icon, .menu-icon-close').click(function (e) {
     e.preventDefault()
     e.stopPropagation()
-    if (flexContainer.hasClass('active')){
+    if (flexContainer.hasClass('active')) {
       hideLayer();
     } else {
       flexContainer.addClass('active')
@@ -42,7 +42,7 @@ $(function () {
     if (flexContainer.hasClass('active') && e.target.tagName !== 'A') {
       if (e.target.classList.contains('night')) {
         clearTimeout(waiting);
-        waiting = setTimeout(function() {
+        waiting = setTimeout(function () {
           hideLayer();
         }, 1000);
       } else {
@@ -51,10 +51,10 @@ $(function () {
     }
   })
 
-  function hideLayer () {
+  function hideLayer() {
     flexContainer.removeClass('opaque')
     flexContainer.addClass('transparent');
-    setTimeout(function(){
+    setTimeout(function () {
       flexContainer.removeClass('active');
     }, 600)
   }
@@ -73,15 +73,15 @@ $(function () {
   // Search button
   $('.search-icon').click(function (e) {
     e.preventDefault()
-    if($('.search-form.inline').length == 0){
-        searchBox.toggleClass('search-active')
+    if ($('.search-form.inline').length == 0) {
+      searchBox.toggleClass('search-active')
     }
     searchInput.focus()
     if (searchBox.hasClass('search-active')) {
       searchClose.click(function (e) {
-    		e.preventDefault()
-    		searchBox.removeClass('search-active')
-    	})
+        e.preventDefault()
+        searchBox.removeClass('search-active')
+      })
     }
   })
 });
