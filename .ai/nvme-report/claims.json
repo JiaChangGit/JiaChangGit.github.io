@@ -193,7 +193,7 @@
       "pdf_pages": "27",
       "normative_keyword": "none",
       "zh_tw": "Figure 1〈NVMe Family of Specifications〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 1, "NVMe Family of Specifications": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 1, \"NVMe Family of Specifications\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, Figure 1, 文件頁 1, PDF 頁 27",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, Figure 1, printed pages 1, PDF pages 27"
@@ -210,7 +210,7 @@
       "pdf_pages": "29",
       "normative_keyword": "none",
       "zh_tw": "Figure 2〈Decimal and Binary Units〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 2, "Decimal and Binary Units": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 2, \"Decimal and Binary Units\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, Figure 2, 文件頁 3, PDF 頁 29",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, Figure 2, printed pages 3, PDF pages 29"
@@ -227,7 +227,7 @@
       "pdf_pages": "31",
       "normative_keyword": "none",
       "zh_tw": "Figure 3〈Byte, Word, and Dword Relationships〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 3, "Byte, Word, and Dword Relationships": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 3, \"Byte, Word, and Dword Relationships\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, 文件頁 5, PDF 頁 31",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, printed pages 5, PDF pages 31"
@@ -244,7 +244,7 @@
       "pdf_pages": "47",
       "normative_keyword": "none",
       "zh_tw": "Figure 5〈Types of NVMe Command Sets〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 5, "Types of NVMe Command Sets": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 5, \"Types of NVMe Command Sets\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2, Figure 5, 文件頁 21, PDF 頁 47",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2, Figure 5, printed pages 21, PDF pages 47"
@@ -261,7 +261,7 @@
       "pdf_pages": "48",
       "normative_keyword": "none",
       "zh_tw": "Figure 6〈Queue Pair Example, 1:1 Mapping〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 6, "Queue Pair Example, 1:1 Mapping": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 6, \"Queue Pair Example, 1:1 Mapping\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 6, 文件頁 22, PDF 頁 48",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 6, printed pages 22, PDF pages 48"
@@ -278,7 +278,7 @@
       "pdf_pages": "48",
       "normative_keyword": "none",
       "zh_tw": "Figure 7〈Queue Pair Example, n:1 Mapping〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 7, "Queue Pair Example, n:1 Mapping": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 7, \"Queue Pair Example, n:1 Mapping\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 7, 文件頁 22, PDF 頁 48",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 7, printed pages 22, PDF pages 48"
@@ -295,7 +295,7 @@
       "pdf_pages": "53",
       "normative_keyword": "none",
       "zh_tw": "Figure 11〈Simple NVM Storage Hierarchy with NVM Sets〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 11, "Simple NVM Storage Hierarchy with NVM Sets": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 11, \"Simple NVM Storage Hierarchy with NVM Sets\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 11, 文件頁 27, PDF 頁 53",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 11, printed pages 27, PDF pages 53"
@@ -312,7 +312,7 @@
       "pdf_pages": "54",
       "normative_keyword": "none",
       "zh_tw": "Figure 12〈Simple NVM Storage Hierarchy with One Reclaim Group〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 12, "Simple NVM Storage Hierarchy with One Reclaim Group": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 12, \"Simple NVM Storage Hierarchy with One Reclaim Group\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 12, 文件頁 28, PDF 頁 54",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 12, printed pages 28, PDF pages 54"
@@ -329,7 +329,7 @@
       "pdf_pages": "55",
       "normative_keyword": "none",
       "zh_tw": "Figure 13〈Simple NVM Storage Hierarchy with Multiple Reclaim Groups〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 13, "Simple NVM Storage Hierarchy with Multiple Reclaim Groups": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 13, \"Simple NVM Storage Hierarchy with Multiple Reclaim Groups\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 13, 文件頁 29, PDF 頁 55",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 13, printed pages 29, PDF pages 55"
@@ -346,7 +346,7 @@
       "pdf_pages": "56",
       "normative_keyword": "none",
       "zh_tw": "Figure 14〈Complex NVM Storage Hierarchy with NVM Sets〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 14, "Complex NVM Storage Hierarchy with NVM Sets": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 14, \"Complex NVM Storage Hierarchy with NVM Sets\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 14, 文件頁 30, PDF 頁 56",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 14, printed pages 30, PDF pages 56"
@@ -363,7 +363,7 @@
       "pdf_pages": "57",
       "normative_keyword": "none",
       "zh_tw": "Figure 15〈Complex NVM Storage Hierarchy with Multiple Reclaim Groups〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 15, "Complex NVM Storage Hierarchy with Multiple Reclaim Groups": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 15, \"Complex NVM Storage Hierarchy with Multiple Reclaim Groups\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 15, 文件頁 31, PDF 頁 57",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 15, printed pages 31, PDF pages 57"
@@ -380,7 +380,7 @@
       "pdf_pages": "58",
       "normative_keyword": "none",
       "zh_tw": "Figure 16〈Single-Namespace NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 16, "Single-Namespace NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 16, \"Single-Namespace NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 16, 文件頁 32, PDF 頁 58",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 16, printed pages 32, PDF pages 58"
@@ -397,7 +397,7 @@
       "pdf_pages": "59",
       "normative_keyword": "none",
       "zh_tw": "Figure 17〈Two-Namespace NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 17, "Two-Namespace NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 17, \"Two-Namespace NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 17, 文件頁 33, PDF 頁 59",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 17, printed pages 33, PDF pages 59"
@@ -414,7 +414,7 @@
       "pdf_pages": "60",
       "normative_keyword": "none",
       "zh_tw": "Figure 18〈Complex NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 18, "Complex NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 18, \"Complex NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 18, 文件頁 34, PDF 頁 60",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 18, printed pages 34, PDF pages 60"
@@ -431,7 +431,7 @@
       "pdf_pages": "61",
       "normative_keyword": "none",
       "zh_tw": "Figure 19〈NVM Express Controller with Two Namespaces〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 19, "NVM Express Controller with Two Namespaces": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 19, \"NVM Express Controller with Two Namespaces\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 19, 文件頁 35, PDF 頁 61",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 19, printed pages 35, PDF pages 61"
@@ -448,7 +448,7 @@
       "pdf_pages": "61",
       "normative_keyword": "none",
       "zh_tw": "Figure 20〈NVM Subsystem with Two Controllers and One Port〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 20, "NVM Subsystem with Two Controllers and One Port": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 20, \"NVM Subsystem with Two Controllers and One Port\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 20, 文件頁 35, PDF 頁 61",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 20, printed pages 35, PDF pages 61"
@@ -465,7 +465,7 @@
       "pdf_pages": "62",
       "normative_keyword": "none",
       "zh_tw": "Figure 21〈NVM Subsystem with Two Controllers and Two Ports〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 21, "NVM Subsystem with Two Controllers and Two Ports": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 21, \"NVM Subsystem with Two Controllers and Two Ports\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 21, 文件頁 36, PDF 頁 62",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 21, printed pages 36, PDF pages 62"
@@ -482,7 +482,7 @@
       "pdf_pages": "63",
       "normative_keyword": "none",
       "zh_tw": "Figure 22〈PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 22, "PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 22, \"PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE12-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 22, 文件頁 37, PDF 頁 63",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 22, printed pages 37, PDF pages 63"
@@ -754,7 +754,7 @@
       "pdf_pages": "65",
       "normative_keyword": "none",
       "zh_tw": "Figure 23〈Controller Types〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 23, "Controller Types": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 23, \"Controller Types\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 23, 文件頁 39, PDF 頁 65",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 23, printed pages 39, PDF pages 65"
@@ -771,7 +771,7 @@
       "pdf_pages": "67",
       "normative_keyword": "none",
       "zh_tw": "Figure 24〈NVM Subsystem with Three I/O Controllers〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 24, "NVM Subsystem with Three I/O Controllers": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 24, \"NVM Subsystem with Three I/O Controllers\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.1, Figure 24, 文件頁 41, PDF 頁 67",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.1, Figure 24, printed pages 41, PDF pages 67"
@@ -788,7 +788,7 @@
       "pdf_pages": "68",
       "normative_keyword": "none",
       "zh_tw": "Figure 25〈NVM Subsystem with One Administrative and Two I/O Controllers〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 25, "NVM Subsystem with One Administrative and Two I/O Controllers": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 25, \"NVM Subsystem with One Administrative and Two I/O Controllers\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 25, 文件頁 42, PDF 頁 68",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 25, printed pages 42, PDF pages 68"
@@ -805,7 +805,7 @@
       "pdf_pages": "68",
       "normative_keyword": "none",
       "zh_tw": "Figure 26〈NVM Subsystem with One Administrative Controller〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 26, "NVM Subsystem with One Administrative Controller": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 26, \"NVM Subsystem with One Administrative Controller\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 26, 文件頁 42, PDF 頁 68",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 26, printed pages 42, PDF pages 68"
@@ -822,7 +822,7 @@
       "pdf_pages": "70",
       "normative_keyword": "none",
       "zh_tw": "Figure 27〈Controller IDs FFF0h to FFFFh〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 27, "Controller IDs FFF0h to FFFFh": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 27, \"Controller IDs FFF0h to FFFFh\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3, Figure 27, 文件頁 44, PDF 頁 70",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.3, Figure 27, printed pages 44, PDF pages 70"
@@ -839,7 +839,7 @@
       "pdf_pages": "71-73",
       "normative_keyword": "none",
       "zh_tw": "Figure 28〈Admin Command Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 28, "Admin Command Support Requirements": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 28, \"Admin Command Support Requirements\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3.3, Figure 28, 文件頁 45-47, PDF 頁 71-73",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.3.3, Figure 28, printed pages 45-47, PDF pages 71-73"
@@ -856,7 +856,7 @@
       "pdf_pages": "73-74",
       "normative_keyword": "none",
       "zh_tw": "Figure 30〈Common I/O Command Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 30, "Common I/O Command Support Requirements": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 30, \"Common I/O Command Support Requirements\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 30, 文件頁 47-48, PDF 頁 73-74",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 30, printed pages 47-48, PDF pages 73-74"
@@ -873,7 +873,7 @@
       "pdf_pages": "74-76",
       "normative_keyword": "none",
       "zh_tw": "Figure 31〈Log Page Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 31, "Log Page Support Requirements": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 31, \"Log Page Support Requirements\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 31, 文件頁 48-50, PDF 頁 74-76",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 31, printed pages 48-50, PDF pages 74-76"
@@ -890,7 +890,7 @@
       "pdf_pages": "76-78",
       "normative_keyword": "none",
       "zh_tw": "Figure 32〈Feature Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 32, "Feature Support Requirements": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 32, \"Feature Support Requirements\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.5, Figure 32, 文件頁 50-52, PDF 頁 76-78",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3.5, Figure 32, printed pages 50-52, PDF pages 76-78"
@@ -907,7 +907,7 @@
       "pdf_pages": "78-79",
       "normative_keyword": "none",
       "zh_tw": "Figure 33〈Property Definition〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 33, "Property Definition": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 33, \"Property Definition\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 33, 文件頁 52-53, PDF 頁 78-79",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 33, printed pages 52-53, PDF pages 78-79"
@@ -924,7 +924,7 @@
       "pdf_pages": "80",
       "normative_keyword": "none",
       "zh_tw": "Figure 34〈Memory-Based Property Definition〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 34, "Memory-Based Property Definition": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 34, \"Memory-Based Property Definition\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, 文件頁 54, PDF 頁 80",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, printed pages 54, PDF pages 80"
@@ -941,7 +941,7 @@
       "pdf_pages": "81-84",
       "normative_keyword": "none",
       "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 36, "Offset 0h: CAP - Controller Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, printed pages 55-58, PDF pages 81-84"
@@ -958,7 +958,7 @@
       "pdf_pages": "84",
       "normative_keyword": "none",
       "zh_tw": "Figure 37〈Specification Version Descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 37, "Specification Version Descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 37, \"Specification Version Descriptor\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 37, 文件頁 58, PDF 頁 84",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 37, printed pages 58, PDF pages 84"
@@ -975,7 +975,7 @@
       "pdf_pages": "84-85",
       "normative_keyword": "none",
       "zh_tw": "Figure 38〈NVM Express Base Specification Version Property Reset Values〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 38, "NVM Express Base Specification Version Property Reset Values": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 38, \"NVM Express Base Specification Version Property Reset Values\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, 文件頁 58-59, PDF 頁 84-85",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, printed pages 58-59, PDF pages 84-85"
@@ -992,7 +992,7 @@
       "pdf_pages": "85",
       "normative_keyword": "none",
       "zh_tw": "Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 39, "Offset Ch: INTMS - Interrupt Mask Set": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 39, \"Offset Ch: INTMS - Interrupt Mask Set\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, printed pages 59, PDF pages 85"
@@ -1009,7 +1009,7 @@
       "pdf_pages": "85",
       "normative_keyword": "none",
       "zh_tw": "Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 40, "Offset 10h: INTMC - Interrupt Mask Clear": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 40, \"Offset 10h: INTMC - Interrupt Mask Clear\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, printed pages 59, PDF pages 85"
@@ -1026,7 +1026,7 @@
       "pdf_pages": "86-89",
       "normative_keyword": "none",
       "zh_tw": "Figure 41〈Offset 14h: CC - Controller Configuration〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 41, "Offset 14h: CC - Controller Configuration": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 41, \"Offset 14h: CC - Controller Configuration\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, printed pages 60-63, PDF pages 86-89"
@@ -1043,7 +1043,7 @@
       "pdf_pages": "89-91",
       "normative_keyword": "none",
       "zh_tw": "Figure 42〈Offset 1Ch: CSTS - Controller Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 42, "Offset 1Ch: CSTS - Controller Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 42, \"Offset 1Ch: CSTS - Controller Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, printed pages 63-65, PDF pages 89-91"
@@ -1060,7 +1060,7 @@
       "pdf_pages": "92",
       "normative_keyword": "none",
       "zh_tw": "Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 43, "Offset 20h: NSSR - NVM Subsystem Reset": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 43, \"Offset 20h: NSSR - NVM Subsystem Reset\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, printed pages 66, PDF pages 92"
@@ -1077,7 +1077,7 @@
       "pdf_pages": "92",
       "normative_keyword": "none",
       "zh_tw": "Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 44, "Offset 24h: AQA - Admin Queue Attributes": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 44, \"Offset 24h: AQA - Admin Queue Attributes\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, printed pages 66, PDF pages 92"
@@ -1094,7 +1094,7 @@
       "pdf_pages": "92",
       "normative_keyword": "none",
       "zh_tw": "Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 45, "Offset 28h: ASQ - Admin Submission Queue Base Address": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 45, \"Offset 28h: ASQ - Admin Submission Queue Base Address\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, printed pages 66, PDF pages 92"
@@ -1111,7 +1111,7 @@
       "pdf_pages": "93",
       "normative_keyword": "none",
       "zh_tw": "Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 46, "Offset 30h: ACQ - Admin Completion Queue Base Address": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 46, \"Offset 30h: ACQ - Admin Completion Queue Base Address\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, printed pages 67, PDF pages 93"
@@ -1128,7 +1128,7 @@
       "pdf_pages": "93-94",
       "normative_keyword": "none",
       "zh_tw": "Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 47, "Offset 38h: CMBLOC - Controller Memory Buffer Location": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 47, \"Offset 38h: CMBLOC - Controller Memory Buffer Location\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, printed pages 67-68, PDF pages 93-94"
@@ -1145,7 +1145,7 @@
       "pdf_pages": "94-95",
       "normative_keyword": "none",
       "zh_tw": "Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 48, "Offset 3Ch: CMBSZ - Controller Memory Buffer Size": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 48, \"Offset 3Ch: CMBSZ - Controller Memory Buffer Size\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, printed pages 68-69, PDF pages 94-95"
@@ -1162,7 +1162,7 @@
       "pdf_pages": "95",
       "normative_keyword": "none",
       "zh_tw": "Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 49, "Offset 40h: BPINFO - Boot Partition Information": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 49, \"Offset 40h: BPINFO - Boot Partition Information\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, printed pages 69, PDF pages 95"
@@ -1179,7 +1179,7 @@
       "pdf_pages": "95-96",
       "normative_keyword": "none",
       "zh_tw": "Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 50, "Offset 44h: BPRSEL - Boot Partition Read Select": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 50, \"Offset 44h: BPRSEL - Boot Partition Read Select\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, printed pages 69-70, PDF pages 95-96"
@@ -1196,7 +1196,7 @@
       "pdf_pages": "96",
       "normative_keyword": "none",
       "zh_tw": "Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 51, "Offset 48h: BPMBL - Boot Partition Memory Buffer Location": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 51, \"Offset 48h: BPMBL - Boot Partition Memory Buffer Location\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, printed pages 70, PDF pages 96"
@@ -1213,7 +1213,7 @@
       "pdf_pages": "96-97",
       "normative_keyword": "none",
       "zh_tw": "Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 52, "Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 52, \"Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, printed pages 70-71, PDF pages 96-97"
@@ -1230,7 +1230,7 @@
       "pdf_pages": "97",
       "normative_keyword": "none",
       "zh_tw": "Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 53, "Offset 58h: CMBSTS - Controller Memory Buffer Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 53, \"Offset 58h: CMBSTS - Controller Memory Buffer Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, printed pages 71, PDF pages 97"
@@ -1247,7 +1247,7 @@
       "pdf_pages": "97",
       "normative_keyword": "none",
       "zh_tw": "Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 54, "Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 54, \"Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, printed pages 71, PDF pages 97"
@@ -1264,7 +1264,7 @@
       "pdf_pages": "98",
       "normative_keyword": "none",
       "zh_tw": "Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 55, "Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 55, \"Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, printed pages 72, PDF pages 98"
@@ -1281,7 +1281,7 @@
       "pdf_pages": "98",
       "normative_keyword": "none",
       "zh_tw": "Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 56, "Offset 64h: NSSD - NVM Subsystem Shutdown": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 56, \"Offset 64h: NSSD - NVM Subsystem Shutdown\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, printed pages 72, PDF pages 98"
@@ -1298,7 +1298,7 @@
       "pdf_pages": "99",
       "normative_keyword": "none",
       "zh_tw": "Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 57, "Offset 68h: CRTO - Controller Ready Timeouts": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 57, \"Offset 68h: CRTO - Controller Ready Timeouts\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, printed pages 73, PDF pages 99"
@@ -1315,7 +1315,7 @@
       "pdf_pages": "99-100",
       "normative_keyword": "none",
       "zh_tw": "Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 58, "Offset E00h: PMRCAP - Persistent Memory Region Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 58, \"Offset E00h: PMRCAP - Persistent Memory Region Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, printed pages 73-74, PDF pages 99-100"
@@ -1332,7 +1332,7 @@
       "pdf_pages": "100",
       "normative_keyword": "none",
       "zh_tw": "Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 59, "Offset E04h: PMRCTL - Persistent Memory Region Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 59, \"Offset E04h: PMRCTL - Persistent Memory Region Control\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, printed pages 74, PDF pages 100"
@@ -1349,7 +1349,7 @@
       "pdf_pages": "101",
       "normative_keyword": "none",
       "zh_tw": "Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 60, "Offset E08h: PMRSTS - Persistent Memory Region Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 60, \"Offset E08h: PMRSTS - Persistent Memory Region Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, printed pages 75, PDF pages 101"
@@ -1366,7 +1366,7 @@
       "pdf_pages": "102",
       "normative_keyword": "none",
       "zh_tw": "Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 61, "Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 61, \"Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, printed pages 76, PDF pages 102"
@@ -1383,7 +1383,7 @@
       "pdf_pages": "102",
       "normative_keyword": "none",
       "zh_tw": "Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 62, "Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 62, \"Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, printed pages 76, PDF pages 102"
@@ -1400,7 +1400,7 @@
       "pdf_pages": "103",
       "normative_keyword": "none",
       "zh_tw": "Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 63, "Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 63, \"Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, printed pages 77, PDF pages 103"
@@ -1417,7 +1417,7 @@
       "pdf_pages": "103",
       "normative_keyword": "none",
       "zh_tw": "Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 64, "Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 64, \"Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, printed pages 77, PDF pages 103"
@@ -1434,7 +1434,7 @@
       "pdf_pages": "104-105",
       "normative_keyword": "none",
       "zh_tw": "Figure 65〈NSID Types and Relationship to Namespace〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 65, "NSID Types and Relationship to Namespace": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 65, \"NSID Types and Relationship to Namespace\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, Figure 65, 文件頁 78-79, PDF 頁 104-105",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.1, Figure 65, printed pages 78-79, PDF pages 104-105"
@@ -1451,7 +1451,7 @@
       "pdf_pages": "105",
       "normative_keyword": "none",
       "zh_tw": "Figure 66〈NSID Types〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 66, "NSID Types": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 66, \"NSID Types\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1.5, Figure 66, 文件頁 79, PDF 頁 105",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.1.5, Figure 66, printed pages 79, PDF pages 105"
@@ -1468,7 +1468,7 @@
       "pdf_pages": "107",
       "normative_keyword": "none",
       "zh_tw": "Figure 67〈NVM Sets and Associated Namespaces〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 67, "NVM Sets and Associated Namespaces": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 67, \"NVM Sets and Associated Namespaces\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, printed pages 81, PDF pages 107"
@@ -1485,7 +1485,7 @@
       "pdf_pages": "107",
       "normative_keyword": "none",
       "zh_tw": "Figure 68〈NVM Set Aware Admin Commands〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 68, "NVM Set Aware Admin Commands": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 68, \"NVM Set Aware Admin Commands\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 68, 文件頁 81, PDF 頁 107",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 68, printed pages 81, PDF pages 107"
@@ -1502,7 +1502,7 @@
       "pdf_pages": "109",
       "normative_keyword": "none",
       "zh_tw": "Figure 69〈NVM Sets and Associated Namespaces〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 69, "NVM Sets and Associated Namespaces": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 69, \"NVM Sets and Associated Namespaces\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.3, Figure 69, 文件頁 83, PDF 頁 109",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.3, Figure 69, printed pages 83, PDF pages 109"
@@ -1519,7 +1519,7 @@
       "pdf_pages": "111",
       "normative_keyword": "none",
       "zh_tw": "Figure 70〈Flexible Data Placement Logical View of Non-Volatile Storage〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 70, "Flexible Data Placement Logical View of Non-Volatile Storage": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 70, \"Flexible Data Placement Logical View of Non-Volatile Storage\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, printed pages 85, PDF pages 111"
@@ -1536,7 +1536,7 @@
       "pdf_pages": "112",
       "normative_keyword": "none",
       "zh_tw": "Figure 71〈Example 1 Domain Structure〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 71, "Example 1 Domain Structure": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 71, \"Example 1 Domain Structure\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5.1, Figure 71, 文件頁 86, PDF 頁 112",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.2.5.1, Figure 71, printed pages 86, PDF pages 112"
@@ -1553,7 +1553,7 @@
       "pdf_pages": "117",
       "normative_keyword": "none",
       "zh_tw": "Figure 73〈Empty Queue Definition〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 73, "Empty Queue Definition": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 73, \"Empty Queue Definition\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 73, 文件頁 91, PDF 頁 117",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 73, printed pages 91, PDF pages 117"
@@ -1570,7 +1570,7 @@
       "pdf_pages": "117",
       "normative_keyword": "none",
       "zh_tw": "Figure 74〈Full Queue Definition〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 74, "Full Queue Definition": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 74, \"Full Queue Definition\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 74, 文件頁 91, PDF 頁 117",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 74, printed pages 91, PDF pages 117"
@@ -1587,7 +1587,7 @@
       "pdf_pages": "129",
       "normative_keyword": "none",
       "zh_tw": "Figure 80〈Round Robin Arbitration〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 80, "Round Robin Arbitration": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 80, \"Round Robin Arbitration\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4, Figure 80, 文件頁 103, PDF 頁 129",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.4.4, Figure 80, printed pages 103, PDF pages 129"
@@ -1604,7 +1604,7 @@
       "pdf_pages": "130",
       "normative_keyword": "none",
       "zh_tw": "Figure 81〈Weighted Round Robin with Urgent Priority Class Arbitration〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 81, "Weighted Round Robin with Urgent Priority Class Arbitration": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 81, \"Weighted Round Robin with Urgent Priority Class Arbitration\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4.2, Figure 81, 文件頁 104, PDF 頁 130",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.4.4.2, Figure 81, printed pages 104, PDF pages 130"
@@ -1621,7 +1621,7 @@
       "pdf_pages": "136-137",
       "normative_keyword": "none",
       "zh_tw": "Figure 84〈Admin Commands Permitted to Return a Status Code of Admin Command Media Not〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 84, "Admin Commands Permitted to Return a Status Code of Admin Command Media Not": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 84, \"Admin Commands Permitted to Return a Status Code of Admin Command Media Not\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.5.3, Figure 84, 文件頁 110-111, PDF 頁 136-137",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.5.3, Figure 84, printed pages 110-111, PDF pages 136-137"
@@ -1638,7 +1638,7 @@
       "pdf_pages": "139",
       "normative_keyword": "none",
       "zh_tw": "Figure 85〈Shutdown Processing Interactions〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 85, "Shutdown Processing Interactions": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 85, \"Shutdown Processing Interactions\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.6, Figure 85, 文件頁 113, PDF 頁 139",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.6, Figure 85, printed pages 113, PDF pages 139"
@@ -1655,7 +1655,7 @@
       "pdf_pages": "152",
       "normative_keyword": "none",
       "zh_tw": "Figure 86〈Simple NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 86, "Simple NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 86, \"Simple NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2, Figure 86, 文件頁 126, PDF 頁 152",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.8.2, Figure 86, printed pages 126, PDF pages 152"
@@ -1672,7 +1672,7 @@
       "pdf_pages": "153",
       "normative_keyword": "none",
       "zh_tw": "Figure 87〈Vertically-Organized NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 87, "Vertically-Organized NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 87, \"Vertically-Organized NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.2, Figure 87, 文件頁 127, PDF 頁 153",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.8.2.2, Figure 87, printed pages 127, PDF pages 153"
@@ -1689,7 +1689,7 @@
       "pdf_pages": "154",
       "normative_keyword": "none",
       "zh_tw": "Figure 88〈Horizontally-Organized Dual NAND NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 88, "Horizontally-Organized Dual NAND NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 88, \"Horizontally-Organized Dual NAND NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.3, Figure 88, 文件頁 128, PDF 頁 154",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.8.2.3, Figure 88, printed pages 128, PDF pages 154"
@@ -1706,7 +1706,7 @@
       "pdf_pages": "155",
       "normative_keyword": "none",
       "zh_tw": "Figure 89〈Capacity Information Field Usage〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 89, "Capacity Information Field Usage": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 89, \"Capacity Information Field Usage\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.8.3, Figure 89, 文件頁 129, PDF 頁 155",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.8.3, Figure 89, printed pages 129, PDF pages 155"
@@ -1723,7 +1723,7 @@
       "pdf_pages": "159",
       "normative_keyword": "none",
       "zh_tw": "Figure 90〈Detecting Timeout Takes up to 2 * KATT〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 90, "Detecting Timeout Takes up to 2 * KATT": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 90, \"Detecting Timeout Takes up to 2 * KATT\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.9.4.1, Figure 90, 文件頁 133, PDF 頁 159",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.9.4.1, Figure 90, printed pages 133, PDF pages 159"
@@ -1740,7 +1740,7 @@
       "pdf_pages": "161",
       "normative_keyword": "none",
       "zh_tw": "Figure 91〈Example Privileged Action Admin Commands〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 91, "Example Privileged Action Admin Commands": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 91, \"Example Privileged Action Admin Commands\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE3-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.10, Figure 91, 文件頁 135, PDF 頁 161",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.10, Figure 91, printed pages 135, PDF pages 161"
@@ -1961,7 +1961,7 @@
       "pdf_pages": "165-166",
       "normative_keyword": "none",
       "zh_tw": "Figure 92〈Command Dword 0〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 92, "Command Dword 0": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 92, \"Command Dword 0\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 92, 文件頁 139-140, PDF 頁 165-166",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 92, printed pages 139-140, PDF pages 165-166"
@@ -1978,7 +1978,7 @@
       "pdf_pages": "166-168",
       "normative_keyword": "none",
       "zh_tw": "Figure 93〈Common Command Format〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 93, "Common Command Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 93, \"Common Command Format\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, printed pages 140-142, PDF pages 166-168"
@@ -1995,7 +1995,7 @@
       "pdf_pages": "169",
       "normative_keyword": "none",
       "zh_tw": "Figure 94〈Common Command Format - Vendor Specific Commands (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 94, "Common Command Format - Vendor Specific Commands (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 94, \"Common Command Format - Vendor Specific Commands (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, printed pages 143, PDF pages 169"
@@ -2012,7 +2012,7 @@
       "pdf_pages": "170",
       "normative_keyword": "none",
       "zh_tw": "Figure 97〈Common Completion Queue Entry Layout - Admin and All I/O Command Sets〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 97, "Common Completion Queue Entry Layout - Admin and All I/O Command Sets": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 97, \"Common Completion Queue Entry Layout - Admin and All I/O Command Sets\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, 文件頁 144, PDF 頁 170",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, printed pages 144, PDF pages 170"
@@ -2029,7 +2029,7 @@
       "pdf_pages": "170",
       "normative_keyword": "none",
       "zh_tw": "Figure 98〈Completion Queue Entry: DW 2〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 98, "Completion Queue Entry: DW 2": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 98, \"Completion Queue Entry: DW 2\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, 文件頁 144, PDF 頁 170",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, printed pages 144, PDF pages 170"
@@ -2046,7 +2046,7 @@
       "pdf_pages": "171",
       "normative_keyword": "none",
       "zh_tw": "Figure 99〈Completion Queue Entry: DW 3〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 99, "Completion Queue Entry: DW 3": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 99, \"Completion Queue Entry: DW 3\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, 文件頁 145, PDF 頁 171",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, printed pages 145, PDF pages 171"
@@ -2063,7 +2063,7 @@
       "pdf_pages": "171-172",
       "normative_keyword": "none",
       "zh_tw": "Figure 101〈Completion Queue Entry: Status Field〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 101, "Completion Queue Entry: Status Field": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 101, \"Completion Queue Entry: Status Field\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, printed pages 145-146, PDF pages 171-172"
@@ -2080,7 +2080,7 @@
       "pdf_pages": "172",
       "normative_keyword": "none",
       "zh_tw": "Figure 102〈Status Code - Status Code Type Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 102, "Status Code - Status Code Type Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 102, \"Status Code - Status Code Type Values\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, 文件頁 146, PDF 頁 172",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, printed pages 146, PDF pages 172"
@@ -2097,7 +2097,7 @@
       "pdf_pages": "173-176",
       "normative_keyword": "none",
       "zh_tw": "Figure 103〈Status Code - Generic Command Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 103, "Status Code - Generic Command Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 103, \"Status Code - Generic Command Status Values\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, 文件頁 147-150, PDF 頁 173-176",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, printed pages 147-150, PDF pages 173-176"
@@ -2114,7 +2114,7 @@
       "pdf_pages": "177-178",
       "normative_keyword": "none",
       "zh_tw": "Figure 104〈Status Code - Command Specific Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 104, "Status Code - Command Specific Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 104, \"Status Code - Command Specific Status Values\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, 文件頁 151-152, PDF 頁 177-178",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, printed pages 151-152, PDF pages 177-178"
@@ -2131,7 +2131,7 @@
       "pdf_pages": "178-179",
       "normative_keyword": "none",
       "zh_tw": "Figure 105〈Status Code - Command Specific Status Values, I/O Command Set Specific〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 105, "Status Code - Command Specific Status Values, I/O Command Set Specific": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 105, \"Status Code - Command Specific Status Values, I/O Command Set Specific\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, 文件頁 152-153, PDF 頁 178-179",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, printed pages 152-153, PDF pages 178-179"
@@ -2148,7 +2148,7 @@
       "pdf_pages": "180-181",
       "normative_keyword": "none",
       "zh_tw": "Figure 107〈Status Code - Media and Data Integrity Error Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 107, "Status Code - Media and Data Integrity Error Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 107, \"Status Code - Media and Data Integrity Error Values\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, 文件頁 154-155, PDF 頁 180-181",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, printed pages 154-155, PDF pages 180-181"
@@ -2165,7 +2165,7 @@
       "pdf_pages": "181",
       "normative_keyword": "none",
       "zh_tw": "Figure 108〈Status Code - Path Related Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 108, "Status Code - Path Related Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 108, \"Status Code - Path Related Status Values\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.3, Figure 108, 文件頁 155, PDF 頁 181",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.3, Figure 108, printed pages 155, PDF pages 181"
@@ -2182,7 +2182,7 @@
       "pdf_pages": "182-183",
       "normative_keyword": "none",
       "zh_tw": "Figure 109〈Phase Tag bit Transition Example〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 109, "Phase Tag bit Transition Example": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 109, \"Phase Tag bit Transition Example\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, Figure 109, 文件頁 156-157, PDF 頁 182-183",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, Figure 109, printed pages 156-157, PDF pages 182-183"
@@ -2199,7 +2199,7 @@
       "pdf_pages": "184",
       "normative_keyword": "none",
       "zh_tw": "Figure 110〈PRP Entry Layout〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 110, "PRP Entry Layout": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 110, \"PRP Entry Layout\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, 文件頁 158, PDF 頁 184",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, printed pages 158, PDF pages 184"
@@ -2216,7 +2216,7 @@
       "pdf_pages": "184",
       "normative_keyword": "none",
       "zh_tw": "Figure 111〈PRP Entry - Page Base Address and Offset〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 111, "PRP Entry - Page Base Address and Offset": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 111, \"PRP Entry - Page Base Address and Offset\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 111, 文件頁 158, PDF 頁 184",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 111, printed pages 158, PDF pages 184"
@@ -2233,7 +2233,7 @@
       "pdf_pages": "185",
       "normative_keyword": "none",
       "zh_tw": "Figure 112〈PRP List Layout for Physically Contiguous Memory Pages〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 112, "PRP List Layout for Physically Contiguous Memory Pages": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 112, \"PRP List Layout for Physically Contiguous Memory Pages\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 112, 文件頁 159, PDF 頁 185",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 112, printed pages 159, PDF pages 185"
@@ -2250,7 +2250,7 @@
       "pdf_pages": "185",
       "normative_keyword": "none",
       "zh_tw": "Figure 113〈PRP List Layout for Physically Non-Contiguous Memory Pages〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 113, "PRP List Layout for Physically Non-Contiguous Memory Pages": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 113, \"PRP List Layout for Physically Non-Contiguous Memory Pages\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 113, 文件頁 159, PDF 頁 185",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 113, printed pages 159, PDF pages 185"
@@ -2267,7 +2267,7 @@
       "pdf_pages": "187",
       "normative_keyword": "none",
       "zh_tw": "Figure 114〈SGL Validation Error Conditions〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 114, "SGL Validation Error Conditions": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 114, \"SGL Validation Error Conditions\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 114, 文件頁 161, PDF 頁 187",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 114, printed pages 161, PDF pages 187"
@@ -2284,7 +2284,7 @@
       "pdf_pages": "187",
       "normative_keyword": "none",
       "zh_tw": "Figure 115〈SGL Segment〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 115, "SGL Segment": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 115, \"SGL Segment\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 115, 文件頁 161, PDF 頁 187",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 115, printed pages 161, PDF pages 187"
@@ -2301,7 +2301,7 @@
       "pdf_pages": "187",
       "normative_keyword": "none",
       "zh_tw": "Figure 116〈Generic SGL Descriptor Format〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 116, "Generic SGL Descriptor Format": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 116, \"Generic SGL Descriptor Format\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, 文件頁 161, PDF 頁 187",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, printed pages 161, PDF pages 187"
@@ -2318,7 +2318,7 @@
       "pdf_pages": "187-188",
       "normative_keyword": "none",
       "zh_tw": "Figure 117〈SGL Descriptor Type〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 117, "SGL Descriptor Type": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 117, \"SGL Descriptor Type\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 117, 文件頁 161-162, PDF 頁 187-188",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 117, printed pages 161-162, PDF pages 187-188"
@@ -2335,7 +2335,7 @@
       "pdf_pages": "188",
       "normative_keyword": "none",
       "zh_tw": "Figure 118〈SGL Descriptor Sub Type Values〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 118, "SGL Descriptor Sub Type Values": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 118, \"SGL Descriptor Sub Type Values\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 118, 文件頁 162, PDF 頁 188",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 118, printed pages 162, PDF pages 188"
@@ -2352,7 +2352,7 @@
       "pdf_pages": "188-189",
       "normative_keyword": "none",
       "zh_tw": "Figure 119〈SGL Data Block descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 119, "SGL Data Block descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 119, \"SGL Data Block descriptor\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 119, 文件頁 162-163, PDF 頁 188-189",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 119, printed pages 162-163, PDF pages 188-189"
@@ -2369,7 +2369,7 @@
       "pdf_pages": "189",
       "normative_keyword": "none",
       "zh_tw": "Figure 120〈SGL Bit Bucket descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 120, "SGL Bit Bucket descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 120, \"SGL Bit Bucket descriptor\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 120, 文件頁 163, PDF 頁 189",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 120, printed pages 163, PDF pages 189"
@@ -2386,7 +2386,7 @@
       "pdf_pages": "189",
       "normative_keyword": "none",
       "zh_tw": "Figure 121〈SGL Segment descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 121, "SGL Segment descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 121, \"SGL Segment descriptor\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 121, 文件頁 163, PDF 頁 189",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 121, printed pages 163, PDF pages 189"
@@ -2403,7 +2403,7 @@
       "pdf_pages": "190",
       "normative_keyword": "none",
       "zh_tw": "Figure 122〈SGL Last Segment descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 122, "SGL Last Segment descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 122, \"SGL Last Segment descriptor\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 122, 文件頁 164, PDF 頁 190",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 122, printed pages 164, PDF pages 190"
@@ -2420,7 +2420,7 @@
       "pdf_pages": "192",
       "normative_keyword": "none",
       "zh_tw": "Figure 125〈SGL Read Example〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 125, "SGL Read Example": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 125, \"SGL Read Example\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2.1, Figure 125, 文件頁 166, PDF 頁 192",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2.1, Figure 125, printed pages 166, PDF pages 192"
@@ -2437,7 +2437,7 @@
       "pdf_pages": "193",
       "normative_keyword": "none",
       "zh_tw": "Figure 126〈Current Value after Reset with Scope of Entire NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 126, "Current Value after Reset with Scope of Entire NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 126, \"Current Value after Reset with Scope of Entire NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, 文件頁 167, PDF 頁 193",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, printed pages 167, PDF pages 193"
@@ -2454,7 +2454,7 @@
       "pdf_pages": "194",
       "normative_keyword": "none",
       "zh_tw": "Figure 127〈Current Value after Reset with Scope of Subset of the NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 127, "Current Value after Reset with Scope of Subset of the NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 127, \"Current Value after Reset with Scope of Subset of the NVM Subsystem\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, 文件頁 168, PDF 頁 194",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, printed pages 168, PDF pages 194"
@@ -2471,7 +2471,7 @@
       "pdf_pages": "195",
       "normative_keyword": "none",
       "zh_tw": "Figure 128〈PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 128, "PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 128, \"PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.1, Figure 128, 文件頁 169, PDF 頁 195",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.1, Figure 128, printed pages 169, PDF pages 195"
@@ -2488,7 +2488,7 @@
       "pdf_pages": "196",
       "normative_keyword": "none",
       "zh_tw": "Figure 129〈Serial Number (SN) and Model Number (MN)〉：整理 identifier 或 list 的 byte layout 與範圍。 先確認長度、byte order、數量欄位、唯一性範圍與保留區。",
-      "en": "Figure 129, "Serial Number (SN) and Model Number (MN)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
+      "en": "Figure 129, \"Serial Number (SN) and Model Number (MN)\": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.2, Figure 129, 文件頁 170, PDF 頁 196",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.2, Figure 129, printed pages 170, PDF pages 196"
@@ -2505,7 +2505,7 @@
       "pdf_pages": "196",
       "normative_keyword": "none",
       "zh_tw": "Figure 130〈IEEE OUI Identifier (IEEE)〉：整理 identifier 或 list 的 byte layout 與範圍。 先確認長度、byte order、數量欄位、唯一性範圍與保留區。",
-      "en": "Figure 130, "IEEE OUI Identifier (IEEE)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
+      "en": "Figure 130, \"IEEE OUI Identifier (IEEE)\": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.3, Figure 130, 文件頁 170, PDF 頁 196",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.3, Figure 130, printed pages 170, PDF pages 196"
@@ -2522,7 +2522,7 @@
       "pdf_pages": "196",
       "normative_keyword": "none",
       "zh_tw": "Figure 131〈IEEE Extended Unique Identifier (EUI64), MA-L Format〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 131, "IEEE Extended Unique Identifier (EUI64), MA-L Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 131, \"IEEE Extended Unique Identifier (EUI64), MA-L Format\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 131, 文件頁 170, PDF 頁 196",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 131, printed pages 170, PDF pages 196"
@@ -2539,7 +2539,7 @@
       "pdf_pages": "196",
       "normative_keyword": "none",
       "zh_tw": "Figure 132〈IEEE Extended Unique Identifier (EUI64), OUI Identifier〉：整理 identifier 或 list 的 byte layout 與範圍。 先確認長度、byte order、數量欄位、唯一性範圍與保留區。",
-      "en": "Figure 132, "IEEE Extended Unique Identifier (EUI64), OUI Identifier": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
+      "en": "Figure 132, \"IEEE Extended Unique Identifier (EUI64), OUI Identifier\": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 132, 文件頁 170, PDF 頁 196",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 132, printed pages 170, PDF pages 196"
@@ -2556,7 +2556,7 @@
       "pdf_pages": "196-197",
       "normative_keyword": "none",
       "zh_tw": "Figure 133〈IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)〉：整理 identifier 或 list 的 byte layout 與範圍。 先確認長度、byte order、數量欄位、唯一性範圍與保留區。",
-      "en": "Figure 133, "IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
+      "en": "Figure 133, \"IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)\": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 133, 文件頁 170-171, PDF 頁 196-197",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 133, printed pages 170-171, PDF pages 196-197"
@@ -2573,7 +2573,7 @@
       "pdf_pages": "197",
       "normative_keyword": "none",
       "zh_tw": "Figure 134〈MA-L similarity to WWN〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 134, "MA-L similarity to WWN": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 134, \"MA-L similarity to WWN\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 134, 文件頁 171, PDF 頁 197",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 134, printed pages 171, PDF pages 197"
@@ -2590,7 +2590,7 @@
       "pdf_pages": "197",
       "normative_keyword": "none",
       "zh_tw": "Figure 135〈Namespace Globally Unique Identifier (NGUID)〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 135, "Namespace Globally Unique Identifier (NGUID)": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 135, \"Namespace Globally Unique Identifier (NGUID)\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 135, 文件頁 171, PDF 頁 197",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 135, printed pages 171, PDF pages 197"
@@ -2607,7 +2607,7 @@
       "pdf_pages": "197",
       "normative_keyword": "none",
       "zh_tw": "Figure 136〈Namespace Globally Unique Identifier (NGUID), OUI〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 136, "Namespace Globally Unique Identifier (NGUID), OUI": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 136, \"Namespace Globally Unique Identifier (NGUID), OUI\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 136, 文件頁 171, PDF 頁 197",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 136, printed pages 171, PDF pages 197"
@@ -2624,7 +2624,7 @@
       "pdf_pages": "197",
       "normative_keyword": "none",
       "zh_tw": "Figure 137〈Namespace Globally Unique Identifier〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 137, "Namespace Globally Unique Identifier": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 137, \"Namespace Globally Unique Identifier\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 137, 文件頁 171, PDF 頁 197",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 137, printed pages 171, PDF pages 197"
@@ -2641,7 +2641,7 @@
       "pdf_pages": "197",
       "normative_keyword": "none",
       "zh_tw": "Figure 138〈Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。",
-      "en": "Figure 138, "Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
+      "en": "Figure 138, \"Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN\": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 138, 文件頁 171, PDF 頁 197",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 138, printed pages 171, PDF pages 197"
@@ -2658,7 +2658,7 @@
       "pdf_pages": "198",
       "normative_keyword": "none",
       "zh_tw": "Figure 139〈Controller List Format〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 139, "Controller List Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 139, \"Controller List Format\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.6.1, Figure 139, 文件頁 172, PDF 頁 198",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.6.1, Figure 139, printed pages 172, PDF pages 198"
@@ -2675,7 +2675,7 @@
       "pdf_pages": "198",
       "normative_keyword": "none",
       "zh_tw": "Figure 140〈Namespace List Format〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 140, "Namespace List Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 140, \"Namespace List Format\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.6.2, Figure 140, 文件頁 172, PDF 頁 198",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.6.2, Figure 140, printed pages 172, PDF pages 198"
@@ -2692,7 +2692,7 @@
       "pdf_pages": "201",
       "normative_keyword": "none",
       "zh_tw": "Figure 142〈UTF-8 Input Processing〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 142, "UTF-8 Input Processing": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 142, \"UTF-8 Input Processing\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "BASE4-INCLUDE",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.8, Figure 142, 文件頁 175, PDF 頁 201",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.8, Figure 142, printed pages 175, PDF pages 201"
@@ -2981,7 +2981,7 @@
       "pdf_pages": "6",
       "normative_keyword": "none",
       "zh_tw": "Figure 1〈NVMe Family of Specifications〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。",
-      "en": "Figure 1, "NVMe Family of Specifications": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
+      "en": "Figure 1, \"NVMe Family of Specifications\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, Figure 1, 文件頁 6, PDF 頁 6",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, Figure 1, printed pages 6, PDF pages 6"
@@ -2998,7 +2998,7 @@
       "pdf_pages": "8",
       "normative_keyword": "none",
       "zh_tw": "Figure 2〈Example of Transport Protocol Layers〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 2, "Example of Transport Protocol Layers": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 2, \"Example of Transport Protocol Layers\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, Figure 2, 文件頁 8, PDF 頁 8",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, Figure 2, printed pages 8, PDF pages 8"
@@ -3015,7 +3015,7 @@
       "pdf_pages": "9",
       "normative_keyword": "none",
       "zh_tw": "Figure 3〈PCI Express Registers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 3, "PCI Express Registers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 3, \"PCI Express Registers\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 3, 文件頁 9, PDF 頁 9",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 3, printed pages 9, PDF pages 9"
@@ -3032,7 +3032,7 @@
       "pdf_pages": "9-10",
       "normative_keyword": "none",
       "zh_tw": "Figure 4〈PCI Express Specific Controller Property Definitions〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 4, "PCI Express Specific Controller Property Definitions": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 4, \"PCI Express Specific Controller Property Definitions\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 4, 文件頁 9-10, PDF 頁 9-10",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 4, printed pages 9-10, PDF pages 9-10"
@@ -3049,7 +3049,7 @@
       "pdf_pages": "10",
       "normative_keyword": "none",
       "zh_tw": "Figure 5〈Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 5, "Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 5, \"Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 5, 文件頁 10, PDF 頁 10",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 5, printed pages 10, PDF pages 10"
@@ -3066,7 +3066,7 @@
       "pdf_pages": "10-11",
       "normative_keyword": "none",
       "zh_tw": "Figure 6〈Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL - Completion Queue y Head〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 6, "Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL - Completion Queue y Head": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 6, \"Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL - Completion Queue y Head\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, 文件頁 10-11, PDF 頁 10-11",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, printed pages 10-11, PDF pages 10-11"
@@ -3083,7 +3083,7 @@
       "pdf_pages": "11",
       "normative_keyword": "none",
       "zh_tw": "Figure 7〈Create I/O Completion Queue - Command Dword 11〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 7, "Create I/O Completion Queue - Command Dword 11": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 7, \"Create I/O Completion Queue - Command Dword 11\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, 文件頁 11, PDF 頁 11",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, printed pages 11, PDF pages 11"
@@ -3100,7 +3100,7 @@
       "pdf_pages": "13",
       "normative_keyword": "none",
       "zh_tw": "Figure 8〈Command Processing〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-      "en": "Figure 8, "Command Processing": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
+      "en": "Figure 8, \"Command Processing\": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4.1, Figure 8, 文件頁 13, PDF 頁 13",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4.1, Figure 8, printed pages 13, PDF pages 13"
@@ -3117,7 +3117,7 @@
       "pdf_pages": "15",
       "normative_keyword": "none",
       "zh_tw": "Figure 9〈Pin Based, Single MSI, and Multiple MSI Behavior〉：說明 interrupt capability、vector 或通知行為。 分開 capability 是否存在、enable 狀態、vector mapping 與 pending／mask。",
-      "en": "Figure 9, "Pin Based, Single MSI, and Multiple MSI Behavior": Shows interrupt capability, vector, or notification behavior. Separate capability presence, enable state, vector mapping, and pending or mask state.",
+      "en": "Figure 9, \"Pin Based, Single MSI, and Multiple MSI Behavior\": Shows interrupt capability, vector, or notification behavior. Separate capability presence, enable state, vector mapping, and pending or mask state.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5.1, Figure 9, 文件頁 15, PDF 頁 15",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5.1, Figure 9, printed pages 15, PDF pages 15"
@@ -3134,7 +3134,7 @@
       "pdf_pages": "16-17",
       "normative_keyword": "none",
       "zh_tw": "Figure 10〈PCI Express Type 0/1 Common Configuration Space〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 10, "PCI Express Type 0/1 Common Configuration Space": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 10, \"PCI Express Type 0/1 Common Configuration Space\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8, Figure 10, 文件頁 16-17, PDF 頁 16-17",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8, Figure 10, printed pages 16-17, PDF pages 16-17"
@@ -3151,7 +3151,7 @@
       "pdf_pages": "17",
       "normative_keyword": "none",
       "zh_tw": "Figure 11〈Offset 00h: ID - Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 11, "Offset 00h: ID - Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 11, \"Offset 00h: ID - Identifiers\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, printed pages 17, PDF pages 17"
@@ -3168,7 +3168,7 @@
       "pdf_pages": "17",
       "normative_keyword": "none",
       "zh_tw": "Figure 12〈Offset 04h: CMD - Command〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 12, "Offset 04h: CMD - Command": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 12, \"Offset 04h: CMD - Command\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, 文件頁 17, PDF 頁 17",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, printed pages 17, PDF pages 17"
@@ -3185,7 +3185,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Figure 13〈Offset 06h: STS - Device Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 13, "Offset 06h: STS - Device Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 13, \"Offset 06h: STS - Device Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, 文件頁 18, PDF 頁 18",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, printed pages 18, PDF pages 18"
@@ -3202,7 +3202,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Figure 14〈Offset 08h: RID - Revision ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 14, "Offset 08h: RID - Revision ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 14, \"Offset 08h: RID - Revision ID\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, 文件頁 18, PDF 頁 18",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, printed pages 18, PDF pages 18"
@@ -3219,7 +3219,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Figure 15〈Offset 09h: CC - Class Code〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 15, "Offset 09h: CC - Class Code": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 15, \"Offset 09h: CC - Class Code\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, 文件頁 18, PDF 頁 18",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, printed pages 18, PDF pages 18"
@@ -3236,7 +3236,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Figure 16〈Offset 0Ch: CLS - Cache Line Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 16, "Offset 0Ch: CLS - Cache Line Size": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 16, \"Offset 0Ch: CLS - Cache Line Size\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, 文件頁 18, PDF 頁 18",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, printed pages 18, PDF pages 18"
@@ -3253,7 +3253,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Figure 17〈Offset 0Dh: MLT - Master Latency Timer〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 17, "Offset 0Dh: MLT - Master Latency Timer": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 17, \"Offset 0Dh: MLT - Master Latency Timer\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, 文件頁 18, PDF 頁 18",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, printed pages 18, PDF pages 18"
@@ -3270,7 +3270,7 @@
       "pdf_pages": "19",
       "normative_keyword": "none",
       "zh_tw": "Figure 18〈Offset 0Eh: HTYPE - Header Type〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 18, "Offset 0Eh: HTYPE - Header Type": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 18, \"Offset 0Eh: HTYPE - Header Type\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, 文件頁 19, PDF 頁 19",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, printed pages 19, PDF pages 19"
@@ -3287,7 +3287,7 @@
       "pdf_pages": "19",
       "normative_keyword": "none",
       "zh_tw": "Figure 19〈Offset 0Fh: BIST - Built-In Self Test (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 19, "Offset 0Fh: BIST - Built-In Self Test (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 19, \"Offset 0Fh: BIST - Built-In Self Test (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, 文件頁 19, PDF 頁 19",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, printed pages 19, PDF pages 19"
@@ -3304,7 +3304,7 @@
       "pdf_pages": "19",
       "normative_keyword": "none",
       "zh_tw": "Figure 20〈Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 20, "Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 20, \"Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.10, Figure 20, 文件頁 19, PDF 頁 19",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.10, Figure 20, printed pages 19, PDF pages 19"
@@ -3321,7 +3321,7 @@
       "pdf_pages": "19",
       "normative_keyword": "none",
       "zh_tw": "Figure 21〈Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 21, "Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 21, \"Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.11, Figure 21, 文件頁 19, PDF 頁 19",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.11, Figure 21, printed pages 19, PDF pages 19"
@@ -3338,7 +3338,7 @@
       "pdf_pages": "20",
       "normative_keyword": "none",
       "zh_tw": "Figure 22〈Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 22, "Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 22, \"Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, 文件頁 20, PDF 頁 20",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, printed pages 20, PDF pages 20"
@@ -3355,7 +3355,7 @@
       "pdf_pages": "20",
       "normative_keyword": "none",
       "zh_tw": "Figure 23〈Offset 28h: CCPTR - CardBus CIS Pointer〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 23, "Offset 28h: CCPTR - CardBus CIS Pointer": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 23, \"Offset 28h: CCPTR - CardBus CIS Pointer\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, 文件頁 20, PDF 頁 20",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, printed pages 20, PDF pages 20"
@@ -3372,7 +3372,7 @@
       "pdf_pages": "20",
       "normative_keyword": "none",
       "zh_tw": "Figure 24〈Offset 2Ch: SS - Subsystem Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 24, "Offset 2Ch: SS - Subsystem Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 24, \"Offset 2Ch: SS - Subsystem Identifiers\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, 文件頁 20, PDF 頁 20",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, printed pages 20, PDF pages 20"
@@ -3389,7 +3389,7 @@
       "pdf_pages": "20",
       "normative_keyword": "none",
       "zh_tw": "Figure 25〈Offset 30h: EROM - Expansion ROM (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 25, "Offset 30h: EROM - Expansion ROM (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 25, \"Offset 30h: EROM - Expansion ROM (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, 文件頁 20, PDF 頁 20",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, printed pages 20, PDF pages 20"
@@ -3406,7 +3406,7 @@
       "pdf_pages": "21",
       "normative_keyword": "none",
       "zh_tw": "Figure 26〈Offset 34h: CAP - Capabilities Pointer〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 26, "Offset 34h: CAP - Capabilities Pointer": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 26, \"Offset 34h: CAP - Capabilities Pointer\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, 文件頁 21, PDF 頁 21",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, printed pages 21, PDF pages 21"
@@ -3423,7 +3423,7 @@
       "pdf_pages": "21",
       "normative_keyword": "none",
       "zh_tw": "Figure 27〈Offset 3Ch: INTR - Interrupt Information〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 27, "Offset 3Ch: INTR - Interrupt Information": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 27, \"Offset 3Ch: INTR - Interrupt Information\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, 文件頁 21, PDF 頁 21",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, printed pages 21, PDF pages 21"
@@ -3440,7 +3440,7 @@
       "pdf_pages": "21",
       "normative_keyword": "none",
       "zh_tw": "Figure 28〈Offset 3Eh: MGNT - Minimum Grant〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 28, "Offset 3Eh: MGNT - Minimum Grant": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 28, \"Offset 3Eh: MGNT - Minimum Grant\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, 文件頁 21, PDF 頁 21",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, printed pages 21, PDF pages 21"
@@ -3457,7 +3457,7 @@
       "pdf_pages": "21",
       "normative_keyword": "none",
       "zh_tw": "Figure 29〈Offset 3Fh: MLAT - Maximum Latency〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 29, "Offset 3Fh: MLAT - Maximum Latency": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 29, \"Offset 3Fh: MLAT - Maximum Latency\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, 文件頁 21, PDF 頁 21",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, printed pages 21, PDF pages 21"
@@ -3474,7 +3474,7 @@
       "pdf_pages": "21",
       "normative_keyword": "none",
       "zh_tw": "Figure 30〈PCI Power Management Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 30, "PCI Power Management Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 30, \"PCI Power Management Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 30, 文件頁 21, PDF 頁 21",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 30, printed pages 21, PDF pages 21"
@@ -3491,7 +3491,7 @@
       "pdf_pages": "21",
       "normative_keyword": "none",
       "zh_tw": "Figure 31〈Offset PMCAP: PID - PCI Power Management Capability ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 31, "Offset PMCAP: PID - PCI Power Management Capability ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 31, \"Offset PMCAP: PID - PCI Power Management Capability ID\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, 文件頁 21, PDF 頁 21",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, printed pages 21, PDF pages 21"
@@ -3508,7 +3508,7 @@
       "pdf_pages": "22",
       "normative_keyword": "none",
       "zh_tw": "Figure 32〈Offset PMCAP + 2h: PC - PCI Power Management Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 32, "Offset PMCAP + 2h: PC - PCI Power Management Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 32, \"Offset PMCAP + 2h: PC - PCI Power Management Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, 文件頁 22, PDF 頁 22",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, printed pages 22, PDF pages 22"
@@ -3525,7 +3525,7 @@
       "pdf_pages": "22",
       "normative_keyword": "none",
       "zh_tw": "Figure 33〈Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 33, "Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 33, \"Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, 文件頁 22, PDF 頁 22",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, printed pages 22, PDF pages 22"
@@ -3542,7 +3542,7 @@
       "pdf_pages": "22",
       "normative_keyword": "none",
       "zh_tw": "Figure 34〈Message Signaled Interrupt Capability (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 34, "Message Signaled Interrupt Capability (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 34, \"Message Signaled Interrupt Capability (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 34, 文件頁 22, PDF 頁 22",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 34, printed pages 22, PDF pages 22"
@@ -3559,7 +3559,7 @@
       "pdf_pages": "23",
       "normative_keyword": "none",
       "zh_tw": "Figure 35〈Offset MSICAP: MID - Message Signaled Interrupt Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 35, "Offset MSICAP: MID - Message Signaled Interrupt Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 35, \"Offset MSICAP: MID - Message Signaled Interrupt Identifiers\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, 文件頁 23, PDF 頁 23",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, printed pages 23, PDF pages 23"
@@ -3576,7 +3576,7 @@
       "pdf_pages": "23",
       "normative_keyword": "none",
       "zh_tw": "Figure 36〈Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 36, "Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 36, \"Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, 文件頁 23, PDF 頁 23",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, printed pages 23, PDF pages 23"
@@ -3593,7 +3593,7 @@
       "pdf_pages": "23",
       "normative_keyword": "none",
       "zh_tw": "Figure 37〈Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 37, "Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 37, \"Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, 文件頁 23, PDF 頁 23",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, printed pages 23, PDF pages 23"
@@ -3610,7 +3610,7 @@
       "pdf_pages": "23",
       "normative_keyword": "none",
       "zh_tw": "Figure 38〈Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 38, "Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 38, \"Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, 文件頁 23, PDF 頁 23",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, printed pages 23, PDF pages 23"
@@ -3627,7 +3627,7 @@
       "pdf_pages": "23",
       "normative_keyword": "none",
       "zh_tw": "Figure 39〈Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 39, "Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 39, \"Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, 文件頁 23, PDF 頁 23",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, printed pages 23, PDF pages 23"
@@ -3644,7 +3644,7 @@
       "pdf_pages": "24",
       "normative_keyword": "none",
       "zh_tw": "Figure 40〈Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 40, "Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 40, \"Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, 文件頁 24, PDF 頁 24",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, printed pages 24, PDF pages 24"
@@ -3661,7 +3661,7 @@
       "pdf_pages": "24",
       "normative_keyword": "none",
       "zh_tw": "Figure 41〈Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 41, "Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 41, \"Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, 文件頁 24, PDF 頁 24",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, printed pages 24, PDF pages 24"
@@ -3678,7 +3678,7 @@
       "pdf_pages": "24",
       "normative_keyword": "none",
       "zh_tw": "Figure 42〈MSI-X Capability (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 42, "MSI-X Capability (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 42, \"MSI-X Capability (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 42, 文件頁 24, PDF 頁 24",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 42, printed pages 24, PDF pages 24"
@@ -3695,7 +3695,7 @@
       "pdf_pages": "24",
       "normative_keyword": "none",
       "zh_tw": "Figure 43〈Offset MSIXCAP: MXID - MSI-X Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 43, "Offset MSIXCAP: MXID - MSI-X Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 43, \"Offset MSIXCAP: MXID - MSI-X Identifiers\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, 文件頁 24, PDF 頁 24",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, printed pages 24, PDF pages 24"
@@ -3712,7 +3712,7 @@
       "pdf_pages": "24-25",
       "normative_keyword": "none",
       "zh_tw": "Figure 44〈Offset MSIXCAP + 2h: MXC - MSI-X Message Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 44, "Offset MSIXCAP + 2h: MXC - MSI-X Message Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 44, \"Offset MSIXCAP + 2h: MXC - MSI-X Message Control\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, 文件頁 24-25, PDF 頁 24-25",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, printed pages 24-25, PDF pages 24-25"
@@ -3729,7 +3729,7 @@
       "pdf_pages": "25",
       "normative_keyword": "none",
       "zh_tw": "Figure 45〈Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 45, "Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 45, \"Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, printed pages 25, PDF pages 25"
@@ -3746,7 +3746,7 @@
       "pdf_pages": "25",
       "normative_keyword": "none",
       "zh_tw": "Figure 46〈Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 46, "Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 46, \"Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, printed pages 25, PDF pages 25"
@@ -3763,7 +3763,7 @@
       "pdf_pages": "26",
       "normative_keyword": "none",
       "zh_tw": "Figure 47〈PCI Express Capability〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 47, "PCI Express Capability": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 47, \"PCI Express Capability\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5, Figure 47, 文件頁 26, PDF 頁 26",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5, Figure 47, printed pages 26, PDF pages 26"
@@ -3780,7 +3780,7 @@
       "pdf_pages": "26",
       "normative_keyword": "none",
       "zh_tw": "Figure 48〈Offset PXCAP: PXID - PCI Express Capability ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 48, "Offset PXCAP: PXID - PCI Express Capability ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 48, \"Offset PXCAP: PXID - PCI Express Capability ID\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, 文件頁 26, PDF 頁 26",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, printed pages 26, PDF pages 26"
@@ -3797,7 +3797,7 @@
       "pdf_pages": "26",
       "normative_keyword": "none",
       "zh_tw": "Figure 49〈Offset PXCAP + 2h: PXCAP - PCI Express Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 49, "Offset PXCAP + 2h: PXCAP - PCI Express Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 49, \"Offset PXCAP + 2h: PXCAP - PCI Express Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, 文件頁 26, PDF 頁 26",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, printed pages 26, PDF pages 26"
@@ -3814,7 +3814,7 @@
       "pdf_pages": "26-27",
       "normative_keyword": "none",
       "zh_tw": "Figure 50〈Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 50, "Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 50, \"Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, 文件頁 26-27, PDF 頁 26-27",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, printed pages 26-27, PDF pages 26-27"
@@ -3831,7 +3831,7 @@
       "pdf_pages": "27-28",
       "normative_keyword": "none",
       "zh_tw": "Figure 51〈Offset PXCAP + 8h: PXDC - PCI Express Device Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 51, "Offset PXCAP + 8h: PXDC - PCI Express Device Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 51, \"Offset PXCAP + 8h: PXDC - PCI Express Device Control\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, 文件頁 27-28, PDF 頁 27-28",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, printed pages 27-28, PDF pages 27-28"
@@ -3848,7 +3848,7 @@
       "pdf_pages": "28",
       "normative_keyword": "none",
       "zh_tw": "Figure 52〈Offset PXCAP + Ah: PXDS - PCI Express Device Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 52, "Offset PXCAP + Ah: PXDS - PCI Express Device Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 52, \"Offset PXCAP + Ah: PXDS - PCI Express Device Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, 文件頁 28, PDF 頁 28",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, printed pages 28, PDF pages 28"
@@ -3865,7 +3865,7 @@
       "pdf_pages": "28-29",
       "normative_keyword": "none",
       "zh_tw": "Figure 53〈Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 53, "Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 53, \"Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, 文件頁 28-29, PDF 頁 28-29",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, printed pages 28-29, PDF pages 28-29"
@@ -3882,7 +3882,7 @@
       "pdf_pages": "29",
       "normative_keyword": "none",
       "zh_tw": "Figure 54〈Offset PXCAP + 10h: PXLC - PCI Express Link Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 54, "Offset PXCAP + 10h: PXLC - PCI Express Link Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 54, \"Offset PXCAP + 10h: PXLC - PCI Express Link Control\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, 文件頁 29, PDF 頁 29",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, printed pages 29, PDF pages 29"
@@ -3899,7 +3899,7 @@
       "pdf_pages": "29",
       "normative_keyword": "none",
       "zh_tw": "Figure 55〈Offset PXCAP + 12h: PXLS - PCI Express Link Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 55, "Offset PXCAP + 12h: PXLS - PCI Express Link Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 55, \"Offset PXCAP + 12h: PXLS - PCI Express Link Status\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, 文件頁 29, PDF 頁 29",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, printed pages 29, PDF pages 29"
@@ -3916,7 +3916,7 @@
       "pdf_pages": "30",
       "normative_keyword": "none",
       "zh_tw": "Figure 56〈Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 56, "Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 56, \"Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, 文件頁 30, PDF 頁 30",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, printed pages 30, PDF pages 30"
@@ -3933,7 +3933,7 @@
       "pdf_pages": "30-31",
       "normative_keyword": "none",
       "zh_tw": "Figure 57〈Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 57, "Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 57, \"Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, 文件頁 30-31, PDF 頁 30-31",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, printed pages 30-31, PDF pages 30-31"
@@ -3950,7 +3950,7 @@
       "pdf_pages": "31",
       "normative_keyword": "none",
       "zh_tw": "Figure 58〈Advanced Error Reporting Capability (Optional)〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 58, "Advanced Error Reporting Capability (Optional)": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 58, \"Advanced Error Reporting Capability (Optional)\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 58, 文件頁 31, PDF 頁 31",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 58, printed pages 31, PDF pages 31"
@@ -3967,7 +3967,7 @@
       "pdf_pages": "31",
       "normative_keyword": "none",
       "zh_tw": "Figure 59〈Offset AERCAP: AERID - AER Capability ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 59, "Offset AERCAP: AERID - AER Capability ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 59, \"Offset AERCAP: AERID - AER Capability ID\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, 文件頁 31, PDF 頁 31",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, printed pages 31, PDF pages 31"
@@ -3984,7 +3984,7 @@
       "pdf_pages": "31-32",
       "normative_keyword": "none",
       "zh_tw": "Figure 60〈Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 60, "Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 60, \"Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, 文件頁 31-32, PDF 頁 31-32",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, printed pages 31-32, PDF pages 31-32"
@@ -4001,7 +4001,7 @@
       "pdf_pages": "32",
       "normative_keyword": "none",
       "zh_tw": "Figure 61〈Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 61, "Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 61, \"Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, 文件頁 32, PDF 頁 32",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, printed pages 32, PDF pages 32"
@@ -4018,7 +4018,7 @@
       "pdf_pages": "32-33",
       "normative_keyword": "none",
       "zh_tw": "Figure 62〈Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 62, "Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 62, \"Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, 文件頁 32-33, PDF 頁 32-33",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, printed pages 32-33, PDF pages 32-33"
@@ -4035,7 +4035,7 @@
       "pdf_pages": "33",
       "normative_keyword": "none",
       "zh_tw": "Figure 63〈Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 63, "Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 63, \"Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, 文件頁 33, PDF 頁 33",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, printed pages 33, PDF pages 33"
@@ -4052,7 +4052,7 @@
       "pdf_pages": "33",
       "normative_keyword": "none",
       "zh_tw": "Figure 64〈Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-      "en": "Figure 64, "Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
+      "en": "Figure 64, \"Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register\": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, 文件頁 33, PDF 頁 33",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, printed pages 33, PDF pages 33"
@@ -4069,7 +4069,7 @@
       "pdf_pages": "34",
       "normative_keyword": "none",
       "zh_tw": "Figure 65〈Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 65, "Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 65, \"Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, 文件頁 34, PDF 頁 34",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, printed pages 34, PDF pages 34"
@@ -4086,7 +4086,7 @@
       "pdf_pages": "34",
       "normative_keyword": "none",
       "zh_tw": "Figure 66〈Offset AERCAP + 1Ch: AERHL - AER Header Log Register〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 66, "Offset AERCAP + 1Ch: AERHL - AER Header Log Register": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 66, \"Offset AERCAP + 1Ch: AERHL - AER Header Log Register\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, 文件頁 34, PDF 頁 34",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, printed pages 34, PDF pages 34"
@@ -4103,7 +4103,7 @@
       "pdf_pages": "35",
       "normative_keyword": "none",
       "zh_tw": "Figure 67〈Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 67, "Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 67, \"Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, 文件頁 35, PDF 頁 35",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, printed pages 35, PDF pages 35"
@@ -4120,7 +4120,7 @@
       "pdf_pages": "37",
       "normative_keyword": "none",
       "zh_tw": "Figure 68〈Example of an Eve Diagram in the Printable Eye Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 68, "Example of an Eve Diagram in the Printable Eye Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 68, \"Example of an Eve Diagram in the Printable Eye Field\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.9, Figure 68, 文件頁 37, PDF 頁 37",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.9, Figure 68, printed pages 37, PDF pages 37"
@@ -4137,7 +4137,7 @@
       "pdf_pages": "38-39",
       "normative_keyword": "none",
       "zh_tw": "Figure 69〈NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-      "en": "Figure 69, "NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
+      "en": "Figure 69, \"NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure\": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.10, Figure 69, 文件頁 38-39, PDF 頁 38-39",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.10, Figure 69, printed pages 38-39, PDF pages 38-39"
@@ -4154,7 +4154,7 @@
       "pdf_pages": "39",
       "normative_keyword": "none",
       "zh_tw": "Figure 70〈Get Log Page - Log Page Identifiers〉：整理 identifier 或 list 的 byte layout 與範圍。 先確認長度、byte order、數量欄位、唯一性範圍與保留區。",
-      "en": "Figure 70, "Get Log Page - Log Page Identifiers": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
+      "en": "Figure 70, \"Get Log Page - Log Page Identifiers\": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, 文件頁 39, PDF 頁 39",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, printed pages 39, PDF pages 39"
@@ -4171,7 +4171,7 @@
       "pdf_pages": "40",
       "normative_keyword": "none",
       "zh_tw": "Figure 71〈Size of Physical Interface Receiver Eye Opening Measurement Log Page〉：整理 receiver eye measurement 的輸入、輸出或資料格式。 先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。",
-      "en": "Figure 71, "Size of Physical Interface Receiver Eye Opening Measurement Log Page": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.",
+      "en": "Figure 71, \"Size of Physical Interface Receiver Eye Opening Measurement Log Page\": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 71, 文件頁 40, PDF 頁 40",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 71, printed pages 40, PDF pages 40"
@@ -4188,7 +4188,7 @@
       "pdf_pages": "40-41",
       "normative_keyword": "none",
       "zh_tw": "Figure 72〈Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 72, "Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 72, \"Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 72, 文件頁 40-41, PDF 頁 40-41",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 72, printed pages 40-41, PDF pages 40-41"
@@ -4205,7 +4205,7 @@
       "pdf_pages": "41",
       "normative_keyword": "none",
       "zh_tw": "Figure 73〈Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 73, "Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 73, \"Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 73, 文件頁 41, PDF 頁 41",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 73, printed pages 41, PDF pages 41"
@@ -4222,7 +4222,7 @@
       "pdf_pages": "41",
       "normative_keyword": "none",
       "zh_tw": "Figure 74〈Physical Interface Receiver Eye Opening Measurement Log Page〉：整理 receiver eye measurement 的輸入、輸出或資料格式。 先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。",
-      "en": "Figure 74, "Physical Interface Receiver Eye Opening Measurement Log Page": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.",
+      "en": "Figure 74, \"Physical Interface Receiver Eye Opening Measurement Log Page\": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 74, 文件頁 41, PDF 頁 41",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 74, printed pages 41, PDF pages 41"
@@ -4239,7 +4239,7 @@
       "pdf_pages": "42-43",
       "normative_keyword": "none",
       "zh_tw": "Figure 75〈EOM Header〉：整理 receiver eye measurement 的輸入、輸出或資料格式。 先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。",
-      "en": "Figure 75, "EOM Header": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.",
+      "en": "Figure 75, \"EOM Header\": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 75, 文件頁 42-43, PDF 頁 42-43",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 75, printed pages 42-43, PDF pages 42-43"
@@ -4256,7 +4256,7 @@
       "pdf_pages": "43-45",
       "normative_keyword": "none",
       "zh_tw": "Figure 76〈EOM Lane Descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。",
-      "en": "Figure 76, "EOM Lane Descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
+      "en": "Figure 76, \"EOM Lane Descriptor\": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 76, 文件頁 43-45, PDF 頁 43-45",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 76, printed pages 43-45, PDF pages 43-45"
@@ -4273,7 +4273,7 @@
       "pdf_pages": "46",
       "normative_keyword": "none",
       "zh_tw": "Figure 77〈Example of an Eve Diagram in the Printable Eye Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-      "en": "Figure 77, "Example of an Eve Diagram in the Printable Eye Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
+      "en": "Figure 77, \"Example of an Eve Diagram in the Printable Eye Field\": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "citation_zh_tw": "來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 77, 文件頁 46, PDF 頁 46",
       "citation_en": "Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 77, printed pages 46, PDF pages 46"
