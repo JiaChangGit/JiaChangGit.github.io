@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NVMe Base 2.4 第 1、2 章：規格語言、PCIe 佇列與儲存模型｜新手教學版</title>
+</head>
+<body>
+<nav aria-label="章節導覽"><a href="#scope">範圍</a> ｜ <a href="#map">流程圖</a> ｜ <a href="#claims">重點</a> ｜ <a href="#figures">Figure 逐圖導讀</a> ｜ <a href="#sources">來源</a></nav>
+<main>
+<h1>NVMe Base 2.4 第 1、2 章：規格語言、PCIe 佇列與儲存模型｜新手教學版</h1>
+<p>用途：供具備 PCIe 與 NVMe 基礎的工程人員在 iPad 離線閱讀，並作為 100 分鐘簡報的內容來源。</p>
+<section id="scope"><h2>範圍與閱讀方式</h2>
+<p><strong>納入：</strong>§1–§2；文件頁 1–37；PDF 頁 27–63。正文只保留 PCIe／memory-based 與通用 NVMe 內容；未納入主題不會出現在報告或 PPT。</p>
+<p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、讀法、條件與說明性範例。欄位表雖以表格呈現，在本範圍的規格中仍以 Figure 編號。</p>
+<table><thead><tr><th>keyword</th><th>台灣繁體中文</th><th>強度</th></tr></thead><tbody><tr><td>shall</td><td>必須</td><td>強制要求</td></tr><tr><td>may</td><td>可、得</td><td>允許選擇</td></tr><tr><td>should</td><td>宜、建議</td><td>有偏好的建議</td></tr><tr><td>optional</td><td>選用</td><td>不要求支援；實作後仍依定義</td></tr></tbody></table></section>
+<section id="map"><h2>整體流程圖</h2>
+<svg width="100%" height="140" viewBox="0 0 720 140" role="img" aria-labelledby="flow-title flow-desc"><title id="flow-title">NVMe report flow</title><desc id="flow-desc">命令由 host 放入 Submission Queue；controller 取走並執行，再把完成結果寫入 Completion Queue。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs><rect x="10" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="85" y="75" text-anchor="middle" font-size="14">Host / CPU core</text><rect x="190" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="265" y="75" text-anchor="middle" font-size="14">Submission Queue</text><rect x="370" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="445" y="75" text-anchor="middle" font-size="14">NVMe controller</text><rect x="550" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="625" y="75" text-anchor="middle" font-size="14">Completion Queue</text><line x1="160" y1="70" x2="188" y2="70" stroke="#333" marker-end="url(#arrow)"/><line x1="340" y1="70" x2="368" y2="70" stroke="#333" marker-end="url(#arrow)"/><line x1="520" y1="70" x2="548" y2="70" stroke="#333" marker-end="url(#arrow)"/></svg>
+<p>命令由 host 放入 Submission Queue；controller 取走並執行，再把完成結果寫入 Completion Queue。</p></section>
+<section id="claims"><h2>規格重點</h2>
+<article><h3>1. 先看懂</h3>
+<p><span data-claim-id="BASE12-FAMILY">Base Specification 定義通用 NVMe 協定；Transport Specification 綁定特定傳輸，I/O Command Set Specification 擴充命令與資料結構。這是適用關係，不是協定堆疊。</span></p>
+<p><strong>新手檢查點：</strong>先確認概念位於規格家族、儲存階層或路徑層級，不把不同層級合併。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27</small></p></article>
+<article><h3>2. 先看懂</h3>
+<p><span data-claim-id="BASE12-KEYWORDS">規格的 mandatory、may、optional、reserved、shall、should 各有固定語氣；詳細版保留英文 keyword，不能把 may 或 should 翻成 shall。</span></p>
+<p><strong>新手檢查點：</strong>先圈出 keyword、進位、單位與 bit／byte 編號，再開始解讀句子或欄位。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.1, 文件頁 2-3, PDF 頁 28-29</small></p></article>
+<article><h3>3. 先看懂</h3>
+<p><span data-claim-id="BASE12-NUMBERS">數值的解讀同時包含進位與單位；十六進位使用 h 後綴，二進位使用 b 後綴，十進位可省略 d。十進位與二進位容量前綴代表不同倍率。</span></p>
+<p><strong>新手檢查點：</strong>先圈出 keyword、進位、單位與 bit／byte 編號，再開始解讀句子或欄位。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31</small></p></article>
+<article><h3>4. 先看懂</h3>
+<p><span data-claim-id="BASE12-DWORD">NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。</span></p>
+<p><strong>新手檢查點：</strong>先圈出 keyword、進位、單位與 bit／byte 編號，再開始解讀句子或欄位。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31</small></p></article>
+<article><h3>5. 先看懂</h3>
+<p><span data-claim-id="BASE12-QUEUE">PCIe memory-based model 把 Submission Queue 與 Completion Queue 配置在記憶體。多個 I/O Submission Queues 可共用一個 I/O Completion Queue；Admin queue pair 維持一對一。</span></p>
+<p><strong>新手檢查點：</strong>畫出 host → SQ → controller → CQ，並在每一步標上由誰更新 pointer。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49</small></p></article>
+<article><h3>6. 先看懂</h3>
+<p><span data-claim-id="BASE12-STORAGE">儲存模型用 NVM subsystem、domain、Endurance Group、NVM Set／Reclaim Group、Reclaim Unit 與 namespace 表達包含關係。namespace 是 host 實際透過 controller 存取的格式化容量。</span></p>
+<p><strong>新手檢查點：</strong>把 identifier 與實體／邏輯物件分開，再由 namespace 往上追到所屬容量階層。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59</small></p></article>
+<article><h3>7. 先看懂</h3>
+<p><span data-claim-id="BASE12-COMMANDSET">Admin Command Set 管理 controller 與 queue；I/O Command Set 定義對 namespace 的資料操作。Base 說明通用機制，個別 I/O Command Set Specification 說明命令語意。</span></p>
+<p><strong>新手檢查點：</strong>畫出 host → SQ → controller → CQ，並在每一步標上由誰更新 pointer。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59</small></p></article>
+<article><h3>8. 先看懂</h3>
+<p><span data-claim-id="BASE12-SUBSYSTEM">controller、port、namespace 與 PCI Function 是不同物件；NSID 是 controller 用來指向 namespace 的 handle，不是 namespace 本身。</span></p>
+<p><strong>新手檢查點：</strong>把 identifier 與實體／邏輯物件分開，再由 namespace 往上追到所屬容量階層。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61</small></p></article>
+<article><h3>9. 先看懂</h3>
+<p><span data-claim-id="BASE12-MULTIPATH">multi-path I/O 是同一 host 到同一 namespace 的兩條以上獨立路徑；namespace sharing 是兩個以上 host 經不同 controller 存取同一 shared namespace。兩者都需要至少兩個 controller。</span></p>
+<p><strong>新手檢查點：</strong>先確認概念位於規格家族、儲存階層或路徑層級，不把不同層級合併。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63</small></p></article>
+<article><h3>10. 先看懂</h3>
+<p><span data-claim-id="BASE12-ASYMMETRY">支援多路徑或共享時，各 controller 對同一 namespace 的存取特性不一定相同；host 可依 controller 所回報的狀態選擇路徑。</span></p>
+<p><strong>新手檢查點：</strong>先確認概念位於規格家族、儲存階層或路徑層級，不把不同層級合併。</p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63</small></p></article>
+</section><section id="figures"><h2>Figure 逐圖導讀</h2>
+<article data-figure-table-id="BASE12-FIG-001"><h3>Figure 1: NVMe Family of Specifications</h3>
+<p><span data-claim-id="BASE12-FIG-001-CLAIM">Figure 1〈NVMe Family of Specifications〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, Figure 1, 文件頁 1, PDF 頁 27</small></p></article>
+<article data-figure-table-id="BASE12-FIG-002"><h3>Figure 2: Decimal and Binary Units</h3>
+<p><span data-claim-id="BASE12-FIG-002-CLAIM">Figure 2〈Decimal and Binary Units〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, Figure 2, 文件頁 3, PDF 頁 29</small></p></article>
+<article data-figure-table-id="BASE12-FIG-003"><h3>Figure 3: Byte, Word, and Dword Relationships</h3>
+<p><span data-claim-id="BASE12-FIG-003-CLAIM">Figure 3〈Byte, Word, and Dword Relationships〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, 文件頁 5, PDF 頁 31</small></p></article>
+<article data-figure-table-id="BASE12-FIG-005"><h3>Figure 5: Types of NVMe Command Sets</h3>
+<p><span data-claim-id="BASE12-FIG-005-CLAIM">Figure 5〈Types of NVMe Command Sets〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2, Figure 5, 文件頁 21, PDF 頁 47</small></p></article>
+<article data-figure-table-id="BASE12-FIG-006"><h3>Figure 6: Queue Pair Example, 1:1 Mapping</h3>
+<p><span data-claim-id="BASE12-FIG-006-CLAIM">Figure 6〈Queue Pair Example, 1:1 Mapping〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
+<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 6, 文件頁 22, PDF 頁 48</small></p></article>
+<article data-figure-table-id="BASE12-FIG-007"><h3>Figure 7: Queue Pair Example, n:1 Mapping</h3>
+<p><span data-claim-id="BASE12-FIG-007-CLAIM">Figure 7〈Queue Pair Example, n:1 Mapping〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
+<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 7, 文件頁 22, PDF 頁 48</small></p></article>
+<article data-figure-table-id="BASE12-FIG-011"><h3>Figure 11: Simple NVM Storage Hierarchy with NVM Sets</h3>
+<p><span data-claim-id="BASE12-FIG-011-CLAIM">Figure 11〈Simple NVM Storage Hierarchy with NVM Sets〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 11, 文件頁 27, PDF 頁 53</small></p></article>
+<article data-figure-table-id="BASE12-FIG-012"><h3>Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group</h3>
+<p><span data-claim-id="BASE12-FIG-012-CLAIM">Figure 12〈Simple NVM Storage Hierarchy with One Reclaim Group〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 12, 文件頁 28, PDF 頁 54</small></p></article>
+<article data-figure-table-id="BASE12-FIG-013"><h3>Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups</h3>
+<p><span data-claim-id="BASE12-FIG-013-CLAIM">Figure 13〈Simple NVM Storage Hierarchy with Multiple Reclaim Groups〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 13, 文件頁 29, PDF 頁 55</small></p></article>
+<article data-figure-table-id="BASE12-FIG-014"><h3>Figure 14: Complex NVM Storage Hierarchy with NVM Sets</h3>
+<p><span data-claim-id="BASE12-FIG-014-CLAIM">Figure 14〈Complex NVM Storage Hierarchy with NVM Sets〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 14, 文件頁 30, PDF 頁 56</small></p></article>
+<article data-figure-table-id="BASE12-FIG-015"><h3>Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups</h3>
+<p><span data-claim-id="BASE12-FIG-015-CLAIM">Figure 15〈Complex NVM Storage Hierarchy with Multiple Reclaim Groups〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 15, 文件頁 31, PDF 頁 57</small></p></article>
+<article data-figure-table-id="BASE12-FIG-016"><h3>Figure 16: Single-Namespace NVM Subsystem</h3>
+<p><span data-claim-id="BASE12-FIG-016-CLAIM">Figure 16〈Single-Namespace NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 16, 文件頁 32, PDF 頁 58</small></p></article>
+<article data-figure-table-id="BASE12-FIG-017"><h3>Figure 17: Two-Namespace NVM Subsystem</h3>
+<p><span data-claim-id="BASE12-FIG-017-CLAIM">Figure 17〈Two-Namespace NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 17, 文件頁 33, PDF 頁 59</small></p></article>
+<article data-figure-table-id="BASE12-FIG-018"><h3>Figure 18: Complex NVM Subsystem</h3>
+<p><span data-claim-id="BASE12-FIG-018-CLAIM">Figure 18〈Complex NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 18, 文件頁 34, PDF 頁 60</small></p></article>
+<article data-figure-table-id="BASE12-FIG-019"><h3>Figure 19: NVM Express Controller with Two Namespaces</h3>
+<p><span data-claim-id="BASE12-FIG-019-CLAIM">Figure 19〈NVM Express Controller with Two Namespaces〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 19, 文件頁 35, PDF 頁 61</small></p></article>
+<article data-figure-table-id="BASE12-FIG-020"><h3>Figure 20: NVM Subsystem with Two Controllers and One Port</h3>
+<p><span data-claim-id="BASE12-FIG-020-CLAIM">Figure 20〈NVM Subsystem with Two Controllers and One Port〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 20, 文件頁 35, PDF 頁 61</small></p></article>
+<article data-figure-table-id="BASE12-FIG-021"><h3>Figure 21: NVM Subsystem with Two Controllers and Two Ports</h3>
+<p><span data-claim-id="BASE12-FIG-021-CLAIM">Figure 21〈NVM Subsystem with Two Controllers and Two Ports〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
+<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 21, 文件頁 36, PDF 頁 62</small></p></article>
+<article data-figure-table-id="BASE12-FIG-022"><h3>Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</h3>
+<p><span data-claim-id="BASE12-FIG-022-CLAIM">Figure 22〈PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 22, 文件頁 37, PDF 頁 63</small></p></article>
+</section>
+<section id="sources"><h2>來源與限制</h2>
+<p>NVM Express Base Specification, Revision 2.4</p>
+<p>查證日期：2026-08-29。目前未納入其他 Errata、ECN、Technical Proposal、controller vendor 文件或未提供的 PCI Express Base Specification 原文；PCIe 原生語意只轉述本次來源明載的 NVMe-specific requirement。</p>
+</section>
+</main>
+</body>
+</html>

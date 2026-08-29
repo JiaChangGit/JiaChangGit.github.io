@@ -1,0 +1,140 @@
+{
+  "schema_version": 2,
+  "approval_status": "approved",
+  "production_status": "ready_for_publish",
+  "default_status": "EXCLUDE",
+  "ppt_exclusion_follows_report_exclusion": true,
+  "allowed_statuses": [
+    "INCLUDE",
+    "PREREQUISITE_ONLY",
+    "EXCLUDE",
+    "DO_NOT_PUBLISH",
+    "OPEN"
+  ],
+  "status_meanings": {
+    "INCLUDE": "完整納入報告與未來 PPT",
+    "PREREQUISITE_ONLY": "只提供理解主題所需的最小背景",
+    "EXCLUDE": "不寫入報告，也不放入 PPT",
+    "DO_NOT_PUBLISH": "可供私下分析，但不得出現在公開輸出或 PPT",
+    "OPEN": "尚待使用者決定；publish 階段禁止存在"
+  },
+  "global_exclusions": [
+    "NVMe over Fabrics",
+    "message-based controller model",
+    "Fabrics command and response capsules",
+    "Discovery controller and Discovery service",
+    "NVM subsystem export, association, NQN and other Fabrics-only concepts"
+  ],
+  "reports": [
+    {
+      "id": "base-ch1-2",
+      "title_zh_tw": "NVMe Base 2.4 第 1、2 章",
+      "title_en": "NVMe Base 2.4 Chapters 1 and 2",
+      "source_id": "NVME-BASE-2.4",
+      "sections": ["1", "2"],
+      "printed_pages": "1-37",
+      "pdf_pages": "27-63"
+    },
+    {
+      "id": "base-ch3",
+      "title_zh_tw": "NVMe Base 2.4 第 3 章",
+      "title_en": "NVMe Base 2.4 Chapter 3",
+      "source_id": "NVME-BASE-2.4",
+      "sections": ["3"],
+      "printed_pages": "38-138",
+      "pdf_pages": "64-164"
+    },
+    {
+      "id": "base-ch4",
+      "title_zh_tw": "NVMe Base 2.4 第 4 章",
+      "title_en": "NVMe Base 2.4 Chapter 4",
+      "source_id": "NVME-BASE-2.4",
+      "sections": ["4"],
+      "printed_pages": "139-175",
+      "pdf_pages": "165-201"
+    },
+    {
+      "id": "pcie-transport-1.4",
+      "title_zh_tw": "NVMe over PCIe Transport 1.4 全文",
+      "title_en": "NVMe over PCIe Transport 1.4, Complete",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "sections": ["1", "2", "3", "Annex A"],
+      "printed_pages": "1-48",
+      "pdf_pages": "1-48"
+    }
+  ],
+  "interpretation_sources": [
+    {
+      "source_id": "NVME-BASE-2.4",
+      "sections": ["1.4.1", "1.4.2"],
+      "purpose": "規範性 keyword 與數值表示法"
+    },
+    {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "sections": ["1.2", "1.3", "1.5"],
+      "purpose": "規格優先序、conventions exception 與外部參考"
+    }
+  ],
+  "entries": [
+    {
+      "id": "BASE12-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["1", "2"],
+      "note": "保留通用與 memory-based/PCIe 內容"
+    },
+    {
+      "id": "BASE12-FABRIC-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["1.5 Fabrics-only definitions", "2.2"],
+      "figures": ["4", "8", "9", "10"],
+      "note": "排除 Fabrics 定義、message-based model 與 capsule"
+    },
+    {
+      "id": "BASE3-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["3"],
+      "note": "保留通用與 memory-based/PCIe 控制器架構"
+    },
+    {
+      "id": "BASE3-FABRIC-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["3.1.2", "3.1.3.3", "3.3.2", "3.5.2", "3.6.2", "3.6.3.3", "3.7.1.3"],
+      "figures": ["29", "35", "75", "76", "77", "78", "79", "82", "83"],
+      "note": "排除 message-based、Discovery 與 exported NVM subsystem 專屬內容"
+    },
+    {
+      "id": "BASE4-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["4"],
+      "note": "保留通用與 PCIe 可用的 command、completion、PRP、SGL 與 identifier"
+    },
+    {
+      "id": "BASE4-FABRIC-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["4.1.2", "4.2.2", "4.7", "4.3.2 Fabrics-only SGL subtypes"],
+      "figures": ["95", "96", "100", "106", "123", "124", "141"],
+      "note": "排除 Fabrics SQE/CQE/status、Keyed/Transport SGL 與 NQN"
+    },
+    {
+      "id": "PCIE14-INCLUDE",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "status": "INCLUDE",
+      "sections": ["1", "2", "3", "Annex A"],
+      "note": "全文納入；Figure 1 僅解釋 Base 與 PCIe Transport 的關係"
+    },
+    {
+      "id": "NVMCS13-EXCLUDE",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "EXCLUDE",
+      "sections": ["all"],
+      "note": "本次四份報告不使用 NVM Command Set 1.3"
+    }
+  ],
+  "approval_note": "使用者於 2026-08-29 指定四份報告與 Fabrics 全面排除"
+}

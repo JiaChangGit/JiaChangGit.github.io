@@ -1,0 +1,211 @@
+{
+  "schema_version": 2,
+  "audience": "了解 PCIe 與 NVMe 基礎的工程人員",
+  "presentation_minutes": 100,
+  "artifacts": [
+    {
+      "id": "base12-tutorial-html",
+      "report_id": "base-ch1-2",
+      "path": "DOCS/nvme-spec-report/base-ch1-2/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base12-detailed-html",
+      "report_id": "base-ch1-2",
+      "path": "DOCS/nvme-spec-report/base-ch1-2/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文詳細 Spec 版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base12-zh-md",
+      "report_id": "base-ch1-2",
+      "path": "_posts/2026-08-28-nvme-base-ch1-2-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "base12-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base12-en-md",
+      "report_id": "base-ch1-2",
+      "path": "_posts/2026-08-28-nvme-base-ch1-2-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "base12-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base3-tutorial-html",
+      "report_id": "base-ch3",
+      "path": "DOCS/nvme-spec-report/base-ch3/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base3-detailed-html",
+      "report_id": "base-ch3",
+      "path": "DOCS/nvme-spec-report/base-ch3/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文詳細 Spec 版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base3-zh-md",
+      "report_id": "base-ch3",
+      "path": "_posts/2026-08-28-nvme-base-ch3-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "base3-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base3-en-md",
+      "report_id": "base-ch3",
+      "path": "_posts/2026-08-28-nvme-base-ch3-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "base3-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base4-tutorial-html",
+      "report_id": "base-ch4",
+      "path": "DOCS/nvme-spec-report/base-ch4/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base4-detailed-html",
+      "report_id": "base-ch4",
+      "path": "DOCS/nvme-spec-report/base-ch4/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文詳細 Spec 版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base4-zh-md",
+      "report_id": "base-ch4",
+      "path": "_posts/2026-08-28-nvme-base-ch4-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "base4-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "base4-en-md",
+      "report_id": "base-ch4",
+      "path": "_posts/2026-08-28-nvme-base-ch4-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "base4-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "pcie14-tutorial-html",
+      "report_id": "pcie-transport-1.4",
+      "path": "DOCS/nvme-spec-report/pcie-transport-1.4/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-PCIE-TRANSPORT-1.4", "NVME-BASE-2.4"]
+    },
+    {
+      "id": "pcie14-detailed-html",
+      "report_id": "pcie-transport-1.4",
+      "path": "DOCS/nvme-spec-report/pcie-transport-1.4/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文詳細 Spec 版",
+      "required_source_ids": ["NVME-PCIE-TRANSPORT-1.4", "NVME-BASE-2.4"]
+    },
+    {
+      "id": "pcie14-zh-md",
+      "report_id": "pcie-transport-1.4",
+      "path": "_posts/2026-08-28-nvme-pcie-transport-1-4-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "pcie14-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-PCIE-TRANSPORT-1.4", "NVME-BASE-2.4"]
+    },
+    {
+      "id": "pcie14-en-md",
+      "report_id": "pcie-transport-1.4",
+      "path": "_posts/2026-08-28-nvme-pcie-transport-1-4-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "pcie14-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-PCIE-TRANSPORT-1.4", "NVME-BASE-2.4"]
+    }
+  ],
+  "source_markers": {
+    "NVME-BASE-2.4": "NVM Express Base Specification, Revision 2.4",
+    "NVME-PCIE-TRANSPORT-1.4": "NVM Express NVMe over PCIe Transport Specification, Revision 1.4"
+  },
+  "html_policy": {
+    "css_allowed": false,
+    "javascript_allowed": false,
+    "external_resources_allowed": false,
+    "inline_svg_allowed": true,
+    "relative_images_allowed": true,
+    "required_lang": "zh-Hant-TW",
+    "viewport_required": true,
+    "recommended_max_table_columns": 4
+  },
+  "citation_fields": [
+    "source_id",
+    "revision",
+    "section",
+    "figure_or_table_when_applicable",
+    "printed_pages",
+    "pdf_pages"
+  ],
+  "full_coverage_artifact_ids": [
+    "base12-detailed-html",
+    "base12-zh-md",
+    "base12-en-md",
+    "base3-detailed-html",
+    "base3-zh-md",
+    "base3-en-md",
+    "base4-detailed-html",
+    "base4-zh-md",
+    "base4-en-md",
+    "pcie14-detailed-html",
+    "pcie14-zh-md",
+    "pcie14-en-md"
+  ]
+}

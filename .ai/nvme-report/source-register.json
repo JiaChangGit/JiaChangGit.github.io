@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "registry_id": "nvme-report-2026-07-31",
+  "verified_date": "2026-08-29",
+  "public_repository_policy": {
+    "commit_source_pdfs": false,
+    "commit_long_verbatim_excerpts": false,
+    "allow_self_authored_diagrams": true,
+    "allow_precise_source_locations": true
+  },
+  "sources": [
+    {
+      "id": "NVME-BASE-2.4",
+      "title": "NVM Express Base Specification",
+      "revision": "2.4",
+      "ratified_date": "2026-07-31",
+      "filename": "NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf",
+      "sha256": "fe7647532c06859f2952d9db1f90165aa3e9375343d588d5444253f7dbb2c9bd",
+      "size_bytes": 13821463,
+      "pdf_pages": 870,
+      "printed_page_mapping": {
+        "body_section_1_printed_page": 1,
+        "body_section_1_pdf_page": 27,
+        "body_rule": "pdf_page = printed_page + 26"
+      },
+      "normative_terms": {
+        "section": "1.4.1",
+        "printed_pages": [2, 3],
+        "pdf_pages": [28, 29]
+      }
+    },
+    {
+      "id": "NVME-NVM-CS-1.3",
+      "title": "NVM Express NVM Command Set Specification",
+      "revision": "1.3",
+      "ratified_date": "2026-07-31",
+      "filename": "NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf",
+      "sha256": "a5c192fe239777c3c7a70417c16317fcfc24445a8cd72832286651ce76cefc4b",
+      "size_bytes": 3121358,
+      "pdf_pages": 177,
+      "printed_page_mapping": {
+        "body_rule": "pdf_page = printed_page"
+      },
+      "conventions_reference": {
+        "section": "1.3",
+        "printed_pages": [9],
+        "pdf_pages": [9],
+        "inherits": "NVME-BASE-2.4 section 1.4"
+      }
+    },
+    {
+      "id": "NVME-PCIE-TRANSPORT-1.4",
+      "title": "NVM Express NVMe over PCIe Transport Specification",
+      "revision": "1.4",
+      "ratified_date": "2026-07-31",
+      "filename": "NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf",
+      "sha256": "2f6dc41d529c03e0596219fb2a734221ba3261837e14bab61168cde5a3226c30",
+      "size_bytes": 1221749,
+      "pdf_pages": 48,
+      "printed_page_mapping": {
+        "body_rule": "pdf_page = printed_page"
+      },
+      "conventions_reference": {
+        "section": "1.3",
+        "printed_pages": [6, 7],
+        "pdf_pages": [6, 7],
+        "inherits": "NVME-BASE-2.4 section 1.4",
+        "exception": "Reset column wording for PCI or PCI Express registers and properties"
+      }
+    }
+  ],
+  "provided_supplements": {
+    "errata": [],
+    "ecn": [],
+    "technical_proposals": [],
+    "controller_vendor_documents": []
+  },
+  "referenced_but_not_provided": [
+    {
+      "title": "PCI Express Base Specification",
+      "revision": "6.2",
+      "reason": "Referenced by NVME-PCIE-TRANSPORT-1.4 section 1.5; not an input source for this report"
+    }
+  ]
+}
+

@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NVMe over PCIe Transport 1.4：完整傳輸綁定｜詳細 Spec 版</title>
+</head>
+<body>
+<nav aria-label="章節導覽"><a href="#scope">範圍</a> ｜ <a href="#map">流程圖</a> ｜ <a href="#claims">重點</a> ｜ <a href="#figures">Figure 逐圖導讀</a> ｜ <a href="#sources">來源</a></nav>
+<main>
+<h1>NVMe over PCIe Transport 1.4：完整傳輸綁定｜詳細 Spec 版</h1>
+<p>用途：供具備 PCIe 與 NVMe 基礎的工程人員在 iPad 離線閱讀，並作為 100 分鐘簡報的內容來源。</p>
+<section id="scope"><h2>範圍與閱讀方式</h2>
+<p><strong>納入：</strong>§1–§3 與 Annex A；文件頁／PDF 頁 1–48。正文只保留 PCIe／memory-based 與通用 NVMe 內容；未納入主題不會出現在報告或 PPT。</p>
+<p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、讀法、條件與說明性範例。欄位表雖以表格呈現，在本範圍的規格中仍以 Figure 編號。</p>
+<table><thead><tr><th>keyword</th><th>台灣繁體中文</th><th>強度</th></tr></thead><tbody><tr><td>shall</td><td>必須</td><td>強制要求</td></tr><tr><td>may</td><td>可、得</td><td>允許選擇</td></tr><tr><td>should</td><td>宜、建議</td><td>有偏好的建議</td></tr><tr><td>optional</td><td>選用</td><td>不要求支援；實作後仍依定義</td></tr></tbody></table></section>
+<section id="map"><h2>整體流程圖</h2>
+<svg width="100%" height="140" viewBox="0 0 720 140" role="img" aria-labelledby="flow-title flow-desc"><title id="flow-title">NVMe report flow</title><desc id="flow-desc">PCIe transport 以 host memory 的 queue 配合 MMIO doorbell；資料可由 PRP／SGL 指到 host-addressable memory。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs><rect x="10" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="85" y="75" text-anchor="middle" font-size="14">Write SQE</text><rect x="190" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="265" y="75" text-anchor="middle" font-size="14">Ring SQ tail doorbell</text><rect x="370" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="445" y="75" text-anchor="middle" font-size="14">Controller executes</text><rect x="550" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="625" y="75" text-anchor="middle" font-size="14">Read CQE / ring CQ head</text><line x1="160" y1="70" x2="188" y2="70" stroke="#333" marker-end="url(#arrow)"/><line x1="340" y1="70" x2="368" y2="70" stroke="#333" marker-end="url(#arrow)"/><line x1="520" y1="70" x2="548" y2="70" stroke="#333" marker-end="url(#arrow)"/></svg>
+<p>PCIe transport 以 host memory 的 queue 配合 MMIO doorbell；資料可由 PRP／SGL 指到 host-addressable memory。</p></section>
+<section id="claims"><h2>規格重點</h2>
+<article><h3>1. 規格結論</h3>
+<p><span data-claim-id="PCIE14-SCOPE">PCIe Transport 補充 Base Specification，定義 PCIe 專屬資料結構、延伸、要求與行為；通用 NVMe 行為仍由 Base 定義。規格衝突時 Base 的優先序高於 Transport。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-SCOPE</dd><dt>規範性 keyword</dt><dd>shall</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6</small></p></article>
+<article><h3>2. 規格結論</h3>
+<p><span data-claim-id="PCIE14-CONVENTION">本文件沿用 Base 的 conventions；register／property 表格中的 Reset 欄改表示依 PCI 或 PCIe 規格定義之 reset 後欄位值。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-CONVENTION</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, 文件頁 6-7, PDF 頁 6-7</small></p></article>
+<article><h3>3. 規格結論</h3>
+<p><span data-claim-id="PCIE14-KEYWORDS">shall、may 與 should 的語氣仍由 Base 2.4 定義；Transport 摘要不得自行提高或降低規範強度。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-KEYWORDS</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.1, 文件頁 2-3, PDF 頁 28-29</small></p></article>
+<article><h3>4. 規格結論</h3>
+<p><span data-claim-id="PCIE14-OVERVIEW">PCIe transport 使用 memory-mapped I/O 進行資料與 register 存取，並使用 PCIe configuration space 與 message-signaled interrupt。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-OVERVIEW</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, 文件頁 8, PDF 頁 8</small></p></article>
+<article><h3>5. 規格結論</h3>
+<p><span data-claim-id="PCIE14-MMIO">NVMe controller registers 位於 BAR0／BAR1 所指定的 memory space。host 必須（shall）使用 native width 或 aligned 32-bit access，不得發出 locked access；違反時行為未定義。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-MMIO</dd><dt>規範性 keyword</dt><dd>shall</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10</small></p></article>
+<article><h3>6. 規格結論</h3>
+<p><span data-claim-id="PCIE14-DOORBELL">SQ tail 與 CQ head doorbell 從 offset 1000h 起，實際 stride 由 CAP.DSTRD 決定；queue identifier y 參與 offset 計算。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-DOORBELL</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11</small></p></article>
+<article><h3>7. 規格結論</h3>
+<p><span data-claim-id="PCIE14-QUEUE">PCIe 支援多個 Submission Queues 共用一個 Completion Queue。建立 CQ 時若啟用 interrupt，Interrupt Vector 必須（shall）初始化成對應 MSI-X 或 multiple-message MSI vector。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-QUEUE</dd><dt>規範性 keyword</dt><dd>shall</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11</small></p></article>
+<article><h3>8. 規格結論</h3>
+<p><span data-claim-id="PCIE14-RESET">PCIe reset 來源包含 Base 定義的 controller/reset 流程與 PCIe 層級 reset。Recovery 設計要以 reset 類型判斷 controller property、queue 與 PCI configuration state。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-RESET</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.3, 文件頁 11-12, PDF 頁 11-12</small></p></article>
+<article><h3>9. 規格結論</h3>
+<p><span data-claim-id="PCIE14-COMMAND">command flow 是：寫 SQE、更新 SQ tail doorbell、controller 取走與執行、寫 CQE、發出 interrupt（若啟用）、host 處理 CQE、更新 CQ head doorbell。doorbell 只通告 pointer，不攜帶 command 本體。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-COMMAND</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, 文件頁 12-13, PDF 頁 12-13</small></p></article>
+<article><h3>10. 規格結論</h3>
+<p><span data-claim-id="PCIE14-INTERRUPT">可用模式為 pin-based、single-message MSI、multiple-message MSI 與 MSI-X。規格建議 MSI-X；coalescing 可降低 interrupt rate，但通常增加 latency。Admin CQ 的 interrupt 不宜（should not）延遲。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-INTERRUPT</dd><dt>規範性 keyword</dt><dd>should</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16</small></p></article>
+<article><h3>11. 規格結論</h3>
+<p><span data-claim-id="PCIE14-POWER">host 絕不可（shall never）選擇功耗高於 PCIe slot power limit 的 NVMe power state；違反時 power behavior 未定義。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-POWER</dd><dt>規範性 keyword</dt><dd>shall</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16</small></p></article>
+<article><h3>12. 規格結論</h3>
+<p><span data-claim-id="PCIE14-ERROR">NVMe command error 由 CQE status 回報；PCIe transport／link error 則依 PCIe 機制與本文件的 NVMe-specific 要求處理，兩者的 recovery 層級不同。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-ERROR</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, 文件頁 16, PDF 頁 16</small></p></article>
+<article><h3>13. 規格結論</h3>
+<p><span data-claim-id="PCIE14-CONFIG">§3.8 逐欄定義 NVMe controller 的 PCI header、Power Management、MSI／MSI-X、PCIe capability 與 AER 額外要求。PCI／PCIe 原始欄位語意仍以 PCI-SIG 規格為準。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-CONFIG</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35</small></p></article>
+<article><h3>14. 規格結論</h3>
+<p><span data-claim-id="PCIE14-SECURITY">power-loss signaling、confidential computing 與 TDISP 把平台事件或隔離狀態映射到 NVMe controller 行為；實作仍需要本次未提供的外部 PCIe／TDISP 規格。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-SECURITY</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.8-3.8.10, 文件頁 35-39, PDF 頁 35-39</small></p></article>
+<article><h3>15. 規格結論</h3>
+<p><span data-claim-id="PCIE14-EOM">Physical Interface Receiver Eye Opening Measurement log page 以 header、lane descriptor 與 EOM data 回報量測；host 先查支援與大小，再依 lane／parameter 解析。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-EOM</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46</small></p></article>
+<article><h3>16. 規格結論</h3>
+<p><span data-claim-id="PCIE14-HOST">Annex A 是 informative host checklist：提交時先寫 SQE 再 doorbell；完成時以 phase 判斷新 CQE，完成讀取後再推進 CQ head；interrupt handler 要處理同 vector 的所有相關 CQ。</span></p>
+<dl><dt>Claim ID</dt><dd>PCIE14-HOST</dd><dt>規範性 keyword</dt><dd>none</dd></dl>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48</small></p></article>
+</section><section id="figures"><h2>Figure 逐圖導讀</h2>
+<article data-figure-table-id="PCIE14-FIG-001"><h3>Figure 1: NVMe Family of Specifications</h3>
+<p><span data-claim-id="PCIE14-FIG-001-CLAIM">Figure 1〈NVMe Family of Specifications〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-001-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, Figure 1, 文件頁 6, PDF 頁 6</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-002"><h3>Figure 2: Example of Transport Protocol Layers</h3>
+<p><span data-claim-id="PCIE14-FIG-002-CLAIM">Figure 2〈Example of Transport Protocol Layers〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-002-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, Figure 2, 文件頁 8, PDF 頁 8</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-003"><h3>Figure 3: PCI Express Registers</h3>
+<p><span data-claim-id="PCIE14-FIG-003-CLAIM">Figure 3〈PCI Express Registers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-003-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 3, 文件頁 9, PDF 頁 9</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-004"><h3>Figure 4: PCI Express Specific Controller Property Definitions</h3>
+<p><span data-claim-id="PCIE14-FIG-004-CLAIM">Figure 4〈PCI Express Specific Controller Property Definitions〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-004-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 4, 文件頁 9-10, PDF 頁 9-10</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-005"><h3>Figure 5: Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL – Submission Queue y Tail</h3>
+<p><span data-claim-id="PCIE14-FIG-005-CLAIM">Figure 5〈Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL – Submission Queue y Tail〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
+<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-005-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 5, 文件頁 10, PDF 頁 10</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-006"><h3>Figure 6: Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL – Completion Queue y Head</h3>
+<p><span data-claim-id="PCIE14-FIG-006-CLAIM">Figure 6〈Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL – Completion Queue y Head〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
+<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-006-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, 文件頁 10-11, PDF 頁 10-11</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-007"><h3>Figure 7: Create I/O Completion Queue – Command Dword 11</h3>
+<p><span data-claim-id="PCIE14-FIG-007-CLAIM">Figure 7〈Create I/O Completion Queue – Command Dword 11〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
+<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-007-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, 文件頁 11, PDF 頁 11</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-008"><h3>Figure 8: Command Processing</h3>
+<p><span data-claim-id="PCIE14-FIG-008-CLAIM">Figure 8〈Command Processing〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
+<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-008-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4.1, Figure 8, 文件頁 13, PDF 頁 13</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-009"><h3>Figure 9: Pin Based, Single MSI, and Multiple MSI Behavior</h3>
+<p><span data-claim-id="PCIE14-FIG-009-CLAIM">Figure 9〈Pin Based, Single MSI, and Multiple MSI Behavior〉：說明 interrupt capability、vector 或通知行為。 分開 capability 是否存在、enable 狀態、vector mapping 與 pending／mask。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明 interrupt capability、vector 或通知行為。</li>
+<li><strong>閱讀順序：</strong>分開 capability 是否存在、enable 狀態、vector mapping 與 pending／mask。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>為兩個 Completion Queues 配置 vector，檢查是否共用及如何服務。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-009-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5.1, Figure 9, 文件頁 15, PDF 頁 15</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-010"><h3>Figure 10: PCI Express Type 0/1 Common Configuration Space</h3>
+<p><span data-claim-id="PCIE14-FIG-010-CLAIM">Figure 10〈PCI Express Type 0/1 Common Configuration Space〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-010-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8, Figure 10, 文件頁 16-17, PDF 頁 16-17</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-011"><h3>Figure 11: Offset 00h: ID - Identifiers</h3>
+<p><span data-claim-id="PCIE14-FIG-011-CLAIM">Figure 11〈Offset 00h: ID - Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-011-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-012"><h3>Figure 12: Offset 04h: CMD - Command</h3>
+<p><span data-claim-id="PCIE14-FIG-012-CLAIM">Figure 12〈Offset 04h: CMD - Command〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-012-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, 文件頁 17, PDF 頁 17</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-013"><h3>Figure 13: Offset 06h: STS – Device Status</h3>
+<p><span data-claim-id="PCIE14-FIG-013-CLAIM">Figure 13〈Offset 06h: STS – Device Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-013-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, 文件頁 18, PDF 頁 18</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-014"><h3>Figure 14: Offset 08h: RID - Revision ID</h3>
+<p><span data-claim-id="PCIE14-FIG-014-CLAIM">Figure 14〈Offset 08h: RID - Revision ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-014-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, 文件頁 18, PDF 頁 18</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-015"><h3>Figure 15: Offset 09h: CC - Class Code</h3>
+<p><span data-claim-id="PCIE14-FIG-015-CLAIM">Figure 15〈Offset 09h: CC - Class Code〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-015-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, 文件頁 18, PDF 頁 18</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-016"><h3>Figure 16: Offset 0Ch: CLS – Cache Line Size</h3>
+<p><span data-claim-id="PCIE14-FIG-016-CLAIM">Figure 16〈Offset 0Ch: CLS – Cache Line Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-016-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, 文件頁 18, PDF 頁 18</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-017"><h3>Figure 17: Offset 0Dh: MLT – Master Latency Timer</h3>
+<p><span data-claim-id="PCIE14-FIG-017-CLAIM">Figure 17〈Offset 0Dh: MLT – Master Latency Timer〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-017-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, 文件頁 18, PDF 頁 18</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-018"><h3>Figure 18: Offset 0Eh: HTYPE – Header Type</h3>
+<p><span data-claim-id="PCIE14-FIG-018-CLAIM">Figure 18〈Offset 0Eh: HTYPE – Header Type〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-018-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, 文件頁 19, PDF 頁 19</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-019"><h3>Figure 19: Offset 0Fh: BIST – Built-In Self Test (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-019-CLAIM">Figure 19〈Offset 0Fh: BIST – Built-In Self Test (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-019-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, 文件頁 19, PDF 頁 19</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-020"><h3>Figure 20: Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits</h3>
+<p><span data-claim-id="PCIE14-FIG-020-CLAIM">Figure 20〈Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-020-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.10, Figure 20, 文件頁 19, PDF 頁 19</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-021"><h3>Figure 21: Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits</h3>
+<p><span data-claim-id="PCIE14-FIG-021-CLAIM">Figure 21〈Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-021-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.11, Figure 21, 文件頁 19, PDF 頁 19</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-022"><h3>Figure 22: Offset 18h: BAR2 – Index/Data Pair Register Base Address or Vendor Specific</h3>
+<p><span data-claim-id="PCIE14-FIG-022-CLAIM">Figure 22〈Offset 18h: BAR2 – Index/Data Pair Register Base Address or Vendor Specific〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-022-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, 文件頁 20, PDF 頁 20</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-023"><h3>Figure 23: Offset 28h: CCPTR – CardBus CIS Pointer</h3>
+<p><span data-claim-id="PCIE14-FIG-023-CLAIM">Figure 23〈Offset 28h: CCPTR – CardBus CIS Pointer〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-023-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, 文件頁 20, PDF 頁 20</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-024"><h3>Figure 24: Offset 2Ch: SS - Subsystem Identifiers</h3>
+<p><span data-claim-id="PCIE14-FIG-024-CLAIM">Figure 24〈Offset 2Ch: SS - Subsystem Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-024-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, 文件頁 20, PDF 頁 20</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-025"><h3>Figure 25: Offset 30h: EROM – Expansion ROM (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-025-CLAIM">Figure 25〈Offset 30h: EROM – Expansion ROM (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-025-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, 文件頁 20, PDF 頁 20</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-026"><h3>Figure 26: Offset 34h: CAP – Capabilities Pointer</h3>
+<p><span data-claim-id="PCIE14-FIG-026-CLAIM">Figure 26〈Offset 34h: CAP – Capabilities Pointer〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-026-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, 文件頁 21, PDF 頁 21</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-027"><h3>Figure 27: Offset 3Ch: INTR - Interrupt Information</h3>
+<p><span data-claim-id="PCIE14-FIG-027-CLAIM">Figure 27〈Offset 3Ch: INTR - Interrupt Information〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-027-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, 文件頁 21, PDF 頁 21</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-028"><h3>Figure 28: Offset 3Eh: MGNT – Minimum Grant</h3>
+<p><span data-claim-id="PCIE14-FIG-028-CLAIM">Figure 28〈Offset 3Eh: MGNT – Minimum Grant〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-028-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, 文件頁 21, PDF 頁 21</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-029"><h3>Figure 29: Offset 3Fh: MLAT – Maximum Latency</h3>
+<p><span data-claim-id="PCIE14-FIG-029-CLAIM">Figure 29〈Offset 3Fh: MLAT – Maximum Latency〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-029-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, 文件頁 21, PDF 頁 21</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-030"><h3>Figure 30: PCI Power Management Capabilities</h3>
+<p><span data-claim-id="PCIE14-FIG-030-CLAIM">Figure 30〈PCI Power Management Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-030-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 30, 文件頁 21, PDF 頁 21</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-031"><h3>Figure 31: Offset PMCAP: PID - PCI Power Management Capability ID</h3>
+<p><span data-claim-id="PCIE14-FIG-031-CLAIM">Figure 31〈Offset PMCAP: PID - PCI Power Management Capability ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-031-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, 文件頁 21, PDF 頁 21</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-032"><h3>Figure 32: Offset PMCAP + 2h: PC – PCI Power Management Capabilities</h3>
+<p><span data-claim-id="PCIE14-FIG-032-CLAIM">Figure 32〈Offset PMCAP + 2h: PC – PCI Power Management Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-032-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, 文件頁 22, PDF 頁 22</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-033"><h3>Figure 33: Offset PMCAP + 4h: PMCS – PCI Power Management Control and Status</h3>
+<p><span data-claim-id="PCIE14-FIG-033-CLAIM">Figure 33〈Offset PMCAP + 4h: PMCS – PCI Power Management Control and Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-033-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, 文件頁 22, PDF 頁 22</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-034"><h3>Figure 34: Message Signaled Interrupt Capability (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-034-CLAIM">Figure 34〈Message Signaled Interrupt Capability (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-034-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 34, 文件頁 22, PDF 頁 22</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-035"><h3>Figure 35: Offset MSICAP: MID – Message Signaled Interrupt Identifiers</h3>
+<p><span data-claim-id="PCIE14-FIG-035-CLAIM">Figure 35〈Offset MSICAP: MID – Message Signaled Interrupt Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-035-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, 文件頁 23, PDF 頁 23</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-036"><h3>Figure 36: Offset MSICAP + 2h: MC – Message Signaled Interrupt Message Control</h3>
+<p><span data-claim-id="PCIE14-FIG-036-CLAIM">Figure 36〈Offset MSICAP + 2h: MC – Message Signaled Interrupt Message Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-036-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, 文件頁 23, PDF 頁 23</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-037"><h3>Figure 37: Offset MSICAP + 4h: MA – Message Signaled Interrupt Message Address</h3>
+<p><span data-claim-id="PCIE14-FIG-037-CLAIM">Figure 37〈Offset MSICAP + 4h: MA – Message Signaled Interrupt Message Address〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-037-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, 文件頁 23, PDF 頁 23</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-038"><h3>Figure 38: Offset MSICAP + 8h: MUA – Message Signaled Interrupt Upper Address</h3>
+<p><span data-claim-id="PCIE14-FIG-038-CLAIM">Figure 38〈Offset MSICAP + 8h: MUA – Message Signaled Interrupt Upper Address〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-038-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, 文件頁 23, PDF 頁 23</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-039"><h3>Figure 39: Offset MSICAP + Ch: MD – Message Signaled Interrupt Message Data</h3>
+<p><span data-claim-id="PCIE14-FIG-039-CLAIM">Figure 39〈Offset MSICAP + Ch: MD – Message Signaled Interrupt Message Data〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-039-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, 文件頁 23, PDF 頁 23</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-040"><h3>Figure 40: Offset MSICAP + 10h: MMASK – Message Signaled Interrupt Mask Bits (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-040-CLAIM">Figure 40〈Offset MSICAP + 10h: MMASK – Message Signaled Interrupt Mask Bits (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-040-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, 文件頁 24, PDF 頁 24</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-041"><h3>Figure 41: Offset MSICAP + 14h: MPEND – Message Signaled Interrupt Pending Bits (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-041-CLAIM">Figure 41〈Offset MSICAP + 14h: MPEND – Message Signaled Interrupt Pending Bits (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-041-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, 文件頁 24, PDF 頁 24</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-042"><h3>Figure 42: MSI-X Capability (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-042-CLAIM">Figure 42〈MSI-X Capability (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-042-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 42, 文件頁 24, PDF 頁 24</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-043"><h3>Figure 43: Offset MSIXCAP: MXID – MSI-X Identifiers</h3>
+<p><span data-claim-id="PCIE14-FIG-043-CLAIM">Figure 43〈Offset MSIXCAP: MXID – MSI-X Identifiers〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-043-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, 文件頁 24, PDF 頁 24</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-044"><h3>Figure 44: Offset MSIXCAP + 2h: MXC – MSI-X Message Control</h3>
+<p><span data-claim-id="PCIE14-FIG-044-CLAIM">Figure 44〈Offset MSIXCAP + 2h: MXC – MSI-X Message Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-044-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, 文件頁 24-25, PDF 頁 24-25</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-045"><h3>Figure 45: Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR</h3>
+<p><span data-claim-id="PCIE14-FIG-045-CLAIM">Figure 45〈Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-045-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-046"><h3>Figure 46: Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR</h3>
+<p><span data-claim-id="PCIE14-FIG-046-CLAIM">Figure 46〈Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-046-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-047"><h3>Figure 47: PCI Express Capability</h3>
+<p><span data-claim-id="PCIE14-FIG-047-CLAIM">Figure 47〈PCI Express Capability〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-047-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5, Figure 47, 文件頁 26, PDF 頁 26</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-048"><h3>Figure 48: Offset PXCAP: PXID – PCI Express Capability ID</h3>
+<p><span data-claim-id="PCIE14-FIG-048-CLAIM">Figure 48〈Offset PXCAP: PXID – PCI Express Capability ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-048-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, 文件頁 26, PDF 頁 26</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-049"><h3>Figure 49: Offset PXCAP + 2h: PXCAP – PCI Express Capabilities</h3>
+<p><span data-claim-id="PCIE14-FIG-049-CLAIM">Figure 49〈Offset PXCAP + 2h: PXCAP – PCI Express Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-049-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, 文件頁 26, PDF 頁 26</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-050"><h3>Figure 50: Offset PXCAP + 4h: PXDCAP – PCI Express Device Capabilities</h3>
+<p><span data-claim-id="PCIE14-FIG-050-CLAIM">Figure 50〈Offset PXCAP + 4h: PXDCAP – PCI Express Device Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-050-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, 文件頁 26-27, PDF 頁 26-27</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-051"><h3>Figure 51: Offset PXCAP + 8h: PXDC – PCI Express Device Control</h3>
+<p><span data-claim-id="PCIE14-FIG-051-CLAIM">Figure 51〈Offset PXCAP + 8h: PXDC – PCI Express Device Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-051-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, 文件頁 27-28, PDF 頁 27-28</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-052"><h3>Figure 52: Offset PXCAP + Ah: PXDS – PCI Express Device Status</h3>
+<p><span data-claim-id="PCIE14-FIG-052-CLAIM">Figure 52〈Offset PXCAP + Ah: PXDS – PCI Express Device Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-052-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, 文件頁 28, PDF 頁 28</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-053"><h3>Figure 53: Offset PXCAP + Ch: PXLCAP – PCI Express Link Capabilities</h3>
+<p><span data-claim-id="PCIE14-FIG-053-CLAIM">Figure 53〈Offset PXCAP + Ch: PXLCAP – PCI Express Link Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-053-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, 文件頁 28-29, PDF 頁 28-29</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-054"><h3>Figure 54: Offset PXCAP + 10h: PXLC – PCI Express Link Control</h3>
+<p><span data-claim-id="PCIE14-FIG-054-CLAIM">Figure 54〈Offset PXCAP + 10h: PXLC – PCI Express Link Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-054-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, 文件頁 29, PDF 頁 29</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-055"><h3>Figure 55: Offset PXCAP + 12h: PXLS – PCI Express Link Status</h3>
+<p><span data-claim-id="PCIE14-FIG-055-CLAIM">Figure 55〈Offset PXCAP + 12h: PXLS – PCI Express Link Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-055-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, 文件頁 29, PDF 頁 29</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-056"><h3>Figure 56: Offset PXCAP + 24h: PXDCAP2 – PCI Express Device Capabilities 2</h3>
+<p><span data-claim-id="PCIE14-FIG-056-CLAIM">Figure 56〈Offset PXCAP + 24h: PXDCAP2 – PCI Express Device Capabilities 2〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-056-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, 文件頁 30, PDF 頁 30</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-057"><h3>Figure 57: Offset PXCAP + 28h: PXDC2 – PCI Express Device Control 2</h3>
+<p><span data-claim-id="PCIE14-FIG-057-CLAIM">Figure 57〈Offset PXCAP + 28h: PXDC2 – PCI Express Device Control 2〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-057-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, 文件頁 30-31, PDF 頁 30-31</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-058"><h3>Figure 58: Advanced Error Reporting Capability (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-058-CLAIM">Figure 58〈Advanced Error Reporting Capability (Optional)〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-058-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 58, 文件頁 31, PDF 頁 31</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-059"><h3>Figure 59: Offset AERCAP: AERID – AER Capability ID</h3>
+<p><span data-claim-id="PCIE14-FIG-059-CLAIM">Figure 59〈Offset AERCAP: AERID – AER Capability ID〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-059-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, 文件頁 31, PDF 頁 31</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-060"><h3>Figure 60: Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register</h3>
+<p><span data-claim-id="PCIE14-FIG-060-CLAIM">Figure 60〈Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-060-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, 文件頁 31-32, PDF 頁 31-32</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-061"><h3>Figure 61: Offset AERCAP + 8: AERUCEM – AER Uncorrectable Error Mask Register</h3>
+<p><span data-claim-id="PCIE14-FIG-061-CLAIM">Figure 61〈Offset AERCAP + 8: AERUCEM – AER Uncorrectable Error Mask Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-061-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, 文件頁 32, PDF 頁 32</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-062"><h3>Figure 62: Offset AERCAP + Ch: AERUCESEV – AER Uncorrectable Error Severity Register</h3>
+<p><span data-claim-id="PCIE14-FIG-062-CLAIM">Figure 62〈Offset AERCAP + Ch: AERUCESEV – AER Uncorrectable Error Severity Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-062-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, 文件頁 32-33, PDF 頁 32-33</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-063"><h3>Figure 63: Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register</h3>
+<p><span data-claim-id="PCIE14-FIG-063-CLAIM">Figure 63〈Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-063-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, 文件頁 33, PDF 頁 33</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-064"><h3>Figure 64: Offset AERCAP + 14h: AERCEM – AER Correctable Error Mask Register</h3>
+<p><span data-claim-id="PCIE14-FIG-064-CLAIM">Figure 64〈Offset AERCAP + 14h: AERCEM – AER Correctable Error Mask Register〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
+<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-064-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, 文件頁 33, PDF 頁 33</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-065"><h3>Figure 65: Offset AERCAP + 18h: AERCC – AER Capabilities and Control Register</h3>
+<p><span data-claim-id="PCIE14-FIG-065-CLAIM">Figure 65〈Offset AERCAP + 18h: AERCC – AER Capabilities and Control Register〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-065-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, 文件頁 34, PDF 頁 34</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-066"><h3>Figure 66: Offset AERCAP + 1Ch: AERHL – AER Header Log Register</h3>
+<p><span data-claim-id="PCIE14-FIG-066-CLAIM">Figure 66〈Offset AERCAP + 1Ch: AERHL – AER Header Log Register〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-066-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, 文件頁 34, PDF 頁 34</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-067"><h3>Figure 67: Offset AERCAP + 38h: AERTLP – AER TLP Prefix Log Register (Optional)</h3>
+<p><span data-claim-id="PCIE14-FIG-067-CLAIM">Figure 67〈Offset AERCAP + 38h: AERTLP – AER TLP Prefix Log Register (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-067-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, 文件頁 35, PDF 頁 35</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-068"><h3>Figure 68: Example of an Eve Diagram in the Printable Eye Field</h3>
+<p><span data-claim-id="PCIE14-FIG-068-CLAIM">Figure 68〈Example of an Eve Diagram in the Printable Eye Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-068-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.9, Figure 68, 文件頁 37, PDF 頁 37</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-069"><h3>Figure 69: NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure</h3>
+<p><span data-claim-id="PCIE14-FIG-069-CLAIM">Figure 69〈NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
+<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-069-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.10, Figure 69, 文件頁 38-39, PDF 頁 38-39</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-070"><h3>Figure 70: Get Log Page – Log Page Identifiers</h3>
+<p><span data-claim-id="PCIE14-FIG-070-CLAIM">Figure 70〈Get Log Page – Log Page Identifiers〉：整理 identifier 或 list 的 byte layout 與範圍。 先確認長度、byte order、數量欄位、唯一性範圍與保留區。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 identifier 或 list 的 byte layout 與範圍。</li>
+<li><strong>閱讀順序：</strong>先確認長度、byte order、數量欄位、唯一性範圍與保留區。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>parser 先驗證 count 與長度，再逐筆讀取 identifier。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-070-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, 文件頁 39, PDF 頁 39</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-071"><h3>Figure 71: Size of Physical Interface Receiver Eye Opening Measurement Log Page</h3>
+<p><span data-claim-id="PCIE14-FIG-071-CLAIM">Figure 71〈Size of Physical Interface Receiver Eye Opening Measurement Log Page〉：整理 receiver eye measurement 的輸入、輸出或資料格式。 先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 receiver eye measurement 的輸入、輸出或資料格式。</li>
+<li><strong>閱讀順序：</strong>先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先查回報長度，再只解析完整存在的 lane descriptor。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-071-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 71, 文件頁 40, PDF 頁 40</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-072"><h3>Figure 72: Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field</h3>
+<p><span data-claim-id="PCIE14-FIG-072-CLAIM">Figure 72〈Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-072-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 72, 文件頁 40-41, PDF 頁 40-41</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-073"><h3>Figure 73: Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field</h3>
+<p><span data-claim-id="PCIE14-FIG-073-CLAIM">Figure 73〈Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-073-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 73, 文件頁 41, PDF 頁 41</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-074"><h3>Figure 74: Physical Interface Receiver Eye Opening Measurement Log Page</h3>
+<p><span data-claim-id="PCIE14-FIG-074-CLAIM">Figure 74〈Physical Interface Receiver Eye Opening Measurement Log Page〉：整理 receiver eye measurement 的輸入、輸出或資料格式。 先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 receiver eye measurement 的輸入、輸出或資料格式。</li>
+<li><strong>閱讀順序：</strong>先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先查回報長度，再只解析完整存在的 lane descriptor。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-074-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 74, 文件頁 41, PDF 頁 41</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-075"><h3>Figure 75: EOM Header</h3>
+<p><span data-claim-id="PCIE14-FIG-075-CLAIM">Figure 75〈EOM Header〉：整理 receiver eye measurement 的輸入、輸出或資料格式。 先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理 receiver eye measurement 的輸入、輸出或資料格式。</li>
+<li><strong>閱讀順序：</strong>先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>先查回報長度，再只解析完整存在的 lane descriptor。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-075-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 75, 文件頁 42-43, PDF 頁 42-43</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-076"><h3>Figure 76: EOM Lane Descriptor</h3>
+<p><span data-claim-id="PCIE14-FIG-076-CLAIM">Figure 76〈EOM Lane Descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>說明資料 buffer 如何由 PRP／SGL 結構描述。</li>
+<li><strong>閱讀順序：</strong>逐一核對 address、offset、length、alignment 與下一層 pointer。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>用跨兩個 memory page 的 buffer 檢查第一個 offset 與後續 alignment。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-076-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 76, 文件頁 43-45, PDF 頁 43-45</small></p></article>
+<article data-figure-table-id="PCIE14-FIG-077"><h3>Figure 77: Example of an Eve Diagram in the Printable Eye Field</h3>
+<p><span data-claim-id="PCIE14-FIG-077-CLAIM">Figure 77〈Example of an Eve Diagram in the Printable Eye Field〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
+<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
+<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
+<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>追溯鍵：</strong>PCIE14-FIG-077-CLAIM；normative keyword：none（Figure 導讀本身不新增要求）。</li>
+</ul>
+<p><small>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 77, 文件頁 46, PDF 頁 46</small></p></article>
+</section>
+<section id="sources"><h2>來源與限制</h2>
+<p>NVM Express NVMe over PCIe Transport Specification, Revision 1.4</p>
+<p>NVM Express Base Specification, Revision 2.4</p>
+<p>查證日期：2026-08-29。目前未納入其他 Errata、ECN、Technical Proposal、controller vendor 文件或未提供的 PCI Express Base Specification 原文；PCIe 原生語意只轉述本次來源明載的 NVMe-specific requirement。</p>
+</section>
+</main>
+</body>
+</html>

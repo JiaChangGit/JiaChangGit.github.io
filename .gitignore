@@ -11,3 +11,12 @@
 /.vscode/
 /.idea/
 .liquidrc
+
+# NVMe report working data. Source specifications stay outside the public repository.
+/tmp/
+/.ai/private/
+/.ai/handoffs/
+/private-sources/
+NVM-Express-*.pdf
+__pycache__/
+*.pyc

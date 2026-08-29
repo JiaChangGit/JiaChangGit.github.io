@@ -1,0 +1,5489 @@
+{
+  "schema_version": 2,
+  "entries": [
+    {
+      "id": "BASE12-FIG-001",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "1",
+      "title": "NVMe Family of Specifications",
+      "section": "1.1.1",
+      "printed_pages": "1",
+      "pdf_pages": "27",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-002",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "2",
+      "title": "Decimal and Binary Units",
+      "section": "1.4.2",
+      "printed_pages": "3",
+      "pdf_pages": "29",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-003",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "3",
+      "title": "Byte, Word, and Dword Relationships",
+      "section": "1.4.3",
+      "printed_pages": "5",
+      "pdf_pages": "31",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-004",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "4",
+      "title": "Taxonomy of Transport Models",
+      "section": "2",
+      "printed_pages": "20",
+      "pdf_pages": "46",
+      "scope_entry_id": "BASE12-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE12-FIG-005",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "5",
+      "title": "Types of NVMe Command Sets",
+      "section": "2",
+      "printed_pages": "21",
+      "pdf_pages": "47",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-006",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "6",
+      "title": "Queue Pair Example, 1:1 Mapping",
+      "section": "2.1",
+      "printed_pages": "22",
+      "pdf_pages": "48",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-007",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "7",
+      "title": "Queue Pair Example, n:1 Mapping",
+      "section": "2.1",
+      "printed_pages": "22",
+      "pdf_pages": "48",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-008",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "8",
+      "title": "NVMe over Fabrics Layering",
+      "section": "2.2.1",
+      "printed_pages": "24",
+      "pdf_pages": "50",
+      "scope_entry_id": "BASE12-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE12-FIG-009",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "9",
+      "title": "Command Capsule Format",
+      "section": "2.2.4",
+      "printed_pages": "25",
+      "pdf_pages": "51",
+      "scope_entry_id": "BASE12-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE12-FIG-010",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "10",
+      "title": "Response Capsule Format",
+      "section": "2.2.4",
+      "printed_pages": "26",
+      "pdf_pages": "52",
+      "scope_entry_id": "BASE12-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE12-FIG-011",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "11",
+      "title": "Simple NVM Storage Hierarchy with NVM Sets",
+      "section": "2.3.1",
+      "printed_pages": "27",
+      "pdf_pages": "53",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-012",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "12",
+      "title": "Simple NVM Storage Hierarchy with One Reclaim Group",
+      "section": "2.3.1",
+      "printed_pages": "28",
+      "pdf_pages": "54",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-013",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "13",
+      "title": "Simple NVM Storage Hierarchy with Multiple Reclaim Groups",
+      "section": "2.3.1",
+      "printed_pages": "29",
+      "pdf_pages": "55",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-014",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "14",
+      "title": "Complex NVM Storage Hierarchy with NVM Sets",
+      "section": "2.3.1",
+      "printed_pages": "30",
+      "pdf_pages": "56",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-015",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "15",
+      "title": "Complex NVM Storage Hierarchy with Multiple Reclaim Groups",
+      "section": "2.3.1",
+      "printed_pages": "31",
+      "pdf_pages": "57",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-016",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "16",
+      "title": "Single-Namespace NVM Subsystem",
+      "section": "2.3.3",
+      "printed_pages": "32",
+      "pdf_pages": "58",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-017",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "17",
+      "title": "Two-Namespace NVM Subsystem",
+      "section": "2.3.3",
+      "printed_pages": "33",
+      "pdf_pages": "59",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-018",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "18",
+      "title": "Complex NVM Subsystem",
+      "section": "2.3.3",
+      "printed_pages": "34",
+      "pdf_pages": "60",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-019",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "19",
+      "title": "NVM Express Controller with Two Namespaces",
+      "section": "2.4.1",
+      "printed_pages": "35",
+      "pdf_pages": "61",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-020",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "20",
+      "title": "NVM Subsystem with Two Controllers and One Port",
+      "section": "2.4.1",
+      "printed_pages": "35",
+      "pdf_pages": "61",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-021",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "21",
+      "title": "NVM Subsystem with Two Controllers and Two Ports",
+      "section": "2.4.1",
+      "printed_pages": "36",
+      "pdf_pages": "62",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE12-FIG-022",
+      "report_id": "base-ch1-2",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "22",
+      "title": "PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)",
+      "section": "2.4.1",
+      "printed_pages": "37",
+      "pdf_pages": "63",
+      "scope_entry_id": "BASE12-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ],
+      "introduced_in": [
+        "base12-tutorial-html",
+        "base12-detailed-html",
+        "base12-zh-md",
+        "base12-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-023",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "23",
+      "title": "Controller Types",
+      "section": "3.1.3",
+      "printed_pages": "39",
+      "pdf_pages": "65",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-024",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "24",
+      "title": "NVM Subsystem with Three I/O Controllers",
+      "section": "3.1.3.1",
+      "printed_pages": "41",
+      "pdf_pages": "67",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-025",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "25",
+      "title": "NVM Subsystem with One Administrative and Two I/O Controllers",
+      "section": "3.1.3.2",
+      "printed_pages": "42",
+      "pdf_pages": "68",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-026",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "26",
+      "title": "NVM Subsystem with One Administrative Controller",
+      "section": "3.1.3.2",
+      "printed_pages": "42",
+      "pdf_pages": "68",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-027",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "27",
+      "title": "Controller IDs FFF0h to FFFFh",
+      "section": "3.1.3.3",
+      "printed_pages": "44",
+      "pdf_pages": "70",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-028",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "28",
+      "title": "Admin Command Support Requirements",
+      "section": "3.1.3.3.3",
+      "printed_pages": "45-47",
+      "pdf_pages": "71-73",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-029",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "29",
+      "title": "Fabrics Command Support Requirements",
+      "section": "3.1.3.4",
+      "printed_pages": "47",
+      "pdf_pages": "73",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-030",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "30",
+      "title": "Common I/O Command Support Requirements",
+      "section": "3.1.3.4",
+      "printed_pages": "47-48",
+      "pdf_pages": "73-74",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-031",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "31",
+      "title": "Log Page Support Requirements",
+      "section": "3.1.3.4",
+      "printed_pages": "48-50",
+      "pdf_pages": "74-76",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-032",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "32",
+      "title": "Feature Support Requirements",
+      "section": "3.1.3.5",
+      "printed_pages": "50-52",
+      "pdf_pages": "76-78",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-033",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "33",
+      "title": "Property Definition",
+      "section": "3.1.4",
+      "printed_pages": "52-53",
+      "pdf_pages": "78-79",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-034",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "34",
+      "title": "Memory-Based Property Definition",
+      "section": "3.1.4",
+      "printed_pages": "54",
+      "pdf_pages": "80",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-035",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "35",
+      "title": "Message-Based Property Definition",
+      "section": "3.1.4",
+      "printed_pages": "54",
+      "pdf_pages": "80",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-036",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "36",
+      "title": "Offset 0h: CAP – Controller Capabilities",
+      "section": "3.1.4.1",
+      "printed_pages": "55-58",
+      "pdf_pages": "81-84",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-037",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "37",
+      "title": "Specification Version Descriptor",
+      "section": "3.1.4.1",
+      "printed_pages": "58",
+      "pdf_pages": "84",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-038",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "38",
+      "title": "NVM Express Base Specification Version Property Reset Values",
+      "section": "3.1.4.1",
+      "printed_pages": "58-59",
+      "pdf_pages": "84-85",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-039",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "39",
+      "title": "Offset Ch: INTMS – Interrupt Mask Set",
+      "section": "3.1.4.2",
+      "printed_pages": "59",
+      "pdf_pages": "85",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-040",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "40",
+      "title": "Offset 10h: INTMC – Interrupt Mask Clear",
+      "section": "3.1.4.2",
+      "printed_pages": "59",
+      "pdf_pages": "85",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-041",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "41",
+      "title": "Offset 14h: CC – Controller Configuration",
+      "section": "3.1.4.5",
+      "printed_pages": "60-63",
+      "pdf_pages": "86-89",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-042",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "42",
+      "title": "Offset 1Ch: CSTS – Controller Status",
+      "section": "3.1.4.5",
+      "printed_pages": "63-65",
+      "pdf_pages": "89-91",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-043",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "43",
+      "title": "Offset 20h: NSSR – NVM Subsystem Reset",
+      "section": "3.1.4.6",
+      "printed_pages": "66",
+      "pdf_pages": "92",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-044",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "44",
+      "title": "Offset 24h: AQA – Admin Queue Attributes",
+      "section": "3.1.4.6",
+      "printed_pages": "66",
+      "pdf_pages": "92",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-045",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "45",
+      "title": "Offset 28h: ASQ – Admin Submission Queue Base Address",
+      "section": "3.1.4.6",
+      "printed_pages": "66",
+      "pdf_pages": "92",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-046",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "46",
+      "title": "Offset 30h: ACQ – Admin Completion Queue Base Address",
+      "section": "3.1.4.9",
+      "printed_pages": "67",
+      "pdf_pages": "93",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-047",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "47",
+      "title": "Offset 38h: CMBLOC – Controller Memory Buffer Location",
+      "section": "3.1.4.9",
+      "printed_pages": "67-68",
+      "pdf_pages": "93-94",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-048",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "48",
+      "title": "Offset 3Ch: CMBSZ – Controller Memory Buffer Size",
+      "section": "3.1.4.11",
+      "printed_pages": "68-69",
+      "pdf_pages": "94-95",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-049",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "49",
+      "title": "Offset 40h: BPINFO – Boot Partition Information",
+      "section": "3.1.4.12",
+      "printed_pages": "69",
+      "pdf_pages": "95",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-050",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "50",
+      "title": "Offset 44h: BPRSEL – Boot Partition Read Select",
+      "section": "3.1.4.12",
+      "printed_pages": "69-70",
+      "pdf_pages": "95-96",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-051",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "51",
+      "title": "Offset 48h: BPMBL – Boot Partition Memory Buffer Location",
+      "section": "3.1.4.14",
+      "printed_pages": "70",
+      "pdf_pages": "96",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-052",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "52",
+      "title": "Offset 50h: CMBMSC – Controller Memory Buffer Memory Space Control",
+      "section": "3.1.4.14",
+      "printed_pages": "70-71",
+      "pdf_pages": "96-97",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-053",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "53",
+      "title": "Offset 58h: CMBSTS – Controller Memory Buffer Status",
+      "section": "3.1.4.16",
+      "printed_pages": "71",
+      "pdf_pages": "97",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-054",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "54",
+      "title": "Offset 5Ch: CMBEBS – Controller Memory Buffer Elasticity Buffer Size",
+      "section": "3.1.4.16",
+      "printed_pages": "71",
+      "pdf_pages": "97",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-055",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "55",
+      "title": "Offset 60h: CMBSWTP – Controller Memory Buffer Sustained Write Throughput",
+      "section": "3.1.4.19",
+      "printed_pages": "72",
+      "pdf_pages": "98",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-056",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "56",
+      "title": "Offset 64h: NSSD – NVM Subsystem Shutdown",
+      "section": "3.1.4.19",
+      "printed_pages": "72",
+      "pdf_pages": "98",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-057",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "57",
+      "title": "Offset 68h: CRTO – Controller Ready Timeouts",
+      "section": "3.1.4.21",
+      "printed_pages": "73",
+      "pdf_pages": "99",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-058",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "58",
+      "title": "Offset E00h: PMRCAP – Persistent Memory Region Capabilities",
+      "section": "3.1.4.21",
+      "printed_pages": "73-74",
+      "pdf_pages": "99-100",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-059",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "59",
+      "title": "Offset E04h: PMRCTL – Persistent Memory Region Control",
+      "section": "3.1.4.22",
+      "printed_pages": "74",
+      "pdf_pages": "100",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-060",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "60",
+      "title": "Offset E08h: PMRSTS – Persistent Memory Region Status",
+      "section": "3.1.4.23",
+      "printed_pages": "75",
+      "pdf_pages": "101",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-061",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "61",
+      "title": "Offset E0Ch: PMREBS – Persistent Memory Region Elasticity Buffer Size",
+      "section": "3.1.4.24",
+      "printed_pages": "76",
+      "pdf_pages": "102",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-062",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "62",
+      "title": "Offset E10h: PMRSWTP – Persistent Memory Region Sustained Write Throughput",
+      "section": "3.1.4.24",
+      "printed_pages": "76",
+      "pdf_pages": "102",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-063",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "63",
+      "title": "Offset E14h: PMRMSCL – Persistent Memory Region Memory Space Control Lower",
+      "section": "3.1.4.26",
+      "printed_pages": "77",
+      "pdf_pages": "103",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-064",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "64",
+      "title": "Offset E18h: PMRMSCU – Persistent Memory Region Memory Space Control Upper",
+      "section": "3.1.4.26",
+      "printed_pages": "77",
+      "pdf_pages": "103",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-065",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "65",
+      "title": "NSID Types and Relationship to Namespace",
+      "section": "3.2.1",
+      "printed_pages": "78-79",
+      "pdf_pages": "104-105",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-066",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "66",
+      "title": "NSID Types",
+      "section": "3.2.1.5",
+      "printed_pages": "79",
+      "pdf_pages": "105",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-067",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "67",
+      "title": "NVM Sets and Associated Namespaces",
+      "section": "3.2.2",
+      "printed_pages": "81",
+      "pdf_pages": "107",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-068",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "68",
+      "title": "NVM Set Aware Admin Commands",
+      "section": "3.2.2",
+      "printed_pages": "81",
+      "pdf_pages": "107",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-069",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "69",
+      "title": "NVM Sets and Associated Namespaces",
+      "section": "3.2.3",
+      "printed_pages": "83",
+      "pdf_pages": "109",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-070",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "70",
+      "title": "Flexible Data Placement Logical View of Non-Volatile Storage",
+      "section": "3.2.4",
+      "printed_pages": "85",
+      "pdf_pages": "111",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-071",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "71",
+      "title": "Example 1 Domain Structure",
+      "section": "3.2.5.1",
+      "printed_pages": "86",
+      "pdf_pages": "112",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-072",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "72",
+      "title": "Example 2 Domain Structure",
+      "section": "3.2.5.1",
+      "printed_pages": "87",
+      "pdf_pages": "113",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-073",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "73",
+      "title": "Empty Queue Definition",
+      "section": "3.3.1.4",
+      "printed_pages": "91",
+      "pdf_pages": "117",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-074",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "74",
+      "title": "Full Queue Definition",
+      "section": "3.3.1.4",
+      "printed_pages": "91",
+      "pdf_pages": "117",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-075",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "75",
+      "title": "Command Capsule",
+      "section": "3.3.2.1.1",
+      "printed_pages": "92",
+      "pdf_pages": "118",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-076",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "76",
+      "title": "Response Capsule",
+      "section": "3.3.2.1.2",
+      "printed_pages": "93",
+      "pdf_pages": "119",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-077",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "77",
+      "title": "Data and SGL Locations within a Command Capsule",
+      "section": "3.3.2.1.3.1",
+      "printed_pages": "94",
+      "pdf_pages": "120",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-078",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "78",
+      "title": "SGL Example Using Memory Transactions",
+      "section": "3.3.2.1.3.2",
+      "printed_pages": "95",
+      "pdf_pages": "121",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-079",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "79",
+      "title": "SGL Example Using In Capsule Data Transfer",
+      "section": "3.3.2.1.3.2",
+      "printed_pages": "95",
+      "pdf_pages": "121",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-080",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "80",
+      "title": "Round Robin Arbitration",
+      "section": "3.4.4",
+      "printed_pages": "103",
+      "pdf_pages": "129",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-081",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "81",
+      "title": "Weighted Round Robin with Urgent Priority Class Arbitration",
+      "section": "3.4.4.2",
+      "printed_pages": "104",
+      "pdf_pages": "130",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-082",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "82",
+      "title": "Queue Creation Flow",
+      "section": "3.5.2",
+      "printed_pages": "107",
+      "pdf_pages": "133",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-083",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "83",
+      "title": "Discovery Controller Initialization process flow",
+      "section": "3.5.2.1",
+      "printed_pages": "109",
+      "pdf_pages": "135",
+      "scope_entry_id": "BASE3-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE3-FIG-084",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "84",
+      "title": "Admin Commands Permitted to Return a Status Code of Admin Command Media Not",
+      "section": "3.5.3",
+      "printed_pages": "110-111",
+      "pdf_pages": "136-137",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-085",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "85",
+      "title": "Shutdown Processing Interactions",
+      "section": "3.6",
+      "printed_pages": "113",
+      "pdf_pages": "139",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-086",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "86",
+      "title": "Simple NVM Subsystem",
+      "section": "3.8.2",
+      "printed_pages": "126",
+      "pdf_pages": "152",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-087",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "87",
+      "title": "Vertically-Organized NVM Subsystem",
+      "section": "3.8.2.2",
+      "printed_pages": "127",
+      "pdf_pages": "153",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-088",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "88",
+      "title": "Horizontally-Organized Dual NAND NVM Subsystem",
+      "section": "3.8.2.3",
+      "printed_pages": "128",
+      "pdf_pages": "154",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-089",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "89",
+      "title": "Capacity Information Field Usage",
+      "section": "3.8.3",
+      "printed_pages": "129",
+      "pdf_pages": "155",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-090",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "90",
+      "title": "Detecting Timeout Takes up to 2 * KATT",
+      "section": "3.9.4.1",
+      "printed_pages": "133",
+      "pdf_pages": "159",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE3-FIG-091",
+      "report_id": "base-ch3",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "91",
+      "title": "Example Privileged Action Admin Commands",
+      "section": "3.10",
+      "printed_pages": "135",
+      "pdf_pages": "161",
+      "scope_entry_id": "BASE3-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ],
+      "introduced_in": [
+        "base3-tutorial-html",
+        "base3-detailed-html",
+        "base3-zh-md",
+        "base3-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-092",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "92",
+      "title": "Command Dword 0",
+      "section": "4.1.1",
+      "printed_pages": "139-140",
+      "pdf_pages": "165-166",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-093",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-094",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "94",
+      "title": "Common Command Format – Vendor Specific Commands (Optional)",
+      "section": "4.1.1",
+      "printed_pages": "143",
+      "pdf_pages": "169",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-095",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "95",
+      "title": "Fabrics Command – Submission Queue Entry Format",
+      "section": "4.1.2",
+      "printed_pages": "143",
+      "pdf_pages": "169",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-096",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "96",
+      "title": "Fabrics Command – Command Dword 0",
+      "section": "4.1.2",
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-097",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "97",
+      "title": "Common Completion Queue Entry Layout – Admin and All I/O Command Sets",
+      "section": "4.2.1",
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-098",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "98",
+      "title": "Completion Queue Entry: DW 2",
+      "section": "4.2.1",
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-099",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "99",
+      "title": "Completion Queue Entry: DW 3",
+      "section": "4.2.1",
+      "printed_pages": "145",
+      "pdf_pages": "171",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-100",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "100",
+      "title": "Fabrics Response – Completion Queue Entry Format",
+      "section": "4.2.2",
+      "printed_pages": "145",
+      "pdf_pages": "171",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-101",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "101",
+      "title": "Completion Queue Entry: Status Field",
+      "section": "4.2.3",
+      "printed_pages": "145-146",
+      "pdf_pages": "171-172",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-102",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "102",
+      "title": "Status Code – Status Code Type Values",
+      "section": "4.2.3",
+      "printed_pages": "146",
+      "pdf_pages": "172",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-103",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "103",
+      "title": "Status Code – Generic Command Status Values",
+      "section": "4.2.3",
+      "printed_pages": "147-150",
+      "pdf_pages": "173-176",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-104",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "104",
+      "title": "Status Code – Command Specific Status Values",
+      "section": "4.2.3.2",
+      "printed_pages": "151-152",
+      "pdf_pages": "177-178",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-105",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "105",
+      "title": "Status Code – Command Specific Status Values, I/O Command Set Specific",
+      "section": "4.2.3.2",
+      "printed_pages": "152-153",
+      "pdf_pages": "178-179",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-106",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "106",
+      "title": "Status Code – Command Specific Status Values, Fabrics Command Specific",
+      "section": "4.2.3.2",
+      "printed_pages": "153-154",
+      "pdf_pages": "179-180",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-107",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "107",
+      "title": "Status Code – Media and Data Integrity Error Values",
+      "section": "4.2.3.2",
+      "printed_pages": "154-155",
+      "pdf_pages": "180-181",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-108",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "108",
+      "title": "Status Code – Path Related Status Values",
+      "section": "4.2.3.3",
+      "printed_pages": "155",
+      "pdf_pages": "181",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-109",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "109",
+      "title": "Phase Tag bit Transition Example",
+      "section": "4.2.4",
+      "printed_pages": "156-157",
+      "pdf_pages": "182-183",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-110",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "110",
+      "title": "PRP Entry Layout",
+      "section": "4.3.1",
+      "printed_pages": "158",
+      "pdf_pages": "184",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-111",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "111",
+      "title": "PRP Entry – Page Base Address and Offset",
+      "section": "4.3.1",
+      "printed_pages": "158",
+      "pdf_pages": "184",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-112",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "112",
+      "title": "PRP List Layout for Physically Contiguous Memory Pages",
+      "section": "4.3.1",
+      "printed_pages": "159",
+      "pdf_pages": "185",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-113",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "113",
+      "title": "PRP List Layout for Physically Non-Contiguous Memory Pages",
+      "section": "4.3.1",
+      "printed_pages": "159",
+      "pdf_pages": "185",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-114",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "114",
+      "title": "SGL Validation Error Conditions",
+      "section": "4.3.2",
+      "printed_pages": "161",
+      "pdf_pages": "187",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-115",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "115",
+      "title": "SGL Segment",
+      "section": "4.3.2",
+      "printed_pages": "161",
+      "pdf_pages": "187",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-116",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "116",
+      "title": "Generic SGL Descriptor Format",
+      "section": "4.3.2",
+      "printed_pages": "161",
+      "pdf_pages": "187",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-117",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "117",
+      "title": "SGL Descriptor Type",
+      "section": "4.3.2",
+      "printed_pages": "161-162",
+      "pdf_pages": "187-188",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-118",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "118",
+      "title": "SGL Descriptor Sub Type Values",
+      "section": "4.3.2",
+      "printed_pages": "162",
+      "pdf_pages": "188",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-119",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "119",
+      "title": "SGL Data Block descriptor",
+      "section": "4.3.2",
+      "printed_pages": "162-163",
+      "pdf_pages": "188-189",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-120",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "120",
+      "title": "SGL Bit Bucket descriptor",
+      "section": "4.3.2",
+      "printed_pages": "163",
+      "pdf_pages": "189",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-121",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "121",
+      "title": "SGL Segment descriptor",
+      "section": "4.3.2",
+      "printed_pages": "163",
+      "pdf_pages": "189",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-122",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "122",
+      "title": "SGL Last Segment descriptor",
+      "section": "4.3.2",
+      "printed_pages": "164",
+      "pdf_pages": "190",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-123",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "123",
+      "title": "Keyed SGL Data Block descriptor",
+      "section": "4.3.2",
+      "printed_pages": "164",
+      "pdf_pages": "190",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-124",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "124",
+      "title": "Transport SGL Data Block descriptor",
+      "section": "4.3.2",
+      "printed_pages": "164",
+      "pdf_pages": "190",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-125",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "125",
+      "title": "SGL Read Example",
+      "section": "4.3.2.1",
+      "printed_pages": "166",
+      "pdf_pages": "192",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-126",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "126",
+      "title": "Current Value after Reset with Scope of Entire NVM Subsystem",
+      "section": "4.4",
+      "printed_pages": "167",
+      "pdf_pages": "193",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-127",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "127",
+      "title": "Current Value after Reset with Scope of Subset of the NVM Subsystem",
+      "section": "4.4",
+      "printed_pages": "168",
+      "pdf_pages": "194",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-128",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "128",
+      "title": "PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)",
+      "section": "4.5.1",
+      "printed_pages": "169",
+      "pdf_pages": "195",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-129",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "129",
+      "title": "Serial Number (SN) and Model Number (MN)",
+      "section": "4.5.2",
+      "printed_pages": "170",
+      "pdf_pages": "196",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-130",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "130",
+      "title": "IEEE OUI Identifier (IEEE)",
+      "section": "4.5.3",
+      "printed_pages": "170",
+      "pdf_pages": "196",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-131",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "131",
+      "title": "IEEE Extended Unique Identifier (EUI64), MA-L Format",
+      "section": "4.5.4",
+      "printed_pages": "170",
+      "pdf_pages": "196",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-132",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "132",
+      "title": "IEEE Extended Unique Identifier (EUI64), OUI Identifier",
+      "section": "4.5.4",
+      "printed_pages": "170",
+      "pdf_pages": "196",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-133",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "133",
+      "title": "IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)",
+      "section": "4.5.4",
+      "printed_pages": "170-171",
+      "pdf_pages": "196-197",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-134",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "134",
+      "title": "MA-L similarity to WWN",
+      "section": "4.5.4",
+      "printed_pages": "171",
+      "pdf_pages": "197",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-135",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "135",
+      "title": "Namespace Globally Unique Identifier (NGUID)",
+      "section": "4.5.5",
+      "printed_pages": "171",
+      "pdf_pages": "197",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-136",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "136",
+      "title": "Namespace Globally Unique Identifier (NGUID), OUI",
+      "section": "4.5.5",
+      "printed_pages": "171",
+      "pdf_pages": "197",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-137",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "137",
+      "title": "Namespace Globally Unique Identifier",
+      "section": "4.5.5",
+      "printed_pages": "171",
+      "pdf_pages": "197",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-138",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "138",
+      "title": "Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN",
+      "section": "4.5.5",
+      "printed_pages": "171",
+      "pdf_pages": "197",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-139",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "139",
+      "title": "Controller List Format",
+      "section": "4.6.1",
+      "printed_pages": "172",
+      "pdf_pages": "198",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-140",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "140",
+      "title": "Namespace List Format",
+      "section": "4.6.2",
+      "printed_pages": "172",
+      "pdf_pages": "198",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "BASE4-FIG-141",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "141",
+      "title": "NQN Construction for Older NVM Subsystems",
+      "section": "4.7.1.1",
+      "printed_pages": "174",
+      "pdf_pages": "200",
+      "scope_entry_id": "BASE4-FABRIC-EXCLUDE",
+      "scope_status": "EXCLUDE",
+      "mode": "excluded",
+      "required_artifact_ids": [],
+      "introduced_in": []
+    },
+    {
+      "id": "BASE4-FIG-142",
+      "report_id": "base-ch4",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "142",
+      "title": "UTF-8 Input Processing",
+      "section": "4.8",
+      "printed_pages": "175",
+      "pdf_pages": "201",
+      "scope_entry_id": "BASE4-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ],
+      "introduced_in": [
+        "base4-tutorial-html",
+        "base4-detailed-html",
+        "base4-zh-md",
+        "base4-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-001",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "1",
+      "title": "NVMe Family of Specifications",
+      "section": "1.2",
+      "printed_pages": "6",
+      "pdf_pages": "6",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-002",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "2",
+      "title": "Example of Transport Protocol Layers",
+      "section": "2",
+      "printed_pages": "8",
+      "pdf_pages": "8",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-003",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "3",
+      "title": "PCI Express Registers",
+      "section": "3.1",
+      "printed_pages": "9",
+      "pdf_pages": "9",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-004",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "4",
+      "title": "PCI Express Specific Controller Property Definitions",
+      "section": "3.1",
+      "printed_pages": "9-10",
+      "pdf_pages": "9-10",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-005",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "5",
+      "title": "Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL – Submission Queue y Tail",
+      "section": "3.1.2.1",
+      "printed_pages": "10",
+      "pdf_pages": "10",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-006",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "6",
+      "title": "Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL – Completion Queue y Head",
+      "section": "3.1.2.1",
+      "printed_pages": "10-11",
+      "pdf_pages": "10-11",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-007",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "7",
+      "title": "Create I/O Completion Queue – Command Dword 11",
+      "section": "3.2",
+      "printed_pages": "11",
+      "pdf_pages": "11",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-008",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "8",
+      "title": "Command Processing",
+      "section": "3.4.1",
+      "printed_pages": "13",
+      "pdf_pages": "13",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-009",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "9",
+      "title": "Pin Based, Single MSI, and Multiple MSI Behavior",
+      "section": "3.5.1",
+      "printed_pages": "15",
+      "pdf_pages": "15",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-010",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "10",
+      "title": "PCI Express Type 0/1 Common Configuration Space",
+      "section": "3.8",
+      "printed_pages": "16-17",
+      "pdf_pages": "16-17",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-011",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "11",
+      "title": "Offset 00h: ID - Identifiers",
+      "section": "3.8.1.1",
+      "printed_pages": "17",
+      "pdf_pages": "17",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-012",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "12",
+      "title": "Offset 04h: CMD - Command",
+      "section": "3.8.1.2",
+      "printed_pages": "17",
+      "pdf_pages": "17",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-013",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "13",
+      "title": "Offset 06h: STS – Device Status",
+      "section": "3.8.1.3",
+      "printed_pages": "18",
+      "pdf_pages": "18",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-014",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "14",
+      "title": "Offset 08h: RID - Revision ID",
+      "section": "3.8.1.4",
+      "printed_pages": "18",
+      "pdf_pages": "18",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-015",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "15",
+      "title": "Offset 09h: CC - Class Code",
+      "section": "3.8.1.5",
+      "printed_pages": "18",
+      "pdf_pages": "18",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-016",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "16",
+      "title": "Offset 0Ch: CLS – Cache Line Size",
+      "section": "3.8.1.6",
+      "printed_pages": "18",
+      "pdf_pages": "18",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-017",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "17",
+      "title": "Offset 0Dh: MLT – Master Latency Timer",
+      "section": "3.8.1.7",
+      "printed_pages": "18",
+      "pdf_pages": "18",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-018",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "18",
+      "title": "Offset 0Eh: HTYPE – Header Type",
+      "section": "3.8.1.8",
+      "printed_pages": "19",
+      "pdf_pages": "19",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-019",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "19",
+      "title": "Offset 0Fh: BIST – Built-In Self Test (Optional)",
+      "section": "3.8.1.9",
+      "printed_pages": "19",
+      "pdf_pages": "19",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-020",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "20",
+      "title": "Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits",
+      "section": "3.8.1.10",
+      "printed_pages": "19",
+      "pdf_pages": "19",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-021",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "21",
+      "title": "Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits",
+      "section": "3.8.1.11",
+      "printed_pages": "19",
+      "pdf_pages": "19",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-022",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "22",
+      "title": "Offset 18h: BAR2 – Index/Data Pair Register Base Address or Vendor Specific",
+      "section": "3.8.1.12",
+      "printed_pages": "20",
+      "pdf_pages": "20",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-023",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "23",
+      "title": "Offset 28h: CCPTR – CardBus CIS Pointer",
+      "section": "3.8.1.16",
+      "printed_pages": "20",
+      "pdf_pages": "20",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-024",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "24",
+      "title": "Offset 2Ch: SS - Subsystem Identifiers",
+      "section": "3.8.1.17",
+      "printed_pages": "20",
+      "pdf_pages": "20",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-025",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "25",
+      "title": "Offset 30h: EROM – Expansion ROM (Optional)",
+      "section": "3.8.1.18",
+      "printed_pages": "20",
+      "pdf_pages": "20",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-026",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "26",
+      "title": "Offset 34h: CAP – Capabilities Pointer",
+      "section": "3.8.1.19",
+      "printed_pages": "21",
+      "pdf_pages": "21",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-027",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "27",
+      "title": "Offset 3Ch: INTR - Interrupt Information",
+      "section": "3.8.1.20",
+      "printed_pages": "21",
+      "pdf_pages": "21",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-028",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "28",
+      "title": "Offset 3Eh: MGNT – Minimum Grant",
+      "section": "3.8.1.21",
+      "printed_pages": "21",
+      "pdf_pages": "21",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-029",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "29",
+      "title": "Offset 3Fh: MLAT – Maximum Latency",
+      "section": "3.8.1.22",
+      "printed_pages": "21",
+      "pdf_pages": "21",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-030",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "30",
+      "title": "PCI Power Management Capabilities",
+      "section": "3.8.1.22",
+      "printed_pages": "21",
+      "pdf_pages": "21",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-031",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "31",
+      "title": "Offset PMCAP: PID - PCI Power Management Capability ID",
+      "section": "3.8.2.1",
+      "printed_pages": "21",
+      "pdf_pages": "21",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-032",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "32",
+      "title": "Offset PMCAP + 2h: PC – PCI Power Management Capabilities",
+      "section": "3.8.2.2",
+      "printed_pages": "22",
+      "pdf_pages": "22",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-033",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "33",
+      "title": "Offset PMCAP + 4h: PMCS – PCI Power Management Control and Status",
+      "section": "3.8.2.3",
+      "printed_pages": "22",
+      "pdf_pages": "22",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-034",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "34",
+      "title": "Message Signaled Interrupt Capability (Optional)",
+      "section": "3.8.2.3",
+      "printed_pages": "22",
+      "pdf_pages": "22",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-035",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "35",
+      "title": "Offset MSICAP: MID – Message Signaled Interrupt Identifiers",
+      "section": "3.8.3.1",
+      "printed_pages": "23",
+      "pdf_pages": "23",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-036",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "36",
+      "title": "Offset MSICAP + 2h: MC – Message Signaled Interrupt Message Control",
+      "section": "3.8.3.2",
+      "printed_pages": "23",
+      "pdf_pages": "23",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-037",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "37",
+      "title": "Offset MSICAP + 4h: MA – Message Signaled Interrupt Message Address",
+      "section": "3.8.3.3",
+      "printed_pages": "23",
+      "pdf_pages": "23",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-038",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "38",
+      "title": "Offset MSICAP + 8h: MUA – Message Signaled Interrupt Upper Address",
+      "section": "3.8.3.4",
+      "printed_pages": "23",
+      "pdf_pages": "23",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-039",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "39",
+      "title": "Offset MSICAP + Ch: MD – Message Signaled Interrupt Message Data",
+      "section": "3.8.3.5",
+      "printed_pages": "23",
+      "pdf_pages": "23",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-040",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "40",
+      "title": "Offset MSICAP + 10h: MMASK – Message Signaled Interrupt Mask Bits (Optional)",
+      "section": "3.8.3.6",
+      "printed_pages": "24",
+      "pdf_pages": "24",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-041",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "41",
+      "title": "Offset MSICAP + 14h: MPEND – Message Signaled Interrupt Pending Bits (Optional)",
+      "section": "3.8.3.7",
+      "printed_pages": "24",
+      "pdf_pages": "24",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-042",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "42",
+      "title": "MSI-X Capability (Optional)",
+      "section": "3.8.3.7",
+      "printed_pages": "24",
+      "pdf_pages": "24",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-043",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "43",
+      "title": "Offset MSIXCAP: MXID – MSI-X Identifiers",
+      "section": "3.8.4.1",
+      "printed_pages": "24",
+      "pdf_pages": "24",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-044",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "44",
+      "title": "Offset MSIXCAP + 2h: MXC – MSI-X Message Control",
+      "section": "3.8.4.2",
+      "printed_pages": "24-25",
+      "pdf_pages": "24-25",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-045",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "45",
+      "title": "Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR",
+      "section": "3.8.4.3",
+      "printed_pages": "25",
+      "pdf_pages": "25",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-046",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "46",
+      "title": "Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR",
+      "section": "3.8.4.4",
+      "printed_pages": "25",
+      "pdf_pages": "25",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-047",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "47",
+      "title": "PCI Express Capability",
+      "section": "3.8.5",
+      "printed_pages": "26",
+      "pdf_pages": "26",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-048",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "48",
+      "title": "Offset PXCAP: PXID – PCI Express Capability ID",
+      "section": "3.8.5.1",
+      "printed_pages": "26",
+      "pdf_pages": "26",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-049",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "49",
+      "title": "Offset PXCAP + 2h: PXCAP – PCI Express Capabilities",
+      "section": "3.8.5.2",
+      "printed_pages": "26",
+      "pdf_pages": "26",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-050",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "50",
+      "title": "Offset PXCAP + 4h: PXDCAP – PCI Express Device Capabilities",
+      "section": "3.8.5.3",
+      "printed_pages": "26-27",
+      "pdf_pages": "26-27",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-051",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "51",
+      "title": "Offset PXCAP + 8h: PXDC – PCI Express Device Control",
+      "section": "3.8.5.4",
+      "printed_pages": "27-28",
+      "pdf_pages": "27-28",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-052",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "52",
+      "title": "Offset PXCAP + Ah: PXDS – PCI Express Device Status",
+      "section": "3.8.5.5",
+      "printed_pages": "28",
+      "pdf_pages": "28",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-053",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "53",
+      "title": "Offset PXCAP + Ch: PXLCAP – PCI Express Link Capabilities",
+      "section": "3.8.5.6",
+      "printed_pages": "28-29",
+      "pdf_pages": "28-29",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-054",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "54",
+      "title": "Offset PXCAP + 10h: PXLC – PCI Express Link Control",
+      "section": "3.8.5.7",
+      "printed_pages": "29",
+      "pdf_pages": "29",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-055",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "55",
+      "title": "Offset PXCAP + 12h: PXLS – PCI Express Link Status",
+      "section": "3.8.5.8",
+      "printed_pages": "29",
+      "pdf_pages": "29",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-056",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "56",
+      "title": "Offset PXCAP + 24h: PXDCAP2 – PCI Express Device Capabilities 2",
+      "section": "3.8.5.9",
+      "printed_pages": "30",
+      "pdf_pages": "30",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-057",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "57",
+      "title": "Offset PXCAP + 28h: PXDC2 – PCI Express Device Control 2",
+      "section": "3.8.5.10",
+      "printed_pages": "30-31",
+      "pdf_pages": "30-31",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-058",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "58",
+      "title": "Advanced Error Reporting Capability (Optional)",
+      "section": "3.8.5.10",
+      "printed_pages": "31",
+      "pdf_pages": "31",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-059",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "59",
+      "title": "Offset AERCAP: AERID – AER Capability ID",
+      "section": "3.8.6.1",
+      "printed_pages": "31",
+      "pdf_pages": "31",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-060",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "60",
+      "title": "Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register",
+      "section": "3.8.6.2",
+      "printed_pages": "31-32",
+      "pdf_pages": "31-32",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-061",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "61",
+      "title": "Offset AERCAP + 8: AERUCEM – AER Uncorrectable Error Mask Register",
+      "section": "3.8.6.3",
+      "printed_pages": "32",
+      "pdf_pages": "32",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-062",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "62",
+      "title": "Offset AERCAP + Ch: AERUCESEV – AER Uncorrectable Error Severity Register",
+      "section": "3.8.6.4",
+      "printed_pages": "32-33",
+      "pdf_pages": "32-33",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-063",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "63",
+      "title": "Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register",
+      "section": "3.8.6.5",
+      "printed_pages": "33",
+      "pdf_pages": "33",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-064",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "64",
+      "title": "Offset AERCAP + 14h: AERCEM – AER Correctable Error Mask Register",
+      "section": "3.8.6.6",
+      "printed_pages": "33",
+      "pdf_pages": "33",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-065",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "65",
+      "title": "Offset AERCAP + 18h: AERCC – AER Capabilities and Control Register",
+      "section": "3.8.6.7",
+      "printed_pages": "34",
+      "pdf_pages": "34",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-066",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "66",
+      "title": "Offset AERCAP + 1Ch: AERHL – AER Header Log Register",
+      "section": "3.8.6.8",
+      "printed_pages": "34",
+      "pdf_pages": "34",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-067",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "67",
+      "title": "Offset AERCAP + 38h: AERTLP – AER TLP Prefix Log Register (Optional)",
+      "section": "3.8.6.9",
+      "printed_pages": "35",
+      "pdf_pages": "35",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-068",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "68",
+      "title": "Example of an Eve Diagram in the Printable Eye Field",
+      "section": "3.8.9",
+      "printed_pages": "37",
+      "pdf_pages": "37",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-069",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "69",
+      "title": "NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure",
+      "section": "3.8.10",
+      "printed_pages": "38-39",
+      "pdf_pages": "38-39",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-070",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "70",
+      "title": "Get Log Page – Log Page Identifiers",
+      "section": "3.9",
+      "printed_pages": "39",
+      "pdf_pages": "39",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-071",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "71",
+      "title": "Size of Physical Interface Receiver Eye Opening Measurement Log Page",
+      "section": "3.9.1.1",
+      "printed_pages": "40",
+      "pdf_pages": "40",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-072",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "72",
+      "title": "Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field",
+      "section": "3.9.1.1",
+      "printed_pages": "40-41",
+      "pdf_pages": "40-41",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-073",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "73",
+      "title": "Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field",
+      "section": "3.9.1.1",
+      "printed_pages": "41",
+      "pdf_pages": "41",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-074",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "74",
+      "title": "Physical Interface Receiver Eye Opening Measurement Log Page",
+      "section": "3.9.1.1",
+      "printed_pages": "41",
+      "pdf_pages": "41",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-075",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "75",
+      "title": "EOM Header",
+      "section": "3.9.1.1",
+      "printed_pages": "42-43",
+      "pdf_pages": "42-43",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-076",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "76",
+      "title": "EOM Lane Descriptor",
+      "section": "3.9.1.1",
+      "printed_pages": "43-45",
+      "pdf_pages": "43-45",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    },
+    {
+      "id": "PCIE14-FIG-077",
+      "report_id": "pcie-transport-1.4",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "type": "Figure",
+      "number": "77",
+      "title": "Example of an Eve Diagram in the Printable Eye Field",
+      "section": "3.9.1.1",
+      "printed_pages": "46",
+      "pdf_pages": "46",
+      "scope_entry_id": "PCIE14-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ],
+      "introduced_in": [
+        "pcie14-tutorial-html",
+        "pcie14-detailed-html",
+        "pcie14-zh-md",
+        "pcie14-en-md"
+      ]
+    }
+  ]
+}
