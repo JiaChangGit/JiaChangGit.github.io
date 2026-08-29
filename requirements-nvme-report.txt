@@ -1,0 +1,2 @@
+# Only required when refreshing local evidence from the source PDFs.
+pypdf==6.10.0

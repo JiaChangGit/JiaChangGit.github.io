@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe Base 2.4 Chapters 1-2: Specification Language, PCIe Queues, and Storage Model"
 date: 2026-08-28
 description: "Source-located PCIe/NVMe report for PPT authoring."
+lang: en
 img: posts/2026/cat_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
@@ -39,7 +40,7 @@ shall is mandatory, may permits a choice, should expresses a preferred recommend
 
 ## Specification findings
 
-### 1. BASE12-FAMILY
+### 1. Roles in the NVMe specification family
 
 <!-- claim:BASE12-FAMILY -->
 
@@ -47,7 +48,7 @@ The Base Specification defines the common NVMe protocol; a Transport Specificati
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, printed pages 1, PDF pages 27
 
-### 2. BASE12-KEYWORDS
+### 2. Normative keyword strength
 
 <!-- claim:BASE12-KEYWORDS -->
 
@@ -55,7 +56,7 @@ The specification assigns distinct force to mandatory, may, optional, reserved, 
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.4.1, printed pages 2-3, PDF pages 28-29
 
-### 3. BASE12-NUMBERS
+### 3. Radix and capacity units
 
 <!-- claim:BASE12-NUMBERS -->
 
@@ -63,7 +64,7 @@ A value is interpreted together with its radix and units. Hexadecimal uses the h
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, printed pages 3-5, PDF pages 29-31
 
-### 4. BASE12-DWORD
+### 4. Byte, word, and dword relationships
 
 <!-- claim:BASE12-DWORD -->
 
@@ -71,7 +72,7 @@ NVMe expresses field locations in bytes, words, and dwords. A word is two bytes 
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, printed pages 5, PDF pages 31
 
-### 5. BASE12-QUEUE
+### 5. PCIe queue-pair model
 
 <!-- claim:BASE12-QUEUE -->
 
@@ -79,7 +80,7 @@ In the PCIe memory-based model, Submission and Completion Queues reside in memor
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.1, printed pages 21-23, PDF pages 47-49
 
-### 6. BASE12-STORAGE
+### 6. NVM storage hierarchy
 
 <!-- claim:BASE12-STORAGE -->
 
@@ -87,7 +88,7 @@ The storage model expresses containment through the NVM subsystem, domain, Endur
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, printed pages 26-33, PDF pages 52-59
 
-### 7. BASE12-COMMANDSET
+### 7. Admin and I/O Command Sets
 
 <!-- claim:BASE12-COMMANDSET -->
 
@@ -95,7 +96,7 @@ The Admin Command Set manages controllers and queues; an I/O Command Set defines
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.2, printed pages 33, PDF pages 59
 
-### 8. BASE12-SUBSYSTEM
+### 8. Subsystem objects and NSIDs
 
 <!-- claim:BASE12-SUBSYSTEM -->
 
@@ -103,7 +104,7 @@ Controllers, ports, namespaces, and PCI Functions are distinct objects. An NSID 
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61
 
-### 9. BASE12-MULTIPATH
+### 9. Multi-path and namespace sharing
 
 <!-- claim:BASE12-MULTIPATH -->
 
@@ -111,7 +112,7 @@ Multi-path I/O provides two or more independent paths from one host to one names
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, printed pages 35-37, PDF pages 61-63
 
-### 10. BASE12-ASYMMETRY
+### 10. Asymmetric path characteristics
 
 <!-- claim:BASE12-ASYMMETRY -->
 
@@ -119,301 +120,463 @@ With multi-path or sharing, controllers need not provide identical access charac
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.4.2, printed pages 37, PDF pages 63
 
+## Figure index
+
+This report introduces all 18 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item.
+
+- [§1.1](#section-1-1)
+
+- [§1.4](#section-1-4)
+
+- [§2](#section-2)
+
+- [§2.1](#section-2-1)
+
+- [§2.3](#section-2-3)
+
+- [§2.4](#section-2-4)
+
 ## Figure-by-Figure Guide
 
-The source uses Figure numbers for both diagrams and field-layout tables. No source artwork is reproduced.
+The source uses Figure numbers for diagrams and field-layout tables. No source artwork is reproduced; compact field and keyword indexes come from the locally verified PDFs.
 
-### Figure 1: NVMe Family of Specifications
+<a id="section-1-1"></a>
+
+### §1.1
+
+<details markdown="1">
+<summary><strong>Figure 1: NVMe Family of Specifications</strong></summary>
 
 <!-- claim:BASE12-FIG-001-CLAIM figure-table:BASE12-FIG-001 -->
 
-Figure 1, "NVMe Family of Specifications": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
+Figure 1, "NVMe Family of Specifications": Places NVMe Family of Specifications in the NVMe document and command-set hierarchy. Read from the common Base requirements toward the transport and command-set layer; keep these source-derived labels distinct: NVMe Family.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Places NVMe Family of Specifications in the NVMe document and command-set hierarchy.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Read from the common Base requirements toward the transport and command-set layer; keep these source-derived labels distinct: NVMe Family.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement. Only the PCIe/memory-based portion is in scope.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Start with NVMe Family, then follow the branch containing the cited condition; cite the document that owns the requirement instead of assuming every layer defines it. This example adds no requirement.
 
-- Scope: only the PCIe/memory-based portion is introduced.
+- Source field index: NVMe Family
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, Figure 1, printed pages 1, PDF pages 27
 
-### Figure 2: Decimal and Binary Units
+</details>
+
+<a id="section-1-4"></a>
+
+### §1.4
+
+<details markdown="1">
+<summary><strong>Figure 2: Decimal and Binary Units</strong></summary>
 
 <!-- claim:BASE12-FIG-002-CLAIM figure-table:BASE12-FIG-002 -->
 
-Figure 2, "Decimal and Binary Units": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 2, "Decimal and Binary Units": Defines the numeric-unit or byte-width convention illustrated by Decimal and Binary Units. Separate decimal units from binary units and preserve byte/word/Dword boundaries. Evidence index: Decimal and Binary Units.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Defines the numeric-unit or byte-width convention illustrated by Decimal and Binary Units.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Separate decimal units from binary units and preserve byte/word/Dword boundaries. Evidence index: Decimal and Binary Units.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Normalize one value using Decimal and Binary Units, then verify its storage width against the cited condition before comparing it. This example adds no requirement.
+
+- Source field index: Decimal and Binary Units
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, Figure 2, printed pages 3, PDF pages 29
 
-### Figure 3: Byte, Word, and Dword Relationships
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 3: Byte, Word, and Dword Relationships</strong></summary>
 
 <!-- claim:BASE12-FIG-003-CLAIM figure-table:BASE12-FIG-003 -->
 
-Figure 3, "Byte, Word, and Dword Relationships": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 3, "Byte, Word, and Dword Relationships": Defines the numeric-unit or byte-width convention illustrated by Byte, Word, and Dword Relationships. Separate decimal units from binary units and preserve byte/word/Dword boundaries. Evidence index: Byte, Word, and Dword Relationships.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Defines the numeric-unit or byte-width convention illustrated by Byte, Word, and Dword Relationships.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Separate decimal units from binary units and preserve byte/word/Dword boundaries. Evidence index: Byte, Word, and Dword Relationships.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Normalize one value using Byte, Word, and Dword Relationships, then verify its storage width against the cited condition before comparing it. This example adds no requirement.
+
+- Source field index: Byte, Word, and Dword Relationships
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, printed pages 5, PDF pages 31
 
-### Figure 5: Types of NVMe Command Sets
+</details>
+
+<a id="section-2"></a>
+
+### §2
+
+<details markdown="1">
+<summary><strong>Figure 5: Types of NVMe Command Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-005-CLAIM figure-table:BASE12-FIG-005 -->
 
-Figure 5, "Types of NVMe Command Sets": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
+Figure 5, "Types of NVMe Command Sets": Places Types of NVMe Command Sets in the NVMe document and command-set hierarchy. Read from the common Base requirements toward the transport and command-set layer; keep these source-derived labels distinct: Command Set, Command.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Places Types of NVMe Command Sets in the NVMe document and command-set hierarchy.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Read from the common Base requirements toward the transport and command-set layer; keep these source-derived labels distinct: Command Set, Command.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement. Only the PCIe/memory-based portion is in scope.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Start with Command Set, then follow the branch containing Command; cite the document that owns the requirement instead of assuming every layer defines it. This example adds no requirement.
 
-- Scope: only the PCIe/memory-based portion is introduced.
+- Source field index: Command Set, Command
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2, Figure 5, printed pages 21, PDF pages 47
 
-### Figure 6: Queue Pair Example, 1:1 Mapping
+</details>
+
+<a id="section-2-1"></a>
+
+### §2.1
+
+<details markdown="1">
+<summary><strong>Figure 6: Queue Pair Example, 1:1 Mapping</strong></summary>
 
 <!-- claim:BASE12-FIG-006-CLAIM figure-table:BASE12-FIG-006 -->
 
-Figure 6, "Queue Pair Example, 1:1 Mapping": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 6, "Queue Pair Example, 1:1 Mapping": Shows the queue or command relationship expressed by Queue Pair Example, 1:1 Mapping. Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: Queue Pair, 1:1.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Shows the queue or command relationship expressed by Queue Pair Example, 1:1 Mapping.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: Queue Pair, 1:1.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Trace one command through Figure 6, using Queue Pair and 1:1 as checkpoints for ownership or pointer movement. This example adds no requirement.
+
+- Source field index: Queue Pair, 1:1
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 6, printed pages 22, PDF pages 48
 
-### Figure 7: Queue Pair Example, n:1 Mapping
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 7: Queue Pair Example, n:1 Mapping</strong></summary>
 
 <!-- claim:BASE12-FIG-007-CLAIM figure-table:BASE12-FIG-007 -->
 
-Figure 7, "Queue Pair Example, n:1 Mapping": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 7, "Queue Pair Example, n:1 Mapping": Shows the queue or command relationship expressed by Queue Pair Example, n:1 Mapping. Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: Queue Pair.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Shows the queue or command relationship expressed by Queue Pair Example, n:1 Mapping.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: Queue Pair.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Trace one command through Figure 7, using Queue Pair and the cited condition as checkpoints for ownership or pointer movement. This example adds no requirement.
+
+- Source field index: Queue Pair
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 7, printed pages 22, PDF pages 48
 
-### Figure 11: Simple NVM Storage Hierarchy with NVM Sets
+</details>
+
+<a id="section-2-3"></a>
+
+### §2.3
+
+<details markdown="1">
+<summary><strong>Figure 11: Simple NVM Storage Hierarchy with NVM Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-011-CLAIM figure-table:BASE12-FIG-011 -->
 
-Figure 11, "Simple NVM Storage Hierarchy with NVM Sets": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 11, "Simple NVM Storage Hierarchy with NVM Sets": Shows the object or capacity relationships in Simple NVM Storage Hierarchy with NVM Sets. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, NVM Set.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Simple NVM Storage Hierarchy with NVM Sets.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, NVM Set.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Storage Hierarchy and trace its relationship to NVM Set without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Storage Hierarchy, NVM Set
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 11, printed pages 27, PDF pages 53
 
-### Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group</strong></summary>
 
 <!-- claim:BASE12-FIG-012-CLAIM figure-table:BASE12-FIG-012 -->
 
-Figure 12, "Simple NVM Storage Hierarchy with One Reclaim Group": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 12, "Simple NVM Storage Hierarchy with One Reclaim Group": Shows the object or capacity relationships in Simple NVM Storage Hierarchy with One Reclaim Group. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, Reclaim Group.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Shows the object or capacity relationships in Simple NVM Storage Hierarchy with One Reclaim Group.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, Reclaim Group.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Storage Hierarchy and trace its relationship to Reclaim Group without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Storage Hierarchy, Reclaim Group
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 12, printed pages 28, PDF pages 54
 
-### Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
 
 <!-- claim:BASE12-FIG-013-CLAIM figure-table:BASE12-FIG-013 -->
 
-Figure 13, "Simple NVM Storage Hierarchy with Multiple Reclaim Groups": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 13, "Simple NVM Storage Hierarchy with Multiple Reclaim Groups": Shows the object or capacity relationships in Simple NVM Storage Hierarchy with Multiple Reclaim Groups. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, Reclaim Group.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Shows the object or capacity relationships in Simple NVM Storage Hierarchy with Multiple Reclaim Groups.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, Reclaim Group.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Storage Hierarchy and trace its relationship to Reclaim Group without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Storage Hierarchy, Reclaim Group
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 13, printed pages 29, PDF pages 55
 
-### Figure 14: Complex NVM Storage Hierarchy with NVM Sets
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 14: Complex NVM Storage Hierarchy with NVM Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-014-CLAIM figure-table:BASE12-FIG-014 -->
 
-Figure 14, "Complex NVM Storage Hierarchy with NVM Sets": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 14, "Complex NVM Storage Hierarchy with NVM Sets": Shows the object or capacity relationships in Complex NVM Storage Hierarchy with NVM Sets. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, NVM Set.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Complex NVM Storage Hierarchy with NVM Sets.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, NVM Set.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Storage Hierarchy and trace its relationship to NVM Set without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Storage Hierarchy, NVM Set
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 14, printed pages 30, PDF pages 56
 
-### Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
 
 <!-- claim:BASE12-FIG-015-CLAIM figure-table:BASE12-FIG-015 -->
 
-Figure 15, "Complex NVM Storage Hierarchy with Multiple Reclaim Groups": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 15, "Complex NVM Storage Hierarchy with Multiple Reclaim Groups": Shows the object or capacity relationships in Complex NVM Storage Hierarchy with Multiple Reclaim Groups. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, Reclaim Group.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Shows the object or capacity relationships in Complex NVM Storage Hierarchy with Multiple Reclaim Groups.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Storage Hierarchy, Reclaim Group.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Storage Hierarchy and trace its relationship to Reclaim Group without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Storage Hierarchy, Reclaim Group
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 15, printed pages 31, PDF pages 57
 
-### Figure 16: Single-Namespace NVM Subsystem
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 16: Single-Namespace NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-016-CLAIM figure-table:BASE12-FIG-016 -->
 
-Figure 16, "Single-Namespace NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 16, "Single-Namespace NVM Subsystem": Shows the object or capacity relationships in Single-Namespace NVM Subsystem. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Namespace.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Single-Namespace NVM Subsystem.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to Namespace without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 16, printed pages 32, PDF pages 58
 
-### Figure 17: Two-Namespace NVM Subsystem
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 17: Two-Namespace NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-017-CLAIM figure-table:BASE12-FIG-017 -->
 
-Figure 17, "Two-Namespace NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 17, "Two-Namespace NVM Subsystem": Shows the object or capacity relationships in Two-Namespace NVM Subsystem. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Namespace.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Two-Namespace NVM Subsystem.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to Namespace without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 17, printed pages 33, PDF pages 59
 
-### Figure 18: Complex NVM Subsystem
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 18: Complex NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-018-CLAIM figure-table:BASE12-FIG-018 -->
 
-Figure 18, "Complex NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 18, "Complex NVM Subsystem": Shows the object or capacity relationships in Complex NVM Subsystem. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Complex NVM Subsystem.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to the cited condition without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 18, printed pages 34, PDF pages 60
 
-### Figure 19: NVM Express Controller with Two Namespaces
+</details>
+
+<a id="section-2-4"></a>
+
+### §2.4
+
+<details markdown="1">
+<summary><strong>Figure 19: NVM Express Controller with Two Namespaces</strong></summary>
 
 <!-- claim:BASE12-FIG-019-CLAIM figure-table:BASE12-FIG-019 -->
 
-Figure 19, "NVM Express Controller with Two Namespaces": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 19, "NVM Express Controller with Two Namespaces": Shows the object or capacity relationships in NVM Express Controller with Two Namespaces. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: Namespace, Controller.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in NVM Express Controller with Two Namespaces.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: Namespace, Controller.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by Namespace and trace its relationship to Controller without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: Namespace, Controller
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 19, printed pages 35, PDF pages 61
 
-### Figure 20: NVM Subsystem with Two Controllers and One Port
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 20: NVM Subsystem with Two Controllers and One Port</strong></summary>
 
 <!-- claim:BASE12-FIG-020-CLAIM figure-table:BASE12-FIG-020 -->
 
-Figure 20, "NVM Subsystem with Two Controllers and One Port": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 20, "NVM Subsystem with Two Controllers and One Port": Shows the object or capacity relationships in NVM Subsystem with Two Controllers and One Port. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Controller.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in NVM Subsystem with Two Controllers and One Port.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Controller.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to Controller without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem, Controller
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 20, printed pages 35, PDF pages 61
 
-### Figure 21: NVM Subsystem with Two Controllers and Two Ports
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 21: NVM Subsystem with Two Controllers and Two Ports</strong></summary>
 
 <!-- claim:BASE12-FIG-021-CLAIM figure-table:BASE12-FIG-021 -->
 
-Figure 21, "NVM Subsystem with Two Controllers and Two Ports": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 21, "NVM Subsystem with Two Controllers and Two Ports": Shows the object or capacity relationships in NVM Subsystem with Two Controllers and Two Ports. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Controller.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in NVM Subsystem with Two Controllers and Two Ports.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem, Controller.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to Controller without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem, Controller
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 21, printed pages 36, PDF pages 62
 
-### Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</strong></summary>
 
 <!-- claim:BASE12-FIG-022-CLAIM figure-table:BASE12-FIG-022 -->
 
-Figure 22, "PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 22, "PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)": Shows the Physical Function and Virtual Function relationships in PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV). Separate PCIe Function identity, controller ownership, and shared device resources. Evidence index: SR, IOV.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Shows the Physical Function and Virtual Function relationships in PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV).
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Separate PCIe Function identity, controller ownership, and shared device resources. Evidence index: SR, IOV.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Start at the function represented by SR, then trace its relationship to IOV without treating shared resources as private. This example adds no requirement.
+
+- Source field index: SR, IOV
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 22, printed pages 37, PDF pages 63
+
+</details>
 
 ## Use and limitations
 

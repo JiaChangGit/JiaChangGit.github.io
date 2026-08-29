@@ -6,620 +6,819 @@
 <title>NVMe Base 2.4 第 3 章：Controller、Queue、初始化與重設｜新手教學版</title>
 </head>
 <body>
-<nav aria-label="章節導覽"><a href="#scope">範圍</a> ｜ <a href="#map">流程圖</a> ｜ <a href="#claims">重點</a> ｜ <a href="#figures">Figure 逐圖導讀</a> ｜ <a href="#sources">來源</a></nav>
+<nav id="top" aria-label="章節導覽"><a href="#scope">範圍</a> ｜ <a href="#map">流程圖</a> ｜ <a href="#claims">規格重點</a> ｜ <a href="#figure-index">Figure 索引</a> ｜ <a href="#sources">來源</a></nav>
 <main>
 <h1>NVMe Base 2.4 第 3 章：Controller、Queue、初始化與重設｜新手教學版</h1>
 <p>用途：供具備 PCIe 與 NVMe 基礎的工程人員在 iPad 離線閱讀，並作為 100 分鐘簡報的內容來源。</p>
 <section id="scope"><h2>範圍與閱讀方式</h2>
 <p><strong>納入：</strong>§3；文件頁 38-138；PDF 頁 64-164。正文只保留 PCIe／memory-based 與通用 NVMe 內容；未納入主題不會出現在報告或 PPT。</p>
 <p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、讀法、條件與說明性範例。欄位表雖以表格呈現，在本範圍的規格中仍以 Figure 編號。</p>
+<p><strong>完整度：</strong>本檔介紹 59 張納入範圍的 Figure。100 分鐘口頭報告應以規格重點與必講 Figure 為主；其餘 Figure 作為附錄查閱，但仍完整保留於本檔。</p>
 <table><thead><tr><th>keyword</th><th>台灣繁體中文</th><th>強度</th></tr></thead><tbody><tr><td>shall</td><td>必須</td><td>強制要求</td></tr><tr><td>may</td><td>可、得</td><td>允許選擇</td></tr><tr><td>should</td><td>宜、建議</td><td>有偏好的建議</td></tr><tr><td>optional</td><td>選用</td><td>不要求支援；實作後仍依定義</td></tr></tbody></table></section>
 <section id="map"><h2>整體流程圖</h2>
 <svg width="100%" height="140" viewBox="0 0 720 140" role="img" aria-labelledby="flow-title flow-desc"><title id="flow-title">NVMe report flow</title><desc id="flow-desc">host 先讀能力與設定 Admin queues，再啟用 controller；只有 CSTS.RDY 回報 ready 後才進入正常 queue processing。</desc><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/></marker></defs><rect x="10" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="85" y="75" text-anchor="middle" font-size="14">Properties / CAP</text><rect x="190" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="265" y="75" text-anchor="middle" font-size="14">CC.EN = 1</text><rect x="370" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="445" y="75" text-anchor="middle" font-size="14">CSTS.RDY = 1</text><rect x="550" y="35" width="150" height="70" rx="8" fill="#f4f4f4" stroke="#333"/><text x="625" y="75" text-anchor="middle" font-size="14">Queues active</text><line x1="160" y1="70" x2="188" y2="70" stroke="#333" marker-end="url(#arrow)"/><line x1="340" y1="70" x2="368" y2="70" stroke="#333" marker-end="url(#arrow)"/><line x1="520" y1="70" x2="548" y2="70" stroke="#333" marker-end="url(#arrow)"/></svg>
 <p>host 先讀能力與設定 Admin queues，再啟用 controller；只有 CSTS.RDY 回報 ready 後才進入正常 queue processing。</p></section>
 <section id="claims"><h2>規格重點</h2>
-<article><h3>1. 先看懂</h3>
+<article><h3>1. static controller model</h3>
 <p><span data-claim-id="BASE3-STATIC">memory-based controller 必須（shall）只支援 static controller model。</span></p>
 <p><strong>新手檢查點：</strong>先寫出目前 controller state，再核對哪個 register／property 觸發狀態轉換。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64</small></p></article>
-<article><h3>2. 先看懂</h3>
+<article><h3>2. I/O 與 Administrative controller</h3>
 <p><span data-claim-id="BASE3-TYPES">本輪只使用 I/O controller 與 Administrative controller：前者可執行使用者資料的 I/O，後者以管理為目的且不支援資料 I/O command。兩者都具有一組 Admin Submission／Completion Queue。</span></p>
 <p><strong>新手檢查點：</strong>先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69</small></p></article>
-<article><h3>3. 先看懂</h3>
+<article><h3>3. 命令與完成順序</h3>
 <p><span data-claim-id="BASE3-ORDER">除 fused operation 外，controller 取走的命令與完成沒有一般性的先後保證；若有順序需求，強制該順序是 host 的責任。</span></p>
 <p><strong>新手檢查點：</strong>畫出 host → SQ → controller → CQ，並在每一步標上由誰更新 pointer。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66</small></p></article>
-<article><h3>4. 先看懂</h3>
+<article><h3>4. property 存取寬度</h3>
 <p><span data-claim-id="BASE3-PROPERTY">host 必須（shall）以 property 指定的寬度，從 property 起始 offset 存取；memory-based controller 的實際存取規則由 PCIe Transport 補充。</span></p>
 <p><strong>新手檢查點：</strong>先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</small></p></article>
-<article><h3>5. 先看懂</h3>
+<article><h3>5. NSID 狀態與特殊值</h3>
 <p><span data-claim-id="BASE3-NAMESPACE">NSID 0h 無效，FFFFFFFFh 是 broadcast 值；其餘 NSID 還要區分 allocated／unallocated 與 active／inactive，不能只看數字是否落在範圍內。</span></p>
 <p><strong>新手檢查點：</strong>把 identifier 與實體／邏輯物件分開，再由 namespace 往上追到所屬容量階層。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, 文件頁 78-80, PDF 頁 104-106</small></p></article>
-<article><h3>6. 先看懂</h3>
+<article><h3>6. 媒體與回收階層</h3>
 <p><span data-claim-id="BASE3-MEDIA">NVM Set、Endurance Group、Reclaim Group 與 Reclaim Unit 分別描述容量集合、耐久度管理與回收粒度。是否支援及其 identifier 由 Identify／log page 能力判定。</span></p>
 <p><strong>新手檢查點：</strong>把 identifier 與實體／邏輯物件分開，再由 namespace 往上追到所屬容量階層。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111</small></p></article>
-<article><h3>7. 先看懂</h3>
+<article><h3>7. domain 邊界與識別碼</h3>
 <p><span data-claim-id="BASE3-DOMAIN">domain 是 NVM subsystem 內的故障／通訊邊界。多 domain subsystem 的 identifier 必須（shall）在該 subsystem 內唯一。</span></p>
 <p><strong>新手檢查點：</strong>把 identifier 與實體／邏輯物件分開，再由 namespace 往上追到所屬容量階層。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5, 文件頁 85-88, PDF 頁 111-114</small></p></article>
-<article><h3>8. 先看懂</h3>
+<article><h3>8. PCIe queue 建立與 pointer</h3>
 <p><span data-claim-id="BASE3-QUEUE">PCIe queue 由 host-addressable memory 中的環形 buffer、head 與 tail pointer 構成。host 建立 I/O Completion Queue 後再建立對應 Submission Queue，並以 doorbell 推進 pointer。</span></p>
 <p><strong>新手檢查點：</strong>畫出 host → SQ → controller → CQ，並在每一步標上由誰更新 pointer。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1, 文件頁 88-91, PDF 頁 114-117</small></p></article>
-<article><h3>9. 先看懂</h3>
+<article><h3>9. 命令處理與 arbitration</h3>
 <p><span data-claim-id="BASE3-PROCESS">command processing 要分開看 ordering、fused／atomic semantics、arbitration 與 outstanding command 上限；priority 屬於 Submission Queue，不是每一筆 command 的獨立欄位。</span></p>
 <p><strong>新手檢查點：</strong>畫出 host → SQ → controller → CQ，並在每一步標上由誰更新 pointer。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, 文件頁 101-105, PDF 頁 127-131</small></p></article>
-<article><h3>10. 先看懂</h3>
+<article><h3>10. controller 初始化</h3>
 <p><span data-claim-id="BASE3-INIT">PCIe 初始化以 CAP 判斷能力與 timeout，設定 AQA／ASQ／ACQ 與 CC，接著等待 CSTS.RDY。ready mode 與 CRTO 會影響 host 等待與錯誤處理。</span></p>
 <p><strong>新手檢查點：</strong>先寫出目前 controller state，再核對哪個 register／property 觸發狀態轉換。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139</small></p></article>
-<article><h3>11. 先看懂</h3>
+<article><h3>11. shutdown 狀態流程</h3>
 <p><span data-claim-id="BASE3-SHUTDOWN">正常 shutdown 由 host 設定 CC.SHN，controller 透過 CSTS.SHST 回報進度；NVM subsystem shutdown 是更大範圍的處理，不能與單一 controller shutdown 混為一談。</span></p>
 <p><strong>新手檢查點：</strong>先寫出目前 controller state，再核對哪個 register／property 觸發狀態轉換。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146</small></p></article>
-<article><h3>12. 先看懂</h3>
+<article><h3>12. reset 層級與影響範圍</h3>
 <p><span data-claim-id="BASE3-RESET">NVM Subsystem Reset、Controller Level Reset 與 Queue Level Reset 的影響範圍不同；設計 recovery flow 前先確認哪一層狀態會被清除、queue 是否仍存在。</span></p>
 <p><strong>新手檢查點：</strong>先寫出目前 controller state，再核對哪個 register／property 觸發狀態轉換。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151</small></p></article>
-<article><h3>13. 先看懂</h3>
+<article><h3>13. capacity model</h3>
 <p><span data-claim-id="BASE3-CAPACITY">capacity model 分開追蹤 NVM subsystem、Endurance Group、NVM Set 與 namespace 的可用或配置容量；同一數值不可跨層級直接比較。</span></p>
 <p><strong>新手檢查點：</strong>把 identifier 與實體／邏輯物件分開，再由 namespace 往上追到所屬容量階層。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155</small></p></article>
-<article><h3>14. 先看懂</h3>
+<article><h3>14. Keep Alive timer</h3>
 <p><span data-claim-id="BASE3-KEEPALIVE">Keep Alive 以 KATO／KATT 建立 host 與 controller 的存活監測；本報告只保留 controller 共通與 PCIe 可用的 timer、command 與 timeout 行為。</span></p>
 <p><strong>新手檢查點：</strong>先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161</small></p></article>
-<article><h3>15. 先看懂</h3>
+<article><h3>15. firmware update 與 privileged action</h3>
 <p><span data-claim-id="BASE3-FIRMWARE">privileged action 會影響其他 host 或 controller；firmware update 分成 image download、commit／activate 與可能的 reset，host 依回報的 activation action 安排流程。</span></p>
 <p><strong>新手檢查點：</strong>先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164</small></p></article>
-</section><section id="figures"><h2>Figure 逐圖導讀</h2>
-<article data-figure-table-id="BASE3-FIG-023"><h3>Figure 23: Controller Types</h3>
-<p><span data-claim-id="BASE3-FIG-023-CLAIM">Figure 23〈Controller Types〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+</section><section id="figure-index"><h2>Figure 索引</h2>
+<p>依 section 跳轉；每張 Figure 可個別展開，減少 iPad 長頁面捲動。</p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
-</ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 23, 文件頁 39, PDF 頁 65</small></p></article>
-<article data-figure-table-id="BASE3-FIG-024"><h3>Figure 24: NVM Subsystem with Three I/O Controllers</h3>
-<p><span data-claim-id="BASE3-FIG-024-CLAIM">Figure 24〈NVM Subsystem with Three I/O Controllers〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<li><a href="#section-3-1">§3.1</a></li>
+<li><a href="#section-3-2">§3.2</a></li>
+<li><a href="#section-3-3">§3.3</a></li>
+<li><a href="#section-3-4">§3.4</a></li>
+<li><a href="#section-3-5">§3.5</a></li>
+<li><a href="#section-3-6">§3.6</a></li>
+<li><a href="#section-3-8">§3.8</a></li>
+<li><a href="#section-3-9">§3.9</a></li>
+<li><a href="#section-3-10">§3.10</a></li>
+</ul></section>
+<section id="figures"><h2>Figure 逐圖導讀</h2>
+<section id="section-3-1"><h3>§3.1</h3>
+<details id="figure-23" data-figure-table-id="BASE3-FIG-023">
+<summary><strong>Figure 23: Controller Types</strong></summary>
+<p><span data-claim-id="BASE3-FIG-023-CLAIM">Figure 23〈Controller Types〉：呈現〈Controller Types〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Controller Types〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：Controller。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 Controller 標示的一個物件，再追到 引用條件，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.1, Figure 24, 文件頁 41, PDF 頁 67</small></p></article>
-<article data-figure-table-id="BASE3-FIG-025"><h3>Figure 25: NVM Subsystem with One Administrative and Two I/O Controllers</h3>
-<p><span data-claim-id="BASE3-FIG-025-CLAIM">Figure 25〈NVM Subsystem with One Administrative and Two I/O Controllers〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 23, 文件頁 39, PDF 頁 65</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-24" data-figure-table-id="BASE3-FIG-024">
+<summary><strong>Figure 24: NVM Subsystem with Three I/O Controllers</strong></summary>
+<p><span data-claim-id="BASE3-FIG-024-CLAIM">Figure 24〈NVM Subsystem with Three I/O Controllers〉：呈現〈NVM Subsystem with Three I/O Controllers〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem, I/O Controller, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈NVM Subsystem with Three I/O Controllers〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem, I/O Controller, Controller。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Subsystem 標示的一個物件，再追到 I/O Controller，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 25, 文件頁 42, PDF 頁 68</small></p></article>
-<article data-figure-table-id="BASE3-FIG-026"><h3>Figure 26: NVM Subsystem with One Administrative Controller</h3>
-<p><span data-claim-id="BASE3-FIG-026-CLAIM">Figure 26〈NVM Subsystem with One Administrative Controller〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.1, Figure 24, 文件頁 41, PDF 頁 67</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-25" data-figure-table-id="BASE3-FIG-025">
+<summary><strong>Figure 25: NVM Subsystem with One Administrative and Two I/O Controllers</strong></summary>
+<p><span data-claim-id="BASE3-FIG-025-CLAIM">Figure 25〈NVM Subsystem with One Administrative and Two I/O Controllers〉：呈現〈NVM Subsystem with One Administrative and Two I/O Controllers〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem, I/O Controller, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈NVM Subsystem with One Administrative and Two I/O Controllers〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem, I/O Controller, Controller。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Subsystem 標示的一個物件，再追到 I/O Controller，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 26, 文件頁 42, PDF 頁 68</small></p></article>
-<article data-figure-table-id="BASE3-FIG-027"><h3>Figure 27: Controller IDs FFF0h to FFFFh</h3>
-<p><span data-claim-id="BASE3-FIG-027-CLAIM">Figure 27〈Controller IDs FFF0h to FFFFh〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 25, 文件頁 42, PDF 頁 68</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-26" data-figure-table-id="BASE3-FIG-026">
+<summary><strong>Figure 26: NVM Subsystem with One Administrative Controller</strong></summary>
+<p><span data-claim-id="BASE3-FIG-026-CLAIM">Figure 26〈NVM Subsystem with One Administrative Controller〉：呈現〈NVM Subsystem with One Administrative Controller〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem, Administrative Controller, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈NVM Subsystem with One Administrative Controller〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem, Administrative Controller, Controller。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Subsystem 標示的一個物件，再追到 Administrative Controller，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3, Figure 27, 文件頁 44, PDF 頁 70</small></p></article>
-<article data-figure-table-id="BASE3-FIG-028"><h3>Figure 28: Admin Command Support Requirements</h3>
-<p><span data-claim-id="BASE3-FIG-028-CLAIM">Figure 28〈Admin Command Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 26, 文件頁 42, PDF 頁 68</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-27" data-figure-table-id="BASE3-FIG-027">
+<summary><strong>Figure 27: Controller IDs FFF0h to FFFFh</strong></summary>
+<p><span data-claim-id="BASE3-FIG-027-CLAIM">Figure 27〈Controller IDs FFF0h to FFFFh〉：定義〈Controller IDs FFF0h to FFFFh〉的識別碼組成或數值空間。 分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：Controller, Controller ID。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>定義〈Controller IDs FFF0h to FFFFh〉的識別碼組成或數值空間。</li>
+<li><strong>閱讀順序：</strong>分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：Controller, Controller ID。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>依定義寬度解析 Controller，再核對 Controller ID 的唯一性範圍後才把它當成 identity key。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3.3, Figure 28, 文件頁 45-47, PDF 頁 71-73</small></p></article>
-<article data-figure-table-id="BASE3-FIG-030"><h3>Figure 30: Common I/O Command Support Requirements</h3>
-<p><span data-claim-id="BASE3-FIG-030-CLAIM">Figure 30〈Common I/O Command Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3, Figure 27, 文件頁 44, PDF 頁 70</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-28" data-figure-table-id="BASE3-FIG-028">
+<summary><strong>Figure 28: Admin Command Support Requirements</strong></summary>
+<p><span data-claim-id="BASE3-FIG-028-CLAIM">Figure 28〈Admin Command Support Requirements〉：統整〈Admin Command Support Requirements〉指定的支援等級。 先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：MI, O10, O11, Command。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>統整〈Admin Command Support Requirements〉指定的支援等級。</li>
+<li><strong>閱讀順序：</strong>先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：MI, O10, O11, Command。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`optional`。索引用來定位規範性語句，不取代各欄位所附的完整條件。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>先在適用 row 查找 MI，再核對 O10 所代表的上下文，最後才判斷必須或選用。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 30, 文件頁 47-48, PDF 頁 73-74</small></p></article>
-<article data-figure-table-id="BASE3-FIG-031"><h3>Figure 31: Log Page Support Requirements</h3>
-<p><span data-claim-id="BASE3-FIG-031-CLAIM">Figure 31〈Log Page Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3.3, Figure 28, 文件頁 45-47, PDF 頁 71-73</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-30" data-figure-table-id="BASE3-FIG-030">
+<summary><strong>Figure 30: Common I/O Command Support Requirements</strong></summary>
+<p><span data-claim-id="BASE3-FIG-030-CLAIM">Figure 30〈Common I/O Command Support Requirements〉：統整〈Common I/O Command Support Requirements〉指定的支援等級。 先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：FDPS, Command。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>統整〈Common I/O Command Support Requirements〉指定的支援等級。</li>
+<li><strong>閱讀順序：</strong>先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：FDPS, Command。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`optional`。索引用來定位規範性語句，不取代各欄位所附的完整條件。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>先在適用 row 查找 FDPS，再核對 Command 所代表的上下文，最後才判斷必須或選用。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 31, 文件頁 48-50, PDF 頁 74-76</small></p></article>
-<article data-figure-table-id="BASE3-FIG-032"><h3>Figure 32: Feature Support Requirements</h3>
-<p><span data-claim-id="BASE3-FIG-032-CLAIM">Figure 32〈Feature Support Requirements〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 30, 文件頁 47-48, PDF 頁 73-74</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-31" data-figure-table-id="BASE3-FIG-031">
+<summary><strong>Figure 31: Log Page Support Requirements</strong></summary>
+<p><span data-claim-id="BASE3-FIG-031-CLAIM">Figure 31〈Log Page Support Requirements〉：統整〈Log Page Support Requirements〉指定的支援等級。 先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：M3, SMART, O4, O6, O12, O13, FDP, O5。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>統整〈Log Page Support Requirements〉指定的支援等級。</li>
+<li><strong>閱讀順序：</strong>先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：M3, SMART, O4, O6, O12, O13, FDP, O5。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `optional`。索引用來定位規範性語句，不取代各欄位所附的完整條件。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>先在適用 row 查找 M3，再核對 SMART 所代表的上下文，最後才判斷必須或選用。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.5, Figure 32, 文件頁 50-52, PDF 頁 76-78</small></p></article>
-<article data-figure-table-id="BASE3-FIG-033"><h3>Figure 33: Property Definition</h3>
-<p><span data-claim-id="BASE3-FIG-033-CLAIM">Figure 33〈Property Definition〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 31, 文件頁 48-50, PDF 頁 74-76</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-32" data-figure-table-id="BASE3-FIG-032">
+<summary><strong>Figure 32: Feature Support Requirements</strong></summary>
+<p><span data-claim-id="BASE3-FIG-032-CLAIM">Figure 32〈Feature Support Requirements〉：統整〈Feature Support Requirements〉指定的支援等級。 先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：LBA, O8, M10, M7, O9, O6, O5, O3。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>統整〈Feature Support Requirements〉指定的支援等級。</li>
+<li><strong>閱讀順序：</strong>先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：LBA, O8, M10, M7, O9, O6, O5, O3。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`optional`。索引用來定位規範性語句，不取代各欄位所附的完整條件。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>先在適用 row 查找 LBA，再核對 O8 所代表的上下文，最後才判斷必須或選用。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 33, 文件頁 52-53, PDF 頁 78-79</small></p></article>
-<article data-figure-table-id="BASE3-FIG-034"><h3>Figure 34: Memory-Based Property Definition</h3>
-<p><span data-claim-id="BASE3-FIG-034-CLAIM">Figure 34〈Memory-Based Property Definition〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.5, Figure 32, 文件頁 50-52, PDF 頁 76-78</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-33" data-figure-table-id="BASE3-FIG-033">
+<summary><strong>Figure 33: Property Definition</strong></summary>
+<p><span data-claim-id="BASE3-FIG-033-CLAIM">Figure 33〈Property Definition〉：定義〈Property Definition〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：OFST, CAP, VS, M2, INTMS, INTMC, CC, CSTS。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈Property Definition〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：OFST, CAP, VS, M2, INTMS, INTMC, CC, CSTS。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`optional`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>以 OFST 作為 parser 的第一個檢查點，再用 CAP 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, 文件頁 54, PDF 頁 80</small></p></article>
-<article data-figure-table-id="BASE3-FIG-036"><h3>Figure 36: Offset 0h: CAP - Controller Capabilities</h3>
-<p><span data-claim-id="BASE3-FIG-036-CLAIM">Figure 36〈Offset 0h: CAP - Controller Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 33, 文件頁 52-53, PDF 頁 78-79</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-34" data-figure-table-id="BASE3-FIG-034">
+<summary><strong>Figure 34: Memory-Based Property Definition</strong></summary>
+<p><span data-claim-id="BASE3-FIG-034-CLAIM">Figure 34〈Memory-Based Property Definition〉：定義〈Memory-Based Property Definition〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：OFST, CAP.DSTRD。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈Memory-Based Property Definition〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：OFST, CAP.DSTRD。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`optional`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>以 OFST 作為 parser 的第一個檢查點，再用 CAP.DSTRD 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</small></p></article>
-<article data-figure-table-id="BASE3-FIG-037"><h3>Figure 37: Specification Version Descriptor</h3>
-<p><span data-claim-id="BASE3-FIG-037-CLAIM">Figure 37〈Specification Version Descriptor〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, 文件頁 54, PDF 頁 80</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-36" data-figure-table-id="BASE3-FIG-036">
+<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<p><span data-claim-id="BASE3-FIG-036-CLAIM">Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別解碼的欄位。 先定位 CAP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：NSSES, CRMS, CRIMS, CRWMS, NSSS, CMBS, PMRS, MPSMAX。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明資料 buffer 如何由 PRP／SGL 結構描述。</li>
-<li><strong>閱讀順序：</strong>逐一核對 address、offset、length、alignment 與下一層 pointer。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>用跨兩個 memory page 的 buffer 檢查第一個 offset 與後續 alignment。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CAP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：NSSES, CRMS, CRIMS, CRWMS, NSSS, CMBS, PMRS, MPSMAX。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall not`, `shall`, `should`, `may`, `optional`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CAP，先獨立驗證 NSSES，再驗證 CRMS，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 37, 文件頁 58, PDF 頁 84</small></p></article>
-<article data-figure-table-id="BASE3-FIG-038"><h3>Figure 38: NVM Express Base Specification Version Property Reset Values</h3>
-<p><span data-claim-id="BASE3-FIG-038-CLAIM">Figure 38〈NVM Express Base Specification Version Property Reset Values〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-37" data-figure-table-id="BASE3-FIG-037">
+<summary><strong>Figure 37: Specification Version Descriptor</strong></summary>
+<p><span data-claim-id="BASE3-FIG-037-CLAIM">Figure 37〈Specification Version Descriptor〉：定義〈Specification Version Descriptor〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：MJR, MNR, TER。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈Specification Version Descriptor〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：MJR, MNR, TER。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>以 MJR 作為 parser 的第一個檢查點，再用 MNR 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, 文件頁 58-59, PDF 頁 84-85</small></p></article>
-<article data-figure-table-id="BASE3-FIG-039"><h3>Figure 39: Offset Ch: INTMS - Interrupt Mask Set</h3>
-<p><span data-claim-id="BASE3-FIG-039-CLAIM">Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 37, 文件頁 58, PDF 頁 84</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-38" data-figure-table-id="BASE3-FIG-038">
+<summary><strong>Figure 38: NVM Express Base Specification Version Property Reset Values</strong></summary>
+<p><span data-claim-id="BASE3-FIG-038-CLAIM">Figure 38〈NVM Express Base Specification Version Property Reset Values〉：定義〈NVM Express Base Specification Version Property Reset Values〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：MJR, MNR, TER。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈NVM Express Base Specification Version Property Reset Values〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：MJR, MNR, TER。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>以 MJR 作為 parser 的第一個檢查點，再用 MNR 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85</small></p></article>
-<article data-figure-table-id="BASE3-FIG-040"><h3>Figure 40: Offset 10h: INTMC - Interrupt Mask Clear</h3>
-<p><span data-claim-id="BASE3-FIG-040-CLAIM">Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, 文件頁 58-59, PDF 頁 84-85</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-39" data-figure-table-id="BASE3-FIG-039">
+<summary><strong>Figure 39: Offset Ch: INTMS - Interrupt Mask Set</strong></summary>
+<p><span data-claim-id="BASE3-FIG-039-CLAIM">Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：定義 offset Ch 的 INTMS（Interrupt Mask Set），並指出軟體在該位置必須分別解碼的欄位。 先定位 INTMS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：IVMS, INTMS, RWS, MSI, Interrupt。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset Ch 的 INTMS（Interrupt Mask Set），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 INTMS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：IVMS, INTMS, RWS, MSI, Interrupt。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 INTMS，先獨立驗證 IVMS，再驗證 INTMS，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85</small></p></article>
-<article data-figure-table-id="BASE3-FIG-041"><h3>Figure 41: Offset 14h: CC - Controller Configuration</h3>
-<p><span data-claim-id="BASE3-FIG-041-CLAIM">Figure 41〈Offset 14h: CC - Controller Configuration〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-40" data-figure-table-id="BASE3-FIG-040">
+<summary><strong>Figure 40: Offset 10h: INTMC - Interrupt Mask Clear</strong></summary>
+<p><span data-claim-id="BASE3-FIG-040-CLAIM">Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：定義 offset 10h 的 INTMC（Interrupt Mask Clear），並指出軟體在該位置必須分別解碼的欄位。 先定位 INTMC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：IVMC, INTMC, RWC, Interrupt。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 10h 的 INTMC（Interrupt Mask Clear），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 INTMC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：IVMC, INTMC, RWC, Interrupt。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 INTMC，先獨立驗證 IVMC，再驗證 INTMC，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89</small></p></article>
-<article data-figure-table-id="BASE3-FIG-042"><h3>Figure 42: Offset 1Ch: CSTS - Controller Status</h3>
-<p><span data-claim-id="BASE3-FIG-042-CLAIM">Figure 42〈Offset 1Ch: CSTS - Controller Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-41" data-figure-table-id="BASE3-FIG-041">
+<summary><strong>Figure 41: Offset 14h: CC - Controller Configuration</strong></summary>
+<p><span data-claim-id="BASE3-FIG-041-CLAIM">Figure 41〈Offset 14h: CC - Controller Configuration〉：定義 offset 14h 的 CC（Controller Configuration），並指出軟體在該位置必須分別解碼的欄位。 先定位 CC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CRIME, SHN, AMS, MPS, CSS, EN, CC, CC.EN。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
-<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 14h 的 CC（Controller Configuration），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CRIME, SHN, AMS, MPS, CSS, EN, CC, CC.EN。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall not`, `shall`, `should`, `may`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CC，先獨立驗證 CRIME，再驗證 SHN，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91</small></p></article>
-<article data-figure-table-id="BASE3-FIG-043"><h3>Figure 43: Offset 20h: NSSR - NVM Subsystem Reset</h3>
-<p><span data-claim-id="BASE3-FIG-043-CLAIM">Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-42" data-figure-table-id="BASE3-FIG-042">
+<summary><strong>Figure 42: Offset 1Ch: CSTS - Controller Status</strong></summary>
+<p><span data-claim-id="BASE3-FIG-042-CLAIM">Figure 42〈Offset 1Ch: CSTS - Controller Status〉：定義 offset 1Ch 的 CSTS（Controller Status），並指出軟體在該位置必須分別解碼的欄位。 先定位 CSTS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ST, PP, NSSRO, SHST, CLR, CFS, RDY, CSTS。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 1Ch 的 CSTS（Controller Status），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CSTS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ST, PP, NSSRO, SHST, CLR, CFS, RDY, CSTS。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall not`, `should not`, `shall`, `should`, `may`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CSTS，先獨立驗證 ST，再驗證 PP，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92</small></p></article>
-<article data-figure-table-id="BASE3-FIG-044"><h3>Figure 44: Offset 24h: AQA - Admin Queue Attributes</h3>
-<p><span data-claim-id="BASE3-FIG-044-CLAIM">Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-43" data-figure-table-id="BASE3-FIG-043">
+<summary><strong>Figure 43: Offset 20h: NSSR - NVM Subsystem Reset</strong></summary>
+<p><span data-claim-id="BASE3-FIG-043-CLAIM">Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：定義 offset 20h 的 NSSR（NVM Subsystem Reset），並指出軟體在該位置必須分別解碼的欄位。 先定位 NSSR，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：NSSRC, NSSR, NVM Subsystem。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
-<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 20h 的 NSSR（NVM Subsystem Reset），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 NSSR，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：NSSRC, NSSR, NVM Subsystem。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 NSSR，先獨立驗證 NSSRC，再驗證 NSSR，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92</small></p></article>
-<article data-figure-table-id="BASE3-FIG-045"><h3>Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address</h3>
-<p><span data-claim-id="BASE3-FIG-045-CLAIM">Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-44" data-figure-table-id="BASE3-FIG-044">
+<summary><strong>Figure 44: Offset 24h: AQA - Admin Queue Attributes</strong></summary>
+<p><span data-claim-id="BASE3-FIG-044-CLAIM">Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：定義 offset 24h 的 AQA（Admin Queue Attributes），並指出軟體在該位置必須分別解碼的欄位。 先定位 AQA，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ACQS, ASQS, AQA。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
-<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 24h 的 AQA（Admin Queue Attributes），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 AQA，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ACQS, ASQS, AQA。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 AQA，先獨立驗證 ACQS，再驗證 ASQS，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92</small></p></article>
-<article data-figure-table-id="BASE3-FIG-046"><h3>Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address</h3>
-<p><span data-claim-id="BASE3-FIG-046-CLAIM">Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-45" data-figure-table-id="BASE3-FIG-045">
+<summary><strong>Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address</strong></summary>
+<p><span data-claim-id="BASE3-FIG-045-CLAIM">Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：定義 offset 28h 的 ASQ（Admin Submission Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。 先定位 ASQ，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ASQB, ASQ, CC.MPS, Submission Queue。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
-<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 28h 的 ASQ（Admin Submission Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 ASQ，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ASQB, ASQ, CC.MPS, Submission Queue。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 ASQ，先獨立驗證 ASQB，再驗證 ASQ，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93</small></p></article>
-<article data-figure-table-id="BASE3-FIG-047"><h3>Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location</h3>
-<p><span data-claim-id="BASE3-FIG-047-CLAIM">Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-46" data-figure-table-id="BASE3-FIG-046">
+<summary><strong>Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address</strong></summary>
+<p><span data-claim-id="BASE3-FIG-046-CLAIM">Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：定義 offset 30h 的 ACQ（Admin Completion Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。 先定位 ACQ，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ACQB, ACQ, CC.MPS, Completion Queue。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 30h 的 ACQ（Admin Completion Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 ACQ，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ACQB, ACQ, CC.MPS, Completion Queue。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 ACQ，先獨立驗證 ACQB，再驗證 ACQ，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94</small></p></article>
-<article data-figure-table-id="BASE3-FIG-048"><h3>Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size</h3>
-<p><span data-claim-id="BASE3-FIG-048-CLAIM">Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-47" data-figure-table-id="BASE3-FIG-047">
+<summary><strong>Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location</strong></summary>
+<p><span data-claim-id="BASE3-FIG-047-CLAIM">Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：定義 offset 38h 的 CMBLOC（Controller Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。 先定位 CMBLOC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CQMMS, BIR, CMBLOC, CMB, BAR, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 38h 的 CMBLOC（Controller Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CMBLOC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CQMMS, BIR, CMBLOC, CMB, BAR, Controller。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CMBLOC，先獨立驗證 CQMMS，再驗證 BIR，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95</small></p></article>
-<article data-figure-table-id="BASE3-FIG-049"><h3>Figure 49: Offset 40h: BPINFO - Boot Partition Information</h3>
-<p><span data-claim-id="BASE3-FIG-049-CLAIM">Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-48" data-figure-table-id="BASE3-FIG-048">
+<summary><strong>Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size</strong></summary>
+<p><span data-claim-id="BASE3-FIG-048-CLAIM">Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：定義 offset 3Ch 的 CMBSZ（Controller Memory Buffer Size），並指出軟體在該位置必須分別解碼的欄位。 先定位 CMBSZ，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：SZ, SZU, WDS, RDS, LISTS, CQS, SQS, CMBSZ。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 3Ch 的 CMBSZ（Controller Memory Buffer Size），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CMBSZ，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：SZ, SZU, WDS, RDS, LISTS, CQS, SQS, CMBSZ。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall not`, `shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CMBSZ，先獨立驗證 SZ，再驗證 SZU，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95</small></p></article>
-<article data-figure-table-id="BASE3-FIG-050"><h3>Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select</h3>
-<p><span data-claim-id="BASE3-FIG-050-CLAIM">Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-49" data-figure-table-id="BASE3-FIG-049">
+<summary><strong>Figure 49: Offset 40h: BPINFO - Boot Partition Information</strong></summary>
+<p><span data-claim-id="BASE3-FIG-049-CLAIM">Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：定義 offset 40h 的 BPINFO（Boot Partition Information），並指出軟體在該位置必須分別解碼的欄位。 先定位 BPINFO，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ABPID, BRS, BPSZ, BPINFO, ID, BPRSEL.BPID。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 40h 的 BPINFO（Boot Partition Information），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 BPINFO，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：ABPID, BRS, BPSZ, BPINFO, ID, BPRSEL.BPID。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 BPINFO，先獨立驗證 ABPID，再驗證 BRS，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96</small></p></article>
-<article data-figure-table-id="BASE3-FIG-051"><h3>Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location</h3>
-<p><span data-claim-id="BASE3-FIG-051-CLAIM">Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-50" data-figure-table-id="BASE3-FIG-050">
+<summary><strong>Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select</strong></summary>
+<p><span data-claim-id="BASE3-FIG-050-CLAIM">Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：定義 offset 44h 的 BPRSEL（Boot Partition Read Select），並指出軟體在該位置必須分別解碼的欄位。 先定位 BPRSEL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：BPID, BPROF, BPRSZ, BPRSEL。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 44h 的 BPRSEL（Boot Partition Read Select），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 BPRSEL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：BPID, BPROF, BPRSZ, BPRSEL。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 BPRSEL，先獨立驗證 BPID，再驗證 BPROF，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96</small></p></article>
-<article data-figure-table-id="BASE3-FIG-052"><h3>Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</h3>
-<p><span data-claim-id="BASE3-FIG-052-CLAIM">Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-51" data-figure-table-id="BASE3-FIG-051">
+<summary><strong>Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location</strong></summary>
+<p><span data-claim-id="BASE3-FIG-051-CLAIM">Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：定義 offset 48h 的 BPMBL（Boot Partition Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。 先定位 BPMBL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：BMBBA, BPMBL。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 48h 的 BPMBL（Boot Partition Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 BPMBL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：BMBBA, BPMBL。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 BPMBL，先獨立驗證 BMBBA，再驗證 BPMBL，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97</small></p></article>
-<article data-figure-table-id="BASE3-FIG-053"><h3>Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status</h3>
-<p><span data-claim-id="BASE3-FIG-053-CLAIM">Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-52" data-figure-table-id="BASE3-FIG-052">
+<summary><strong>Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</strong></summary>
+<p><span data-claim-id="BASE3-FIG-052-CLAIM">Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：定義 offset 50h 的 CMBMSC（Controller Memory Buffer Memory Space Control），並指出軟體在該位置必須分別解碼的欄位。 先定位 CMBMSC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBA, CMSE, CRE, CMBMSC, CMBSMSC.CRE, CMBLOC, CMBSZ, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
-<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 50h 的 CMBMSC（Controller Memory Buffer Memory Space Control），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CMBMSC，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBA, CMSE, CRE, CMBMSC, CMBSMSC.CRE, CMBLOC, CMBSZ, Controller。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CMBMSC，先獨立驗證 CBA，再驗證 CMSE，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97</small></p></article>
-<article data-figure-table-id="BASE3-FIG-054"><h3>Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</h3>
-<p><span data-claim-id="BASE3-FIG-054-CLAIM">Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-53" data-figure-table-id="BASE3-FIG-053">
+<summary><strong>Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status</strong></summary>
+<p><span data-claim-id="BASE3-FIG-053-CLAIM">Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：定義 offset 58h 的 CMBSTS（Controller Memory Buffer Status），並指出軟體在該位置必須分別解碼的欄位。 先定位 CMBSTS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBAI, CMBSTS, CMBMSC.CBA, CMBMSC.CRE, CMBMSC.CMSE, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 58h 的 CMBSTS（Controller Memory Buffer Status），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CMBSTS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBAI, CMBSTS, CMBMSC.CBA, CMBMSC.CRE, CMBMSC.CMSE, Controller。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CMBSTS，先獨立驗證 CBAI，再驗證 CMBSTS，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97</small></p></article>
-<article data-figure-table-id="BASE3-FIG-055"><h3>Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</h3>
-<p><span data-claim-id="BASE3-FIG-055-CLAIM">Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-54" data-figure-table-id="BASE3-FIG-054">
+<summary><strong>Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</strong></summary>
+<p><span data-claim-id="BASE3-FIG-054-CLAIM">Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：定義 offset 5Ch 的 CMBEBS（Controller Memory Buffer Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。 先定位 CMBEBS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CMBWBZ, CMBRBB, CMBSZU, CMBEBS, CMB, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 5Ch 的 CMBEBS（Controller Memory Buffer Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CMBEBS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CMBWBZ, CMBRBB, CMBSZU, CMBEBS, CMB, Controller。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `may`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CMBEBS，先獨立驗證 CMBWBZ，再驗證 CMBRBB，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98</small></p></article>
-<article data-figure-table-id="BASE3-FIG-056"><h3>Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown</h3>
-<p><span data-claim-id="BASE3-FIG-056-CLAIM">Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-55" data-figure-table-id="BASE3-FIG-055">
+<summary><strong>Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</strong></summary>
+<p><span data-claim-id="BASE3-FIG-055-CLAIM">Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：定義 offset 60h 的 CMBSWTP（Controller Memory Buffer Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。 先定位 CMBSWTP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CMBSWTV, CMBSWTU, CMBSWTP, CMB, TLP, MPS, PXDC, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 60h 的 CMBSWTP（Controller Memory Buffer Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CMBSWTP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CMBSWTV, CMBSWTU, CMBSWTP, CMB, TLP, MPS, PXDC, Controller。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CMBSWTP，先獨立驗證 CMBSWTV，再驗證 CMBSWTU，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98</small></p></article>
-<article data-figure-table-id="BASE3-FIG-057"><h3>Figure 57: Offset 68h: CRTO - Controller Ready Timeouts</h3>
-<p><span data-claim-id="BASE3-FIG-057-CLAIM">Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-56" data-figure-table-id="BASE3-FIG-056">
+<summary><strong>Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown</strong></summary>
+<p><span data-claim-id="BASE3-FIG-056-CLAIM">Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：定義 offset 64h 的 NSSD（NVM Subsystem Shutdown），並指出軟體在該位置必須分別解碼的欄位。 先定位 NSSD，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：NSSC, NSSD, CAP.CPS, NVM Subsystem。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 64h 的 NSSD（NVM Subsystem Shutdown），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 NSSD，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：NSSC, NSSD, CAP.CPS, NVM Subsystem。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 NSSD，先獨立驗證 NSSC，再驗證 NSSD，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99</small></p></article>
-<article data-figure-table-id="BASE3-FIG-058"><h3>Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities</h3>
-<p><span data-claim-id="BASE3-FIG-058-CLAIM">Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-57" data-figure-table-id="BASE3-FIG-057">
+<summary><strong>Figure 57: Offset 68h: CRTO - Controller Ready Timeouts</strong></summary>
+<p><span data-claim-id="BASE3-FIG-057-CLAIM">Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：定義 offset 68h 的 CRTO（Controller Ready Timeouts），並指出軟體在該位置必須分別解碼的欄位。 先定位 CRTO，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CRIMT, CRWMT, CRTO, CAP.CRMS.CRIMS, CC.EN, CC.CRIME, CRTO.CRIMT, Controller。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset 68h 的 CRTO（Controller Ready Timeouts），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 CRTO，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CRIMT, CRWMT, CRTO, CAP.CRMS.CRIMS, CC.EN, CC.CRIME, CRTO.CRIMT, Controller。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`should not`, `shall`, `should`, `may`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 CRTO，先獨立驗證 CRIMT，再驗證 CRWMT，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100</small></p></article>
-<article data-figure-table-id="BASE3-FIG-059"><h3>Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control</h3>
-<p><span data-claim-id="BASE3-FIG-059-CLAIM">Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-58" data-figure-table-id="BASE3-FIG-058">
+<summary><strong>Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities</strong></summary>
+<p><span data-claim-id="BASE3-FIG-058-CLAIM">Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：定義 offset E00h 的 PMRCAP（Persistent Memory Region Capabilities），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMRCAP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CMSS, PMRTO, PMRWBM, CPMTSTSR, CMR, PMRTU, BIR, WDS。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E00h 的 PMRCAP（Persistent Memory Region Capabilities），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMRCAP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CMSS, PMRTO, PMRWBM, CPMTSTSR, CMR, PMRTU, BIR, WDS。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall not`, `shall`, `should`, `may`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMRCAP，先獨立驗證 CMSS，再驗證 PMRTO，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100</small></p></article>
-<article data-figure-table-id="BASE3-FIG-060"><h3>Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status</h3>
-<p><span data-claim-id="BASE3-FIG-060-CLAIM">Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-59" data-figure-table-id="BASE3-FIG-059">
+<summary><strong>Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control</strong></summary>
+<p><span data-claim-id="BASE3-FIG-059-CLAIM">Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：定義 offset E04h 的 PMRCTL（Persistent Memory Region Control），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMRCTL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：EN, PMRCTL, PMRSTS.NRDY。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
-<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E04h 的 PMRCTL（Persistent Memory Region Control），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMRCTL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：EN, PMRCTL, PMRSTS.NRDY。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMRCTL，先獨立驗證 EN，再驗證 PMRCTL，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101</small></p></article>
-<article data-figure-table-id="BASE3-FIG-061"><h3>Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</h3>
-<p><span data-claim-id="BASE3-FIG-061-CLAIM">Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-60" data-figure-table-id="BASE3-FIG-060">
+<summary><strong>Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status</strong></summary>
+<p><span data-claim-id="BASE3-FIG-060-CLAIM">Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：定義 offset E08h 的 PMRSTS（Persistent Memory Region Status），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMRSTS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBAI, HSTS, NRDY, ERR, PMRSTS, PMRMSCU.CBA, PMRMSCL.CBA, PMRCAP.CMSS。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E08h 的 PMRSTS（Persistent Memory Region Status），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMRSTS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBAI, HSTS, NRDY, ERR, PMRSTS, PMRMSCU.CBA, PMRMSCL.CBA, PMRCAP.CMSS。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `may`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMRSTS，先獨立驗證 CBAI，再驗證 HSTS，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102</small></p></article>
-<article data-figure-table-id="BASE3-FIG-062"><h3>Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</h3>
-<p><span data-claim-id="BASE3-FIG-062-CLAIM">Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-61" data-figure-table-id="BASE3-FIG-061">
+<summary><strong>Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</strong></summary>
+<p><span data-claim-id="BASE3-FIG-061-CLAIM">Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：定義 offset E0Ch 的 PMREBS（Persistent Memory Region Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMREBS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：PMRWBZ, PMRRBB, PMRSZU, PMREBS, PMR。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E0Ch 的 PMREBS（Persistent Memory Region Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMREBS，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：PMRWBZ, PMRRBB, PMRSZU, PMREBS, PMR。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `may`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMREBS，先獨立驗證 PMRWBZ，再驗證 PMRRBB，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102</small></p></article>
-<article data-figure-table-id="BASE3-FIG-063"><h3>Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</h3>
-<p><span data-claim-id="BASE3-FIG-063-CLAIM">Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-62" data-figure-table-id="BASE3-FIG-062">
+<summary><strong>Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</strong></summary>
+<p><span data-claim-id="BASE3-FIG-062-CLAIM">Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：定義 offset E10h 的 PMRSWTP（Persistent Memory Region Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMRSWTP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：PMRSWTV, PMRSWTU, PMRSWTP, PMR, TLP, MPS, PXDC。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E10h 的 PMRSWTP（Persistent Memory Region Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMRSWTP，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：PMRSWTV, PMRSWTU, PMRSWTP, PMR, TLP, MPS, PXDC。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMRSWTP，先獨立驗證 PMRSWTV，再驗證 PMRSWTU，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103</small></p></article>
-<article data-figure-table-id="BASE3-FIG-064"><h3>Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</h3>
-<p><span data-claim-id="BASE3-FIG-064-CLAIM">Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-63" data-figure-table-id="BASE3-FIG-063">
+<summary><strong>Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</strong></summary>
+<p><span data-claim-id="BASE3-FIG-063-CLAIM">Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：定義 offset E14h 的 PMRMSCL（Persistent Memory Region Memory Space Control Lower），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMRMSCL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBA, CMSE, PMRMSCL, PMRMSCU.CBA。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E14h 的 PMRMSCL（Persistent Memory Region Memory Space Control Lower），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMRMSCL，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBA, CMSE, PMRMSCL, PMRMSCU.CBA。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `reserved`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMRMSCL，先獨立驗證 CBA，再驗證 CMSE，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103</small></p></article>
-<article data-figure-table-id="BASE3-FIG-065"><h3>Figure 65: NSID Types and Relationship to Namespace</h3>
-<p><span data-claim-id="BASE3-FIG-065-CLAIM">Figure 65〈NSID Types and Relationship to Namespace〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-64" data-figure-table-id="BASE3-FIG-064">
+<summary><strong>Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</strong></summary>
+<p><span data-claim-id="BASE3-FIG-064-CLAIM">Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：定義 offset E18h 的 PMRMSCU（Persistent Memory Region Memory Space Control Upper），並指出軟體在該位置必須分別解碼的欄位。 先定位 PMRMSCU，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBA, PMRMSCU。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義 offset E18h 的 PMRMSCU（Persistent Memory Region Memory Space Control Upper），並指出軟體在該位置必須分別解碼的欄位。</li>
+<li><strong>閱讀順序：</strong>先定位 PMRMSCU，再把 bit range 對到 access type、reset value 與欄位語意；來源欄位索引：CBA, PMRMSCU。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>依規定寬度讀取 PMRMSCU，先獨立驗證 CBA，再驗證 PMRMSCU，確認後才使用欄位值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, Figure 65, 文件頁 78-79, PDF 頁 104-105</small></p></article>
-<article data-figure-table-id="BASE3-FIG-066"><h3>Figure 66: NSID Types</h3>
-<p><span data-claim-id="BASE3-FIG-066-CLAIM">Figure 66〈NSID Types〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-2"><h3>§3.2</h3>
+<details id="figure-65" data-figure-table-id="BASE3-FIG-065">
+<summary><strong>Figure 65: NSID Types and Relationship to Namespace</strong></summary>
+<p><span data-claim-id="BASE3-FIG-065-CLAIM">Figure 65〈NSID Types and Relationship to Namespace〉：定義〈NSID Types and Relationship to Namespace〉的識別碼組成或數值空間。 分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：NSID, Namespace。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈NSID Types and Relationship to Namespace〉的識別碼組成或數值空間。</li>
+<li><strong>閱讀順序：</strong>分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：NSID, Namespace。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>依定義寬度解析 NSID，再核對 Namespace 的唯一性範圍後才把它當成 identity key。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1.5, Figure 66, 文件頁 79, PDF 頁 105</small></p></article>
-<article data-figure-table-id="BASE3-FIG-067"><h3>Figure 67: NVM Sets and Associated Namespaces</h3>
-<p><span data-claim-id="BASE3-FIG-067-CLAIM">Figure 67〈NVM Sets and Associated Namespaces〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, Figure 65, 文件頁 78-79, PDF 頁 104-105</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-66" data-figure-table-id="BASE3-FIG-066">
+<summary><strong>Figure 66: NSID Types</strong></summary>
+<p><span data-claim-id="BASE3-FIG-066-CLAIM">Figure 66〈NSID Types〉：定義〈NSID Types〉的識別碼組成或數值空間。 分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：NSID。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈NSID Types〉的識別碼組成或數值空間。</li>
+<li><strong>閱讀順序：</strong>分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：NSID。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>依定義寬度解析 NSID，再核對 引用條件 的唯一性範圍後才把它當成 identity key。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</small></p></article>
-<article data-figure-table-id="BASE3-FIG-068"><h3>Figure 68: NVM Set Aware Admin Commands</h3>
-<p><span data-claim-id="BASE3-FIG-068-CLAIM">Figure 68〈NVM Set Aware Admin Commands〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1.5, Figure 66, 文件頁 79, PDF 頁 105</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-67" data-figure-table-id="BASE3-FIG-067">
+<summary><strong>Figure 67: NVM Sets and Associated Namespaces</strong></summary>
+<p><span data-claim-id="BASE3-FIG-067-CLAIM">Figure 67〈NVM Sets and Associated Namespaces〉：呈現〈NVM Sets and Associated Namespaces〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Set, Namespace。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈NVM Sets and Associated Namespaces〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Set, Namespace。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Set 標示的一個物件，再追到 Namespace，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 68, 文件頁 81, PDF 頁 107</small></p></article>
-<article data-figure-table-id="BASE3-FIG-069"><h3>Figure 69: NVM Sets and Associated Namespaces</h3>
-<p><span data-claim-id="BASE3-FIG-069-CLAIM">Figure 69〈NVM Sets and Associated Namespaces〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-68" data-figure-table-id="BASE3-FIG-068">
+<summary><strong>Figure 68: NVM Set Aware Admin Commands</strong></summary>
+<p><span data-claim-id="BASE3-FIG-068-CLAIM">Figure 68〈NVM Set Aware Admin Commands〉：呈現〈NVM Set Aware Admin Commands〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Set, Command。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈NVM Set Aware Admin Commands〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Set, Command。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Set 標示的一個物件，再追到 Command，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.3, Figure 69, 文件頁 83, PDF 頁 109</small></p></article>
-<article data-figure-table-id="BASE3-FIG-070"><h3>Figure 70: Flexible Data Placement Logical View of Non-Volatile Storage</h3>
-<p><span data-claim-id="BASE3-FIG-070-CLAIM">Figure 70〈Flexible Data Placement Logical View of Non-Volatile Storage〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 68, 文件頁 81, PDF 頁 107</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-69" data-figure-table-id="BASE3-FIG-069">
+<summary><strong>Figure 69: NVM Sets and Associated Namespaces</strong></summary>
+<p><span data-claim-id="BASE3-FIG-069-CLAIM">Figure 69〈NVM Sets and Associated Namespaces〉：呈現〈NVM Sets and Associated Namespaces〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Set, Namespace。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈NVM Sets and Associated Namespaces〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Set, Namespace。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Set 標示的一個物件，再追到 Namespace，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111</small></p></article>
-<article data-figure-table-id="BASE3-FIG-071"><h3>Figure 71: Example 1 Domain Structure</h3>
-<p><span data-claim-id="BASE3-FIG-071-CLAIM">Figure 71〈Example 1 Domain Structure〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.3, Figure 69, 文件頁 83, PDF 頁 109</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-70" data-figure-table-id="BASE3-FIG-070">
+<summary><strong>Figure 70: Flexible Data Placement Logical View of Non-Volatile Storage</strong></summary>
+<p><span data-claim-id="BASE3-FIG-070-CLAIM">Figure 70〈Flexible Data Placement Logical View of Non-Volatile Storage〉：呈現〈Flexible Data Placement Logical View of Non-Volatile Storage〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：Flexible Data Placement Logical View of Non-Volatile Storage。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Flexible Data Placement Logical View of Non-Volatile Storage〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：Flexible Data Placement Logical View of Non-Volatile Storage。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 Flexible Data Placement Logical View of Non-Volatile Storage 標示的一個物件，再追到 引用條件，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5.1, Figure 71, 文件頁 86, PDF 頁 112</small></p></article>
-<article data-figure-table-id="BASE3-FIG-073"><h3>Figure 73: Empty Queue Definition</h3>
-<p><span data-claim-id="BASE3-FIG-073-CLAIM">Figure 73〈Empty Queue Definition〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-71" data-figure-table-id="BASE3-FIG-071">
+<summary><strong>Figure 71: Example 1 Domain Structure</strong></summary>
+<p><span data-claim-id="BASE3-FIG-071-CLAIM">Figure 71〈Example 1 Domain Structure〉：定義〈Example 1 Domain Structure〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：Domain。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
-<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈Example 1 Domain Structure〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：Domain。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>以 Domain 作為 parser 的第一個檢查點，再用 引用條件 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 73, 文件頁 91, PDF 頁 117</small></p></article>
-<article data-figure-table-id="BASE3-FIG-074"><h3>Figure 74: Full Queue Definition</h3>
-<p><span data-claim-id="BASE3-FIG-074-CLAIM">Figure 74〈Full Queue Definition〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5.1, Figure 71, 文件頁 86, PDF 頁 112</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-3"><h3>§3.3</h3>
+<details id="figure-73" data-figure-table-id="BASE3-FIG-073">
+<summary><strong>Figure 73: Empty Queue Definition</strong></summary>
+<p><span data-claim-id="BASE3-FIG-073-CLAIM">Figure 73〈Empty Queue Definition〉：定義〈Empty Queue Definition〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：Empty Queue Definition。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
-<li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈Empty Queue Definition〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：Empty Queue Definition。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`。索引用來定位規範性語句，不取代各欄位所附的完整條件。</li>
+<li><strong>說明性範例（informative example）：</strong>以 Empty Queue Definition 作為 parser 的第一個檢查點，再用 引用條件 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 74, 文件頁 91, PDF 頁 117</small></p></article>
-<article data-figure-table-id="BASE3-FIG-080"><h3>Figure 80: Round Robin Arbitration</h3>
-<p><span data-claim-id="BASE3-FIG-080-CLAIM">Figure 80〈Round Robin Arbitration〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 73, 文件頁 91, PDF 頁 117</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-74" data-figure-table-id="BASE3-FIG-074">
+<summary><strong>Figure 74: Full Queue Definition</strong></summary>
+<p><span data-claim-id="BASE3-FIG-074-CLAIM">Figure 74〈Full Queue Definition〉：定義〈Full Queue Definition〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：Full Queue Definition。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>定義〈Full Queue Definition〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：Full Queue Definition。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>以 Full Queue Definition 作為 parser 的第一個檢查點，再用 引用條件 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4, Figure 80, 文件頁 103, PDF 頁 129</small></p></article>
-<article data-figure-table-id="BASE3-FIG-081"><h3>Figure 81: Weighted Round Robin with Urgent Priority Class Arbitration</h3>
-<p><span data-claim-id="BASE3-FIG-081-CLAIM">Figure 81〈Weighted Round Robin with Urgent Priority Class Arbitration〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 74, 文件頁 91, PDF 頁 117</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-4"><h3>§3.4</h3>
+<details id="figure-80" data-figure-table-id="BASE3-FIG-080">
+<summary><strong>Figure 80: Round Robin Arbitration</strong></summary>
+<p><span data-claim-id="BASE3-FIG-080-CLAIM">Figure 80〈Round Robin Arbitration〉：呈現〈Round Robin Arbitration〉如何在多個 Submission Queue 間選擇工作。 分別追蹤 priority class、服務順序與 arbiter 選出下一筆 command 的時點；來源索引：Round Robin Arbitration。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Round Robin Arbitration〉如何在多個 Submission Queue 間選擇工作。</li>
+<li><strong>閱讀順序：</strong>分別追蹤 priority class、服務順序與 arbiter 選出下一筆 command 的時點；來源索引：Round Robin Arbitration。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>比較 Round Robin Arbitration 與 引用條件 所代表的 queue，再只推進由規定 arbitration rule 選中的 queue。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4.2, Figure 81, 文件頁 104, PDF 頁 130</small></p></article>
-<article data-figure-table-id="BASE3-FIG-084"><h3>Figure 84: Admin Commands Permitted to Return a Status Code of Admin Command Media Not</h3>
-<p><span data-claim-id="BASE3-FIG-084-CLAIM">Figure 84〈Admin Commands Permitted to Return a Status Code of Admin Command Media Not〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4, Figure 80, 文件頁 103, PDF 頁 129</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-81" data-figure-table-id="BASE3-FIG-081">
+<summary><strong>Figure 81: Weighted Round Robin with Urgent Priority Class Arbitration</strong></summary>
+<p><span data-claim-id="BASE3-FIG-081-CLAIM">Figure 81〈Weighted Round Robin with Urgent Priority Class Arbitration〉：呈現〈Weighted Round Robin with Urgent Priority Class Arbitration〉如何在多個 Submission Queue 間選擇工作。 分別追蹤 priority class、服務順序與 arbiter 選出下一筆 command 的時點；來源索引：Weighted Round Robin with Urgent Priority Class Arbitration。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
-<li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>呈現〈Weighted Round Robin with Urgent Priority Class Arbitration〉如何在多個 Submission Queue 間選擇工作。</li>
+<li><strong>閱讀順序：</strong>分別追蹤 priority class、服務順序與 arbiter 選出下一筆 command 的時點；來源索引：Weighted Round Robin with Urgent Priority Class Arbitration。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>比較 Weighted Round Robin with Urgent Priority Class Arbitration 與 引用條件 所代表的 queue，再只推進由規定 arbitration rule 選中的 queue。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.3, Figure 84, 文件頁 110-111, PDF 頁 136-137</small></p></article>
-<article data-figure-table-id="BASE3-FIG-085"><h3>Figure 85: Shutdown Processing Interactions</h3>
-<p><span data-claim-id="BASE3-FIG-085-CLAIM">Figure 85〈Shutdown Processing Interactions〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4.2, Figure 81, 文件頁 104, PDF 頁 130</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-5"><h3>§3.5</h3>
+<details id="figure-84" data-figure-table-id="BASE3-FIG-084">
+<summary><strong>Figure 84: Admin Commands Permitted to Return a Status Code of Admin Command Media Not</strong></summary>
+<p><span data-claim-id="BASE3-FIG-084-CLAIM">Figure 84〈Admin Commands Permitted to Return a Status Code of Admin Command Media Not〉：定義〈Admin Commands Permitted to Return a Status Code of Admin Command Media Not〉所表示的 status／error 分類。 先判斷類別，再解個別 code 或 flag；保留值不自行賦義。來源欄位索引：LBA, TCG, CAP.CRMS, CAP.CRMS.CRWMS, CAP.CRMS.CRIMS, CC.CRIME, Status Code, Command。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>定義〈Admin Commands Permitted to Return a Status Code of Admin Command Media Not〉所表示的 status／error 分類。</li>
+<li><strong>閱讀順序：</strong>先判斷類別，再解個別 code 或 flag；保留值不自行賦義。來源欄位索引：LBA, TCG, CAP.CRMS, CAP.CRMS.CRWMS, CAP.CRMS.CRIMS, CC.CRIME, Status Code, Command。</li>
+<li><strong>條件與限制：</strong>來源 keyword 索引：`shall`, `should`, `may`。索引用來定位規範性語句，不取代各欄位所附的完整條件。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>收到一筆狀態時先辨認 LBA，再檢查 TCG，不可脫離類別單看數值。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.6, Figure 85, 文件頁 113, PDF 頁 139</small></p></article>
-<article data-figure-table-id="BASE3-FIG-086"><h3>Figure 86: Simple NVM Subsystem</h3>
-<p><span data-claim-id="BASE3-FIG-086-CLAIM">Figure 86〈Simple NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.3, Figure 84, 文件頁 110-111, PDF 頁 136-137</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-6"><h3>§3.6</h3>
+<details id="figure-85" data-figure-table-id="BASE3-FIG-085">
+<summary><strong>Figure 85: Shutdown Processing Interactions</strong></summary>
+<p><span data-claim-id="BASE3-FIG-085-CLAIM">Figure 85〈Shutdown Processing Interactions〉：呈現〈Shutdown Processing Interactions〉的狀態或時間推進關係。 依箭頭順序追蹤 state 或 time bound，並標出每個 transition 的觀察者；來源索引：Shutdown Processing Interactions。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Shutdown Processing Interactions〉的狀態或時間推進關係。</li>
+<li><strong>閱讀順序：</strong>依箭頭順序追蹤 state 或 time bound，並標出每個 transition 的觀察者；來源索引：Shutdown Processing Interactions。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>從 Shutdown Processing Interactions 開始，記錄到達 引用條件 的 transition，只在規定邊界判斷 timeout 或 reset 行為。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2, Figure 86, 文件頁 126, PDF 頁 152</small></p></article>
-<article data-figure-table-id="BASE3-FIG-087"><h3>Figure 87: Vertically-Organized NVM Subsystem</h3>
-<p><span data-claim-id="BASE3-FIG-087-CLAIM">Figure 87〈Vertically-Organized NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.6, Figure 85, 文件頁 113, PDF 頁 139</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-8"><h3>§3.8</h3>
+<details id="figure-86" data-figure-table-id="BASE3-FIG-086">
+<summary><strong>Figure 86: Simple NVM Subsystem</strong></summary>
+<p><span data-claim-id="BASE3-FIG-086-CLAIM">Figure 86〈Simple NVM Subsystem〉：呈現〈Simple NVM Subsystem〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Simple NVM Subsystem〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Subsystem 標示的一個物件，再追到 引用條件，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.2, Figure 87, 文件頁 127, PDF 頁 153</small></p></article>
-<article data-figure-table-id="BASE3-FIG-088"><h3>Figure 88: Horizontally-Organized Dual NAND NVM Subsystem</h3>
-<p><span data-claim-id="BASE3-FIG-088-CLAIM">Figure 88〈Horizontally-Organized Dual NAND NVM Subsystem〉：說明 subsystem 物件的包含、連接或容量關係。 分開辨認 controller、port、namespace、identifier 與容量階層。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2, Figure 86, 文件頁 126, PDF 頁 152</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-87" data-figure-table-id="BASE3-FIG-087">
+<summary><strong>Figure 87: Vertically-Organized NVM Subsystem</strong></summary>
+<p><span data-claim-id="BASE3-FIG-087-CLAIM">Figure 87〈Vertically-Organized NVM Subsystem〉：呈現〈Vertically-Organized NVM Subsystem〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>說明 subsystem 物件的包含、連接或容量關係。</li>
-<li><strong>閱讀順序：</strong>分開辨認 controller、port、namespace、identifier 與容量階層。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>替單一 namespace 標出其 NSID、controller 與所屬容量階層。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Vertically-Organized NVM Subsystem〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NVM Subsystem。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NVM Subsystem 標示的一個物件，再追到 引用條件，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.3, Figure 88, 文件頁 128, PDF 頁 154</small></p></article>
-<article data-figure-table-id="BASE3-FIG-089"><h3>Figure 89: Capacity Information Field Usage</h3>
-<p><span data-claim-id="BASE3-FIG-089-CLAIM">Figure 89〈Capacity Information Field Usage〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.2, Figure 87, 文件頁 127, PDF 頁 153</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-88" data-figure-table-id="BASE3-FIG-088">
+<summary><strong>Figure 88: Horizontally-Organized Dual NAND NVM Subsystem</strong></summary>
+<p><span data-claim-id="BASE3-FIG-088-CLAIM">Figure 88〈Horizontally-Organized Dual NAND NVM Subsystem〉：呈現〈Horizontally-Organized Dual NAND NVM Subsystem〉中的物件或容量關係。 將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NAND, NVM Subsystem。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
-<li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
+<li><strong>解決的問題：</strong>呈現〈Horizontally-Organized Dual NAND NVM Subsystem〉中的物件或容量關係。</li>
+<li><strong>閱讀順序：</strong>將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：NAND, NVM Subsystem。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>選擇 NAND 標示的一個物件，再追到 NVM Subsystem，過程中不把 identifier 當成物件本身。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.3, Figure 89, 文件頁 129, PDF 頁 155</small></p></article>
-<article data-figure-table-id="BASE3-FIG-090"><h3>Figure 90: Detecting Timeout Takes up to 2 * KATT</h3>
-<p><span data-claim-id="BASE3-FIG-090-CLAIM">Figure 90〈Detecting Timeout Takes up to 2 * KATT〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.3, Figure 88, 文件頁 128, PDF 頁 154</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+<details id="figure-89" data-figure-table-id="BASE3-FIG-089">
+<summary><strong>Figure 89: Capacity Information Field Usage</strong></summary>
+<p><span data-claim-id="BASE3-FIG-089-CLAIM">Figure 89〈Capacity Information Field Usage〉：定義〈Capacity Information Field Usage〉的實際配置或數值關係。 依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：TNVMCAP, UNVMCAP, MEGCAP, TEGCAP, UEGCAP。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>定義〈Capacity Information Field Usage〉的實際配置或數值關係。</li>
+<li><strong>閱讀順序：</strong>依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：TNVMCAP, UNVMCAP, MEGCAP, TEGCAP, UEGCAP。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。</li>
+<li><strong>說明性範例（informative example）：</strong>以 TNVMCAP 作為 parser 的第一個檢查點，再用 UNVMCAP 獨立檢查另一個邊界。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.9.4.1, Figure 90, 文件頁 133, PDF 頁 159</small></p></article>
-<article data-figure-table-id="BASE3-FIG-091"><h3>Figure 91: Example Privileged Action Admin Commands</h3>
-<p><span data-claim-id="BASE3-FIG-091-CLAIM">Figure 91〈Example Privileged Action Admin Commands〉：提供本節概念、支援條件或範例的結構化索引。 先看標題所指物件，再對照相鄰文字的條件、圖例與例外。 本報告只解釋圖中的 PCIe／memory-based 部分。</span></p>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.3, Figure 89, 文件頁 129, PDF 頁 155</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-9"><h3>§3.9</h3>
+<details id="figure-90" data-figure-table-id="BASE3-FIG-090">
+<summary><strong>Figure 90: Detecting Timeout Takes up to 2 * KATT</strong></summary>
+<p><span data-claim-id="BASE3-FIG-090-CLAIM">Figure 90〈Detecting Timeout Takes up to 2 * KATT〉：呈現〈Detecting Timeout Takes up to 2 * KATT〉的狀態或時間推進關係。 依箭頭順序追蹤 state 或 time bound，並標出每個 transition 的觀察者；來源索引：KATT。</span></p>
 <ul>
-<li><strong>解決的問題：</strong>提供本節概念、支援條件或範例的結構化索引。</li>
-<li><strong>閱讀順序：</strong>先看標題所指物件，再對照相鄰文字的條件、圖例與例外。</li>
-<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；實際強度以同節文字與欄位描述為準。</li>
-<li><strong>說明性範例（informative example）：</strong>選一個具體 controller 設定，逐項對照圖中的關係。此例不新增規格要求。</li>
-<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>
+<li><strong>解決的問題：</strong>呈現〈Detecting Timeout Takes up to 2 * KATT〉的狀態或時間推進關係。</li>
+<li><strong>閱讀順序：</strong>依箭頭順序追蹤 state 或 time bound，並標出每個 transition 的觀察者；來源索引：KATT。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>從 KATT 開始，記錄到達 引用條件 的 transition，只在規定邊界判斷 timeout 或 reset 行為。 此例不新增規格要求。</li>
 </ul>
-<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.10, Figure 91, 文件頁 135, PDF 頁 161</small></p></article>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.9.4.1, Figure 90, 文件頁 133, PDF 頁 159</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
+<section id="section-3-10"><h3>§3.10</h3>
+<details id="figure-91" data-figure-table-id="BASE3-FIG-091">
+<summary><strong>Figure 91: Example Privileged Action Admin Commands</strong></summary>
+<p><span data-claim-id="BASE3-FIG-091-CLAIM">Figure 91〈Example Privileged Action Admin Commands〉：界定〈Example Privileged Action Admin Commands〉所示的 privileged operation 邊界。 分開發出 command 的主體，以及授權該操作的 privilege／controller state；來源索引：Command。</span></p>
+<ul>
+<li><strong>解決的問題：</strong>界定〈Example Privileged Action Admin Commands〉所示的 privileged operation 邊界。</li>
+<li><strong>閱讀順序：</strong>分開發出 command 的主體，以及授權該操作的 privilege／controller state；來源索引：Command。</li>
+<li><strong>條件與限制：</strong>這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。 本報告只解釋 PCIe／memory-based 部分。</li>
+<li><strong>說明性範例（informative example）：</strong>先核對 Command，再確認 引用條件 對應的授權條件成立後才發出操作。 此例不新增規格要求。</li>
+</ul>
+<p><small>來源：NVME-BASE-2.4, Rev. 2.4, §3.10, Figure 91, 文件頁 135, PDF 頁 161</small></p>
+<p><a href="#figure-index">回到 Figure 索引</a> ｜ <a href="#top">回到頂端</a></p>
+</details>
+</section>
 </section>
 <section id="sources"><h2>來源與限制</h2>
 <p>NVM Express Base Specification, Revision 2.4</p>

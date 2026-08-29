@@ -25,7 +25,12 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVMe Family"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-002",
@@ -51,7 +56,12 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "Decimal and Binary Units"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-003",
@@ -77,7 +87,12 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "Byte, Word, and Dword Relationships"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1bc28e8e144cef0dfc4e04b40f5a9da4e2cad8e074af7bbf21219fd091176a33"
     },
     {
       "id": "BASE12-FIG-004",
@@ -93,7 +108,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Taxonomy of Transport Models"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-005",
@@ -119,7 +139,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "Command Set",
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-006",
@@ -145,7 +171,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "Queue Pair",
+        "1:1"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-007",
@@ -171,7 +203,12 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "Queue Pair"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-008",
@@ -187,7 +224,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "NVMe over Fabrics Layering"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-009",
@@ -203,7 +245,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f51048b326332032b76c06d2fba93a854dfdb33c1d1e030a3e81e8d1f5a412f8"
     },
     {
       "id": "BASE12-FIG-010",
@@ -219,7 +266,15 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "RDMA",
+        "SGL"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "11b6bc620900c2adfe83a48d0294c78a9039b22bf0e52316070b951aa49c774c"
     },
     {
       "id": "BASE12-FIG-011",
@@ -245,7 +300,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Storage Hierarchy",
+        "NVM Set"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-012",
@@ -271,7 +332,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Storage Hierarchy",
+        "Reclaim Group"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-013",
@@ -297,7 +364,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Storage Hierarchy",
+        "Reclaim Group"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-014",
@@ -323,7 +396,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Storage Hierarchy",
+        "NVM Set"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-015",
@@ -349,7 +428,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Storage Hierarchy",
+        "Reclaim Group"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-016",
@@ -375,7 +460,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-017",
@@ -401,7 +492,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-018",
@@ -427,7 +524,12 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-019",
@@ -453,7 +555,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "Namespace",
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-020",
@@ -479,7 +587,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-021",
@@ -505,7 +619,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE12-FIG-022",
@@ -531,7 +651,13 @@
         "base12-detailed-html",
         "base12-zh-md",
         "base12-en-md"
-      ]
+      ],
+      "key_items": [
+        "SR",
+        "IOV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-023",
@@ -557,7 +683,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-024",
@@ -583,7 +714,14 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "I/O Controller",
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-025",
@@ -609,7 +747,14 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "I/O Controller",
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-026",
@@ -635,7 +780,14 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem",
+        "Administrative Controller",
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-027",
@@ -661,7 +813,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Controller",
+        "Controller ID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-028",
@@ -687,7 +845,17 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "MI",
+        "O10",
+        "O11",
+        "Command"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "8b85bef5b7f136f0a92bfdeea81af914f957564231a9b8ed3edda8885d1122a2"
     },
     {
       "id": "BASE3-FIG-029",
@@ -703,7 +871,14 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Command"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "ef8a526f250b7d1478ae645fb0926a5b50accb02330cd9ec2581f5805ad41f61"
     },
     {
       "id": "BASE3-FIG-030",
@@ -729,7 +904,15 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "FDPS",
+        "Command"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "68e6817363601f396ab56d27bfecdc7fc7c6a3981affe01785a8e32a85019b4e"
     },
     {
       "id": "BASE3-FIG-031",
@@ -755,7 +938,22 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "M3",
+        "SMART",
+        "O4",
+        "O6",
+        "O12",
+        "O13",
+        "FDP",
+        "O5"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional"
+      ],
+      "evidence_digest": "246689dd68534ed967655d17df48732176887d2b12267f33507eae4a58e9655e"
     },
     {
       "id": "BASE3-FIG-032",
@@ -781,7 +979,21 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "LBA",
+        "O8",
+        "M10",
+        "M7",
+        "O9",
+        "O6",
+        "O5",
+        "O3"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "03c1863e37fc1e8545b5f27d835ba1222cff71a42d4bfe9837aa1f009d2ec293"
     },
     {
       "id": "BASE3-FIG-033",
@@ -807,7 +1019,22 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "OFST",
+        "CAP",
+        "VS",
+        "M2",
+        "INTMS",
+        "INTMC",
+        "CC",
+        "CSTS"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "e7d36ee6abfb447dccb4b582b240462e14ebedd0c058afc503cab440a58fda39"
     },
     {
       "id": "BASE3-FIG-034",
@@ -833,7 +1060,15 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "OFST",
+        "CAP.DSTRD"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "023c183a63a9264e2cd2f7a332ee6e802a8c05c41c91665e5fa70b84bac21955"
     },
     {
       "id": "BASE3-FIG-035",
@@ -849,7 +1084,20 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "OFST",
+        "RWC",
+        "RWS",
+        "CMD.PEE",
+        "CAP.CRMS.CRWMS"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "adb82aa98273b55ac6aebf726eae4b43a46adbb50fe3edc2a8611cce32ff81a0"
     },
     {
       "id": "BASE3-FIG-036",
@@ -875,7 +1123,26 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NSSES",
+        "CRMS",
+        "CRIMS",
+        "CRWMS",
+        "NSSS",
+        "CMBS",
+        "PMRS",
+        "MPSMAX"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "f2e7548c14f76478bbe8c1fa6c6fc9b748612ed2a92808e2460943be75d2ec83"
     },
     {
       "id": "BASE3-FIG-037",
@@ -901,7 +1168,14 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "MJR",
+        "MNR",
+        "TER"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "bdc6a75d478f13c4116d6da28e7cd6480a5e39e4a6581e9e32b21e4bfdbca30a"
     },
     {
       "id": "BASE3-FIG-038",
@@ -927,7 +1201,14 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "MJR",
+        "MNR",
+        "TER"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8b3df840dc18dee53a95cc299a3a2a05edae42a02c62ad69087adfe08c556e90"
     },
     {
       "id": "BASE3-FIG-039",
@@ -953,7 +1234,16 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "IVMS",
+        "INTMS",
+        "RWS",
+        "MSI",
+        "Interrupt"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1497e0f6e4e9da5693b3b7bde2d071b54b262af5190e430a1ce6842a7c6cbcb2"
     },
     {
       "id": "BASE3-FIG-040",
@@ -979,7 +1269,15 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "IVMC",
+        "INTMC",
+        "RWC",
+        "Interrupt"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "75ec0f90d5a6555f164efe9f33a2d9f84ac35affc78ad290e8884a98d7eee4fc"
     },
     {
       "id": "BASE3-FIG-041",
@@ -1005,7 +1303,25 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CRIME",
+        "SHN",
+        "AMS",
+        "MPS",
+        "CSS",
+        "EN",
+        "CC",
+        "CC.EN"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "08729997ee67e270e56ae62a0cdc3a08eeaa57dfa604cb478addd3d3002ffd8d"
     },
     {
       "id": "BASE3-FIG-042",
@@ -1031,7 +1347,26 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "ST",
+        "PP",
+        "NSSRO",
+        "SHST",
+        "CLR",
+        "CFS",
+        "RDY",
+        "CSTS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "63fef975ac41d992cc5e3ee20a06ea183d4cfa24a6d79695289a2763f4b8a9b1"
     },
     {
       "id": "BASE3-FIG-043",
@@ -1057,7 +1392,16 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NSSRC",
+        "NSSR",
+        "NVM Subsystem"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "d6d83f259c7e4f624b0574923ccc73ec6ba1d7da5e061bb4f83198a12ec6642c"
     },
     {
       "id": "BASE3-FIG-044",
@@ -1083,7 +1427,16 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "ACQS",
+        "ASQS",
+        "AQA"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "0ffd8b787059f235f8967393c5d46a7cf2c9f87aa7415a2d37b375bf3a2b956c"
     },
     {
       "id": "BASE3-FIG-045",
@@ -1109,7 +1462,18 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "ASQB",
+        "ASQ",
+        "CC.MPS",
+        "Submission Queue"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "df9f850c39887b328a45e23623608487dfc75d910019800e33c671acaf50ca15"
     },
     {
       "id": "BASE3-FIG-046",
@@ -1135,7 +1499,18 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "ACQB",
+        "ACQ",
+        "CC.MPS",
+        "Completion Queue"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "dc2bcf819ef55b24c648f3f24b717f82b07e4232103c611d3e00609588e47ac8"
     },
     {
       "id": "BASE3-FIG-047",
@@ -1161,7 +1536,19 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CQMMS",
+        "BIR",
+        "CMBLOC",
+        "CMB",
+        "BAR",
+        "Controller"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "af78b15bfbf1b3fd028bdf03ca1ddfbd4b7ba5dea0a10690d55dc9dae56802e4"
     },
     {
       "id": "BASE3-FIG-048",
@@ -1187,7 +1574,23 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "SZ",
+        "SZU",
+        "WDS",
+        "RDS",
+        "LISTS",
+        "CQS",
+        "SQS",
+        "CMBSZ"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "039a784cb94b3b5be2b4b034dfdae5251dc38ca9fc6da00bec7a1ed8151b4279"
     },
     {
       "id": "BASE3-FIG-049",
@@ -1213,7 +1616,19 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "ABPID",
+        "BRS",
+        "BPSZ",
+        "BPINFO",
+        "ID",
+        "BPRSEL.BPID"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "2fb86a370239237a7575437a90a9b7a774c06a35a7f2ef14e5c6818638a7ebb4"
     },
     {
       "id": "BASE3-FIG-050",
@@ -1239,7 +1654,17 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "BPID",
+        "BPROF",
+        "BPRSZ",
+        "BPRSEL"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "95113e2f5f6d50662f096cb1c4bd5d888d97799eaf57fded8d505a0e15b42d0c"
     },
     {
       "id": "BASE3-FIG-051",
@@ -1265,7 +1690,15 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "BMBBA",
+        "BPMBL"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "033b71d0eae9c903d0429262d4cfc02e05e822a22abdd100bc9550413cff85b3"
     },
     {
       "id": "BASE3-FIG-052",
@@ -1291,7 +1724,22 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CBA",
+        "CMSE",
+        "CRE",
+        "CMBMSC",
+        "CMBSMSC.CRE",
+        "CMBLOC",
+        "CMBSZ",
+        "Controller"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "7d71aa03bf251be57befcfc5c0c10f3fad7aeedfbd80f3e34e8b659ae1c4cbec"
     },
     {
       "id": "BASE3-FIG-053",
@@ -1317,7 +1765,20 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CBAI",
+        "CMBSTS",
+        "CMBMSC.CBA",
+        "CMBMSC.CRE",
+        "CMBMSC.CMSE",
+        "Controller"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "65ffea578e5fcaf0505dde711121adb8282352c5c6a43d517118882e857f99d4"
     },
     {
       "id": "BASE3-FIG-054",
@@ -1343,7 +1804,21 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CMBWBZ",
+        "CMBRBB",
+        "CMBSZU",
+        "CMBEBS",
+        "CMB",
+        "Controller"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ef22f1589293b0cf9cceda6c9665f90382229dd6052942fdd454446a92597266"
     },
     {
       "id": "BASE3-FIG-055",
@@ -1369,7 +1844,21 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CMBSWTV",
+        "CMBSWTU",
+        "CMBSWTP",
+        "CMB",
+        "TLP",
+        "MPS",
+        "PXDC",
+        "Controller"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "f20e8fbedc8585b32a94463f3da0009e88b9b181ba366231858e89b372882d40"
     },
     {
       "id": "BASE3-FIG-056",
@@ -1395,7 +1884,17 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NSSC",
+        "NSSD",
+        "CAP.CPS",
+        "NVM Subsystem"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "f76be506d3e3f2b169670f64252f3a15fb3280f229d2e96b8a17b264ba4f4646"
     },
     {
       "id": "BASE3-FIG-057",
@@ -1421,7 +1920,24 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CRIMT",
+        "CRWMT",
+        "CRTO",
+        "CAP.CRMS.CRIMS",
+        "CC.EN",
+        "CC.CRIME",
+        "CRTO.CRIMT",
+        "Controller"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "9dd8b0644e70dbb9563579323845593d9b51935a3b2cc6ea5a1db3598b9ee43f"
     },
     {
       "id": "BASE3-FIG-058",
@@ -1447,7 +1963,25 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CMSS",
+        "PMRTO",
+        "PMRWBM",
+        "CPMTSTSR",
+        "CMR",
+        "PMRTU",
+        "BIR",
+        "WDS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "1f8e6775992fe1701ee6897ebf9645f1758dac1a62ffe737a1f66340f03fabf6"
     },
     {
       "id": "BASE3-FIG-059",
@@ -1473,7 +2007,17 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "EN",
+        "PMRCTL",
+        "PMRSTS.NRDY"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "1f759c3eaeee8b6aee50fa53fe100652d5c1c00b57c9ec986faea801ddc8e205"
     },
     {
       "id": "BASE3-FIG-060",
@@ -1499,7 +2043,23 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CBAI",
+        "HSTS",
+        "NRDY",
+        "ERR",
+        "PMRSTS",
+        "PMRMSCU.CBA",
+        "PMRMSCL.CBA",
+        "PMRCAP.CMSS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "538df077b183645496f41d779e3f6426c21befa796fa90aca96b84078068be3f"
     },
     {
       "id": "BASE3-FIG-061",
@@ -1525,7 +2085,20 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "PMRWBZ",
+        "PMRRBB",
+        "PMRSZU",
+        "PMREBS",
+        "PMR"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "92377daa4711077d35feb799b7be0cd43cfab95d72a806f215f29930491b3595"
     },
     {
       "id": "BASE3-FIG-062",
@@ -1551,7 +2124,20 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "PMRSWTV",
+        "PMRSWTU",
+        "PMRSWTP",
+        "PMR",
+        "TLP",
+        "MPS",
+        "PXDC"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "6d0f20dbde41c69b44b3b4d95e0fc6a9bf9784512a91aec0374907e1af69719b"
     },
     {
       "id": "BASE3-FIG-063",
@@ -1577,7 +2163,18 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CBA",
+        "CMSE",
+        "PMRMSCL",
+        "PMRMSCU.CBA"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "08e5fe754d06ded2953d45d9fdb9a6c811b36f574a60aa7c40f6f89ac99fa346"
     },
     {
       "id": "BASE3-FIG-064",
@@ -1603,7 +2200,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "CBA",
+        "PMRMSCU"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8abc207cda08cafd6e2340f3a23f7310e67879817b5cd19dcda49e81795eec31"
     },
     {
       "id": "BASE3-FIG-065",
@@ -1629,7 +2232,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NSID",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-066",
@@ -1655,7 +2264,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NSID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-067",
@@ -1681,7 +2295,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Set",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-068",
@@ -1707,7 +2327,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Set",
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-069",
@@ -1733,7 +2359,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Set",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-070",
@@ -1759,7 +2391,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Flexible Data Placement Logical View of Non-Volatile Storage"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-071",
@@ -1785,7 +2422,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Domain"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-072",
@@ -1801,7 +2443,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Domain"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-073",
@@ -1827,7 +2474,14 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Empty Queue Definition"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "db8509ec3a6718bed067d234d125ba5975cd66b7283a9802bee9f057f4cac1f9"
     },
     {
       "id": "BASE3-FIG-074",
@@ -1853,7 +2507,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Full Queue Definition"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-075",
@@ -1869,7 +2528,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-076",
@@ -1885,7 +2549,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Response Capsule"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-077",
@@ -1901,7 +2570,13 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "SGL",
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-078",
@@ -1917,7 +2592,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-079",
@@ -1933,7 +2613,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-080",
@@ -1959,7 +2644,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Round Robin Arbitration"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-081",
@@ -1985,7 +2675,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Weighted Round Robin with Urgent Priority Class Arbitration"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-082",
@@ -2001,7 +2696,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Queue Creation Flow"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-083",
@@ -2017,7 +2717,12 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "Controller"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-084",
@@ -2043,7 +2748,23 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "LBA",
+        "TCG",
+        "CAP.CRMS",
+        "CAP.CRMS.CRWMS",
+        "CAP.CRMS.CRIMS",
+        "CC.CRIME",
+        "Status Code",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "08e86bd5214a2f98637a79cd4bdc5a38c62a0ae7389dd8d1d5fc593f9b938099"
     },
     {
       "id": "BASE3-FIG-085",
@@ -2069,7 +2790,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Shutdown Processing Interactions"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-086",
@@ -2095,7 +2821,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-087",
@@ -2121,7 +2852,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-088",
@@ -2147,7 +2883,13 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "NAND",
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-089",
@@ -2173,7 +2915,16 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "TNVMCAP",
+        "UNVMCAP",
+        "MEGCAP",
+        "TEGCAP",
+        "UEGCAP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2f5082ab7e115617853d36b62718bc65d229ec5717e61e0858fae310a4eafaea"
     },
     {
       "id": "BASE3-FIG-090",
@@ -2199,7 +2950,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "KATT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE3-FIG-091",
@@ -2225,7 +2981,12 @@
         "base3-detailed-html",
         "base3-zh-md",
         "base3-en-md"
-      ]
+      ],
+      "key_items": [
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-092",
@@ -2251,7 +3012,26 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "CID",
+        "PSDT",
+        "FUSE",
+        "OPC",
+        "FN",
+        "DTD",
+        "PRP",
+        "SGL"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "70ca110ef1ea23ca5c153fefb7daf0ca2fe14caeefba859dfaa8588548627ade"
     },
     {
       "id": "BASE4-FIG-093",
@@ -2277,7 +3057,23 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "CDW0",
+        "NSID",
+        "CDW2",
+        "CDW3",
+        "MPTR",
+        "DPTR",
+        "PRP2",
+        "PRP1"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "9c8f5e6fdffc1b2004284a736c33f16649c6e55890f1fbc63aadb779719289a9"
     },
     {
       "id": "BASE4-FIG-094",
@@ -2303,7 +3099,22 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "CDW0",
+        "NSID",
+        "MDPTR",
+        "NDT",
+        "NDM",
+        "CDW12",
+        "CDW13",
+        "CDW14"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "a051365d7d9349b99f426a2b0f9c19e7cf819accfc12b0094fa797ec9a9b94ca"
     },
     {
       "id": "BASE4-FIG-095",
@@ -2319,7 +3130,22 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "CDW0",
+        "FN",
+        "DTD",
+        "SGL1",
+        "FCTYPE",
+        "SGL",
+        "Submission Queue",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "23485594febea6a41b97f79e4b5b8f1bd26a2415bc8d17b12750576fc6dc500f"
     },
     {
       "id": "BASE4-FIG-096",
@@ -2335,7 +3161,18 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "CID",
+        "PSDT",
+        "PRP",
+        "SGL",
+        "Command"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "04244508ffcc9f67f4f7c1292917dd9b5b6eba65eec1daefce1d434e8e790475"
     },
     {
       "id": "BASE4-FIG-097",
@@ -2361,7 +3198,19 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "DW0",
+        "DW1",
+        "DW2",
+        "SQ",
+        "DW3",
+        "Command Set",
+        "Completion Queue",
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "237f70f84793d7d8fcf62e23e43b66997de966e27902ba3fb0f933f8b78ffbed"
     },
     {
       "id": "BASE4-FIG-098",
@@ -2387,7 +3236,19 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SQID",
+        "SQHD",
+        "DW",
+        "SQ",
+        "CID",
+        "Completion Queue"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "6f0f1f41bb727644827b8b9ed2fe1aad82ceac7e90cb0411d357d54231385d3f"
     },
     {
       "id": "BASE4-FIG-099",
@@ -2413,7 +3274,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "STATUS",
+        "CID",
+        "DW",
+        "SQ",
+        "Completion Queue"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "57f73d77dddb6c143aacabcb8445b047656021dd5a4805031b391acc9d9a3df4"
     },
     {
       "id": "BASE4-FIG-100",
@@ -2429,7 +3299,18 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "SQHD",
+        "CID",
+        "STATUS",
+        "SQ",
+        "Completion Queue"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "88e847fbf575cfe7ecb7820894c95f2955dc9791985d4f14b876755a64e17d83"
     },
     {
       "id": "BASE4-FIG-101",
@@ -2455,7 +3336,24 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "DNR",
+        "CRD",
+        "SCT",
+        "SC",
+        "ACRE",
+        "CRDT1",
+        "CRDT2",
+        "CRDT3"
+      ],
+      "source_keywords": [
+        "should not",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "733e9a4567cfa1e0461ad60c3e8ccbc803702975a4e65c590d56f8cdcf87ae23"
     },
     {
       "id": "BASE4-FIG-102",
@@ -2481,7 +3379,17 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SC",
+        "Status Code"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "b9c2c9769889b51d614862bc57b6ec01ce826285d242b4a8c8b1d95864b936e5"
     },
     {
       "id": "BASE4-FIG-103",
@@ -2507,7 +3415,25 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ID",
+        "SQ",
+        "TCG",
+        "SGL",
+        "PRP",
+        "ZNS",
+        "RACQA",
+        "CMB"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "b5550db4f2d39481189012549f2a9972a2fece12aa53898f7ea32b670efb1326"
     },
     {
       "id": "BASE4-FIG-104",
@@ -2533,7 +3459,17 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ANA",
+        "NOTE",
+        "Status Code",
+        "Command"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "51fe3937e85e1fca0a96425de59cdcaffb3aa0ea2c6049734f36a9521ec2559a"
     },
     {
       "id": "BASE4-FIG-105",
@@ -2559,7 +3495,17 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ID",
+        "Command Set",
+        "Status Code",
+        "Command"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "79f55fa8276775ab1b4daa72516ae88f7004c6f6e41fa6fafc5b063c9769ac98"
     },
     {
       "id": "BASE4-FIG-106",
@@ -2575,7 +3521,18 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "NOTE",
+        "SCT",
+        "Status Code",
+        "Command"
+      ],
+      "source_keywords": [
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "083e99161de05ac198ffa8151f15dc1519e64f5b531a5d5c3d18b060be717752"
     },
     {
       "id": "BASE4-FIG-107",
@@ -2601,7 +3558,18 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "TCG",
+        "SCT",
+        "Status Code"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "daa3372fe0200fdd5510ea99ffcd4c991e0ad5cb4bebdbd5e39b2b6ba2950e5c"
     },
     {
       "id": "BASE4-FIG-108",
@@ -2627,7 +3595,18 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "DNR",
+        "ANA",
+        "Status Code"
+      ],
+      "source_keywords": [
+        "should not",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "b7dfcf6184de1ff0854614d386cf1ecf2149a9401c259980f0ce2d5ed613c620"
     },
     {
       "id": "BASE4-FIG-109",
@@ -2653,7 +3632,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "Phase Tag"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-110",
@@ -2679,7 +3663,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "PRP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "84139782e9f87f07ff05ec4bb75f66200da8eceb6ecc0ece629aee6d1bf7ebe2"
     },
     {
       "id": "BASE4-FIG-111",
@@ -2705,7 +3694,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "PBAO",
+        "PRP"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d28746c88c06ce1525601abfbfc85e505c868bd3e52e6c3fb154410bb9faa52e"
     },
     {
       "id": "BASE4-FIG-112",
@@ -2731,7 +3729,13 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "PRP",
+        "Memory Page"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "24c89b2977fdd641d3dee3a93be44753625cccec8940c3edc66a18b5cf749f31"
     },
     {
       "id": "BASE4-FIG-113",
@@ -2757,7 +3761,18 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "PRP",
+        "CC.MPS",
+        "Memory Page"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "ff0d872acc873961bb1c1e50d361d14d942cd987491c02972afe87a3ec7e6b59"
     },
     {
       "id": "BASE4-FIG-114",
@@ -2783,7 +3798,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-115",
@@ -2809,7 +3829,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-116",
@@ -2835,7 +3860,21 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "DTS",
+        "SGLID",
+        "SGLDT",
+        "SGLDST",
+        "SGL",
+        "NULL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "145a490bf617a539239d51dd4ffc3d4e6dc33ff3a0720f5343f042313a1f02e0"
     },
     {
       "id": "BASE4-FIG-117",
@@ -2861,7 +3900,14 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "ed393db1a4abd186920e2b05d1faa7caba65467c1a56c056d0f4bdc92f659b4e"
     },
     {
       "id": "BASE4-FIG-118",
@@ -2887,7 +3933,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "34f2645ba139a95429a1859ca7f10e8af20490181434182d26b113660eb8783b"
     },
     {
       "id": "BASE4-FIG-119",
@@ -2913,7 +3968,22 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ADDR",
+        "LEN",
+        "SGLID",
+        "SGLDT",
+        "SGLDST",
+        "SGL",
+        "SGLS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "541339ace4b8ca63e9a8788c35dc01903ceb0c19b23c052d931f9d621e62443c"
     },
     {
       "id": "BASE4-FIG-120",
@@ -2939,7 +4009,20 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "LEN",
+        "SGLID",
+        "SGLDT",
+        "SGLDST",
+        "SGL",
+        "NLB"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "2599b05d066065f53770bef5b5f402c9ee7684968d9c12df4e62e1cf1e249555"
     },
     {
       "id": "BASE4-FIG-121",
@@ -2965,7 +4048,21 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ADDR",
+        "LEN",
+        "SGLID",
+        "SGLDT",
+        "SGDST",
+        "SGL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "df3f776fabf745798ceb55586f8dfb2bba9b53ae5c32619fcc3a9b08b65b2907"
     },
     {
       "id": "BASE4-FIG-122",
@@ -2991,7 +4088,21 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ADDR",
+        "LEN",
+        "SGLID",
+        "SGLDT",
+        "SGLDST",
+        "SGL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "3f135daeab6eec4d349cbdc680a9e91862b1fbc9a3ceb45a9ce59793dd2cb832"
     },
     {
       "id": "BASE4-FIG-123",
@@ -3007,7 +4118,20 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "ADDR",
+        "LEN",
+        "KEY",
+        "SGLID",
+        "SGLDT",
+        "SGLDST",
+        "SGL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "95f04791b2a73cb5d9f5074a69feea0874dbc1ee442582c54059988ef604826e"
     },
     {
       "id": "BASE4-FIG-124",
@@ -3023,7 +4147,19 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "LEN",
+        "SGLID",
+        "SGLDT",
+        "SGLDST",
+        "SGL"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "2c2cf9df536f7a1bc7fba72d7b076c55f3afe93a3b7d96983e8e4a07ebeed05c"
     },
     {
       "id": "BASE4-FIG-125",
@@ -3049,7 +4185,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SGL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-126",
@@ -3075,7 +4216,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-127",
@@ -3101,7 +4247,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-128",
@@ -3127,7 +4278,14 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ID",
+        "VID",
+        "SSVID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-129",
@@ -3153,7 +4311,13 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "SN",
+        "MN"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-130",
@@ -3179,7 +4343,13 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "IEEE",
+        "OUI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "40d18b3f88513a36e4ba4782feffa26160a64dabc29c378467be12d2bef80a19"
     },
     {
       "id": "BASE4-FIG-131",
@@ -3205,7 +4375,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "IEEE",
+        "EUI64",
+        "MA",
+        "EUI",
+        "OUI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f952a51894fe8d8bd2c16d1913c18de75b0485845161725fe0beb39c61bdcc2a"
     },
     {
       "id": "BASE4-FIG-132",
@@ -3231,7 +4410,14 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "IEEE",
+        "EUI64",
+        "OUI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "bd48b367199644b3917ff7767cdfff02ade0146a63c9304f7b4b740e586d66bf"
     },
     {
       "id": "BASE4-FIG-133",
@@ -3257,7 +4443,17 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "IEEE",
+        "EUI64",
+        "ID",
+        "MA",
+        "WWN",
+        "NAA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1a4d5b7500e57c3e88fbf543e5892cd0f7a12f3149d81bfac0b456f5d5ae5584"
     },
     {
       "id": "BASE4-FIG-134",
@@ -3283,7 +4479,13 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "MA",
+        "WWN"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-135",
@@ -3309,7 +4511,13 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NGUID",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ad045eb326b4dafd9ed762ffd6feb62fefcfa944d6834ea28eac7ec45b084042"
     },
     {
       "id": "BASE4-FIG-136",
@@ -3335,7 +4543,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NGUID",
+        "OUI",
+        "VSP",
+        "ID",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "4019d5d167331e8035f09229ae817aa6ec063cb1db933b4ad4f093c3dd4618c2"
     },
     {
       "id": "BASE4-FIG-137",
@@ -3361,7 +4578,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NGUID",
+        "WWN",
+        "IEEE",
+        "NAA",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "33ac4d720784c691a88052896502dcbe9377fbdb63eee7f28e6487114decfa89"
     },
     {
       "id": "BASE4-FIG-138",
@@ -3387,7 +4613,16 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NGUID",
+        "WWN",
+        "OUI",
+        "NAA",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "38595fc9b3dcbad9b60b3fb8a61e3172e538bbef46f173c95846540f154c5492"
     },
     {
       "id": "BASE4-FIG-139",
@@ -3413,7 +4648,15 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "NUMCIDS",
+        "Controller"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "e1de4be4310f3f2fcbdaa36bdf4d3607af0ca9d9e711cb15c4c69a5706d70361"
     },
     {
       "id": "BASE4-FIG-140",
@@ -3439,7 +4682,13 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "ID",
+        "Namespace"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e2b222e564e49b278a663e51edcae991aaba2a7844cc1e87a40e9d9a2244e334"
     },
     {
       "id": "BASE4-FIG-141",
@@ -3455,7 +4704,13 @@
       "scope_status": "EXCLUDE",
       "mode": "excluded",
       "required_artifact_ids": [],
-      "introduced_in": []
+      "introduced_in": [],
+      "key_items": [
+        "NQN",
+        "NVM Subsystem"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "BASE4-FIG-142",
@@ -3481,7 +4736,12 @@
         "base4-detailed-html",
         "base4-zh-md",
         "base4-en-md"
-      ]
+      ],
+      "key_items": [
+        "UTF"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-001",
@@ -3507,7 +4767,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "NVMe Family"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-002",
@@ -3533,7 +4798,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "Transport Protocol Layers"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-003",
@@ -3559,7 +4829,25 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PMCAP",
+        "MSICAP",
+        "MSIXCAP",
+        "MSIX",
+        "PXCAP",
+        "AERCAP",
+        "MSI",
+        "MLBAR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "b42f17a8f9c2a83120666792fc770f920ed274e181ef003db781de6fdc496e25"
     },
     {
       "id": "PCIE14-FIG-004",
@@ -3585,7 +4873,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "SQ0TDBL",
+        "CAP.DSTRD",
+        "CQ0HDBL",
+        "SQ1TDBL",
+        "CQ1HDBL",
+        "SQ2TDBL",
+        "CQ2HDBL",
+        "Controller"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "8b506ff6ab9fc7b8a09ab5842076ca389300b38458e7740a849a5fd645c17fa6"
     },
     {
       "id": "PCIE14-FIG-005",
@@ -3611,7 +4914,17 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "SQT",
+        "CAP.DSTRD",
+        "Submission Queue"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "15202165fc5f18d30d1ce1ce0ff5792d7c218af39ea7ed103800ab38e73ea5c8"
     },
     {
       "id": "PCIE14-FIG-006",
@@ -3637,7 +4950,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CQH",
+        "CAP.DSTRD",
+        "CC.PI",
+        "Completion Queue"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "646fb1bd3bc14ed94ce18138e59b975b87c20a7043994846a2c9e7729a6d3b40"
     },
     {
       "id": "PCIE14-FIG-007",
@@ -3663,7 +4987,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "IV",
+        "MSI",
+        "MSICAP.MC.MME",
+        "MSIXCAP.MXC.TS",
+        "Completion Queue",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "7b4a758b5042c6b8acdb1d91998bc054acccca7c93b720cf698b3f0e95a5d713"
     },
     {
       "id": "PCIE14-FIG-008",
@@ -3689,7 +5027,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-009",
@@ -3715,7 +5058,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MSI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-010",
@@ -3741,7 +5089,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PCI Express Type 0/1 Common Configuration Space"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-011",
@@ -3767,7 +5120,14 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "ID",
+        "DID",
+        "VID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "746547b48cd61d94ef4e9975c22a9561d9ffe5cc2da6c6682fb7f04389a2347f"
     },
     {
       "id": "PCIE14-FIG-012",
@@ -3793,7 +5153,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CMD",
+        "SIG",
+        "ID",
+        "FBE",
+        "SERR",
+        "SEE",
+        "IDSEL",
+        "ISWCC"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "ab28280b22fa2739ace96bd62d8e422a0a03b003a2825b77849e424cd5718878"
     },
     {
       "id": "PCIE14-FIG-013",
@@ -3819,7 +5193,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "STS",
+        "DPE",
+        "SSE",
+        "RMA",
+        "RTA",
+        "STA",
+        "DEVSEL",
+        "DEVT"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "0989b4960fe89b6c01c1401560c0b476769e970e4fc31f3633df5df07b2f5e61"
     },
     {
       "id": "PCIE14-FIG-014",
@@ -3845,7 +5233,13 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "RID",
+        "ID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "a8c54038413ac661054f39332f3b64329495f7118b80d7fd0874c0c7e25fe2d3"
     },
     {
       "id": "PCIE14-FIG-015",
@@ -3871,7 +5265,15 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CC",
+        "BCC",
+        "SCC",
+        "PI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "20334bbe8f6650575f496470f9c359eda399c7f0edba2a7bcd89cfaf5c2563d0"
     },
     {
       "id": "PCIE14-FIG-016",
@@ -3897,7 +5299,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CLS"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "7ee8db675fd35dd74ca76422e088af55b301b68aec94f246aba0e2d0aafcb2eb"
     },
     {
       "id": "PCIE14-FIG-017",
@@ -3923,7 +5330,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MLT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "593869bd669617595f38eb0bba231cf24ddf486eda35f3cd9fc4b9250dc46739"
     },
     {
       "id": "PCIE14-FIG-018",
@@ -3949,7 +5361,14 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "HTYPE",
+        "MFD",
+        "HL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1cc96488ba5a30faaf4ebacb311a4acde7c7c1883537bd606fbe01a970c41bd2"
     },
     {
       "id": "PCIE14-FIG-019",
@@ -3975,7 +5394,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "BIST",
+        "BC",
+        "SB",
+        "SIG",
+        "CC"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "7f2fd222dda988441fab7c39d90a0aa3d5b7af25ba0ca6158e29318d0ad0cbbd"
     },
     {
       "id": "PCIE14-FIG-020",
@@ -4001,7 +5431,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "BA",
+        "PF",
+        "TP",
+        "RTE",
+        "MLBAR",
+        "BAR0",
+        "SIG"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "1f12e06bdba587c33c5fa52c100f5f1b5684c11a578f3bef5168162548758a77"
     },
     {
       "id": "PCIE14-FIG-021",
@@ -4027,7 +5471,16 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "BA",
+        "MUBAR",
+        "BAR1"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "881e6ec95b261d31706e876b9b86163e6e7d133c121c4cd120ccf4244e328c70"
     },
     {
       "id": "PCIE14-FIG-022",
@@ -4053,7 +5506,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "BA",
+        "RTE",
+        "BAR2"
+      ],
+      "source_keywords": [
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "0b1949123451eef314c7ebdd07b951ab3b4bbd4526a4b3fb114886c8d841ada8"
     },
     {
       "id": "PCIE14-FIG-023",
@@ -4079,7 +5543,15 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CCPTR",
+        "CIS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "70b4391814001abc31181d5323dd31c1e6eb9072fff9f5f7a8d018e89c213eb2"
     },
     {
       "id": "PCIE14-FIG-024",
@@ -4105,7 +5577,15 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "SSID",
+        "SSVID",
+        "SS",
+        "ID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "efd16243194acd61b8e6fe36cd4e0d09ee049f4c06ff2db20b5aa703486e30c8"
     },
     {
       "id": "PCIE14-FIG-025",
@@ -4131,7 +5611,14 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "RBA",
+        "EROM",
+        "ROM"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "87236fd9b8706c4394e935078239c74d9cc3bd21448369a977498c521b796cbf"
     },
     {
       "id": "PCIE14-FIG-026",
@@ -4157,7 +5644,13 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CP",
+        "CAP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "02a0074394730aa3957c4a53ad27e7860585b12e433831475f3708c507bb26ee"
     },
     {
       "id": "PCIE14-FIG-027",
@@ -4183,7 +5676,15 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "IPIN",
+        "ILINE",
+        "INTR",
+        "Interrupt"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "abbd39a1cd166f5471e1f51a9eed61a5c912c58d14be72b968ecd5bf45c509de"
     },
     {
       "id": "PCIE14-FIG-028",
@@ -4209,7 +5710,13 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "GNT",
+        "MGNT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "9b01dfb8a4756c28c772dec15098ac97090eedbc23b4e65eb52f95ca6c887667"
     },
     {
       "id": "PCIE14-FIG-029",
@@ -4235,7 +5742,14 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "LAT",
+        "MLAT",
+        "CC"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1ebec1c23e6d3ee8169b4b878325d6cef006d7943c70b8eca6e1a2703d5091e6"
     },
     {
       "id": "PCIE14-FIG-030",
@@ -4261,7 +5775,16 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PMCAP",
+        "PID",
+        "ID",
+        "PC",
+        "PMCS"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8abde1fc735e65eb44e024dccc957e65a9ae6c8c04521cec8e32ad5d9d5445ae"
     },
     {
       "id": "PCIE14-FIG-031",
@@ -4287,7 +5810,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "NEXT",
+        "CID",
+        "PMCAP",
+        "PID",
+        "ID"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "6ecc24a56280aef7fe8377953a1336a5cc8cc58661fb930c1af0fe186c825a86"
     },
     {
       "id": "PCIE14-FIG-032",
@@ -4313,7 +5847,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PSUP",
+        "D2S",
+        "D1S",
+        "AUXC",
+        "DSI",
+        "PMEC",
+        "VS",
+        "PMCAP"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "ec91aea6d5fd60499500ff462bb9c3bc27ed9691a6897aac7c3c65a79b46a5c9"
     },
     {
       "id": "PCIE14-FIG-033",
@@ -4339,7 +5887,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PMES",
+        "DSC",
+        "DSE",
+        "PMEE",
+        "NSFRST",
+        "PS",
+        "PMCAP",
+        "PMCS"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "711832be7ca5ed414680674403bad80f8e58d7e3b34ad58528350d309fd4aca9"
     },
     {
       "id": "PCIE14-FIG-034",
@@ -4365,7 +5928,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MSICAP",
+        "MID",
+        "ID",
+        "MC",
+        "MA",
+        "MUA",
+        "MD",
+        "MMASK"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "6918e0f73f9563c8df5a17bf7c68b9af3d2a45935fecac3dd63985d9084ab10e"
     },
     {
       "id": "PCIE14-FIG-035",
@@ -4391,7 +5968,20 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "NEXT",
+        "CID",
+        "MSICAP",
+        "MID",
+        "ID",
+        "MSI",
+        "Interrupt"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "dabcf8c7beb25341bfcf22b5092f21a3b0f822c971fcdf67ba62b361c2e894c5"
     },
     {
       "id": "PCIE14-FIG-036",
@@ -4417,7 +6007,24 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PVM",
+        "C64",
+        "MME",
+        "MMC",
+        "MSIE",
+        "MSICAP",
+        "MC",
+        "MSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "5ab9b06516b19311fbef30734366b9e20a9cd8f633c6c7a3d19a97a4536db674"
     },
     {
       "id": "PCIE14-FIG-037",
@@ -4443,7 +6050,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "ADDR",
+        "MSICAP",
+        "MA",
+        "SIG",
+        "Interrupt"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "dddad99784048315f7b96a7cea3fe2cfece5ca3d76b598366e1700759c5cc9b2"
     },
     {
       "id": "PCIE14-FIG-038",
@@ -4469,7 +6087,16 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "UADDR",
+        "MSICAP",
+        "MUA",
+        "MSI",
+        "Interrupt"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "b953debb3bd4e6cc5ebdc9ba4e7b54c5f3542d29afa4b7fe5e6db1c23a3e74c5"
     },
     {
       "id": "PCIE14-FIG-039",
@@ -4495,7 +6122,17 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "DATA",
+        "MSICAP",
+        "MD",
+        "MSI",
+        "AD",
+        "Interrupt"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f15e6a81f3b6b45c076d785fb6f6a9b13f3d0ffab51b493b67ed290dd1a5ff74"
     },
     {
       "id": "PCIE14-FIG-040",
@@ -4521,7 +6158,15 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MASK",
+        "MSICAP",
+        "MMASK",
+        "Interrupt"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "858e8c50baee493d7672258a0c8d5cd2afebb2046d5e81313cd0e7627e95a9a3"
     },
     {
       "id": "PCIE14-FIG-041",
@@ -4547,7 +6192,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PEND",
+        "MSICAP",
+        "MPEND",
+        "MSIX",
+        "Interrupt"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "7b565ea903f7882e65ab3e8339b41ead7b897e27932b565649cb2b3f0dc739b5"
     },
     {
       "id": "PCIE14-FIG-042",
@@ -4573,7 +6229,24 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MSIX",
+        "MSIXCAP",
+        "MXID",
+        "ID",
+        "MXC",
+        "MTAB",
+        "BIR",
+        "MPBA"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "df42358b6314751dbc3bf4e825c8dec7f045b921d13853193c7bdbbc10fabe97"
     },
     {
       "id": "PCIE14-FIG-043",
@@ -4599,7 +6272,19 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "NEXT",
+        "CID",
+        "MSIXCAP",
+        "MXID",
+        "MSIX",
+        "ID"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "51a7cb8da0c50619157469eead74c36a2fc41df80513ae00a089b7478a218887"
     },
     {
       "id": "PCIE14-FIG-044",
@@ -4625,7 +6310,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MXE",
+        "FM",
+        "TS",
+        "MSIXCAP",
+        "MXC",
+        "MSIX",
+        "MSI",
+        "SIG"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "5a6cbf9ca52cd56a8f4095eb76238d53363c89d7e8739cdcc3d098a2efe9eb27"
     },
     {
       "id": "PCIE14-FIG-045",
@@ -4651,7 +6350,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TO",
+        "TBIR",
+        "MSIXCAP",
+        "MTAB",
+        "MSIX",
+        "BIR",
+        "MSI",
+        "BAR"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "442d5e6eee5eba9fccc815466cbdaf3dc6e75bdda9f1de555b54dc8ee9ab6562"
     },
     {
       "id": "PCIE14-FIG-046",
@@ -4677,7 +6390,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PBAO",
+        "PBIR",
+        "MSIXCAP",
+        "MPBA",
+        "MSIX",
+        "PBA",
+        "BIR",
+        "MSI"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "30093f9794fe848d0da351b66a32f064e007297a357575da08a7d1df6a010361"
     },
     {
       "id": "PCIE14-FIG-047",
@@ -4703,7 +6431,19 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PXCAP",
+        "PXID",
+        "ID",
+        "PXDCAP",
+        "PXDC",
+        "PXDS",
+        "PXLCAP",
+        "PXLC"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e5dd6a92dd89263c4c06d4be7ab5eca96501c0e6ed064e6e02a5b196bf8db225"
     },
     {
       "id": "PCIE14-FIG-048",
@@ -4729,7 +6469,18 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "NEXT",
+        "CID",
+        "PXCAP",
+        "PXID",
+        "ID"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "17fc5b01072b4aade1d64f1c09469f5b5edaad7c1bc68a167af4cd3eb359cb10"
     },
     {
       "id": "PCIE14-FIG-049",
@@ -4755,7 +6506,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "IMN",
+        "SI",
+        "DPT",
+        "VER",
+        "PXCAP",
+        "SIG",
+        "MSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "9131a377da4928e025cd1a6126f7e9852c81eb9bbb145819e91b53fb62323ee6"
     },
     {
       "id": "PCIE14-FIG-050",
@@ -4781,7 +6546,24 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "FLRC",
+        "CSPLS",
+        "CSPLV",
+        "RER",
+        "L1L",
+        "L0SL",
+        "ETFS",
+        "PFS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "dc9e766080051b3925880c99b832867da1ca0b0450b63db16b8e0a750a74aea5"
     },
     {
       "id": "PCIE14-FIG-051",
@@ -4807,7 +6589,23 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "IFLR",
+        "MRRS",
+        "ENS",
+        "APPME",
+        "PFE",
+        "ETE",
+        "MPS",
+        "ERO"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "e172cbd528fa477d17b9bacfb12e97647f45bd0d8529f874ff7eee860547c890"
     },
     {
       "id": "PCIE14-FIG-052",
@@ -4833,7 +6631,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TP",
+        "APD",
+        "URD",
+        "FED",
+        "NFED",
+        "CED",
+        "PXCAP",
+        "PXDS"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "f9a4bd72aeb65d2dca203579ce9a3ea3b8c420207fb03b06b85a1ca3f570733f"
     },
     {
       "id": "PCIE14-FIG-053",
@@ -4859,7 +6672,23 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "PN",
+        "AOC",
+        "LBNC",
+        "DLLLA",
+        "SDERC",
+        "CPM",
+        "L1EL",
+        "L0SEL"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "69b0fa6ccc7a13ccafc0ef4793695f3a42ab671520e124491736f01675e326ee"
     },
     {
       "id": "PCIE14-FIG-054",
@@ -4885,7 +6714,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "HAWD",
+        "ECPM",
+        "ES",
+        "CCC",
+        "RCB",
+        "ASPMC",
+        "PXCAP",
+        "PXLC"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "43ba070a0d027db026df65b4c0414c27815b984ca81156cb9e850fe241f612de"
     },
     {
       "id": "PCIE14-FIG-055",
@@ -4911,7 +6755,20 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "SCC",
+        "NLW",
+        "CLS",
+        "PXCAP",
+        "PXLS",
+        "SIG"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "115b2bf53c05b22846c044f6a96811e4e331ed346fef825b41dcd5face170c8c"
     },
     {
       "id": "PCIE14-FIG-056",
@@ -4937,7 +6794,23 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MEETP",
+        "EETPS",
+        "EFFS",
+        "OBFFS",
+        "TPHCS",
+        "LTRS",
+        "NPRPR",
+        "AORS"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "7ff857ab2de6ac8a84b4daefc1f91dd66a9cc7907dbc2a3f6628e3fc0c0d1b36"
     },
     {
       "id": "PCIE14-FIG-057",
@@ -4963,7 +6836,23 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "OBFFE",
+        "LTRME",
+        "CTD",
+        "CTV",
+        "PXCAP",
+        "PXDC2",
+        "SIG",
+        "OBFF"
+      ],
+      "source_keywords": [
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "a9e3a46459e4eb0b5414033ed7479921659c41015df2da5bafa8c0b59be8a0a4"
     },
     {
       "id": "PCIE14-FIG-058",
@@ -4989,7 +6878,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "AERCAP",
+        "AERID",
+        "AER",
+        "ID",
+        "AERUCES",
+        "AERUCEM",
+        "AERUCESEV",
+        "AERCES"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "f3908a33ca38e74325bf82a510fe006f26756f4aa87825db6a0b70fe2b322d9b"
     },
     {
       "id": "PCIE14-FIG-059",
@@ -5015,7 +6918,20 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "NEXT",
+        "CVER",
+        "CID",
+        "AERCAP",
+        "AERID",
+        "AER",
+        "ID"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "2fbd8a0c2d42fb2098c68671438f53e515fd668d6fd6a2f9665b6d5e71dbbc31"
     },
     {
       "id": "PCIE14-FIG-060",
@@ -5041,7 +6957,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TPBES",
+        "AOEBS",
+        "MCBTS",
+        "UIES",
+        "ACSVS",
+        "ECRCES",
+        "ROS",
+        "CAS"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "76422d885b317e08456fb6790febaf3c816616d6d940026c10a622f07c2724f9"
     },
     {
       "id": "PCIE14-FIG-061",
@@ -5067,7 +6998,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TPBEM",
+        "AOEBM",
+        "MCBTM",
+        "UIEM",
+        "ACSVM",
+        "ECRCEM",
+        "ROM",
+        "CAM"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "9e2ce500e4b896b485d8ec0aeb3abe96c20643859685f44e55831c802acdbbd3"
     },
     {
       "id": "PCIE14-FIG-062",
@@ -5093,7 +7039,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TPBESEV",
+        "AOEBSEV",
+        "MCBTSEV",
+        "UIESEV",
+        "ACSVSEV",
+        "ECRCESEV",
+        "ROSEV",
+        "CASEV"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "17274aa67dfd63aa0eb98efb85ff4373743273f59a5c62d729bd93947b0eaee1"
     },
     {
       "id": "PCIE14-FIG-063",
@@ -5119,7 +7080,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "HLOS",
+        "CIES",
+        "AERCAP",
+        "AERCES",
+        "AER",
+        "SIG",
+        "RWC",
+        "ANFES"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "bba9b520147ab1e48228acccff59a41b104c8cfeb0aa44689114853e0fc40b45"
     },
     {
       "id": "PCIE14-FIG-064",
@@ -5145,7 +7121,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "HLOM",
+        "CIEM",
+        "AERCAP",
+        "AERCEM",
+        "AER",
+        "SIG",
+        "ANFEM",
+        "RTM"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "024ff8aeb656dd6713134d3dab1975a69f4aa2bbe7b34e311d0d263935f10767"
     },
     {
       "id": "PCIE14-FIG-065",
@@ -5171,7 +7162,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TPLP",
+        "MHRE",
+        "MHRC",
+        "ECE",
+        "ECC",
+        "EGE",
+        "EGC",
+        "FEP"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "8262e842ca419597e914b8cc320b5d9ece670d2ba89b38b2cde1c570acf5a4b0"
     },
     {
       "id": "PCIE14-FIG-066",
@@ -5197,7 +7202,19 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "AERCAP",
+        "AERHL",
+        "AER",
+        "HB3",
+        "HB2",
+        "HB1",
+        "HB0",
+        "HB7"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "9e97e7ba791fead7b2f72aa12b73b9bfcc163ce4e4567ad910b2fb52fb66e566"
     },
     {
       "id": "PCIE14-FIG-067",
@@ -5223,7 +7240,23 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "AERCAP",
+        "AERTLP",
+        "AER",
+        "TLP",
+        "TPL1B3",
+        "TPL1B2",
+        "TPL1B1",
+        "TPL1B0"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "optional"
+      ],
+      "evidence_digest": "ece969e0b833f9597c7643bd07336469a4cd0f491b418bdd5d2d6cba6f6ec4d2"
     },
     {
       "id": "PCIE14-FIG-068",
@@ -5249,7 +7282,22 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TEE",
+        "VM",
+        "OS",
+        "TDISP",
+        "SR",
+        "IOV",
+        "SIOV",
+        "MI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "fef17a67978014c508b426dc57ac301c31481e58aeaffdec8263a4f5f79c2ab3"
     },
     {
       "id": "PCIE14-FIG-069",
@@ -5275,7 +7323,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TDISP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-070",
@@ -5301,7 +7354,13 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "CSI1",
+        "CSI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c4af2b3c7c79c60ab4fc9565ae2dc40d37c4deec410fd052f2442510768549ec"
     },
     {
       "id": "PCIE14-FIG-071",
@@ -5327,7 +7386,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "Size of Physical Interface Receiver Eye Opening Measurement Log Page"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-072",
@@ -5353,7 +7417,21 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "ACT",
+        "MQUAL",
+        "LPOU",
+        "LPOL",
+        "EOM",
+        "EOMIP"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "2dadadbebb5cc9b385bf56d635fa1bc415ed568f5b01bb5ebfc722b16c5952b6"
     },
     {
       "id": "PCIE14-FIG-073",
@@ -5379,7 +7457,16 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "TC",
+        "ID",
+        "EOM"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9ac781ce4a494b315c77d69abb9398fcef48fa5cde6e54e99387782948f9df2b"
     },
     {
       "id": "PCIE14-FIG-074",
@@ -5405,7 +7492,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "Physical Interface Receiver Eye Opening Measurement Log Page"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-075",
@@ -5431,7 +7523,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "EOM"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "id": "PCIE14-FIG-076",
@@ -5457,7 +7554,23 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "MSTAT",
+        "MSCS",
+        "LN",
+        "EYE",
+        "TOP",
+        "BTM",
+        "LFT",
+        "RGT"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "702b215760873800e86c97f7bdd66b6aca8d9828d6b93f77cfd099d9dc8cd709"
     },
     {
       "id": "PCIE14-FIG-077",
@@ -5483,7 +7596,12 @@
         "pcie14-detailed-html",
         "pcie14-zh-md",
         "pcie14-en-md"
-      ]
+      ],
+      "key_items": [
+        "Example of an Eve Diagram in the Printable Eye Field"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "333fe67c63703245cd88a163aa97a50b2c1d43c569db18a1942989a7846ed121"
     }
   ]
 }

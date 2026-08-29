@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import re
 from pathlib import Path
 
 
@@ -154,19 +155,80 @@ REPORTS = {
     },
 }
 
-EXCLUDED = {
-    "base-ch1-2": {4, 8, 9, 10},
-    "base-ch3": {29, 35, 72, 75, 76, 77, 78, 79, 82, 83},
-    "base-ch4": {95, 96, 100, 106, 123, 124, 141},
-    "pcie-transport-1.4": set(),
-}
-SCOPE_REDUCED = {
-    "base-ch1-2": {1, 5},
-    "base-ch3": {23, 28, 30, 31, 32, 33, 84, 85, 90, 91},
-    "base-ch4": {117, 118},
-    "pcie-transport-1.4": {1},
+POST_IMAGES = {
+    "base-ch1-2": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "base-ch3": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "base-ch4": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "pcie-transport-1.4": {
+        "zh": "posts/2026/lion_title.jpg",
+        "en": "posts/2026/catFlower_title.jpg",
+    },
 }
 
+CORE_TITLES = {
+    "BASE12-FAMILY": ("NVMe 規格家族的分工", "Roles in the NVMe specification family"),
+    "BASE12-KEYWORDS": ("規範性用語的強度", "Normative keyword strength"),
+    "BASE12-NUMBERS": ("進位與容量單位", "Radix and capacity units"),
+    "BASE12-DWORD": ("byte、word 與 dword", "Byte, word, and dword relationships"),
+    "BASE12-QUEUE": ("PCIe queue pair 模型", "PCIe queue-pair model"),
+    "BASE12-STORAGE": ("NVM 儲存階層", "NVM storage hierarchy"),
+    "BASE12-COMMANDSET": ("Admin 與 I/O Command Set", "Admin and I/O Command Sets"),
+    "BASE12-SUBSYSTEM": ("subsystem 物件與 NSID", "Subsystem objects and NSIDs"),
+    "BASE12-MULTIPATH": ("multi-path 與 namespace sharing", "Multi-path and namespace sharing"),
+    "BASE12-ASYMMETRY": ("非對稱路徑特性", "Asymmetric path characteristics"),
+    "BASE3-STATIC": ("static controller model", "Static controller model"),
+    "BASE3-TYPES": ("I/O 與 Administrative controller", "I/O and Administrative controllers"),
+    "BASE3-ORDER": ("命令與完成順序", "Command and completion ordering"),
+    "BASE3-PROPERTY": ("property 存取寬度", "Property access width"),
+    "BASE3-NAMESPACE": ("NSID 狀態與特殊值", "NSID states and special values"),
+    "BASE3-MEDIA": ("媒體與回收階層", "Media and reclamation hierarchy"),
+    "BASE3-DOMAIN": ("domain 邊界與識別碼", "Domain boundaries and identifiers"),
+    "BASE3-QUEUE": ("PCIe queue 建立與 pointer", "PCIe queue creation and pointers"),
+    "BASE3-PROCESS": ("命令處理與 arbitration", "Command processing and arbitration"),
+    "BASE3-INIT": ("controller 初始化", "Controller initialization"),
+    "BASE3-SHUTDOWN": ("shutdown 狀態流程", "Shutdown state flow"),
+    "BASE3-RESET": ("reset 層級與影響範圍", "Reset levels and scope"),
+    "BASE3-CAPACITY": ("capacity model", "Capacity model"),
+    "BASE3-KEEPALIVE": ("Keep Alive timer", "Keep Alive timers"),
+    "BASE3-FIRMWARE": ("firmware update 與 privileged action", "Firmware updates and privileged actions"),
+    "BASE4-SQE": ("common SQE 配置", "Common SQE layout"),
+    "BASE4-CID": ("CID 唯一性", "CID uniqueness"),
+    "BASE4-PSDT": ("PRP／SGL 選擇", "PRP/SGL selection"),
+    "BASE4-CQE": ("common CQE 與 Phase Tag", "Common CQE and Phase Tag"),
+    "BASE4-STATUS": ("SCT、SC 與 DNR", "SCT, SC, and DNR"),
+    "BASE4-PHASE": ("Completion Queue phase", "Completion Queue phase"),
+    "BASE4-PRP": ("PRP alignment 與 page", "PRP alignment and pages"),
+    "BASE4-SGL": ("SGL descriptor 與 length", "SGL descriptors and length"),
+    "BASE4-FEATURE": ("Feature value 與 persistence", "Feature values and persistence"),
+    "BASE4-IDENTIFIER": ("全域識別碼的範圍", "Scope of global identifiers"),
+    "BASE4-LISTS": ("Controller／Namespace List", "Controller and Namespace Lists"),
+    "BASE4-UTF8": ("UTF-8 輸入驗證", "UTF-8 input validation"),
+    "PCIE14-SCOPE": ("Transport 與 Base 的優先序", "Transport and Base precedence"),
+    "PCIE14-CONVENTION": ("PCIe Reset 欄定義", "PCIe Reset-column convention"),
+    "PCIE14-KEYWORDS": ("Transport 規範性用語", "Transport normative language"),
+    "PCIE14-OVERVIEW": ("PCIe transport 概觀", "PCIe transport overview"),
+    "PCIE14-MMIO": ("BAR 與 register 存取", "BAR and register access"),
+    "PCIE14-DOORBELL": ("SQ／CQ doorbell offset", "SQ/CQ doorbell offsets"),
+    "PCIE14-QUEUE": ("queue 與 interrupt vector", "Queues and interrupt vectors"),
+    "PCIE14-RESET": ("PCIe reset recovery", "PCIe reset recovery"),
+    "PCIE14-COMMAND": ("PCIe command flow", "PCIe command flow"),
+    "PCIE14-INTERRUPT": ("interrupt 模式與延遲", "Interrupt modes and delay"),
+    "PCIE14-POWER": ("slot power limit", "Slot power limit"),
+    "PCIE14-ERROR": ("NVMe 與 PCIe error 分層", "NVMe and PCIe error layers"),
+    "PCIE14-CONFIG": ("PCI configuration requirements", "PCI configuration requirements"),
+    "PCIE14-SECURITY": ("平台安全與隔離依賴", "Platform security and isolation dependencies"),
+    "PCIE14-EOM": ("receiver eye measurement", "Receiver-eye measurement"),
+    "PCIE14-HOST": ("host implementation checklist", "Host implementation checklist"),
+}
 
 def artifact_ids(report_id: str) -> list[str]:
     key = {
@@ -198,154 +260,416 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
     )
 
 
-def figure_explanation(caption: str, language: str) -> tuple[str, str, str]:
-    low = caption.lower()
-    if any(word in low for word in ("queue", "command processing", "phase tag")):
-        kind = "queue"
-    elif any(word in low for word in ("prp", "sgl", "data block", "descriptor")):
-        kind = "pointer"
-    elif any(word in low for word in ("status", "error", "warning")):
-        kind = "status"
-    elif any(
-        word in low
-        for word in (
-            "offset",
-            "register",
-            "capabilit",
-            "command dword",
-            "format",
-            "layout",
-            "field",
-        )
-    ):
-        kind = "field"
-    elif any(
-        word in low
-        for word in (
-            "namespace",
-            "subsystem",
-            "domain",
-            "nvm set",
-            "endurance",
-            "capacity",
-        )
-    ):
-        kind = "architecture"
-    elif any(
-        word in low
-        for word in (
-            "identifier",
-            "vendor id",
-            "serial number",
-            "eui",
-            "nguid",
-            "uuid",
-            "list",
-        )
-    ):
-        kind = "identifier"
-    elif any(word in low for word in ("interrupt", "msi", "msi-x")):
-        kind = "interrupt"
-    elif any(word in low for word in ("eye", "eom", "lane")):
-        kind = "measurement"
-    else:
-        kind = "general"
+def figure_explanation(figure: dict, language: str) -> dict[str, str]:
+    """Return a source-specific, non-verbatim guide for one Figure."""
 
-    zh = {
-        "queue": (
-            "整理 queue／command 的關係或處理順序。",
-            "依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。",
-            "先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。",
-        ),
-        "pointer": (
-            "說明資料 buffer 如何由 PRP／SGL 結構描述。",
-            "逐一核對 address、offset、length、alignment 與下一層 pointer。",
-            "用跨兩個 memory page 的 buffer 檢查第一個 offset 與後續 alignment。",
-        ),
-        "status": (
-            "整理狀態、錯誤或其分類欄位。",
-            "先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。",
-            "以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。",
-        ),
-        "field": (
-            "整理欄位、位元或 register 配置。",
-            "由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。",
-            "讀取前先確認 capability，再以欄位寬度與遮罩解碼。",
-        ),
-        "architecture": (
-            "說明 subsystem 物件的包含、連接或容量關係。",
-            "分開辨認 controller、port、namespace、identifier 與容量階層。",
-            "替單一 namespace 標出其 NSID、controller 與所屬容量階層。",
-        ),
-        "identifier": (
-            "整理 identifier 或 list 的 byte layout 與範圍。",
-            "先確認長度、byte order、數量欄位、唯一性範圍與保留區。",
-            "parser 先驗證 count 與長度，再逐筆讀取 identifier。",
-        ),
-        "interrupt": (
-            "說明 interrupt capability、vector 或通知行為。",
-            "分開 capability 是否存在、enable 狀態、vector mapping 與 pending／mask。",
-            "為兩個 Completion Queues 配置 vector，檢查是否共用及如何服務。",
-        ),
-        "measurement": (
-            "整理 receiver eye measurement 的輸入、輸出或資料格式。",
-            "先讀支援與大小，再依 lane、parameter、header 與 descriptor 解碼。",
-            "先查回報長度，再只解析完整存在的 lane descriptor。",
-        ),
-        "general": (
-            "提供本節概念、支援條件或範例的結構化索引。",
-            "先看標題所指物件，再對照相鄰文字的條件、圖例與例外。",
-            "選一個具體 controller 設定，逐項對照圖中的關係。",
-        ),
+    title = figure["title"]
+    lower_title = title.lower()
+    number = figure["number"]
+    items = list(figure.get("key_items", []))
+    item_text = ", ".join(items)
+    first = items[0] if items else title
+    keywords = list(figure.get("source_keywords", []))
+    keyword_text = ", ".join(f"`{item}`" for item in keywords) or "none"
+
+    offset = re.match(
+        r"^Offset\s+([^:]+):\s*([A-Z0-9-]+)\s+-\s+(.+)$", title
+    )
+    dword = re.match(r"^(.+?)\s+-\s+Command Dword\s+([0-9-]+)$", title)
+    second = (
+        items[1]
+        if len(items) > 1
+        else ("the cited condition" if language == "en" else "引用條件")
+    )
+
+    if language == "en":
+        if offset:
+            location, symbol, name = offset.groups()
+            purpose = (
+                f"Defines {symbol} ({name}) at offset {location} and identifies "
+                "the fields that software must decode at that location."
+            )
+            reading = (
+                f"Start at {symbol}, then map bit ranges to access type, reset value, "
+                f"and field meaning. Evidence index: {item_text}."
+            )
+            example = (
+                f"Read {symbol} with the required width, then verify {first} and "
+                f"{second} separately before using either value."
+            )
+        elif dword:
+            command, index = dword.groups()
+            purpose = (
+                f"Defines command-specific fields in CDW{index} for {command}."
+            )
+            reading = (
+                f"Locate CDW{index}, then decode the named fields without borrowing "
+                f"semantics from another command. Evidence index: {item_text}."
+            )
+            example = (
+                f"Build one {command} entry, set {first}, and independently validate "
+                f"{second} before ringing the Submission Queue doorbell."
+            )
+        elif "family of specifications" in lower_title or "types of nvme command sets" in lower_title:
+            purpose = f"Places {title} in the NVMe document and command-set hierarchy."
+            reading = (
+                "Read from the common Base requirements toward the transport and command-set layer; "
+                f"keep these source-derived labels distinct: {item_text}."
+            )
+            example = (
+                f"Start with {first}, then follow the branch containing {second}; cite the document "
+                "that owns the requirement instead of assuming every layer defines it."
+            )
+        elif "decimal and binary units" in lower_title or "byte, word, and dword" in lower_title:
+            purpose = f"Defines the numeric-unit or byte-width convention illustrated by {title}."
+            reading = (
+                f"Separate decimal units from binary units and preserve byte/word/Dword boundaries. Evidence index: {item_text}."
+            )
+            example = (
+                f"Normalize one value using {first}, then verify its storage width against {second} before comparing it."
+            )
+        elif "support requirements" in lower_title:
+            purpose = f"Summarizes the support levels assigned by {title}."
+            reading = (
+                f"Resolve the row and controller/command-set context before interpreting its support marker. Evidence index: {item_text}."
+            )
+            example = (
+                f"Look up {first} in the applicable row, then confirm the context identified by {second} before labeling it required or optional."
+            )
+        elif "status code" in lower_title or "error" in lower_title:
+            purpose = f"Defines the status/error classification represented by {title}."
+            reading = (
+                "Resolve the category before the individual code or flag; keep "
+                f"reserved values uninterpreted. Evidence index: {item_text}."
+            )
+            example = (
+                f"For one reported condition, identify {first} first and then check "
+                f"{second} instead of decoding an isolated numeric value."
+            )
+        elif any(word in lower_title for word in ("layout", "format", "definition", "descriptor", "field", "register", "values", "structure", "capabilit", "configuration space", "command dword")):
+            purpose = f"Defines the concrete layout or value relationships for {title}."
+            reading = (
+                "Follow byte/bit order, length, access type, and reserved areas; "
+                f"the source-derived evidence index is {item_text}."
+            )
+            example = (
+                f"Use {first} as the first parser checkpoint and {second} as a second, "
+                "independent boundary check."
+            )
+        elif any(word in lower_title for word in ("identifier", "controller ids", "nsid types", "serial number", "model number", "oui", "eui64", "nguid", "uuid", "wwn")):
+            purpose = f"Defines the identifier composition or namespace of values shown by {title}."
+            reading = (
+                f"Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: {item_text}."
+            )
+            example = (
+                f"Parse {first} at its defined width, then validate the scope associated with {second} before using it as an identity key."
+            )
+        elif "virtualization" in lower_title or "sr-iov" in lower_title:
+            purpose = f"Shows the Physical Function and Virtual Function relationships in {title}."
+            reading = (
+                f"Separate PCIe Function identity, controller ownership, and shared device resources. Evidence index: {item_text}."
+            )
+            example = (
+                f"Start at the function represented by {first}, then trace its relationship to {second} without treating shared resources as private."
+            )
+        elif "queue" in lower_title or "command processing" in lower_title or "phase tag" in lower_title:
+            purpose = f"Shows the queue or command relationship expressed by {title}."
+            reading = (
+                "Trace ownership and direction from host to SQ, controller, and CQ; "
+                f"keep the indexed elements distinct: {item_text}."
+            )
+            example = (
+                f"Trace one command through Figure {number}, using {first} and "
+                f"{second} as checkpoints for ownership or pointer movement."
+            )
+        elif any(word in lower_title for word in ("namespace", "subsystem", "domain", "nvm set", "endurance", "capacity", "controller types", "storage hierarchy", "logical view of non-volatile storage")):
+            purpose = f"Shows the object or capacity relationships in {title}."
+            reading = (
+                "Separate logical identifiers from controllers, namespaces, ports, "
+                f"and capacity containers. Evidence index: {item_text}."
+            )
+            example = (
+                f"Choose one object labeled by {first} and trace its relationship to "
+                f"{second} without treating an identifier as the object itself."
+            )
+        elif "arbitration" in lower_title:
+            purpose = f"Shows how {title} selects work from competing Submission Queues."
+            reading = (
+                f"Track priority class, service order, and the point at which the arbiter selects the next command. Evidence index: {item_text}."
+            )
+            example = (
+                f"Compare queues represented by {first} and {second}, then advance only the queue chosen by the stated arbitration rule."
+            )
+        elif any(word in lower_title for word in ("shutdown", "timeout", "after reset", "power state", "reset sequence", "initialization sequence")):
+            purpose = f"Shows the state or timing progression represented by {title}."
+            reading = (
+                f"Follow the states or time bounds in arrow order and identify which actor observes each transition. Evidence index: {item_text}."
+            )
+            example = (
+                f"Begin at {first}, record the transition that reaches {second}, and evaluate timeout or reset behavior only at the stated boundary."
+            )
+        elif "privileged action" in lower_title:
+            purpose = f"Identifies the privileged-operation boundary illustrated by {title}."
+            reading = (
+                f"Separate the requesting command from the privilege or controller state that authorizes it. Evidence index: {item_text}."
+            )
+            example = (
+                f"Check {first} first, then verify the authorization condition associated with {second} before issuing the operation."
+            )
+        elif any(word in lower_title for word in ("prp entry", "prp list", "sgl segment", "sgl data block", "sgl bit bucket", "sgl read example")):
+            purpose = f"Shows how {title} maps a transfer onto host-memory locations."
+            reading = (
+                f"Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: {item_text}."
+            )
+            example = (
+                f"Map a transfer beginning at {first}, then verify the boundary or next element identified by {second} before continuing."
+            )
+        elif any(word in lower_title for word in ("interrupt", "msi", "msi-x", "pin based")):
+            purpose = f"Shows the interrupt delivery or masking relationship represented by {title}."
+            reading = (
+                f"Trace the vector/message source, mask state, and delivery destination separately. Evidence index: {item_text}."
+            )
+            example = (
+                f"Select the source represented by {first}, then confirm the mask or vector condition represented by {second} before expecting delivery."
+            )
+        elif "transport protocol layers" in lower_title:
+            purpose = f"Separates the responsibilities of the protocol layers in {title}."
+            reading = (
+                f"Read vertically by layer and horizontally by peer interaction; do not assign a transport rule to the Base layer. Evidence index: {item_text}."
+            )
+            example = (
+                f"Start with {first}, follow the operation to {second}, and cite the layer that defines the observed behavior."
+            )
+        elif "utf-8" in lower_title:
+            purpose = f"Shows the input-validation sequence required by {title}."
+            reading = (
+                f"Follow decoding, prohibited-code-point, and truncation checks in order. Evidence index: {item_text}."
+            )
+            example = (
+                f"Validate {first} first and reject the input if the check associated with {second} fails before accepting the string."
+            )
+        elif "eye" in lower_title or "eve diagram" in lower_title or "eom" in lower_title or "lane" in lower_title:
+            purpose = f"Shows the receiver-eye measurement information in {title}."
+            reading = (
+                "Confirm support and returned length before interpreting lane, "
+                f"parameter, header, or descriptor data. Evidence index: {item_text}."
+            )
+            example = (
+                f"Check that {first} is present, then parse {second} only when the "
+                "returned structure is long enough."
+            )
+        else:
+            purpose = f"Explains the specific relationship or example named {title}."
+            reading = (
+                f"Use the source-derived elements {item_text} as checkpoints and "
+                "apply only the conditions in the cited section."
+            )
+            example = (
+                f"Create a review row for Figure {number}, verify {first}, then verify "
+                f"{second} against the cited section."
+            )
+        caveat = (
+            f"Source keyword index: {keyword_text}. The index locates normative "
+            "language but does not replace the condition attached to each field."
+            if keywords
+            else "The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement."
+        )
+    else:
+        if offset:
+            location, symbol, name = offset.groups()
+            purpose = (
+                f"定義 offset {location} 的 {symbol}（{name}），並指出軟體在該位置"
+                "必須分別解碼的欄位。"
+            )
+            reading = (
+                f"先定位 {symbol}，再把 bit range 對到 access type、reset value 與欄位"
+                f"語意；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"依規定寬度讀取 {symbol}，先獨立驗證 {first}，再驗證 {second}，"
+                "確認後才使用欄位值。"
+            )
+        elif dword:
+            command, index = dword.groups()
+            purpose = f"定義 {command} 在 CDW{index} 的 command-specific 欄位。"
+            reading = (
+                f"先定位 CDW{index}，再依本命令定義解碼，不借用其他 command 的語意；"
+                f"來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"建立一筆 {command}，設定 {first} 後再獨立驗證 {second}，確認完成才"
+                "更新 Submission Queue doorbell。"
+            )
+        elif "family of specifications" in lower_title or "types of nvme command sets" in lower_title:
+            purpose = f"定位〈{title}〉在 NVMe 文件與 command set 階層中的位置。"
+            reading = (
+                f"由共通 Base 要求往 transport 與 command set 分支閱讀，並分開核對：{item_text}。"
+            )
+            example = (
+                f"先從 {first} 出發，再沿包含 {second} 的分支找定義來源，不假設每一層都重複定義同一要求。"
+            )
+        elif "decimal and binary units" in lower_title or "byte, word, and dword" in lower_title:
+            purpose = f"定義〈{title}〉使用的數值單位或 byte 寬度慣例。"
+            reading = (
+                f"分開十進位與二進位單位，並保留 byte／word／Dword 邊界；來源索引：{item_text}。"
+            )
+            example = (
+                f"先依 {first} 正規化一個數值，再用 {second} 核對儲存寬度後才進行比較。"
+            )
+        elif "support requirements" in lower_title:
+            purpose = f"統整〈{title}〉指定的支援等級。"
+            reading = (
+                f"先確認 row 與 controller／command-set 上下文，再解讀 support marker；來源索引：{item_text}。"
+            )
+            example = (
+                f"先在適用 row 查找 {first}，再核對 {second} 所代表的上下文，最後才判斷必須或選用。"
+            )
+        elif "status code" in lower_title or "error" in lower_title:
+            purpose = f"定義〈{title}〉所表示的 status／error 分類。"
+            reading = (
+                f"先判斷類別，再解個別 code 或 flag；保留值不自行賦義。來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"收到一筆狀態時先辨認 {first}，再檢查 {second}，不可脫離類別單看數值。"
+            )
+        elif any(word in lower_title for word in ("layout", "format", "definition", "descriptor", "field", "register", "values", "structure", "capabilit", "configuration space", "command dword")):
+            purpose = f"定義〈{title}〉的實際配置或數值關係。"
+            reading = (
+                f"依 byte／bit 順序、length、access type 與保留區閱讀；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"以 {first} 作為 parser 的第一個檢查點，再用 {second} 獨立檢查另一個邊界。"
+            )
+        elif any(word in lower_title for word in ("identifier", "controller ids", "nsid types", "serial number", "model number", "oui", "eui64", "nguid", "uuid", "wwn")):
+            purpose = f"定義〈{title}〉的識別碼組成或數值空間。"
+            reading = (
+                f"分開數值寬度、核發來源、唯一性範圍與保留值；來源索引：{item_text}。"
+            )
+            example = (
+                f"依定義寬度解析 {first}，再核對 {second} 的唯一性範圍後才把它當成 identity key。"
+            )
+        elif "virtualization" in lower_title or "sr-iov" in lower_title:
+            purpose = f"呈現〈{title}〉中 Physical Function 與 Virtual Function 的關係。"
+            reading = (
+                f"分開 PCIe Function identity、controller ownership 與 shared device resource；來源索引：{item_text}。"
+            )
+            example = (
+                f"從 {first} 所代表的 Function 出發，再追到 {second}，不要把 shared resource 誤當成 private resource。"
+            )
+        elif "queue" in lower_title or "command processing" in lower_title or "phase tag" in lower_title:
+            purpose = f"呈現〈{title}〉中的 queue 或 command 關係。"
+            reading = (
+                f"沿 host、SQ、controller、CQ 的擁有者與方向閱讀，並分開追蹤：{item_text}。"
+            )
+            example = (
+                f"沿 Figure {number} 追蹤一筆 command，以 {first} 與 {second} 作為擁有者或 pointer 變動檢查點。"
+            )
+        elif any(word in lower_title for word in ("namespace", "subsystem", "domain", "nvm set", "endurance", "capacity", "controller types", "storage hierarchy", "logical view of non-volatile storage")):
+            purpose = f"呈現〈{title}〉中的物件或容量關係。"
+            reading = (
+                f"將邏輯 identifier、controller、namespace、port 與容量容器分開；來源索引：{item_text}。"
+            )
+            example = (
+                f"選擇 {first} 標示的一個物件，再追到 {second}，過程中不把 identifier 當成物件本身。"
+            )
+        elif "arbitration" in lower_title:
+            purpose = f"呈現〈{title}〉如何在多個 Submission Queue 間選擇工作。"
+            reading = (
+                f"分別追蹤 priority class、服務順序與 arbiter 選出下一筆 command 的時點；來源索引：{item_text}。"
+            )
+            example = (
+                f"比較 {first} 與 {second} 所代表的 queue，再只推進由規定 arbitration rule 選中的 queue。"
+            )
+        elif any(word in lower_title for word in ("shutdown", "timeout", "after reset", "power state", "reset sequence", "initialization sequence")):
+            purpose = f"呈現〈{title}〉的狀態或時間推進關係。"
+            reading = (
+                f"依箭頭順序追蹤 state 或 time bound，並標出每個 transition 的觀察者；來源索引：{item_text}。"
+            )
+            example = (
+                f"從 {first} 開始，記錄到達 {second} 的 transition，只在規定邊界判斷 timeout 或 reset 行為。"
+            )
+        elif "privileged action" in lower_title:
+            purpose = f"界定〈{title}〉所示的 privileged operation 邊界。"
+            reading = (
+                f"分開發出 command 的主體，以及授權該操作的 privilege／controller state；來源索引：{item_text}。"
+            )
+            example = (
+                f"先核對 {first}，再確認 {second} 對應的授權條件成立後才發出操作。"
+            )
+        elif any(word in lower_title for word in ("prp entry", "prp list", "sgl segment", "sgl data block", "sgl bit bucket", "sgl read example")):
+            purpose = f"呈現〈{title}〉如何把 transfer 對映到 host memory。"
+            reading = (
+                f"依序追蹤 address、length、page／segment boundary 與下一個 entry 的連結；來源索引：{item_text}。"
+            )
+            example = (
+                f"從 {first} 所示位置開始對映 transfer，再核對 {second} 的邊界或下一個元素後才繼續。"
+            )
+        elif any(word in lower_title for word in ("interrupt", "msi", "msi-x", "pin based")):
+            purpose = f"呈現〈{title}〉中的 interrupt 傳遞或 masking 關係。"
+            reading = (
+                f"分開追蹤 vector／message 來源、mask 狀態與傳遞目的端；來源索引：{item_text}。"
+            )
+            example = (
+                f"選定 {first} 所代表的來源，再確認 {second} 對應的 mask 或 vector 條件後才預期 interrupt 送達。"
+            )
+        elif "transport protocol layers" in lower_title:
+            purpose = f"分開〈{title}〉中各 protocol layer 的責任。"
+            reading = (
+                f"垂直按 layer、水平按 peer interaction 閱讀，不把 transport rule 歸到 Base layer；來源索引：{item_text}。"
+            )
+            example = (
+                f"先從 {first} 出發，再沿操作追到 {second}，最後引用真正定義該行為的 layer。"
+            )
+        elif "utf-8" in lower_title:
+            purpose = f"呈現〈{title}〉要求的輸入驗證順序。"
+            reading = (
+                f"依序執行 decoding、禁止 code point 與 truncation 檢查；來源索引：{item_text}。"
+            )
+            example = (
+                f"先驗證 {first}；若 {second} 對應的檢查失敗，就在接受字串前拒絕輸入。"
+            )
+        elif "eye" in lower_title or "eve diagram" in lower_title or "eom" in lower_title or "lane" in lower_title:
+            purpose = f"呈現〈{title}〉中的 receiver-eye measurement 資訊。"
+            reading = (
+                f"先確認支援與回傳長度，再解 lane、parameter、header 或 descriptor；來源索引：{item_text}。"
+            )
+            example = (
+                f"先確認 {first} 已存在，只有在回傳結構長度足夠時才繼續解析 {second}。"
+            )
+        else:
+            purpose = f"解釋〈{title}〉所指的特定關係或範例。"
+            reading = (
+                f"以 PDF 擷取出的 {item_text} 作為核對點，只套用引用 section 明載的條件。"
+            )
+            example = (
+                f"為 Figure {number} 建立檢查列，先核對 {first}，再依引用 section 核對 {second}。"
+            )
+        caveat = (
+            f"來源 keyword 索引：{keyword_text}。索引用來定位規範性語句，不取代各欄位所附的完整條件。"
+            if keywords
+            else "這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。"
+        )
+
+    if figure.get("mode") == "scope-reduced":
+        caveat += (
+            " Only the PCIe/memory-based portion is in scope."
+            if language == "en"
+            else " 本報告只解釋 PCIe／memory-based 部分。"
+        )
+    if "Eve Diagram" in title:
+        caveat += (
+            ' The source caption spells "Eve"; the section context identifies a receiver eye. The caption is preserved for traceability.'
+            if language == "en"
+            else " 原始 Figure caption 使用「Eve」；section 上下文說明的是 receiver eye。此處保留原 caption 以利追溯。"
+        )
+    return {
+        "purpose": purpose,
+        "reading": reading,
+        "example": example,
+        "caveat": caveat,
+        "keyword_text": keyword_text,
+        "item_text": item_text,
     }
-    en = {
-        "queue": (
-            "Organizes a queue or command relationship or processing sequence.",
-            "Follow host, SQ, controller, CQ, and pointer or phase direction.",
-            "Choose one queue identifier and trace one command and its completion.",
-        ),
-        "pointer": (
-            "Shows how PRP or SGL structures describe a data buffer.",
-            "Check address, offset, length, alignment, and next-level pointers in order.",
-            "Use a buffer crossing two memory pages to check the first offset and later alignment.",
-        ),
-        "status": (
-            "Organizes status or error fields and their classification.",
-            "Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.",
-            "For a failed CQE, decode SCT first, then SC and DNR.",
-        ),
-        "field": (
-            "Organizes a field, bit, or register layout.",
-            "Map offsets, bytes, or bits to names, access type, reset value, and conditions.",
-            "Check capability support first, then decode using the specified width and mask.",
-        ),
-        "architecture": (
-            "Shows containment, connection, or capacity relationships among subsystem objects.",
-            "Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.",
-            "For one namespace, mark its NSID, controller, and capacity hierarchy.",
-        ),
-        "identifier": (
-            "Organizes identifier or list byte layout and scope.",
-            "Check length, byte order, count, uniqueness scope, and reserved area.",
-            "A parser validates count and length before reading identifiers.",
-        ),
-        "interrupt": (
-            "Shows interrupt capability, vector, or notification behavior.",
-            "Separate capability presence, enable state, vector mapping, and pending or mask state.",
-            "Assign vectors to two Completion Queues and check sharing and service behavior.",
-        ),
-        "measurement": (
-            "Organizes receiver-eye measurement inputs, outputs, or data format.",
-            "Check support and size before decoding lanes, parameters, headers, and descriptors.",
-            "Read the returned length first and parse only complete lane descriptors.",
-        ),
-        "general": (
-            "Provides a structured index to a concept, support condition, or example.",
-            "Identify the named object, then read adjacent conditions, legend, and exceptions.",
-            "Choose a concrete controller configuration and map it to the relationships shown.",
-        ),
-    }
-    return (en if language == "en" else zh)[kind]
 
 
 def flow_svg(report: dict) -> str:
@@ -393,6 +717,8 @@ def make_claim(report_id: str, report: dict, item: dict) -> dict:
         "zh_tw": item["zh_tw"],
         "en": item["en"],
         "scope_entry_id": report["scope_entry"],
+        "heading_zh_tw": CORE_TITLES[claim_id][0],
+        "heading_en": CORE_TITLES[claim_id][1],
     }
     result["citation_zh_tw"] = cite(result, "zh")
     result["citation_en"] = cite(result, "en")
@@ -401,18 +727,8 @@ def make_claim(report_id: str, report: dict, item: dict) -> dict:
 
 def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
     figure_id = f"{report['prefix']}-FIG-{int(figure['number']):03d}"
-    zh_parts = figure_explanation(figure["title"], "zh")
-    en_parts = figure_explanation(figure["title"], "en")
-    scope_zh = (
-        " 本報告只解釋圖中的 PCIe／memory-based 部分。"
-        if figure["mode"] == "scope-reduced"
-        else ""
-    )
-    scope_en = (
-        " This report explains only the PCIe/memory-based portion."
-        if figure["mode"] == "scope-reduced"
-        else ""
-    )
+    zh_parts = figure_explanation(figure, "zh")
+    en_parts = figure_explanation(figure, "en")
     result = {
         "id": f"{figure_id}-CLAIM",
         "report_id": report_id,
@@ -426,13 +742,16 @@ def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
         "normative_keyword": "none",
         "zh_tw": (
             f"Figure {figure['number']}〈{figure['title']}〉："
-            f"{zh_parts[0]} {zh_parts[1]}{scope_zh}"
+            f"{zh_parts['purpose']} {zh_parts['reading']}"
         ),
         "en": (
-            f"Figure {figure['number']}, "{figure['title']}": "
-            f"{en_parts[0]} {en_parts[1]}{scope_en}"
+            f"Figure {figure['number']}, \"{figure['title']}\": "
+            f"{en_parts['purpose']} {en_parts['reading']}"
         ),
         "scope_entry_id": report["scope_entry"],
+        "source_keywords": list(figure.get("source_keywords", [])),
+        "key_items": list(figure.get("key_items", [])),
+        "evidence_digest": figure.get("evidence_digest", ""),
     }
     result["citation_zh_tw"] = cite(result, "zh", int(figure["number"]))
     result["citation_en"] = cite(result, "en", int(figure["number"]))
@@ -462,6 +781,17 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
     }[report_id]
 
 
+def section_group(section: str) -> str:
+    if section.lower().startswith("annex"):
+        return section
+    pieces = section.split(".")
+    return ".".join(pieces[:2]) if len(pieces) > 1 else pieces[0]
+
+
+def anchor(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+
+
 def render_html(
     report_id: str,
     report: dict,
@@ -473,6 +803,12 @@ def render_html(
     if report_id == "pcie-transport-1.4":
         source_markers.append(SOURCES["NVME-BASE-2.4"]["marker"])
     label = "新手教學版" if tutorial else "詳細 Spec 版"
+    figure_groups: list[str] = []
+    for figure in figures:
+        group = section_group(str(figure["section"]))
+        if group not in figure_groups:
+            figure_groups.append(group)
+
     parts = [
         "<!doctype html>",
         '<html lang="zh-Hant-TW">',
@@ -482,9 +818,9 @@ def render_html(
         f"<title>{html.escape(report['title_zh'])}｜{label}</title>",
         "</head>",
         "<body>",
-        '<nav aria-label="章節導覽"><a href="#scope">範圍</a> ｜ '
-        '<a href="#map">流程圖</a> ｜ <a href="#claims">重點</a> ｜ '
-        '<a href="#figures">Figure 逐圖導讀</a> ｜ '
+        '<nav id="top" aria-label="章節導覽"><a href="#scope">範圍</a> ｜ '
+        '<a href="#map">流程圖</a> ｜ <a href="#claims">規格重點</a> ｜ '
+        '<a href="#figure-index">Figure 索引</a> ｜ '
         '<a href="#sources">來源</a></nav>',
         "<main>",
         f"<h1>{html.escape(report['title_zh'])}｜{label}</h1>",
@@ -497,6 +833,9 @@ def render_html(
         "<p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、"
         "讀法、條件與說明性範例。欄位表雖以表格呈現，"
         "在本範圍的規格中仍以 Figure 編號。</p>",
+        f"<p><strong>完整度：</strong>本檔介紹 {len(figures)} 張納入範圍的 Figure。"
+        "100 分鐘口頭報告應以規格重點與必講 Figure 為主；其餘 Figure 作為附錄查閱，"
+        "但仍完整保留於本檔。</p>",
         "<table><thead><tr><th>keyword</th><th>台灣繁體中文</th>"
         "<th>強度</th></tr></thead><tbody>"
         "<tr><td>shall</td><td>必須</td><td>強制要求</td></tr>"
@@ -511,7 +850,7 @@ def render_html(
     ]
     core_claims = [item for item in claims if item["figure"] is None]
     for index, item in enumerate(core_claims, 1):
-        heading = "先看懂" if tutorial else "規格結論"
+        heading = item["heading_zh_tw"]
         parts.extend(
             [
                 f"<article><h3>{index}. {heading}</h3>",
@@ -537,46 +876,73 @@ def render_html(
                 + html.escape(item["normative_keyword"])
                 + "</dd></dl>",
             )
-    parts.append('</section><section id="figures"><h2>Figure 逐圖導讀</h2>')
+    parts.extend(
+        [
+            '</section><section id="figure-index"><h2>Figure 索引</h2>',
+            "<p>依 section 跳轉；每張 Figure 可個別展開，減少 iPad 長頁面捲動。</p>",
+            "<ul>",
+            *[
+                f'<li><a href="#section-{anchor(group)}">§{html.escape(group)}</a></li>'
+                for group in figure_groups
+            ],
+            "</ul></section>",
+            '<section id="figures"><h2>Figure 逐圖導讀</h2>',
+        ]
+    )
     figure_claims = {
         int(item["figure"]): item for item in claims if item["figure"] is not None
     }
+    active_group = ""
     for figure in figures:
         item = figure_claims[int(figure["number"])]
-        purpose, reading, example = figure_explanation(figure["title"], "zh")
+        details = figure_explanation(figure, "zh")
+        group = section_group(str(figure["section"]))
+        if group != active_group:
+            if active_group:
+                parts.append("</section>")
+            active_group = group
+            parts.append(
+                f'<section id="section-{anchor(group)}"><h3>§{html.escape(group)}</h3>'
+            )
+        figure_anchor = f"figure-{figure['number']}"
         parts.extend(
             [
-                f'<article data-figure-table-id="{figure["id"]}">'
-                f'<h3>Figure {figure["number"]}: '
-                f'{html.escape(figure["title"])}</h3>',
+                f'<details id="{figure_anchor}" data-figure-table-id="{figure["id"]}">',
+                f'<summary><strong>Figure {figure["number"]}: '
+                f'{html.escape(figure["title"])}</strong></summary>',
                 f'<p><span data-claim-id="{item["id"]}">'
                 f'{html.escape(item["zh_tw"])}</span></p>',
                 "<ul>",
-                f"<li><strong>解決的問題：</strong>{html.escape(purpose)}</li>",
-                f"<li><strong>閱讀順序：</strong>{html.escape(reading)}</li>",
-                "<li><strong>規範語氣：</strong>本導讀不新增 shall／may／should；"
-                "實際強度以同節文字與欄位描述為準。</li>",
+                f"<li><strong>解決的問題：</strong>{html.escape(details['purpose'])}</li>",
+                f"<li><strong>閱讀順序：</strong>{html.escape(details['reading'])}</li>",
+                f"<li><strong>條件與限制：</strong>{html.escape(details['caveat'])}</li>",
                 "<li><strong>說明性範例（informative example）：</strong>"
-                f"{html.escape(example)}此例不新增規格要求。</li>",
+                f"{html.escape(details['example'])} 此例不新增規格要求。</li>",
             ]
         )
-        if figure["mode"] == "scope-reduced":
-            parts.append(
-                "<li><strong>範圍：</strong>只介紹 PCIe／memory-based 部分。</li>"
-            )
         if not tutorial:
-            parts.append(
-                "<li><strong>追溯鍵：</strong>"
-                + html.escape(item["id"])
-                + "；normative keyword：none（Figure 導讀本身不新增要求）。</li>"
+            parts.extend(
+                [
+                    "<li><strong>來源欄位索引：</strong>"
+                    + html.escape(details["item_text"])
+                    + "。</li>",
+                    "<li><strong>來源 keyword 索引：</strong>"
+                    + html.escape(details["keyword_text"])
+                    + "；Figure 導讀本身的 normative keyword 為 none。</li>",
+                    "<li><strong>追溯鍵：</strong>" + html.escape(item["id"]) + "。</li>",
+                ]
             )
         parts.extend(
             [
                 "</ul>",
-                f"<p><small>{html.escape(item['citation_zh_tw'])}</small></p>"
-                "</article>",
+                f"<p><small>{html.escape(item['citation_zh_tw'])}</small></p>",
+                '<p><a href="#figure-index">回到 Figure 索引</a> ｜ '
+                '<a href="#top">回到頂端</a></p>',
+                "</details>",
             ]
         )
+    if active_group:
+        parts.append("</section>")
     parts.extend(
         [
             "</section>",
@@ -596,7 +962,11 @@ def render_html(
     return "\n".join(parts)
 
 
-def frontmatter(title: str, description: str) -> str:
+def frontmatter(
+    report_id: str, title: str, description: str, language: str
+) -> str:
+    lang = "en" if language == "en" else "zh-Hant-TW"
+    image = POST_IMAGES[report_id][language]
     return f"""---
 layout: post
 read_time: true
@@ -604,6 +974,8 @@ show_date: true
 title: "{title}"
 date: 2026-08-28
 description: "{description}"
+lang: {lang}
+img: {image}
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -629,7 +1001,7 @@ def render_markdown(
     )
     fence = chr(96) * 3
     out = [
-        frontmatter(title, description),
+        frontmatter(report_id, title, description, language),
         f"# {title}",
         "",
         (
@@ -696,9 +1068,10 @@ def render_markdown(
     for index, item in enumerate(core_claims, 1):
         text = item["en"] if english else item["zh_tw"]
         citation = item["citation_en"] if english else item["citation_zh_tw"]
+        heading = item["heading_en"] if english else item["heading_zh_tw"]
         out.extend(
             [
-                f"### {index}. {item['id']}",
+                f"### {index}. {heading}",
                 "",
                 f"<!-- claim:{item['id']} -->",
                 "",
@@ -710,14 +1083,37 @@ def render_markdown(
         )
     out.extend(
         [
+            "## " + ("Figure index" if english else "Figure 索引"),
+            "",
+            (
+                f"This report introduces all {len(figures)} in-scope Figures. Use the "
+                "section links below for the 100-minute presentation path; every Figure "
+                "remains available as an appendix item."
+                if english
+                else f"本報告介紹全部 {len(figures)} 張納入範圍的 Figure。100 分鐘簡報"
+                "以 section 主線與必講 Figure 為主，其餘 Figure 仍完整保留作為附錄。"
+            ),
+            "",
+        ]
+    )
+    figure_groups: list[str] = []
+    for figure in figures:
+        group = section_group(str(figure["section"]))
+        if group not in figure_groups:
+            figure_groups.append(group)
+    for group in figure_groups:
+        out.extend([f"- [§{group}](#section-{anchor(group)})", ""])
+    out.extend(
+        [
             "## " + ("Figure-by-Figure Guide" if english else "Figure 逐圖導讀"),
             "",
             (
-                "The source uses Figure numbers for both diagrams and field-layout "
-                "tables. No source artwork is reproduced."
+                "The source uses Figure numbers for diagrams and field-layout tables. "
+                "No source artwork is reproduced; compact field and keyword indexes "
+                "come from the locally verified PDFs."
                 if english
-                else "本範圍的規格以 Figure 編號同時涵蓋示意圖與欄位表；"
-                "本文不重製原圖。"
+                else "本範圍的規格以 Figure 編號同時涵蓋示意圖與欄位表；本文不重製原圖。"
+                "欄位與 keyword 索引來自本機核對過的 PDF。"
             ),
             "",
         ]
@@ -725,59 +1121,72 @@ def render_markdown(
     figure_claims = {
         int(item["figure"]): item for item in claims if item["figure"] is not None
     }
+    active_group = ""
     for figure in figures:
         item = figure_claims[int(figure["number"])]
-        purpose, reading, example = figure_explanation(figure["title"], language)
+        details = figure_explanation(figure, language)
         statement = item["en"] if english else item["zh_tw"]
         citation = item["citation_en"] if english else item["citation_zh_tw"]
+        group = section_group(str(figure["section"]))
+        if group != active_group:
+            active_group = group
+            out.extend(
+                [
+                    f'<a id="section-{anchor(group)}"></a>',
+                    "",
+                    f"### §{group}",
+                    "",
+                ]
+            )
         out.extend(
             [
-                f"### Figure {figure['number']}: {figure['title']}",
+                '<details markdown="1">',
+                f"<summary><strong>Figure {figure['number']}: "
+                f"{html.escape(figure['title'])}</strong></summary>",
                 "",
                 f"<!-- claim:{item['id']} figure-table:{figure['id']} -->",
                 "",
                 statement,
                 "",
-                "- Purpose: " + purpose
+                "- Purpose: " + details["purpose"]
                 if english
-                else "- 解決的問題：" + purpose,
+                else "- 解決的問題：" + details["purpose"],
                 "",
-                "- How to read: " + reading
+                "- How to read: " + details["reading"]
                 if english
-                else "- 閱讀順序：" + reading,
+                else "- 閱讀順序：" + details["reading"],
                 "",
                 (
-                    "- Normative force: this guide adds no shall, may, or should; "
-                    "use the adjacent source text and field descriptions."
+                    "- Conditions and limits: " + details["caveat"]
                     if english
-                    else "- 規範語氣：本導讀不新增 shall／may／should；"
-                    "實際強度以同節文字與欄位描述為準。"
+                    else "- 條件與限制：" + details["caveat"]
                 ),
                 "",
                 (
                     "- Informative example: "
-                    + example
+                    + details["example"]
                     + " This example adds no requirement."
                     if english
                     else "- 說明性範例（informative example）："
-                    + example
-                    + "此例不新增規格要求。"
+                    + details["example"]
+                    + " 此例不新增規格要求。"
+                ),
+                "",
+                (
+                    "- Source field index: " + details["item_text"]
+                    if english
+                    else "- 來源欄位索引：" + details["item_text"]
+                ),
+                "",
+                (
+                    "- Source keyword index: " + details["keyword_text"]
+                    if english
+                    else "- 來源 keyword 索引：" + details["keyword_text"]
                 ),
                 "",
             ]
         )
-        if figure["mode"] == "scope-reduced":
-            out.extend(
-                [
-                    (
-                        "- Scope: only the PCIe/memory-based portion is introduced."
-                        if english
-                        else "- 範圍：只介紹 PCIe／memory-based 部分。"
-                    ),
-                    "",
-                ]
-            )
-        out.extend([f"> {citation}", ""])
+        out.extend([f"> {citation}", "", "</details>", ""])
     out.extend(
         [
             "## " + ("Use and limitations" if english else "使用與限制"),
@@ -797,63 +1206,32 @@ def render_markdown(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--inventory",
-        type=Path,
-        default=ROOT / "tmp" / "pdfs" / "nvme-report" / "inventory.json",
-    )
-    args = parser.parse_args()
-    inventory = json.loads(args.inventory.read_text(encoding="utf-8"))["reports"]
+    argparse.ArgumentParser(description=__doc__).parse_args()
     contract = json.loads(
         (CONTROL / "output-contract.json").read_text(encoding="utf-8")
     )
+    register_doc = json.loads(
+        (CONTROL / "figure-table-register.json").read_text(encoding="utf-8")
+    )
+    register_entries = register_doc["entries"]
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
-    register_entries = []
 
     for report_id, report in REPORTS.items():
-        figures = []
-        for raw in inventory[report_id]["figures"]:
-            number = int(raw["number"])
-            excluded = number in EXCLUDED[report_id]
-            mode = (
-                "excluded"
-                if excluded
-                else (
-                    "scope-reduced"
-                    if number in SCOPE_REDUCED[report_id]
-                    else "full"
+        figures = sorted(
+            [
+                item
+                for item in register_entries
+                if item["report_id"] == report_id
+                and item["scope_status"] == "INCLUDE"
+            ],
+            key=lambda item: int(item["number"]),
+        )
+        for figure in figures:
+            if not figure.get("key_items") or not figure.get("evidence_digest"):
+                raise ValueError(
+                    f"{figure['id']} lacks tracked compact PDF evidence"
                 )
-            )
-            figure_id = f"{report['prefix']}-FIG-{number:03d}"
-            if excluded:
-                exclusion_scope = report["scope_entry"].replace(
-                    "-INCLUDE", "-FABRIC-EXCLUDE"
-                )
-            else:
-                exclusion_scope = report["scope_entry"]
-            entry = {
-                "id": figure_id,
-                "report_id": report_id,
-                "source_id": report["source_id"],
-                "type": "Figure",
-                "number": str(number),
-                "title": raw["caption"],
-                "section": raw["section"],
-                "printed_pages": raw["printed_pages"],
-                "pdf_pages": raw["pdf_pages"],
-                "scope_entry_id": exclusion_scope,
-                "scope_status": "EXCLUDE" if excluded else "INCLUDE",
-                "mode": mode,
-                "required_artifact_ids": []
-                if excluded
-                else artifact_ids(report_id),
-                "introduced_in": [] if excluded else artifact_ids(report_id),
-            }
-            register_entries.append(entry)
-            if not excluded:
-                figures.append(entry)
         report_claims = [
             make_claim(report_id, report, item) for item in report["claims"]
         ]
@@ -879,7 +1257,7 @@ def main() -> int:
             path.write_text(content, encoding="utf-8")
 
     claims_doc = {
-        "schema_version": 2,
+        "schema_version": 3,
         "allowed_normative_keywords": [
             "mandatory",
             "may",
@@ -892,18 +1270,13 @@ def main() -> int:
         ],
         "claims": all_claims,
     }
-    figures_doc = {"schema_version": 2, "entries": register_entries}
     (CONTROL / "claims.json").write_text(
         json.dumps(claims_doc, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    (CONTROL / "figure-table-register.json").write_text(
-        json.dumps(figures_doc, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
     print(
         f"Built 16 artifacts, {len(all_claims)} claims, "
-        f"and {len(register_entries)} Figure records"
+        f"using {len(register_entries)} tracked Figure records"
     )
     return 0
 

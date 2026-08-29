@@ -2,6 +2,7 @@
 
 import importlib.util
 import json
+import re
 import subprocess
 import sys
 import tempfile
@@ -11,6 +12,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "validate_nvme_report.py"
+BUILD_SCRIPT = ROOT / "scripts" / "build_nvme_reports.py"
+EVIDENCE_SCRIPT = ROOT / "scripts" / "update_nvme_figure_evidence.py"
 SPEC = importlib.util.spec_from_file_location("validate_nvme_report", SCRIPT)
 assert SPEC and SPEC.loader
 VALIDATOR = importlib.util.module_from_spec(SPEC)
@@ -18,6 +21,35 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_generators_parse_and_import(self):
+        for path in (BUILD_SCRIPT, EVIDENCE_SCRIPT):
+            source = path.read_text(encoding="utf-8")
+            compile(source, str(path), "exec")
+            spec = importlib.util.spec_from_file_location(path.stem, path)
+            self.assertIsNotNone(spec)
+            self.assertIsNotNone(spec.loader)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+    def test_report_generation_is_deterministic(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        paths = [ROOT / item["path"] for item in contract["artifacts"]]
+        paths.append(ROOT / ".ai/nvme-report/claims.json")
+        before = {path: path.read_bytes() for path in paths}
+        result = subprocess.run(
+            [sys.executable, "-B", str(BUILD_SCRIPT)],
+            cwd=ROOT,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout)
+        after = {path: path.read_bytes() for path in paths}
+        self.assertEqual(before, after)
+
     def test_auto_runs_publish_when_outputs_are_ready(self):
         result = subprocess.run(
             [sys.executable, "-B", str(SCRIPT), "--phase", "auto"],
@@ -52,6 +84,71 @@ class NvmeReportContractTest(unittest.TestCase):
         for source in registry["sources"]:
             self.assertFalse(VALIDATOR.ABSOLUTE_PATH.match(source["filename"]))
             self.assertRegex(source["sha256"], r"^[0-9a-f]{64}$")
+
+    def test_scope_and_figure_register_are_consistent(self):
+        scope = json.loads(
+            (ROOT / ".ai/nvme-report/scope.json").read_text(encoding="utf-8")
+        )
+        register = json.loads(
+            (ROOT / ".ai/nvme-report/figure-table-register.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        statuses = {item["id"]: item["status"] for item in scope["entries"]}
+        base3_excluded = next(
+            item for item in scope["entries"] if item["id"] == "BASE3-FABRIC-EXCLUDE"
+        )
+        self.assertIn("72", base3_excluded["figures"])
+        for figure in register["entries"]:
+            self.assertEqual(figure["scope_status"], statuses[figure["scope_entry_id"]])
+            if figure["scope_status"] == "INCLUDE":
+                self.assertTrue(figure["key_items"])
+                self.assertRegex(figure["evidence_digest"], r"^[0-9a-f]{64}$")
+
+    def test_markdown_language_and_site_layout_are_language_aware(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        expected_images = {
+            "base12-zh-md": "posts/2026/dogMC_title.jpg",
+            "base12-en-md": "posts/2026/cat_title.jpg",
+            "base3-zh-md": "posts/2026/dogMC_title.jpg",
+            "base3-en-md": "posts/2026/cat_title.jpg",
+            "base4-zh-md": "posts/2026/dogMC_title.jpg",
+            "base4-en-md": "posts/2026/cat_title.jpg",
+            "pcie14-zh-md": "posts/2026/lion_title.jpg",
+            "pcie14-en-md": "posts/2026/catFlower_title.jpg",
+        }
+        for artifact in contract["artifacts"]:
+            if artifact["format"] != "markdown":
+                continue
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            self.assertRegex(
+                text,
+                rf"(?m)^lang:\s*{re.escape(artifact['language'])}\s*$",
+            )
+            self.assertRegex(
+                text,
+                rf"(?m)^img:\s*{re.escape(expected_images[artifact['id']])}\s*$",
+            )
+        layout = (ROOT / "_layouts/default.html").read_text(encoding="utf-8")
+        self.assertIn("page.lang", layout)
+
+    def test_github_actions_are_pinned_to_full_commit_shas(self):
+        for workflow in (ROOT / ".github/workflows").glob("*.yml"):
+            text = workflow.read_text(encoding="utf-8")
+            for reference in re.findall(r"(?m)^\s*uses:\s*([^\s#]+)", text):
+                self.assertRegex(reference, r"@(?:[0-9a-f]{40})$")
+
+    def test_published_reports_have_no_excluded_terms_or_placeholders(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        for artifact in contract["artifacts"]:
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            self.assertIsNone(VALIDATOR.FORBIDDEN_PUBLISHED.search(text))
+            for phrase in VALIDATOR.PLACEHOLDER_PHRASES:
+                self.assertNotIn(phrase, text)
 
     def test_html_validator_rejects_css_javascript_and_external_resources(self):
         with tempfile.TemporaryDirectory() as temp:

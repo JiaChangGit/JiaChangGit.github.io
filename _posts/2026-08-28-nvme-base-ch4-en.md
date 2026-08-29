@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe Base 2.4 Chapter 4: SQE, CQE, Status, PRP, and SGL"
 date: 2026-08-28
 description: "Source-located PCIe/NVMe report for PPT authoring."
+lang: en
 img: posts/2026/cat_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
@@ -39,7 +40,7 @@ shall is mandatory, may permits a choice, should expresses a preferred recommend
 
 ## Specification findings
 
-### 1. BASE4-SQE
+### 1. Common SQE layout
 
 <!-- claim:BASE4-SQE -->
 
@@ -47,7 +48,7 @@ The common Admin and I/O SQE is 64 bytes. CDW0, NSID, data pointers, and CDW10-1
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 139-143, PDF pages 165-169
 
-### 2. BASE4-CID
+### 2. CID uniqueness
 
 <!-- claim:BASE4-CID -->
 
@@ -55,7 +56,7 @@ CID in combination with the Submission Queue identifier uniquely identifies a co
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140, PDF pages 166
 
-### 3. BASE4-PSDT
+### 3. PRP/SGL selection
 
 <!-- claim:BASE4-PSDT -->
 
@@ -63,7 +64,7 @@ CDW0.PSDT selects PRP or SGL interpretation for DPTR. An Admin command over PCIe
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
 
-### 4. BASE4-CQE
+### 4. Common CQE and Phase Tag
 
 <!-- claim:BASE4-CQE -->
 
@@ -71,7 +72,7 @@ The common CQE is at least 16 bytes. If multiple writes construct it, the Phase 
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, printed pages 144-145, PDF pages 170-171
 
-### 5. BASE4-STATUS
+### 5. SCT, SC, and DNR
 
 <!-- claim:BASE4-STATUS -->
 
@@ -79,7 +80,7 @@ Status decoding starts with Status Code Type (SCT), then Status Code (SC), toget
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, printed pages 145-155, PDF pages 171-181
 
-### 6. BASE4-PHASE
+### 6. Completion Queue phase
 
 <!-- claim:BASE4-PHASE -->
 
@@ -87,7 +88,7 @@ The Phase Tag lets the host distinguish a new entry in a circular Completion Que
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, printed pages 155-158, PDF pages 181-184
 
-### 7. BASE4-PRP
+### 7. PRP alignment and pages
 
 <!-- claim:BASE4-PRP -->
 
@@ -95,7 +96,7 @@ A fixed-size PRP entry points to a physical memory page. The first entry may con
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, printed pages 158-159, PDF pages 184-185
 
-### 8. BASE4-SGL
+### 8. SGL descriptors and length
 
 <!-- claim:BASE4-SGL -->
 
@@ -103,7 +104,7 @@ An SGL describes a data buffer through one or more descriptors and segments. SGL
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, printed pages 159-166, PDF pages 185-192
 
-### 9. BASE4-FEATURE
+### 9. Feature values and persistence
 
 <!-- claim:BASE4-FEATURE -->
 
@@ -111,7 +112,7 @@ A Feature may have default, saved, and current values. Saved-value support and p
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.4, printed pages 166-169, PDF pages 192-195
 
-### 10. BASE4-IDENTIFIER
+### 10. Scope of global identifiers
 
 <!-- claim:BASE4-IDENTIFIER -->
 
@@ -119,7 +120,7 @@ VID/SSVID, SN/MN, IEEE OUI, EUI64, NGUID, and UUID differ in origin, length, and
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5, printed pages 169-172, PDF pages 195-198
 
-### 11. BASE4-LISTS
+### 11. Controller and Namespace Lists
 
 <!-- claim:BASE4-LISTS -->
 
@@ -127,7 +128,7 @@ Controller and Namespace Lists provide a count followed by identifiers. A parser
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.6, printed pages 172-173, PDF pages 198-199
 
-### 12. BASE4-UTF8
+### 12. UTF-8 input validation
 
 <!-- claim:BASE4-UTF8 -->
 
@@ -135,717 +136,1067 @@ UTF-8 input processing validates encoding, prohibited code points, and truncatio
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.8, printed pages 175, PDF pages 201
 
+## Figure index
+
+This report introduces all 44 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item.
+
+- [§4.1](#section-4-1)
+
+- [§4.2](#section-4-2)
+
+- [§4.3](#section-4-3)
+
+- [§4.4](#section-4-4)
+
+- [§4.5](#section-4-5)
+
+- [§4.6](#section-4-6)
+
+- [§4.8](#section-4-8)
+
 ## Figure-by-Figure Guide
 
-The source uses Figure numbers for both diagrams and field-layout tables. No source artwork is reproduced.
+The source uses Figure numbers for diagrams and field-layout tables. No source artwork is reproduced; compact field and keyword indexes come from the locally verified PDFs.
 
-### Figure 92: Command Dword 0
+<a id="section-4-1"></a>
+
+### §4.1
+
+<details markdown="1">
+<summary><strong>Figure 92: Command Dword 0</strong></summary>
 
 <!-- claim:BASE4-FIG-092-CLAIM figure-table:BASE4-FIG-092 -->
 
-Figure 92, "Command Dword 0": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 92, "Command Dword 0": Defines the concrete layout or value relationships for Command Dword 0. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is CID, PSDT, FUSE, OPC, FN, DTD, PRP, SGL.
 
-- Purpose: Organizes a field, bit, or register layout.
+- Purpose: Defines the concrete layout or value relationships for Command Dword 0.
 
-- How to read: Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is CID, PSDT, FUSE, OPC, FN, DTD, PRP, SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall not`, `should not`, `shall`, `should`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Check capability support first, then decode using the specified width and mask. This example adds no requirement.
+- Informative example: Use CID as the first parser checkpoint and PSDT as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: CID, PSDT, FUSE, OPC, FN, DTD, PRP, SGL
+
+- Source keyword index: `shall not`, `should not`, `shall`, `should`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 92, printed pages 139-140, PDF pages 165-166
 
-### Figure 93: Common Command Format
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASE4-FIG-093-CLAIM figure-table:BASE4-FIG-093 -->
 
-Figure 93, "Common Command Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 93, "Common Command Format": Defines the concrete layout or value relationships for Common Command Format. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is CDW0, NSID, CDW2, CDW3, MPTR, DPTR, PRP2, PRP1.
 
-- Purpose: Organizes a field, bit, or register layout.
+- Purpose: Defines the concrete layout or value relationships for Common Command Format.
 
-- How to read: Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is CDW0, NSID, CDW2, CDW3, MPTR, DPTR, PRP2, PRP1.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Check capability support first, then decode using the specified width and mask. This example adds no requirement.
+- Informative example: Use CDW0 as the first parser checkpoint and NSID as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: CDW0, NSID, CDW2, CDW3, MPTR, DPTR, PRP2, PRP1
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, printed pages 140-142, PDF pages 166-168
 
-### Figure 94: Common Command Format - Vendor Specific Commands (Optional)
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
 
 <!-- claim:BASE4-FIG-094-CLAIM figure-table:BASE4-FIG-094 -->
 
-Figure 94, "Common Command Format - Vendor Specific Commands (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 94, "Common Command Format - Vendor Specific Commands (Optional)": Defines the concrete layout or value relationships for Common Command Format - Vendor Specific Commands (Optional). Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is CDW0, NSID, MDPTR, NDT, NDM, CDW12, CDW13, CDW14.
 
-- Purpose: Organizes a field, bit, or register layout.
+- Purpose: Defines the concrete layout or value relationships for Common Command Format - Vendor Specific Commands (Optional).
 
-- How to read: Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is CDW0, NSID, MDPTR, NDT, NDM, CDW12, CDW13, CDW14.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Check capability support first, then decode using the specified width and mask. This example adds no requirement.
+- Informative example: Use CDW0 as the first parser checkpoint and NSID as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: CDW0, NSID, MDPTR, NDT, NDM, CDW12, CDW13, CDW14
+
+- Source keyword index: `shall`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, printed pages 143, PDF pages 169
 
-### Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets
+</details>
+
+<a id="section-4-2"></a>
+
+### §4.2
+
+<details markdown="1">
+<summary><strong>Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets</strong></summary>
 
 <!-- claim:BASE4-FIG-097-CLAIM figure-table:BASE4-FIG-097 -->
 
-Figure 97, "Common Completion Queue Entry Layout - Admin and All I/O Command Sets": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 97, "Common Completion Queue Entry Layout - Admin and All I/O Command Sets": Defines the concrete layout or value relationships for Common Completion Queue Entry Layout - Admin and All I/O Command Sets. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is DW0, DW1, DW2, SQ, DW3, Command Set, Completion Queue, Command.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Defines the concrete layout or value relationships for Common Completion Queue Entry Layout - Admin and All I/O Command Sets.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is DW0, DW1, DW2, SQ, DW3, Command Set, Completion Queue, Command.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Use DW0 as the first parser checkpoint and DW1 as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: DW0, DW1, DW2, SQ, DW3, Command Set, Completion Queue, Command
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, printed pages 144, PDF pages 170
 
-### Figure 98: Completion Queue Entry: DW 2
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 98: Completion Queue Entry: DW 2</strong></summary>
 
 <!-- claim:BASE4-FIG-098-CLAIM figure-table:BASE4-FIG-098 -->
 
-Figure 98, "Completion Queue Entry: DW 2": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 98, "Completion Queue Entry: DW 2": Shows the queue or command relationship expressed by Completion Queue Entry: DW 2. Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: SQID, SQHD, DW, SQ, CID, Completion Queue.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Shows the queue or command relationship expressed by Completion Queue Entry: DW 2.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: SQID, SQHD, DW, SQ, CID, Completion Queue.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `may`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Trace one command through Figure 98, using SQID and SQHD as checkpoints for ownership or pointer movement. This example adds no requirement.
+
+- Source field index: SQID, SQHD, DW, SQ, CID, Completion Queue
+
+- Source keyword index: `may`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, printed pages 144, PDF pages 170
 
-### Figure 99: Completion Queue Entry: DW 3
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 99: Completion Queue Entry: DW 3</strong></summary>
 
 <!-- claim:BASE4-FIG-099-CLAIM figure-table:BASE4-FIG-099 -->
 
-Figure 99, "Completion Queue Entry: DW 3": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 99, "Completion Queue Entry: DW 3": Shows the queue or command relationship expressed by Completion Queue Entry: DW 3. Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: STATUS, CID, DW, SQ, Completion Queue.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Shows the queue or command relationship expressed by Completion Queue Entry: DW 3.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: STATUS, CID, DW, SQ, Completion Queue.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Trace one command through Figure 99, using STATUS and CID as checkpoints for ownership or pointer movement. This example adds no requirement.
+
+- Source field index: STATUS, CID, DW, SQ, Completion Queue
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, printed pages 145, PDF pages 171
 
-### Figure 101: Completion Queue Entry: Status Field
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 101: Completion Queue Entry: Status Field</strong></summary>
 
 <!-- claim:BASE4-FIG-101-CLAIM figure-table:BASE4-FIG-101 -->
 
-Figure 101, "Completion Queue Entry: Status Field": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 101, "Completion Queue Entry: Status Field": Defines the concrete layout or value relationships for Completion Queue Entry: Status Field. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is DNR, CRD, SCT, SC, ACRE, CRDT1, CRDT2, CRDT3.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Defines the concrete layout or value relationships for Completion Queue Entry: Status Field.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is DNR, CRD, SCT, SC, ACRE, CRDT1, CRDT2, CRDT3.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `should not`, `should`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Use DNR as the first parser checkpoint and CRD as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: DNR, CRD, SCT, SC, ACRE, CRDT1, CRDT2, CRDT3
+
+- Source keyword index: `should not`, `should`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, printed pages 145-146, PDF pages 171-172
 
-### Figure 102: Status Code - Status Code Type Values
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 102: Status Code - Status Code Type Values</strong></summary>
 
 <!-- claim:BASE4-FIG-102-CLAIM figure-table:BASE4-FIG-102 -->
 
-Figure 102, "Status Code - Status Code Type Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 102, "Status Code - Status Code Type Values": Defines the status/error classification represented by Status Code - Status Code Type Values. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: SC, Status Code.
 
-- Purpose: Organizes status or error fields and their classification.
+- Purpose: Defines the status/error classification represented by Status Code - Status Code Type Values.
 
-- How to read: Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: SC, Status Code.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: For a failed CQE, decode SCT first, then SC and DNR. This example adds no requirement.
+- Informative example: For one reported condition, identify SC first and then check Status Code instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: SC, Status Code
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, printed pages 146, PDF pages 172
 
-### Figure 103: Status Code - Generic Command Status Values
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 103: Status Code - Generic Command Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-103-CLAIM figure-table:BASE4-FIG-103 -->
 
-Figure 103, "Status Code - Generic Command Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 103, "Status Code - Generic Command Status Values": Defines the status/error classification represented by Status Code - Generic Command Status Values. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: ID, SQ, TCG, SGL, PRP, ZNS, RACQA, CMB.
 
-- Purpose: Organizes status or error fields and their classification.
+- Purpose: Defines the status/error classification represented by Status Code - Generic Command Status Values.
 
-- How to read: Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: ID, SQ, TCG, SGL, PRP, ZNS, RACQA, CMB.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall not`, `shall`, `should`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: For a failed CQE, decode SCT first, then SC and DNR. This example adds no requirement.
+- Informative example: For one reported condition, identify ID first and then check SQ instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: ID, SQ, TCG, SGL, PRP, ZNS, RACQA, CMB
+
+- Source keyword index: `shall not`, `shall`, `should`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, printed pages 147-150, PDF pages 173-176
 
-### Figure 104: Status Code - Command Specific Status Values
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 104: Status Code - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-104-CLAIM figure-table:BASE4-FIG-104 -->
 
-Figure 104, "Status Code - Command Specific Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 104, "Status Code - Command Specific Status Values": Defines the status/error classification represented by Status Code - Command Specific Status Values. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: ANA, NOTE, Status Code, Command.
 
-- Purpose: Organizes status or error fields and their classification.
+- Purpose: Defines the status/error classification represented by Status Code - Command Specific Status Values.
 
-- How to read: Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: ANA, NOTE, Status Code, Command.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: For a failed CQE, decode SCT first, then SC and DNR. This example adds no requirement.
+- Informative example: For one reported condition, identify ANA first and then check NOTE instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: ANA, NOTE, Status Code, Command
+
+- Source keyword index: `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, printed pages 151-152, PDF pages 177-178
 
-### Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific</strong></summary>
 
 <!-- claim:BASE4-FIG-105-CLAIM figure-table:BASE4-FIG-105 -->
 
-Figure 105, "Status Code - Command Specific Status Values, I/O Command Set Specific": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 105, "Status Code - Command Specific Status Values, I/O Command Set Specific": Defines the status/error classification represented by Status Code - Command Specific Status Values, I/O Command Set Specific. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: ID, Command Set, Status Code, Command.
 
-- Purpose: Organizes status or error fields and their classification.
+- Purpose: Defines the status/error classification represented by Status Code - Command Specific Status Values, I/O Command Set Specific.
 
-- How to read: Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: ID, Command Set, Status Code, Command.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: For a failed CQE, decode SCT first, then SC and DNR. This example adds no requirement.
+- Informative example: For one reported condition, identify ID first and then check Command Set instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: ID, Command Set, Status Code, Command
+
+- Source keyword index: `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, printed pages 152-153, PDF pages 178-179
 
-### Figure 107: Status Code - Media and Data Integrity Error Values
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 107: Status Code - Media and Data Integrity Error Values</strong></summary>
 
 <!-- claim:BASE4-FIG-107-CLAIM figure-table:BASE4-FIG-107 -->
 
-Figure 107, "Status Code - Media and Data Integrity Error Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 107, "Status Code - Media and Data Integrity Error Values": Defines the status/error classification represented by Status Code - Media and Data Integrity Error Values. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: TCG, SCT, Status Code.
 
-- Purpose: Organizes status or error fields and their classification.
+- Purpose: Defines the status/error classification represented by Status Code - Media and Data Integrity Error Values.
 
-- How to read: Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: TCG, SCT, Status Code.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `should`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: For a failed CQE, decode SCT first, then SC and DNR. This example adds no requirement.
+- Informative example: For one reported condition, identify TCG first and then check SCT instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: TCG, SCT, Status Code
+
+- Source keyword index: `should`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, printed pages 154-155, PDF pages 180-181
 
-### Figure 108: Status Code - Path Related Status Values
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 108: Status Code - Path Related Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-108-CLAIM figure-table:BASE4-FIG-108 -->
 
-Figure 108, "Status Code - Path Related Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 108, "Status Code - Path Related Status Values": Defines the status/error classification represented by Status Code - Path Related Status Values. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: DNR, ANA, Status Code.
 
-- Purpose: Organizes status or error fields and their classification.
+- Purpose: Defines the status/error classification represented by Status Code - Path Related Status Values.
 
-- How to read: Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: DNR, ANA, Status Code.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `should not`, `should`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: For a failed CQE, decode SCT first, then SC and DNR. This example adds no requirement.
+- Informative example: For one reported condition, identify DNR first and then check ANA instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: DNR, ANA, Status Code
+
+- Source keyword index: `should not`, `should`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.3, Figure 108, printed pages 155, PDF pages 181
 
-### Figure 109: Phase Tag bit Transition Example
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 109: Phase Tag bit Transition Example</strong></summary>
 
 <!-- claim:BASE4-FIG-109-CLAIM figure-table:BASE4-FIG-109 -->
 
-Figure 109, "Phase Tag bit Transition Example": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 109, "Phase Tag bit Transition Example": Shows the queue or command relationship expressed by Phase Tag bit Transition Example. Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: Phase Tag.
 
-- Purpose: Organizes a queue or command relationship or processing sequence.
+- Purpose: Shows the queue or command relationship expressed by Phase Tag bit Transition Example.
 
-- How to read: Follow host, SQ, controller, CQ, and pointer or phase direction.
+- How to read: Trace ownership and direction from host to SQ, controller, and CQ; keep the indexed elements distinct: Phase Tag.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose one queue identifier and trace one command and its completion. This example adds no requirement.
+- Informative example: Trace one command through Figure 109, using Phase Tag and the cited condition as checkpoints for ownership or pointer movement. This example adds no requirement.
+
+- Source field index: Phase Tag
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, Figure 109, printed pages 156-157, PDF pages 182-183
 
-### Figure 110: PRP Entry Layout
+</details>
+
+<a id="section-4-3"></a>
+
+### §4.3
+
+<details markdown="1">
+<summary><strong>Figure 110: PRP Entry Layout</strong></summary>
 
 <!-- claim:BASE4-FIG-110-CLAIM figure-table:BASE4-FIG-110 -->
 
-Figure 110, "PRP Entry Layout": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 110, "PRP Entry Layout": Defines the concrete layout or value relationships for PRP Entry Layout. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is PRP.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for PRP Entry Layout.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is PRP.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use PRP as the first parser checkpoint and the cited condition as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: PRP
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, printed pages 158, PDF pages 184
 
-### Figure 111: PRP Entry - Page Base Address and Offset
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 111: PRP Entry - Page Base Address and Offset</strong></summary>
 
 <!-- claim:BASE4-FIG-111-CLAIM figure-table:BASE4-FIG-111 -->
 
-Figure 111, "PRP Entry - Page Base Address and Offset": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 111, "PRP Entry - Page Base Address and Offset": Shows how PRP Entry - Page Base Address and Offset maps a transfer onto host-memory locations. Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: PBAO, PRP.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Shows how PRP Entry - Page Base Address and Offset maps a transfer onto host-memory locations.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: PBAO, PRP.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Map a transfer beginning at PBAO, then verify the boundary or next element identified by PRP before continuing. This example adds no requirement.
+
+- Source field index: PBAO, PRP
+
+- Source keyword index: `shall`, `may`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 111, printed pages 158, PDF pages 184
 
-### Figure 112: PRP List Layout for Physically Contiguous Memory Pages
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 112: PRP List Layout for Physically Contiguous Memory Pages</strong></summary>
 
 <!-- claim:BASE4-FIG-112-CLAIM figure-table:BASE4-FIG-112 -->
 
-Figure 112, "PRP List Layout for Physically Contiguous Memory Pages": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 112, "PRP List Layout for Physically Contiguous Memory Pages": Defines the concrete layout or value relationships for PRP List Layout for Physically Contiguous Memory Pages. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is PRP, Memory Page.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for PRP List Layout for Physically Contiguous Memory Pages.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is PRP, Memory Page.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use PRP as the first parser checkpoint and Memory Page as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: PRP, Memory Page
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 112, printed pages 159, PDF pages 185
 
-### Figure 113: PRP List Layout for Physically Non-Contiguous Memory Pages
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 113: PRP List Layout for Physically Non-Contiguous Memory Pages</strong></summary>
 
 <!-- claim:BASE4-FIG-113-CLAIM figure-table:BASE4-FIG-113 -->
 
-Figure 113, "PRP List Layout for Physically Non-Contiguous Memory Pages": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 113, "PRP List Layout for Physically Non-Contiguous Memory Pages": Defines the concrete layout or value relationships for PRP List Layout for Physically Non-Contiguous Memory Pages. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is PRP, CC.MPS, Memory Page.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for PRP List Layout for Physically Non-Contiguous Memory Pages.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is PRP, CC.MPS, Memory Page.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `should`, `may`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use PRP as the first parser checkpoint and CC.MPS as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: PRP, CC.MPS, Memory Page
+
+- Source keyword index: `shall`, `should`, `may`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 113, printed pages 159, PDF pages 185
 
-### Figure 114: SGL Validation Error Conditions
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 114: SGL Validation Error Conditions</strong></summary>
 
 <!-- claim:BASE4-FIG-114-CLAIM figure-table:BASE4-FIG-114 -->
 
-Figure 114, "SGL Validation Error Conditions": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 114, "SGL Validation Error Conditions": Defines the status/error classification represented by SGL Validation Error Conditions. Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the status/error classification represented by SGL Validation Error Conditions.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Resolve the category before the individual code or flag; keep reserved values uninterpreted. Evidence index: SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: For one reported condition, identify SGL first and then check the cited condition instead of decoding an isolated numeric value. This example adds no requirement.
+
+- Source field index: SGL
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 114, printed pages 161, PDF pages 187
 
-### Figure 115: SGL Segment
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 115: SGL Segment</strong></summary>
 
 <!-- claim:BASE4-FIG-115-CLAIM figure-table:BASE4-FIG-115 -->
 
-Figure 115, "SGL Segment": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 115, "SGL Segment": Shows how SGL Segment maps a transfer onto host-memory locations. Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Shows how SGL Segment maps a transfer onto host-memory locations.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Map a transfer beginning at SGL, then verify the boundary or next element identified by the cited condition before continuing. This example adds no requirement.
+
+- Source field index: SGL
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 115, printed pages 161, PDF pages 187
 
-### Figure 116: Generic SGL Descriptor Format
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 116: Generic SGL Descriptor Format</strong></summary>
 
 <!-- claim:BASE4-FIG-116-CLAIM figure-table:BASE4-FIG-116 -->
 
-Figure 116, "Generic SGL Descriptor Format": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 116, "Generic SGL Descriptor Format": Defines the concrete layout or value relationships for Generic SGL Descriptor Format. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is DTS, SGLID, SGLDT, SGLDST, SGL, NULL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for Generic SGL Descriptor Format.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is DTS, SGLID, SGLDT, SGLDST, SGL, NULL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use DTS as the first parser checkpoint and SGLID as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: DTS, SGLID, SGLDT, SGLDST, SGL, NULL
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, printed pages 161, PDF pages 187
 
-### Figure 117: SGL Descriptor Type
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 117: SGL Descriptor Type</strong></summary>
 
 <!-- claim:BASE4-FIG-117-CLAIM figure-table:BASE4-FIG-117 -->
 
-Figure 117, "SGL Descriptor Type": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.
+Figure 117, "SGL Descriptor Type": Defines the concrete layout or value relationships for SGL Descriptor Type. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for SGL Descriptor Type.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `reserved`. The index locates normative language but does not replace the condition attached to each field. Only the PCIe/memory-based portion is in scope.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use SGL as the first parser checkpoint and the cited condition as a second, independent boundary check. This example adds no requirement.
 
-- Scope: only the PCIe/memory-based portion is introduced.
+- Source field index: SGL
+
+- Source keyword index: `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 117, printed pages 161-162, PDF pages 187-188
 
-### Figure 118: SGL Descriptor Sub Type Values
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 118: SGL Descriptor Sub Type Values</strong></summary>
 
 <!-- claim:BASE4-FIG-118-CLAIM figure-table:BASE4-FIG-118 -->
 
-Figure 118, "SGL Descriptor Sub Type Values": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.
+Figure 118, "SGL Descriptor Sub Type Values": Defines the concrete layout or value relationships for SGL Descriptor Sub Type Values. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for SGL Descriptor Sub Type Values.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field. Only the PCIe/memory-based portion is in scope.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use SGL as the first parser checkpoint and the cited condition as a second, independent boundary check. This example adds no requirement.
 
-- Scope: only the PCIe/memory-based portion is introduced.
+- Source field index: SGL
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 118, printed pages 162, PDF pages 188
 
-### Figure 119: SGL Data Block descriptor
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 119: SGL Data Block descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-119-CLAIM figure-table:BASE4-FIG-119 -->
 
-Figure 119, "SGL Data Block descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 119, "SGL Data Block descriptor": Defines the concrete layout or value relationships for SGL Data Block descriptor. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ADDR, LEN, SGLID, SGLDT, SGLDST, SGL, SGLS.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for SGL Data Block descriptor.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ADDR, LEN, SGLID, SGLDT, SGLDST, SGL, SGLS.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use ADDR as the first parser checkpoint and LEN as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: ADDR, LEN, SGLID, SGLDT, SGLDST, SGL, SGLS
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 119, printed pages 162-163, PDF pages 188-189
 
-### Figure 120: SGL Bit Bucket descriptor
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 120: SGL Bit Bucket descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-120-CLAIM figure-table:BASE4-FIG-120 -->
 
-Figure 120, "SGL Bit Bucket descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 120, "SGL Bit Bucket descriptor": Defines the concrete layout or value relationships for SGL Bit Bucket descriptor. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is LEN, SGLID, SGLDT, SGLDST, SGL, NLB.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for SGL Bit Bucket descriptor.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is LEN, SGLID, SGLDT, SGLDST, SGL, NLB.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use LEN as the first parser checkpoint and SGLID as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: LEN, SGLID, SGLDT, SGLDST, SGL, NLB
+
+- Source keyword index: `shall`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 120, printed pages 163, PDF pages 189
 
-### Figure 121: SGL Segment descriptor
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 121: SGL Segment descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-121-CLAIM figure-table:BASE4-FIG-121 -->
 
-Figure 121, "SGL Segment descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 121, "SGL Segment descriptor": Defines the concrete layout or value relationships for SGL Segment descriptor. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ADDR, LEN, SGLID, SGLDT, SGDST, SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for SGL Segment descriptor.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ADDR, LEN, SGLID, SGLDT, SGDST, SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use ADDR as the first parser checkpoint and LEN as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: ADDR, LEN, SGLID, SGLDT, SGDST, SGL
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 121, printed pages 163, PDF pages 189
 
-### Figure 122: SGL Last Segment descriptor
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 122: SGL Last Segment descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-122-CLAIM figure-table:BASE4-FIG-122 -->
 
-Figure 122, "SGL Last Segment descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 122, "SGL Last Segment descriptor": Defines the concrete layout or value relationships for SGL Last Segment descriptor. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ADDR, LEN, SGLID, SGLDT, SGLDST, SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Defines the concrete layout or value relationships for SGL Last Segment descriptor.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ADDR, LEN, SGLID, SGLDT, SGLDST, SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `shall`, `may`, `reserved`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Use ADDR as the first parser checkpoint and LEN as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: ADDR, LEN, SGLID, SGLDT, SGLDST, SGL
+
+- Source keyword index: `shall`, `may`, `reserved`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 122, printed pages 164, PDF pages 190
 
-### Figure 125: SGL Read Example
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 125: SGL Read Example</strong></summary>
 
 <!-- claim:BASE4-FIG-125-CLAIM figure-table:BASE4-FIG-125 -->
 
-Figure 125, "SGL Read Example": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 125, "SGL Read Example": Shows how SGL Read Example maps a transfer onto host-memory locations. Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: SGL.
 
-- Purpose: Shows how PRP or SGL structures describe a data buffer.
+- Purpose: Shows how SGL Read Example maps a transfer onto host-memory locations.
 
-- How to read: Check address, offset, length, alignment, and next-level pointers in order.
+- How to read: Follow address, length, page/segment boundaries, and the link to the next entry in order. Evidence index: SGL.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Use a buffer crossing two memory pages to check the first offset and later alignment. This example adds no requirement.
+- Informative example: Map a transfer beginning at SGL, then verify the boundary or next element identified by the cited condition before continuing. This example adds no requirement.
+
+- Source field index: SGL
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2.1, Figure 125, printed pages 166, PDF pages 192
 
-### Figure 126: Current Value after Reset with Scope of Entire NVM Subsystem
+</details>
+
+<a id="section-4-4"></a>
+
+### §4.4
+
+<details markdown="1">
+<summary><strong>Figure 126: Current Value after Reset with Scope of Entire NVM Subsystem</strong></summary>
 
 <!-- claim:BASE4-FIG-126-CLAIM figure-table:BASE4-FIG-126 -->
 
-Figure 126, "Current Value after Reset with Scope of Entire NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 126, "Current Value after Reset with Scope of Entire NVM Subsystem": Shows the object or capacity relationships in Current Value after Reset with Scope of Entire NVM Subsystem. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Current Value after Reset with Scope of Entire NVM Subsystem.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to the cited condition without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, printed pages 167, PDF pages 193
 
-### Figure 127: Current Value after Reset with Scope of Subset of the NVM Subsystem
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 127: Current Value after Reset with Scope of Subset of the NVM Subsystem</strong></summary>
 
 <!-- claim:BASE4-FIG-127-CLAIM figure-table:BASE4-FIG-127 -->
 
-Figure 127, "Current Value after Reset with Scope of Subset of the NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 127, "Current Value after Reset with Scope of Subset of the NVM Subsystem": Shows the object or capacity relationships in Current Value after Reset with Scope of Subset of the NVM Subsystem. Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in Current Value after Reset with Scope of Subset of the NVM Subsystem.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: NVM Subsystem.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by NVM Subsystem and trace its relationship to the cited condition without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: NVM Subsystem
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, printed pages 168, PDF pages 194
 
-### Figure 128: PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)
+</details>
+
+<a id="section-4-5"></a>
+
+### §4.5
+
+<details markdown="1">
+<summary><strong>Figure 128: PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</strong></summary>
 
 <!-- claim:BASE4-FIG-128-CLAIM figure-table:BASE4-FIG-128 -->
 
-Figure 128, "PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 128, "PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)": Shows the object or capacity relationships in PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID). Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: ID, VID, SSVID.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Shows the object or capacity relationships in PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID).
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Separate logical identifiers from controllers, namespaces, ports, and capacity containers. Evidence index: ID, VID, SSVID.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Choose one object labeled by ID and trace its relationship to VID without treating an identifier as the object itself. This example adds no requirement.
+
+- Source field index: ID, VID, SSVID
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.1, Figure 128, printed pages 169, PDF pages 195
 
-### Figure 129: Serial Number (SN) and Model Number (MN)
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 129: Serial Number (SN) and Model Number (MN)</strong></summary>
 
 <!-- claim:BASE4-FIG-129-CLAIM figure-table:BASE4-FIG-129 -->
 
-Figure 129, "Serial Number (SN) and Model Number (MN)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 129, "Serial Number (SN) and Model Number (MN)": Defines the identifier composition or namespace of values shown by Serial Number (SN) and Model Number (MN). Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: SN, MN.
 
-- Purpose: Organizes identifier or list byte layout and scope.
+- Purpose: Defines the identifier composition or namespace of values shown by Serial Number (SN) and Model Number (MN).
 
-- How to read: Check length, byte order, count, uniqueness scope, and reserved area.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: SN, MN.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: A parser validates count and length before reading identifiers. This example adds no requirement.
+- Informative example: Parse SN at its defined width, then validate the scope associated with MN before using it as an identity key. This example adds no requirement.
+
+- Source field index: SN, MN
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.2, Figure 129, printed pages 170, PDF pages 196
 
-### Figure 130: IEEE OUI Identifier (IEEE)
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 130: IEEE OUI Identifier (IEEE)</strong></summary>
 
 <!-- claim:BASE4-FIG-130-CLAIM figure-table:BASE4-FIG-130 -->
 
-Figure 130, "IEEE OUI Identifier (IEEE)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 130, "IEEE OUI Identifier (IEEE)": Defines the identifier composition or namespace of values shown by IEEE OUI Identifier (IEEE). Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: IEEE, OUI.
 
-- Purpose: Organizes identifier or list byte layout and scope.
+- Purpose: Defines the identifier composition or namespace of values shown by IEEE OUI Identifier (IEEE).
 
-- How to read: Check length, byte order, count, uniqueness scope, and reserved area.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: IEEE, OUI.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: A parser validates count and length before reading identifiers. This example adds no requirement.
+- Informative example: Parse IEEE at its defined width, then validate the scope associated with OUI before using it as an identity key. This example adds no requirement.
+
+- Source field index: IEEE, OUI
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.3, Figure 130, printed pages 170, PDF pages 196
 
-### Figure 131: IEEE Extended Unique Identifier (EUI64), MA-L Format
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 131: IEEE Extended Unique Identifier (EUI64), MA-L Format</strong></summary>
 
 <!-- claim:BASE4-FIG-131-CLAIM figure-table:BASE4-FIG-131 -->
 
-Figure 131, "IEEE Extended Unique Identifier (EUI64), MA-L Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 131, "IEEE Extended Unique Identifier (EUI64), MA-L Format": Defines the concrete layout or value relationships for IEEE Extended Unique Identifier (EUI64), MA-L Format. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is IEEE, EUI64, MA, EUI, OUI.
 
-- Purpose: Organizes a field, bit, or register layout.
+- Purpose: Defines the concrete layout or value relationships for IEEE Extended Unique Identifier (EUI64), MA-L Format.
 
-- How to read: Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is IEEE, EUI64, MA, EUI, OUI.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Check capability support first, then decode using the specified width and mask. This example adds no requirement.
+- Informative example: Use IEEE as the first parser checkpoint and EUI64 as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: IEEE, EUI64, MA, EUI, OUI
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 131, printed pages 170, PDF pages 196
 
-### Figure 132: IEEE Extended Unique Identifier (EUI64), OUI Identifier
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 132: IEEE Extended Unique Identifier (EUI64), OUI Identifier</strong></summary>
 
 <!-- claim:BASE4-FIG-132-CLAIM figure-table:BASE4-FIG-132 -->
 
-Figure 132, "IEEE Extended Unique Identifier (EUI64), OUI Identifier": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 132, "IEEE Extended Unique Identifier (EUI64), OUI Identifier": Defines the identifier composition or namespace of values shown by IEEE Extended Unique Identifier (EUI64), OUI Identifier. Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: IEEE, EUI64, OUI.
 
-- Purpose: Organizes identifier or list byte layout and scope.
+- Purpose: Defines the identifier composition or namespace of values shown by IEEE Extended Unique Identifier (EUI64), OUI Identifier.
 
-- How to read: Check length, byte order, count, uniqueness scope, and reserved area.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: IEEE, EUI64, OUI.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: A parser validates count and length before reading identifiers. This example adds no requirement.
+- Informative example: Parse IEEE at its defined width, then validate the scope associated with EUI64 before using it as an identity key. This example adds no requirement.
+
+- Source field index: IEEE, EUI64, OUI
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 132, printed pages 170, PDF pages 196
 
-### Figure 133: IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 133: IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</strong></summary>
 
 <!-- claim:BASE4-FIG-133-CLAIM figure-table:BASE4-FIG-133 -->
 
-Figure 133, "IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 133, "IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)": Defines the identifier composition or namespace of values shown by IEEE Extended Unique Identifier (EUI64), Ext. ID (cont). Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: IEEE, EUI64, ID, MA, WWN, NAA.
 
-- Purpose: Organizes identifier or list byte layout and scope.
+- Purpose: Defines the identifier composition or namespace of values shown by IEEE Extended Unique Identifier (EUI64), Ext. ID (cont).
 
-- How to read: Check length, byte order, count, uniqueness scope, and reserved area.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: IEEE, EUI64, ID, MA, WWN, NAA.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: A parser validates count and length before reading identifiers. This example adds no requirement.
+- Informative example: Parse IEEE at its defined width, then validate the scope associated with EUI64 before using it as an identity key. This example adds no requirement.
+
+- Source field index: IEEE, EUI64, ID, MA, WWN, NAA
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 133, printed pages 170-171, PDF pages 196-197
 
-### Figure 134: MA-L similarity to WWN
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 134: MA-L similarity to WWN</strong></summary>
 
 <!-- claim:BASE4-FIG-134-CLAIM figure-table:BASE4-FIG-134 -->
 
-Figure 134, "MA-L similarity to WWN": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 134, "MA-L similarity to WWN": Defines the identifier composition or namespace of values shown by MA-L similarity to WWN. Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: MA, WWN.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Defines the identifier composition or namespace of values shown by MA-L similarity to WWN.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: MA, WWN.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Parse MA at its defined width, then validate the scope associated with WWN before using it as an identity key. This example adds no requirement.
+
+- Source field index: MA, WWN
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 134, printed pages 171, PDF pages 197
 
-### Figure 135: Namespace Globally Unique Identifier (NGUID)
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 135: Namespace Globally Unique Identifier (NGUID)</strong></summary>
 
 <!-- claim:BASE4-FIG-135-CLAIM figure-table:BASE4-FIG-135 -->
 
-Figure 135, "Namespace Globally Unique Identifier (NGUID)": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 135, "Namespace Globally Unique Identifier (NGUID)": Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier (NGUID). Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, Namespace.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier (NGUID).
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Parse NGUID at its defined width, then validate the scope associated with Namespace before using it as an identity key. This example adds no requirement.
+
+- Source field index: NGUID, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 135, printed pages 171, PDF pages 197
 
-### Figure 136: Namespace Globally Unique Identifier (NGUID), OUI
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 136: Namespace Globally Unique Identifier (NGUID), OUI</strong></summary>
 
 <!-- claim:BASE4-FIG-136-CLAIM figure-table:BASE4-FIG-136 -->
 
-Figure 136, "Namespace Globally Unique Identifier (NGUID), OUI": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 136, "Namespace Globally Unique Identifier (NGUID), OUI": Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier (NGUID), OUI. Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, OUI, VSP, ID, Namespace.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier (NGUID), OUI.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, OUI, VSP, ID, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Parse NGUID at its defined width, then validate the scope associated with OUI before using it as an identity key. This example adds no requirement.
+
+- Source field index: NGUID, OUI, VSP, ID, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 136, printed pages 171, PDF pages 197
 
-### Figure 137: Namespace Globally Unique Identifier
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 137: Namespace Globally Unique Identifier</strong></summary>
 
 <!-- claim:BASE4-FIG-137-CLAIM figure-table:BASE4-FIG-137 -->
 
-Figure 137, "Namespace Globally Unique Identifier": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 137, "Namespace Globally Unique Identifier": Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier. Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, WWN, IEEE, NAA, Namespace.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, WWN, IEEE, NAA, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Parse NGUID at its defined width, then validate the scope associated with WWN before using it as an identity key. This example adds no requirement.
+
+- Source field index: NGUID, WWN, IEEE, NAA, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 137, printed pages 171, PDF pages 197
 
-### Figure 138: Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 138: Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</strong></summary>
 
 <!-- claim:BASE4-FIG-138-CLAIM figure-table:BASE4-FIG-138 -->
 
-Figure 138, "Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 138, "Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN": Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN. Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, WWN, OUI, NAA, Namespace.
 
-- Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
+- Purpose: Defines the identifier composition or namespace of values shown by Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN.
 
-- How to read: Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+- How to read: Keep the value width, issuing authority, uniqueness scope, and reserved values separate. Evidence index: NGUID, WWN, OUI, NAA, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: For one namespace, mark its NSID, controller, and capacity hierarchy. This example adds no requirement.
+- Informative example: Parse NGUID at its defined width, then validate the scope associated with WWN before using it as an identity key. This example adds no requirement.
+
+- Source field index: NGUID, WWN, OUI, NAA, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 138, printed pages 171, PDF pages 197
 
-### Figure 139: Controller List Format
+</details>
+
+<a id="section-4-6"></a>
+
+### §4.6
+
+<details markdown="1">
+<summary><strong>Figure 139: Controller List Format</strong></summary>
 
 <!-- claim:BASE4-FIG-139-CLAIM figure-table:BASE4-FIG-139 -->
 
-Figure 139, "Controller List Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 139, "Controller List Format": Defines the concrete layout or value relationships for Controller List Format. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is NUMCIDS, Controller.
 
-- Purpose: Organizes a field, bit, or register layout.
+- Purpose: Defines the concrete layout or value relationships for Controller List Format.
 
-- How to read: Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is NUMCIDS, Controller.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: Source keyword index: `may`. The index locates normative language but does not replace the condition attached to each field.
 
-- Informative example: Check capability support first, then decode using the specified width and mask. This example adds no requirement.
+- Informative example: Use NUMCIDS as the first parser checkpoint and Controller as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: NUMCIDS, Controller
+
+- Source keyword index: `may`
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.6.1, Figure 139, printed pages 172, PDF pages 198
 
-### Figure 140: Namespace List Format
+</details>
+
+<details markdown="1">
+<summary><strong>Figure 140: Namespace List Format</strong></summary>
 
 <!-- claim:BASE4-FIG-140-CLAIM figure-table:BASE4-FIG-140 -->
 
-Figure 140, "Namespace List Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 140, "Namespace List Format": Defines the concrete layout or value relationships for Namespace List Format. Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ID, Namespace.
 
-- Purpose: Organizes a field, bit, or register layout.
+- Purpose: Defines the concrete layout or value relationships for Namespace List Format.
 
-- How to read: Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+- How to read: Follow byte/bit order, length, access type, and reserved areas; the source-derived evidence index is ID, Namespace.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Check capability support first, then decode using the specified width and mask. This example adds no requirement.
+- Informative example: Use ID as the first parser checkpoint and Namespace as a second, independent boundary check. This example adds no requirement.
+
+- Source field index: ID, Namespace
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.6.2, Figure 140, printed pages 172, PDF pages 198
 
-### Figure 142: UTF-8 Input Processing
+</details>
+
+<a id="section-4-8"></a>
+
+### §4.8
+
+<details markdown="1">
+<summary><strong>Figure 142: UTF-8 Input Processing</strong></summary>
 
 <!-- claim:BASE4-FIG-142-CLAIM figure-table:BASE4-FIG-142 -->
 
-Figure 142, "UTF-8 Input Processing": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 142, "UTF-8 Input Processing": Shows the input-validation sequence required by UTF-8 Input Processing. Follow decoding, prohibited-code-point, and truncation checks in order. Evidence index: UTF.
 
-- Purpose: Provides a structured index to a concept, support condition, or example.
+- Purpose: Shows the input-validation sequence required by UTF-8 Input Processing.
 
-- How to read: Identify the named object, then read adjacent conditions, legend, and exceptions.
+- How to read: Follow decoding, prohibited-code-point, and truncation checks in order. Evidence index: UTF.
 
-- Normative force: this guide adds no shall, may, or should; use the adjacent source text and field descriptions.
+- Conditions and limits: The Figure is explanatory or structural; this guide does not turn its visual relationship into a new requirement.
 
-- Informative example: Choose a concrete controller configuration and map it to the relationships shown. This example adds no requirement.
+- Informative example: Validate UTF first and reject the input if the check associated with the cited condition fails before accepting the string. This example adds no requirement.
+
+- Source field index: UTF
+
+- Source keyword index: none
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.8, Figure 142, printed pages 175, PDF pages 201
+
+</details>
 
 ## Use and limitations
 

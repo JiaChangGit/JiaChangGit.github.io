@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html as html_lib
 import json
 import re
 import sys
@@ -21,6 +22,28 @@ FIGURE_TABLE_MARKER = re.compile(
     r'(?:figure-table:|data-figure-table-id=["\'])([A-Z][A-Z0-9-]{2,})(?:["\'])?'
 )
 ABSOLUTE_PATH = re.compile(r"^(?:[A-Za-z]:[\\/]|/|\\\\)")
+FORBIDDEN_PUBLISHED = re.compile(
+    r"NVMe\s+over\s+Fabrics|\bFabrics?\b|message-based|"
+    r"Discovery\s+controller|command\s+capsule|response\s+capsule|\bNQN\b",
+    re.IGNORECASE,
+)
+PLACEHOLDER_PHRASES = (
+    "提供本節概念、支援條件或範例的結構化索引",
+    "Provides a structured index to a concept",
+    "選一個具體 controller 設定",
+    "Choose a concrete controller configuration",
+    "所指的特定關係或範例",
+    "Explains the specific relationship or example named",
+)
+SOURCE_KEYWORDS = {
+    "shall not",
+    "should not",
+    "shall",
+    "should",
+    "may",
+    "optional",
+    "reserved",
+}
 
 
 def load_json(name: str) -> dict:
@@ -104,6 +127,10 @@ def validate_html(path: Path, max_columns: int = 4) -> list[str]:
 
 def claim_ids(text: str) -> set[str]:
     return set(CLAIM_MARKER.findall(text))
+
+
+def claim_id_sequence(text: str) -> list[str]:
+    return CLAIM_MARKER.findall(text)
 
 
 def figure_table_ids(text: str) -> set[str]:
@@ -193,6 +220,11 @@ def validate_publish() -> list[str]:
     claims_doc = load_json("claims.json")
     figure_doc = load_json("figure-table-register.json")
     source_ids = {item["id"] for item in load_json("source-register.json")["sources"]}
+    figure_entries = figure_doc.get("entries", [])
+    included_figures_by_report: dict[str, list[dict]] = {}
+    for item in figure_entries:
+        if item.get("scope_status") == "INCLUDE":
+            included_figures_by_report.setdefault(item.get("report_id", ""), []).append(item)
 
     if scope.get("approval_status") != "approved":
         errors.append("scope.json 尚未 approved，禁止 publish")
@@ -246,6 +278,7 @@ def validate_publish() -> list[str]:
         if item.get("id") and item.get("report_id"):
             claims_by_report.setdefault(item["report_id"], set()).add(item["id"])
     artifact_claims: dict[str, set[str]] = {}
+    artifact_claim_sequences: dict[str, list[str]] = {}
     artifact_texts: dict[str, str] = {}
     max_columns = int(contract.get("html_policy", {}).get("recommended_max_table_columns", 4))
     for artifact in contract.get("artifacts", []):
@@ -257,6 +290,7 @@ def validate_publish() -> list[str]:
         artifact_texts[artifact["id"]] = text
         ids = claim_ids(text)
         artifact_claims[artifact["id"]] = ids
+        artifact_claim_sequences[artifact["id"]] = claim_id_sequence(text)
         unknown = sorted(ids - all_claims)
         if unknown:
             errors.append(f"{artifact['path']} 出現未知 claim：{', '.join(unknown)}")
@@ -269,12 +303,38 @@ def validate_publish() -> list[str]:
             if missing:
                 errors.append(f"{artifact['path']} 缺少 claim：{', '.join(missing)}")
         citation_field = "citation_en" if artifact.get("language") == "en" else "citation_zh_tw"
+        body_field = "en" if artifact.get("language") == "en" else "zh_tw"
+        searchable_text = (
+            html_lib.unescape(text) if artifact["format"] == "html" else text
+        )
         for claim_id in sorted(ids & all_claims):
             citation = claims_by_id[claim_id].get(citation_field, "")
             if not citation or citation not in text:
                 errors.append(
                     f"{artifact['path']} 的 {claim_id} 缺少完整 {citation_field} 來源定位"
                 )
+            expected_body = claims_by_id[claim_id].get(body_field, "")
+            body_count = searchable_text.count(expected_body) if expected_body else 0
+            if body_count != 1:
+                errors.append(
+                    f"{artifact['path']} 的 {claim_id} 正文應完整出現一次，目前 {body_count} 次"
+                )
+        forbidden = FORBIDDEN_PUBLISHED.search(searchable_text)
+        if forbidden:
+            errors.append(
+                f"{artifact['path']} 出現排除範圍詞彙：{forbidden.group(0)}"
+            )
+        for phrase in PLACEHOLDER_PHRASES:
+            if phrase in searchable_text:
+                errors.append(f"{artifact['path']} 仍含共用 placeholder：{phrase}")
+
+        expected_figures = included_figures_by_report.get(artifact.get("report_id", ""), [])
+        figure_markers = figure_table_ids(text)
+        if len(figure_markers) != len(expected_figures):
+            errors.append(
+                f"{artifact['path']} Figure 標記數 {len(figure_markers)}，"
+                f"應為 {len(expected_figures)}"
+            )
         source_markers = contract.get("source_markers", {})
         for source_id in artifact.get("required_source_ids", []):
             marker = source_markers.get(source_id)
@@ -286,6 +346,10 @@ def validate_publish() -> list[str]:
         if artifact["format"] == "html":
             for message in validate_html(path, max_columns):
                 errors.append(f"{artifact['path']}：{message}")
+            if expected_figures and text.count("<details") < len(expected_figures):
+                errors.append(f"{artifact['path']} 每張 Figure 應使用 details 提供 iPad 摺疊導覽")
+            if expected_figures and 'id="figure-index"' not in text:
+                errors.append(f"{artifact['path']} 缺少 Figure 索引")
         else:
             if not text.startswith("---\n"):
                 errors.append(f"{artifact['path']} 缺少 Jekyll front matter")
@@ -293,15 +357,30 @@ def validate_publish() -> list[str]:
                 errors.append(f"{artifact['path']} 的 layout 必須是 post")
             if "toc: yes" not in text:
                 errors.append(f"{artifact['path']} 必須啟用 toc")
+            expected_lang = artifact.get("language")
+            if not re.search(
+                rf"^lang:\s*{re.escape(str(expected_lang))}\s*$", text, re.MULTILINE
+            ):
+                errors.append(
+                    f"{artifact['path']} front matter lang 應為 {expected_lang}"
+                )
+            if expected_figures and text.count('<details markdown="1">') != len(expected_figures):
+                errors.append(f"{artifact['path']} 每張 Figure 應有一個 Markdown details")
 
-    parity_groups: dict[str, list[set[str]]] = {}
+    parity_groups: dict[str, list[tuple[set[str], list[str]]]] = {}
     for artifact in contract.get("artifacts", []):
         group = artifact.get("parity_group")
         if group and artifact["id"] in artifact_claims:
-            parity_groups.setdefault(group, []).append(artifact_claims[artifact["id"]])
-    for group, sets in parity_groups.items():
+            parity_groups.setdefault(group, []).append(
+                (artifact_claims[artifact["id"]], artifact_claim_sequences[artifact["id"]])
+            )
+    for group, pairs in parity_groups.items():
+        sets = [item[0] for item in pairs]
+        sequences = [item[1] for item in pairs]
         if len(sets) > 1 and any(item != sets[0] for item in sets[1:]):
             errors.append(f"parity group {group} 的 claim ID 集合不一致")
+        if len(sequences) > 1 and any(item != sequences[0] for item in sequences[1:]):
+            errors.append(f"parity group {group} 的 claim 順序不一致")
 
     required_figure_fields = {
         "id",
@@ -317,8 +396,9 @@ def validate_publish() -> list[str]:
         "mode",
         "required_artifact_ids",
         "introduced_in",
+        "title",
     }
-    for item in figure_doc.get("entries", []):
+    for item in figure_entries:
         missing_fields = sorted(required_figure_fields - set(item))
         if missing_fields:
             errors.append(
@@ -331,8 +411,49 @@ def validate_publish() -> list[str]:
             errors.append(f"Figure/Table {item['id']} type 必須是 Figure 或 Table")
         if item["scope_entry_id"] not in scope_status:
             errors.append(f"Figure/Table {item['id']} 未對應核准 scope entry")
+            continue
+        declared_status = scope_status[item["scope_entry_id"]]
+        if item.get("scope_status") != declared_status:
+            errors.append(
+                f"Figure/Table {item['id']} scope_status 與 scope.json 不一致"
+            )
+        scope_entry = next(
+            entry
+            for entry in scope.get("entries", [])
+            if entry.get("id") == item["scope_entry_id"]
+        )
+        if item.get("scope_status") == "EXCLUDE":
+            if str(item["number"]) not in {
+                str(number) for number in scope_entry.get("figures", [])
+            }:
+                errors.append(
+                    f"Figure/Table {item['id']} 未列入 scope.json 的明確排除清單"
+                )
+            if item.get("required_artifact_ids") or item.get("introduced_in"):
+                errors.append(f"排除的 Figure/Table {item['id']} 不得宣告輸出 coverage")
+            continue
         if item.get("scope_status") != "INCLUDE":
             continue
+        if not isinstance(item.get("key_items"), list) or not item.get("key_items"):
+            errors.append(f"Figure/Table {item['id']} 缺少來源欄位索引")
+        if any(
+            not isinstance(value, str) or not value.strip() or len(value) > 80
+            for value in item.get("key_items", [])
+        ):
+            errors.append(f"Figure/Table {item['id']} 的來源欄位索引格式錯誤")
+        if any(
+            FORBIDDEN_PUBLISHED.search(value)
+            for value in item.get("key_items", [])
+            if isinstance(value, str)
+        ):
+            errors.append(f"Figure/Table {item['id']} 的欄位索引含排除內容")
+        if not re.fullmatch(r"[0-9a-f]{64}", str(item.get("evidence_digest", ""))):
+            errors.append(f"Figure/Table {item['id']} 缺少有效 evidence_digest")
+        keywords = item.get("source_keywords")
+        if not isinstance(keywords, list) or any(
+            keyword not in SOURCE_KEYWORDS for keyword in keywords
+        ):
+            errors.append(f"Figure/Table {item['id']} 的 source_keywords 無效")
         coverage = set(item.get("introduced_in", []))
         required_coverage = set(item.get("required_artifact_ids", []))
         missing = sorted(required_coverage - coverage)
