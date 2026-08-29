@@ -4,9 +4,9 @@ description: 'Blog' # this means to ignore newlines until "baseurl:"
 permalink: ':categories:title:month:day'
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://jiachanggit.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-logo: "/assets/img/branding/logo.png"
-logo-icon: "/assets/img/branding/logo-icon.png"
-logo-icon-SEO: "/assets/img/branding/logo-icon.png" # must be a non SVG file
+logo: "/assets/img/branding/logo.jpg"
+logo-icon: "/assets/img/branding/logo-icon.jpg"
+logo-icon-SEO: "/assets/img/branding/logo-icon.jpg" # must be a non SVG file
 
 # Night/Dark mode
 # Default mode is "auto", "auto" is for auto nightshift
@@ -20,7 +20,7 @@ logo-icon-SEO: "/assets/img/branding/logo-icon.png" # must be a non SVG file
 # the browser is closed or not)
 night_mode: "auto"
 
-logo-dark: "/assets/img/branding/logo-dark.png"
+logo-dark: "/assets/img/branding/logo-dark.jpg"
 highlight_theme: syntax-base16.monokai.dark # select a dark theme for the code highlighter if needed
 
 # Author settings
