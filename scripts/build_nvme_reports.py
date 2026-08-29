@@ -46,11 +46,11 @@ REPORTS = {
     "base-ch1-2": {
         "prefix": "BASE12",
         "title_zh": "NVMe Base 2.4 第 1、2 章：規格語言、PCIe 佇列與儲存模型",
-        "title_en": "NVMe Base 2.4 Chapters 1–2: Specification Language, PCIe Queues, and Storage Model",
+        "title_en": "NVMe Base 2.4 Chapters 1-2: Specification Language, PCIe Queues, and Storage Model",
         "source_id": "NVME-BASE-2.4",
         "scope_entry": "BASE12-INCLUDE",
-        "range": "§1–§2；文件頁 1–37；PDF 頁 27–63",
-        "range_en": "§1–§2; printed pages 1–37; PDF pages 27–63",
+        "range": "§1-§2；文件頁 1-37；PDF 頁 27-63",
+        "range_en": "§1-§2; printed pages 1-37; PDF pages 27-63",
         "diagram": ["Host / CPU core", "Submission Queue", "NVMe controller", "Completion Queue"],
         "diagram_note_zh": "命令由 host 放入 Submission Queue；controller 取走並執行，再把完成結果寫入 Completion Queue。",
         "diagram_note_en": "The host places commands in a Submission Queue; the controller fetches and executes them, then posts completions to a Completion Queue.",
@@ -73,8 +73,8 @@ REPORTS = {
         "title_en": "NVMe Base 2.4 Chapter 3: Controllers, Queues, Initialization, and Resets",
         "source_id": "NVME-BASE-2.4",
         "scope_entry": "BASE3-INCLUDE",
-        "range": "§3；文件頁 38–138；PDF 頁 64–164",
-        "range_en": "§3; printed pages 38–138; PDF pages 64–164",
+        "range": "§3；文件頁 38-138；PDF 頁 64-164",
+        "range_en": "§3; printed pages 38-138; PDF pages 64-164",
         "diagram": ["Properties / CAP", "CC.EN = 1", "CSTS.RDY = 1", "Queues active"],
         "diagram_note_zh": "host 先讀能力與設定 Admin queues，再啟用 controller；只有 CSTS.RDY 回報 ready 後才進入正常 queue processing。",
         "diagram_note_en": "The host reads capabilities and configures Admin queues before enabling the controller; normal queue processing starts only after CSTS.RDY reports ready.",
@@ -102,13 +102,13 @@ REPORTS = {
         "title_en": "NVMe Base 2.4 Chapter 4: SQE, CQE, Status, PRP, and SGL",
         "source_id": "NVME-BASE-2.4",
         "scope_entry": "BASE4-INCLUDE",
-        "range": "§4；文件頁 139–175；PDF 頁 165–201",
-        "range_en": "§4; printed pages 139–175; PDF pages 165–201",
+        "range": "§4；文件頁 139-175；PDF 頁 165-201",
+        "range_en": "§4; printed pages 139-175; PDF pages 165-201",
         "diagram": ["64-byte SQE", "PRP or SGL", "Command execution", "16-byte+ CQE"],
         "diagram_note_zh": "SQE 以 CID 與 SQID 識別 command，data pointer 描述 buffer；CQE 回報 SQ head、SQID、CID、phase 與 status。",
         "diagram_note_en": "The SQE identifies a command with CID plus SQID and describes buffers through data pointers; the CQE reports SQ head, SQID, CID, phase, and status.",
         "claims": [
-            c("SQE", "4.1.1", "139-143", "Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10–15 的通用位置先固定，再由各 command 定義命令專屬內容。", "The common Admin and I/O SQE is 64 bytes. CDW0, NSID, data pointers, and CDW10–15 establish the common layout before each command defines command-specific content."),
+            c("SQE", "4.1.1", "139-143", "Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10-15 的通用位置先固定，再由各 command 定義命令專屬內容。", "The common Admin and I/O SQE is 64 bytes. CDW0, NSID, data pointers, and CDW10-15 establish the common layout before each command defines command-specific content."),
             c("CID", "4.1.1", "140", "CID 與 Submission Queue identifier 的組合用來唯一識別 command；FFFFh 宜（should）避免使用，因 Error Information log 以該值表示錯誤未對應特定 command。", "CID in combination with the Submission Queue identifier uniquely identifies a command. FFFFh should be avoided because the Error Information log uses it when an error is not associated with a particular command.", "should"),
             c("PSDT", "4.1.1", "140-142", "CDW0.PSDT 決定 DPTR 解讀為 PRP 或 SGL。NVMe over PCIe 的 Admin command 原則上必須（shall）使用 PRP，除非 command 定義另有規定。", "CDW0.PSDT selects PRP or SGL interpretation for DPTR. An Admin command over PCIe shall use PRPs unless its command definition specifies otherwise.", "shall"),
             c("CQE", "4.2.1", "144-145", "common CQE 至少 16 bytes；若以多次寫入建立 CQE，Phase Tag 必須（shall）在最後一次寫入更新，避免 host 看到半成品。", "The common CQE is at least 16 bytes. If multiple writes construct it, the Phase Tag shall be updated in the last write so the host does not consume a partial entry.", "shall"),
@@ -128,8 +128,8 @@ REPORTS = {
         "title_en": "NVMe over PCIe Transport 1.4: Complete Transport Binding",
         "source_id": "NVME-PCIE-TRANSPORT-1.4",
         "scope_entry": "PCIE14-INCLUDE",
-        "range": "§1–§3 與 Annex A；文件頁／PDF 頁 1–48",
-        "range_en": "§1–§3 and Annex A; printed/PDF pages 1–48",
+        "range": "§1-§3 與 Annex A；文件頁／PDF 頁 1-48",
+        "range_en": "§1-§3 and Annex A; printed/PDF pages 1-48",
         "diagram": ["Write SQE", "Ring SQ tail doorbell", "Controller executes", "Read CQE / ring CQ head"],
         "diagram_note_zh": "PCIe transport 以 host memory 的 queue 配合 MMIO doorbell；資料可由 PRP／SGL 指到 host-addressable memory。",
         "diagram_note_en": "The PCIe transport combines queues in host memory with MMIO doorbells; PRPs or SGLs identify data in host-addressable memory.",
@@ -429,7 +429,7 @@ def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
             f"{zh_parts[0]} {zh_parts[1]}{scope_zh}"
         ),
         "en": (
-            f"Figure {figure['number']}, “{figure['title']}”: "
+            f"Figure {figure['number']}, "{figure['title']}": "
             f"{en_parts[0]} {en_parts[1]}{scope_en}"
         ),
         "scope_entry_id": report["scope_entry"],

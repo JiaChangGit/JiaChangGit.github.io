@@ -11,7 +11,7 @@
 <h1>NVMe Base 2.4 第 4 章：SQE、CQE、Status、PRP 與 SGL｜新手教學版</h1>
 <p>用途：供具備 PCIe 與 NVMe 基礎的工程人員在 iPad 離線閱讀，並作為 100 分鐘簡報的內容來源。</p>
 <section id="scope"><h2>範圍與閱讀方式</h2>
-<p><strong>納入：</strong>§4；文件頁 139–175；PDF 頁 165–201。正文只保留 PCIe／memory-based 與通用 NVMe 內容；未納入主題不會出現在報告或 PPT。</p>
+<p><strong>納入：</strong>§4；文件頁 139-175；PDF 頁 165-201。正文只保留 PCIe／memory-based 與通用 NVMe 內容；未納入主題不會出現在報告或 PPT。</p>
 <p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、讀法、條件與說明性範例。欄位表雖以表格呈現，在本範圍的規格中仍以 Figure 編號。</p>
 <table><thead><tr><th>keyword</th><th>台灣繁體中文</th><th>強度</th></tr></thead><tbody><tr><td>shall</td><td>必須</td><td>強制要求</td></tr><tr><td>may</td><td>可、得</td><td>允許選擇</td></tr><tr><td>should</td><td>宜、建議</td><td>有偏好的建議</td></tr><tr><td>optional</td><td>選用</td><td>不要求支援；實作後仍依定義</td></tr></tbody></table></section>
 <section id="map"><h2>整體流程圖</h2>
@@ -19,7 +19,7 @@
 <p>SQE 以 CID 與 SQID 識別 command，data pointer 描述 buffer；CQE 回報 SQ head、SQID、CID、phase 與 status。</p></section>
 <section id="claims"><h2>規格重點</h2>
 <article><h3>1. 先看懂</h3>
-<p><span data-claim-id="BASE4-SQE">Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10–15 的通用位置先固定，再由各 command 定義命令專屬內容。</span></p>
+<p><span data-claim-id="BASE4-SQE">Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10-15 的通用位置先固定，再由各 command 定義命令專屬內容。</span></p>
 <p><strong>新手檢查點：</strong>先定位 dword 與 bit 範圍，再決定這個欄位用於識別、資料指標或完成狀態。</p>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169</small></p></article>
 <article><h3>2. 先看懂</h3>
@@ -85,8 +85,8 @@
 <li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</small></p></article>
-<article data-figure-table-id="BASE4-FIG-094"><h3>Figure 94: Common Command Format – Vendor Specific Commands (Optional)</h3>
-<p><span data-claim-id="BASE4-FIG-094-CLAIM">Figure 94〈Common Command Format – Vendor Specific Commands (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
+<article data-figure-table-id="BASE4-FIG-094"><h3>Figure 94: Common Command Format - Vendor Specific Commands (Optional)</h3>
+<p><span data-claim-id="BASE4-FIG-094-CLAIM">Figure 94〈Common Command Format - Vendor Specific Commands (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理欄位、位元或 register 配置。</li>
 <li><strong>閱讀順序：</strong>由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。</li>
@@ -94,8 +94,8 @@
 <li><strong>說明性範例（informative example）：</strong>讀取前先確認 capability，再以欄位寬度與遮罩解碼。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169</small></p></article>
-<article data-figure-table-id="BASE4-FIG-097"><h3>Figure 97: Common Completion Queue Entry Layout – Admin and All I/O Command Sets</h3>
-<p><span data-claim-id="BASE4-FIG-097-CLAIM">Figure 97〈Common Completion Queue Entry Layout – Admin and All I/O Command Sets〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
+<article data-figure-table-id="BASE4-FIG-097"><h3>Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets</h3>
+<p><span data-claim-id="BASE4-FIG-097-CLAIM">Figure 97〈Common Completion Queue Entry Layout - Admin and All I/O Command Sets〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理 queue／command 的關係或處理順序。</li>
 <li><strong>閱讀順序：</strong>依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。</li>
@@ -130,8 +130,8 @@
 <li><strong>說明性範例（informative example）：</strong>先選一個 queue identifier，沿箭頭追蹤一筆 command 與 completion。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172</small></p></article>
-<article data-figure-table-id="BASE4-FIG-102"><h3>Figure 102: Status Code – Status Code Type Values</h3>
-<p><span data-claim-id="BASE4-FIG-102-CLAIM">Figure 102〈Status Code – Status Code Type Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<article data-figure-table-id="BASE4-FIG-102"><h3>Figure 102: Status Code - Status Code Type Values</h3>
+<p><span data-claim-id="BASE4-FIG-102-CLAIM">Figure 102〈Status Code - Status Code Type Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
 <li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
@@ -139,8 +139,8 @@
 <li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, 文件頁 146, PDF 頁 172</small></p></article>
-<article data-figure-table-id="BASE4-FIG-103"><h3>Figure 103: Status Code – Generic Command Status Values</h3>
-<p><span data-claim-id="BASE4-FIG-103-CLAIM">Figure 103〈Status Code – Generic Command Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<article data-figure-table-id="BASE4-FIG-103"><h3>Figure 103: Status Code - Generic Command Status Values</h3>
+<p><span data-claim-id="BASE4-FIG-103-CLAIM">Figure 103〈Status Code - Generic Command Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
 <li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
@@ -148,8 +148,8 @@
 <li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, 文件頁 147-150, PDF 頁 173-176</small></p></article>
-<article data-figure-table-id="BASE4-FIG-104"><h3>Figure 104: Status Code – Command Specific Status Values</h3>
-<p><span data-claim-id="BASE4-FIG-104-CLAIM">Figure 104〈Status Code – Command Specific Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<article data-figure-table-id="BASE4-FIG-104"><h3>Figure 104: Status Code - Command Specific Status Values</h3>
+<p><span data-claim-id="BASE4-FIG-104-CLAIM">Figure 104〈Status Code - Command Specific Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
 <li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
@@ -157,8 +157,8 @@
 <li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, 文件頁 151-152, PDF 頁 177-178</small></p></article>
-<article data-figure-table-id="BASE4-FIG-105"><h3>Figure 105: Status Code – Command Specific Status Values, I/O Command Set Specific</h3>
-<p><span data-claim-id="BASE4-FIG-105-CLAIM">Figure 105〈Status Code – Command Specific Status Values, I/O Command Set Specific〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<article data-figure-table-id="BASE4-FIG-105"><h3>Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific</h3>
+<p><span data-claim-id="BASE4-FIG-105-CLAIM">Figure 105〈Status Code - Command Specific Status Values, I/O Command Set Specific〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
 <li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
@@ -166,8 +166,8 @@
 <li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, 文件頁 152-153, PDF 頁 178-179</small></p></article>
-<article data-figure-table-id="BASE4-FIG-107"><h3>Figure 107: Status Code – Media and Data Integrity Error Values</h3>
-<p><span data-claim-id="BASE4-FIG-107-CLAIM">Figure 107〈Status Code – Media and Data Integrity Error Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<article data-figure-table-id="BASE4-FIG-107"><h3>Figure 107: Status Code - Media and Data Integrity Error Values</h3>
+<p><span data-claim-id="BASE4-FIG-107-CLAIM">Figure 107〈Status Code - Media and Data Integrity Error Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
 <li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
@@ -175,8 +175,8 @@
 <li><strong>說明性範例（informative example）：</strong>以一筆失敗 CQE 為例，先解 SCT，再解 SC 與 DNR。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, 文件頁 154-155, PDF 頁 180-181</small></p></article>
-<article data-figure-table-id="BASE4-FIG-108"><h3>Figure 108: Status Code – Path Related Status Values</h3>
-<p><span data-claim-id="BASE4-FIG-108-CLAIM">Figure 108〈Status Code – Path Related Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
+<article data-figure-table-id="BASE4-FIG-108"><h3>Figure 108: Status Code - Path Related Status Values</h3>
+<p><span data-claim-id="BASE4-FIG-108-CLAIM">Figure 108〈Status Code - Path Related Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>整理狀態、錯誤或其分類欄位。</li>
 <li><strong>閱讀順序：</strong>先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。</li>
@@ -202,8 +202,8 @@
 <li><strong>說明性範例（informative example）：</strong>用跨兩個 memory page 的 buffer 檢查第一個 offset 與後續 alignment。此例不新增規格要求。</li>
 </ul>
 <p><small>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, 文件頁 158, PDF 頁 184</small></p></article>
-<article data-figure-table-id="BASE4-FIG-111"><h3>Figure 111: PRP Entry – Page Base Address and Offset</h3>
-<p><span data-claim-id="BASE4-FIG-111-CLAIM">Figure 111〈PRP Entry – Page Base Address and Offset〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。</span></p>
+<article data-figure-table-id="BASE4-FIG-111"><h3>Figure 111: PRP Entry - Page Base Address and Offset</h3>
+<p><span data-claim-id="BASE4-FIG-111-CLAIM">Figure 111〈PRP Entry - Page Base Address and Offset〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。</span></p>
 <ul>
 <li><strong>解決的問題：</strong>說明資料 buffer 如何由 PRP／SGL 結構描述。</li>
 <li><strong>閱讀順序：</strong>逐一核對 address、offset、length、alignment 與下一層 pointer。</li>

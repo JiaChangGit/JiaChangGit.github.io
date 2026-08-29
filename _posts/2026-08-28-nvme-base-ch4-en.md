@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe Base 2.4 Chapter 4: SQE, CQE, Status, PRP, and SGL"
 date: 2026-08-28
 description: "Source-located PCIe/NVMe report for PPT authoring."
+img: posts/2026/cat_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -16,7 +17,7 @@ toc: yes
 
 Purpose: a source-located engineering report for GitHub Pages and a 100-minute presentation.
 
-Scope: §4; printed pages 139–175; PDF pages 165–201. Only PCIe/memory-based and common NVMe content appears below.
+Scope: §4; printed pages 139-175; PDF pages 165-201. Only PCIe/memory-based and common NVMe content appears below.
 
 ## Source versions
 
@@ -42,7 +43,7 @@ shall is mandatory, may permits a choice, should expresses a preferred recommend
 
 <!-- claim:BASE4-SQE -->
 
-The common Admin and I/O SQE is 64 bytes. CDW0, NSID, data pointers, and CDW10–15 establish the common layout before each command defines command-specific content.
+The common Admin and I/O SQE is 64 bytes. CDW0, NSID, data pointers, and CDW10-15 establish the common layout before each command defines command-specific content.
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 139-143, PDF pages 165-169
 
@@ -142,7 +143,7 @@ The source uses Figure numbers for both diagrams and field-layout tables. No sou
 
 <!-- claim:BASE4-FIG-092-CLAIM figure-table:BASE4-FIG-092 -->
 
-Figure 92, “Command Dword 0”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 92, "Command Dword 0": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -158,7 +159,7 @@ Figure 92, “Command Dword 0”: Organizes a field, bit, or register layout. Ma
 
 <!-- claim:BASE4-FIG-093-CLAIM figure-table:BASE4-FIG-093 -->
 
-Figure 93, “Common Command Format”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 93, "Common Command Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -170,11 +171,11 @@ Figure 93, “Common Command Format”: Organizes a field, bit, or register layo
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, printed pages 140-142, PDF pages 166-168
 
-### Figure 94: Common Command Format – Vendor Specific Commands (Optional)
+### Figure 94: Common Command Format - Vendor Specific Commands (Optional)
 
 <!-- claim:BASE4-FIG-094-CLAIM figure-table:BASE4-FIG-094 -->
 
-Figure 94, “Common Command Format – Vendor Specific Commands (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 94, "Common Command Format - Vendor Specific Commands (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -186,11 +187,11 @@ Figure 94, “Common Command Format – Vendor Specific Commands (Optional)”: 
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, printed pages 143, PDF pages 169
 
-### Figure 97: Common Completion Queue Entry Layout – Admin and All I/O Command Sets
+### Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets
 
 <!-- claim:BASE4-FIG-097-CLAIM figure-table:BASE4-FIG-097 -->
 
-Figure 97, “Common Completion Queue Entry Layout – Admin and All I/O Command Sets”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 97, "Common Completion Queue Entry Layout - Admin and All I/O Command Sets": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -206,7 +207,7 @@ Figure 97, “Common Completion Queue Entry Layout – Admin and All I/O Command
 
 <!-- claim:BASE4-FIG-098-CLAIM figure-table:BASE4-FIG-098 -->
 
-Figure 98, “Completion Queue Entry: DW 2”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 98, "Completion Queue Entry: DW 2": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -222,7 +223,7 @@ Figure 98, “Completion Queue Entry: DW 2”: Organizes a queue or command rela
 
 <!-- claim:BASE4-FIG-099-CLAIM figure-table:BASE4-FIG-099 -->
 
-Figure 99, “Completion Queue Entry: DW 3”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 99, "Completion Queue Entry: DW 3": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -238,7 +239,7 @@ Figure 99, “Completion Queue Entry: DW 3”: Organizes a queue or command rela
 
 <!-- claim:BASE4-FIG-101-CLAIM figure-table:BASE4-FIG-101 -->
 
-Figure 101, “Completion Queue Entry: Status Field”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 101, "Completion Queue Entry: Status Field": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -250,11 +251,11 @@ Figure 101, “Completion Queue Entry: Status Field”: Organizes a queue or com
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, printed pages 145-146, PDF pages 171-172
 
-### Figure 102: Status Code – Status Code Type Values
+### Figure 102: Status Code - Status Code Type Values
 
 <!-- claim:BASE4-FIG-102-CLAIM figure-table:BASE4-FIG-102 -->
 
-Figure 102, “Status Code – Status Code Type Values”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 102, "Status Code - Status Code Type Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -266,11 +267,11 @@ Figure 102, “Status Code – Status Code Type Values”: Organizes status or e
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, printed pages 146, PDF pages 172
 
-### Figure 103: Status Code – Generic Command Status Values
+### Figure 103: Status Code - Generic Command Status Values
 
 <!-- claim:BASE4-FIG-103-CLAIM figure-table:BASE4-FIG-103 -->
 
-Figure 103, “Status Code – Generic Command Status Values”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 103, "Status Code - Generic Command Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -282,11 +283,11 @@ Figure 103, “Status Code – Generic Command Status Values”: Organizes statu
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, printed pages 147-150, PDF pages 173-176
 
-### Figure 104: Status Code – Command Specific Status Values
+### Figure 104: Status Code - Command Specific Status Values
 
 <!-- claim:BASE4-FIG-104-CLAIM figure-table:BASE4-FIG-104 -->
 
-Figure 104, “Status Code – Command Specific Status Values”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 104, "Status Code - Command Specific Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -298,11 +299,11 @@ Figure 104, “Status Code – Command Specific Status Values”: Organizes stat
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, printed pages 151-152, PDF pages 177-178
 
-### Figure 105: Status Code – Command Specific Status Values, I/O Command Set Specific
+### Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific
 
 <!-- claim:BASE4-FIG-105-CLAIM figure-table:BASE4-FIG-105 -->
 
-Figure 105, “Status Code – Command Specific Status Values, I/O Command Set Specific”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 105, "Status Code - Command Specific Status Values, I/O Command Set Specific": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -314,11 +315,11 @@ Figure 105, “Status Code – Command Specific Status Values, I/O Command Set S
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, printed pages 152-153, PDF pages 178-179
 
-### Figure 107: Status Code – Media and Data Integrity Error Values
+### Figure 107: Status Code - Media and Data Integrity Error Values
 
 <!-- claim:BASE4-FIG-107-CLAIM figure-table:BASE4-FIG-107 -->
 
-Figure 107, “Status Code – Media and Data Integrity Error Values”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 107, "Status Code - Media and Data Integrity Error Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -330,11 +331,11 @@ Figure 107, “Status Code – Media and Data Integrity Error Values”: Organiz
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, printed pages 154-155, PDF pages 180-181
 
-### Figure 108: Status Code – Path Related Status Values
+### Figure 108: Status Code - Path Related Status Values
 
 <!-- claim:BASE4-FIG-108-CLAIM figure-table:BASE4-FIG-108 -->
 
-Figure 108, “Status Code – Path Related Status Values”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 108, "Status Code - Path Related Status Values": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -350,7 +351,7 @@ Figure 108, “Status Code – Path Related Status Values”: Organizes status o
 
 <!-- claim:BASE4-FIG-109-CLAIM figure-table:BASE4-FIG-109 -->
 
-Figure 109, “Phase Tag bit Transition Example”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 109, "Phase Tag bit Transition Example": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -366,7 +367,7 @@ Figure 109, “Phase Tag bit Transition Example”: Organizes a queue or command
 
 <!-- claim:BASE4-FIG-110-CLAIM figure-table:BASE4-FIG-110 -->
 
-Figure 110, “PRP Entry Layout”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 110, "PRP Entry Layout": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -378,11 +379,11 @@ Figure 110, “PRP Entry Layout”: Shows how PRP or SGL structures describe a d
 
 > Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, printed pages 158, PDF pages 184
 
-### Figure 111: PRP Entry – Page Base Address and Offset
+### Figure 111: PRP Entry - Page Base Address and Offset
 
 <!-- claim:BASE4-FIG-111-CLAIM figure-table:BASE4-FIG-111 -->
 
-Figure 111, “PRP Entry – Page Base Address and Offset”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 111, "PRP Entry - Page Base Address and Offset": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -398,7 +399,7 @@ Figure 111, “PRP Entry – Page Base Address and Offset”: Shows how PRP or S
 
 <!-- claim:BASE4-FIG-112-CLAIM figure-table:BASE4-FIG-112 -->
 
-Figure 112, “PRP List Layout for Physically Contiguous Memory Pages”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 112, "PRP List Layout for Physically Contiguous Memory Pages": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -414,7 +415,7 @@ Figure 112, “PRP List Layout for Physically Contiguous Memory Pages”: Shows 
 
 <!-- claim:BASE4-FIG-113-CLAIM figure-table:BASE4-FIG-113 -->
 
-Figure 113, “PRP List Layout for Physically Non-Contiguous Memory Pages”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 113, "PRP List Layout for Physically Non-Contiguous Memory Pages": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -430,7 +431,7 @@ Figure 113, “PRP List Layout for Physically Non-Contiguous Memory Pages”: Sh
 
 <!-- claim:BASE4-FIG-114-CLAIM figure-table:BASE4-FIG-114 -->
 
-Figure 114, “SGL Validation Error Conditions”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 114, "SGL Validation Error Conditions": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -446,7 +447,7 @@ Figure 114, “SGL Validation Error Conditions”: Shows how PRP or SGL structur
 
 <!-- claim:BASE4-FIG-115-CLAIM figure-table:BASE4-FIG-115 -->
 
-Figure 115, “SGL Segment”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 115, "SGL Segment": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -462,7 +463,7 @@ Figure 115, “SGL Segment”: Shows how PRP or SGL structures describe a data b
 
 <!-- claim:BASE4-FIG-116-CLAIM figure-table:BASE4-FIG-116 -->
 
-Figure 116, “Generic SGL Descriptor Format”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 116, "Generic SGL Descriptor Format": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -478,7 +479,7 @@ Figure 116, “Generic SGL Descriptor Format”: Shows how PRP or SGL structures
 
 <!-- claim:BASE4-FIG-117-CLAIM figure-table:BASE4-FIG-117 -->
 
-Figure 117, “SGL Descriptor Type”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.
+Figure 117, "SGL Descriptor Type": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -496,7 +497,7 @@ Figure 117, “SGL Descriptor Type”: Shows how PRP or SGL structures describe 
 
 <!-- claim:BASE4-FIG-118-CLAIM figure-table:BASE4-FIG-118 -->
 
-Figure 118, “SGL Descriptor Sub Type Values”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.
+Figure 118, "SGL Descriptor Sub Type Values": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order. This report explains only the PCIe/memory-based portion.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -514,7 +515,7 @@ Figure 118, “SGL Descriptor Sub Type Values”: Shows how PRP or SGL structure
 
 <!-- claim:BASE4-FIG-119-CLAIM figure-table:BASE4-FIG-119 -->
 
-Figure 119, “SGL Data Block descriptor”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 119, "SGL Data Block descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -530,7 +531,7 @@ Figure 119, “SGL Data Block descriptor”: Shows how PRP or SGL structures des
 
 <!-- claim:BASE4-FIG-120-CLAIM figure-table:BASE4-FIG-120 -->
 
-Figure 120, “SGL Bit Bucket descriptor”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 120, "SGL Bit Bucket descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -546,7 +547,7 @@ Figure 120, “SGL Bit Bucket descriptor”: Shows how PRP or SGL structures des
 
 <!-- claim:BASE4-FIG-121-CLAIM figure-table:BASE4-FIG-121 -->
 
-Figure 121, “SGL Segment descriptor”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 121, "SGL Segment descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -562,7 +563,7 @@ Figure 121, “SGL Segment descriptor”: Shows how PRP or SGL structures descri
 
 <!-- claim:BASE4-FIG-122-CLAIM figure-table:BASE4-FIG-122 -->
 
-Figure 122, “SGL Last Segment descriptor”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 122, "SGL Last Segment descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -578,7 +579,7 @@ Figure 122, “SGL Last Segment descriptor”: Shows how PRP or SGL structures d
 
 <!-- claim:BASE4-FIG-125-CLAIM figure-table:BASE4-FIG-125 -->
 
-Figure 125, “SGL Read Example”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 125, "SGL Read Example": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -594,7 +595,7 @@ Figure 125, “SGL Read Example”: Shows how PRP or SGL structures describe a d
 
 <!-- claim:BASE4-FIG-126-CLAIM figure-table:BASE4-FIG-126 -->
 
-Figure 126, “Current Value after Reset with Scope of Entire NVM Subsystem”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 126, "Current Value after Reset with Scope of Entire NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -610,7 +611,7 @@ Figure 126, “Current Value after Reset with Scope of Entire NVM Subsystem”: 
 
 <!-- claim:BASE4-FIG-127-CLAIM figure-table:BASE4-FIG-127 -->
 
-Figure 127, “Current Value after Reset with Scope of Subset of the NVM Subsystem”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 127, "Current Value after Reset with Scope of Subset of the NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -626,7 +627,7 @@ Figure 127, “Current Value after Reset with Scope of Subset of the NVM Subsyst
 
 <!-- claim:BASE4-FIG-128-CLAIM figure-table:BASE4-FIG-128 -->
 
-Figure 128, “PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 128, "PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -642,7 +643,7 @@ Figure 128, “PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)”: Shows
 
 <!-- claim:BASE4-FIG-129-CLAIM figure-table:BASE4-FIG-129 -->
 
-Figure 129, “Serial Number (SN) and Model Number (MN)”: Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 129, "Serial Number (SN) and Model Number (MN)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
 
 - Purpose: Organizes identifier or list byte layout and scope.
 
@@ -658,7 +659,7 @@ Figure 129, “Serial Number (SN) and Model Number (MN)”: Organizes identifier
 
 <!-- claim:BASE4-FIG-130-CLAIM figure-table:BASE4-FIG-130 -->
 
-Figure 130, “IEEE OUI Identifier (IEEE)”: Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 130, "IEEE OUI Identifier (IEEE)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
 
 - Purpose: Organizes identifier or list byte layout and scope.
 
@@ -674,7 +675,7 @@ Figure 130, “IEEE OUI Identifier (IEEE)”: Organizes identifier or list byte 
 
 <!-- claim:BASE4-FIG-131-CLAIM figure-table:BASE4-FIG-131 -->
 
-Figure 131, “IEEE Extended Unique Identifier (EUI64), MA-L Format”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 131, "IEEE Extended Unique Identifier (EUI64), MA-L Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -690,7 +691,7 @@ Figure 131, “IEEE Extended Unique Identifier (EUI64), MA-L Format”: Organize
 
 <!-- claim:BASE4-FIG-132-CLAIM figure-table:BASE4-FIG-132 -->
 
-Figure 132, “IEEE Extended Unique Identifier (EUI64), OUI Identifier”: Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 132, "IEEE Extended Unique Identifier (EUI64), OUI Identifier": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
 
 - Purpose: Organizes identifier or list byte layout and scope.
 
@@ -706,7 +707,7 @@ Figure 132, “IEEE Extended Unique Identifier (EUI64), OUI Identifier”: Organ
 
 <!-- claim:BASE4-FIG-133-CLAIM figure-table:BASE4-FIG-133 -->
 
-Figure 133, “IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)”: Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 133, "IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
 
 - Purpose: Organizes identifier or list byte layout and scope.
 
@@ -722,7 +723,7 @@ Figure 133, “IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)”: Organ
 
 <!-- claim:BASE4-FIG-134-CLAIM figure-table:BASE4-FIG-134 -->
 
-Figure 134, “MA-L similarity to WWN”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 134, "MA-L similarity to WWN": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -738,7 +739,7 @@ Figure 134, “MA-L similarity to WWN”: Provides a structured index to a conce
 
 <!-- claim:BASE4-FIG-135-CLAIM figure-table:BASE4-FIG-135 -->
 
-Figure 135, “Namespace Globally Unique Identifier (NGUID)”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 135, "Namespace Globally Unique Identifier (NGUID)": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -754,7 +755,7 @@ Figure 135, “Namespace Globally Unique Identifier (NGUID)”: Shows containmen
 
 <!-- claim:BASE4-FIG-136-CLAIM figure-table:BASE4-FIG-136 -->
 
-Figure 136, “Namespace Globally Unique Identifier (NGUID), OUI”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 136, "Namespace Globally Unique Identifier (NGUID), OUI": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -770,7 +771,7 @@ Figure 136, “Namespace Globally Unique Identifier (NGUID), OUI”: Shows conta
 
 <!-- claim:BASE4-FIG-137-CLAIM figure-table:BASE4-FIG-137 -->
 
-Figure 137, “Namespace Globally Unique Identifier”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 137, "Namespace Globally Unique Identifier": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -786,7 +787,7 @@ Figure 137, “Namespace Globally Unique Identifier”: Shows containment, conne
 
 <!-- claim:BASE4-FIG-138-CLAIM figure-table:BASE4-FIG-138 -->
 
-Figure 138, “Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 138, "Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -802,7 +803,7 @@ Figure 138, “Namespace Globally Unique Identifier (NGUID), NGUID similarity to
 
 <!-- claim:BASE4-FIG-139-CLAIM figure-table:BASE4-FIG-139 -->
 
-Figure 139, “Controller List Format”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 139, "Controller List Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -818,7 +819,7 @@ Figure 139, “Controller List Format”: Organizes a field, bit, or register la
 
 <!-- claim:BASE4-FIG-140-CLAIM figure-table:BASE4-FIG-140 -->
 
-Figure 140, “Namespace List Format”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 140, "Namespace List Format": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -834,7 +835,7 @@ Figure 140, “Namespace List Format”: Organizes a field, bit, or register lay
 
 <!-- claim:BASE4-FIG-142-CLAIM figure-table:BASE4-FIG-142 -->
 
-Figure 142, “UTF-8 Input Processing”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 142, "UTF-8 Input Processing": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 

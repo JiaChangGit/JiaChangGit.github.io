@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe over PCIe Transport 1.4: Complete Transport Binding"
 date: 2026-08-28
 description: "Source-located PCIe/NVMe report for PPT authoring."
+img: posts/2026/catFlower_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -16,7 +17,7 @@ toc: yes
 
 Purpose: a source-located engineering report for GitHub Pages and a 100-minute presentation.
 
-Scope: §1–§3 and Annex A; printed/PDF pages 1–48. Only PCIe/memory-based and common NVMe content appears below.
+Scope: §1-§3 and Annex A; printed/PDF pages 1-48. Only PCIe/memory-based and common NVMe content appears below.
 
 ## Source versions
 
@@ -175,7 +176,7 @@ The source uses Figure numbers for both diagrams and field-layout tables. No sou
 
 <!-- claim:PCIE14-FIG-001-CLAIM figure-table:PCIE14-FIG-001 -->
 
-Figure 1, “NVMe Family of Specifications”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
+Figure 1, "NVMe Family of Specifications": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -193,7 +194,7 @@ Figure 1, “NVMe Family of Specifications”: Provides a structured index to a 
 
 <!-- claim:PCIE14-FIG-002-CLAIM figure-table:PCIE14-FIG-002 -->
 
-Figure 2, “Example of Transport Protocol Layers”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 2, "Example of Transport Protocol Layers": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -209,7 +210,7 @@ Figure 2, “Example of Transport Protocol Layers”: Provides a structured inde
 
 <!-- claim:PCIE14-FIG-003-CLAIM figure-table:PCIE14-FIG-003 -->
 
-Figure 3, “PCI Express Registers”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 3, "PCI Express Registers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -225,7 +226,7 @@ Figure 3, “PCI Express Registers”: Organizes a field, bit, or register layou
 
 <!-- claim:PCIE14-FIG-004-CLAIM figure-table:PCIE14-FIG-004 -->
 
-Figure 4, “PCI Express Specific Controller Property Definitions”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 4, "PCI Express Specific Controller Property Definitions": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -237,11 +238,11 @@ Figure 4, “PCI Express Specific Controller Property Definitions”: Provides a
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 4, printed pages 9-10, PDF pages 9-10
 
-### Figure 5: Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL – Submission Queue y Tail
+### Figure 5: Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail
 
 <!-- claim:PCIE14-FIG-005-CLAIM figure-table:PCIE14-FIG-005 -->
 
-Figure 5, “Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL – Submission Queue y Tail”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 5, "Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL - Submission Queue y Tail": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -253,11 +254,11 @@ Figure 5, “Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL – Submission 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 5, printed pages 10, PDF pages 10
 
-### Figure 6: Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL – Completion Queue y Head
+### Figure 6: Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL - Completion Queue y Head
 
 <!-- claim:PCIE14-FIG-006-CLAIM figure-table:PCIE14-FIG-006 -->
 
-Figure 6, “Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL – Completion Queue y Head”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 6, "Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL - Completion Queue y Head": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -269,11 +270,11 @@ Figure 6, “Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL – Complet
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, printed pages 10-11, PDF pages 10-11
 
-### Figure 7: Create I/O Completion Queue – Command Dword 11
+### Figure 7: Create I/O Completion Queue - Command Dword 11
 
 <!-- claim:PCIE14-FIG-007-CLAIM figure-table:PCIE14-FIG-007 -->
 
-Figure 7, “Create I/O Completion Queue – Command Dword 11”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 7, "Create I/O Completion Queue - Command Dword 11": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -289,7 +290,7 @@ Figure 7, “Create I/O Completion Queue – Command Dword 11”: Organizes a qu
 
 <!-- claim:PCIE14-FIG-008-CLAIM figure-table:PCIE14-FIG-008 -->
 
-Figure 8, “Command Processing”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 8, "Command Processing": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -305,7 +306,7 @@ Figure 8, “Command Processing”: Organizes a queue or command relationship or
 
 <!-- claim:PCIE14-FIG-009-CLAIM figure-table:PCIE14-FIG-009 -->
 
-Figure 9, “Pin Based, Single MSI, and Multiple MSI Behavior”: Shows interrupt capability, vector, or notification behavior. Separate capability presence, enable state, vector mapping, and pending or mask state.
+Figure 9, "Pin Based, Single MSI, and Multiple MSI Behavior": Shows interrupt capability, vector, or notification behavior. Separate capability presence, enable state, vector mapping, and pending or mask state.
 
 - Purpose: Shows interrupt capability, vector, or notification behavior.
 
@@ -321,7 +322,7 @@ Figure 9, “Pin Based, Single MSI, and Multiple MSI Behavior”: Shows interrup
 
 <!-- claim:PCIE14-FIG-010-CLAIM figure-table:PCIE14-FIG-010 -->
 
-Figure 10, “PCI Express Type 0/1 Common Configuration Space”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 10, "PCI Express Type 0/1 Common Configuration Space": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -337,7 +338,7 @@ Figure 10, “PCI Express Type 0/1 Common Configuration Space”: Provides a str
 
 <!-- claim:PCIE14-FIG-011-CLAIM figure-table:PCIE14-FIG-011 -->
 
-Figure 11, “Offset 00h: ID - Identifiers”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 11, "Offset 00h: ID - Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -353,7 +354,7 @@ Figure 11, “Offset 00h: ID - Identifiers”: Organizes a field, bit, or regist
 
 <!-- claim:PCIE14-FIG-012-CLAIM figure-table:PCIE14-FIG-012 -->
 
-Figure 12, “Offset 04h: CMD - Command”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 12, "Offset 04h: CMD - Command": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -365,11 +366,11 @@ Figure 12, “Offset 04h: CMD - Command”: Organizes a field, bit, or register 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, printed pages 17, PDF pages 17
 
-### Figure 13: Offset 06h: STS – Device Status
+### Figure 13: Offset 06h: STS - Device Status
 
 <!-- claim:PCIE14-FIG-013-CLAIM figure-table:PCIE14-FIG-013 -->
 
-Figure 13, “Offset 06h: STS – Device Status”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 13, "Offset 06h: STS - Device Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -385,7 +386,7 @@ Figure 13, “Offset 06h: STS – Device Status”: Organizes status or error fi
 
 <!-- claim:PCIE14-FIG-014-CLAIM figure-table:PCIE14-FIG-014 -->
 
-Figure 14, “Offset 08h: RID - Revision ID”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 14, "Offset 08h: RID - Revision ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -401,7 +402,7 @@ Figure 14, “Offset 08h: RID - Revision ID”: Organizes a field, bit, or regis
 
 <!-- claim:PCIE14-FIG-015-CLAIM figure-table:PCIE14-FIG-015 -->
 
-Figure 15, “Offset 09h: CC - Class Code”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 15, "Offset 09h: CC - Class Code": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -413,11 +414,11 @@ Figure 15, “Offset 09h: CC - Class Code”: Organizes a field, bit, or registe
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, printed pages 18, PDF pages 18
 
-### Figure 16: Offset 0Ch: CLS – Cache Line Size
+### Figure 16: Offset 0Ch: CLS - Cache Line Size
 
 <!-- claim:PCIE14-FIG-016-CLAIM figure-table:PCIE14-FIG-016 -->
 
-Figure 16, “Offset 0Ch: CLS – Cache Line Size”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 16, "Offset 0Ch: CLS - Cache Line Size": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -429,11 +430,11 @@ Figure 16, “Offset 0Ch: CLS – Cache Line Size”: Organizes a field, bit, or
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, printed pages 18, PDF pages 18
 
-### Figure 17: Offset 0Dh: MLT – Master Latency Timer
+### Figure 17: Offset 0Dh: MLT - Master Latency Timer
 
 <!-- claim:PCIE14-FIG-017-CLAIM figure-table:PCIE14-FIG-017 -->
 
-Figure 17, “Offset 0Dh: MLT – Master Latency Timer”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 17, "Offset 0Dh: MLT - Master Latency Timer": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -445,11 +446,11 @@ Figure 17, “Offset 0Dh: MLT – Master Latency Timer”: Organizes a field, bi
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, printed pages 18, PDF pages 18
 
-### Figure 18: Offset 0Eh: HTYPE – Header Type
+### Figure 18: Offset 0Eh: HTYPE - Header Type
 
 <!-- claim:PCIE14-FIG-018-CLAIM figure-table:PCIE14-FIG-018 -->
 
-Figure 18, “Offset 0Eh: HTYPE – Header Type”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 18, "Offset 0Eh: HTYPE - Header Type": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -461,11 +462,11 @@ Figure 18, “Offset 0Eh: HTYPE – Header Type”: Organizes a field, bit, or r
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, printed pages 19, PDF pages 19
 
-### Figure 19: Offset 0Fh: BIST – Built-In Self Test (Optional)
+### Figure 19: Offset 0Fh: BIST - Built-In Self Test (Optional)
 
 <!-- claim:PCIE14-FIG-019-CLAIM figure-table:PCIE14-FIG-019 -->
 
-Figure 19, “Offset 0Fh: BIST – Built-In Self Test (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 19, "Offset 0Fh: BIST - Built-In Self Test (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -477,11 +478,11 @@ Figure 19, “Offset 0Fh: BIST – Built-In Self Test (Optional)”: Organizes a
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, printed pages 19, PDF pages 19
 
-### Figure 20: Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits
+### Figure 20: Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits
 
 <!-- claim:PCIE14-FIG-020-CLAIM figure-table:PCIE14-FIG-020 -->
 
-Figure 20, “Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 20, "Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -493,11 +494,11 @@ Figure 20, “Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 3
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.10, Figure 20, printed pages 19, PDF pages 19
 
-### Figure 21: Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits
+### Figure 21: Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits
 
 <!-- claim:PCIE14-FIG-021-CLAIM figure-table:PCIE14-FIG-021 -->
 
-Figure 21, “Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 21, "Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -509,11 +510,11 @@ Figure 21, “Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 3
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.11, Figure 21, printed pages 19, PDF pages 19
 
-### Figure 22: Offset 18h: BAR2 – Index/Data Pair Register Base Address or Vendor Specific
+### Figure 22: Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific
 
 <!-- claim:PCIE14-FIG-022-CLAIM figure-table:PCIE14-FIG-022 -->
 
-Figure 22, “Offset 18h: BAR2 – Index/Data Pair Register Base Address or Vendor Specific”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 22, "Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -525,11 +526,11 @@ Figure 22, “Offset 18h: BAR2 – Index/Data Pair Register Base Address or Vend
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, printed pages 20, PDF pages 20
 
-### Figure 23: Offset 28h: CCPTR – CardBus CIS Pointer
+### Figure 23: Offset 28h: CCPTR - CardBus CIS Pointer
 
 <!-- claim:PCIE14-FIG-023-CLAIM figure-table:PCIE14-FIG-023 -->
 
-Figure 23, “Offset 28h: CCPTR – CardBus CIS Pointer”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 23, "Offset 28h: CCPTR - CardBus CIS Pointer": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -545,7 +546,7 @@ Figure 23, “Offset 28h: CCPTR – CardBus CIS Pointer”: Organizes a field, b
 
 <!-- claim:PCIE14-FIG-024-CLAIM figure-table:PCIE14-FIG-024 -->
 
-Figure 24, “Offset 2Ch: SS - Subsystem Identifiers”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 24, "Offset 2Ch: SS - Subsystem Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -557,11 +558,11 @@ Figure 24, “Offset 2Ch: SS - Subsystem Identifiers”: Organizes a field, bit,
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, printed pages 20, PDF pages 20
 
-### Figure 25: Offset 30h: EROM – Expansion ROM (Optional)
+### Figure 25: Offset 30h: EROM - Expansion ROM (Optional)
 
 <!-- claim:PCIE14-FIG-025-CLAIM figure-table:PCIE14-FIG-025 -->
 
-Figure 25, “Offset 30h: EROM – Expansion ROM (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 25, "Offset 30h: EROM - Expansion ROM (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -573,11 +574,11 @@ Figure 25, “Offset 30h: EROM – Expansion ROM (Optional)”: Organizes a fiel
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, printed pages 20, PDF pages 20
 
-### Figure 26: Offset 34h: CAP – Capabilities Pointer
+### Figure 26: Offset 34h: CAP - Capabilities Pointer
 
 <!-- claim:PCIE14-FIG-026-CLAIM figure-table:PCIE14-FIG-026 -->
 
-Figure 26, “Offset 34h: CAP – Capabilities Pointer”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 26, "Offset 34h: CAP - Capabilities Pointer": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -593,7 +594,7 @@ Figure 26, “Offset 34h: CAP – Capabilities Pointer”: Organizes a field, bi
 
 <!-- claim:PCIE14-FIG-027-CLAIM figure-table:PCIE14-FIG-027 -->
 
-Figure 27, “Offset 3Ch: INTR - Interrupt Information”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 27, "Offset 3Ch: INTR - Interrupt Information": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -605,11 +606,11 @@ Figure 27, “Offset 3Ch: INTR - Interrupt Information”: Organizes a field, bi
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, printed pages 21, PDF pages 21
 
-### Figure 28: Offset 3Eh: MGNT – Minimum Grant
+### Figure 28: Offset 3Eh: MGNT - Minimum Grant
 
 <!-- claim:PCIE14-FIG-028-CLAIM figure-table:PCIE14-FIG-028 -->
 
-Figure 28, “Offset 3Eh: MGNT – Minimum Grant”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 28, "Offset 3Eh: MGNT - Minimum Grant": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -621,11 +622,11 @@ Figure 28, “Offset 3Eh: MGNT – Minimum Grant”: Organizes a field, bit, or 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, printed pages 21, PDF pages 21
 
-### Figure 29: Offset 3Fh: MLAT – Maximum Latency
+### Figure 29: Offset 3Fh: MLAT - Maximum Latency
 
 <!-- claim:PCIE14-FIG-029-CLAIM figure-table:PCIE14-FIG-029 -->
 
-Figure 29, “Offset 3Fh: MLAT – Maximum Latency”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 29, "Offset 3Fh: MLAT - Maximum Latency": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -641,7 +642,7 @@ Figure 29, “Offset 3Fh: MLAT – Maximum Latency”: Organizes a field, bit, o
 
 <!-- claim:PCIE14-FIG-030-CLAIM figure-table:PCIE14-FIG-030 -->
 
-Figure 30, “PCI Power Management Capabilities”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 30, "PCI Power Management Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -657,7 +658,7 @@ Figure 30, “PCI Power Management Capabilities”: Organizes a field, bit, or r
 
 <!-- claim:PCIE14-FIG-031-CLAIM figure-table:PCIE14-FIG-031 -->
 
-Figure 31, “Offset PMCAP: PID - PCI Power Management Capability ID”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 31, "Offset PMCAP: PID - PCI Power Management Capability ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -669,11 +670,11 @@ Figure 31, “Offset PMCAP: PID - PCI Power Management Capability ID”: Organiz
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, printed pages 21, PDF pages 21
 
-### Figure 32: Offset PMCAP + 2h: PC – PCI Power Management Capabilities
+### Figure 32: Offset PMCAP + 2h: PC - PCI Power Management Capabilities
 
 <!-- claim:PCIE14-FIG-032-CLAIM figure-table:PCIE14-FIG-032 -->
 
-Figure 32, “Offset PMCAP + 2h: PC – PCI Power Management Capabilities”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 32, "Offset PMCAP + 2h: PC - PCI Power Management Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -685,11 +686,11 @@ Figure 32, “Offset PMCAP + 2h: PC – PCI Power Management Capabilities”: Or
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, printed pages 22, PDF pages 22
 
-### Figure 33: Offset PMCAP + 4h: PMCS – PCI Power Management Control and Status
+### Figure 33: Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status
 
 <!-- claim:PCIE14-FIG-033-CLAIM figure-table:PCIE14-FIG-033 -->
 
-Figure 33, “Offset PMCAP + 4h: PMCS – PCI Power Management Control and Status”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 33, "Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -705,7 +706,7 @@ Figure 33, “Offset PMCAP + 4h: PMCS – PCI Power Management Control and Statu
 
 <!-- claim:PCIE14-FIG-034-CLAIM figure-table:PCIE14-FIG-034 -->
 
-Figure 34, “Message Signaled Interrupt Capability (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 34, "Message Signaled Interrupt Capability (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -717,11 +718,11 @@ Figure 34, “Message Signaled Interrupt Capability (Optional)”: Organizes a f
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 34, printed pages 22, PDF pages 22
 
-### Figure 35: Offset MSICAP: MID – Message Signaled Interrupt Identifiers
+### Figure 35: Offset MSICAP: MID - Message Signaled Interrupt Identifiers
 
 <!-- claim:PCIE14-FIG-035-CLAIM figure-table:PCIE14-FIG-035 -->
 
-Figure 35, “Offset MSICAP: MID – Message Signaled Interrupt Identifiers”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 35, "Offset MSICAP: MID - Message Signaled Interrupt Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -733,11 +734,11 @@ Figure 35, “Offset MSICAP: MID – Message Signaled Interrupt Identifiers”: 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, printed pages 23, PDF pages 23
 
-### Figure 36: Offset MSICAP + 2h: MC – Message Signaled Interrupt Message Control
+### Figure 36: Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control
 
 <!-- claim:PCIE14-FIG-036-CLAIM figure-table:PCIE14-FIG-036 -->
 
-Figure 36, “Offset MSICAP + 2h: MC – Message Signaled Interrupt Message Control”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 36, "Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -749,11 +750,11 @@ Figure 36, “Offset MSICAP + 2h: MC – Message Signaled Interrupt Message Cont
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, printed pages 23, PDF pages 23
 
-### Figure 37: Offset MSICAP + 4h: MA – Message Signaled Interrupt Message Address
+### Figure 37: Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address
 
 <!-- claim:PCIE14-FIG-037-CLAIM figure-table:PCIE14-FIG-037 -->
 
-Figure 37, “Offset MSICAP + 4h: MA – Message Signaled Interrupt Message Address”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 37, "Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -765,11 +766,11 @@ Figure 37, “Offset MSICAP + 4h: MA – Message Signaled Interrupt Message Addr
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, printed pages 23, PDF pages 23
 
-### Figure 38: Offset MSICAP + 8h: MUA – Message Signaled Interrupt Upper Address
+### Figure 38: Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address
 
 <!-- claim:PCIE14-FIG-038-CLAIM figure-table:PCIE14-FIG-038 -->
 
-Figure 38, “Offset MSICAP + 8h: MUA – Message Signaled Interrupt Upper Address”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 38, "Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -781,11 +782,11 @@ Figure 38, “Offset MSICAP + 8h: MUA – Message Signaled Interrupt Upper Addre
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, printed pages 23, PDF pages 23
 
-### Figure 39: Offset MSICAP + Ch: MD – Message Signaled Interrupt Message Data
+### Figure 39: Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data
 
 <!-- claim:PCIE14-FIG-039-CLAIM figure-table:PCIE14-FIG-039 -->
 
-Figure 39, “Offset MSICAP + Ch: MD – Message Signaled Interrupt Message Data”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 39, "Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -797,11 +798,11 @@ Figure 39, “Offset MSICAP + Ch: MD – Message Signaled Interrupt Message Data
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, printed pages 23, PDF pages 23
 
-### Figure 40: Offset MSICAP + 10h: MMASK – Message Signaled Interrupt Mask Bits (Optional)
+### Figure 40: Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)
 
 <!-- claim:PCIE14-FIG-040-CLAIM figure-table:PCIE14-FIG-040 -->
 
-Figure 40, “Offset MSICAP + 10h: MMASK – Message Signaled Interrupt Mask Bits (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 40, "Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -813,11 +814,11 @@ Figure 40, “Offset MSICAP + 10h: MMASK – Message Signaled Interrupt Mask Bit
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, printed pages 24, PDF pages 24
 
-### Figure 41: Offset MSICAP + 14h: MPEND – Message Signaled Interrupt Pending Bits (Optional)
+### Figure 41: Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)
 
 <!-- claim:PCIE14-FIG-041-CLAIM figure-table:PCIE14-FIG-041 -->
 
-Figure 41, “Offset MSICAP + 14h: MPEND – Message Signaled Interrupt Pending Bits (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 41, "Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -833,7 +834,7 @@ Figure 41, “Offset MSICAP + 14h: MPEND – Message Signaled Interrupt Pending 
 
 <!-- claim:PCIE14-FIG-042-CLAIM figure-table:PCIE14-FIG-042 -->
 
-Figure 42, “MSI-X Capability (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 42, "MSI-X Capability (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -845,11 +846,11 @@ Figure 42, “MSI-X Capability (Optional)”: Organizes a field, bit, or registe
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 42, printed pages 24, PDF pages 24
 
-### Figure 43: Offset MSIXCAP: MXID – MSI-X Identifiers
+### Figure 43: Offset MSIXCAP: MXID - MSI-X Identifiers
 
 <!-- claim:PCIE14-FIG-043-CLAIM figure-table:PCIE14-FIG-043 -->
 
-Figure 43, “Offset MSIXCAP: MXID – MSI-X Identifiers”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 43, "Offset MSIXCAP: MXID - MSI-X Identifiers": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -861,11 +862,11 @@ Figure 43, “Offset MSIXCAP: MXID – MSI-X Identifiers”: Organizes a field, 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, printed pages 24, PDF pages 24
 
-### Figure 44: Offset MSIXCAP + 2h: MXC – MSI-X Message Control
+### Figure 44: Offset MSIXCAP + 2h: MXC - MSI-X Message Control
 
 <!-- claim:PCIE14-FIG-044-CLAIM figure-table:PCIE14-FIG-044 -->
 
-Figure 44, “Offset MSIXCAP + 2h: MXC – MSI-X Message Control”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 44, "Offset MSIXCAP + 2h: MXC - MSI-X Message Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -877,11 +878,11 @@ Figure 44, “Offset MSIXCAP + 2h: MXC – MSI-X Message Control”: Organizes a
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, printed pages 24-25, PDF pages 24-25
 
-### Figure 45: Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR
+### Figure 45: Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR
 
 <!-- claim:PCIE14-FIG-045-CLAIM figure-table:PCIE14-FIG-045 -->
 
-Figure 45, “Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 45, "Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -893,11 +894,11 @@ Figure 45, “Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR”: O
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, printed pages 25, PDF pages 25
 
-### Figure 46: Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR
+### Figure 46: Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR
 
 <!-- claim:PCIE14-FIG-046-CLAIM figure-table:PCIE14-FIG-046 -->
 
-Figure 46, “Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 46, "Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -913,7 +914,7 @@ Figure 46, “Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR”: Organ
 
 <!-- claim:PCIE14-FIG-047-CLAIM figure-table:PCIE14-FIG-047 -->
 
-Figure 47, “PCI Express Capability”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 47, "PCI Express Capability": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -925,11 +926,11 @@ Figure 47, “PCI Express Capability”: Organizes a field, bit, or register lay
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5, Figure 47, printed pages 26, PDF pages 26
 
-### Figure 48: Offset PXCAP: PXID – PCI Express Capability ID
+### Figure 48: Offset PXCAP: PXID - PCI Express Capability ID
 
 <!-- claim:PCIE14-FIG-048-CLAIM figure-table:PCIE14-FIG-048 -->
 
-Figure 48, “Offset PXCAP: PXID – PCI Express Capability ID”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 48, "Offset PXCAP: PXID - PCI Express Capability ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -941,11 +942,11 @@ Figure 48, “Offset PXCAP: PXID – PCI Express Capability ID”: Organizes a f
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, printed pages 26, PDF pages 26
 
-### Figure 49: Offset PXCAP + 2h: PXCAP – PCI Express Capabilities
+### Figure 49: Offset PXCAP + 2h: PXCAP - PCI Express Capabilities
 
 <!-- claim:PCIE14-FIG-049-CLAIM figure-table:PCIE14-FIG-049 -->
 
-Figure 49, “Offset PXCAP + 2h: PXCAP – PCI Express Capabilities”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 49, "Offset PXCAP + 2h: PXCAP - PCI Express Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -957,11 +958,11 @@ Figure 49, “Offset PXCAP + 2h: PXCAP – PCI Express Capabilities”: Organize
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, printed pages 26, PDF pages 26
 
-### Figure 50: Offset PXCAP + 4h: PXDCAP – PCI Express Device Capabilities
+### Figure 50: Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities
 
 <!-- claim:PCIE14-FIG-050-CLAIM figure-table:PCIE14-FIG-050 -->
 
-Figure 50, “Offset PXCAP + 4h: PXDCAP – PCI Express Device Capabilities”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 50, "Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -973,11 +974,11 @@ Figure 50, “Offset PXCAP + 4h: PXDCAP – PCI Express Device Capabilities”: 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, printed pages 26-27, PDF pages 26-27
 
-### Figure 51: Offset PXCAP + 8h: PXDC – PCI Express Device Control
+### Figure 51: Offset PXCAP + 8h: PXDC - PCI Express Device Control
 
 <!-- claim:PCIE14-FIG-051-CLAIM figure-table:PCIE14-FIG-051 -->
 
-Figure 51, “Offset PXCAP + 8h: PXDC – PCI Express Device Control”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 51, "Offset PXCAP + 8h: PXDC - PCI Express Device Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -989,11 +990,11 @@ Figure 51, “Offset PXCAP + 8h: PXDC – PCI Express Device Control”: Organiz
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, printed pages 27-28, PDF pages 27-28
 
-### Figure 52: Offset PXCAP + Ah: PXDS – PCI Express Device Status
+### Figure 52: Offset PXCAP + Ah: PXDS - PCI Express Device Status
 
 <!-- claim:PCIE14-FIG-052-CLAIM figure-table:PCIE14-FIG-052 -->
 
-Figure 52, “Offset PXCAP + Ah: PXDS – PCI Express Device Status”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 52, "Offset PXCAP + Ah: PXDS - PCI Express Device Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1005,11 +1006,11 @@ Figure 52, “Offset PXCAP + Ah: PXDS – PCI Express Device Status”: Organize
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, printed pages 28, PDF pages 28
 
-### Figure 53: Offset PXCAP + Ch: PXLCAP – PCI Express Link Capabilities
+### Figure 53: Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities
 
 <!-- claim:PCIE14-FIG-053-CLAIM figure-table:PCIE14-FIG-053 -->
 
-Figure 53, “Offset PXCAP + Ch: PXLCAP – PCI Express Link Capabilities”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 53, "Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1021,11 +1022,11 @@ Figure 53, “Offset PXCAP + Ch: PXLCAP – PCI Express Link Capabilities”: Or
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, printed pages 28-29, PDF pages 28-29
 
-### Figure 54: Offset PXCAP + 10h: PXLC – PCI Express Link Control
+### Figure 54: Offset PXCAP + 10h: PXLC - PCI Express Link Control
 
 <!-- claim:PCIE14-FIG-054-CLAIM figure-table:PCIE14-FIG-054 -->
 
-Figure 54, “Offset PXCAP + 10h: PXLC – PCI Express Link Control”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 54, "Offset PXCAP + 10h: PXLC - PCI Express Link Control": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1037,11 +1038,11 @@ Figure 54, “Offset PXCAP + 10h: PXLC – PCI Express Link Control”: Organize
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, printed pages 29, PDF pages 29
 
-### Figure 55: Offset PXCAP + 12h: PXLS – PCI Express Link Status
+### Figure 55: Offset PXCAP + 12h: PXLS - PCI Express Link Status
 
 <!-- claim:PCIE14-FIG-055-CLAIM figure-table:PCIE14-FIG-055 -->
 
-Figure 55, “Offset PXCAP + 12h: PXLS – PCI Express Link Status”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 55, "Offset PXCAP + 12h: PXLS - PCI Express Link Status": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1053,11 +1054,11 @@ Figure 55, “Offset PXCAP + 12h: PXLS – PCI Express Link Status”: Organizes
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, printed pages 29, PDF pages 29
 
-### Figure 56: Offset PXCAP + 24h: PXDCAP2 – PCI Express Device Capabilities 2
+### Figure 56: Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2
 
 <!-- claim:PCIE14-FIG-056-CLAIM figure-table:PCIE14-FIG-056 -->
 
-Figure 56, “Offset PXCAP + 24h: PXDCAP2 – PCI Express Device Capabilities 2”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 56, "Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1069,11 +1070,11 @@ Figure 56, “Offset PXCAP + 24h: PXDCAP2 – PCI Express Device Capabilities 2�
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, printed pages 30, PDF pages 30
 
-### Figure 57: Offset PXCAP + 28h: PXDC2 – PCI Express Device Control 2
+### Figure 57: Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2
 
 <!-- claim:PCIE14-FIG-057-CLAIM figure-table:PCIE14-FIG-057 -->
 
-Figure 57, “Offset PXCAP + 28h: PXDC2 – PCI Express Device Control 2”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 57, "Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1089,7 +1090,7 @@ Figure 57, “Offset PXCAP + 28h: PXDC2 – PCI Express Device Control 2”: Org
 
 <!-- claim:PCIE14-FIG-058-CLAIM figure-table:PCIE14-FIG-058 -->
 
-Figure 58, “Advanced Error Reporting Capability (Optional)”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 58, "Advanced Error Reporting Capability (Optional)": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1101,11 +1102,11 @@ Figure 58, “Advanced Error Reporting Capability (Optional)”: Organizes statu
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 58, printed pages 31, PDF pages 31
 
-### Figure 59: Offset AERCAP: AERID – AER Capability ID
+### Figure 59: Offset AERCAP: AERID - AER Capability ID
 
 <!-- claim:PCIE14-FIG-059-CLAIM figure-table:PCIE14-FIG-059 -->
 
-Figure 59, “Offset AERCAP: AERID – AER Capability ID”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 59, "Offset AERCAP: AERID - AER Capability ID": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1117,11 +1118,11 @@ Figure 59, “Offset AERCAP: AERID – AER Capability ID”: Organizes a field, 
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, printed pages 31, PDF pages 31
 
-### Figure 60: Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register
+### Figure 60: Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register
 
 <!-- claim:PCIE14-FIG-060-CLAIM figure-table:PCIE14-FIG-060 -->
 
-Figure 60, “Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 60, "Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1133,11 +1134,11 @@ Figure 60, “Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Regi
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, printed pages 31-32, PDF pages 31-32
 
-### Figure 61: Offset AERCAP + 8: AERUCEM – AER Uncorrectable Error Mask Register
+### Figure 61: Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register
 
 <!-- claim:PCIE14-FIG-061-CLAIM figure-table:PCIE14-FIG-061 -->
 
-Figure 61, “Offset AERCAP + 8: AERUCEM – AER Uncorrectable Error Mask Register”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 61, "Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1149,11 +1150,11 @@ Figure 61, “Offset AERCAP + 8: AERUCEM – AER Uncorrectable Error Mask Regist
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, printed pages 32, PDF pages 32
 
-### Figure 62: Offset AERCAP + Ch: AERUCESEV – AER Uncorrectable Error Severity Register
+### Figure 62: Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register
 
 <!-- claim:PCIE14-FIG-062-CLAIM figure-table:PCIE14-FIG-062 -->
 
-Figure 62, “Offset AERCAP + Ch: AERUCESEV – AER Uncorrectable Error Severity Register”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 62, "Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1165,11 +1166,11 @@ Figure 62, “Offset AERCAP + Ch: AERUCESEV – AER Uncorrectable Error Severity
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, printed pages 32-33, PDF pages 32-33
 
-### Figure 63: Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register
+### Figure 63: Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register
 
 <!-- claim:PCIE14-FIG-063-CLAIM figure-table:PCIE14-FIG-063 -->
 
-Figure 63, “Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 63, "Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1181,11 +1182,11 @@ Figure 63, “Offset AERCAP + 10h: AERCES – AER Correctable Error Status Regis
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, printed pages 33, PDF pages 33
 
-### Figure 64: Offset AERCAP + 14h: AERCEM – AER Correctable Error Mask Register
+### Figure 64: Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register
 
 <!-- claim:PCIE14-FIG-064-CLAIM figure-table:PCIE14-FIG-064 -->
 
-Figure 64, “Offset AERCAP + 14h: AERCEM – AER Correctable Error Mask Register”: Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
+Figure 64, "Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register": Organizes status or error fields and their classification. Read the type and control bits before decoding a code within that type; do not assign meaning to reserved values.
 
 - Purpose: Organizes status or error fields and their classification.
 
@@ -1197,11 +1198,11 @@ Figure 64, “Offset AERCAP + 14h: AERCEM – AER Correctable Error Mask Registe
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, printed pages 33, PDF pages 33
 
-### Figure 65: Offset AERCAP + 18h: AERCC – AER Capabilities and Control Register
+### Figure 65: Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register
 
 <!-- claim:PCIE14-FIG-065-CLAIM figure-table:PCIE14-FIG-065 -->
 
-Figure 65, “Offset AERCAP + 18h: AERCC – AER Capabilities and Control Register”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 65, "Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1213,11 +1214,11 @@ Figure 65, “Offset AERCAP + 18h: AERCC – AER Capabilities and Control Regist
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, printed pages 34, PDF pages 34
 
-### Figure 66: Offset AERCAP + 1Ch: AERHL – AER Header Log Register
+### Figure 66: Offset AERCAP + 1Ch: AERHL - AER Header Log Register
 
 <!-- claim:PCIE14-FIG-066-CLAIM figure-table:PCIE14-FIG-066 -->
 
-Figure 66, “Offset AERCAP + 1Ch: AERHL – AER Header Log Register”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 66, "Offset AERCAP + 1Ch: AERHL - AER Header Log Register": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1229,11 +1230,11 @@ Figure 66, “Offset AERCAP + 1Ch: AERHL – AER Header Log Register”: Organiz
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, printed pages 34, PDF pages 34
 
-### Figure 67: Offset AERCAP + 38h: AERTLP – AER TLP Prefix Log Register (Optional)
+### Figure 67: Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)
 
 <!-- claim:PCIE14-FIG-067-CLAIM figure-table:PCIE14-FIG-067 -->
 
-Figure 67, “Offset AERCAP + 38h: AERTLP – AER TLP Prefix Log Register (Optional)”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 67, "Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1249,7 +1250,7 @@ Figure 67, “Offset AERCAP + 38h: AERTLP – AER TLP Prefix Log Register (Optio
 
 <!-- claim:PCIE14-FIG-068-CLAIM figure-table:PCIE14-FIG-068 -->
 
-Figure 68, “Example of an Eve Diagram in the Printable Eye Field”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 68, "Example of an Eve Diagram in the Printable Eye Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1265,7 +1266,7 @@ Figure 68, “Example of an Eve Diagram in the Printable Eye Field”: Organizes
 
 <!-- claim:PCIE14-FIG-069-CLAIM figure-table:PCIE14-FIG-069 -->
 
-Figure 69, “NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 69, "NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -1277,11 +1278,11 @@ Figure 69, “NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure”: Provide
 
 > Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.10, Figure 69, printed pages 38-39, PDF pages 38-39
 
-### Figure 70: Get Log Page – Log Page Identifiers
+### Figure 70: Get Log Page - Log Page Identifiers
 
 <!-- claim:PCIE14-FIG-070-CLAIM figure-table:PCIE14-FIG-070 -->
 
-Figure 70, “Get Log Page – Log Page Identifiers”: Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
+Figure 70, "Get Log Page - Log Page Identifiers": Organizes identifier or list byte layout and scope. Check length, byte order, count, uniqueness scope, and reserved area.
 
 - Purpose: Organizes identifier or list byte layout and scope.
 
@@ -1297,7 +1298,7 @@ Figure 70, “Get Log Page – Log Page Identifiers”: Organizes identifier or 
 
 <!-- claim:PCIE14-FIG-071-CLAIM figure-table:PCIE14-FIG-071 -->
 
-Figure 71, “Size of Physical Interface Receiver Eye Opening Measurement Log Page”: Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.
+Figure 71, "Size of Physical Interface Receiver Eye Opening Measurement Log Page": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.
 
 - Purpose: Organizes receiver-eye measurement inputs, outputs, or data format.
 
@@ -1313,7 +1314,7 @@ Figure 71, “Size of Physical Interface Receiver Eye Opening Measurement Log Pa
 
 <!-- claim:PCIE14-FIG-072-CLAIM figure-table:PCIE14-FIG-072 -->
 
-Figure 72, “Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 72, "Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1329,7 +1330,7 @@ Figure 72, “Physical Interface Receiver Eye Opening Measurement Log Specific P
 
 <!-- claim:PCIE14-FIG-073-CLAIM figure-table:PCIE14-FIG-073 -->
 
-Figure 73, “Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 73, "Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 
@@ -1345,7 +1346,7 @@ Figure 73, “Physical Interface Receiver Eye Opening Measurement Log Specific I
 
 <!-- claim:PCIE14-FIG-074-CLAIM figure-table:PCIE14-FIG-074 -->
 
-Figure 74, “Physical Interface Receiver Eye Opening Measurement Log Page”: Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.
+Figure 74, "Physical Interface Receiver Eye Opening Measurement Log Page": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.
 
 - Purpose: Organizes receiver-eye measurement inputs, outputs, or data format.
 
@@ -1361,7 +1362,7 @@ Figure 74, “Physical Interface Receiver Eye Opening Measurement Log Page”: O
 
 <!-- claim:PCIE14-FIG-075-CLAIM figure-table:PCIE14-FIG-075 -->
 
-Figure 75, “EOM Header”: Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.
+Figure 75, "EOM Header": Organizes receiver-eye measurement inputs, outputs, or data format. Check support and size before decoding lanes, parameters, headers, and descriptors.
 
 - Purpose: Organizes receiver-eye measurement inputs, outputs, or data format.
 
@@ -1377,7 +1378,7 @@ Figure 75, “EOM Header”: Organizes receiver-eye measurement inputs, outputs,
 
 <!-- claim:PCIE14-FIG-076-CLAIM figure-table:PCIE14-FIG-076 -->
 
-Figure 76, “EOM Lane Descriptor”: Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
+Figure 76, "EOM Lane Descriptor": Shows how PRP or SGL structures describe a data buffer. Check address, offset, length, alignment, and next-level pointers in order.
 
 - Purpose: Shows how PRP or SGL structures describe a data buffer.
 
@@ -1393,7 +1394,7 @@ Figure 76, “EOM Lane Descriptor”: Shows how PRP or SGL structures describe a
 
 <!-- claim:PCIE14-FIG-077-CLAIM figure-table:PCIE14-FIG-077 -->
 
-Figure 77, “Example of an Eve Diagram in the Printable Eye Field”: Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
+Figure 77, "Example of an Eve Diagram in the Printable Eye Field": Organizes a field, bit, or register layout. Map offsets, bytes, or bits to names, access type, reset value, and conditions.
 
 - Purpose: Organizes a field, bit, or register layout.
 

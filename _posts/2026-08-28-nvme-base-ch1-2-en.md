@@ -2,9 +2,10 @@
 layout: post
 read_time: true
 show_date: true
-title: "NVMe Base 2.4 Chapters 1–2: Specification Language, PCIe Queues, and Storage Model"
+title: "NVMe Base 2.4 Chapters 1-2: Specification Language, PCIe Queues, and Storage Model"
 date: 2026-08-28
 description: "Source-located PCIe/NVMe report for PPT authoring."
+img: posts/2026/cat_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -12,11 +13,11 @@ github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
 
-# NVMe Base 2.4 Chapters 1–2: Specification Language, PCIe Queues, and Storage Model
+# NVMe Base 2.4 Chapters 1-2: Specification Language, PCIe Queues, and Storage Model
 
 Purpose: a source-located engineering report for GitHub Pages and a 100-minute presentation.
 
-Scope: §1–§2; printed pages 1–37; PDF pages 27–63. Only PCIe/memory-based and common NVMe content appears below.
+Scope: §1-§2; printed pages 1-37; PDF pages 27-63. Only PCIe/memory-based and common NVMe content appears below.
 
 ## Source versions
 
@@ -126,7 +127,7 @@ The source uses Figure numbers for both diagrams and field-layout tables. No sou
 
 <!-- claim:BASE12-FIG-001-CLAIM figure-table:BASE12-FIG-001 -->
 
-Figure 1, “NVMe Family of Specifications”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
+Figure 1, "NVMe Family of Specifications": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -144,7 +145,7 @@ Figure 1, “NVMe Family of Specifications”: Provides a structured index to a 
 
 <!-- claim:BASE12-FIG-002-CLAIM figure-table:BASE12-FIG-002 -->
 
-Figure 2, “Decimal and Binary Units”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 2, "Decimal and Binary Units": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -160,7 +161,7 @@ Figure 2, “Decimal and Binary Units”: Provides a structured index to a conce
 
 <!-- claim:BASE12-FIG-003-CLAIM figure-table:BASE12-FIG-003 -->
 
-Figure 3, “Byte, Word, and Dword Relationships”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 3, "Byte, Word, and Dword Relationships": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -176,7 +177,7 @@ Figure 3, “Byte, Word, and Dword Relationships”: Provides a structured index
 
 <!-- claim:BASE12-FIG-005-CLAIM figure-table:BASE12-FIG-005 -->
 
-Figure 5, “Types of NVMe Command Sets”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
+Figure 5, "Types of NVMe Command Sets": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions. This report explains only the PCIe/memory-based portion.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -194,7 +195,7 @@ Figure 5, “Types of NVMe Command Sets”: Provides a structured index to a con
 
 <!-- claim:BASE12-FIG-006-CLAIM figure-table:BASE12-FIG-006 -->
 
-Figure 6, “Queue Pair Example, 1:1 Mapping”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 6, "Queue Pair Example, 1:1 Mapping": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -210,7 +211,7 @@ Figure 6, “Queue Pair Example, 1:1 Mapping”: Organizes a queue or command re
 
 <!-- claim:BASE12-FIG-007-CLAIM figure-table:BASE12-FIG-007 -->
 
-Figure 7, “Queue Pair Example, n:1 Mapping”: Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
+Figure 7, "Queue Pair Example, n:1 Mapping": Organizes a queue or command relationship or processing sequence. Follow host, SQ, controller, CQ, and pointer or phase direction.
 
 - Purpose: Organizes a queue or command relationship or processing sequence.
 
@@ -226,7 +227,7 @@ Figure 7, “Queue Pair Example, n:1 Mapping”: Organizes a queue or command re
 
 <!-- claim:BASE12-FIG-011-CLAIM figure-table:BASE12-FIG-011 -->
 
-Figure 11, “Simple NVM Storage Hierarchy with NVM Sets”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 11, "Simple NVM Storage Hierarchy with NVM Sets": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -242,7 +243,7 @@ Figure 11, “Simple NVM Storage Hierarchy with NVM Sets”: Shows containment, 
 
 <!-- claim:BASE12-FIG-012-CLAIM figure-table:BASE12-FIG-012 -->
 
-Figure 12, “Simple NVM Storage Hierarchy with One Reclaim Group”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 12, "Simple NVM Storage Hierarchy with One Reclaim Group": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -258,7 +259,7 @@ Figure 12, “Simple NVM Storage Hierarchy with One Reclaim Group”: Provides a
 
 <!-- claim:BASE12-FIG-013-CLAIM figure-table:BASE12-FIG-013 -->
 
-Figure 13, “Simple NVM Storage Hierarchy with Multiple Reclaim Groups”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 13, "Simple NVM Storage Hierarchy with Multiple Reclaim Groups": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -274,7 +275,7 @@ Figure 13, “Simple NVM Storage Hierarchy with Multiple Reclaim Groups”: Prov
 
 <!-- claim:BASE12-FIG-014-CLAIM figure-table:BASE12-FIG-014 -->
 
-Figure 14, “Complex NVM Storage Hierarchy with NVM Sets”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 14, "Complex NVM Storage Hierarchy with NVM Sets": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -290,7 +291,7 @@ Figure 14, “Complex NVM Storage Hierarchy with NVM Sets”: Shows containment,
 
 <!-- claim:BASE12-FIG-015-CLAIM figure-table:BASE12-FIG-015 -->
 
-Figure 15, “Complex NVM Storage Hierarchy with Multiple Reclaim Groups”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 15, "Complex NVM Storage Hierarchy with Multiple Reclaim Groups": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 
@@ -306,7 +307,7 @@ Figure 15, “Complex NVM Storage Hierarchy with Multiple Reclaim Groups”: Pro
 
 <!-- claim:BASE12-FIG-016-CLAIM figure-table:BASE12-FIG-016 -->
 
-Figure 16, “Single-Namespace NVM Subsystem”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 16, "Single-Namespace NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -322,7 +323,7 @@ Figure 16, “Single-Namespace NVM Subsystem”: Shows containment, connection, 
 
 <!-- claim:BASE12-FIG-017-CLAIM figure-table:BASE12-FIG-017 -->
 
-Figure 17, “Two-Namespace NVM Subsystem”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 17, "Two-Namespace NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -338,7 +339,7 @@ Figure 17, “Two-Namespace NVM Subsystem”: Shows containment, connection, or 
 
 <!-- claim:BASE12-FIG-018-CLAIM figure-table:BASE12-FIG-018 -->
 
-Figure 18, “Complex NVM Subsystem”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 18, "Complex NVM Subsystem": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -354,7 +355,7 @@ Figure 18, “Complex NVM Subsystem”: Shows containment, connection, or capaci
 
 <!-- claim:BASE12-FIG-019-CLAIM figure-table:BASE12-FIG-019 -->
 
-Figure 19, “NVM Express Controller with Two Namespaces”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 19, "NVM Express Controller with Two Namespaces": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -370,7 +371,7 @@ Figure 19, “NVM Express Controller with Two Namespaces”: Shows containment, 
 
 <!-- claim:BASE12-FIG-020-CLAIM figure-table:BASE12-FIG-020 -->
 
-Figure 20, “NVM Subsystem with Two Controllers and One Port”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 20, "NVM Subsystem with Two Controllers and One Port": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -386,7 +387,7 @@ Figure 20, “NVM Subsystem with Two Controllers and One Port”: Shows containm
 
 <!-- claim:BASE12-FIG-021-CLAIM figure-table:BASE12-FIG-021 -->
 
-Figure 21, “NVM Subsystem with Two Controllers and Two Ports”: Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
+Figure 21, "NVM Subsystem with Two Controllers and Two Ports": Shows containment, connection, or capacity relationships among subsystem objects. Keep controllers, ports, namespaces, identifiers, and capacity levels distinct.
 
 - Purpose: Shows containment, connection, or capacity relationships among subsystem objects.
 
@@ -402,7 +403,7 @@ Figure 21, “NVM Subsystem with Two Controllers and Two Ports”: Shows contain
 
 <!-- claim:BASE12-FIG-022-CLAIM figure-table:BASE12-FIG-022 -->
 
-Figure 22, “PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)”: Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
+Figure 22, "PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)": Provides a structured index to a concept, support condition, or example. Identify the named object, then read adjacent conditions, legend, and exceptions.
 
 - Purpose: Provides a structured index to a concept, support condition, or example.
 

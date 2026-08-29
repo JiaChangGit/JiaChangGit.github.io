@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe Base 2.4 第 1、2 章：規格語言、PCIe 佇列與儲存模型"
 date: 2026-08-28
 description: "供 GitHub Pages 與 PPT 使用的 NVMe 規格導讀。"
+img: posts/2026/dogMC_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -16,7 +17,7 @@ toc: yes
 
 用途：供 GitHub Pages 閱讀與 100 分鐘簡報製作；讀者已具備 PCIe 與 NVMe 基礎。
 
-範圍：§1–§2；文件頁 1–37；PDF 頁 27–63。正文只保留 PCIe／memory-based 與通用 NVMe 內容。
+範圍：§1-§2；文件頁 1-37；PDF 頁 27-63。正文只保留 PCIe／memory-based 與通用 NVMe 內容。
 
 ## 來源版本
 

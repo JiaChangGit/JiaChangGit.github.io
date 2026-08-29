@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe Base 2.4 第 3 章：Controller、Queue、初始化與重設"
 date: 2026-08-28
 description: "供 GitHub Pages 與 PPT 使用的 NVMe 規格導讀。"
+img: posts/2026/dogMC_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -16,7 +17,7 @@ toc: yes
 
 用途：供 GitHub Pages 閱讀與 100 分鐘簡報製作；讀者已具備 PCIe 與 NVMe 基礎。
 
-範圍：§3；文件頁 38–138；PDF 頁 64–164。正文只保留 PCIe／memory-based 與通用 NVMe 內容。
+範圍：§3；文件頁 38-138；PDF 頁 64-164。正文只保留 PCIe／memory-based 與通用 NVMe 內容。
 
 ## 來源版本
 
@@ -350,11 +351,11 @@ Figure 34〈Memory-Based Property Definition〉：提供本節概念、支援條
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, 文件頁 54, PDF 頁 80
 
-### Figure 36: Offset 0h: CAP – Controller Capabilities
+### Figure 36: Offset 0h: CAP - Controller Capabilities
 
 <!-- claim:BASE3-FIG-036-CLAIM figure-table:BASE3-FIG-036 -->
 
-Figure 36〈Offset 0h: CAP – Controller Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 36〈Offset 0h: CAP - Controller Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -398,11 +399,11 @@ Figure 38〈NVM Express Base Specification Version Property Reset Values〉：�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, 文件頁 58-59, PDF 頁 84-85
 
-### Figure 39: Offset Ch: INTMS – Interrupt Mask Set
+### Figure 39: Offset Ch: INTMS - Interrupt Mask Set
 
 <!-- claim:BASE3-FIG-039-CLAIM figure-table:BASE3-FIG-039 -->
 
-Figure 39〈Offset Ch: INTMS – Interrupt Mask Set〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -414,11 +415,11 @@ Figure 39〈Offset Ch: INTMS – Interrupt Mask Set〉：整理欄位、位元�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85
 
-### Figure 40: Offset 10h: INTMC – Interrupt Mask Clear
+### Figure 40: Offset 10h: INTMC - Interrupt Mask Clear
 
 <!-- claim:BASE3-FIG-040-CLAIM figure-table:BASE3-FIG-040 -->
 
-Figure 40〈Offset 10h: INTMC – Interrupt Mask Clear〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -430,11 +431,11 @@ Figure 40〈Offset 10h: INTMC – Interrupt Mask Clear〉：整理欄位、位�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85
 
-### Figure 41: Offset 14h: CC – Controller Configuration
+### Figure 41: Offset 14h: CC - Controller Configuration
 
 <!-- claim:BASE3-FIG-041-CLAIM figure-table:BASE3-FIG-041 -->
 
-Figure 41〈Offset 14h: CC – Controller Configuration〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 41〈Offset 14h: CC - Controller Configuration〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -446,11 +447,11 @@ Figure 41〈Offset 14h: CC – Controller Configuration〉：整理欄位、位�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89
 
-### Figure 42: Offset 1Ch: CSTS – Controller Status
+### Figure 42: Offset 1Ch: CSTS - Controller Status
 
 <!-- claim:BASE3-FIG-042-CLAIM figure-table:BASE3-FIG-042 -->
 
-Figure 42〈Offset 1Ch: CSTS – Controller Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 42〈Offset 1Ch: CSTS - Controller Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -462,11 +463,11 @@ Figure 42〈Offset 1Ch: CSTS – Controller Status〉：整理狀態、錯誤或
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91
 
-### Figure 43: Offset 20h: NSSR – NVM Subsystem Reset
+### Figure 43: Offset 20h: NSSR - NVM Subsystem Reset
 
 <!-- claim:BASE3-FIG-043-CLAIM figure-table:BASE3-FIG-043 -->
 
-Figure 43〈Offset 20h: NSSR – NVM Subsystem Reset〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -478,11 +479,11 @@ Figure 43〈Offset 20h: NSSR – NVM Subsystem Reset〉：整理欄位、位元�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92
 
-### Figure 44: Offset 24h: AQA – Admin Queue Attributes
+### Figure 44: Offset 24h: AQA - Admin Queue Attributes
 
 <!-- claim:BASE3-FIG-044-CLAIM figure-table:BASE3-FIG-044 -->
 
-Figure 44〈Offset 24h: AQA – Admin Queue Attributes〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
+Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
 
 - 解決的問題：整理 queue／command 的關係或處理順序。
 
@@ -494,11 +495,11 @@ Figure 44〈Offset 24h: AQA – Admin Queue Attributes〉：整理 queue／comma
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92
 
-### Figure 45: Offset 28h: ASQ – Admin Submission Queue Base Address
+### Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address
 
 <!-- claim:BASE3-FIG-045-CLAIM figure-table:BASE3-FIG-045 -->
 
-Figure 45〈Offset 28h: ASQ – Admin Submission Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
+Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
 
 - 解決的問題：整理 queue／command 的關係或處理順序。
 
@@ -510,11 +511,11 @@ Figure 45〈Offset 28h: ASQ – Admin Submission Queue Base Address〉：整理 
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92
 
-### Figure 46: Offset 30h: ACQ – Admin Completion Queue Base Address
+### Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address
 
 <!-- claim:BASE3-FIG-046-CLAIM figure-table:BASE3-FIG-046 -->
 
-Figure 46〈Offset 30h: ACQ – Admin Completion Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
+Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
 
 - 解決的問題：整理 queue／command 的關係或處理順序。
 
@@ -526,11 +527,11 @@ Figure 46〈Offset 30h: ACQ – Admin Completion Queue Base Address〉：整理 
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93
 
-### Figure 47: Offset 38h: CMBLOC – Controller Memory Buffer Location
+### Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location
 
 <!-- claim:BASE3-FIG-047-CLAIM figure-table:BASE3-FIG-047 -->
 
-Figure 47〈Offset 38h: CMBLOC – Controller Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -542,11 +543,11 @@ Figure 47〈Offset 38h: CMBLOC – Controller Memory Buffer Location〉：整理
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94
 
-### Figure 48: Offset 3Ch: CMBSZ – Controller Memory Buffer Size
+### Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size
 
 <!-- claim:BASE3-FIG-048-CLAIM figure-table:BASE3-FIG-048 -->
 
-Figure 48〈Offset 3Ch: CMBSZ – Controller Memory Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -558,11 +559,11 @@ Figure 48〈Offset 3Ch: CMBSZ – Controller Memory Buffer Size〉：整理欄�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95
 
-### Figure 49: Offset 40h: BPINFO – Boot Partition Information
+### Figure 49: Offset 40h: BPINFO - Boot Partition Information
 
 <!-- claim:BASE3-FIG-049-CLAIM figure-table:BASE3-FIG-049 -->
 
-Figure 49〈Offset 40h: BPINFO – Boot Partition Information〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -574,11 +575,11 @@ Figure 49〈Offset 40h: BPINFO – Boot Partition Information〉：整理欄位�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95
 
-### Figure 50: Offset 44h: BPRSEL – Boot Partition Read Select
+### Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select
 
 <!-- claim:BASE3-FIG-050-CLAIM figure-table:BASE3-FIG-050 -->
 
-Figure 50〈Offset 44h: BPRSEL – Boot Partition Read Select〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -590,11 +591,11 @@ Figure 50〈Offset 44h: BPRSEL – Boot Partition Read Select〉：整理欄位�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96
 
-### Figure 51: Offset 48h: BPMBL – Boot Partition Memory Buffer Location
+### Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location
 
 <!-- claim:BASE3-FIG-051-CLAIM figure-table:BASE3-FIG-051 -->
 
-Figure 51〈Offset 48h: BPMBL – Boot Partition Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -606,11 +607,11 @@ Figure 51〈Offset 48h: BPMBL – Boot Partition Memory Buffer Location〉：整
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96
 
-### Figure 52: Offset 50h: CMBMSC – Controller Memory Buffer Memory Space Control
+### Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control
 
 <!-- claim:BASE3-FIG-052-CLAIM figure-table:BASE3-FIG-052 -->
 
-Figure 52〈Offset 50h: CMBMSC – Controller Memory Buffer Memory Space Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -622,11 +623,11 @@ Figure 52〈Offset 50h: CMBMSC – Controller Memory Buffer Memory Space Control
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97
 
-### Figure 53: Offset 58h: CMBSTS – Controller Memory Buffer Status
+### Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status
 
 <!-- claim:BASE3-FIG-053-CLAIM figure-table:BASE3-FIG-053 -->
 
-Figure 53〈Offset 58h: CMBSTS – Controller Memory Buffer Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -638,11 +639,11 @@ Figure 53〈Offset 58h: CMBSTS – Controller Memory Buffer Status〉：整理�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97
 
-### Figure 54: Offset 5Ch: CMBEBS – Controller Memory Buffer Elasticity Buffer Size
+### Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size
 
 <!-- claim:BASE3-FIG-054-CLAIM figure-table:BASE3-FIG-054 -->
 
-Figure 54〈Offset 5Ch: CMBEBS – Controller Memory Buffer Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -654,11 +655,11 @@ Figure 54〈Offset 5Ch: CMBEBS – Controller Memory Buffer Elasticity Buffer Si
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97
 
-### Figure 55: Offset 60h: CMBSWTP – Controller Memory Buffer Sustained Write Throughput
+### Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput
 
 <!-- claim:BASE3-FIG-055-CLAIM figure-table:BASE3-FIG-055 -->
 
-Figure 55〈Offset 60h: CMBSWTP – Controller Memory Buffer Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -670,11 +671,11 @@ Figure 55〈Offset 60h: CMBSWTP – Controller Memory Buffer Sustained Write Thr
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98
 
-### Figure 56: Offset 64h: NSSD – NVM Subsystem Shutdown
+### Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown
 
 <!-- claim:BASE3-FIG-056-CLAIM figure-table:BASE3-FIG-056 -->
 
-Figure 56〈Offset 64h: NSSD – NVM Subsystem Shutdown〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -686,11 +687,11 @@ Figure 56〈Offset 64h: NSSD – NVM Subsystem Shutdown〉：整理欄位、位�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98
 
-### Figure 57: Offset 68h: CRTO – Controller Ready Timeouts
+### Figure 57: Offset 68h: CRTO - Controller Ready Timeouts
 
 <!-- claim:BASE3-FIG-057-CLAIM figure-table:BASE3-FIG-057 -->
 
-Figure 57〈Offset 68h: CRTO – Controller Ready Timeouts〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -702,11 +703,11 @@ Figure 57〈Offset 68h: CRTO – Controller Ready Timeouts〉：整理欄位、�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99
 
-### Figure 58: Offset E00h: PMRCAP – Persistent Memory Region Capabilities
+### Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities
 
 <!-- claim:BASE3-FIG-058-CLAIM figure-table:BASE3-FIG-058 -->
 
-Figure 58〈Offset E00h: PMRCAP – Persistent Memory Region Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -718,11 +719,11 @@ Figure 58〈Offset E00h: PMRCAP – Persistent Memory Region Capabilities〉：�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100
 
-### Figure 59: Offset E04h: PMRCTL – Persistent Memory Region Control
+### Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control
 
 <!-- claim:BASE3-FIG-059-CLAIM figure-table:BASE3-FIG-059 -->
 
-Figure 59〈Offset E04h: PMRCTL – Persistent Memory Region Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -734,11 +735,11 @@ Figure 59〈Offset E04h: PMRCTL – Persistent Memory Region Control〉：整理
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100
 
-### Figure 60: Offset E08h: PMRSTS – Persistent Memory Region Status
+### Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status
 
 <!-- claim:BASE3-FIG-060-CLAIM figure-table:BASE3-FIG-060 -->
 
-Figure 60〈Offset E08h: PMRSTS – Persistent Memory Region Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -750,11 +751,11 @@ Figure 60〈Offset E08h: PMRSTS – Persistent Memory Region Status〉：整理�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101
 
-### Figure 61: Offset E0Ch: PMREBS – Persistent Memory Region Elasticity Buffer Size
+### Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size
 
 <!-- claim:BASE3-FIG-061-CLAIM figure-table:BASE3-FIG-061 -->
 
-Figure 61〈Offset E0Ch: PMREBS – Persistent Memory Region Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -766,11 +767,11 @@ Figure 61〈Offset E0Ch: PMREBS – Persistent Memory Region Elasticity Buffer S
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102
 
-### Figure 62: Offset E10h: PMRSWTP – Persistent Memory Region Sustained Write Throughput
+### Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput
 
 <!-- claim:BASE3-FIG-062-CLAIM figure-table:BASE3-FIG-062 -->
 
-Figure 62〈Offset E10h: PMRSWTP – Persistent Memory Region Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -782,11 +783,11 @@ Figure 62〈Offset E10h: PMRSWTP – Persistent Memory Region Sustained Write Th
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102
 
-### Figure 63: Offset E14h: PMRMSCL – Persistent Memory Region Memory Space Control Lower
+### Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower
 
 <!-- claim:BASE3-FIG-063-CLAIM figure-table:BASE3-FIG-063 -->
 
-Figure 63〈Offset E14h: PMRMSCL – Persistent Memory Region Memory Space Control Lower〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -798,11 +799,11 @@ Figure 63〈Offset E14h: PMRMSCL – Persistent Memory Region Memory Space Contr
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103
 
-### Figure 64: Offset E18h: PMRMSCU – Persistent Memory Region Memory Space Control Upper
+### Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper
 
 <!-- claim:BASE3-FIG-064-CLAIM figure-table:BASE3-FIG-064 -->
 
-Figure 64〈Offset E18h: PMRMSCU – Persistent Memory Region Memory Space Control Upper〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 

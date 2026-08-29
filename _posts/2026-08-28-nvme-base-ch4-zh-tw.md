@@ -5,6 +5,7 @@ show_date: true
 title: "NVMe Base 2.4 第 4 章：SQE、CQE、Status、PRP 與 SGL"
 date: 2026-08-28
 description: "供 GitHub Pages 與 PPT 使用的 NVMe 規格導讀。"
+img: posts/2026/dogMC_title.jpg
 tags: [NVMe, PCIe, Specification]
 category: NVMe
 author: Jia-Chang
@@ -16,7 +17,7 @@ toc: yes
 
 用途：供 GitHub Pages 閱讀與 100 分鐘簡報製作；讀者已具備 PCIe 與 NVMe 基礎。
 
-範圍：§4；文件頁 139–175；PDF 頁 165–201。正文只保留 PCIe／memory-based 與通用 NVMe 內容。
+範圍：§4；文件頁 139-175；PDF 頁 165-201。正文只保留 PCIe／memory-based 與通用 NVMe 內容。
 
 ## 來源版本
 
@@ -42,7 +43,7 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 <!-- claim:BASE4-SQE -->
 
-Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10–15 的通用位置先固定，再由各 command 定義命令專屬內容。
+Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10-15 的通用位置先固定，再由各 command 定義命令專屬內容。
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169
 
@@ -170,11 +171,11 @@ Figure 93〈Common Command Format〉：整理欄位、位元或 register 配置�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168
 
-### Figure 94: Common Command Format – Vendor Specific Commands (Optional)
+### Figure 94: Common Command Format - Vendor Specific Commands (Optional)
 
 <!-- claim:BASE4-FIG-094-CLAIM figure-table:BASE4-FIG-094 -->
 
-Figure 94〈Common Command Format – Vendor Specific Commands (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
+Figure 94〈Common Command Format - Vendor Specific Commands (Optional)〉：整理欄位、位元或 register 配置。 由 offset／byte／bit 範圍對到名稱、存取型別、reset 與條件。
 
 - 解決的問題：整理欄位、位元或 register 配置。
 
@@ -186,11 +187,11 @@ Figure 94〈Common Command Format – Vendor Specific Commands (Optional)〉：�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169
 
-### Figure 97: Common Completion Queue Entry Layout – Admin and All I/O Command Sets
+### Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets
 
 <!-- claim:BASE4-FIG-097-CLAIM figure-table:BASE4-FIG-097 -->
 
-Figure 97〈Common Completion Queue Entry Layout – Admin and All I/O Command Sets〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
+Figure 97〈Common Completion Queue Entry Layout - Admin and All I/O Command Sets〉：整理 queue／command 的關係或處理順序。 依 host、SQ、controller、CQ 與 pointer／phase 的方向閱讀。
 
 - 解決的問題：整理 queue／command 的關係或處理順序。
 
@@ -250,11 +251,11 @@ Figure 101〈Completion Queue Entry: Status Field〉：整理 queue／command �
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172
 
-### Figure 102: Status Code – Status Code Type Values
+### Figure 102: Status Code - Status Code Type Values
 
 <!-- claim:BASE4-FIG-102-CLAIM figure-table:BASE4-FIG-102 -->
 
-Figure 102〈Status Code – Status Code Type Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 102〈Status Code - Status Code Type Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -266,11 +267,11 @@ Figure 102〈Status Code – Status Code Type Values〉：整理狀態、錯誤�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, 文件頁 146, PDF 頁 172
 
-### Figure 103: Status Code – Generic Command Status Values
+### Figure 103: Status Code - Generic Command Status Values
 
 <!-- claim:BASE4-FIG-103-CLAIM figure-table:BASE4-FIG-103 -->
 
-Figure 103〈Status Code – Generic Command Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 103〈Status Code - Generic Command Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -282,11 +283,11 @@ Figure 103〈Status Code – Generic Command Status Values〉：整理狀態、�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, 文件頁 147-150, PDF 頁 173-176
 
-### Figure 104: Status Code – Command Specific Status Values
+### Figure 104: Status Code - Command Specific Status Values
 
 <!-- claim:BASE4-FIG-104-CLAIM figure-table:BASE4-FIG-104 -->
 
-Figure 104〈Status Code – Command Specific Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 104〈Status Code - Command Specific Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -298,11 +299,11 @@ Figure 104〈Status Code – Command Specific Status Values〉：整理狀態、
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, 文件頁 151-152, PDF 頁 177-178
 
-### Figure 105: Status Code – Command Specific Status Values, I/O Command Set Specific
+### Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific
 
 <!-- claim:BASE4-FIG-105-CLAIM figure-table:BASE4-FIG-105 -->
 
-Figure 105〈Status Code – Command Specific Status Values, I/O Command Set Specific〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 105〈Status Code - Command Specific Status Values, I/O Command Set Specific〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -314,11 +315,11 @@ Figure 105〈Status Code – Command Specific Status Values, I/O Command Set Spe
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, 文件頁 152-153, PDF 頁 178-179
 
-### Figure 107: Status Code – Media and Data Integrity Error Values
+### Figure 107: Status Code - Media and Data Integrity Error Values
 
 <!-- claim:BASE4-FIG-107-CLAIM figure-table:BASE4-FIG-107 -->
 
-Figure 107〈Status Code – Media and Data Integrity Error Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 107〈Status Code - Media and Data Integrity Error Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -330,11 +331,11 @@ Figure 107〈Status Code – Media and Data Integrity Error Values〉：整理�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, 文件頁 154-155, PDF 頁 180-181
 
-### Figure 108: Status Code – Path Related Status Values
+### Figure 108: Status Code - Path Related Status Values
 
 <!-- claim:BASE4-FIG-108-CLAIM figure-table:BASE4-FIG-108 -->
 
-Figure 108〈Status Code – Path Related Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
+Figure 108〈Status Code - Path Related Status Values〉：整理狀態、錯誤或其分類欄位。 先讀類型與控制 bit，再在正確類型下解讀 code；保留值不自行賦義。
 
 - 解決的問題：整理狀態、錯誤或其分類欄位。
 
@@ -378,11 +379,11 @@ Figure 110〈PRP Entry Layout〉：說明資料 buffer 如何由 PRP／SGL 結�
 
 > 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, 文件頁 158, PDF 頁 184
 
-### Figure 111: PRP Entry – Page Base Address and Offset
+### Figure 111: PRP Entry - Page Base Address and Offset
 
 <!-- claim:BASE4-FIG-111-CLAIM figure-table:BASE4-FIG-111 -->
 
-Figure 111〈PRP Entry – Page Base Address and Offset〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。
+Figure 111〈PRP Entry - Page Base Address and Offset〉：說明資料 buffer 如何由 PRP／SGL 結構描述。 逐一核對 address、offset、length、alignment 與下一層 pointer。
 
 - 解決的問題：說明資料 buffer 如何由 PRP／SGL 結構描述。
 
