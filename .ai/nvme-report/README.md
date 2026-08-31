@@ -1,15 +1,15 @@
 # NVMe 報告控制資料
 
-此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 16 個輸出的契約。
+此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 20 個輸出的契約。
 它不保存 PDF 原文。一般重建只讀取此目錄中的追蹤資料，不需要 PDF，也不會把規格原文
 帶進 GitHub Pages。
 
 ## 唯一資料來源與重建流程
 
-- `scope.json`：四份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
+- `scope.json`：五份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
 - `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。
 - `claims.json`：由產生器重建；不手動維護。
-- `output-contract.json`：16 個輸出路徑與格式要求。
+- `output-contract.json`：20 個輸出路徑與格式要求。
 
 一般內容更新後，依序執行：
 
@@ -40,8 +40,8 @@ python3 -B scripts/build_nvme_reports.py
 
 ## 執行階段
 
-1. `setup`：驗證來源登記、四份報告、16 個輸出路徑與規則骨架。
-2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、16 個輸出存在且通過檢查。
+1. `setup`：驗證來源登記、五份報告、20 個輸出路徑與規則骨架。
+2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、20 個輸出存在且通過檢查。
 3. `auto`：`scope.json` 的 `production_status` 為 `ready_for_publish` 時執行
    `publish`，否則執行 `setup`。
 
@@ -85,6 +85,10 @@ Figure／Table 使用 `<!-- figure-table:<ID> -->` 或 HTML
 本輪四種版本都介紹每張納入的 Figure；新手 HTML 使用較白話的判讀檢查點，詳細
 HTML 額外顯示 claim ID 與 normative keyword。明確排除的 Figure 只留在內部清冊，
 不會進入報告或 PPT。
+
+第五份報告另登記 `referenced_dependency` Figure：只教學主範圍交叉引用所需部分，
+必須記錄 `referenced_from` 並使用 `dependency-slice` 模式。若相依 Figure 屬於
+Fabrics／Discovery，仍維持排除，不因引用而發佈。
 
 驗證器還會核對 claim 的完整正文與順序，而不只檢查隱藏標記；中英文 Markdown 必須
 具有相同 claim 集合與排列。輸出不得出現 Fabrics、message-based transport、Discovery

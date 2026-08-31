@@ -4,7 +4,7 @@
 翻譯、審查或驗證本報告的人員；不取代 NVM Express 原始規格，也不涵蓋尚未提供的
 PCI Express Base Specification 或 controller vendor 行為。
 
-查證日期：2026-08-29。
+查證日期：2026-08-31。
 
 ## 採用來源
 
@@ -16,7 +16,7 @@ PCI Express Base Specification 或 controller vendor 行為。
 
 目前沒有其他適用的 Errata、Engineering Change Notice (ECN)、Technical Proposal 或
 controller vendor 文件。若之後新增，必須先更新來源登記、範圍與所有受影響 claim，
-再更新四份報告的 16 個輸出。
+再更新五份報告的 20 個輸出。
 
 ## 規範性用語
 
@@ -67,6 +67,10 @@ Figure <n>／Table <n>（若適用）, 文件頁 <p>, PDF 頁 <p>
 Base 2.4 的正文第 1 頁位於 PDF 第 27 頁；正文範圍可用 `PDF 頁 = 文件頁 + 26`
 核對。NVM Command Set 1.3 與 PCIe Transport 1.4 的可見頁碼目前與 PDF 頁碼一致。
 跨頁 Figure／Table 應列完整頁碼範圍。
+
+正文引用到範圍外 Figure 時，若理解主題需要該 Figure，應以相依教學項目登記並只介紹
+被引用的欄位與關係；這不會把 Figure 所在章節整段納入範圍。Fabrics／Discovery 專用
+Figure 的排除優先於相依引用規則。
 
 ## 公開與重繪邊界
 

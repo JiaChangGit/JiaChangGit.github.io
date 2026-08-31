@@ -24,8 +24,10 @@ TEXT_FILES = {
     "base-ch3": "base-ch3.txt",
     "base-ch4": "base-ch4.txt",
     "pcie-transport-1.4": "pcie-transport-1.4.txt",
+    "base-admin-fw-logs": "base-admin-fw-logs.txt",
 }
-FIGURE = re.compile(r"^Figure\s+(\d+):\s*(.+)$", re.IGNORECASE)
+CAPTION = re.compile(r"^(Figure|Table)\s+(\d+):\s*(.+)$", re.IGNORECASE)
+LEGACY_FIGURE = re.compile(r"^Figure\s+(\d+):\s*(.+)$", re.IGNORECASE)
 TOKEN = re.compile(r"\b[A-Z][A-Z0-9]{1,11}(?:\.[A-Z][A-Z0-9]{1,11})*\b")
 FIELD_NAME = re.compile(
     r"([A-Za-z][A-Za-z0-9 /_-]{2,80})\s+\(([A-Z][A-Z0-9]{1,11})\)\s*:"
@@ -42,12 +44,141 @@ KEYWORDS = (
 FORBIDDEN_EVIDENCE = (
     "fabric",
     "message-based",
+    "discovery",
+    "exported nvm subsystem",
+    "cross-controller reset",
+    "lost host communication",
+    "pull model ddc",
+    "command capsule",
+    "response capsule",
+    "in capsule",
+    "nqn",
+)
+LEGACY_FORBIDDEN_EVIDENCE = (
+    "fabric",
+    "message-based",
     "discovery controller",
     "command capsule",
     "response capsule",
     "in capsule",
     "nqn",
 )
+NEW_REPORT_ID = "base-admin-fw-logs"
+NEW_REPORT_PREFIX = "BASEFWLOG"
+NEW_ARTIFACT_IDS = [
+    "basefwlog-tutorial-html",
+    "basefwlog-detailed-html",
+    "basefwlog-zh-md",
+    "basefwlog-en-md",
+]
+MAIN_FIGURES = (set(range(187, 194)) | set(range(203, 313)) | {331}) - {257}
+DEPENDENCY_FIGURES = {
+    70,
+    84,
+    93,
+    101,
+    102,
+    107,
+    155,
+    195,
+    337,
+    338,
+    339,
+    346,
+    347,
+    348,
+    448,
+    451,
+    452,
+    466,
+    474,
+    480,
+    512,
+    527,
+    656,
+    745,
+    746,
+    747,
+    772,
+    782,
+    783,
+}
+TITLE_OVERRIDES = {
+    84: "Admin Commands Permitted to Return a Status Code of Admin Command Media Not Ready",
+    245: "Additional Hardware Error Information for correctable and uncorrectable PCIe errors",
+}
+KEY_ITEM_OVERRIDES = {
+    70: ["Endurance Group", "Reclaim Group", "Reclaim Unit", "Reclaim Unit Handle"],
+    155: ["Firmware Activation Starting", "CSTS.PP", "Firmware Slot Information", "RAE"],
+    190: ["DPTR"],
+    192: ["OFST", "FWUG"],
+    193: ["Overlapping Range"],
+    245: ["PCIEAS", "PCIEAERS", "PCIe AER Error Status", "PCIe AER Error Mask"],
+    331: ["Invalid Log Page", "Invalid Controller Identifier", "I/O Command Set Not Supported"],
+    512: ["Manufacturing Default", "Security", "Lockdown Persistence", "All Personalities"],
+    656: ["NPID", "MAXPIDS", "NRG", "NRUH", "Placement Identifier"],
+    745: ["0h", "NVM subsystem total power", "CSTS.SHST"],
+    747: ["01b = 0.0001 W", "10b = 0.01 W"],
+    772: ["SANS", "Idle", "Restricted Processing", "Unrestricted Processing", "Media Verification"],
+    783: ["VSEN1", "VSEN2", "VSEN3", "VSEN4"],
+}
+DEPENDENCY_FOCUS = {
+    155: {
+        "zh_tw": "只取 firmware activation notice、CSTS.PP 與以 Firmware Slot Information log 清除事件的關係。",
+        "en": "Use only the firmware-activation notice, CSTS.PP, and the Firmware Slot Information log used to clear the event.",
+    },
+    337: {
+        "zh_tw": "§5.2.9 的正文指向 Figure 337，但 Figure 337 實際列的是 Command Set Identifier；firmware 欄位位於 Figure 338。",
+        "en": "Section 5.2.9 points to Figure 337, but Figure 337 lists Command Set Identifiers; the firmware fields are in Figure 338.",
+    },
+    338: {
+        "zh_tw": "只取 firmware update 需要的 FR、FRMW／SMUD／FAWR、MTFA 與 FWUG；其餘 Identify Controller 欄位不展開。",
+        "en": "Use only FR, FRMW/SMUD/FAWR, MTFA, and FWUG for the firmware workflow; other Identify Controller fields are not expanded.",
+    },
+    347: {
+        "zh_tw": "用於 §3.11.1 的 UUID list slot 穩定性與不得縮短清單的規則。",
+        "en": "Used for the UUID-list slot-stability and no-shortening rules in section 3.11.1.",
+    },
+    348: {
+        "zh_tw": "用於判斷 UUID list entry 是空值、NVMe Invalid UUID 或有效 UUID。",
+        "en": "Used to distinguish an empty entry, the NVMe Invalid UUID, and a valid UUID.",
+    },
+    474: {
+        "zh_tw": "只取 Firmware Activation Notices enable bit，對應 §3.11 的 activation-starting event。",
+        "en": "Use only the Firmware Activation Notices enable bit associated with the activation-starting event in section 3.11.",
+    },
+}
+DEPENDENCY_REFERENCES = {
+    70: ["5.2.13.1.29", "5.2.13.1.30"],
+    84: ["5.2.13.1.3"],
+    93: ["5.2.10", "5.2.13"],
+    101: ["5.2.13.1.2", "5.2.13.1.14"],
+    102: ["5.2.13.1.14"],
+    107: ["5.2.13.1.14.2.5"],
+    155: ["3.11", "5.2.30.1.6"],
+    195: ["5.2.13.1.14.2.7"],
+    337: ["5.2.9", "5.2.13"],
+    338: ["3.11", "5.2.9", "5.2.10", "5.2.13"],
+    339: ["5.2.13.1.35"],
+    346: ["5.2.13.1.14.2.6"],
+    347: ["3.11.1"],
+    348: ["3.11.1"],
+    448: ["5.2.13.1.14.2.6"],
+    451: ["5.2.13.1.14.2.9", "5.2.13.1.38"],
+    452: ["5.2.13.1.14.2.9", "5.2.13.1.38"],
+    466: ["5.2.13.1.18"],
+    474: ["3.11"],
+    480: ["5.2.13.1.14"],
+    512: ["5.2.13.1.28"],
+    527: ["5.2.13.1.35"],
+    656: ["5.2.13.1.29"],
+    745: ["5.2.13.1.34"],
+    746: ["5.2.13.1.34"],
+    747: ["5.2.13.1.34"],
+    772: ["5.2.13.1.38"],
+    782: ["5.2.13"],
+    783: ["5.2.13.1.35"],
+}
 NOISE = {
     "ADMIN",
     "BASE",
@@ -115,8 +246,8 @@ def clean(line: str) -> str:
     return " ".join(line.replace("\u00ad", "").split())
 
 
-def figure_blocks(text: str) -> dict[int, list[str]]:
-    """Collect page-bounded context around each Figure caption.
+def figure_blocks(text: str) -> dict[tuple[str, int], list[str]]:
+    """Collect page-bounded context around each Figure/Table caption.
 
     Diagram labels often precede a caption, while register rows follow it. The
     extractor therefore retains a small same-page window on both sides and
@@ -143,12 +274,12 @@ def figure_blocks(text: str) -> dict[int, list[str]]:
     if page:
         pages.append(page)
 
-    blocks: dict[int, list[str]] = defaultdict(list)
+    blocks: dict[tuple[str, int], list[str]] = defaultdict(list)
     for page_lines in pages:
         captions = [
-            (index, FIGURE.match(line))
+            (index, CAPTION.match(line))
             for index, line in enumerate(page_lines)
-            if FIGURE.match(line)
+            if CAPTION.match(line)
         ]
         for position, (index, match) in enumerate(captions):
             assert match is not None
@@ -160,8 +291,52 @@ def figure_blocks(text: str) -> dict[int, list[str]]:
             )
             start = max(previous_caption + 1, index - 36)
             end = min(next_caption, index + 100)
-            blocks[int(match.group(1))].append("__FIGURE_CONTEXT_BOUNDARY__")
-            blocks[int(match.group(1))].extend(page_lines[start:end])
+            key = (match.group(1).title(), int(match.group(2)))
+            blocks[key].append("__FIGURE_CONTEXT_BOUNDARY__")
+            blocks[key].extend(page_lines[start:end])
+    return blocks
+
+
+def legacy_figure_blocks(text: str) -> dict[int, list[str]]:
+    """Use the original Figure-only page windows for the four existing reports."""
+
+    pages: list[list[str]] = []
+    page: list[str] = []
+    for raw in text.splitlines():
+        line = clean(raw)
+        if line.startswith("===== PDF PAGE"):
+            if page:
+                pages.append(page)
+            page = []
+            continue
+        if not line or (line.startswith("NVM Express") and "Revision" in line):
+            continue
+        if line.isdigit():
+            continue
+        page.append(line)
+    if page:
+        pages.append(page)
+
+    blocks: dict[int, list[str]] = defaultdict(list)
+    for page_lines in pages:
+        captions = [
+            (index, LEGACY_FIGURE.match(line))
+            for index, line in enumerate(page_lines)
+            if LEGACY_FIGURE.match(line)
+        ]
+        for position, (index, match) in enumerate(captions):
+            assert match is not None
+            previous_caption = captions[position - 1][0] if position else -1
+            next_caption = (
+                captions[position + 1][0]
+                if position + 1 < len(captions)
+                else len(page_lines)
+            )
+            start = max(previous_caption + 1, index - 36)
+            end = min(next_caption, index + 100)
+            number = int(match.group(1))
+            blocks[number].append("__FIGURE_CONTEXT_BOUNDARY__")
+            blocks[number].extend(page_lines[start:end])
     return blocks
 
 
@@ -173,8 +348,16 @@ def allowed_lines(lines: list[str]) -> list[str]:
     ]
 
 
+def legacy_allowed_lines(lines: list[str]) -> list[str]:
+    return [
+        line
+        for line in lines
+        if not any(term in line.lower() for term in LEGACY_FORBIDDEN_EVIDENCE)
+    ]
+
+
 def evidence_lines(
-    lines: list[str], caption: str, number: int
+    lines: list[str], caption: str, item_type: str, number: int
 ) -> tuple[list[str], bool]:
     """Select the part of a page window that belongs to the Figure grid.
 
@@ -182,6 +365,45 @@ def evidence_lines(
     tokens usually belong to the previous Figure. Conceptual diagrams are read
     from both sides of the caption but do not receive a normative-keyword index.
     """
+
+    structured = bool(
+        re.search(
+            r"offset|dword|entry|layout|format|status|capabilit|field|"
+            r"identifier|definition|descriptor|register|values|requirements|"
+            r"log page|data structure|event|information|list|measurement|pointer",
+            caption,
+            re.IGNORECASE,
+        )
+    )
+    if not structured:
+        return lines, False
+
+    result: list[str] = []
+    collecting = False
+    for line in lines:
+        if line == "__FIGURE_CONTEXT_BOUNDARY__":
+            collecting = False
+            continue
+        match = CAPTION.match(line)
+        if match:
+            collecting = (
+                match.group(1).title() == item_type and int(match.group(2)) == number
+            )
+            continue
+        if collecting:
+            if line.startswith(("Offset ", "Annex ")) or re.match(
+                r"^\d+(?:\.\d+)+\s+[A-Za-z]", line
+            ):
+                collecting = False
+                continue
+            result.append(line)
+    return result, True
+
+
+def legacy_evidence_lines(
+    lines: list[str], caption: str, number: int
+) -> tuple[list[str], bool]:
+    """Preserve the evidence-selection behavior used by the existing reports."""
 
     structured = bool(
         re.search(
@@ -200,7 +422,7 @@ def evidence_lines(
         if line == "__FIGURE_CONTEXT_BOUNDARY__":
             collecting = False
             continue
-        match = FIGURE.match(line)
+        match = LEGACY_FIGURE.match(line)
         if match:
             collecting = int(match.group(1)) == number
             continue
@@ -259,6 +481,54 @@ def source_keywords(lines: list[str]) -> list[str]:
     return result
 
 
+def sync_new_report_entries(document: dict, inventory_path: Path) -> None:
+    """Replace generated register rows for the cross-section firmware/log report."""
+
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    report = inventory["reports"][NEW_REPORT_ID]
+    by_number = {int(item["number"]): item for item in report["figures"]}
+    selected = MAIN_FIGURES | DEPENDENCY_FIGURES
+    missing = sorted(selected - set(by_number))
+    if missing:
+        raise ValueError(f"Source inventory is missing Figures: {missing}")
+
+    retained = [
+        item for item in document["entries"] if item.get("report_id") != NEW_REPORT_ID
+    ]
+    generated = []
+    for number in sorted(selected):
+        source = by_number[number]
+        dependency = number in DEPENDENCY_FIGURES
+        generated.append(
+            {
+                "id": f"{NEW_REPORT_PREFIX}-FIG-{number:03d}",
+                "report_id": NEW_REPORT_ID,
+                "source_id": "NVME-BASE-2.4",
+                "type": "Figure",
+                "number": str(number),
+                "title": TITLE_OVERRIDES.get(number, source["caption"]),
+                "section": source["section"],
+                "printed_pages": source["printed_pages"],
+                "pdf_pages": source["pdf_pages"],
+                "scope_entry_id": (
+                    "BASE-FWLOG-DEPENDENCY-INCLUDE"
+                    if dependency
+                    else "BASE-FWLOG-INCLUDE"
+                ),
+                "scope_status": "INCLUDE",
+                "mode": "dependency-slice" if dependency else (
+                    "scope-reduced" if number == 209 else "full"
+                ),
+                "role": "referenced_dependency" if dependency else "in_scope",
+                "referenced_from": DEPENDENCY_REFERENCES.get(number, []),
+                "dependency_focus": DEPENDENCY_FOCUS.get(number),
+                "required_artifact_ids": list(NEW_ARTIFACT_IDS),
+                "introduced_in": list(NEW_ARTIFACT_IDS),
+            }
+        )
+    document["entries"] = retained + generated
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -271,28 +541,55 @@ def main() -> int:
         type=Path,
         default=CONTROL / "figure-table-register.json",
     )
+    parser.add_argument(
+        "--inventory",
+        type=Path,
+        default=ROOT / "tmp" / "pdfs" / "nvme-report" / "inventory.json",
+    )
     args = parser.parse_args()
 
     document = json.loads(args.register.read_text(encoding="utf-8"))
+    sync_new_report_entries(document, args.inventory)
     entries = document["entries"]
-    by_key = {(item["report_id"], int(item["number"])): item for item in entries}
+    by_key = {
+        (item["report_id"], item["type"], int(item["number"])): item
+        for item in entries
+    }
 
     updated = 0
     for report_id, filename in TEXT_FILES.items():
         source_path = args.evidence_dir / filename
         if not source_path.is_file():
             raise FileNotFoundError(f"Missing local evidence: {source_path}")
-        blocks = figure_blocks(source_path.read_text(encoding="utf-8"))
-        for number, lines in blocks.items():
-            entry = by_key.get((report_id, number))
+        source_text = source_path.read_text(encoding="utf-8")
+        if report_id == NEW_REPORT_ID:
+            blocks = figure_blocks(source_text)
+        else:
+            blocks = {
+                ("Figure", number): lines
+                for number, lines in legacy_figure_blocks(source_text).items()
+            }
+        for (item_type, number), lines in blocks.items():
+            entry = by_key.get((report_id, item_type, number))
             if entry is None:
                 continue
-            selected, structured = evidence_lines(lines, entry["title"], number)
+            if report_id == NEW_REPORT_ID:
+                selected, structured = evidence_lines(
+                    lines, entry["title"], item_type, number
+                )
+                filter_evidence = allowed_lines
+            else:
+                selected, structured = legacy_evidence_lines(
+                    lines, entry["title"], number
+                )
+                filter_evidence = legacy_allowed_lines
             if not structured:
                 selected = []
-            filtered = allowed_lines(selected)
+            filtered = filter_evidence(selected)
             compact = "\n".join(filtered)
             entry["key_items"] = key_items(filtered, entry["title"])
+            if report_id == NEW_REPORT_ID and number in KEY_ITEM_OVERRIDES:
+                entry["key_items"] = list(KEY_ITEM_OVERRIDES[number])
             entry["source_keywords"] = (
                 source_keywords(filtered) if structured else []
             )

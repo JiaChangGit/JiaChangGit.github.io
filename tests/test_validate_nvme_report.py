@@ -62,18 +62,24 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_four_reports_and_sixteen_requested_artifacts(self):
+    def test_contract_has_five_reports_and_twenty_requested_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 16)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 8)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 8)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 4)
+        self.assertEqual(len(artifacts), 20)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 10)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 10)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 5)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
-            {"base12-bilingual", "base3-bilingual", "base4-bilingual", "pcie14-bilingual"},
+            {
+                "base12-bilingual",
+                "base3-bilingual",
+                "base4-bilingual",
+                "pcie14-bilingual",
+                "basefwlog-bilingual",
+            },
         )
 
     def test_source_registry_does_not_store_absolute_paths(self):
@@ -105,6 +111,30 @@ class NvmeReportContractTest(unittest.TestCase):
                 self.assertTrue(figure["key_items"])
                 self.assertRegex(figure["evidence_digest"], r"^[0-9a-f]{64}$")
 
+        new_report = [
+            item for item in register["entries"]
+            if item["report_id"] == "base-admin-fw-logs" and item["scope_status"] == "INCLUDE"
+        ]
+        dependencies = [item for item in new_report if item.get("role") == "referenced_dependency"]
+        expected_dependencies = {
+            "70", "84", "93", "101", "102", "107", "155", "195", "337", "338",
+            "339", "346", "347", "348", "448", "451", "452", "466", "474", "480",
+            "512", "527", "656", "745", "746", "747", "772", "782", "783",
+        }
+        self.assertEqual(len(new_report), 146)
+        self.assertEqual(len(dependencies), 29)
+        self.assertEqual({item["number"] for item in dependencies}, expected_dependencies)
+        self.assertEqual(sum(item.get("role") == "in_scope" for item in new_report), 117)
+        self.assertTrue(all(item["type"] == "Figure" for item in new_report))
+        self.assertTrue(all(item.get("referenced_from") for item in dependencies))
+        self.assertTrue(all(item["mode"] == "dependency-slice" for item in dependencies))
+        self.assertEqual(
+            next(item for item in new_report if item["number"] == "209")["mode"],
+            "scope-reduced",
+        )
+        self.assertNotIn("257", {item["number"] for item in new_report})
+        self.assertNotIn("320", {item["number"] for item in new_report})
+
     def test_markdown_language_and_site_layout_are_language_aware(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
@@ -118,6 +148,8 @@ class NvmeReportContractTest(unittest.TestCase):
             "base4-en-md": "posts/2026/cat_title.jpg",
             "pcie14-zh-md": "posts/2026/lion_title.jpg",
             "pcie14-en-md": "posts/2026/catFlower_title.jpg",
+            "basefwlog-zh-md": "posts/2026/dogMC_title.jpg",
+            "basefwlog-en-md": "posts/2026/cat_title.jpg",
         }
         for artifact in contract["artifacts"]:
             if artifact["format"] != "markdown":

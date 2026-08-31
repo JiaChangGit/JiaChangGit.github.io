@@ -7602,6 +7602,6071 @@
       ],
       "source_keywords": [],
       "evidence_digest": "333fe67c63703245cd88a163aa97a50b2c1d43c569db18a1942989a7846ed121"
+    },
+    {
+      "id": "BASEFWLOG-FIG-070",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "70",
+      "title": "Flexible Data Placement Logical View of Non-Volatile Storage",
+      "section": "3.2.4",
+      "printed_pages": "85",
+      "pdf_pages": "111",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.29",
+        "5.2.13.1.30"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "Endurance Group",
+        "Reclaim Group",
+        "Reclaim Unit",
+        "Reclaim Unit Handle"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEFWLOG-FIG-084",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "84",
+      "title": "Admin Commands Permitted to Return a Status Code of Admin Command Media Not Ready",
+      "section": "3.5.3",
+      "printed_pages": "110-111",
+      "pdf_pages": "136-137",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.3"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LBA",
+        "CAP.CRMS",
+        "CAP.CRMS.CRWMS",
+        "CAP.CRMS.CRIMS",
+        "CC.CRIME",
+        "Status Code",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "b75639ccbdde43c29914332d7ef0ae477d325b1ff84ff48e46054a68d48e958c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-093",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.10",
+        "5.2.13"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CDW0",
+        "NSID",
+        "CDW2",
+        "CDW3",
+        "MPTR",
+        "DPTR",
+        "PRP2",
+        "PRP1"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "9c8f5e6fdffc1b2004284a736c33f16649c6e55890f1fbc63aadb779719289a9"
+    },
+    {
+      "id": "BASEFWLOG-FIG-101",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "101",
+      "title": "Completion Queue Entry: Status Field",
+      "section": "4.2.3",
+      "printed_pages": "145-146",
+      "pdf_pages": "171-172",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.2",
+        "5.2.13.1.14"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "DNR",
+        "CRD",
+        "SCT",
+        "SC",
+        "ACRE",
+        "CRDT1",
+        "CRDT2",
+        "CRDT3"
+      ],
+      "source_keywords": [
+        "should not",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "733e9a4567cfa1e0461ad60c3e8ccbc803702975a4e65c590d56f8cdcf87ae23"
+    },
+    {
+      "id": "BASEFWLOG-FIG-102",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "102",
+      "title": "Status Code – Status Code Type Values",
+      "section": "4.2.3",
+      "printed_pages": "146",
+      "pdf_pages": "172",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SC",
+        "Status Code"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "b9c2c9769889b51d614862bc57b6ec01ce826285d242b4a8c8b1d95864b936e5"
+    },
+    {
+      "id": "BASEFWLOG-FIG-107",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "107",
+      "title": "Status Code – Media and Data Integrity Error Values",
+      "section": "4.2.3.2",
+      "printed_pages": "154-155",
+      "pdf_pages": "180-181",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14.2.5"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "TCG",
+        "SCT",
+        "Status Code"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "daa3372fe0200fdd5510ea99ffcd4c991e0ad5cb4bebdbd5e39b2b6ba2950e5c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-155",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "155",
+      "title": "Asynchronous Event Information – Notice",
+      "section": "5.2.2.1",
+      "printed_pages": "186",
+      "pdf_pages": "212",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "3.11",
+        "5.2.30.1.6"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 firmware activation notice、CSTS.PP 與以 Firmware Slot Information log 清除事件的關係。",
+        "en": "Use only the firmware-activation notice, CSTS.PP, and the Firmware Slot Information log used to clear the event."
+      },
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "Firmware Activation Starting",
+        "CSTS.PP",
+        "Firmware Slot Information",
+        "RAE"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "5af628b1cb10290f5e062a3092ec47d0267528e1c4e23b73447dff3c2b0cc094"
+    },
+    {
+      "id": "BASEFWLOG-FIG-187",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "187",
+      "title": "Firmware Commit – Command Dword 10",
+      "section": "5.2.9",
+      "printed_pages": "203",
+      "pdf_pages": "229",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "BPID",
+        "CA",
+        "FS",
+        "ID",
+        "BPINFO.ABPID",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "9145a5c6b832e5646c058aed60a2b31b704d5091279629b5112f3e92298693ba"
+    },
+    {
+      "id": "BASEFWLOG-FIG-188",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "188",
+      "title": "Firmware Commit – Completion Queue Entry Dword 0",
+      "section": "5.2.9.1",
+      "printed_pages": "204",
+      "pdf_pages": "230",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MUD",
+        "Completion Queue"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "2b2a4281715f941b1161d4a7c1ab22684d3fdc3414b0afc78a800aa9d993d74d"
+    },
+    {
+      "id": "BASEFWLOG-FIG-189",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "189",
+      "title": "Firmware Commit – Command Specific Status Values",
+      "section": "5.2.9.1",
+      "printed_pages": "204-205",
+      "pdf_pages": "230-231",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MTFA",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "77aed9e2ef2e6576b75a8a98f953be981138ed2d2f59735c86abf1c42879c9d5"
+    },
+    {
+      "id": "BASEFWLOG-FIG-190",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "190",
+      "title": "Firmware Image Download – Data Pointer",
+      "section": "5.2.10",
+      "printed_pages": "205",
+      "pdf_pages": "231",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "should"
+      ],
+      "evidence_digest": "2969c597bb558bed5c7bebc7048bc5861cd31c006e81e7fda8ae97c793a42fdd"
+    },
+    {
+      "id": "BASEFWLOG-FIG-191",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "191",
+      "title": "Firmware Image Download – Command Dword 10",
+      "section": "5.2.10",
+      "printed_pages": "205",
+      "pdf_pages": "231",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NUMD",
+        "FWUG",
+        "Command"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "62c7465fdb2ac577a2a513101ab44d362d9a6d98055eda84ebd31b438eda827b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-192",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "192",
+      "title": "Firmware Image Download – Command Dword 11",
+      "section": "5.2.10",
+      "printed_pages": "206",
+      "pdf_pages": "232",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "OFST",
+        "FWUG"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2d267c2dca5dd783fb1c783a192501110621ff690344da56e8f670b589718b79"
+    },
+    {
+      "id": "BASEFWLOG-FIG-193",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "193",
+      "title": "Firmware Image Download – Command Specific Status Values",
+      "section": "5.2.10",
+      "printed_pages": "206",
+      "pdf_pages": "232",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "Overlapping Range"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "425f189329e59fb6eda7861020a0e3b31623c7cf5c039bcb02746d2e2b1c9d35"
+    },
+    {
+      "id": "BASEFWLOG-FIG-195",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "195",
+      "title": "Format NVM – Command Dword 10",
+      "section": "5.2.11",
+      "printed_pages": "208",
+      "pdf_pages": "234",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14.2.7"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LBAFU",
+        "SES",
+        "PIL",
+        "PI",
+        "MSET",
+        "LBA",
+        "LBAFEE",
+        "NOTE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "d5a0b908a8ec22641991eb436b7153fbebc16712be83b8fe97a9ee1f8140efb6"
+    },
+    {
+      "id": "BASEFWLOG-FIG-203",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page – Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2ced3045a9c3679384e3527401c7cc66b46ad0bba85bb9f6725d02b277c25ccd"
+    },
+    {
+      "id": "BASEFWLOG-FIG-204",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "NUMDU",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "969320632e234fae0d3a87864be7a412b6cc101d2e6ded2443d5d0c8f2460c55"
+    },
+    {
+      "id": "BASEFWLOG-FIG-205",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LSI",
+        "NUMDU",
+        "Command"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "228c7bc5e0563e8427d64d7dfcb8662a7cc165e1167972be3d177e132c60bb4b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-206",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page – Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LPOL",
+        "OT",
+        "LPOU",
+        "IOS",
+        "LID",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c9628a7d1eb82a21de6b12ef995dcb0551952ee0db970f144b640b6567ef058c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-207",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page – Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LPOU",
+        "UUID",
+        "Command"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "56c5826995ce5acc14d8ad9b775eb38c70a649dcdcf2ad86ab480b4a16f89389"
+    },
+    {
+      "id": "BASEFWLOG-FIG-208",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CSI",
+        "CC.CSS",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a00866350c2f4248bece93c2473f5b19de0fa46affe381e944021ad92e473e32"
+    },
+    {
+      "id": "BASEFWLOG-FIG-209",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page – Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-216",
+      "pdf_pages": "241-242",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CSI8",
+        "SMART",
+        "MI",
+        "FDP",
+        "SDSO",
+        "DSTO",
+        "UUID",
+        "MDS"
+      ],
+      "source_keywords": [
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "233abc2a781af1786ac4a41262b2c84f93253a4987f9d4ef1d617105298939b9"
+    },
+    {
+      "id": "BASEFWLOG-FIG-210",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "210",
+      "title": "Supported Log Pages Log Page",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217",
+      "pdf_pages": "243",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LIDS0",
+        "LIDS1",
+        "LIDS254",
+        "LIDS255",
+        "LID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "9a46e81503312cdfc8581019598736f9b93f5dd53278f184a57e9c6eb4b52b59"
+    },
+    {
+      "id": "BASEFWLOG-FIG-211",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "211",
+      "title": "LID Supported and Effects Data Structure",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217-218",
+      "pdf_pages": "243-244",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LIDSP",
+        "IOS",
+        "LSUPP",
+        "LID",
+        "OT",
+        "SPEDS",
+        "PA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "dc934e424ceb2792660b1b3ca547b41fc61677c1f74602c737da23ddb0dbd45c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-212",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "212",
+      "title": "Error Information Log Entry Data Structure",
+      "section": "5.2.13.1.2",
+      "printed_pages": "218-220",
+      "pdf_pages": "244-246",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ECNT",
+        "SQID",
+        "CID",
+        "STS",
+        "STATUS",
+        "PEL",
+        "BITLOC",
+        "BYTLOC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "7e5bcead1ff702b1c0f2566c6ee5fa066aa5c05203b74d2ad3c92bf8e1e851da"
+    },
+    {
+      "id": "BASEFWLOG-FIG-213",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "213",
+      "title": "SMART / Health Information Log Page",
+      "section": "5.2.13.1.3",
+      "printed_pages": "221-225",
+      "pdf_pages": "247-251",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CW",
+        "IPS",
+        "PMRRO",
+        "VMBF",
+        "AMRO",
+        "NDR",
+        "TTC",
+        "ASCBT"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "e34d885fec93089e8cb84373ceae61183f240d67b2f939e46dcdd2686c74b955"
+    },
+    {
+      "id": "BASEFWLOG-FIG-214",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "214",
+      "title": "Temperature Sensor Data Structure",
+      "section": "5.2.13.1.3",
+      "printed_pages": "225",
+      "pdf_pages": "251",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "TST"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "a269a3aec8b17993e80967843472634937c8734f2b233b760ec9e4626cfc4173"
+    },
+    {
+      "id": "BASEFWLOG-FIG-215",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "215",
+      "title": "Firmware Slot Information Log Page",
+      "section": "5.2.13.1.4",
+      "printed_pages": "226",
+      "pdf_pages": "252",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "AFI",
+        "NAFS",
+        "CAFS",
+        "FRS1",
+        "FRS2",
+        "FRS3",
+        "FRS4",
+        "FRS5"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "406954edd56e69c0168c1f7030b8de4a1d3b23fccd3c73d675a652e6279cc804"
+    },
+    {
+      "id": "BASEFWLOG-FIG-216",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "216",
+      "title": "Commands Supported and Effects Log Page",
+      "section": "5.2.13.1.6",
+      "printed_pages": "227",
+      "pdf_pages": "253",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ACS0",
+        "ACS1",
+        "ACS254",
+        "ACS255",
+        "IOCS0",
+        "IOCS1",
+        "IOCS254",
+        "IOCS255"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "d29db303f518e55e098e37bde7b4ed77a827560d075ff142dbfa3820e3273d96"
+    },
+    {
+      "id": "BASEFWLOG-FIG-217",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "217",
+      "title": "Commands Supported and Effects Data Structure",
+      "section": "5.2.13.1.6",
+      "printed_pages": "228-229",
+      "pdf_pages": "254-255",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CSP",
+        "NSSCPE",
+        "DSCPE",
+        "EGSCPE",
+        "NSETSCPE",
+        "CSCPE",
+        "NSCPE",
+        "USS"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "775e9a3038bf3917c4d2781749e24662a5168bce8d2ba2d47742b1a3d76b4d80"
+    },
+    {
+      "id": "BASEFWLOG-FIG-218",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "218",
+      "title": "Device Self-test Log Page",
+      "section": "5.2.13.1.7",
+      "printed_pages": "230",
+      "pdf_pages": "256",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CDSTO",
+        "DSTOS",
+        "CDSTC",
+        "DSTCS",
+        "RDS1",
+        "RDS2",
+        "RDS19",
+        "RDS20"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "2017a9f903e42b08e72b03e78fa2d996c36d91edaecf16eece0b4c9909ee0253"
+    },
+    {
+      "id": "BASEFWLOG-FIG-219",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "219",
+      "title": "Self-test Result Data Structure",
+      "section": "5.2.13.1.7",
+      "printed_pages": "231-232",
+      "pdf_pages": "257-258",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "DSTS",
+        "DSTC",
+        "DSTR",
+        "SEGN",
+        "VDINFO",
+        "SCVLD",
+        "SCTVLD",
+        "FVLD"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "5066e8545cd20947781334ed7caa8c0243df02c3a680578e907e2d2c8cc3bbd4"
+    },
+    {
+      "id": "BASEFWLOG-FIG-220",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "220",
+      "title": "Telemetry Host-Initiated Log Specific Parameter Field",
+      "section": "5.2.13.1.8",
+      "printed_pages": "232-233",
+      "pdf_pages": "258-259",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MCDA",
+        "CTHID",
+        "MCDAS",
+        "LID",
+        "DA4S",
+        "ETDAS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "1090dc02d69f83028ba218b3ac34e72e714d88c5db75b253e336654257eaae7f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-221",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "221",
+      "title": "Telemetry Host-Initiated Log Page",
+      "section": "5.2.13.1.8",
+      "printed_pages": "234-235",
+      "pdf_pages": "260-261",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "IEEE",
+        "THDA1LB",
+        "THDA2LB",
+        "THDA3LB",
+        "THDA4LB",
+        "THS",
+        "THDGN"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "054ec7128048d3e391ffd13ff6df3e82bf1e0c3c65acba1fff7f86598fa2b0df"
+    },
+    {
+      "id": "BASEFWLOG-FIG-222",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "222",
+      "title": "Telemetry Host-Initiated Log Page - LID Specific Parameter Field",
+      "section": "5.2.13.1.8",
+      "printed_pages": "235",
+      "pdf_pages": "261",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MCDAS",
+        "LID"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "1d8fb51de300da9aaa3d6911f7171d25c4af69a2d0ea898464e7599a26b477f6"
+    },
+    {
+      "id": "BASEFWLOG-FIG-223",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "223",
+      "title": "Telemetry Controller-Initiated Log Page",
+      "section": "5.2.13.1.9",
+      "printed_pages": "236-237",
+      "pdf_pages": "262-263",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "IEEE",
+        "TCDA1LB",
+        "TCDA2LB",
+        "TCDA3LB",
+        "TCDA4LB",
+        "TCS",
+        "TCDA"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "4f55a0b9e3b02dcdd2172ec456c1dbf9a471e6b4f25471fd79b14ff70c958378"
+    },
+    {
+      "id": "BASEFWLOG-FIG-224",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "224",
+      "title": "Endurance Group Identifier - Log Specific Identifier",
+      "section": "5.2.13.1.10",
+      "printed_pages": "237",
+      "pdf_pages": "263",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ENDGID",
+        "Endurance Group"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "64b95002b1bbeb7adeabaf0d2f8a54244f2b12d04ac1f6e8b5b09d5b52836aca"
+    },
+    {
+      "id": "BASEFWLOG-FIG-225",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "225",
+      "title": "Endurance Group Information Log Page",
+      "section": "5.2.13.1.10",
+      "printed_pages": "238-239",
+      "pdf_pages": "264-265",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "EGCW",
+        "EGRO",
+        "EGDR",
+        "EGASB",
+        "EGFEAT",
+        "AVSP",
+        "AVSPT",
+        "PUSED"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "62f2dddf1a6453344085c112cce15a806c65520d79cda41a0a6144e615bc7c14"
+    },
+    {
+      "id": "BASEFWLOG-FIG-226",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "226",
+      "title": "NVM Set Identifier – Log Specific Identifier",
+      "section": "5.2.13.1.11",
+      "printed_pages": "240",
+      "pdf_pages": "266",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NVMSETID",
+        "NVM Set"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "4c8849ed610b19879de5f702d6e8f2ac889ece38944ad5d5df67eec116f6aa71"
+    },
+    {
+      "id": "BASEFWLOG-FIG-227",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "227",
+      "title": "Predictable Latency Per NVM Set Log Page",
+      "section": "5.2.13.1.11",
+      "printed_pages": "240-241",
+      "pdf_pages": "266-267",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "STSNVMS",
+        "PLMW",
+        "ETYP",
+        "DEAT",
+        "MVEAT",
+        "DTWRT",
+        "DTWWT",
+        "DTWTM"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "a0a3e01162a4b2f5ecbbf17312d5c6a1978090ef7835ca15ba40f6a29570f74b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-228",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "228",
+      "title": "Predictable Latency Event Aggregate Log Page",
+      "section": "5.2.13.1.12",
+      "printed_pages": "241",
+      "pdf_pages": "267",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NUMENT",
+        "NEMENT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "df8e7cc3bccdf3efd91df795da07e612dd74c1761ad2dc85d5b3fdbad55c05c2"
+    },
+    {
+      "id": "BASEFWLOG-FIG-229",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "229",
+      "title": "Asymmetric Namespace Access Log Specific Parameter Field",
+      "section": "5.2.13.1.13",
+      "printed_pages": "242",
+      "pdf_pages": "268",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RGO",
+        "ANA",
+        "NSID",
+        "Namespace"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "6b5a23f1af07883f79f3a12d3d06182ba95694c23749a289a47afa9bfcf91e4e"
+    },
+    {
+      "id": "BASEFWLOG-FIG-230",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "230",
+      "title": "Asymmetric Namespace Access Log Page",
+      "section": "5.2.13.1.13",
+      "printed_pages": "242-243",
+      "pdf_pages": "268-269",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CHGC",
+        "NAGD",
+        "ANA",
+        "NSID",
+        "Namespace"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "fcd12f22cd5bcabc15ea17a0dc63ef47b3db9970edc0b532b39fcaa268d8da87"
+    },
+    {
+      "id": "BASEFWLOG-FIG-231",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "231",
+      "title": "ANA Group Descriptor format",
+      "section": "5.2.13.1.13",
+      "printed_pages": "243-244",
+      "pdf_pages": "269-270",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "AGID",
+        "NNV",
+        "CHGC",
+        "ANASA",
+        "ANAS",
+        "ANA",
+        "ID",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "2cf7992dd8be52b6cc9db8dfc7d669a46b830319bb90dbd73b7d293688f4e60b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-232",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "232",
+      "title": "Persistent Event Log Specific Parameter Field",
+      "section": "5.2.13.1.14",
+      "printed_pages": "246",
+      "pdf_pages": "272",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ACT",
+        "LPOU",
+        "LPOL",
+        "NUMDU",
+        "NUMDL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "286dc801586856f5efee49c6453705468fe5aa7ea3648d077ea8b6e2be1afb19"
+    },
+    {
+      "id": "BASEFWLOG-FIG-233",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "233",
+      "title": "Persistent Event Log Page",
+      "section": "5.2.13.1.14",
+      "printed_pages": "247-249",
+      "pdf_pages": "273-275",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "TNEV",
+        "TLL",
+        "LREV",
+        "LHL",
+        "TSTMP",
+        "POH",
+        "PWRCC"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "afa051581a6bb369d979844478edcdc22e932345693d33d90f75ee5bbcba50e9"
+    },
+    {
+      "id": "BASEFWLOG-FIG-234",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "234",
+      "title": "Persistent Event Format",
+      "section": "5.2.13.1.14",
+      "printed_pages": "249-250",
+      "pdf_pages": "275-276",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ET",
+        "EHAI",
+        "PIT",
+        "CNTLID",
+        "ETSTP",
+        "PELPID",
+        "VSIL",
+        "EL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "650e61af72030cedd7bc23878a464a321a57ed07e2db8b0f232729e487102f3a"
+    },
+    {
+      "id": "BASEFWLOG-FIG-235",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "235",
+      "title": "Persistent Event LID Specific Parameter Field",
+      "section": "5.2.13.1.14",
+      "printed_pages": "251",
+      "pdf_pages": "277",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ECRH",
+        "LID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "44d6aa809df88ea602c835e0e18642f3f1a9b41509b0efc5abed3c0bb79af44b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-236",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "236",
+      "title": "Persistent Event Log Event Types",
+      "section": "5.2.13.1.14",
+      "printed_pages": "251",
+      "pdf_pages": "277",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "M1",
+        "NOTE",
+        "SMART",
+        "TCG"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "ca02ecdf4c6e5ecc168bf370d1a7621395534e7d76d7d9a5be4078bdf17aa81f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-237",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "237",
+      "title": "SMART / Health Log Snapshot Event Data Format (Event Type 01h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "252",
+      "pdf_pages": "278",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ED",
+        "SMART"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "deb6600c63eb5a644433eb888eb8d88c9003b8028c6f852e49233000c05cda35"
+    },
+    {
+      "id": "BASEFWLOG-FIG-238",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "238",
+      "title": "Firmware Commit Event Data Format (Event Type 02h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "252",
+      "pdf_pages": "278",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "OFR",
+        "NFR",
+        "FCA",
+        "FSLT",
+        "STCTFCC",
+        "SRFCC",
+        "VAFCRC"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "005a33d84dab909612ba30cae4ec2ba7ed6987af95f0ff009df8ea4ba1952dc3"
+    },
+    {
+      "id": "BASEFWLOG-FIG-239",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "239",
+      "title": "Timestamp Change Event Format (Event Type 03h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "253",
+      "pdf_pages": "279",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PTSTP",
+        "MSR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "071e5c7f815f227512f85549d9cb1948c633e10ce764e1d586826abeb2215625"
+    },
+    {
+      "id": "BASEFWLOG-FIG-240",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "240",
+      "title": "Power-on or Reset Event (Event Type 04h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "253",
+      "pdf_pages": "279",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "FREV",
+        "RIL",
+        "CC.EN",
+        "EL",
+        "VSIL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a8abd912e5a1837d8321229ade6c24fb937d2e27f0bce78427a6b331a43c43fc"
+    },
+    {
+      "id": "BASEFWLOG-FIG-241",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "241",
+      "title": "Controller Reset Information descriptor",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "253-254",
+      "pdf_pages": "279-280",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CNTLID",
+        "FA",
+        "OIP",
+        "RDNF",
+        "CPWRC",
+        "POM",
+        "CTSTP",
+        "ID"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "867fc6e05e82b48f48b7ea71228641e1a35a95329ab2858d72cb496923a2e8ed"
+    },
+    {
+      "id": "BASEFWLOG-FIG-242",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "242",
+      "title": "NVM Subsystem Hardware Error Event Format (Event Type 05h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "254",
+      "pdf_pages": "280",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NSHEEC",
+        "AHEI",
+        "NVM Subsystem"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "50de8dece0cb271cceedaac9784dc22c200d843cd364b07fc6d5315dbaeecd16"
+    },
+    {
+      "id": "BASEFWLOG-FIG-243",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "243",
+      "title": "NVM Subsystem Hardware Error Event Codes",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "254-256",
+      "pdf_pages": "280-282",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "EGCW",
+        "EGID",
+        "SMART",
+        "CSTS.CFS",
+        "CRTO.CRWMT",
+        "CC.CRIME",
+        "CRTO.CRIMT",
+        "CC.EN"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "ef097a4fac2b1c9d6e7001f434b0b0c036e7b971351cb9f741081185538fb11f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-244",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "244",
+      "title": "Additional Hardware Error Information for Unexpected Power Loss Errors",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "256",
+      "pdf_pages": "282",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "UPL",
+        "UPLI",
+        "UPLOA",
+        "SMART",
+        "CSTS.SHST"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "adf2498667cc449f1f1d8fb8d4ee2457458306a3fe526f129d838d1dfe06764f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-245",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "245",
+      "title": "Additional Hardware Error Information for correctable and uncorrectable PCIe errors",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "256-257",
+      "pdf_pages": "282-283",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PCIEAS",
+        "PCIEAERS",
+        "PCIe AER Error Status",
+        "PCIe AER Error Mask"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "db6ed399a32abc70b11441ce3ae57d645b24171c4b2a45c0441030b66a06aa2d"
+    },
+    {
+      "id": "BASEFWLOG-FIG-246",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "246",
+      "title": "Additional Hardware Error Information for Controller Ready Timeout",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "258",
+      "pdf_pages": "284",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CST",
+        "CNR",
+        "ACMNR",
+        "NNR",
+        "CRIME",
+        "CRTO.CRWMT",
+        "CC.CRIME",
+        "CRTO.CRIMT"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "ee8438be178554e5b42068367fc84023f8ce578fadfe5ca9449dd9aaf3e49908"
+    },
+    {
+      "id": "BASEFWLOG-FIG-247",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "247",
+      "title": "Change Namespace Event Data Format (Event Type 06h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "258-259",
+      "pdf_pages": "284-285",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NMCDW10",
+        "NSZE",
+        "NCAP",
+        "FLBAS",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "9d1aca5a1b9a66f7420cd54f45840c3200b455dfc350b79482080dff40063370"
+    },
+    {
+      "id": "BASEFWLOG-FIG-248",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "248",
+      "title": "Format NVM Start Event Data Format (Event Type 07h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "260",
+      "pdf_pages": "286",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NSID",
+        "FNA",
+        "FMCDW10",
+        "CDW10"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "1260b4cbac3d05ae70c33bb1a4d933448eaa33de95ed21047d7fc1289185bafa"
+    },
+    {
+      "id": "BASEFWLOG-FIG-249",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "249",
+      "title": "Format NVM Completion Event Data Format (Event Type 08h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "260-261",
+      "pdf_pages": "286-287",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NSID",
+        "SFPI",
+        "FNVMS",
+        "INCPLTF",
+        "FNVME",
+        "CINFO",
+        "INFO",
+        "STATUS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "3edd263242f1dd5ecd33abd7d5e0c7a474f453d9735b34c98e79fdcd551d1537"
+    },
+    {
+      "id": "BASEFWLOG-FIG-250",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "250",
+      "title": "Sanitize Start Event Data Format (Event Type 09h)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "261",
+      "pdf_pages": "287",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SCDW11",
+        "NSID",
+        "SANICAP",
+        "CDW10",
+        "CDW11"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "4da149dd8f32095b009ac8c7963fc01cfd59c2817fb5090c9c2ff28159061b68"
+    },
+    {
+      "id": "BASEFWLOG-FIG-251",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "251",
+      "title": "Sanitize Completion Event Data Format (Event Type 0Ah)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "261-262",
+      "pdf_pages": "287-288",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SPROG",
+        "SSTAT",
+        "CINFO",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "71619d599a8314283ad4dacb16e7ad4d175d82f05e8b722a6f2e7c94111951d3"
+    },
+    {
+      "id": "BASEFWLOG-FIG-252",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "252",
+      "title": "Feature Persistent Event Logging Requirements",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "262-263",
+      "pdf_pages": "288-289",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PE",
+        "NR"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "e0fa1ea59d78badb17753215519b44047625788ea56dc31c7253479880406994"
+    },
+    {
+      "id": "BASEFWLOG-FIG-253",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "253",
+      "title": "Set Feature Event Data Format",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "264",
+      "pdf_pages": "290",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SFEL",
+        "MBC",
+        "LCCDW0",
+        "DWC",
+        "CDWS",
+        "MBUF",
+        "CCDW0"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "94d0234f9497c44cde0ad2862ae165b40c7818ebbb3a87d69ff718a14b01b483"
+    },
+    {
+      "id": "BASEFWLOG-FIG-254",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "254",
+      "title": "Telemetry Log Created Event Data Format (Event Type 0Ch)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "264",
+      "pdf_pages": "290",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "TIL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "96565109ac73db80946a44877f98d81ba850d76be92159390b90159c690d4b35"
+    },
+    {
+      "id": "BASEFWLOG-FIG-255",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "255",
+      "title": "Thermal Excursion Event Data Format (Event Type 0Dh)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "265-266",
+      "pdf_pages": "291-292",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "OTMP",
+        "THRESH",
+        "WCTEMP",
+        "CCTEMP",
+        "TMT1",
+        "TMT2"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "f37558924d420bfca090088a3d46f7b2b6ec22bbb34eb8bbb16fea6ff01c1aaf"
+    },
+    {
+      "id": "BASEFWLOG-FIG-256",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "256",
+      "title": "CDP Change Event Data Format (Event Type 0Fh)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "267",
+      "pdf_pages": "293",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PS",
+        "CDPRFS",
+        "CDPCE",
+        "PERID",
+        "PED",
+        "CDP",
+        "EL"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "df13136545af20f1d3943716591fd54f4ff68d15f66085762b2e2a23113ee99b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-258",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "258",
+      "title": "Vendor Specific Event Format (Event Type DEh)",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "269",
+      "pdf_pages": "295",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "EL",
+        "VSIL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c4f4545a78026451d4f4b25048c114a483578a97cb9328987431b5e59cacb0d1"
+    },
+    {
+      "id": "BASEFWLOG-FIG-259",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "259",
+      "title": "Vendor Specific Event Descriptor Format",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "269",
+      "pdf_pages": "295",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VSEC",
+        "VSEDT",
+        "UIDX",
+        "VSEDL",
+        "VSED",
+        "UUID"
+      ],
+      "source_keywords": [
+        "should"
+      ],
+      "evidence_digest": "6aa048336edbd6b048deecd7e7b182ba43f58b52f5297e96755727439ccc4566"
+    },
+    {
+      "id": "BASEFWLOG-FIG-260",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "260",
+      "title": "Vendor Specific Event Data Type Codes",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "269-270",
+      "pdf_pages": "295-296",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ASCII"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "3c813f2eb7f4ca642d5b78cf88f3321f4556741378c565e85beb242d4035253f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-261",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "261",
+      "title": "Endurance Group Event Aggregate Log Page",
+      "section": "5.2.13.1.15",
+      "printed_pages": "270",
+      "pdf_pages": "296",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NUMENT",
+        "Endurance Group"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "3fcd66c5b5789b2cfc33394928ae69c997c9fbe8075a373180e98b788d91c441"
+    },
+    {
+      "id": "BASEFWLOG-FIG-262",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "262",
+      "title": "Domain Identifier – Log Specific Identifier",
+      "section": "5.2.13.1.16",
+      "printed_pages": "271",
+      "pdf_pages": "297",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "DID",
+        "Domain"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "154caebcbcdd01653d515f45bc3f5c23e85fb4157ec370fb3e31fb15154ee366"
+    },
+    {
+      "id": "BASEFWLOG-FIG-263",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "263",
+      "title": "Media Unit Status Log Page",
+      "section": "5.2.13.1.16",
+      "printed_pages": "271",
+      "pdf_pages": "297",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NMU",
+        "CCHANS",
+        "SELC",
+        "NOTE",
+        "ENDGID",
+        "NVMSETID",
+        "MUCS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ba73319398c463e7c3d4a70095cf3696d070fed030614e2bdee9192b613600ea"
+    },
+    {
+      "id": "BASEFWLOG-FIG-264",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "264",
+      "title": "Media Unit Status Descriptor",
+      "section": "5.2.13.1.16",
+      "printed_pages": "272",
+      "pdf_pages": "298",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MUID",
+        "DID",
+        "ENDGID",
+        "NVMSETID",
+        "CAF",
+        "AVSP",
+        "PUSED",
+        "CIO"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "1c92910b02c7b2fc1923fea469cdd5c7ff0370619ef661f0edbe8f205afcaaa1"
+    },
+    {
+      "id": "BASEFWLOG-FIG-265",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "265",
+      "title": "Supported Capacity Configuration List Log Page",
+      "section": "5.2.13.1.17",
+      "printed_pages": "273",
+      "pdf_pages": "299",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SCCN",
+        "NOTE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ad0cefc9799c9e7322ee47ac2adec8c086a3c74b693d0fcb1d092fb36b48a82b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-266",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "266",
+      "title": "Capacity Configuration Descriptor",
+      "section": "5.2.13.1.17",
+      "printed_pages": "273-274",
+      "pdf_pages": "299-300",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CCID",
+        "DID",
+        "EGCN",
+        "NOTE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "2e01c03c42c04a661cf669bb8c00827a81c6f42d76a2ba318ba7f33433fba6d9"
+    },
+    {
+      "id": "BASEFWLOG-FIG-267",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "267",
+      "title": "Endurance Group Configuration Descriptor",
+      "section": "5.2.13.1.17",
+      "printed_pages": "274-275",
+      "pdf_pages": "300-301",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ENDGID",
+        "CADJF",
+        "TEGCAP",
+        "SEGCAP",
+        "EE",
+        "EGSETS",
+        "EGCHANS",
+        "NOTE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "d4a86030daf8cfc9cb6586f0279a231a2e6d2620ce79a9f55110838e9f27f807"
+    },
+    {
+      "id": "BASEFWLOG-FIG-268",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "268",
+      "title": "Channel Configuration Descriptor",
+      "section": "5.2.13.1.17",
+      "printed_pages": "275",
+      "pdf_pages": "301",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CHID",
+        "CHMUS",
+        "NOTE"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "f71332921b4cd1d54e2f6718766a00959362e3d0d9d0f0f6bbf2dd9c7c0a0d8b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-269",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "269",
+      "title": "Media Unit Configuration Descriptor",
+      "section": "5.2.13.1.17",
+      "printed_pages": "276",
+      "pdf_pages": "302",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MUID",
+        "MUDL"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "06e407e5b064ac6fe3d520026b427782890f9d237a9227ddaeca23552653e52c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-270",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "270",
+      "title": "Feature Identifiers Effects Log Page",
+      "section": "5.2.13.1.18",
+      "printed_pages": "276",
+      "pdf_pages": "302",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "FIS0",
+        "FIS1",
+        "FIS254",
+        "FIS255",
+        "FID"
+      ],
+      "source_keywords": [
+        "optional"
+      ],
+      "evidence_digest": "4ef741377758f0986ad10c214d371ae3235b8b3f426051c00ae264769f78b2f2"
+    },
+    {
+      "id": "BASEFWLOG-FIG-271",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "271",
+      "title": "FID Supported and Effects Data Structure",
+      "section": "5.2.13.1.18",
+      "printed_pages": "277-278",
+      "pdf_pages": "303-304",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "FSP",
+        "RUHS",
+        "CDQSCP",
+        "NSSCPE",
+        "DSCPE",
+        "EGSCPE",
+        "NSETSCPE",
+        "CSCPE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "31eb2319122c8875afc74d85f400ccf6a78508fc7d339809810636514ff89f4f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-272",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "272",
+      "title": "NVMe-MI Commands Supported and Effects Log Page",
+      "section": "5.2.13.1.19",
+      "printed_pages": "278",
+      "pdf_pages": "304",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MICS0",
+        "MICS1",
+        "MICS254",
+        "MICS255",
+        "MI",
+        "Command"
+      ],
+      "source_keywords": [
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "f698fa0cdefdf5dd6f33d633ab4ee4f3e2a14cbf68dbcd18f083047d4abcbe61"
+    },
+    {
+      "id": "BASEFWLOG-FIG-273",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "273",
+      "title": "NVMe-MI Commands Supported and Effects Data Structure",
+      "section": "5.2.13.1.19",
+      "printed_pages": "279",
+      "pdf_pages": "305",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CSP",
+        "NSSCPE",
+        "DSCPE",
+        "EGSCPE",
+        "NSETSCPE",
+        "CSCPE",
+        "NSCPE",
+        "CCC"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "09cb7f03653120b2b41b0d549ae8683f7ed056b658874bd2ac51d7e1e1bdfcf1"
+    },
+    {
+      "id": "BASEFWLOG-FIG-274",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "274",
+      "title": "Command and Feature Lockdown Log Specific Parameter Field",
+      "section": "5.2.13.1.20",
+      "printed_pages": "280",
+      "pdf_pages": "306",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ELPF",
+        "CNTTS",
+        "SCP",
+        "Command"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "c8b2d163ae068093201be05a8f0808cc14aa348dfe12c4e3993f98b1be7ddf8c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-275",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "275",
+      "title": "Controller Identifier - Log Specific Identifier",
+      "section": "5.2.13.1.20",
+      "printed_pages": "280",
+      "pdf_pages": "306",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CNTLID",
+        "ELPF",
+        "UUID",
+        "Controller",
+        "Controller ID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "42bd3b3a92e3639748a35c6fc2f607d2c05d109f93ff244901bf33b601dcbf11"
+    },
+    {
+      "id": "BASEFWLOG-FIG-276",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "276",
+      "title": "Command and Feature Lockdown Log Page",
+      "section": "5.2.13.1.20",
+      "printed_pages": "281",
+      "pdf_pages": "307",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CFILA",
+        "CS",
+        "SS",
+        "LNGTH",
+        "CFIL",
+        "CFI",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "33d373afed59277d52cadba25acf99708837da0479af3cefac07145bbfef883f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-277",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "277",
+      "title": "Command and Feature Lockdown Log Page – Enhanced",
+      "section": "5.2.13.1.20",
+      "printed_pages": "282-283",
+      "pdf_pages": "308-309",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VER",
+        "CFIA",
+        "CS",
+        "SS",
+        "CNTLID",
+        "SZE",
+        "NCFID",
+        "CFIDS"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "7e143a328bd3252a54e1325114f3c240c8bf563f11254fde8b760ce1a73fcf2c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-278",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "278",
+      "title": "Command and Feature Identifier Descriptor",
+      "section": "5.2.13.1.20",
+      "printed_pages": "283",
+      "pdf_pages": "309",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CFI",
+        "CFIA",
+        "ACNTL",
+        "CS",
+        "CNTLID",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "dbb02a9fabb8a6785e31c61a46a8f7bb5a2b5f1ce163b40c0543f5e1533ef685"
+    },
+    {
+      "id": "BASEFWLOG-FIG-279",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "279",
+      "title": "Boot Partition Log Specific Parameter Field",
+      "section": "5.2.13.1.21",
+      "printed_pages": "283",
+      "pdf_pages": "309",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "BPID"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "8c5b477834027d2ac92ff4f9fad75b30ffd3eded776654826ab6e0845529976b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-280",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "280",
+      "title": "Boot Partition Log Page",
+      "section": "5.2.13.1.21",
+      "printed_pages": "284",
+      "pdf_pages": "310",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "BPINFO",
+        "ABPID",
+        "BPSZ",
+        "BPD",
+        "ID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "efd7debb939b4515cebe8ef6a6ce6d1f39c806177676983fe476bb1a59773bfe"
+    },
+    {
+      "id": "BASEFWLOG-FIG-281",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "281",
+      "title": "Rotational Media Information Log Page",
+      "section": "5.2.13.1.22",
+      "printed_pages": "284-285",
+      "pdf_pages": "310-311",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ENDGID",
+        "NUMA",
+        "NRS",
+        "SPINC",
+        "FSPINC",
+        "LDC",
+        "FLDC"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "eb83f3956710db8521ee329bc9918072afb49e4b5059fbbd4595df5c3258606e"
+    },
+    {
+      "id": "BASEFWLOG-FIG-282",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "282",
+      "title": "Dispersed Namespace Participating NVM Subsystems Log Page",
+      "section": "5.2.13.1.23",
+      "printed_pages": "285-286",
+      "pdf_pages": "311-312",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "GENCTR",
+        "NUMPSUB",
+        "NVM Subsystem",
+        "Namespace"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "7881f864052fa90c18a24f350635413f68640c8d8ef01f1eded357367d33c177"
+    },
+    {
+      "id": "BASEFWLOG-FIG-283",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "283",
+      "title": "Management Address List – Log Page",
+      "section": "5.2.13.1.24",
+      "printed_pages": "286",
+      "pdf_pages": "312",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MAD0",
+        "MAD1",
+        "MAD7"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "87aa28d4be46ae2afaea7989444fd5ca995f7d34f25adab6e216ea73185b3471"
+    },
+    {
+      "id": "BASEFWLOG-FIG-284",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "284",
+      "title": "Management Address Descriptor",
+      "section": "5.2.13.1.24",
+      "printed_pages": "286",
+      "pdf_pages": "312",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MAT",
+        "MADRS",
+        "SSD",
+        "URI",
+        "RFC",
+        "UTF"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "ff800b34d63790ade2aea196e9f82deec354e4df549c3bb432195feabdec6d4a"
+    },
+    {
+      "id": "BASEFWLOG-FIG-285",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "285",
+      "title": "Reachability Groups Log Specific Parameter Field",
+      "section": "5.2.13.1.25",
+      "printed_pages": "287",
+      "pdf_pages": "313",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RGO",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "69bd8e0b7264c302bab7cffba515609c9f6a0e9fa7497867a8c34e8b480733ed"
+    },
+    {
+      "id": "BASEFWLOG-FIG-286",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "286",
+      "title": "Reachability Groups Log Page",
+      "section": "5.2.13.1.25",
+      "printed_pages": "287-288",
+      "pdf_pages": "313-314",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CHNGC",
+        "NRGD",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "5828fe2ada0a1001b1d1455dacecce471f5b71b7d70d5e7843859bf0f5fe91a8"
+    },
+    {
+      "id": "BASEFWLOG-FIG-287",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "287",
+      "title": "Reachability Group Descriptor format",
+      "section": "5.2.13.1.25",
+      "printed_pages": "288",
+      "pdf_pages": "314",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RGID",
+        "NNID",
+        "CHNGC",
+        "ID",
+        "NSID",
+        "RGO"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "a8f1910f87650f909d9cde4f61e27b0358de2bba37fdf3b25f780f435379dd9b"
+    },
+    {
+      "id": "BASEFWLOG-FIG-288",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "288",
+      "title": "Reachability Associations Log Specific Parameter Field",
+      "section": "5.2.13.1.26",
+      "printed_pages": "289",
+      "pdf_pages": "315",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RAO",
+        "RGID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "36577d5ff647434f24bed7bb495b6d69485878024e1a848a38a274fe53ee4e46"
+    },
+    {
+      "id": "BASEFWLOG-FIG-289",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "289",
+      "title": "Reachability Associations Log Page",
+      "section": "5.2.13.1.26",
+      "printed_pages": "289",
+      "pdf_pages": "315",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "CHNGC",
+        "NRAD"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "4d7567b999e5a22a97247020f83274128caa233cb8592ec7c99f4d4c7f8a39b9"
+    },
+    {
+      "id": "BASEFWLOG-FIG-290",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "290",
+      "title": "Reachability Association Descriptor format",
+      "section": "5.2.13.1.26",
+      "printed_pages": "290",
+      "pdf_pages": "316",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RASID",
+        "NRID",
+        "CHNGC",
+        "RAC",
+        "ID",
+        "RGID",
+        "RAO"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "b6bb19c70e22d257d313f92786b7167c8826b6a23105cd4a2ceed91f75aaa387"
+    },
+    {
+      "id": "BASEFWLOG-FIG-291",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "291",
+      "title": "Device Personalities Log Page",
+      "section": "5.2.13.1.28",
+      "printed_pages": "291",
+      "pdf_pages": "317",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NUMP",
+        "CDPLPV",
+        "DPLPHL",
+        "CDPLPS",
+        "CDP",
+        "PPS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "209911ac20e36fcf612ebc6217940dfd8868a5a89fdc57eae78167a65c0f116e"
+    },
+    {
+      "id": "BASEFWLOG-FIG-292",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "292",
+      "title": "Personality Properties Data Structure",
+      "section": "5.2.13.1.28",
+      "printed_pages": "291-293",
+      "pdf_pages": "317-319",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PPS",
+        "PERID",
+        "MRSTT",
+        "AUS",
+        "PKAS",
+        "PCAS",
+        "PSCUDE",
+        "CDP"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "8926ba78004ae1d1524d47278eb07f7ef84e195eb69568b3420c328e8f057be1"
+    },
+    {
+      "id": "BASEFWLOG-FIG-293",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "293",
+      "title": "FDP Configurations Log Page",
+      "section": "5.2.13.1.29",
+      "printed_pages": "293",
+      "pdf_pages": "319",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VER",
+        "SZE",
+        "FDP",
+        "UMFDPC"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "926e7ce62d1c4aee95ba4ca133e5f3bf97807f0c37dbaf1f7c34268489ad6c4e"
+    },
+    {
+      "id": "BASEFWLOG-FIG-294",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "294",
+      "title": "FDP Configuration Descriptor",
+      "section": "5.2.13.1.29",
+      "printed_pages": "293-295",
+      "pdf_pages": "319-321",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "DSZE",
+        "FDPA",
+        "FDPCV",
+        "FDPVWC",
+        "RGIF",
+        "VSS",
+        "NRG",
+        "NRUH"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "98f295f87dce5bc81dcc0c35c28d756c004b175414a2a7bbbd0616653c491ce8"
+    },
+    {
+      "id": "BASEFWLOG-FIG-295",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "295",
+      "title": "Reclaim Unit Handle Descriptor",
+      "section": "5.2.13.1.29",
+      "printed_pages": "295",
+      "pdf_pages": "321",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RUHT",
+        "FDP",
+        "NRG",
+        "RGIF",
+        "Reclaim Unit"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "d46234022f900d23de0c8b69d938e4d390866dc7670ac0e10074ae66e2a174f7"
+    },
+    {
+      "id": "BASEFWLOG-FIG-296",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "296",
+      "title": "Placement Identifier Format without Reclaim Group Identifier",
+      "section": "5.2.13.1.29",
+      "printed_pages": "295",
+      "pdf_pages": "321",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PHNDL",
+        "Reclaim Group"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "533558b5f7d65762037c6d5ff4998ba659926854b5e11c9f8aede679f9ed2c96"
+    },
+    {
+      "id": "BASEFWLOG-FIG-297",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "297",
+      "title": "Placement Identifier Format with a non-zero RGIF",
+      "section": "5.2.13.1.29",
+      "printed_pages": "296",
+      "pdf_pages": "322",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RGID",
+        "PHNDL",
+        "RGIF",
+        "NRG"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9f011610acf737bc40abd7da7efa5a59b2c7b8b3615f6ea2d8c6263fb0581661"
+    },
+    {
+      "id": "BASEFWLOG-FIG-298",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "298",
+      "title": "Reclaim Unit Handle Usage Log Page",
+      "section": "5.2.13.1.30",
+      "printed_pages": "296",
+      "pdf_pages": "322",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NRUH",
+        "FDP",
+        "Reclaim Unit"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "d23f158ea3cb2e89a9643a824760b6a61ebda5a667de8ac89595968f406b4249"
+    },
+    {
+      "id": "BASEFWLOG-FIG-299",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "299",
+      "title": "Reclaim Unit Handle Usage Descriptor",
+      "section": "5.2.13.1.30",
+      "printed_pages": "296-297",
+      "pdf_pages": "322-323",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "RUHA",
+        "Reclaim Unit"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "1236cd6fdc8063681429f7f8722d79c7b1a607934558c1e7436df4b3f9ff1efb"
+    },
+    {
+      "id": "BASEFWLOG-FIG-300",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "300",
+      "title": "FDP Statistics Log Page",
+      "section": "5.2.13.1.31",
+      "printed_pages": "297",
+      "pdf_pages": "323",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "HBMW",
+        "MBMW",
+        "MBE",
+        "FDP"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "8f6a815029e60f45af09579c9df19c5c3bda006d34c8aa6b08b725e32b9a05d7"
+    },
+    {
+      "id": "BASEFWLOG-FIG-301",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "301",
+      "title": "Command Dword 10 – Log Specific Field",
+      "section": "5.2.13.1.32",
+      "printed_pages": "298",
+      "pdf_pages": "324",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "FDPET",
+        "FDP",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "e9b46995df618747a2a52dd9955581ba75785214cc21085b1b2e13b04936848d"
+    },
+    {
+      "id": "BASEFWLOG-FIG-302",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "302",
+      "title": "FDP Events Log Page",
+      "section": "5.2.13.1.32",
+      "printed_pages": "298",
+      "pdf_pages": "324",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NUMFDPE",
+        "FDP",
+        "NUMFDPC"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "692c4421d272c3ddbf0e37e5cd9149dbb62c6e8042a7cc948d45deda2da982dd"
+    },
+    {
+      "id": "BASEFWLOG-FIG-303",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "303",
+      "title": "FDP Event",
+      "section": "5.2.13.1.32",
+      "printed_pages": "299-300",
+      "pdf_pages": "325-326",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ETYP",
+        "FDPEF",
+        "LV",
+        "NSIDV",
+        "PIV",
+        "PID",
+        "ETMSP",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "866299ec0b350467c09caed7793a304ebbdd6564a712d36e375ec5395be4f25f"
+    },
+    {
+      "id": "BASEFWLOG-FIG-304",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "304",
+      "title": "Manufacturer Default Configuration Status Log Page",
+      "section": "5.2.13.1.33",
+      "printed_pages": "301-302",
+      "pdf_pages": "327-328",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "MDCSV",
+        "MDCS",
+        "DCCS",
+        "DNCS",
+        "DSCS",
+        "RDCCS",
+        "RDNCS",
+        "RDSCS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "7ab16cab3abc7d048ae680d6af8b9b9524f799a5cee77382086707224ff25107"
+    },
+    {
+      "id": "BASEFWLOG-FIG-305",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "305",
+      "title": "Power Measurement Log Page",
+      "section": "5.2.13.1.34",
+      "printed_pages": "303-306",
+      "pdf_pages": "329-332",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VER",
+        "PMGN",
+        "PMA",
+        "PMT",
+        "PHDO",
+        "MIPWRTS",
+        "EPF",
+        "NCPDF"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "78bd438999df4a3e61ea23d42b622e5ffbd387999c5232cc2eea96a87a29ea78"
+    },
+    {
+      "id": "BASEFWLOG-FIG-306",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "306",
+      "title": "Power Histogram Descriptor",
+      "section": "5.2.13.1.34",
+      "printed_pages": "306",
+      "pdf_pages": "332",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PHBC",
+        "PHBLT",
+        "PWRS",
+        "PWRV",
+        "PMT",
+        "PHBS",
+        "PMC"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "3b4e1ccea50f76b81294a807029f6d91348cfb3d09d15a3e18df6b3159a46e9a"
+    },
+    {
+      "id": "BASEFWLOG-FIG-307",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "307",
+      "title": "Voltage Measurement Log Page",
+      "section": "5.2.13.1.35",
+      "printed_pages": "307-311",
+      "pdf_pages": "333-337",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VMGN",
+        "VMA",
+        "VMC",
+        "VSM",
+        "IVOLTS",
+        "VME",
+        "VSI",
+        "VSSS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "245b397e4c08d3245eb13545a5bf424d2a88f71998959d3ea263117b0d664a70"
+    },
+    {
+      "id": "BASEFWLOG-FIG-308",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "308",
+      "title": "Interval Voltage Measurement Descriptor",
+      "section": "5.2.13.1.35",
+      "printed_pages": "311",
+      "pdf_pages": "337",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "IVOLM",
+        "NCVM",
+        "VOLV",
+        "VME",
+        "VOLSS"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "248a15f782fe6fc0f597f803637d8a2770e31dbdac8d9430a1d4ebb7eae2b57a"
+    },
+    {
+      "id": "BASEFWLOG-FIG-309",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "309",
+      "title": "Sanitize Namespace Status List Log Specific Parameter Field",
+      "section": "5.2.13.1.36",
+      "printed_pages": "311-312",
+      "pdf_pages": "337-338",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NLT",
+        "NSID",
+        "CSTS.RDY",
+        "Namespace"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "5061d63c517f5056819cb921df1ceaa5415a8c54ab1b0f2092af74961b9b0a88"
+    },
+    {
+      "id": "BASEFWLOG-FIG-310",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "310",
+      "title": "Sanitize Namespace Status List Log Page",
+      "section": "5.2.13.1.36",
+      "printed_pages": "312",
+      "pdf_pages": "338",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "GENCTR",
+        "NUMNSID",
+        "NSID",
+        "Namespace"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "30f59ea42da683ef68e366a99f1c3ccc74c786fa511db78200a0e9ba69aab032"
+    },
+    {
+      "id": "BASEFWLOG-FIG-311",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "311",
+      "title": "Reservation Notification Log Page",
+      "section": "5.2.13.1.37",
+      "printed_pages": "313",
+      "pdf_pages": "339",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LPC",
+        "RNLPT",
+        "NALP",
+        "NSID",
+        "ID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "1d88fb81f9efc4d195fd81d9f760dd39371dcd963dc4e041c5c8bde7ba65759d"
+    },
+    {
+      "id": "BASEFWLOG-FIG-312",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "312",
+      "title": "Sanitize Status Log Page",
+      "section": "5.2.13.1.38",
+      "printed_pages": "314-319",
+      "pdf_pages": "340-345",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SPROG",
+        "OPC",
+        "SOS",
+        "SCDW10",
+        "ETO",
+        "ETBE",
+        "ETCE",
+        "ETODMM"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "209f43bc159df81e90a22a755477e9bca50714971be7102427e24cc5f0a9fc79"
+    },
+    {
+      "id": "BASEFWLOG-FIG-331",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "331",
+      "title": "Get Log Page – Command Specific Status Values",
+      "section": "5.2.13.3.6",
+      "printed_pages": "336",
+      "pdf_pages": "362",
+      "scope_entry_id": "BASE-FWLOG-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "Invalid Log Page",
+        "Invalid Controller Identifier",
+        "I/O Command Set Not Supported"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "16502a5286b21a10605ee7cb14c6e7a72cddccc28445eba5118146bf201eaf48"
+    },
+    {
+      "id": "BASEFWLOG-FIG-337",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "337",
+      "title": "Command Set Identifiers",
+      "section": "5.2.14.1",
+      "printed_pages": "340",
+      "pdf_pages": "366",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.9",
+        "5.2.13"
+      ],
+      "dependency_focus": {
+        "zh_tw": "§5.2.9 的正文指向 Figure 337，但 Figure 337 實際列的是 Command Set Identifier；firmware 欄位位於 Figure 338。",
+        "en": "Section 5.2.9 points to Figure 337, but Figure 337 lists Command Set Identifiers; the firmware fields are in Figure 338."
+      },
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "Command Set",
+        "Command"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "36543504e61af81bcfe056a799c59c4feb64c9b3610d80ba65bf45fc9097a840"
+    },
+    {
+      "id": "BASEFWLOG-FIG-338",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "340-359",
+      "pdf_pages": "366-385",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "3.11",
+        "5.2.9",
+        "5.2.10",
+        "5.2.13"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 firmware update 需要的 FR、FRMW／SMUD／FAWR、MTFA 與 FWUG；其餘 Identify Controller 欄位不展開。",
+        "en": "Use only FR, FRMW/SMUD/FAWR, MTFA, and FWUG for the firmware workflow; other Identify Controller fields are not expanded."
+      },
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VID",
+        "SSVID",
+        "SN",
+        "MN",
+        "FR",
+        "FRMW",
+        "SMUD",
+        "FAWR"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "1ba17452997adc0ac1f547a61b79e1a5d8d8436639de2748980eed78fd0a2a27"
+    },
+    {
+      "id": "BASEFWLOG-FIG-339",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "339",
+      "title": "Identify – Voltage Sensor Data Structure",
+      "section": "5.2.14.2.1",
+      "printed_pages": "383",
+      "pdf_pages": "409",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.35"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "IVMSR",
+        "VSRS",
+        "VSRV",
+        "VOLSS",
+        "PIT",
+        "PISL",
+        "PISV",
+        "VSEN1"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "8938d8f7f608f934b28dedc7916e9c45a3860a61c610f4d0302fbfc75b51baa6"
+    },
+    {
+      "id": "BASEFWLOG-FIG-346",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "346",
+      "title": "Identify – I/O Command Set Independent Identify Namespace Data Structure",
+      "section": "5.2.14.2.8",
+      "printed_pages": "391-394",
+      "pdf_pages": "417-420",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14.2.6"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NSFEAT",
+        "VWCNP",
+        "RMEDIA",
+        "UIDREUSE",
+        "NMIC",
+        "DISNS",
+        "SHRNS",
+        "RESCAP"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "bd07a5f7835f86fb1275b96b3b41906cbcb8f0deee96b1cd6fb63c0747748347"
+    },
+    {
+      "id": "BASEFWLOG-FIG-347",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "347",
+      "title": "UUID List",
+      "section": "5.2.14.2.14",
+      "printed_pages": "396",
+      "pdf_pages": "422",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "3.11.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "用於 §3.11.1 的 UUID list slot 穩定性與不得縮短清單的規則。",
+        "en": "Used for the UUID-list slot-stability and no-shortening rules in section 3.11.1."
+      },
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "UUID1",
+        "UUID2",
+        "UUID126",
+        "UUID127",
+        "UUID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "2d7ab8257d6426d0f917989f76864d7b4d8ebc7c82043b0de32b406f8e1718f3"
+    },
+    {
+      "id": "BASEFWLOG-FIG-348",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "348",
+      "title": "UUID List Entry",
+      "section": "5.2.14.2.14",
+      "printed_pages": "396",
+      "pdf_pages": "422",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "3.11.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "用於判斷 UUID list entry 是空值、NVMe Invalid UUID 或有效 UUID。",
+        "en": "Used to distinguish an empty entry, the NVMe Invalid UUID, and a valid UUID."
+      },
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ULEH",
+        "IDASSOC",
+        "UUID",
+        "ID",
+        "RFC"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "0c02b18252e33296e70ab511317672422e9856ce30e6c91780e9245d53633c3d"
+    },
+    {
+      "id": "BASEFWLOG-FIG-448",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "448",
+      "title": "Namespace Management – Data Structure for Create",
+      "section": "5.2.25",
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14.2.6"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SIOCS",
+        "VS",
+        "RDNCS",
+        "CSS",
+        "DNCS",
+        "Namespace"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "837c3baf7b6f030e78fc84a841f242f2e4022276cd1b8fe97a5ce562efd649d9"
+    },
+    {
+      "id": "BASEFWLOG-FIG-451",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "451",
+      "title": "Sanitize – Command Dword 10",
+      "section": "5.2.26",
+      "printed_pages": "450-451",
+      "pdf_pages": "476-477",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14.2.9",
+        "5.2.13.1.38"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "PREQ",
+        "EMVS",
+        "NDAS",
+        "OIPBP",
+        "OWPASS",
+        "AUSE",
+        "SANACT",
+        "IEEE"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "b85cc4f1d0bbd2ccddc822c74bf4a1dd7fe11e7259b70a82ace1e761bf63f532"
+    },
+    {
+      "id": "BASEFWLOG-FIG-452",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "452",
+      "title": "Sanitize – Command Dword 11",
+      "section": "5.2.26",
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14.2.9",
+        "5.2.13.1.38"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "OVRPAT",
+        "SCT",
+        "Command"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c4e120cd331295f9aef6b5c10433192cc3d9d2e35e95480d4ee6754cbec80703"
+    },
+    {
+      "id": "BASEFWLOG-FIG-466",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Set Features – Feature Identifiers",
+      "section": "5.2.30",
+      "printed_pages": "457-459",
+      "pdf_pages": "483-485",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.18"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ID",
+        "MR",
+        "UUID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "7b037ac8c99263031f6c25e220ddf5bd9a42bf02e1b3ad782035c094280b617e"
+    },
+    {
+      "id": "BASEFWLOG-FIG-474",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "474",
+      "title": "Asynchronous Event Configuration – Command Dword 11",
+      "section": "5.2.30.1.6",
+      "printed_pages": "466-468",
+      "pdf_pages": "492-494",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "3.11"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Firmware Activation Notices enable bit，對應 §3.11 的 activation-starting event。",
+        "en": "Use only the Firmware Activation Notices enable bit associated with the activation-starting event in section 3.11."
+      },
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "ZDCN",
+        "RLCCN",
+        "ANSAN",
+        "RGRP0",
+        "RASSN",
+        "TTHRY",
+        "NNSSHDN",
+        "EGEALCN"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "511605924d9639c5fa56f3a7a806c73ab1579214af51b7a5a9f8d274ade2ed85"
+    },
+    {
+      "id": "BASEFWLOG-FIG-480",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "480",
+      "title": "Timestamp – Data Structure for Get Features",
+      "section": "5.2.30.1.8",
+      "printed_pages": "470-471",
+      "pdf_pages": "496-497",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.14"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "TSTMP",
+        "TSTMPS",
+        "TSTMPO",
+        "SYNC"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "672f9e5fe5aadeb630106e82cf3eb7cad33c0dcfd6169d6986d111142daeade6"
+    },
+    {
+      "id": "BASEFWLOG-FIG-512",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "512",
+      "title": "Personality Identifier List",
+      "section": "5.2.30.1.25",
+      "printed_pages": "485",
+      "pdf_pages": "511",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.28"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "Manufacturing Default",
+        "Security",
+        "Lockdown Persistence",
+        "All Personalities"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "fd6c108d8f4a4b98962fd3e70cd5792b1b2697256fba5ec4c884e1dda85305bc"
+    },
+    {
+      "id": "BASEFWLOG-FIG-527",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "527",
+      "title": "Start Voltage Measurements Data Structure",
+      "section": "5.2.30.1.30",
+      "printed_pages": "502",
+      "pdf_pages": "528",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.35"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "LVOLTA",
+        "VMLT",
+        "VSSEL",
+        "SVMT",
+        "LVOLT",
+        "LOVT",
+        "LUVT",
+        "VOLSS"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "e0ba53fdbc91ea5647e151434c8e12e71bd36f743656c4335465990c2282796c"
+    },
+    {
+      "id": "BASEFWLOG-FIG-656",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "656",
+      "title": "Management Operation Specific – Reclaim Unit Handle Update Operation",
+      "section": "7.4.1",
+      "printed_pages": "570",
+      "pdf_pages": "596",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.29"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "NPID",
+        "MAXPIDS",
+        "NRG",
+        "NRUH",
+        "Placement Identifier"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEFWLOG-FIG-745",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "745",
+      "title": "Power Measurement Types",
+      "section": "8.1.20",
+      "printed_pages": "678",
+      "pdf_pages": "704",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.34"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "0h",
+        "NVM subsystem total power",
+        "CSTS.SHST"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "9e91f06a552b61625aa4fc172a1bbef74844ad02d742d48a84e960930df05142"
+    },
+    {
+      "id": "BASEFWLOG-FIG-746",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "746",
+      "title": "Power Measurement and Reporting Capabilities",
+      "section": "8.1.20",
+      "printed_pages": "678",
+      "pdf_pages": "704",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.34"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "IPM",
+        "SMART",
+        "OLEC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "ab73ea70749c0bd814d559604d5729c1733656caed7f5470fb241d7c2c0cb46a"
+    },
+    {
+      "id": "BASEFWLOG-FIG-747",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "747",
+      "title": "Power Scale",
+      "section": "8.1.20",
+      "printed_pages": "679",
+      "pdf_pages": "705",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.34"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "01b = 0.0001 W",
+        "10b = 0.01 W"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEFWLOG-FIG-772",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "772",
+      "title": "Sanitize Operation State Machine",
+      "section": "8.1.27.4",
+      "printed_pages": "720",
+      "pdf_pages": "746",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.38"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "SANS",
+        "Idle",
+        "Restricted Processing",
+        "Unrestricted Processing",
+        "Media Verification"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEFWLOG-FIG-782",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "782",
+      "title": "UUID Index Field",
+      "section": "8.1.31.2",
+      "printed_pages": "738",
+      "pdf_pages": "764",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "UIDX",
+        "UUID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "6eb0080a14ae57261bd571ff4a0fef13025fc3c19e777166a46d05734a21ab44"
+    },
+    {
+      "id": "BASEFWLOG-FIG-783",
+      "report_id": "base-admin-fw-logs",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "783",
+      "title": "Voltage Sensors",
+      "section": "8.1.32",
+      "printed_pages": "740",
+      "pdf_pages": "766",
+      "scope_entry_id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.35"
+      ],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "introduced_in": [
+        "basefwlog-tutorial-html",
+        "basefwlog-detailed-html",
+        "basefwlog-zh-md",
+        "basefwlog-en-md"
+      ],
+      "key_items": [
+        "VSEN1",
+        "VSEN2",
+        "VSEN3",
+        "VSEN4"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   ]
 }

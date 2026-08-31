@@ -21,17 +21,59 @@ SOURCE_FILES = {
     "pcie": "NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf",
 }
 RANGES = {
-    "base-ch1-2": ("base", 27, 63),
-    "base-ch3": ("base", 64, 164),
-    "base-ch4": ("base", 165, 201),
-    "pcie-transport-1.4": ("pcie", 1, 48),
+    "base-ch1-2": ("base", [(27, 63)]),
+    "base-ch3": ("base", [(64, 164)]),
+    "base-ch4": ("base", [(165, 201)]),
+    "pcie-transport-1.4": ("pcie", [(1, 48)]),
+    # §3.11, §5.2.9, §5.2.10, the common/PCIe portions of §5.2.13,
+    # plus the exact pages containing Figures referenced by those sections.
+    # The broad 238-362 span is local evidence only; publication scope is
+    # controlled separately and excludes §5.2.13.3 and Figure 257.
+    "base-admin-fw-logs": (
+        "base",
+        [
+            (111, 111),
+            (136, 137),
+            (161, 164),
+            (166, 168),
+            (171, 172),
+            (180, 181),
+            (212, 212),
+            (228, 232),
+            (234, 234),
+            (238, 345),
+            (362, 362),
+            (366, 366),
+            (380, 380),
+            (383, 383),
+            (385, 385),
+            (409, 409),
+            (417, 420),
+            (421, 422),
+            (473, 473),
+            (476, 477),
+            (483, 485),
+            (492, 494),
+            (496, 497),
+            (511, 511),
+            (528, 528),
+            (596, 596),
+            (704, 705),
+            (746, 746),
+            (764, 764),
+            (766, 766),
+        ],
+    ),
 }
 FIGURE = re.compile(r"^Figure\s+(\d+):\s*(.+)$", re.IGNORECASE)
+TABLE = re.compile(r"^Table\s+(\d+):\s*(.+)$", re.IGNORECASE)
 SECTION = re.compile(r"^(\d+(?:\.\d+){0,5})\s+(.+)$")
 
 
 def clean_line(line: str) -> str:
-    return " ".join(line.replace("\u00ad", "").split())
+    return " ".join(
+        line.replace("\u00ad", "").replace("\ufffdV", "-").split()
+    )
 
 
 def flatten_outline(reader: PdfReader) -> list[dict[str, object]]:
@@ -79,14 +121,20 @@ def main() -> int:
     outlines = {key: flatten_outline(reader) for key, reader in readers.items()}
     inventory: dict[str, object] = {"reports": {}}
 
-    for report_id, (source_key, first_page, last_page) in RANGES.items():
+    for report_id, (source_key, page_ranges) in RANGES.items():
         reader = readers[source_key]
         page_records = []
         text_parts = []
         current_section = ""
         figures = []
+        tables = []
         sections = []
-        for pdf_page in range(first_page, last_page + 1):
+        pdf_pages = [
+            page
+            for first_page, last_page in page_ranges
+            for page in range(first_page, last_page + 1)
+        ]
+        for pdf_page in pdf_pages:
             text = reader.pages[pdf_page - 1].extract_text() or ""
             text_parts.append(f"\n===== PDF PAGE {pdf_page} =====\n{text}")
             printed_page = pdf_page - 26 if source_key == "base" else pdf_page
@@ -125,43 +173,76 @@ def main() -> int:
                             "pdf_page": pdf_page,
                         }
                     )
+                table_match = TABLE.match(line)
+                if table_match:
+                    if re.search(r"\.{4,}", table_match.group(2)):
+                        continue
+                    tables.append(
+                        {
+                            "number": int(table_match.group(1)),
+                            "caption": caption_only(table_match.group(2)),
+                            "section": current_section,
+                            "printed_page": printed_page,
+                            "pdf_page": pdf_page,
+                        }
+                    )
             page_records.append(
                 {"printed_page": printed_page, "pdf_page": pdf_page, "text_length": len(text)}
             )
         (args.output_dir / f"{report_id}.txt").write_text(
             "".join(text_parts), encoding="utf-8"
         )
-        deduplicated = {}
-        for figure in figures:
-            number = figure["number"]
-            if number not in deduplicated:
-                deduplicated[number] = {
-                    **figure,
-                    "printed_pages": str(figure["printed_page"]),
-                    "pdf_pages": str(figure["pdf_page"]),
-                }
-                continue
-            item = deduplicated[number]
-            first_printed = min(int(item["printed_pages"].split("-")[0]), figure["printed_page"])
-            last_printed = max(int(item["printed_pages"].split("-")[-1]), figure["printed_page"])
-            first_pdf = min(int(item["pdf_pages"].split("-")[0]), figure["pdf_page"])
-            last_pdf = max(int(item["pdf_pages"].split("-")[-1]), figure["pdf_page"])
-            item["printed_pages"] = (
-                str(first_printed) if first_printed == last_printed else f"{first_printed}-{last_printed}"
-            )
-            item["pdf_pages"] = str(first_pdf) if first_pdf == last_pdf else f"{first_pdf}-{last_pdf}"
+        def deduplicate(records: list[dict[str, object]]) -> list[dict[str, object]]:
+            deduplicated: dict[int, dict[str, object]] = {}
+            for record in records:
+                number = int(record["number"])
+                if number not in deduplicated:
+                    deduplicated[number] = {
+                        **record,
+                        "printed_pages": str(record["printed_page"]),
+                        "pdf_pages": str(record["pdf_page"]),
+                    }
+                    continue
+                item = deduplicated[number]
+                first_printed = min(
+                    int(str(item["printed_pages"]).split("-")[0]),
+                    int(record["printed_page"]),
+                )
+                last_printed = max(
+                    int(str(item["printed_pages"]).split("-")[-1]),
+                    int(record["printed_page"]),
+                )
+                first_pdf = min(
+                    int(str(item["pdf_pages"]).split("-")[0]),
+                    int(record["pdf_page"]),
+                )
+                last_pdf = max(
+                    int(str(item["pdf_pages"]).split("-")[-1]),
+                    int(record["pdf_page"]),
+                )
+                item["printed_pages"] = (
+                    str(first_printed)
+                    if first_printed == last_printed
+                    else f"{first_printed}-{last_printed}"
+                )
+                item["pdf_pages"] = (
+                    str(first_pdf) if first_pdf == last_pdf else f"{first_pdf}-{last_pdf}"
+                )
+            return list(deduplicated.values())
+
         inventory["reports"][report_id] = {
             "source": source_key,
-            "pdf_pages": f"{first_page}-{last_page}",
+            "pdf_page_ranges": [f"{first}-{last}" for first, last in page_ranges],
             "pages": page_records,
             "sections": sections,
-            "figures": list(deduplicated.values()),
+            "figures": deduplicate(figures),
+            "tables": deduplicate(tables),
         }
 
     (args.output_dir / "inventory.json").write_text(
         json.dumps(inventory, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    print(f"Extracted four report ranges to {args.output_dir}")
+    print(f"Extracted {len(RANGES)} report evidence sets to {args.output_dir}")
     return 0
 
 

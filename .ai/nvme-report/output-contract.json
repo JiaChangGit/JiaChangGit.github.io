@@ -170,6 +170,48 @@
       "parity_group": "pcie14-bilingual",
       "purpose": "英文 GitHub Pages 與 PPT 內容來源",
       "required_source_ids": ["NVME-PCIE-TRANSPORT-1.4", "NVME-BASE-2.4"]
+    },
+    {
+      "id": "basefwlog-tutorial-html",
+      "report_id": "base-admin-fw-logs",
+      "path": "DOCS/nvme-spec-report/base-admin-fw-logs/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basefwlog-detailed-html",
+      "report_id": "base-admin-fw-logs",
+      "path": "DOCS/nvme-spec-report/base-admin-fw-logs/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文詳細 Spec 版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basefwlog-zh-md",
+      "report_id": "base-admin-fw-logs",
+      "path": "_posts/2026-08-31-nvme-base-firmware-log-admin-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basefwlog-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basefwlog-en-md",
+      "report_id": "base-admin-fw-logs",
+      "path": "_posts/2026-08-31-nvme-base-firmware-log-admin-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basefwlog-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
     }
   ],
   "source_markers": {
@@ -204,6 +246,9 @@
     "base4-detailed-html",
     "base4-zh-md",
     "base4-en-md",
+    "basefwlog-detailed-html",
+    "basefwlog-zh-md",
+    "basefwlog-en-md",
     "pcie14-detailed-html",
     "pcie14-zh-md",
     "pcie14-en-md"

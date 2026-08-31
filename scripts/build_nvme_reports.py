@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build four NVMe reports from the local, gitignored source inventory."""
+"""Build NVMe reports from tracked scope, claims, and compact PDF evidence."""
 
 from __future__ import annotations
 
@@ -25,8 +25,7 @@ SOURCES = {
 
 
 def page_shift(value: str, delta: int) -> str:
-    values = [int(item) + delta for item in value.split("-")]
-    return str(values[0]) if len(values) == 1 else f"{values[0]}-{values[-1]}"
+    return re.sub(r"\d+", lambda match: str(int(match.group()) + delta), value)
 
 
 def c(key, section, pages, zh, en, keyword="none", source="NVME-BASE-2.4"):
@@ -123,6 +122,45 @@ REPORTS = {
             c("UTF8", "4.8", "175", "處理 UTF-8 輸入時要依規格流程驗證編碼、禁止的 code point 與截斷情況；不可把任意 byte sequence 當成有效字串。", "UTF-8 input processing validates encoding, prohibited code points, and truncation using the specified flow; an arbitrary byte sequence is not automatically a valid string."),
         ],
     },
+    "base-admin-fw-logs": {
+        "prefix": "BASEFWLOG",
+        "title_zh": "NVMe Base 2.4：Firmware Update、Firmware Admin Commands 與 Get Log Page",
+        "title_en": "NVMe Base 2.4: Firmware Updates, Firmware Admin Commands, and Get Log Page",
+        "source_id": "NVME-BASE-2.4",
+        "scope_entry": "BASE-FWLOG-INCLUDE",
+        "date": "2026-08-31",
+        "verified_date": "2026-08-31",
+        "range": "§3.11、§5.2.9、§5.2.10、§5.2.13.1-§5.2.13.2、§5.2.13.4；主範圍文件頁 135-138、202-206、212-319、336；另納入正文直接引用的相依 Figure",
+        "range_en": "§3.11, §5.2.9, §5.2.10, §5.2.13.1-§5.2.13.2, and §5.2.13.4; main printed pages 135-138, 202-206, 212-319, and 336, plus directly referenced Figure dependencies",
+        "diagram": ["Image Download", "Firmware Commit", "Activate / Reset", "Get Log Page"],
+        "diagram_note_zh": "host 以 OFST／NUMD 分段下載 image，Firmware Commit 驗證並選擇 slot／activation action；完成 reset 或立即 activation 後，再以 log page 與 asynchronous event 狀態核對結果。",
+        "diagram_note_en": "The host downloads image portions using OFST and NUMD, Firmware Commit validates the image and selects a slot and activation action, and log pages plus asynchronous-event state verify the result after reset or immediate activation.",
+        "claims": [
+            c("FW-RESET", "3.11", "135-136", "需要 reset 的 firmware update 依序為：以一筆以上 Firmware Image Download command 傳送 image、以 Firmware Commit 驗證並放入 firmware slot、執行能觸發指定 activation 的 Controller Level Reset，最後重新初始化 controller 與 I/O queues。", "A reset-based firmware update downloads the image with one or more Firmware Image Download commands, validates and places it in a firmware slot with Firmware Commit, performs a Controller Level Reset that can activate it, and then reinitializes the controller and I/O queues."),
+            c("FW-IMMEDIATE", "3.11", "136-137", "Commit Action 011b 表示立即 activation。若 activation 開始，受影響 controller 可在 notice 已啟用時送出 Firmware Activation Starting event；Firmware Commit 在 activation 成功或失敗前保持進行中，不是 background operation。", "Commit Action 011b requests immediate activation. Once activation starts, affected controllers may report Firmware Activation Starting when the notice is enabled; Firmware Commit remains in progress until activation succeeds or fails and is not a background operation.", "may"),
+            c("FW-FAILURE", "3.11", "136-137", "立即 activation 若需要其他 reset 或超過 MTFA，controller 以對應 command-specific status 結束；若 image 無法成功載入，controller 必須（shall）回復到最近啟用 slot 的 image 或可用的 baseline read-only image，並以 Firmware Image Load Error event 回報。", "If immediate activation requires another reset or exceeds MTFA, the controller completes with the corresponding command-specific status. If the image cannot be loaded, the controller shall revert to the image in the most recently activated slot or an available baseline read-only image and report Firmware Image Load Error.", "shall"),
+            c("FW-SEQUENCE", "3.11", "137", "host 不宜（should not）重疊 firmware／boot-partition update sequence，且同一 sequence 宜使用同一 controller 或 Management Endpoint。Firmware Commit 完成後的第一筆新 download，以及 commit 完成前發生的 reset，都必須（shall）使 controller 丟棄尚存的已下載部分。", "The host should not overlap firmware or boot-partition update sequences and should use one controller or Management Endpoint for a sequence. The first new download after Firmware Commit, and a reset before commit completion, shall cause remaining downloaded portions to be discarded.", "shall"),
+            c("UUID-LIST", "3.11.1", "137-138", "firmware revision 間的 UUID list 宜維持 slot 穩定：新增項目放在尾端，移除項目以 NVMe Invalid UUID 留在原 slot，既有 invalid slot 不再填入有效 UUID，且不縮短清單。若下載 image 以有效 UUID 取代 invalid UUID 或另一個有效 UUID，controller 必須（shall）要求 reset，所有受影響 controller 都必須一起 reset。", "UUID-list slots should remain stable across firmware revisions: append new UUIDs, replace removed UUIDs with the NVMe Invalid UUID in place, do not reuse an invalidated slot, and do not shorten the list. If a downloaded image replaces an invalid or different valid UUID with a valid UUID, the controller shall require reset and all affected controllers shall be reset.", "shall"),
+            c("COMMIT-PURPOSE", "5.2.9", "202-203", "Firmware Commit 驗證最後下載的 image，將它放入指定 firmware slot，並依 Commit Action 決定只放置、在後續 reset activation，或立即 activation。domain 內的 controller 共用 firmware slots 與相同 firmware image。", "Firmware Commit validates the last downloaded image, places it in a firmware slot, and uses Commit Action to select placement only, activation on a later reset, or immediate activation. Controllers in one domain share firmware slots and the same firmware image."),
+            c("COMMIT-CDW10", "5.2.9", "203", "CDW10 以 BPID、Commit Action（CA）與 Firmware Slot（FS）描述操作。CA 000b-011b 用於 firmware image；110b-111b 用於 Boot Partition。FS=0h 時，controller 必須（shall）在 slot 1-7 中選擇可用 slot。", "CDW10 describes the operation through BPID, Commit Action (CA), and Firmware Slot (FS). CA values 000b-011b operate on firmware images, while 110b-111b operate on Boot Partitions. With FS=0h, the controller shall choose an available slot from 1 through 7.", "shall"),
+            c("COMMIT-MUD", "5.2.9.1", "203-204", "Firmware Commit CQE.DW0 的 Multiple Update Detected（MUD）可指出 Management Endpoint 或 Admin Submission Queue 偵測到重疊 update sequence；若 Identify Controller 的 SMUD=0，MUD 必須（shall）為 00b。", "Firmware Commit CQE DW0 uses Multiple Update Detected (MUD) to report overlap detected through a Management Endpoint or Admin Submission Queue. If Identify Controller SMUD is zero, MUD shall be 00b.", "shall"),
+            c("COMMIT-STATUS", "5.2.9.1", "204-205", "Firmware Commit status 需分開判斷 image／slot 無效、需要 Conventional／NVM Subsystem／Controller Level Reset、超過 MTFA、activation 被禁止、range 重疊與 Boot Partition write lock；成功 commit 不代表 image 已在當下 activation。", "Firmware Commit status distinguishes invalid image or slot, required Conventional/NVM Subsystem/Controller Level Reset, MTFA violation, prohibited activation, overlapping ranges, and Boot Partition write lock. A successful commit does not necessarily mean the image is already active."),
+            c("DOWNLOAD-RANGE", "5.2.10", "205-206", "Firmware Image Download 以 NUMD 與 OFST 定義 0's-based dword range；image 可分段且一般可不依序送出，但 Boot Partition update 必須（shall）依序。host 宜（should）避免 range 重疊，並符合 FWUG 的 alignment 與 granularity。", "Firmware Image Download defines a zero-based dword range with NUMD and OFST. Firmware-image portions may arrive out of order, but Boot Partition portions shall be ordered. The host should avoid overlapping ranges and satisfy FWUG alignment and granularity.", "shall"),
+            c("DOWNLOAD-FIELDS", "5.2.10", "205-206", "DPTR 指向本次 portion，CDW10.NUMD 指定 dword 數量減一，CDW11.OFST 指定距 image 起點的 dword offset；包含 image 起點的 portion 必須（shall）使用 OFST=0h。Firmware Image Download 本身不 activation image。", "DPTR points to the portion, CDW10.NUMD encodes the dword count minus one, and CDW11.OFST encodes the dword offset from the image start. The portion containing the image start shall use OFST=0h. Firmware Image Download does not activate the image.", "shall"),
+            c("LOG-COMMAND", "5.2.13", "212-215", "Get Log Page 使用 DPTR 與 CDW10-CDW14。核心 selector／length 欄位為 LID、LSP、RAE、NUMDL／NUMDU、LSI、LPOL／LPOU、CSI、OT 與 UIDX；未由指定 log page 定義的 command-specific 欄位維持 reserved 或依 Figure 208 的規則忽略。", "Get Log Page uses DPTR and CDW10-CDW14. Its main selector and length fields are LID, LSP, RAE, NUMDL/NUMDU, LSI, LPOL/LPOU, CSI, OT, and UIDX; command-specific fields not defined by the selected log page remain reserved or are ignored as specified by Figure 208."),
+            c("LOG-LENGTH", "5.2.13", "213-215", "NUMDL 與 NUMDU 組成 0's-based transfer length。支援 log page offset 時，byte offset 必須（shall）對所有 log page 可用；只有 Supported Log Pages 對該 LID 回報 IOS=1 時才能使用 index offset（OT=1）。超出 log page 或 entry 數量的 offset 必須以 Invalid Field in Command 結束。", "NUMDL and NUMDU form a zero-based transfer length. When log-page offsets are supported, byte offsets shall work for every log page; index offsets (OT=1) are permitted only when Supported Log Pages reports IOS=1 for that LID. An offset beyond the log page or entry count shall complete with Invalid Field in Command.", "shall"),
+            c("LOG-RAE", "5.2.13", "213", "RAE=0 時，成功完成 Get Log Page 會清除對應 asynchronous event；RAE=1 則保留。若 command 未成功完成，controller 必須（shall）保留 event。與 asynchronous event 無關的 log page，host 通常宜（should）把 RAE 清為 0。", "With RAE=0, a successful Get Log Page clears the corresponding asynchronous event; RAE=1 retains it. If the command does not complete successfully, the controller shall retain the event. For a log page unrelated to asynchronous events, the host should normally clear RAE.", "shall"),
+            c("LOG-SCOPE", "5.2.13.1", "215-217", "Figure 209 同時定義 LID、CSI 使用方式、資料 scope 與 reference section。NVM subsystem、domain、controller、namespace 的 scope 不可互換；對 subsystem 或 controller scope 的 log page，NSID 除 0h／FFFFFFFFh 外必須（shall）以 Invalid Field in Command 結束。", "Figure 209 defines each LID together with CSI usage, data scope, and reference section. NVM-subsystem, domain, controller, and namespace scopes are not interchangeable. For subsystem- or controller-scoped log pages, an NSID other than 0h or FFFFFFFFh shall complete with Invalid Field in Command.", "shall"),
+            c("LOG-SUPPORT", "5.2.13.1.1", "217-218", "Supported Log Pages（LID 00h）按 command submission interface 回報每個 LID 的支援與效果。LID Supported and Effects data structure 的 SUPP、IOS 與其他 attribute 必須先配合 controller type、I/O Command Set 與 UUID selection 狀態解讀。", "Supported Log Pages (LID 00h) reports support and effects for each LID on the interface that received the command. SUPP, IOS, and the other LID Supported and Effects attributes are interpreted together with controller type, I/O Command Set, and UUID-selection state."),
+            c("LOG-OPERATIONS", "5.2.13.1.2-5.2.13.1.13", "218-244", "operational log pages 分別處理 Error Information、SMART／Health、Firmware Slot、namespace change、command effects、device self-test、telemetry、Endurance Group、predictable latency 與 ANA。parser 必須先依 Figure 209 決定 scope，再依各 log page header 的 entry count／generation number／data area 邊界解析。", "Operational log pages cover Error Information, SMART/Health, Firmware Slot, namespace change, command effects, device self-test, telemetry, Endurance Group, predictable latency, and ANA. A parser first resolves scope from Figure 209, then follows each log page's header, entry count or generation number, and data-area boundaries."),
+            c("PERSISTENT-EVENT", "5.2.13.1.14", "244-266, 268-270", "Persistent Event Log 由 log header、event header 與 event-specific data 組成，LSP 控制 establish／read／release context。event length、header length、generation number 與 context identifier 都要先驗證，再依 Event Type 解碼；本報告只保留通用與 PCIe 可用 event。", "The Persistent Event Log consists of a log header, event headers, and event-specific data, with LSP controlling establish/read/release context operations. Validate event length, header length, generation number, and context identifier before decoding Event Type. This report retains only common and PCIe-applicable events."),
+            c("LOG-CAPACITY-FDP", "5.2.13.1.15-5.2.13.1.33", "270-301", "後段 common log pages 涵蓋 Endurance Group event、Media Unit、capacity configuration、Feature／NVMe-MI effects、lockdown、Boot Partition、management／reachability、device personality 與 FDP。這些資料結構使用不同的 identifier、descriptor count 與 variable-length array，不能共用固定 parser。", "Later common log pages cover Endurance Group events, Media Units, capacity configuration, Feature/NVMe-MI effects, lockdown, Boot Partition, management/reachability, device personality, and FDP. Their identifiers, descriptor counts, and variable-length arrays differ and cannot share one fixed parser."),
+            c("LOG-POWER-SANITIZE", "5.2.13.1.34-5.2.13.1.38", "302-319", "Power Measurement、Voltage Measurement、Sanitize Namespace Status List、Reservation Notification 與 Sanitize Status 各自定義量測 scale、sensor／target selector、generation 或 state 欄位。量測值必須先套用對應 scale；sanitize 狀態必須配合 target 與 state machine 解讀。", "Power Measurement, Voltage Measurement, Sanitize Namespace Status List, Reservation Notification, and Sanitize Status define their own measurement scale, sensor or target selector, generation, and state fields. Apply the matching scale before interpreting measurements and combine sanitize status with its target and state machine."),
+            c("PCIE-LOGS", "5.2.13.2", "319", "§5.2.13.2 明確指出 memory-based transport model 沒有專屬 log page；PCIe controller 使用 §5.2.13.1 的 common log pages 與各自 capability／scope 規則。", "Section 5.2.13.2 states that the memory-based transport model has no transport-specific log page; a PCIe controller uses the common log pages in section 5.2.13.1 with their capability and scope rules."),
+            c("LOG-COMPLETION", "5.2.13.4", "336", "Get Log Page 完成後在 Admin Completion Queue 回報結果；command-specific status 區分 Invalid Log Page、Invalid Controller Identifier 與 I/O Command Set Not Supported。保留或未支援 LID 以 Invalid Log Page 回報。", "Get Log Page reports completion on the Admin Completion Queue. Command-specific status distinguishes Invalid Log Page, Invalid Controller Identifier, and I/O Command Set Not Supported. A reserved or unsupported LID completes with Invalid Log Page."),
+            c("XREF-337", "5.2.9, 5.2.14.1-5.2.14.2.1", "202, 340", "來源 §5.2.9 把 Firmware Revision 欄位指向 Figure 337；但 Figure 337 的標題與內容是 Command Set Identifiers，Firmware Revision（FR）實際列於 Figure 338。因本輪沒有額外 Errata，本報告保留此內部交叉引用差異並同時教學兩張 Figure，不自行改寫規格。", "Source section 5.2.9 points the Firmware Revision field to Figure 337, but Figure 337 is titled and populated as Command Set Identifiers; Firmware Revision (FR) appears in Figure 338. With no additional errata in scope, this report preserves the internal cross-reference discrepancy and teaches both Figures rather than silently rewriting the specification."),
+        ],
+    },
     "pcie-transport-1.4": {
         "prefix": "PCIE14",
         "title_zh": "NVMe over PCIe Transport 1.4：完整傳輸綁定",
@@ -165,6 +203,10 @@ POST_IMAGES = {
         "en": "posts/2026/cat_title.jpg",
     },
     "base-ch4": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "base-admin-fw-logs": {
         "zh": "posts/2026/dogMC_title.jpg",
         "en": "posts/2026/cat_title.jpg",
     },
@@ -212,6 +254,29 @@ CORE_TITLES = {
     "BASE4-IDENTIFIER": ("全域識別碼的範圍", "Scope of global identifiers"),
     "BASE4-LISTS": ("Controller／Namespace List", "Controller and Namespace Lists"),
     "BASE4-UTF8": ("UTF-8 輸入驗證", "UTF-8 input validation"),
+    "BASEFWLOG-FW-RESET": ("需要 reset 的 firmware update", "Reset-based firmware update"),
+    "BASEFWLOG-FW-IMMEDIATE": ("立即 activation", "Immediate activation"),
+    "BASEFWLOG-FW-FAILURE": ("activation 失敗與 fallback", "Activation failure and fallback"),
+    "BASEFWLOG-FW-SEQUENCE": ("update sequence 串行化", "Update-sequence serialization"),
+    "BASEFWLOG-UUID-LIST": ("UUID list 跨版本穩定性", "UUID-list stability across revisions"),
+    "BASEFWLOG-COMMIT-PURPOSE": ("Firmware Commit 的作用", "Purpose of Firmware Commit"),
+    "BASEFWLOG-COMMIT-CDW10": ("Commit Action、slot 與 BPID", "Commit Action, slot, and BPID"),
+    "BASEFWLOG-COMMIT-MUD": ("Multiple Update Detected", "Multiple Update Detected"),
+    "BASEFWLOG-COMMIT-STATUS": ("Firmware Commit status", "Firmware Commit status"),
+    "BASEFWLOG-DOWNLOAD-RANGE": ("download range 與順序", "Download ranges and ordering"),
+    "BASEFWLOG-DOWNLOAD-FIELDS": ("DPTR、NUMD 與 OFST", "DPTR, NUMD, and OFST"),
+    "BASEFWLOG-LOG-COMMAND": ("Get Log Page command 欄位", "Get Log Page command fields"),
+    "BASEFWLOG-LOG-LENGTH": ("transfer length 與 offset", "Transfer length and offsets"),
+    "BASEFWLOG-LOG-RAE": ("RAE 與 asynchronous event", "RAE and asynchronous events"),
+    "BASEFWLOG-LOG-SCOPE": ("LID 與資料 scope", "LIDs and data scope"),
+    "BASEFWLOG-LOG-SUPPORT": ("Supported Log Pages", "Supported Log Pages"),
+    "BASEFWLOG-LOG-OPERATIONS": ("operational log pages", "Operational log pages"),
+    "BASEFWLOG-PERSISTENT-EVENT": ("Persistent Event Log", "Persistent Event Log"),
+    "BASEFWLOG-LOG-CAPACITY-FDP": ("capacity、management 與 FDP logs", "Capacity, management, and FDP logs"),
+    "BASEFWLOG-LOG-POWER-SANITIZE": ("power、voltage 與 sanitize logs", "Power, voltage, and sanitize logs"),
+    "BASEFWLOG-PCIE-LOGS": ("PCIe 的 log page 適用方式", "Log-page applicability for PCIe"),
+    "BASEFWLOG-LOG-COMPLETION": ("Get Log Page completion", "Get Log Page completion"),
+    "BASEFWLOG-XREF-337": ("Figure 337／338 交叉引用差異", "Figure 337/338 cross-reference discrepancy"),
     "PCIE14-SCOPE": ("Transport 與 Base 的優先序", "Transport and Base precedence"),
     "PCIE14-CONVENTION": ("PCIe Reset 欄定義", "PCIe Reset-column convention"),
     "PCIE14-KEYWORDS": ("Transport 規範性用語", "Transport normative language"),
@@ -235,6 +300,7 @@ def artifact_ids(report_id: str) -> list[str]:
         "base-ch1-2": "base12",
         "base-ch3": "base3",
         "base-ch4": "base4",
+        "base-admin-fw-logs": "basefwlog",
         "pcie-transport-1.4": "pcie14",
     }[report_id]
     return [
@@ -266,6 +332,7 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     title = figure["title"]
     lower_title = title.lower()
     number = figure["number"]
+    is_fwlog = figure.get("report_id") == "base-admin-fw-logs"
     items = list(figure.get("key_items", []))
     item_text = ", ".join(items)
     first = items[0] if items else title
@@ -345,6 +412,46 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             example = (
                 f"For one reported condition, identify {first} first and then check "
                 f"{second} instead of decoding an isolated numeric value."
+            )
+        elif is_fwlog and "data pointer" in lower_title:
+            purpose = f"Defines how {title} identifies the destination or source buffer for this command."
+            reading = (
+                f"Resolve pointer type and address before checking transfer length and alignment. Evidence index: {item_text}."
+            )
+            example = (
+                f"Validate the pointer form represented by {first}, then confirm the boundary associated with {second} before starting the transfer."
+            )
+        elif is_fwlog and "log page" in lower_title:
+            purpose = f"Defines the returned log-page layout and selection context for {title}."
+            reading = (
+                f"Start with the fixed header and scope, validate counts or lengths, then walk entries or data areas in order. Evidence index: {item_text}."
+            )
+            example = (
+                f"Read {first} first, use {second} as an independent size or identity check, and stop before any unreturned byte."
+            )
+        elif is_fwlog and ("event" in lower_title or "logging requirements" in lower_title):
+            purpose = f"Defines the event record, event taxonomy, or logging condition represented by {title}."
+            reading = (
+                f"Resolve event type and record length before decoding event-specific data. Evidence index: {item_text}."
+            )
+            example = (
+                f"Identify {first}, validate the record boundary using {second}, and decode only the data defined for that event type."
+            )
+        elif is_fwlog and ("operation" in lower_title or "state machine" in lower_title):
+            purpose = f"Defines the operation or state progression represented by {title}."
+            reading = (
+                f"Follow request, state, transition condition, and completion in order. Evidence index: {item_text}."
+            )
+            example = (
+                f"Begin with {first}, move to the state associated with {second} only when the cited transition condition is satisfied."
+            )
+        elif is_fwlog and any(word in lower_title for word in (" types", " codes", " scale", " sensors")):
+            purpose = f"Defines the enumerated values, measurement scale, or sensor selection represented by {title}."
+            reading = (
+                f"Resolve the selector or code first, then apply its unit, scale, or reserved-value rule. Evidence index: {item_text}."
+            )
+            example = (
+                f"Decode {first}, then apply the interpretation selected by {second}; do not assign meaning to a reserved value."
             )
         elif any(word in lower_title for word in ("layout", "format", "definition", "descriptor", "field", "register", "values", "structure", "capabilit", "configuration space", "command dword")):
             purpose = f"Defines the concrete layout or value relationships for {title}."
@@ -532,6 +639,46 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             example = (
                 f"收到一筆狀態時先辨認 {first}，再檢查 {second}，不可脫離類別單看數值。"
             )
+        elif is_fwlog and "data pointer" in lower_title:
+            purpose = f"定義〈{title}〉如何指出本命令的來源或目的 buffer。"
+            reading = (
+                f"先判斷 pointer type 與 address，再核對 transfer length 和 alignment；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"先驗證 {first} 所代表的 pointer 形式，再核對 {second} 對應的邊界，通過後才開始 transfer。"
+            )
+        elif is_fwlog and "log page" in lower_title:
+            purpose = f"定義〈{title}〉的回傳配置與 selector／scope 上下文。"
+            reading = (
+                f"先讀固定 header 與 scope，驗證 count／length 後，再依序走訪 entry 或 data area；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"先讀 {first}，再以 {second} 作為獨立的大小或 identity 檢查點，且不得解析超過實際回傳的 byte。"
+            )
+        elif is_fwlog and ("event" in lower_title or "logging requirements" in lower_title):
+            purpose = f"定義〈{title}〉所表示的 event record、event 分類或記錄條件。"
+            reading = (
+                f"先判斷 Event Type 與 record length，再解 event-specific data；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"先辨認 {first}，以 {second} 驗證 record 邊界，再只解析該 Event Type 定義的資料。"
+            )
+        elif is_fwlog and ("operation" in lower_title or "state machine" in lower_title):
+            purpose = f"定義〈{title}〉所表示的 operation 或 state progression。"
+            reading = (
+                f"依序追蹤 request、state、transition condition 與 completion；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"從 {first} 開始，只有在引用條文的 transition condition 成立時，才移到 {second} 所對應的 state。"
+            )
+        elif is_fwlog and any(word in lower_title for word in (" types", " codes", " scale", " sensors")):
+            purpose = f"定義〈{title}〉中的列舉值、measurement scale 或 sensor selector。"
+            reading = (
+                f"先解 selector／code，再套用對應 unit、scale 或 reserved-value rule；來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"先解碼 {first}，再套用 {second} 選定的解讀方式；保留值不得自行賦義。"
+            )
         elif any(word in lower_title for word in ("layout", "format", "definition", "descriptor", "field", "register", "values", "structure", "capabilit", "configuration space", "command dword")):
             purpose = f"定義〈{title}〉的實際配置或數值關係。"
             reading = (
@@ -656,6 +803,22 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             if language == "en"
             else " 本報告只解釋 PCIe／memory-based 部分。"
         )
+    focus = figure.get("dependency_focus")
+    if figure.get("role") == "referenced_dependency":
+        references = ", ".join(f"§{item}" for item in figure.get("referenced_from", []))
+        if language == "en":
+            caveat += (
+                f" This Figure is a dependency referenced from {references}; only the "
+                "elements needed by the requested sections are taught here."
+            )
+            if focus:
+                caveat += " " + focus["en"]
+        else:
+            caveat += (
+                f" 這是 {references} 直接引用的範圍外相依 Figure；此處只教學指定章節需要的元素。"
+            )
+            if focus:
+                caveat += " " + focus["zh_tw"]
     if "Eve Diagram" in title:
         caveat += (
             ' The source caption spells "Eve"; the section context identifies a receiver eye. The caption is preserved for traceability.'
@@ -748,7 +911,7 @@ def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
             f"Figure {figure['number']}, \"{figure['title']}\": "
             f"{en_parts['purpose']} {en_parts['reading']}"
         ),
-        "scope_entry_id": report["scope_entry"],
+        "scope_entry_id": figure["scope_entry_id"],
         "source_keywords": list(figure.get("source_keywords", [])),
         "key_items": list(figure.get("key_items", [])),
         "evidence_digest": figure.get("evidence_digest", ""),
@@ -773,10 +936,15 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
         return "先驗證長度、alignment、type 與保留值，再沿 pointer 或 entry 順序解析。"
     if any(key in claim_id for key in ("MMIO", "DOORBELL", "CONFIG", "INTERRUPT", "POWER", "EOM")):
         return "先分辨欄位位於 PCI configuration space、MMIO register、host memory 或 log page。"
+    if any(key in claim_id for key in ("FW-", "COMMIT", "DOWNLOAD", "UUID")):
+        return "把 image portion、firmware slot、Commit Action 與 activation 所需 reset 分成四欄逐項核對。"
+    if "LOG-" in claim_id:
+        return "先用 LID 決定資料 scope，再核對 transfer length、offset type、RAE 與 log-specific header。"
     return {
         "base-ch1-2": "先確認概念位於規格家族、儲存階層或路徑層級，不把不同層級合併。",
         "base-ch3": "先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。",
         "base-ch4": "先定位資料結構的 byte／dword 邊界，再閱讀欄位條件。",
+        "base-admin-fw-logs": "先判斷目前位於 download、commit、activation 或 log verification 階段。",
         "pcie-transport-1.4": "先找 Base 的通用規則，再疊加 PCIe Transport 的專屬限制。",
     }[report_id]
 
@@ -786,6 +954,22 @@ def section_group(section: str) -> str:
         return section
     pieces = section.split(".")
     return ".".join(pieces[:2]) if len(pieces) > 1 else pieces[0]
+
+
+def figure_group(figure: dict) -> str:
+    if figure.get("role") == "referenced_dependency":
+        return "dependency"
+    return section_group(str(figure["section"]))
+
+
+def figure_group_label(group: str, language: str) -> str:
+    if group == "dependency":
+        return (
+            "Referenced Figure dependencies (outside the main section range)"
+            if language == "en"
+            else "引用相依 Figure（位於主章節範圍外）"
+        )
+    return f"§{group}"
 
 
 def anchor(value: str) -> str:
@@ -805,9 +989,20 @@ def render_html(
     label = "新手教學版" if tutorial else "詳細 Spec 版"
     figure_groups: list[str] = []
     for figure in figures:
-        group = section_group(str(figure["section"]))
+        group = figure_group(figure)
         if group not in figure_groups:
             figure_groups.append(group)
+    dependency_count = sum(
+        item.get("role") == "referenced_dependency" for item in figures
+    )
+    figure_policy = (
+        "<p><strong>Figure／Table 政策：</strong>不重製規格原圖；以下逐張說明用途、"
+        "讀法、條件與說明性範例。指定正文沒有引用任何編號 Table；"
+        "欄位表在本規格中以 Figure 編號。</p>"
+        if report_id == "base-admin-fw-logs"
+        else "<p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、"
+        "讀法、條件與說明性範例。欄位表雖以表格呈現，在本範圍的規格中仍以 Figure 編號。</p>"
+    )
 
     parts = [
         "<!doctype html>",
@@ -830,11 +1025,14 @@ def render_html(
         f"<p><strong>納入：</strong>{html.escape(report['range'])}。"
         "正文只保留 PCIe／memory-based 與通用 NVMe 內容；"
         "未納入主題不會出現在報告或 PPT。</p>",
-        "<p><strong>Figure 政策：</strong>不重製規格原圖；以下逐張說明用途、"
-        "讀法、條件與說明性範例。欄位表雖以表格呈現，"
-        "在本範圍的規格中仍以 Figure 編號。</p>",
+        figure_policy,
         f"<p><strong>完整度：</strong>本檔介紹 {len(figures)} 張納入範圍的 Figure。"
-        "100 分鐘口頭報告應以規格重點與必講 Figure 為主；其餘 Figure 作為附錄查閱，"
+        + (
+            f"其中 {dependency_count} 張位於主章節範圍外，但因正文直接引用而納入相依教學。"
+            if dependency_count
+            else ""
+        )
+        + "100 分鐘口頭報告應以規格重點與必講 Figure 為主；其餘 Figure 作為附錄查閱，"
         "但仍完整保留於本檔。</p>",
         "<table><thead><tr><th>keyword</th><th>台灣繁體中文</th>"
         "<th>強度</th></tr></thead><tbody>"
@@ -882,7 +1080,8 @@ def render_html(
             "<p>依 section 跳轉；每張 Figure 可個別展開，減少 iPad 長頁面捲動。</p>",
             "<ul>",
             *[
-                f'<li><a href="#section-{anchor(group)}">§{html.escape(group)}</a></li>'
+                f'<li><a href="#section-{anchor(group)}">'
+                f'{html.escape(figure_group_label(group, "zh"))}</a></li>'
                 for group in figure_groups
             ],
             "</ul></section>",
@@ -896,13 +1095,14 @@ def render_html(
     for figure in figures:
         item = figure_claims[int(figure["number"])]
         details = figure_explanation(figure, "zh")
-        group = section_group(str(figure["section"]))
+        group = figure_group(figure)
         if group != active_group:
             if active_group:
                 parts.append("</section>")
             active_group = group
             parts.append(
-                f'<section id="section-{anchor(group)}"><h3>§{html.escape(group)}</h3>'
+                f'<section id="section-{anchor(group)}"><h3>'
+                f'{html.escape(figure_group_label(group, "zh"))}</h3>'
             )
         figure_anchor = f"figure-{figure['number']}"
         parts.extend(
@@ -948,7 +1148,7 @@ def render_html(
             "</section>",
             '<section id="sources"><h2>來源與限制</h2>',
             *[f"<p>{html.escape(marker)}</p>" for marker in source_markers],
-            "<p>查證日期：2026-08-29。目前未納入其他 Errata、ECN、"
+            f"<p>查證日期：{html.escape(report.get('verified_date', '2026-08-29'))}。目前未納入其他 Errata、ECN、"
             "Technical Proposal、controller vendor 文件或未提供的 "
             "PCI Express Base Specification 原文；PCIe 原生語意只轉述"
             "本次來源明載的 NVMe-specific requirement。</p>",
@@ -967,12 +1167,13 @@ def frontmatter(
 ) -> str:
     lang = "en" if language == "en" else "zh-Hant-TW"
     image = POST_IMAGES[report_id][language]
+    report_date = REPORTS[report_id].get("date", "2026-08-28")
     return f"""---
 layout: post
 read_time: true
 show_date: true
 title: "{title}"
-date: 2026-08-28
+date: {report_date}
 description: "{description}"
 lang: {lang}
 img: {image}
@@ -1000,6 +1201,9 @@ def render_markdown(
         else "供 GitHub Pages 與 PPT 使用的 NVMe 規格導讀。"
     )
     fence = chr(96) * 3
+    dependency_count = sum(
+        item.get("role") == "referenced_dependency" for item in figures
+    )
     out = [
         frontmatter(report_id, title, description, language),
         f"# {title}",
@@ -1031,11 +1235,11 @@ def render_markdown(
         [
             "",
             (
-                "Verification date: 2026-08-29. No additional errata, ECNs, "
+                f"Verification date: {report.get('verified_date', '2026-08-29')}. No additional errata, ECNs, "
                 "Technical Proposals, controller-vendor documents, or source text "
                 "from the external PCI Express Base Specification are included."
                 if english
-                else "查證日期：2026-08-29。目前未納入其他 Errata、ECN、"
+                else f"查證日期：{report.get('verified_date', '2026-08-29')}。目前未納入其他 Errata、ECN、"
                 "Technical Proposal、controller vendor 文件或未提供的 "
                 "PCI Express Base Specification 原文。"
             ),
@@ -1089,30 +1293,47 @@ def render_markdown(
                 f"This report introduces all {len(figures)} in-scope Figures. Use the "
                 "section links below for the 100-minute presentation path; every Figure "
                 "remains available as an appendix item."
+                + (
+                    f" {dependency_count} Figures are outside the main section range but are included because the requested text directly references them."
+                    if dependency_count
+                    else ""
+                )
                 if english
                 else f"本報告介紹全部 {len(figures)} 張納入範圍的 Figure。100 分鐘簡報"
                 "以 section 主線與必講 Figure 為主，其餘 Figure 仍完整保留作為附錄。"
+                + (
+                    f"其中 {dependency_count} 張位於主章節範圍外，但因指定正文直接引用而納入相依教學。"
+                    if dependency_count
+                    else ""
+                )
             ),
             "",
         ]
     )
     figure_groups: list[str] = []
     for figure in figures:
-        group = section_group(str(figure["section"]))
+        group = figure_group(figure)
         if group not in figure_groups:
             figure_groups.append(group)
     for group in figure_groups:
-        out.extend([f"- [§{group}](#section-{anchor(group)})", ""])
+        out.extend(
+            [
+                f"- [{figure_group_label(group, language)}](#section-{anchor(group)})",
+                "",
+            ]
+        )
     out.extend(
         [
             "## " + ("Figure-by-Figure Guide" if english else "Figure 逐圖導讀"),
             "",
             (
-                "The source uses Figure numbers for diagrams and field-layout tables. "
+                ("The requested text contains no numbered Table reference. " if report_id == "base-admin-fw-logs" else "")
+                + "The source uses Figure numbers for diagrams and field-layout tables. "
                 "No source artwork is reproduced; compact field and keyword indexes "
                 "come from the locally verified PDFs."
                 if english
-                else "本範圍的規格以 Figure 編號同時涵蓋示意圖與欄位表；本文不重製原圖。"
+                else ("指定正文沒有引用任何編號 Table。" if report_id == "base-admin-fw-logs" else "")
+                + "本範圍的規格以 Figure 編號同時涵蓋示意圖與欄位表；本文不重製原圖。"
                 "欄位與 keyword 索引來自本機核對過的 PDF。"
             ),
             "",
@@ -1127,14 +1348,14 @@ def render_markdown(
         details = figure_explanation(figure, language)
         statement = item["en"] if english else item["zh_tw"]
         citation = item["citation_en"] if english else item["citation_zh_tw"]
-        group = section_group(str(figure["section"]))
+        group = figure_group(figure)
         if group != active_group:
             active_group = group
             out.extend(
                 [
                     f'<a id="section-{anchor(group)}"></a>',
                     "",
-                    f"### §{group}",
+                    f"### {figure_group_label(group, language)}",
                     "",
                 ]
             )
@@ -1225,7 +1446,10 @@ def main() -> int:
                 if item["report_id"] == report_id
                 and item["scope_status"] == "INCLUDE"
             ],
-            key=lambda item: int(item["number"]),
+            key=lambda item: (
+                item.get("role") == "referenced_dependency",
+                int(item["number"]),
+            ),
         )
         for figure in figures:
             if not figure.get("key_items") or not figure.get("evidence_digest"):
@@ -1275,7 +1499,7 @@ def main() -> int:
         encoding="utf-8",
     )
     print(
-        f"Built 16 artifacts, {len(all_claims)} claims, "
+        f"Built {len(contract['artifacts'])} artifacts, {len(all_claims)} claims, "
         f"using {len(register_entries)} tracked Figure records"
     )
     return 0

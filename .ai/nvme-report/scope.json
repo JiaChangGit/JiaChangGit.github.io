@@ -61,6 +61,20 @@
       "sections": ["1", "2", "3", "Annex A"],
       "printed_pages": "1-48",
       "pdf_pages": "1-48"
+    },
+    {
+      "id": "base-admin-fw-logs",
+      "title_zh_tw": "NVMe Base 2.4 韌體、UUID List 與 Get Log Page",
+      "title_en": "NVMe Base 2.4 Firmware, UUID List, and Get Log Page",
+      "source_id": "NVME-BASE-2.4",
+      "sections": ["3.11", "5.2.9", "5.2.10", "5.2.13.1", "5.2.13.2", "5.2.13.4"],
+      "printed_pages": "135-138, 202-206, 212-319, 336",
+      "pdf_pages": "161-164, 228-232, 238-345, 362",
+      "dependency_figures": [
+        "70", "84", "93", "101", "102", "107", "155", "195", "337", "338",
+        "339", "346", "347", "348", "448", "451", "452", "466", "474", "480",
+        "512", "527", "656", "745", "746", "747", "772", "782", "783"
+      ]
     }
   ],
   "interpretation_sources": [
@@ -129,12 +143,42 @@
       "note": "全文納入；Figure 1 僅解釋 Base 與 PCIe Transport 的關係"
     },
     {
+      "id": "BASE-FWLOG-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["3.11", "5.2.9", "5.2.10", "5.2.13.1", "5.2.13.2", "5.2.13.4"],
+      "note": "納入通用與 memory-based/PCIe 適用的韌體更新、UUID List、Get Log Page 與 command completion；Figure 209 只教學通用／PCIe 可用的 log page"
+    },
+    {
+      "id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["referenced dependencies outside the requested main sections"],
+      "figures": [
+        "70", "84", "93", "101", "102", "107", "155", "195", "337", "338",
+        "339", "346", "347", "348", "448", "451", "452", "466", "474", "480",
+        "512", "527", "656", "745", "746", "747", "772", "782", "783"
+      ],
+      "note": "使用者要求：主範圍正文引用到的範圍外 Figure 也須教學；僅納入理解該引用所需的欄位與關係，不擴張主題範圍"
+    },
+    {
+      "id": "BASE-FWLOG-FABRIC-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["5.2.13.1.14.2.16", "5.2.13.3"],
+      "figures": [
+        "257", "313", "314", "315", "316", "317", "318", "319", "320", "321",
+        "322", "323", "324", "325", "326", "327", "328", "329", "330"
+      ],
+      "note": "排除 Exported NVM Subsystem Change Event，以及 message-based/Fabrics 與 Discovery 專用 log page 內容"
+    },
+    {
       "id": "NVMCS13-EXCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "EXCLUDE",
       "sections": ["all"],
-      "note": "本次四份報告不使用 NVM Command Set 1.3"
+      "note": "本次五份報告不使用 NVM Command Set 1.3"
     }
   ],
-  "approval_note": "使用者於 2026-08-29 指定四份報告與 Fabrics 全面排除"
+  "approval_note": "使用者於 2026-08-31 新增第五份報告：Base 2.4 §3.11、§5.2.9、§5.2.10、§5.2.13 的通用／PCIe 內容；範圍外被引用 Figure 亦須教學，Fabrics 全面排除"
 }

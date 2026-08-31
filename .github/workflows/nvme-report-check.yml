@@ -43,7 +43,7 @@ jobs:
 
       - name: Validate report contract
         run: |
-          python3 -B -c "import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding='utf-8'), filename=path) for path in ('scripts/build_nvme_reports.py', 'scripts/update_nvme_figure_evidence.py', 'scripts/validate_nvme_report.py')]"
+          python3 -B -c "import ast, pathlib; [ast.parse(pathlib.Path(path).read_text(encoding='utf-8'), filename=path) for path in ('scripts/build_nvme_reports.py', 'scripts/extract_nvme_source_text.py', 'scripts/update_nvme_figure_evidence.py', 'scripts/validate_nvme_report.py')]"
           python3 -B scripts/build_nvme_reports.py
           git diff --exit-code -- .ai/nvme-report DOCS/nvme-spec-report _posts scripts
           python3 -B scripts/validate_nvme_report.py --phase auto

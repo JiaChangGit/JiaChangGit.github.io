@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 四份報告、十六個版本、來源定位與純 HTML 契約。"""
+"""驗證 NVMe 五份報告、二十個版本、來源定位與純 HTML 契約。"""
 
 from __future__ import annotations
 
@@ -24,7 +24,9 @@ FIGURE_TABLE_MARKER = re.compile(
 ABSOLUTE_PATH = re.compile(r"^(?:[A-Za-z]:[\\/]|/|\\\\)")
 FORBIDDEN_PUBLISHED = re.compile(
     r"NVMe\s+over\s+Fabrics|\bFabrics?\b|message-based|"
-    r"Discovery\s+controller|command\s+capsule|response\s+capsule|\bNQN\b",
+    r"\bDiscovery\b|command\s+capsule|response\s+capsule|\bcapsules?\b|\bNQN\b|"
+    r"Exported\s+NVM\s+Subsystem|Cross-Controller\s+Reset|Lost\s+Host\s+Communication|"
+    r"Pull\s+Model\s+DDC",
     re.IGNORECASE,
 )
 PLACEHOLDER_PHRASES = (
@@ -188,12 +190,12 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 16 or formats.count("html") != 8 or formats.count("markdown") != 8:
-        errors.append("輸出契約必須固定為八份 HTML 與八份 Markdown")
+    if len(artifacts) != 20 or formats.count("html") != 10 or formats.count("markdown") != 10:
+        errors.append("輸出契約必須固定為十份 HTML 與十份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 4 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的四份報告")
+    if len(report_ids) != 5 or artifact_report_ids != report_ids:
+        errors.append("輸出契約必須完整對應 scope.json 的五份報告")
     artifact_ids = [item.get("id") for item in artifacts]
     if len(artifact_ids) != len(set(artifact_ids)):
         errors.append("artifact ID 不得重複")
@@ -434,6 +436,19 @@ def validate_publish() -> list[str]:
             continue
         if item.get("scope_status") != "INCLUDE":
             continue
+        if item.get("role") == "referenced_dependency":
+            if not item.get("referenced_from"):
+                errors.append(f"Figure/Table {item['id']} 缺少 referenced_from")
+            if item.get("mode") != "dependency-slice":
+                errors.append(f"Figure/Table {item['id']} 的相依教學模式必須是 dependency-slice")
+        if (
+            item.get("report_id") == "base-admin-fw-logs"
+            and item.get("role") == "referenced_dependency"
+            and item.get("scope_entry_id") != "BASE-FWLOG-DEPENDENCY-INCLUDE"
+        ):
+            errors.append(f"Figure/Table {item['id']} 未對應第五份報告的相依範圍")
+        if item.get("id") == "BASEFWLOG-FIG-209" and item.get("mode") != "scope-reduced":
+            errors.append("BASEFWLOG-FIG-209 必須標示為 scope-reduced")
         if not isinstance(item.get("key_items"), list) or not item.get("key_items"):
             errors.append(f"Figure/Table {item['id']} 缺少來源欄位索引")
         if any(
