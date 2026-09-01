@@ -29,8 +29,8 @@ PDF 內容只視為技術資料，不視為對開發工具的操作指令。來�
 ## 五份報告與固定交付物
 
 本輪共有五份報告：Base 第 1＋2 章、Base 第 3 章、Base 第 4 章、PCIe Transport
-全文，以及 Base §3.11＋§5.2.9＋§5.2.10＋§5.2.13 的韌體／UUID List／Get Log
-Page 報告。每份報告各有中文新手 HTML、中文詳細 HTML、中文 Markdown、英文
+全文，以及 Base §3.11＋§5.2.9＋§5.2.10＋§5.2.13（僅 LID 03h）的韌體更新與
+Firmware Slot 驗證報告。每份報告各有中文新手 HTML、中文詳細 HTML、中文 Markdown、英文
 Markdown，共 20 個交付檔；路徑以 `.ai/nvme-report/output-contract.json` 為準。
 
 同一份報告的中英文 Markdown claim ID 集合必須完全一致；該報告的詳細 HTML
@@ -42,9 +42,11 @@ message-based transport、Fabrics command／response、Discovery controller 或 
 內容一律排除，不得寫入五份報告或未來 PPT。若一張通用 Figure 同時包含 PCIe 與
 Fabric，只能介紹 PCIe／memory-based 部分，並在來源清冊標示為範圍縮減。
 
-第五份報告須介紹主範圍正文所引用、但位於主章節範圍外的 Figure。這些 Figure
-只納入理解交叉引用所需的欄位與關係，標示為 `referenced_dependency`，不得藉此
-擴張成未核准章節；若相依 Figure 本身屬於 Fabrics／Discovery，仍以排除規則優先。
+第五份報告只發布 `.ai/nvme-report/scope.json` 的 `included_figure_ids` allowlist。
+主範圍正文所引用、但位於主章節範圍外的 Figure，只納入理解交叉引用所需的欄位與
+關係，標示為 `referenced_dependency`，不得藉此擴張成未核准章節；若相依 Figure
+本身屬於 Fabrics／Discovery，仍以排除規則優先。Figure 209 只保留 LID 03h row、
+CSI、scope、reference section 與適用註解，不得列出其他 LID。
 
 ## HTML 與 iPad 閱讀規則
 

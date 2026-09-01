@@ -28,7 +28,16 @@ def page_shift(value: str, delta: int) -> str:
     return re.sub(r"\d+", lambda match: str(int(match.group()) + delta), value)
 
 
-def c(key, section, pages, zh, en, keyword="none", source="NVME-BASE-2.4"):
+def c(
+    key,
+    section,
+    pages,
+    zh,
+    en,
+    keyword="none",
+    source="NVME-BASE-2.4",
+    scope_entry=None,
+):
     pdf_pages = pages if source == "NVME-PCIE-TRANSPORT-1.4" else page_shift(pages, 26)
     return {
         "key": key,
@@ -39,6 +48,7 @@ def c(key, section, pages, zh, en, keyword="none", source="NVME-BASE-2.4"):
         "normative_keyword": keyword,
         "zh_tw": zh,
         "en": en,
+        "scope_entry_id": scope_entry,
     }
 
 
@@ -124,41 +134,49 @@ REPORTS = {
     },
     "base-admin-fw-logs": {
         "prefix": "BASEFWLOG",
-        "title_zh": "NVMe Base 2.4：Firmware Update、Firmware Admin Commands 與 Get Log Page",
-        "title_en": "NVMe Base 2.4: Firmware Updates, Firmware Admin Commands, and Get Log Page",
+        "title_zh": "NVMe Base 2.4：Firmware Update 與 LID 03h 驗證",
+        "title_en": "NVMe Base 2.4: Firmware Update and LID 03h Verification",
         "source_id": "NVME-BASE-2.4",
         "scope_entry": "BASE-FWLOG-INCLUDE",
-        "date": "2026-08-31",
-        "verified_date": "2026-08-31",
-        "range": "§3.11、§5.2.9、§5.2.10、§5.2.13.1-§5.2.13.2、§5.2.13.4；主範圍文件頁 135-138、202-206、212-319、336；另納入正文直接引用的相依 Figure",
-        "range_en": "§3.11, §5.2.9, §5.2.10, §5.2.13.1-§5.2.13.2, and §5.2.13.4; main printed pages 135-138, 202-206, 212-319, and 336, plus directly referenced Figure dependencies",
+        "date": "2026-09-01",
+        "verified_date": "2026-09-01",
+        "range": "§3.11、§3.11.1、§5.2.9、§5.2.10、§5.2.13 的 LID 03h 必要共通欄位、§5.2.13.1.4；主範圍文件頁 135-138、202-206、212-216、225-226，並含最小 dependency slice",
+        "range_en": "§3.11, §3.11.1, §5.2.9, §5.2.10, the minimum common §5.2.13 fields needed for LID 03h, and §5.2.13.1.4; main printed pages 135-138, 202-206, 212-216, and 225-226, plus the minimum dependency slice",
         "diagram": ["Image Download", "Firmware Commit", "Activate / Reset", "Get Log Page"],
-        "diagram_note_zh": "host 以 OFST／NUMD 分段下載 image，Firmware Commit 驗證並選擇 slot／activation action；完成 reset 或立即 activation 後，再以 log page 與 asynchronous event 狀態核對結果。",
-        "diagram_note_en": "The host downloads image portions using OFST and NUMD, Firmware Commit validates the image and selects a slot and activation action, and log pages plus asynchronous-event state verify the result after reset or immediate activation.",
+        "diagram_note_zh": "host 以 OFST／NUMD 傳送 image portions，Firmware Commit 驗證並決定 slot／activation action；需要時完成 reset 與重新初始化，再用 LID 03h 比對目前與下一個 active slot。",
+        "diagram_note_en": "The host transfers image portions with OFST and NUMD, Firmware Commit validates them and selects a slot and activation action, and LID 03h then verifies the current and next active slots after any required reset and reinitialization.",
         "claims": [
-            c("FW-RESET", "3.11", "135-136", "需要 reset 的 firmware update 依序為：以一筆以上 Firmware Image Download command 傳送 image、以 Firmware Commit 驗證並放入 firmware slot、執行能觸發指定 activation 的 Controller Level Reset，最後重新初始化 controller 與 I/O queues。", "A reset-based firmware update downloads the image with one or more Firmware Image Download commands, validates and places it in a firmware slot with Firmware Commit, performs a Controller Level Reset that can activate it, and then reinitializes the controller and I/O queues."),
-            c("FW-IMMEDIATE", "3.11", "136-137", "Commit Action 011b 表示立即 activation。若 activation 開始，受影響 controller 可在 notice 已啟用時送出 Firmware Activation Starting event；Firmware Commit 在 activation 成功或失敗前保持進行中，不是 background operation。", "Commit Action 011b requests immediate activation. Once activation starts, affected controllers may report Firmware Activation Starting when the notice is enabled; Firmware Commit remains in progress until activation succeeds or fails and is not a background operation.", "may"),
-            c("FW-FAILURE", "3.11", "136-137", "立即 activation 若需要其他 reset 或超過 MTFA，controller 以對應 command-specific status 結束；若 image 無法成功載入，controller 必須（shall）回復到最近啟用 slot 的 image 或可用的 baseline read-only image，並以 Firmware Image Load Error event 回報。", "If immediate activation requires another reset or exceeds MTFA, the controller completes with the corresponding command-specific status. If the image cannot be loaded, the controller shall revert to the image in the most recently activated slot or an available baseline read-only image and report Firmware Image Load Error.", "shall"),
-            c("FW-SEQUENCE", "3.11", "137", "host 不宜（should not）重疊 firmware／boot-partition update sequence，且同一 sequence 宜使用同一 controller 或 Management Endpoint。Firmware Commit 完成後的第一筆新 download，以及 commit 完成前發生的 reset，都必須（shall）使 controller 丟棄尚存的已下載部分。", "The host should not overlap firmware or boot-partition update sequences and should use one controller or Management Endpoint for a sequence. The first new download after Firmware Commit, and a reset before commit completion, shall cause remaining downloaded portions to be discarded.", "shall"),
-            c("UUID-LIST", "3.11.1", "137-138", "firmware revision 間的 UUID list 宜維持 slot 穩定：新增項目放在尾端，移除項目以 NVMe Invalid UUID 留在原 slot，既有 invalid slot 不再填入有效 UUID，且不縮短清單。若下載 image 以有效 UUID 取代 invalid UUID 或另一個有效 UUID，controller 必須（shall）要求 reset，所有受影響 controller 都必須一起 reset。", "UUID-list slots should remain stable across firmware revisions: append new UUIDs, replace removed UUIDs with the NVMe Invalid UUID in place, do not reuse an invalidated slot, and do not shorten the list. If a downloaded image replaces an invalid or different valid UUID with a valid UUID, the controller shall require reset and all affected controllers shall be reset.", "shall"),
-            c("COMMIT-PURPOSE", "5.2.9", "202-203", "Firmware Commit 驗證最後下載的 image，將它放入指定 firmware slot，並依 Commit Action 決定只放置、在後續 reset activation，或立即 activation。domain 內的 controller 共用 firmware slots 與相同 firmware image。", "Firmware Commit validates the last downloaded image, places it in a firmware slot, and uses Commit Action to select placement only, activation on a later reset, or immediate activation. Controllers in one domain share firmware slots and the same firmware image."),
-            c("COMMIT-CDW10", "5.2.9", "203", "CDW10 以 BPID、Commit Action（CA）與 Firmware Slot（FS）描述操作。CA 000b-011b 用於 firmware image；110b-111b 用於 Boot Partition。FS=0h 時，controller 必須（shall）在 slot 1-7 中選擇可用 slot。", "CDW10 describes the operation through BPID, Commit Action (CA), and Firmware Slot (FS). CA values 000b-011b operate on firmware images, while 110b-111b operate on Boot Partitions. With FS=0h, the controller shall choose an available slot from 1 through 7.", "shall"),
-            c("COMMIT-MUD", "5.2.9.1", "203-204", "Firmware Commit CQE.DW0 的 Multiple Update Detected（MUD）可指出 Management Endpoint 或 Admin Submission Queue 偵測到重疊 update sequence；若 Identify Controller 的 SMUD=0，MUD 必須（shall）為 00b。", "Firmware Commit CQE DW0 uses Multiple Update Detected (MUD) to report overlap detected through a Management Endpoint or Admin Submission Queue. If Identify Controller SMUD is zero, MUD shall be 00b.", "shall"),
-            c("COMMIT-STATUS", "5.2.9.1", "204-205", "Firmware Commit status 需分開判斷 image／slot 無效、需要 Conventional／NVM Subsystem／Controller Level Reset、超過 MTFA、activation 被禁止、range 重疊與 Boot Partition write lock；成功 commit 不代表 image 已在當下 activation。", "Firmware Commit status distinguishes invalid image or slot, required Conventional/NVM Subsystem/Controller Level Reset, MTFA violation, prohibited activation, overlapping ranges, and Boot Partition write lock. A successful commit does not necessarily mean the image is already active."),
-            c("DOWNLOAD-RANGE", "5.2.10", "205-206", "Firmware Image Download 以 NUMD 與 OFST 定義 0's-based dword range；image 可分段且一般可不依序送出，但 Boot Partition update 必須（shall）依序。host 宜（should）避免 range 重疊，並符合 FWUG 的 alignment 與 granularity。", "Firmware Image Download defines a zero-based dword range with NUMD and OFST. Firmware-image portions may arrive out of order, but Boot Partition portions shall be ordered. The host should avoid overlapping ranges and satisfy FWUG alignment and granularity.", "shall"),
-            c("DOWNLOAD-FIELDS", "5.2.10", "205-206", "DPTR 指向本次 portion，CDW10.NUMD 指定 dword 數量減一，CDW11.OFST 指定距 image 起點的 dword offset；包含 image 起點的 portion 必須（shall）使用 OFST=0h。Firmware Image Download 本身不 activation image。", "DPTR points to the portion, CDW10.NUMD encodes the dword count minus one, and CDW11.OFST encodes the dword offset from the image start. The portion containing the image start shall use OFST=0h. Firmware Image Download does not activate the image.", "shall"),
-            c("LOG-COMMAND", "5.2.13", "212-215", "Get Log Page 使用 DPTR 與 CDW10-CDW14。核心 selector／length 欄位為 LID、LSP、RAE、NUMDL／NUMDU、LSI、LPOL／LPOU、CSI、OT 與 UIDX；未由指定 log page 定義的 command-specific 欄位維持 reserved 或依 Figure 208 的規則忽略。", "Get Log Page uses DPTR and CDW10-CDW14. Its main selector and length fields are LID, LSP, RAE, NUMDL/NUMDU, LSI, LPOL/LPOU, CSI, OT, and UIDX; command-specific fields not defined by the selected log page remain reserved or are ignored as specified by Figure 208."),
-            c("LOG-LENGTH", "5.2.13", "213-215", "NUMDL 與 NUMDU 組成 0's-based transfer length。支援 log page offset 時，byte offset 必須（shall）對所有 log page 可用；只有 Supported Log Pages 對該 LID 回報 IOS=1 時才能使用 index offset（OT=1）。超出 log page 或 entry 數量的 offset 必須以 Invalid Field in Command 結束。", "NUMDL and NUMDU form a zero-based transfer length. When log-page offsets are supported, byte offsets shall work for every log page; index offsets (OT=1) are permitted only when Supported Log Pages reports IOS=1 for that LID. An offset beyond the log page or entry count shall complete with Invalid Field in Command.", "shall"),
-            c("LOG-RAE", "5.2.13", "213", "RAE=0 時，成功完成 Get Log Page 會清除對應 asynchronous event；RAE=1 則保留。若 command 未成功完成，controller 必須（shall）保留 event。與 asynchronous event 無關的 log page，host 通常宜（should）把 RAE 清為 0。", "With RAE=0, a successful Get Log Page clears the corresponding asynchronous event; RAE=1 retains it. If the command does not complete successfully, the controller shall retain the event. For a log page unrelated to asynchronous events, the host should normally clear RAE.", "shall"),
-            c("LOG-SCOPE", "5.2.13.1", "215-217", "Figure 209 同時定義 LID、CSI 使用方式、資料 scope 與 reference section。NVM subsystem、domain、controller、namespace 的 scope 不可互換；對 subsystem 或 controller scope 的 log page，NSID 除 0h／FFFFFFFFh 外必須（shall）以 Invalid Field in Command 結束。", "Figure 209 defines each LID together with CSI usage, data scope, and reference section. NVM-subsystem, domain, controller, and namespace scopes are not interchangeable. For subsystem- or controller-scoped log pages, an NSID other than 0h or FFFFFFFFh shall complete with Invalid Field in Command.", "shall"),
-            c("LOG-SUPPORT", "5.2.13.1.1", "217-218", "Supported Log Pages（LID 00h）按 command submission interface 回報每個 LID 的支援與效果。LID Supported and Effects data structure 的 SUPP、IOS 與其他 attribute 必須先配合 controller type、I/O Command Set 與 UUID selection 狀態解讀。", "Supported Log Pages (LID 00h) reports support and effects for each LID on the interface that received the command. SUPP, IOS, and the other LID Supported and Effects attributes are interpreted together with controller type, I/O Command Set, and UUID-selection state."),
-            c("LOG-OPERATIONS", "5.2.13.1.2-5.2.13.1.13", "218-244", "operational log pages 分別處理 Error Information、SMART／Health、Firmware Slot、namespace change、command effects、device self-test、telemetry、Endurance Group、predictable latency 與 ANA。parser 必須先依 Figure 209 決定 scope，再依各 log page header 的 entry count／generation number／data area 邊界解析。", "Operational log pages cover Error Information, SMART/Health, Firmware Slot, namespace change, command effects, device self-test, telemetry, Endurance Group, predictable latency, and ANA. A parser first resolves scope from Figure 209, then follows each log page's header, entry count or generation number, and data-area boundaries."),
-            c("PERSISTENT-EVENT", "5.2.13.1.14", "244-266, 268-270", "Persistent Event Log 由 log header、event header 與 event-specific data 組成，LSP 控制 establish／read／release context。event length、header length、generation number 與 context identifier 都要先驗證，再依 Event Type 解碼；本報告只保留通用與 PCIe 可用 event。", "The Persistent Event Log consists of a log header, event headers, and event-specific data, with LSP controlling establish/read/release context operations. Validate event length, header length, generation number, and context identifier before decoding Event Type. This report retains only common and PCIe-applicable events."),
-            c("LOG-CAPACITY-FDP", "5.2.13.1.15-5.2.13.1.33", "270-301", "後段 common log pages 涵蓋 Endurance Group event、Media Unit、capacity configuration、Feature／NVMe-MI effects、lockdown、Boot Partition、management／reachability、device personality 與 FDP。這些資料結構使用不同的 identifier、descriptor count 與 variable-length array，不能共用固定 parser。", "Later common log pages cover Endurance Group events, Media Units, capacity configuration, Feature/NVMe-MI effects, lockdown, Boot Partition, management/reachability, device personality, and FDP. Their identifiers, descriptor counts, and variable-length arrays differ and cannot share one fixed parser."),
-            c("LOG-POWER-SANITIZE", "5.2.13.1.34-5.2.13.1.38", "302-319", "Power Measurement、Voltage Measurement、Sanitize Namespace Status List、Reservation Notification 與 Sanitize Status 各自定義量測 scale、sensor／target selector、generation 或 state 欄位。量測值必須先套用對應 scale；sanitize 狀態必須配合 target 與 state machine 解讀。", "Power Measurement, Voltage Measurement, Sanitize Namespace Status List, Reservation Notification, and Sanitize Status define their own measurement scale, sensor or target selector, generation, and state fields. Apply the matching scale before interpreting measurements and combine sanitize status with its target and state machine."),
-            c("PCIE-LOGS", "5.2.13.2", "319", "§5.2.13.2 明確指出 memory-based transport model 沒有專屬 log page；PCIe controller 使用 §5.2.13.1 的 common log pages 與各自 capability／scope 規則。", "Section 5.2.13.2 states that the memory-based transport model has no transport-specific log page; a PCIe controller uses the common log pages in section 5.2.13.1 with their capability and scope rules."),
-            c("LOG-COMPLETION", "5.2.13.4", "336", "Get Log Page 完成後在 Admin Completion Queue 回報結果；command-specific status 區分 Invalid Log Page、Invalid Controller Identifier 與 I/O Command Set Not Supported。保留或未支援 LID 以 Invalid Log Page 回報。", "Get Log Page reports completion on the Admin Completion Queue. Command-specific status distinguishes Invalid Log Page, Invalid Controller Identifier, and I/O Command Set Not Supported. A reserved or unsupported LID completes with Invalid Log Page."),
-            c("XREF-337", "5.2.9, 5.2.14.1-5.2.14.2.1", "202, 340", "來源 §5.2.9 把 Firmware Revision 欄位指向 Figure 337；但 Figure 337 的標題與內容是 Command Set Identifiers，Firmware Revision（FR）實際列於 Figure 338。因本輪沒有額外 Errata，本報告保留此內部交叉引用差異並同時教學兩張 Figure，不自行改寫規格。", "Source section 5.2.9 points the Firmware Revision field to Figure 337, but Figure 337 is titled and populated as Command Set Identifiers; Firmware Revision (FR) appears in Figure 338. With no additional errata in scope, this report preserves the internal cross-reference discrepancy and teaches both Figures rather than silently rewriting the specification."),
+            c("MODEL-DOMAIN", "5.2.9", "202", "同一 domain 內的 controllers 共用 firmware slots，且相同 firmware image 會套用到該 domain 的所有 controllers；若不支援 multiple domains，範圍就是整個 NVM subsystem。", "Controllers in one domain share firmware slots, and the same firmware image is applied to all controllers in that domain. If multiple domains are not supported, that scope is the entire NVM subsystem."),
+            c("FW-RESET", "3.11", "135-136", "需要 reset 的標準流程是：一筆以上 Firmware Image Download、Firmware Commit 驗證並放入 slot、執行能觸發該 activation 的 Controller Level Reset，然後重新初始化 controller 與 I/O queues。", "The reset-based flow is one or more Firmware Image Download commands, Firmware Commit to validate and place the image, a Controller Level Reset capable of causing activation, and reinitialization of the controller and I/O queues."),
+            c("FW-IMMEDIATE", "3.11", "136", "CA=011b 要求立即 activation。Firmware Commit 不是 background operation，會保持進行中直到 activation 成功或失敗；若 Firmware Activation notice 已啟用，受影響 controller 可（may）送出 Firmware Activation Starting event。", "CA=011b requests immediate activation. Firmware Commit is not a background operation and remains in progress until activation succeeds or fails. If Firmware Activation notices are enabled, an affected controller may send Firmware Activation Starting.", "may"),
+            c("FW-FAILURE", "3.11", "136-137", "若新 image 無法成功載入，controller 必須（shall）回復到最近 activation 的 slot image；若該 image 也無法載入，則載入可用的 baseline read-only image，並產生 Firmware Image Load Error event。", "If the new image cannot be loaded, the controller shall revert to the image in the most recently activated slot; if that image also cannot be loaded, it loads an available baseline read-only image and generates Firmware Image Load Error.", "shall"),
+            c("FW-SEQUENCE", "3.11", "137", "host 不宜（should not）讓 firmware／Boot Partition update sequences 重疊，且同一 sequence 宜（should）只使用一個 controller 或 Management Endpoint。", "The host should not overlap firmware or Boot Partition update sequences and should use only one controller or Management Endpoint throughout a sequence.", "should"),
+            c("FW-DISCARD", "3.11, 5.2.10", "137, 205-206", "Firmware Commit 完成後的第一筆新 Firmware Image Download，以及 download 後、Firmware Commit 完成前發生的 Controller Level Reset，都必須（shall）使 controller 丟棄尚存的已下載 portions。", "The first Firmware Image Download after Firmware Commit completes, and a Controller Level Reset after download but before Firmware Commit completion, shall cause the controller to discard remaining downloaded portions.", "shall"),
+            c("UUID-LIST", "3.11.1", "137-138", "firmware revisions 間的 UUID List 宜（should）保持 entry 位置穩定：新增 UUID 宜接在尾端；移除時宜原位改成 NVMe Invalid UUID；不宜重用 invalid entry，也不宜縮短或移除清單。", "Across firmware revisions, UUID List entry positions should remain stable: new UUIDs should be appended, a removed UUID should be replaced in place with the NVMe Invalid UUID, an invalid entry should not be reused, and the list should not be shortened or removed.", "should"),
+            c("UUID-RESET", "3.11.1", "138", "若 downloaded image 在既有 entry 中，以有效 UUID 取代 NVMe Invalid UUID 或另一個有效 UUID，controller 必須（shall）要求 reset；所有受這個 UUID List 變更影響的 controllers 都必須（shall）reset。", "If a downloaded image replaces the NVMe Invalid UUID or a different valid UUID with a valid UUID in an existing entry, the controller shall require reset, and all controllers affected by that UUID List change shall be reset.", "shall"),
+            c("CAP-FR", "5.2.14.1", "340", "Identify Controller 的 FR 是目前 active firmware revision 的 8-byte ASCII string，scope 是 controller 所屬 domain；它與 LID 03h 回報的目前 revision 資訊相同。", "Identify Controller FR is the eight-byte ASCII string for the currently active firmware revision in the controller's domain. It is the same revision information available from LID 03h."),
+            c("CAP-MDS-ULIST", "5.2.14.1", "346, 364", "CTRATT.MDS 判斷 LID 03h 回傳 domain scope 還是整個 NVM subsystem scope；CTRATT.ULIST 判斷 controller 是否支援 UUID List reporting。MDS=1 時 DID 必須（shall）非零；single-domain subsystem 的 DID 必須（shall）為 0h。", "CTRATT.MDS determines whether LID 03h returns domain-scoped or NVM-subsystem-scoped information, while CTRATT.ULIST indicates UUID List reporting support. With MDS=1, DID shall be nonzero; in a single-domain subsystem, DID shall be 0h.", "shall"),
+            c("CAP-FRMW", "5.2.14.1", "354", "FRMW 的 SMUD、FAWR、NOFS 與 FFSRO 分別表示重疊 update 偵測、免 reset activation、domain 支援的 slot 數（1 到 7）以及 slot 1 是否 read-only。", "FRMW.SMUD, FAWR, NOFS, and FFSRO describe overlapping-update detection, activation without reset, the domain's supported slot count (1 through 7), and whether slot 1 is read-only."),
+            c("CAP-MTFA", "5.2.14.1", "357", "MTFA 以 100 ms 為單位，表示 activation 時 controller 暫停處理 commands 的最長時間；支援免 reset activation 時此欄位必須（shall）有效，0h 表示最大時間未定義。", "MTFA is in 100 ms units and reports the maximum time command processing is temporarily stopped during activation. It shall be valid when activation without reset is supported; 0h means the maximum is undefined.", "shall"),
+            c("CAP-FWUG", "5.2.14.1", "359", "FWUG 以 4 KiB 為單位限制 NUMD 與 OFST 的 granularity／alignment：1h=4 KiB、2h=8 KiB、0h=未提供資訊、FFh=可用任何 dword granularity 與 alignment。違反時 controller 可（may）回 Invalid Field in Command。", "FWUG constrains NUMD and OFST granularity/alignment in 4 KiB units: 1h is 4 KiB, 2h is 8 KiB, 0h reports no information, and FFh permits any dword granularity and alignment. A controller may return Invalid Field in Command for a violation.", "may"),
+            c("CAP-MPTFAWR", "5.2.14.1", "364", "MPTFAWR 以 100 ms 為單位，估算 CA=011b 的 Firmware Commit 從處理到完成所需最大時間，且包含把 image commit 到 slot 的時間；不支援免 reset activation 時必須（shall）為 0h。", "MPTFAWR is a 100 ms-unit estimate of the maximum processing time to complete Firmware Commit with CA=011b, including time to commit the image to a slot. It shall be 0h when activation without reset is unsupported.", "shall"),
+            c("COMMIT-PURPOSE", "5.2.9", "202-203", "Firmware Commit 驗證最後下載的 image、把它放入 firmware slot，並依 Commit Action 決定只放置、在後續 Controller Level Reset activation，或立即 activation。成功 commit 不等於當下已 active。", "Firmware Commit validates the last downloaded image, places it in a firmware slot, and uses Commit Action to choose placement only, activation at a later Controller Level Reset, or immediate activation. Successful commit does not by itself mean the image is currently active."),
+            c("COMMIT-CDW10", "5.2.9", "203", "CDW10[5:3] 是 CA，CDW10[2:0] 是 FS。CA 000b 只放置；001b 放置並排定下次 CLR activation；010b 排定既有 slot；011b 立即 activation。FS=0h 時 controller 必須（shall）在 slot 1 到 7 中選一個。", "CDW10[5:3] is CA and CDW10[2:0] is FS. CA 000b places only, 001b places and schedules activation at the next CLR, 010b schedules an existing slot, and 011b activates immediately. With FS=0h, the controller shall choose a slot from 1 through 7.", "shall"),
+            c("COMMIT-BOOT", "5.2.9", "203-205", "BPID 與 CA=110b／111b 屬於 Boot Partition：110b 取代指定 partition，111b 將它標成 active；Boot Partition Write Prohibited 是 Firmware Commit 的 command-specific status 之一。", "BPID and CA=110b/111b belong to Boot Partition handling: 110b replaces the selected partition, 111b marks it active, and Boot Partition Write Prohibited is one of the Firmware Commit command-specific status values."),
+            c("COMMIT-MUD", "5.2.9", "204", "Firmware Commit CQE.DW0[1:0] 的 MUD 分別回報 Management Endpoint 與 Admin Submission Queue 偵測到的 overlap。若 FRMW.SMUD=0，MUD 必須（shall）為 00b；MUD 在 command 成功或 aborted 時都有效。", "Firmware Commit CQE.DW0[1:0] MUD reports overlap detected through a Management Endpoint and an Admin Submission Queue. If FRMW.SMUD is 0, MUD shall be 00b; MUD is valid whether the command succeeds or is aborted.", "shall"),
+            c("COMMIT-STATUS", "5.2.9", "204-205", "Firmware Commit 的 command-specific status 區分 invalid slot／image、需要 Conventional／NVM Subsystem／Controller Level Reset、MTFA violation、activation prohibited、overlapping range、Boot Partition write prohibited 與 personality incompatibility。", "Firmware Commit command-specific status distinguishes invalid slot/image, required Conventional/NVM Subsystem/Controller Level Reset, MTFA violation, activation prohibited, overlapping range, Boot Partition write prohibition, and personality incompatibility."),
+            c("DOWNLOAD-RANGE", "5.2.10", "205-206", "Firmware Image Download 可分成多個 portions，firmware image portions 可不依序送達；host 宜（should）避免 ranges 重疊並符合 FWUG。Boot Partition portions 則必須（shall）依序提交。", "Firmware Image Download may split an image into portions, and firmware-image portions may arrive out of order. The host should avoid overlapping ranges and comply with FWUG. Boot Partition portions shall be submitted in order.", "shall"),
+            c("DOWNLOAD-FIELDS", "4.1.1, 5.2.10", "140-142, 205-206", "NVMe over PCIe 的 Admin command 不得使用 SGL，因此 DPTR 以 PRP 指向本次來源 buffer；NUMD 是 0's-based dword count，所以 bytes=(NUMD+1)×4；OFST 是距 image 起點的 dword offset，所以 byte offset=OFST×4。包含 image 起點的 portion 必須（shall）令 OFST=0h。", "An Admin command over NVMe over PCIe shall not use SGL, so DPTR uses PRPs to identify the source buffer. NUMD is a zero-based dword count, so bytes=(NUMD+1)×4; OFST is a dword offset from the image start, so byte offset=OFST×4. The portion containing the image start shall use OFST=0h.", "shall"),
+            c("LOG-COMMAND", "4.1.1, 5.2.13", "140-142, 212-215", "讀 LID 03h 時，未使用 namespace，因此 NSID 必須（shall）為 0h；DPTR 以 PRP 指向 512-byte destination buffer。必要的 CDW10-CDW14 slice 為 LID=03h、LSP=0、RAE=0、NUMDL/NUMDU 表示 512 bytes、LSI=0、LPOL/LPOU=0、OT=0、UIDX=0；CSI 對 LID 03h 不使用，controller 依 Figure 208 規則忽略。", "When reading LID 03h, no namespace is used, so NSID shall be 0h, and DPTR uses PRPs to identify the 512-byte destination buffer. The required CDW10-CDW14 slice is LID=03h, LSP=0, RAE=0, NUMDL/NUMDU for 512 bytes, LSI=0, LPOL/LPOU=0, OT=0, and UIDX=0. LID 03h does not use CSI, which the controller ignores under Figure 208's rule.", "shall"),
+            c("LOG-LENGTH", "5.2.13", "213-215", "NUMDL 與 NUMDU 合成 0's-based dword count。LID 03h 固定 512 bytes=128 dwords，因此 NUMD=127=0000007Fh，NUMDL=007Fh、NUMDU=0000h；在 LSP=0、RAE=0 下，CDW10=007F0003h。", "NUMDL and NUMDU form a zero-based dword count. LID 03h is 512 bytes, or 128 dwords, so NUMD=127=0000007Fh, NUMDL=007Fh, and NUMDU=0000h. With LSP=0 and RAE=0, CDW10=007F0003h."),
+            c("LOG-RAE", "5.2.2, 5.2.13", "186, 213", "RAE=0 會在 command 成功時清除對應 asynchronous event，RAE=1 則保留；若 command 未成功，controller 必須（shall）保留 event。Firmware Activation Starting event 要以 RAE=0 讀取 LID 03h 才會清除。", "RAE=0 clears the corresponding asynchronous event on successful completion, while RAE=1 retains it. If the command fails, the controller shall retain the event. Firmware Activation Starting is cleared by reading LID 03h with RAE=0.", "shall"),
+            c("LOG-OFFSET", "5.2.13", "214-215", "本報告以完整 512-byte LID 03h、LPOL=LPOU=0、OT=0 為基準。一般 byte offset 必須 dword aligned；超過 log page 大小的 offset 必須（shall）回 Invalid Field in Command。LID 03h 不需要 index-offset 分支。", "This report uses the complete 512-byte LID 03h with LPOL=LPOU=0 and OT=0. A general byte offset is dword aligned, and an offset beyond the log page shall return Invalid Field in Command. LID 03h needs no index-offset branch.", "shall"),
+            c("LOG-SCOPE", "5.2.13", "215-216", "Figure 209 的 LID 03h row 指定 CSI=N、scope=Domain／NVM subsystem、reference=§5.2.13.1.4。MDS=1 時回傳處理 command 之 controller 所屬 domain；否則回傳整個 NVM subsystem 的資訊。", "The LID 03h row in Figure 209 specifies CSI=N, scope=Domain/NVM subsystem, and reference §5.2.13.1.4. With MDS=1, the data is for the domain containing the controller that processed the command; otherwise it is for the NVM subsystem."),
+            c("LID03-DESCRIPTION", "5.2.13.1.4", "225-226", "Firmware Slot Information log page 固定 512 bytes，說明每個支援 slot 內的 firmware revision，並指出 current active slot 與（若 controller 有回報）next active slot。revision 以 ASCII string 表示。", "The 512-byte Firmware Slot Information log page reports the firmware revision stored in each supported slot and identifies the current active slot plus the next active slot when reported. Revisions are ASCII strings."),
+            c("LID03-AFI", "5.2.13.1.4", "226", "byte 0 的 AFI 中，NAFS=bits 6:4、CAFS=bits 2:0；bits 7 與 3 reserved。NAFS 非零表示將於下一次能觸發 activation 的 CLR 啟用該 slot，NAFS=0 表示 controller 未指出 next slot；CAFS 是目前執行 image 的來源 slot。", "In AFI byte 0, NAFS is bits 6:4 and CAFS is bits 2:0; bits 7 and 3 are reserved. Nonzero NAFS identifies the slot to activate at the next CLR capable of causing activation; NAFS=0 means no next slot is indicated. CAFS identifies the source slot of the running image."),
+            c("LID03-FRS", "5.2.13.1.4", "226", "FRS1 到 FRS7 位於 bytes 8-63，每格 8 bytes；slot 沒有有效 revision 或不支援時，該 FRS 必須（shall）清為 0h。bytes 1-7 與 64-511 reserved。", "FRS1 through FRS7 occupy bytes 8-63, eight bytes per slot. If a slot has no valid revision or is unsupported, its FRS shall be cleared to 0h. Bytes 1-7 and 64-511 are reserved.", "shall"),
+            c("RESET-XREF", "3.3", "11", "NVMe over PCIe Transport 將 Conventional Reset 與 Function Level Reset 分別列為額外的 transport-specific Controller Level Reset 方法；除 Controller Reset 外，Controller Level Reset 會依 PCI Express Base Specification 重設 PCI register space。", "NVMe over PCIe Transport lists Conventional Reset and Function Level Reset as distinct additional transport-specific Controller Level Reset methods. Except for Controller Reset, Controller Level Reset resets PCI register space as defined by the PCI Express Base Specification.", "none", "NVME-PCIE-TRANSPORT-1.4", "BASE-FWLOG-PCIE-RESET-PREREQUISITE"),
+            c("XREF-337", "5.2.9, 5.2.14.1", "202, 340", "來源 §5.2.9 將 Firmware Revision 欄位指向 Figure 337；但 Figure 337 是 Command Set Identifiers，FR 實際列在 Figure 338。未取得另行核准的 errata，因此保留並揭露這個來源內部交叉引用差異，不靜默改寫。", "Source §5.2.9 points Firmware Revision to Figure 337, but Figure 337 contains Command Set Identifiers and FR appears in Figure 338. Without separately approved errata, this report preserves and discloses the internal source discrepancy instead of silently rewriting it."),
         ],
     },
     "pcie-transport-1.4": {
@@ -254,28 +272,36 @@ CORE_TITLES = {
     "BASE4-IDENTIFIER": ("全域識別碼的範圍", "Scope of global identifiers"),
     "BASE4-LISTS": ("Controller／Namespace List", "Controller and Namespace Lists"),
     "BASE4-UTF8": ("UTF-8 輸入驗證", "UTF-8 input validation"),
-    "BASEFWLOG-FW-RESET": ("需要 reset 的 firmware update", "Reset-based firmware update"),
-    "BASEFWLOG-FW-IMMEDIATE": ("立即 activation", "Immediate activation"),
-    "BASEFWLOG-FW-FAILURE": ("activation 失敗與 fallback", "Activation failure and fallback"),
-    "BASEFWLOG-FW-SEQUENCE": ("update sequence 串行化", "Update-sequence serialization"),
-    "BASEFWLOG-UUID-LIST": ("UUID list 跨版本穩定性", "UUID-list stability across revisions"),
-    "BASEFWLOG-COMMIT-PURPOSE": ("Firmware Commit 的作用", "Purpose of Firmware Commit"),
-    "BASEFWLOG-COMMIT-CDW10": ("Commit Action、slot 與 BPID", "Commit Action, slot, and BPID"),
-    "BASEFWLOG-COMMIT-MUD": ("Multiple Update Detected", "Multiple Update Detected"),
-    "BASEFWLOG-COMMIT-STATUS": ("Firmware Commit status", "Firmware Commit status"),
-    "BASEFWLOG-DOWNLOAD-RANGE": ("download range 與順序", "Download ranges and ordering"),
-    "BASEFWLOG-DOWNLOAD-FIELDS": ("DPTR、NUMD 與 OFST", "DPTR, NUMD, and OFST"),
-    "BASEFWLOG-LOG-COMMAND": ("Get Log Page command 欄位", "Get Log Page command fields"),
-    "BASEFWLOG-LOG-LENGTH": ("transfer length 與 offset", "Transfer length and offsets"),
-    "BASEFWLOG-LOG-RAE": ("RAE 與 asynchronous event", "RAE and asynchronous events"),
-    "BASEFWLOG-LOG-SCOPE": ("LID 與資料 scope", "LIDs and data scope"),
-    "BASEFWLOG-LOG-SUPPORT": ("Supported Log Pages", "Supported Log Pages"),
-    "BASEFWLOG-LOG-OPERATIONS": ("operational log pages", "Operational log pages"),
-    "BASEFWLOG-PERSISTENT-EVENT": ("Persistent Event Log", "Persistent Event Log"),
-    "BASEFWLOG-LOG-CAPACITY-FDP": ("capacity、management 與 FDP logs", "Capacity, management, and FDP logs"),
-    "BASEFWLOG-LOG-POWER-SANITIZE": ("power、voltage 與 sanitize logs", "Power, voltage, and sanitize logs"),
-    "BASEFWLOG-PCIE-LOGS": ("PCIe 的 log page 適用方式", "Log-page applicability for PCIe"),
-    "BASEFWLOG-LOG-COMPLETION": ("Get Log Page completion", "Get Log Page completion"),
+    "BASEFWLOG-MODEL-DOMAIN": ("先找出 firmware 的共享邊界", "Start with the firmware-sharing boundary"),
+    "BASEFWLOG-FW-RESET": ("需要 reset 的完整流程", "Complete reset-based flow"),
+    "BASEFWLOG-FW-IMMEDIATE": ("立即 activation 不是背景工作", "Immediate activation is not background work"),
+    "BASEFWLOG-FW-FAILURE": ("載入失敗與 fallback", "Load failure and fallback"),
+            "BASEFWLOG-FW-SEQUENCE": ("update sequence 應以串行方式規劃", "Plan update sequences as serialized work"),
+    "BASEFWLOG-FW-DISCARD": ("downloaded portions 何時失效", "When downloaded portions are discarded"),
+    "BASEFWLOG-UUID-LIST": ("UUID List 的位置穩定性", "UUID List positional stability"),
+    "BASEFWLOG-UUID-RESET": ("UUID 變更造成的 reset 邊界", "Reset boundary caused by UUID changes"),
+    "BASEFWLOG-CAP-FR": ("FR：目前 active revision", "FR: currently active revision"),
+    "BASEFWLOG-CAP-MDS-ULIST": ("MDS、DID 與 ULIST", "MDS, DID, and ULIST"),
+    "BASEFWLOG-CAP-FRMW": ("FRMW：slot 與 activation 能力", "FRMW: slot and activation capabilities"),
+    "BASEFWLOG-CAP-MTFA": ("MTFA：暫停 command processing 的時間", "MTFA: command-processing pause"),
+    "BASEFWLOG-CAP-FWUG": ("FWUG：download granularity 與 alignment", "FWUG: download granularity and alignment"),
+    "BASEFWLOG-CAP-MPTFAWR": ("MPTFAWR：立即 activation 的完成時間", "MPTFAWR: immediate-activation completion time"),
+    "BASEFWLOG-COMMIT-PURPOSE": ("Firmware Commit 的真正作用", "What Firmware Commit actually does"),
+    "BASEFWLOG-COMMIT-CDW10": ("CA 與 FS 的決策矩陣", "CA and FS decision matrix"),
+    "BASEFWLOG-COMMIT-BOOT": ("Boot Partition cross-reference 邊界", "Boot Partition cross-reference boundary"),
+    "BASEFWLOG-COMMIT-MUD": ("MUD：重疊 sequence 的證據", "MUD: evidence of overlapping sequences"),
+    "BASEFWLOG-COMMIT-STATUS": ("status 決定下一個 recovery 動作", "Status selects the next recovery action"),
+    "BASEFWLOG-DOWNLOAD-RANGE": ("portion 順序、overlap 與 FWUG", "Portion ordering, overlap, and FWUG"),
+    "BASEFWLOG-DOWNLOAD-FIELDS": ("DPTR、NUMD、OFST 與實際 bytes", "DPTR, NUMD, OFST, and actual bytes"),
+    "BASEFWLOG-LOG-COMMAND": ("LID 03h 的最小 command slice", "Minimum command slice for LID 03h"),
+    "BASEFWLOG-LOG-LENGTH": ("512 bytes 的實際 command 計算", "Concrete command calculation for 512 bytes"),
+    "BASEFWLOG-LOG-RAE": ("RAE 的事件副作用", "RAE event side effect"),
+    "BASEFWLOG-LOG-OFFSET": ("完整讀取與 offset 邊界", "Full-read and offset boundary"),
+    "BASEFWLOG-LOG-SCOPE": ("LID 03h 的 domain／subsystem scope", "Domain/subsystem scope of LID 03h"),
+    "BASEFWLOG-LID03-DESCRIPTION": ("LID 03h 回答的問題", "What LID 03h answers"),
+    "BASEFWLOG-LID03-AFI": ("AFI：current 與 next active slot", "AFI: current and next active slots"),
+    "BASEFWLOG-LID03-FRS": ("FRS1-FRS7 與 reserved 區", "FRS1-FRS7 and reserved regions"),
+    "BASEFWLOG-RESET-XREF": ("PCIe reset 名稱不能混用", "Do not conflate PCIe reset names"),
     "BASEFWLOG-XREF-337": ("Figure 337／338 交叉引用差異", "Figure 337/338 cross-reference discrepancy"),
     "PCIE14-SCOPE": ("Transport 與 Base 的優先序", "Transport and Base precedence"),
     "PCIE14-CONVENTION": ("PCIe Reset 欄定義", "PCIe Reset-column convention"),
@@ -879,7 +905,7 @@ def make_claim(report_id: str, report: dict, item: dict) -> dict:
         "normative_keyword": item["normative_keyword"],
         "zh_tw": item["zh_tw"],
         "en": item["en"],
-        "scope_entry_id": report["scope_entry"],
+        "scope_entry_id": item.get("scope_entry_id") or report["scope_entry"],
         "heading_zh_tw": CORE_TITLES[claim_id][0],
         "heading_en": CORE_TITLES[claim_id][1],
     }
@@ -1426,6 +1452,471 @@ def render_markdown(
     return "\n".join(out)
 
 
+FIRMWARE_PARTS = [
+    {
+        "id": "mental-model",
+        "zh": "PART 1 — 先建立 Mental Model：image、slot、domain",
+        "en": "PART 1 — Mental Model: Images, Slots, and Domains",
+        "intro_zh": "Firmware update 不是把檔案寫進裝置後立刻生效。Downloaded image、slot 內已保存的 image、目前執行中的 image，以及排定在下一次 reset 啟用的 image，是四個要分開追蹤的狀態。",
+        "intro_en": "A firmware update is not an immediate file replacement. Track four distinct states: downloaded image data, an image stored in a slot, the currently executing image, and an image scheduled for activation at a later reset.",
+        "claims": [
+            "BASEFWLOG-MODEL-DOMAIN",
+            "BASEFWLOG-CAP-FR",
+            "BASEFWLOG-CAP-MDS-ULIST",
+            "BASEFWLOG-CAP-FRMW",
+            "BASEFWLOG-CAP-MTFA",
+            "BASEFWLOG-CAP-FWUG",
+            "BASEFWLOG-CAP-MPTFAWR",
+        ],
+        "inference_zh": "工程上應把 domain 當作 firmware 狀態的共享鍵。只記錄 PCI Function 或 controller ID，可能把同一組 shared slots 誤判成多套獨立 firmware。",
+        "inference_en": "Use the domain as the firmware-state sharing key. Recording only a PCI Function or controller ID can incorrectly turn one shared slot set into several apparently independent firmware stores.",
+    },
+    {
+        "id": "download",
+        "zh": "PART 2 — 建立 Download Sequence：切片、對齊、失效條件",
+        "en": "PART 2 — Build the Download Sequence: Portions, Alignment, Invalidation",
+        "intro_zh": "Image 可以分段傳送，但 controller 看到的是 dword range，不是檔名或檔案 offset。每一段都要同時滿足 buffer、0's-based length、image-relative offset 與 FWUG。",
+        "intro_en": "An image may be transferred in portions, but the controller sees dword ranges rather than a filename or byte-oriented file offset. Every portion must satisfy buffer, zero-based length, image-relative offset, and FWUG constraints together.",
+        "claims": [
+            "BASEFWLOG-FW-SEQUENCE",
+            "BASEFWLOG-DOWNLOAD-RANGE",
+            "BASEFWLOG-DOWNLOAD-FIELDS",
+            "BASEFWLOG-FW-DISCARD",
+        ],
+        "inference_zh": "driver 應在送出 command 前用 byte interval 檢查 overlap，再轉成 NUMD／OFST；若先轉成 0's-based 欄位才檢查，最容易發生 off-by-one。",
+        "inference_en": "A driver should detect overlap on byte intervals before converting to NUMD and OFST. Performing interval checks only after zero-based encoding makes off-by-one defects much more likely.",
+    },
+    {
+        "id": "commit-activate",
+        "zh": "PART 3 — Commit 與 Activation：CA 決定狀態轉移",
+        "en": "PART 3 — Commit and Activation: CA Selects the State Transition",
+        "intro_zh": "Firmware Commit 同時承擔驗證、slot placement 與 activation policy。最重要的判斷不是「command 成功了嗎」，而是成功後 image 位於哪個 slot、是否已 active、還欠哪一種 reset。",
+        "intro_en": "Firmware Commit combines validation, slot placement, and activation policy. The key question is not merely whether the command succeeded, but which slot now holds the image, whether it is active, and which reset—if any—still remains.",
+        "claims": [
+            "BASEFWLOG-COMMIT-PURPOSE",
+            "BASEFWLOG-COMMIT-CDW10",
+            "BASEFWLOG-COMMIT-BOOT",
+            "BASEFWLOG-COMMIT-MUD",
+            "BASEFWLOG-COMMIT-STATUS",
+            "BASEFWLOG-FW-RESET",
+            "BASEFWLOG-FW-IMMEDIATE",
+            "BASEFWLOG-FW-FAILURE",
+            "BASEFWLOG-RESET-XREF",
+            "BASEFWLOG-UUID-LIST",
+            "BASEFWLOG-UUID-RESET",
+            "BASEFWLOG-XREF-337",
+        ],
+        "inference_zh": "recovery code 應以完整 SCT／SC 分流，而不是只判斷 success／failure。回報需要 Conventional Reset 時，用 FLR 取代並不能滿足該狀態所指示的 activation 邊界。",
+        "inference_en": "Recovery logic should branch on the complete SCT/SC rather than a success/failure boolean. When status requires Conventional Reset, substituting FLR does not satisfy the indicated activation boundary.",
+    },
+    {
+        "id": "lid03",
+        "zh": "PART 4 — 用 LID 03h 驗證：從 command 到 512-byte layout",
+        "en": "PART 4 — Verify with LID 03h: From Command to the 512-Byte Layout",
+        "intro_zh": "LID 03h 是 firmware workflow 的觀測面：AFI 回答 current／next active slot，FRS1-FRS7 回答各 slot 保存的 revision。它不替代 Firmware Commit completion，也不告訴 host 該用哪一種 reset。",
+        "intro_en": "LID 03h is the observation surface for the firmware workflow. AFI reports current and next active slots, while FRS1-FRS7 report stored revisions. It does not replace Firmware Commit completion or choose the required reset for the host.",
+        "claims": [
+            "BASEFWLOG-LOG-COMMAND",
+            "BASEFWLOG-LOG-LENGTH",
+            "BASEFWLOG-LOG-RAE",
+            "BASEFWLOG-LOG-OFFSET",
+            "BASEFWLOG-LOG-SCOPE",
+            "BASEFWLOG-LID03-DESCRIPTION",
+            "BASEFWLOG-LID03-AFI",
+            "BASEFWLOG-LID03-FRS",
+        ],
+        "inference_zh": "驗證時要同時比對 Identify.FR、LID 03h 的 CAFS 與對應 FRSx。只比 ASCII revision 可能在兩個 slots 恰好含相同字串時失去 slot 身分。",
+        "inference_en": "Verification should compare Identify.FR, LID 03h CAFS, and the corresponding FRSx together. Comparing only the ASCII revision loses slot identity when two slots happen to contain the same string.",
+    },
+]
+
+
+def firmware_mental_model_svg() -> str:
+    return """<svg width="100%" height="240" viewBox="0 0 820 240" role="img" aria-labelledby="fw-model-title fw-model-desc">
+<title id="fw-model-title">Firmware update mental model</title>
+<desc id="fw-model-desc">Downloaded portions are committed to a shared firmware slot, selected for activation, and then observed through Identify FR and LID 03h.</desc>
+<defs><marker id="fw-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="currentColor"/></marker></defs>
+<rect x="20" y="70" width="150" height="70" fill="none" stroke="currentColor"/><text x="95" y="96" text-anchor="middle" fill="currentColor">Downloaded</text><text x="95" y="120" text-anchor="middle" fill="currentColor">image portions</text>
+<rect x="230" y="40" width="170" height="130" fill="none" stroke="currentColor"/><text x="315" y="66" text-anchor="middle" fill="currentColor">Domain-shared slots</text><text x="315" y="95" text-anchor="middle" fill="currentColor">slot 1 · current</text><text x="315" y="120" text-anchor="middle" fill="currentColor">slot 2 · next</text><text x="315" y="145" text-anchor="middle" fill="currentColor">slot 3…7</text>
+<rect x="470" y="70" width="140" height="70" fill="none" stroke="currentColor"/><text x="540" y="96" text-anchor="middle" fill="currentColor">Running</text><text x="540" y="120" text-anchor="middle" fill="currentColor">firmware</text>
+<rect x="670" y="40" width="130" height="130" fill="none" stroke="currentColor"/><text x="735" y="70" text-anchor="middle" fill="currentColor">Observation</text><text x="735" y="100" text-anchor="middle" fill="currentColor">Identify.FR</text><text x="735" y="127" text-anchor="middle" fill="currentColor">LID 03h AFI</text><text x="735" y="151" text-anchor="middle" fill="currentColor">FRS1…FRS7</text>
+<line x1="170" y1="105" x2="228" y2="105" stroke="currentColor" marker-end="url(#fw-arrow)"/><text x="199" y="91" text-anchor="middle" fill="currentColor">Commit</text>
+<line x1="400" y1="105" x2="468" y2="105" stroke="currentColor" marker-end="url(#fw-arrow)"/><text x="434" y="91" text-anchor="middle" fill="currentColor">activate</text>
+<line x1="610" y1="105" x2="668" y2="105" stroke="currentColor" marker-end="url(#fw-arrow)"/>
+<path d="M315,170 C315,220 540,220 540,142" fill="none" stroke="currentColor" marker-end="url(#fw-arrow)"/><text x="425" y="218" text-anchor="middle" fill="currentColor">immediate or reset boundary</text>
+</svg>"""
+
+
+def firmware_afi_svg() -> str:
+    return """<svg width="100%" height="170" viewBox="0 0 820 170" role="img" aria-labelledby="afi-title afi-desc">
+<title id="afi-title">AFI and Firmware Slot Information layout</title>
+<desc id="afi-desc">AFI byte zero contains NAFS in bits six through four and CAFS in bits two through zero, followed by reserved bytes and seven eight-byte revision fields.</desc>
+<text x="20" y="28" fill="currentColor">AFI byte 0</text>
+<rect x="20" y="40" width="80" height="38" fill="none" stroke="currentColor"/><rect x="100" y="40" width="240" height="38" fill="none" stroke="currentColor"/><rect x="340" y="40" width="80" height="38" fill="none" stroke="currentColor"/><rect x="420" y="40" width="240" height="38" fill="none" stroke="currentColor"/>
+<text x="60" y="64" text-anchor="middle" fill="currentColor">R</text><text x="220" y="64" text-anchor="middle" fill="currentColor">NAFS [6:4]</text><text x="380" y="64" text-anchor="middle" fill="currentColor">R</text><text x="540" y="64" text-anchor="middle" fill="currentColor">CAFS [2:0]</text>
+<text x="20" y="108" fill="currentColor">512-byte log page</text>
+<rect x="20" y="120" width="70" height="34" fill="none" stroke="currentColor"/><rect x="90" y="120" width="90" height="34" fill="none" stroke="currentColor"/><rect x="180" y="120" width="390" height="34" fill="none" stroke="currentColor"/><rect x="570" y="120" width="230" height="34" fill="none" stroke="currentColor"/>
+<text x="55" y="142" text-anchor="middle" fill="currentColor">AFI</text><text x="135" y="142" text-anchor="middle" fill="currentColor">R 1:7</text><text x="375" y="142" text-anchor="middle" fill="currentColor">FRS1…FRS7 · bytes 8:63</text><text x="685" y="142" text-anchor="middle" fill="currentColor">Reserved 64:511</text>
+</svg>"""
+
+
+def firmware_claim_order(claims: list[dict]) -> list[dict]:
+    by_id = {item["id"]: item for item in claims if item["figure"] is None}
+    return [by_id[claim_id] for part in FIRMWARE_PARTS for claim_id in part["claims"]]
+
+
+def firmware_figure_appendix_html(claims: list[dict], figures: list[dict]) -> list[str]:
+    figure_claims = {
+        int(item["figure"]): item for item in claims if item["figure"] is not None
+    }
+    out = [
+        '<section id="appendix"><h2>Appendix A — Supporting Figure／Field Reference</h2>',
+        "<p id=\"figure-index\"><strong>[解釋]</strong> 下列 Figure 是主流程的可追溯證據，不是文章章節順序。"
+        "<code>referenced_dependency</code> 只摘取理解所需欄位；Figure 209 只發布 LID 03h row。</p>",
+    ]
+    for figure in figures:
+        item = figure_claims[int(figure["number"])]
+        details = figure_explanation(figure, "zh")
+        role = "最小相依切片" if figure.get("role") == "referenced_dependency" else "主範圍證據"
+        out.extend(
+            [
+                "<details><summary><strong>Figure "
+                + str(figure["number"])
+                + ": "
+                + html.escape(figure["title"])
+                + "</strong> — "
+                + role
+                + "</summary>",
+                f'<!-- figure-table:{figure["id"]} -->',
+                f'<p><strong>[SPEC]</strong> <span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></p>',
+                "<p><strong>[解釋]</strong> " + html.escape(details["purpose"] + " " + details["reading"]) + "</p>",
+                "<p><strong>來源欄位索引：</strong> " + html.escape(details["item_text"]) + "</p>",
+                "<p><small>" + html.escape(item["citation_zh_tw"]) + "</small></p>",
+                "</details>",
+            ]
+        )
+    out.append("</section>")
+    return out
+
+
+def render_firmware_html(
+    report: dict, claims: list[dict], figures: list[dict], tutorial: bool
+) -> str:
+    label = "新手教學版" if tutorial else "詳細 Spec 版"
+    claims_by_id = {item["id"]: item for item in claims if item["figure"] is None}
+    toc = "".join(
+        f'<li><a href="#{part["id"]}">{html.escape(part["zh"])}</a></li>'
+        for part in FIRMWARE_PARTS
+    )
+    parts = [
+        "<!doctype html>",
+        '<html lang="zh-Hant-TW">',
+        "<head>",
+        '<meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        f"<title>{html.escape(report['title_zh'])}｜{label}</title>",
+        "</head>",
+        "<body>",
+        '<header id="top">',
+        f"<h1>{html.escape(report['title_zh'])}</h1>",
+        f"<p><strong>{label}</strong>｜從 Firmware Image Download 到 LID 03h 驗證的工程教學</p>",
+        "<p>讀者前提：已理解 NVMe Admin Queue、SQE／CQE、Controller Level Reset 與 Identify 基礎。</p>",
+        "</header>",
+        '<nav aria-label="目錄"><details open><summary><strong>Contents／章節導覽</strong></summary><ol>',
+        '<li><a href="#scope">範圍、來源與閱讀語意</a></li>',
+        toc,
+        '<li><a href="#example">End-to-End Example</a></li>',
+        '<li><a href="#debug">Debug Decision Flow</a></li>',
+        '<li><a href="#appendix">Appendix A — Supporting Figure／Field Reference</a></li>',
+        "</ol></details></nav>",
+        "<main>",
+        '<section id="scope"><h2>範圍、來源與閱讀語意</h2>',
+        f"<p><strong>納入：</strong>{html.escape(report['range'])}。</p>",
+        "<p><strong>明確不納入：</strong>其他 LID、未核准的傳輸專屬內容、NVM Command Set 1.3，以及 Boot Partition 的完整功能流程。BPID 與 CA=110b／111b 只作 §5.2.9／§5.2.10 cross-reference。</p>",
+        "<table><thead><tr><th>標記</th><th>用途</th><th>能否視為 requirement</th></tr></thead><tbody>",
+        "<tr><td>[SPEC]</td><td>規格明文的精確轉述，保留 shall／may／should</td><td>依原 keyword</td></tr>",
+        "<tr><td>[解釋]</td><td>把多個欄位連成可理解的機制</td><td>否</td></tr>",
+        "<tr><td>[推論]</td><td>依 Spec 導出的工程實作含意</td><td>否</td></tr>",
+        "<tr><td>[說明性範例]</td><td>協助計算與 Debug 的具體數值</td><td>否</td></tr>",
+        "</tbody></table>",
+        "<p><strong>規範強度：</strong><code>shall／shall not</code> 是強制要求；<code>should／should not</code> 是有偏好的建議；<code>may</code> 表示允許選擇；<code>reserved</code> 不得自行賦予意義。</p>",
+        "<p><strong>來源：</strong>NVM Express Base Specification, Revision 2.4；NVMe over PCIe Transport Specification, Revision 1.4（僅 §3.3 reset 名稱）。查證日期：2026-09-01。</p>",
+        "</section>",
+        '<section aria-labelledby="model-picture"><h2 id="model-picture">一張圖先看完整故事</h2>',
+        firmware_mental_model_svg(),
+        "<p><strong>[解釋]</strong> Download 只建立暫存 portions；Commit 才把 image 驗證並放進 slot。Activation 再把某個 slot 的 image 變成正在執行的 firmware。最後以 Identify.FR 與 LID 03h 觀察結果。</p>",
+        "</section>",
+    ]
+    for part in FIRMWARE_PARTS:
+        parts.extend(
+            [
+                f'<section id="{part["id"]}"><h2>{html.escape(part["zh"])}</h2>',
+                "<p><strong>[解釋]</strong> " + html.escape(part["intro_zh"]) + "</p>",
+            ]
+        )
+        if part["id"] == "mental-model":
+            parts.extend(
+                [
+                    "<table><thead><tr><th>物件／欄位</th><th>它回答什麼</th><th>Debug 時何時讀</th></tr></thead><tbody>",
+                    "<tr><td>FRMW／FWUG／MTFA／MPTFAWR</td><td>能做什麼、限制與時間</td><td>任何 download 前</td></tr>",
+                    "<tr><td>Downloaded portions</td><td>尚未 commit 的 image ranges</td><td>download／overlap 錯誤</td></tr>",
+                    "<tr><td>Firmware slot</td><td>已保存但不一定 active 的 image</td><td>commit 與 LID 03h</td></tr>",
+                    "<tr><td>Identify.FR＋AFI／FRSx</td><td>目前執行者與 slot 狀態</td><td>activation 後驗證</td></tr>",
+                    "</tbody></table>",
+                ]
+            )
+        if part["id"] == "commit-activate":
+            parts.extend(
+                [
+                    "<table><thead><tr><th>CA</th><th>對 slot 的動作</th><th>activation 時點</th><th>LID 03h 觀察重點</th></tr></thead><tbody>",
+                    "<tr><td>000b</td><td>放置 downloaded image</td><td>不 activation</td><td>FRSx 可變，CAFS 不因此改變</td></tr>",
+                    "<tr><td>001b</td><td>放置 downloaded image</td><td>下次合適 CLR</td><td>reset 前看 NAFS；後看 CAFS</td></tr>",
+                    "<tr><td>010b</td><td>使用既有 slot</td><td>下次合適 CLR</td><td>reset 前看 NAFS；後看 CAFS</td></tr>",
+                    "<tr><td>011b</td><td>放置或使用既有 slot</td><td>立即；command 等到結果</td><td>完成後重新讀 CAFS／FRSx</td></tr>",
+                    "</tbody></table>",
+                ]
+            )
+        if part["id"] == "lid03":
+            parts.extend([firmware_afi_svg()])
+        for item_id in part["claims"]:
+            item = claims_by_id[item_id]
+            parts.extend(
+                [
+                    f"<article><h3>{html.escape(item['heading_zh_tw'])}</h3>",
+                    f'<p><strong>[SPEC]</strong> <span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></p>',
+                    f"<p><small>{html.escape(item['citation_zh_tw'])}</small></p>",
+                    "</article>",
+                ]
+            )
+        parts.extend(
+            [
+                "<p><strong>[推論]</strong> " + html.escape(part["inference_zh"]) + "</p>",
+                '<p><a href="#top">回到目錄</a></p></section>',
+            ]
+        )
+    parts.extend(
+        [
+            '<section id="example"><h2>End-to-End Example：12 KiB image，slot 2，下次 CLR 啟用</h2>',
+            "<p><strong>[說明性範例]</strong> 假設 Identify 回報 <code>NOFS=3</code>、<code>FFSRO=1</code>、<code>FWUG=1h</code>，目前 LID 03h 為 <code>CAFS=1</code>。選 slot 2 可避開 read-only slot 1；FWUG=1h 代表 4 KiB granularity／alignment。</p>",
+            "<ol><li>將 12 KiB 切成三個 4 KiB portions。每段 4096 bytes=1024 dwords，所以 <code>NUMD=1024-1=1023=000003FFh</code>。</li><li>三段的 <code>OFST</code> 依序為 <code>00000000h</code>、<code>00000400h</code>、<code>00000800h</code>；byte offsets 分別是 0、4096、8192。</li><li>送出 Firmware Commit：<code>CA=001b</code>、<code>FS=010b</code>，所以 <code>CDW10=0000000Ah</code>。成功只表示已排定下次合適 CLR，不表示 slot 2 已在執行。</li><li>reset 前讀完整 LID 03h：512 bytes=128 dwords，<code>NUMD=127</code>，<code>CDW10=007F0003h</code>。若 AFI=<code>21h</code>，則 <code>NAFS=2</code>、<code>CAFS=1</code>。</li><li>執行 Firmware Commit status 所要求且能觸發 activation 的 reset，重新初始化 controller／I/O queues，再讀 Identify.FR 與 LID 03h；確認 <code>CAFS=2</code> 且 FRS2 是預期 revision。</li></ol>",
+            "<p><strong>[推論]</strong> 若 reset 後 FRS2 正確但 CAFS 仍為 1，代表 image 已在 slot 2，卻沒有完成預期的 activation；優先檢查 CA、completion status 與實際 reset 類型。</p>",
+            '<p><a href="#top">回到目錄</a></p></section>',
+            '<section id="debug"><h2>Debug Decision Flow</h2>',
+            "<table><thead><tr><th>觀察點</th><th>先檢查</th><th>常見誤解</th><th>下一步</th></tr></thead><tbody>",
+            "<tr><td>Download 回 Invalid Field</td><td>(NUMD+1)×4、OFST×4、FWUG</td><td>把 NUMD 當實際 dword 數</td><td>以 byte interval 重算 alignment</td></tr>",
+            "<tr><td>Commit 回 Invalid Firmware Slot</td><td>NOFS、FFSRO、FS</td><td>slot 1 永遠可寫</td><td>改用支援且可寫的 slot</td></tr>",
+            "<tr><td>Commit 要求 reset</td><td>完整 SCT／SC</td><td>所有 reset 等價</td><td>依 status 與 PCIe §3.3 選 reset</td></tr>",
+            "<tr><td>LID 03h 看似沒更新</td><td>MDS／DID、處理 command 的 controller、AFI</td><td>每個 controller 有獨立 slots</td><td>回到同一 domain 核對</td></tr>",
+            "<tr><td>FRSx 全零</td><td>NOFS、slot 有效性、buffer offset</td><td>零值是空字串 revision</td><td>視為 unsupported／no valid revision</td></tr>",
+            "<tr><td>立即 activation timeout</td><td>MTFA、MPTFAWR、completion status</td><td>CA=011b 是背景工作</td><td>等待 command 結果並照 status recovery</td></tr>",
+            "</tbody></table>",
+            "<p><strong>最小紀錄集合：</strong>controller／domain identity、FRMW、FWUG、MTFA、MPTFAWR、每筆 NUMD／OFST、Commit CDW10、完整 CQE status／MUD、reset 類型、activation 前後的 512-byte LID 03h。</p>",
+            '<p><a href="#top">回到目錄</a></p></section>',
+        ]
+    )
+    if not tutorial:
+        parts.extend(
+            [
+                '<section id="field-reference"><h2>Detailed Reference — 重要欄位速查</h2>',
+                "<table><thead><tr><th>結構</th><th>欄位</th><th>encoding／unit</th><th>嚴謹注意事項</th></tr></thead><tbody>",
+                "<tr><td>Firmware Image Download CDW10</td><td>NUMD[31:0]</td><td>0's-based dwords</td><td>實際 bytes=(NUMD+1)×4</td></tr>",
+                "<tr><td>Firmware Image Download CDW11</td><td>OFST[31:0]</td><td>dwords</td><td>image 起點 portion shall 為 0h</td></tr>",
+                "<tr><td>Firmware Commit CDW10</td><td>BPID／CA／FS</td><td>bit 31／[5:3]／[2:0]</td><td>100b-101b reserved</td></tr>",
+                "<tr><td>Get Log Page CDW10</td><td>NUMDL／RAE／LSP／LID</td><td>[31:16]／15／[14:8]／[7:0]</td><td>LID 03h full read=007F0003h</td></tr>",
+                "<tr><td>LID 03h byte 0</td><td>NAFS／CAFS</td><td>[6:4]／[2:0]</td><td>NAFS=0 只表示未指出 next slot</td></tr>",
+                "<tr><td>LID 03h bytes 8:63</td><td>FRS1-FRS7</td><td>各 8-byte ASCII</td><td>invalid／unsupported slot shall 為 0h</td></tr>",
+                "</tbody></table></section>",
+            ]
+        )
+    parts.extend(firmware_figure_appendix_html(claims, figures))
+    parts.extend(
+        [
+            '<section id="sources"><h2>來源與限制</h2>',
+            "<p>主要來源：NVM Express Base Specification, Revision 2.4。Reset 名稱的最小外部依賴：NVM Express NVMe over PCIe Transport Specification, Revision 1.4, §3.3, 文件／PDF 頁 11。</p>",
+            "<p>目前未納入額外 Errata、ECN、Technical Proposal、controller vendor 文件或 PCI Express Base Specification 原文。若 revision 或核准範圍改變，應用 claim ID 重新核對。</p>",
+            '<p><a href="#top">回到目錄</a></p></section>',
+            "</main>",
+            "</body>",
+            "</html>",
+            "",
+        ]
+    )
+    return "\n".join(parts)
+
+
+def firmware_figure_appendix_markdown(
+    claims: list[dict], figures: list[dict], language: str
+) -> list[str]:
+    english = language == "en"
+    figure_claims = {
+        int(item["figure"]): item for item in claims if item["figure"] is not None
+    }
+    out = [
+        "## Appendix A — Supporting Figure / Field Reference",
+        "",
+        (
+            "Figures are traceable evidence for the workflow, not the article outline. Dependency entries expose only the required slice; Figure 209 is limited to the LID 03h row."
+            if english
+            else "Figure 是主流程的可追溯證據，不是文章骨架。dependency entries 只取理解所需切片；Figure 209 只保留 LID 03h row。"
+        ),
+        "",
+    ]
+    for figure in figures:
+        item = figure_claims[int(figure["number"])]
+        details = figure_explanation(figure, language)
+        statement = item["en"] if english else item["zh_tw"]
+        citation = item["citation_en"] if english else item["citation_zh_tw"]
+        role = (
+            "minimum dependency slice"
+            if english and figure.get("role") == "referenced_dependency"
+            else "最小相依切片"
+            if figure.get("role") == "referenced_dependency"
+            else "main-scope evidence"
+            if english
+            else "主範圍證據"
+        )
+        out.extend(
+            [
+                '<details markdown="1">',
+                f"<summary><strong>Figure {figure['number']}: {html.escape(figure['title'])}</strong> — {role}</summary>",
+                "",
+                f"<!-- claim:{item['id']} figure-table:{figure['id']} -->",
+                "",
+                "**[SPEC]** " + statement,
+                "",
+                ("**[Explanation]** " if english else "**[解釋]** ")
+                + details["purpose"]
+                + " "
+                + details["reading"],
+                "",
+                ("Source field index: " if english else "來源欄位索引：")
+                + details["item_text"],
+                "",
+                "> " + citation,
+                "",
+                "</details>",
+                "",
+            ]
+        )
+    return out
+
+
+def render_firmware_markdown(
+    report: dict, claims: list[dict], figures: list[dict], language: str
+) -> str:
+    english = language == "en"
+    title = report["title_en"] if english else report["title_zh"]
+    description = (
+        "A source-located engineering tutorial from firmware download through LID 03h verification."
+        if english
+        else "從 firmware download 到 LID 03h 驗證、可供 GitHub Pages 與 PPT 使用的工程教學。"
+    )
+    by_id = {item["id"]: item for item in claims if item["figure"] is None}
+    out = [
+        frontmatter("base-admin-fw-logs", title, description, language),
+        f"# {title}",
+        "",
+        (
+            "This tutorial builds an end-to-end engineering model: capability readout, image download, commit and activation, reset boundaries, and verification with Firmware Slot Information (LID 03h)."
+            if english
+            else "本教學建立完整工程模型：能力探測、image download、commit／activation、reset 邊界，以及用 Firmware Slot Information（LID 03h）驗證結果。"
+        ),
+        "",
+        "## " + ("Scope and source semantics" if english else "範圍與來源語意"),
+        "",
+        ("Scope: " + report["range_en"] + "." if english else "範圍：" + report["range"] + "。"),
+        "",
+        SOURCES["NVME-BASE-2.4"]["marker"],
+        "",
+        SOURCES["NVME-PCIE-TRANSPORT-1.4"]["marker"]
+        + (" — §3.3 reset terminology only" if english else " — 僅 §3.3 reset 名稱"),
+        "",
+        (
+            "Excluded: every other LID, unapproved transport-specific material, NVM Command Set 1.3, and the full Boot Partition feature flow. BPID and CA=110b/111b remain only as cross-references."
+            if english
+            else "排除：其餘 LID、未核准的傳輸專屬內容、NVM Command Set 1.3、Boot Partition 完整功能流程；BPID 與 CA=110b／111b 只保留 cross-reference。"
+        ),
+        "",
+        (
+            "`shall` is mandatory, `should` is a preferred recommendation, `may` permits a choice, and `reserved` is not assigned an invented meaning. `[SPEC]` is a source-faithful paraphrase; `[Explanation]`, `[Inference]`, and `[Informative example]` add no requirement."
+            if english
+            else "`shall` 是強制要求，`should` 是有偏好的建議，`may` 表示允許選擇，`reserved` 不自行賦義。`[SPEC]` 是忠於來源的轉述；`[解釋]`、`[推論]`、`[說明性範例]` 不新增 requirement。"
+        ),
+        "",
+        "## Mental Model",
+        "",
+        "```text",
+        "Downloaded portions -> committed slot -> current / next active image -> Identify.FR + LID 03h",
+        "```",
+        "",
+    ]
+    for part in FIRMWARE_PARTS:
+        out.extend(
+            [
+                f"## {part['en'] if english else part['zh']}",
+                "",
+                ("**[Explanation]** " if english else "**[解釋]** ")
+                + (part["intro_en"] if english else part["intro_zh"]),
+                "",
+            ]
+        )
+        for item_id in part["claims"]:
+            item = by_id[item_id]
+            out.extend(
+                [
+                    f"### {item['heading_en'] if english else item['heading_zh_tw']}",
+                    "",
+                    f"<!-- claim:{item['id']} -->",
+                    "",
+                    "**[SPEC]** " + (item["en"] if english else item["zh_tw"]),
+                    "",
+                    "> " + (item["citation_en"] if english else item["citation_zh_tw"]),
+                    "",
+                ]
+            )
+        out.extend(
+            [
+                ("**[Inference]** " if english else "**[推論]** ")
+                + (part["inference_en"] if english else part["inference_zh"]),
+                "",
+            ]
+        )
+    out.extend(
+        [
+            "## " + ("End-to-End Example" if english else "End-to-End Example：12 KiB image，slot 2，下次 CLR 啟用"),
+            "",
+            (
+                "**[Informative example]** Assume NOFS=3, FFSRO=1, FWUG=1h, and CAFS=1. Use writable slot 2. Split 12 KiB into three 4 KiB portions. Each portion is 1024 dwords, so NUMD=1023=000003FFh; OFST values are 00000000h, 00000400h, and 00000800h. Commit with CA=001b and FS=010b, giving CDW10=0000000Ah. Before reset, read all 512 bytes of LID 03h with NUMD=127 and CDW10=007F0003h. AFI=21h decodes to NAFS=2 and CAFS=1. Perform the required reset, reinitialize, then verify CAFS=2 together with FRS2 and Identify.FR."
+                if english
+                else "**[說明性範例]** 假設 NOFS=3、FFSRO=1、FWUG=1h、CAFS=1，選可寫的 slot 2。12 KiB 切成三個 4 KiB portions；每段 1024 dwords，所以 NUMD=1023=000003FFh，OFST 依序是 00000000h、00000400h、00000800h。以 CA=001b、FS=010b commit，CDW10=0000000Ah。Reset 前完整讀 512-byte LID 03h：NUMD=127、CDW10=007F0003h；AFI=21h 解成 NAFS=2、CAFS=1。執行要求的 reset、重新初始化，再一起驗證 CAFS=2、FRS2 與 Identify.FR。"
+            ),
+            "",
+            "## " + ("Debug Decision Flow" if english else "Debug Decision Flow"),
+            "",
+            (
+                "| Symptom | First evidence | Likely mistake | Next action |\n|---|---|---|---|\n| Download Invalid Field | NUMD, OFST, FWUG | NUMD treated as a direct count | Recompute byte intervals |\n| Invalid Firmware Slot | NOFS, FFSRO, FS | Slot 1 assumed writable | Select a supported writable slot |\n| Reset-required status | Full SCT/SC | All resets treated as equal | Follow status and PCIe §3.3 |\n| LID 03h unchanged | MDS/DID, controller, AFI | Slots assumed per controller | Verify within the same domain |\n| FRSx is zero | NOFS, slot validity, buffer offset | Zero treated as an empty revision string | Treat as unsupported/no valid revision |"
+                if english
+                else "| 症狀 | 第一證據 | 常見錯誤 | 下一步 |\n|---|---|---|---|\n| Download Invalid Field | NUMD、OFST、FWUG | 把 NUMD 當直接 count | 重算 byte intervals |\n| Invalid Firmware Slot | NOFS、FFSRO、FS | 假設 slot 1 可寫 | 改用支援且可寫 slot |\n| reset-required status | 完整 SCT／SC | 把所有 reset 視為相同 | 依 status 與 PCIe §3.3 |\n| LID 03h 未更新 | MDS／DID、controller、AFI | 假設 slots 各 controller 獨立 | 在同一 domain 核對 |\n| FRSx 為零 | NOFS、slot validity、buffer offset | 當成空字串 revision | 視為 unsupported／no valid revision |"
+            ),
+            "",
+        ]
+    )
+    out.extend(firmware_figure_appendix_markdown(claims, figures, language))
+    out.extend(
+        [
+            "## " + ("Limits" if english else "限制"),
+            "",
+            (
+                "Verification date: 2026-09-01. No additional errata, ECNs, Technical Proposals, controller-vendor documents, or PCI Express Base Specification source text are included. Re-check affected claim IDs when the approved source set changes."
+                if english
+                else "查證日期：2026-09-01。未納入其他 Errata、ECN、Technical Proposal、controller vendor 文件或 PCI Express Base Specification 原文。核准來源集合改變時，應依 claim ID 重查。"
+            ),
+            "",
+        ]
+    )
+    return "\n".join(out)
+
+
 def main() -> int:
     argparse.ArgumentParser(description=__doc__).parse_args()
     contract = json.loads(
@@ -1434,6 +1925,11 @@ def main() -> int:
     register_doc = json.loads(
         (CONTROL / "figure-table-register.json").read_text(encoding="utf-8")
     )
+    scope_doc = json.loads((CONTROL / "scope.json").read_text(encoding="utf-8"))
+    figure_allowlists = {
+        item["id"]: set(item.get("included_figure_ids", []))
+        for item in scope_doc["reports"]
+    }
     register_entries = register_doc["entries"]
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
@@ -1445,6 +1941,10 @@ def main() -> int:
                 for item in register_entries
                 if item["report_id"] == report_id
                 and item["scope_status"] == "INCLUDE"
+                and (
+                    not figure_allowlists.get(report_id)
+                    or item["id"] in figure_allowlists[report_id]
+                )
             ],
             key=lambda item: (
                 item.get("role") == "referenced_dependency",
@@ -1465,16 +1965,32 @@ def main() -> int:
         all_claims.extend(report_claims)
 
         ids = artifact_ids(report_id)
-        output_text = {
-            ids[0]: render_html(report_id, report, report_claims, figures, True),
-            ids[1]: render_html(report_id, report, report_claims, figures, False),
-            ids[2]: render_markdown(
-                report_id, report, report_claims, figures, "zh"
-            ),
-            ids[3]: render_markdown(
-                report_id, report, report_claims, figures, "en"
-            ),
-        }
+        if report_id == "base-admin-fw-logs":
+            output_text = {
+                ids[0]: render_firmware_html(report, report_claims, figures, True),
+                ids[1]: render_firmware_html(report, report_claims, figures, False),
+                ids[2]: render_firmware_markdown(
+                    report, report_claims, figures, "zh"
+                ),
+                ids[3]: render_firmware_markdown(
+                    report, report_claims, figures, "en"
+                ),
+            }
+        else:
+            output_text = {
+                ids[0]: render_html(
+                    report_id, report, report_claims, figures, True
+                ),
+                ids[1]: render_html(
+                    report_id, report, report_claims, figures, False
+                ),
+                ids[2]: render_markdown(
+                    report_id, report, report_claims, figures, "zh"
+                ),
+                ids[3]: render_markdown(
+                    report_id, report, report_claims, figures, "en"
+                ),
+            }
         for artifact_id, content in output_text.items():
             path = ROOT / artifacts[artifact_id]["path"]
             path.parent.mkdir(parents=True, exist_ok=True)

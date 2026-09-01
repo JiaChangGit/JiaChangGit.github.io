@@ -27,14 +27,18 @@
 - Unicode 圖示只用於固定語意：`[必須]`、`[允許]`、`[建議]`、`[注意]`，不作裝飾。
 - inline SVG 必須有 `title`／`desc` 或等效替代文字，並在圖說列出來源 claim。
 
-## 每張規格 Figure／Table 的介紹順序
+## Figure／Table 作為支援證據
 
-1. 這張圖或表解決什麼問題。
-2. 如何閱讀各區塊、欄位、bit 或箭頭。
-3. 哪些條件是 `shall`、`may`、`should` 或 `optional`。
-4. 提供一個說明性範例，並標明不是新增規格要求。
-5. 列出保留值、錯誤、例外、跨規格依賴與未提供來源。
-6. 列 section、Figure／Table number、文件頁與 PDF 頁。
+主教學先依「問題、Mental Model、流程、欄位、範例、錯誤與 Debug」組織。Figure／Table
+放在首次支援該概念的位置，或集中於 Detailed Reference／Appendix；不得以 Figure 順序取代
+教學故事線。每筆 Figure／Table reference 仍須說明用途、讀法、適用的 normative keyword、
+限制及來源 section／頁碼。
+
+第五份 firmware update 報告參考 Claude Code 工程文件的資訊設計：Hero／scope、Mental
+Model、PART 層級、固定語意標記、bit-field、sequence、decision flow、章末統整與 Appendix。
+由於離線 HTML 絕對禁止 CSS／JavaScript，視覺呈現改用語意 HTML、`details`、anchor、
+四欄內 table 與單色 `currentColor` inline SVG；不模擬固定側欄、搜尋、scrollspy 或 theme
+button。
 
 ## 100 分鐘報告的暫定節奏
 

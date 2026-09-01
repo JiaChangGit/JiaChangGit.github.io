@@ -179,7 +179,7 @@
       "format": "html",
       "claim_coverage": "subset",
       "purpose": "iPad 中文新手教學版",
-      "required_source_ids": ["NVME-BASE-2.4"]
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
     },
     {
       "id": "basefwlog-detailed-html",
@@ -189,7 +189,7 @@
       "format": "html",
       "claim_coverage": "all",
       "purpose": "iPad 中文詳細 Spec 版",
-      "required_source_ids": ["NVME-BASE-2.4"]
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
     },
     {
       "id": "basefwlog-zh-md",
@@ -200,7 +200,7 @@
       "claim_coverage": "all",
       "parity_group": "basefwlog-bilingual",
       "purpose": "中文 GitHub Pages 與 PPT 內容來源",
-      "required_source_ids": ["NVME-BASE-2.4"]
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
     },
     {
       "id": "basefwlog-en-md",
@@ -211,7 +211,7 @@
       "claim_coverage": "all",
       "parity_group": "basefwlog-bilingual",
       "purpose": "英文 GitHub Pages 與 PPT 內容來源",
-      "required_source_ids": ["NVME-BASE-2.4"]
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
     }
   ],
   "source_markers": {

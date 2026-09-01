@@ -117,14 +117,12 @@ class NvmeReportContractTest(unittest.TestCase):
         ]
         dependencies = [item for item in new_report if item.get("role") == "referenced_dependency"]
         expected_dependencies = {
-            "70", "84", "93", "101", "102", "107", "155", "195", "337", "338",
-            "339", "346", "347", "348", "448", "451", "452", "466", "474", "480",
-            "512", "527", "656", "745", "746", "747", "772", "782", "783",
+            "93", "155", "337", "338", "347", "348", "474",
         }
-        self.assertEqual(len(new_report), 146)
-        self.assertEqual(len(dependencies), 29)
+        self.assertEqual(len(new_report), 22)
+        self.assertEqual(len(dependencies), 7)
         self.assertEqual({item["number"] for item in dependencies}, expected_dependencies)
-        self.assertEqual(sum(item.get("role") == "in_scope" for item in new_report), 117)
+        self.assertEqual(sum(item.get("role") == "in_scope" for item in new_report), 15)
         self.assertTrue(all(item["type"] == "Figure" for item in new_report))
         self.assertTrue(all(item.get("referenced_from") for item in dependencies))
         self.assertTrue(all(item["mode"] == "dependency-slice" for item in dependencies))
@@ -134,6 +132,45 @@ class NvmeReportContractTest(unittest.TestCase):
         )
         self.assertNotIn("257", {item["number"] for item in new_report})
         self.assertNotIn("320", {item["number"] for item in new_report})
+        report_scope = next(
+            item for item in scope["reports"] if item["id"] == "base-admin-fw-logs"
+        )
+        self.assertEqual(
+            {item["id"] for item in new_report},
+            set(report_scope["included_figure_ids"]),
+        )
+        figure_209 = next(item for item in new_report if item["number"] == "209")
+        self.assertEqual(
+            figure_209["key_items"],
+            [
+                "LID 03h",
+                "CSI = N",
+                "Domain / NVM subsystem",
+                "Firmware Slot Information",
+                "§5.2.13.1.4",
+                "MDS",
+            ],
+        )
+
+    def test_firmware_report_is_tutorial_first_and_lid03_only(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        for artifact in contract["artifacts"]:
+            if artifact["report_id"] != "base-admin-fw-logs":
+                continue
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            for required in ("Mental Model", "End-to-End", "Debug", "LID 03h", "007F0003h"):
+                self.assertIn(required, text)
+            self.assertNotIn("Figure 逐圖導讀", text)
+            self.assertNotIn("Figure-by-Figure Guide", text)
+            for removed_topic in (
+                "Persistent Event Log",
+                "SMART / Health Information",
+                "FDP Configurations",
+                "Sanitize Status",
+            ):
+                self.assertNotIn(removed_topic, text)
 
     def test_markdown_language_and_site_layout_are_language_aware(self):
         contract = json.loads(

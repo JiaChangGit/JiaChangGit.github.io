@@ -7,7 +7,7 @@
 ## 唯一資料來源與重建流程
 
 - `scope.json`：五份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
-- `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。
+- `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。報告若在 `scope.json` 宣告 `included_figure_ids`，該 allowlist 是實際發布集合；清冊中其他舊證據列只供追溯，不得出現在輸出。
 - `claims.json`：由產生器重建；不手動維護。
 - `output-contract.json`：20 個輸出路徑與格式要求。
 
@@ -82,9 +82,11 @@ Figure／Table 使用 `<!-- figure-table:<ID> -->` 或 HTML
 4. 一個不超出規格的例子；
 5. 限制、例外與來源頁碼。
 
-本輪四種版本都介紹每張納入的 Figure；新手 HTML 使用較白話的判讀檢查點，詳細
-HTML 額外顯示 claim ID 與 normative keyword。明確排除的 Figure 只留在內部清冊，
-不會進入報告或 PPT。
+本輪四種版本都涵蓋該報告發布 allowlist 中的 Figure，但 Figure 是支援證據，不是文章
+骨架。新手 HTML 使用較白話的判讀檢查點，詳細 HTML 額外顯示 claim ID 與 normative
+keyword。第五份報告以 firmware update 的 end-to-end 流程組織，Figure reference 集中於
+Appendix，不得產生「Figure 逐圖導讀」。明確排除或未列入 allowlist 的 Figure 只留在內部
+清冊，不會進入報告或 PPT。
 
 第五份報告另登記 `referenced_dependency` Figure：只教學主範圍交叉引用所需部分，
 必須記錄 `referenced_from` 並使用 `dependency-slice` 模式。若相依 Figure 屬於

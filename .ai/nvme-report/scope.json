@@ -64,16 +64,24 @@
     },
     {
       "id": "base-admin-fw-logs",
-      "title_zh_tw": "NVMe Base 2.4 韌體、UUID List 與 Get Log Page",
-      "title_en": "NVMe Base 2.4 Firmware, UUID List, and Get Log Page",
+      "title_zh_tw": "NVMe Base 2.4 韌體更新與 Firmware Slot 驗證（LID 03h）",
+      "title_en": "NVMe Base 2.4 Firmware Update and Firmware Slot Verification (LID 03h)",
       "source_id": "NVME-BASE-2.4",
-      "sections": ["3.11", "5.2.9", "5.2.10", "5.2.13.1", "5.2.13.2", "5.2.13.4"],
-      "printed_pages": "135-138, 202-206, 212-319, 336",
-      "pdf_pages": "161-164, 228-232, 238-345, 362",
+      "sections": ["3.11", "3.11.1", "5.2.9", "5.2.10", "5.2.13", "5.2.13.1.4"],
+      "printed_pages": "135-138, 202-206, 212-216, 225-226",
+      "pdf_pages": "161-164, 228-232, 238-242, 251-252",
+      "included_figure_ids": [
+        "BASEFWLOG-FIG-093", "BASEFWLOG-FIG-155",
+        "BASEFWLOG-FIG-187", "BASEFWLOG-FIG-188", "BASEFWLOG-FIG-189",
+        "BASEFWLOG-FIG-190", "BASEFWLOG-FIG-191", "BASEFWLOG-FIG-192",
+        "BASEFWLOG-FIG-193", "BASEFWLOG-FIG-203", "BASEFWLOG-FIG-204",
+        "BASEFWLOG-FIG-205", "BASEFWLOG-FIG-206", "BASEFWLOG-FIG-207",
+        "BASEFWLOG-FIG-208", "BASEFWLOG-FIG-209", "BASEFWLOG-FIG-215",
+        "BASEFWLOG-FIG-337", "BASEFWLOG-FIG-338", "BASEFWLOG-FIG-347",
+        "BASEFWLOG-FIG-348", "BASEFWLOG-FIG-474"
+      ],
       "dependency_figures": [
-        "70", "84", "93", "101", "102", "107", "155", "195", "337", "338",
-        "339", "346", "347", "348", "448", "451", "452", "466", "474", "480",
-        "512", "527", "656", "745", "746", "747", "772", "782", "783"
+        "93", "155", "337", "338", "347", "348", "474"
       ]
     }
   ],
@@ -146,20 +154,30 @@
       "id": "BASE-FWLOG-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["3.11", "5.2.9", "5.2.10", "5.2.13.1", "5.2.13.2", "5.2.13.4"],
-      "note": "納入通用與 memory-based/PCIe 適用的韌體更新、UUID List、Get Log Page 與 command completion；Figure 209 只教學通用／PCIe 可用的 log page"
+      "sections": ["3.11", "3.11.1", "5.2.9", "5.2.10", "5.2.13", "5.2.13.1.4"],
+      "note": "只納入 firmware update 與 LID 03h Firmware Slot Information；§5.2.13 只取建構 LID 03h Get Log Page command 所需的共通欄位，Figure 209 只保留 LID 03h row"
     },
     {
       "id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
       "sections": ["referenced dependencies outside the requested main sections"],
-      "figures": [
-        "70", "84", "93", "101", "102", "107", "155", "195", "337", "338",
-        "339", "346", "347", "348", "448", "451", "452", "466", "474", "480",
-        "512", "527", "656", "745", "746", "747", "772", "782", "783"
-      ],
-      "note": "使用者要求：主範圍正文引用到的範圍外 Figure 也須教學；僅納入理解該引用所需的欄位與關係，不擴張主題範圍"
+      "figures": ["93", "155", "337", "338", "347", "348", "474"],
+      "note": "理解 firmware update 與 LID 03h 所需的最小 dependency slice；只取被主流程使用的欄位與關係，不擴張成 Identify、UUID List 或其他章節的獨立教學"
+    },
+    {
+      "id": "BASE-FWLOG-PCIE-RESET-PREREQUISITE",
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "status": "PREREQUISITE_ONLY",
+      "sections": ["3.3"],
+      "note": "只用於辨識 Conventional Reset 與 Function Level Reset 是 PCIe transport-specific Controller Level Reset 方法"
+    },
+    {
+      "id": "BASE-FWLOG-OTHER-LIDS-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["5.2.13.1 except 5.2.13.1.4", "5.2.13.2-5.2.13.4"],
+      "note": "本報告只教 LID 03h；其餘 log page、Telemetry、Persistent Event Log 與其他 Get Log Page 延伸行為不發佈"
     },
     {
       "id": "BASE-FWLOG-FABRIC-EXCLUDE",
@@ -180,5 +198,5 @@
       "note": "本次五份報告不使用 NVM Command Set 1.3"
     }
   ],
-  "approval_note": "使用者於 2026-08-31 新增第五份報告：Base 2.4 §3.11、§5.2.9、§5.2.10、§5.2.13 的通用／PCIe 內容；範圍外被引用 Figure 亦須教學，Fabrics 全面排除"
+  "approval_note": "使用者於 2026-09-01 核准重構第五份報告：只教 Base 2.4 §3.11、§5.2.9、§5.2.10 與 §5.2.13.1.4 LID 03h；§5.2.13 共通欄位與範圍外 Figure 僅保留理解所需的最小 dependency slice，其他四份報告不變"
 }

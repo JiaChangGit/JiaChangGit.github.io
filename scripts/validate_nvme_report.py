@@ -227,6 +227,19 @@ def validate_publish() -> list[str]:
     for item in figure_entries:
         if item.get("scope_status") == "INCLUDE":
             included_figures_by_report.setdefault(item.get("report_id", ""), []).append(item)
+    report_scopes = {item.get("id"): item for item in scope.get("reports", [])}
+    for report_id, report_scope in report_scopes.items():
+        allowlist = set(report_scope.get("included_figure_ids", []))
+        if not allowlist:
+            continue
+        actual = {
+            item.get("id") for item in included_figures_by_report.get(report_id, [])
+        }
+        if actual != allowlist:
+            errors.append(
+                f"{report_id} 的 included_figure_ids 與 Figure register 不一致："
+                f"missing={sorted(allowlist - actual)}, extra={sorted(actual - allowlist)}"
+            )
 
     if scope.get("approval_status") != "approved":
         errors.append("scope.json 尚未 approved，禁止 publish")
@@ -329,6 +342,15 @@ def validate_publish() -> list[str]:
         for phrase in PLACEHOLDER_PHRASES:
             if phrase in searchable_text:
                 errors.append(f"{artifact['path']} 仍含共用 placeholder：{phrase}")
+        if artifact.get("report_id") == "base-admin-fw-logs":
+            for required in ("Mental Model", "End-to-End", "Debug", "LID 03h", "007F0003h"):
+                if required not in searchable_text:
+                    errors.append(f"{artifact['path']} 缺少 firmware 教學結構：{required}")
+            for forbidden_heading in ("Figure 逐圖導讀", "Figure-by-Figure Guide"):
+                if forbidden_heading in searchable_text:
+                    errors.append(
+                        f"{artifact['path']} 不得以 {forbidden_heading} 作為教學骨架"
+                    )
 
         expected_figures = included_figures_by_report.get(artifact.get("report_id", ""), [])
         figure_markers = figure_table_ids(text)
