@@ -8500,6 +8500,2641 @@
         "reserved"
       ],
       "evidence_digest": "511605924d9639c5fa56f3a7a806c73ab1579214af51b7a5a9f8d274ade2ed85"
+    },
+    {
+      "id": "BASEPOWER-FIG-093",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "BASE-POWER-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.12",
+        "5.2.30"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Admin SQE 中 DPTR 與 command-specific dword 的固定位置。",
+        "en": "Use only the fixed Admin-SQE locations of DPTR and command-specific dwords."
+      },
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "OPC",
+        "CID",
+        "NSID",
+        "MPTR",
+        "DPTR",
+        "CDW10-CDW15"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "25b9363a3436d52757f8c7bd52607c92508ec2053fcb58197c5d5b863884c339"
+    },
+    {
+      "id": "BASEPOWER-FIG-197",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "197",
+      "title": "Get Features – Data Pointer",
+      "section": "5.2.12",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "PRP1",
+        "PRP2"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9cde7a251ca842244d5bccc8029675998f2e3567bd5676303a2e840ae6ca5199"
+    },
+    {
+      "id": "BASEPOWER-FIG-198",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "SEL",
+        "FID"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "9960f9a4d9c6e7833f822aed46bec2e5170062448fb48932d330149abe2145fc"
+    },
+    {
+      "id": "BASEPOWER-FIG-199",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "199",
+      "title": "Get Features – Command Dword 14",
+      "section": "5.2.12",
+      "printed_pages": "210",
+      "pdf_pages": "236",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "3073caecd109ae273b0ed9ce43c544e9edde8a20ba00dc6b39fd162032b81ed3"
+    },
+    {
+      "id": "BASEPOWER-FIG-200",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "200",
+      "title": "Feature Identifiers for Get Features",
+      "section": "5.2.12",
+      "printed_pages": "210-211",
+      "pdf_pages": "236-237",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "FID 02h",
+        "FID 04h",
+        "FID 0Ch",
+        "FID 10h",
+        "FID 11h"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "967a0504546e355534ed9fc9b33542de1b92d10b50160273b3f89184f97ac7a3"
+    },
+    {
+      "id": "BASEPOWER-FIG-201",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Get Features – Select Supported Capabilities",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "e033a4dcc3d7d5f3a2d2217a1f45fc5da4cb7f92e610aa460c88e8ffc562b019"
+    },
+    {
+      "id": "BASEPOWER-FIG-202",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "202",
+      "title": "Get Features – Command Specific Status Values",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "Invalid Controller Identifier"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "015e8dbeba736cac6ef77676f5ae0ba367d89b482136d6f72d550b5b79505acd"
+    },
+    {
+      "id": "BASEPOWER-FIG-213",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "213",
+      "title": "SMART / Health Information Log",
+      "section": "5.2.13.1.3",
+      "printed_pages": "220-225",
+      "pdf_pages": "246-251",
+      "scope_entry_id": "BASE-POWER-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.3",
+        "5.2.30.1.10",
+        "8.1.19.5"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 temperature、TTC critical warning、warning time、HCTM counters 與 sensor readings。",
+        "en": "Use only temperature, the TTC critical warning, warning time, HCTM counters, and sensor readings."
+      },
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "Composite Temperature",
+        "TTC",
+        "Temperature Sensor",
+        "HCTM counters"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "a448e544d165b61ca1f11e3d5d5a77b76caa1616a77c7e73f2f617aad46f8125"
+    },
+    {
+      "id": "BASEPOWER-FIG-338",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify Controller Data Structure",
+      "section": "5.2.14.2.1",
+      "printed_pages": "340-364",
+      "pdf_pages": "366-390",
+      "scope_entry_id": "BASE-POWER-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.2",
+        "5.2.30.1.7",
+        "5.2.30.1.10",
+        "8.1.19"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 power/thermal Feature 的 capability gates 與溫度／RTD3 limits。",
+        "en": "Use only capability gates and temperature/RTD3 limits required by the power/thermal Features."
+      },
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "NPSS",
+        "APSTA",
+        "HCTMA",
+        "WCTEMP",
+        "MNTMT",
+        "MXTMT",
+        "RTD3E",
+        "RTD3R"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43"
+    },
+    {
+      "id": "BASEPOWER-FIG-340",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "340",
+      "title": "Power State Descriptor Data Structure",
+      "section": "5.2.14.2.2",
+      "printed_pages": "383-386",
+      "pdf_pages": "409-412",
+      "scope_entry_id": "BASE-POWER-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.19",
+        "8.1.19.1",
+        "8.1.19.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 power、operational flag、entry/exit latency、idle/active power 與 relative performance；不取已排除的 IIELL。",
+        "en": "Use power, the operational flag, entry/exit latency, idle/active power, and relative performance; omit the excluded IIELL field."
+      },
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "MP",
+        "NOPS",
+        "ENLAT",
+        "EXLAT",
+        "IDLP",
+        "ACTP",
+        "RRT/RRL",
+        "RWT/RWL"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "6fca9b26fb645baccdfaef172bff5bf67a095b088a7f4223ed046271e3f47258"
+    },
+    {
+      "id": "BASEPOWER-FIG-463",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "463",
+      "title": "Set Features – Data Pointer",
+      "section": "5.2.30",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "PRP1",
+        "PRP2"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "7c697ac46149019d40d93552f2e5994752646e3a6185f2a1820ad3c45d2607e2"
+    },
+    {
+      "id": "BASEPOWER-FIG-464",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "SV",
+        "FID"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "243d0f6914f188430ed9d6d2d93e5dc379a1ccd3cabe4013429d1323aa34aaaf"
+    },
+    {
+      "id": "BASEPOWER-FIG-465",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "465",
+      "title": "Set Features – Command Dword 14",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "a02ac956c076e58ff9cd34944448f7aa54a61d8c5ed373eff4acacfc39edfbb1"
+    },
+    {
+      "id": "BASEPOWER-FIG-466",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Feature Identifiers for Set Features",
+      "section": "5.2.30",
+      "printed_pages": "457-459",
+      "pdf_pages": "483-485",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "FID 02h",
+        "FID 04h",
+        "FID 0Ch",
+        "FID 10h",
+        "FID 11h"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "fced821e04fc7c02dd91e63dc3f5c046619a469d7303a883240b286580489997"
+    },
+    {
+      "id": "BASEPOWER-FIG-468",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "468",
+      "title": "Power Management – Command Dword 11",
+      "section": "5.2.30.1.2",
+      "printed_pages": "461",
+      "pdf_pages": "487",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "WH",
+        "PS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "e0b265bffd741eab7f11c2e99684b7b89ef8945bf6bc72b0cca429ba0de854ed"
+    },
+    {
+      "id": "BASEPOWER-FIG-470",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "470",
+      "title": "Temperature Threshold – Command Dword 11",
+      "section": "5.2.30.1.3.1",
+      "printed_pages": "463-464",
+      "pdf_pages": "489-490",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "TMPTHH",
+        "THSEL",
+        "TMPSEL",
+        "TMPTH"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "a7a926db4af07767532b8fabad29047dc7e73d0fa1c889b09de98b60b8e5c0cc"
+    },
+    {
+      "id": "BASEPOWER-FIG-474",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "474",
+      "title": "Asynchronous Event Configuration – Command Dword 11",
+      "section": "5.2.30.1.6",
+      "printed_pages": "466-468",
+      "pdf_pages": "492-494",
+      "scope_entry_id": "BASE-POWER-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.3.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Temperature Threshold Hysteresis 與 SMART/Health critical-warning 事件 enable 欄位。",
+        "en": "Use only Temperature Threshold Hysteresis and SMART/Health critical-warning event enables."
+      },
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "TTHRY",
+        "SHCW"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "e42bb6d6e74bbf241f3803d4821ca01dcae8227e7e09d7387c3bbd43f26e0398"
+    },
+    {
+      "id": "BASEPOWER-FIG-475",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "475",
+      "title": "Autonomous Power State Transition – Command Dword 11",
+      "section": "5.2.30.1.7",
+      "printed_pages": "468",
+      "pdf_pages": "494",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "APSTE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "1e0b69ab4fa5725cb60cdb081c32a9c2eea5b286c7066f8ab224aba11b6c91ac"
+    },
+    {
+      "id": "BASEPOWER-FIG-476",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "476",
+      "title": "Autonomous Power State Transition Data Structure",
+      "section": "5.2.30.1.7",
+      "printed_pages": "469",
+      "pdf_pages": "495",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "32 entries",
+        "256 bytes"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "fddac9404f2fc21c10eaa3cc616ea47f315cbb000bfcf8ba9a1eae0a2a352426"
+    },
+    {
+      "id": "BASEPOWER-FIG-477",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "477",
+      "title": "Autonomous Power State Transition Entry",
+      "section": "5.2.30.1.7",
+      "printed_pages": "469",
+      "pdf_pages": "495",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "ITPT",
+        "ITPS"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "bd05461ed82be86a0e01b235b17a2e8ec3fb30d8cec03f5c0b053691fcce7f79"
+    },
+    {
+      "id": "BASEPOWER-FIG-478",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "478",
+      "title": "APST and NOPPME Interaction",
+      "section": "5.2.30.1.7",
+      "printed_pages": "469",
+      "pdf_pages": "495",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "APSTE",
+        "NOPPME",
+        "host entry",
+        "timer entry",
+        "background operations"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEPOWER-FIG-482",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "482",
+      "title": "Host Controlled Thermal Management – Command Dword 11",
+      "section": "5.2.30.1.10",
+      "printed_pages": "472",
+      "pdf_pages": "498",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "TMT1",
+        "TMT2"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "d29270ce5105715686719a5a4a2490203b3281b59b6272caefb79516090c1147"
+    },
+    {
+      "id": "BASEPOWER-FIG-483",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "483",
+      "title": "Non-Operational Power State Configuration – Command Dword 11",
+      "section": "5.2.30.1.11",
+      "printed_pages": "472-473",
+      "pdf_pages": "498-499",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "NOPPME"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "dc793a3da1734820519dcbb5c3c0ed26e8270e1340d0c57210ed7e7d007b2246"
+    },
+    {
+      "id": "BASEPOWER-FIG-738",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "738",
+      "title": "Power Management Overview",
+      "section": "8.1.19",
+      "printed_pages": "666",
+      "pdf_pages": "692",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "Static Power Management",
+        "Dynamic Power Management",
+        "Power State Descriptor"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEPOWER-FIG-739",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "739",
+      "title": "Power State Characteristics",
+      "section": "8.1.19",
+      "printed_pages": "667",
+      "pdf_pages": "693",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "MP",
+        "IDLP",
+        "ACTP",
+        "ENLAT",
+        "EXLAT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEPOWER-FIG-740",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "740",
+      "title": "Workload Hints",
+      "section": "8.1.19.3",
+      "printed_pages": "669",
+      "pdf_pages": "695",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "WH 000b",
+        "WH 001b",
+        "WH 010b"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEPOWER-FIG-741",
+      "report_id": "base-power-features",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "741",
+      "title": "Host Controlled Thermal Management",
+      "section": "8.1.19.5",
+      "printed_pages": "671",
+      "pdf_pages": "697",
+      "scope_entry_id": "BASE-POWER-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "introduced_in": [
+        "basepower-tutorial-html",
+        "basepower-detailed-html",
+        "basepower-zh-md",
+        "basepower-en-md"
+      ],
+      "key_items": [
+        "TMT1",
+        "TMT2",
+        "hysteresis",
+        "thermal throttling"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-036",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "36",
+      "title": "Offset 0h: CAP - Controller Capabilities",
+      "section": "3.1.4.1",
+      "printed_pages": "55-58",
+      "pdf_pages": "81-84",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 CAP.DSTRD encoding 與 byte-stride 公式。",
+        "en": "Use only CAP.DSTRD encoding and its byte-stride formula."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DSTRD",
+        "2^(2+DSTRD) bytes"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "232faae6b72aeb960edcd68bc90f40b267e55e98b70898e5a9c28c84d8d15465"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-093",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.6",
+        "8.1.29"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 command common fields 與 command-specific dword 位置。",
+        "en": "Use only common command fields and command-specific dword locations."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "OPC",
+        "CID",
+        "NSID",
+        "DPTR",
+        "CDW10-CDW15"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "25b9363a3436d52757f8c7bd52607c92508ec2053fcb58197c5d5b863884c339"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-094",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "94",
+      "title": "Common Command Format - Vendor Specific Commands (Optional)",
+      "section": "4.1.1",
+      "printed_pages": "143",
+      "pdf_pages": "169",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.29"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 §8.1.29 引用的 standard vendor-specific layout。",
+        "en": "Use only the standard vendor-specific layout referenced by §8.1.29."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "NSID",
+        "MDPTR",
+        "NDT",
+        "NDM",
+        "CDW12-CDW15"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "eef28540b4e83ffe4489b72cf3737969ff8c79fd3ff4d93a1cfd80e1fbac058f"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-176",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "176",
+      "title": "Device Self-test Namespace Test Action",
+      "section": "5.2.6",
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "NSID 00000000h",
+        "NSID 00000001h-FFFFFFFEh",
+        "NSID FFFFFFFFh"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-177",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "177",
+      "title": "Device Self-test - Command Dword 10",
+      "section": "5.2.6",
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "STC 1h",
+        "STC 2h",
+        "STC 3h",
+        "STC Eh",
+        "STC Fh"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "004339cad9364e0239c74b7ea3e7bc44a1dab6f0a7f77fb3b3494bff08d56da6"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-178",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "178",
+      "title": "Device Self-test - Command Dword 15",
+      "section": "5.2.6",
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DSTP"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "2ad287ef8aad9bab5c1da89f0e70d4c91149b74c40890162f056a406ed4ffa99"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-179",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "179",
+      "title": "Device Self-test - Command Processing",
+      "section": "5.2.6",
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "self-test in progress",
+        "new STC",
+        "abort",
+        "result creation"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-180",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "180",
+      "title": "Device Self-test - Command Specific Status Values",
+      "section": "5.2.6",
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "Device Self-test in Progress",
+        "status 1Dh"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6d4bc3642b37ee9f5b29a7edc462cc5759f077155fd237b45fbbb45986e1196c"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-197",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "197",
+      "title": "Get Features - Data Pointer",
+      "section": "5.2.12",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 HMB Get Features data-buffer pointer。",
+        "en": "Use only the HMB Get Features data-buffer pointer."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "PRP1",
+        "PRP2"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9cde7a251ca842244d5bccc8029675998f2e3567bd5676303a2e840ae6ca5199"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-198",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features - Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 FID 0Dh 與 SEL。",
+        "en": "Use only FID 0Dh and SEL."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "SEL",
+        "FID"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "9960f9a4d9c6e7833f822aed46bec2e5170062448fb48932d330149abe2145fc"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-200",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "200",
+      "title": "Feature Identifiers for Get Features",
+      "section": "5.2.12",
+      "printed_pages": "210-211",
+      "pdf_pages": "236-237",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 FID 0Dh row。",
+        "en": "Use only the FID 0Dh row."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "FID 0Dh",
+        "Controller scope",
+        "data buffer"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "967a0504546e355534ed9fc9b33542de1b92d10b50160273b3f89184f97ac7a3"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-203",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page - Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h destination buffer。",
+        "en": "Use only the LID 06h destination buffer."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "9f812461ced24765733536a48df25cf21f14933a69fb63fbb3b117922c356840"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-204",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page - Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h 的 LID／NUMDL／RAE／LSP。",
+        "en": "Use only LID/NUMDL/RAE/LSP for LID 06h."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID 06h"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "4989c9738a6cdc6358b35d182434f3d0c8236a451b47446729313978f93d74a8"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-205",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page - Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h 的 NUMDU 與 LSI=0。",
+        "en": "Use only NUMDU and LSI zero for LID 06h."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "LSI",
+        "NUMDU"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "16f1ce386246a3298152c89bf9ec856be1730417110de64fa390cb3c89f2d6a8"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-206",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page - Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取完整讀取所需的 LPOL=0 與 OT=0。",
+        "en": "Use only LPOL zero and OT zero for a complete read."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "LPOL",
+        "OT"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "778ad76bf4dec5aec029c36e1e9c17f0b123dcaa8376370d2c6bb7c96c3c6a69"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-207",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page - Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取完整讀取所需的 LPOU=0。",
+        "en": "Use only LPOU zero for a complete read."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "LPOU"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "983ad5b20d224f9e0aa82afbe3d22ea2cfc043f3257e1f5ced8c73afba86856f"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-208",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page - Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h 不使用的 CSI／UIDX 與 OT=0。",
+        "en": "Use only unused CSI/UIDX and OT zero for LID 06h."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "CSI",
+        "OT",
+        "UIDX"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "4a8c40ec366a80c1955fb1a2560a88a04677f281f02dc6c57135733af54de0c7"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-209",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page - Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-216",
+      "pdf_pages": "241-242",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h row，不列出其他 log pages。",
+        "en": "Use only the LID 06h row; do not enumerate other log pages."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "LID 06h",
+        "CSI = N",
+        "Controller / Domain / NVM subsystem",
+        "Device Self-test",
+        "§5.2.13.1.7"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "4d32050785c1435a6e9ed069e53a7502142e2ba440bf2c676f3a7e70cc09ddfd"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-218",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "218",
+      "title": "Device Self-test Log Page",
+      "section": "5.2.13.1.7",
+      "printed_pages": "230",
+      "pdf_pages": "256",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DSTOS",
+        "DSTCS",
+        "RDS1",
+        "RDS20",
+        "564 bytes"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "604732478aadaad283532efa13c89b5cbfa2ef1be237794f41a83ab372e4b9aa"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-219",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "219",
+      "title": "Self-test Result Data Structure",
+      "section": "5.2.13.1.7",
+      "printed_pages": "231-232",
+      "pdf_pages": "257-258",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DSTC",
+        "DSTR",
+        "SEGN",
+        "VDINFO",
+        "POH",
+        "NSID",
+        "FLBA",
+        "STCT",
+        "STC",
+        "VS"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ce3852e7d9bc74ed5f4b9114bfb90fbb5e66c6f984bb5bdd9f2f798eb584bc05"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-338",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify Controller Data Structure",
+      "section": "5.2.14.2.1",
+      "printed_pages": "340-364",
+      "pdf_pages": "366-390",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.6",
+        "5.2.30.2.3",
+        "8.1.29",
+        "8.2.4"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Device Self-test、HMB 與 standard vendor-command capability fields。",
+        "en": "Use only Device Self-test, HMB, and standard vendor-command capability fields."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "OACS.DSTS",
+        "EDSTT",
+        "DSTO.SDSO",
+        "HMPRE",
+        "HMMIN",
+        "HMMINDS",
+        "HMMAXD",
+        "CTRATT.HMBR",
+        "AVSCC.VSCF",
+        "ICSVSCC.SNVSCF"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-463",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "463",
+      "title": "Set Features - Data Pointer",
+      "section": "5.2.30",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 HMB Set Features data buffer pointer。",
+        "en": "Use only the HMB Set Features data-buffer pointer."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "PRP1",
+        "PRP2"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "7c697ac46149019d40d93552f2e5994752646e3a6185f2a1820ad3c45d2607e2"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-464",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features - Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 FID 0Dh 與 SV。",
+        "en": "Use only FID 0Dh and SV."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "SV",
+        "FID"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "243d0f6914f188430ed9d6d2d93e5dc379a1ccd3cabe4013429d1323aa34aaaf"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-466",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Feature Identifiers for Set Features",
+      "section": "5.2.30",
+      "printed_pages": "457-459",
+      "pdf_pages": "483-485",
+      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.2.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 FID 0Dh row。",
+        "en": "Use only the FID 0Dh row."
+      },
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "FID 0Dh",
+        "Controller scope",
+        "saveable",
+        "changeable"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "fced821e04fc7c02dd91e63dc3f5c046619a469d7303a883240b286580489997"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-545",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "545",
+      "title": "Host Memory Buffer - Command Dword 11",
+      "section": "5.2.30.2.3",
+      "printed_pages": "516-517",
+      "pdf_pages": "542-543",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "CTZ",
+        "HMNARE",
+        "MR",
+        "EHM"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "48d087ef510ef1661ecc915d4079ebb81f051f6e95a1542ef17454a5af02ce19"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-546",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "546",
+      "title": "Host Memory Buffer - Command Dword 12",
+      "section": "5.2.30.2.3",
+      "printed_pages": "517",
+      "pdf_pages": "543",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "HSIZE",
+        "CC.MPS units"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "22c5a7e8821946e06f543a1e444f1545049b160642711fabf048910e6e4446da"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-547",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "547",
+      "title": "Host Memory Buffer - Command Dword 13",
+      "section": "5.2.30.2.3",
+      "printed_pages": "517",
+      "pdf_pages": "543",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "HMDLLA",
+        "16-byte alignment"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "50bc3d5af45202d9a19a50685f8f4c9190bba164edcdf9a74bfafd143756cdb7"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-548",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "548",
+      "title": "Host Memory Buffer - Command Dword 14",
+      "section": "5.2.30.2.3",
+      "printed_pages": "517",
+      "pdf_pages": "543",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "HMDLUA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ab6d8043c9629af51d1cd3a81f3ec37cd329947e286e9427975ed6e9006a5f2b"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-549",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "549",
+      "title": "Host Memory Buffer - Command Dword 15",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518",
+      "pdf_pages": "544",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "HMDLEC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "e658b94a76c108c7ef871e6d28333b7dbadcbdaf3542a15ace3e0828765c356f"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-550",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "550",
+      "title": "Host Memory Buffer - Host Memory Descriptor List",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518",
+      "pdf_pages": "544",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "16-byte descriptor entries",
+        "HMDLEC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "1b0d072be98797a58c8e10c25ae493c41e95f289419736d4128a77df436628db"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-551",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "551",
+      "title": "Host Memory Buffer - Host Memory Buffer Descriptor Entry",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518",
+      "pdf_pages": "544",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "BADD",
+        "BSIZE",
+        "CC.MPS alignment"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "5e496874df952b10ec56c456d1f4e88525fe71bb21060a978929a70f08cf3994"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-552",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "552",
+      "title": "Host Memory Buffer - Completion Queue Entry Dword 0",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518-519",
+      "pdf_pages": "544-545",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "HMNAR",
+        "HMNARE",
+        "EHM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "6e5f441b345345132236678f5b359aa363b17b7db0d88d9723be5f49ab287ee2"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-553",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "553",
+      "title": "Host Memory Buffer - Attributes Data Structure",
+      "section": "5.2.30.2.3",
+      "printed_pages": "519",
+      "pdf_pages": "545",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "HSIZE",
+        "HMDLAL",
+        "HMDLAU",
+        "HMDLEC",
+        "4096 bytes"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "6af59d22167bdded682503b9e59c4a7f77a63324fc915b1fac04308dd29af9e8"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-700",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "700",
+      "title": "Example Device Self-test Operation (Informative)",
+      "section": "8.1.8",
+      "printed_pages": "615",
+      "pdf_pages": "641",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "segment",
+        "test performed",
+        "failure criteria",
+        "informative"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "96b060473c88269eb665a4fb7d80720b026be46ad25f9d50e07a2a5c77412fcc"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-701",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "701",
+      "title": "Format NVM command Aborting a Device Self-Test Operation",
+      "section": "8.1.8.1-8.1.8.2",
+      "printed_pages": "616",
+      "pdf_pages": "642",
+      "scope_entry_id": "BASE-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "SES",
+        "FNS",
+        "SENS",
+        "Format NSID",
+        "Self-test NSID",
+        "abort decision"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional"
+      ],
+      "evidence_digest": "c6a520f05cd5f8a6939e379628b1893d4d22805b474d6f508db35a53b5c19861"
+    },
+    {
+      "id": "BASEDIAGMEM-FIG-111",
+      "report_id": "base-self-test-hmb-emulation",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "111",
+      "title": "Self-test Results Data Structure",
+      "section": "4.1.4.3",
+      "printed_pages": "76",
+      "pdf_pages": "76",
+      "scope_entry_id": "NVMCS-DIAGMEM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "introduced_in": [
+        "basediagmem-tutorial-html",
+        "basediagmem-detailed-html",
+        "basediagmem-zh-md",
+        "basediagmem-en-md"
+      ],
+      "key_items": [
+        "FLBA",
+        "bytes 23:16",
+        "FVLD",
+        "one failed logical block"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "aa4dc39548eb6a7634cab6f03f2bf7a0998ace4001de950e517f4f98952d8b07"
     }
   ]
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 五份報告、二十個版本、來源定位與純 HTML 契約。"""
+"""驗證 NVMe 七份報告、二十八個版本、來源定位與離線 HTML 契約。"""
 
 from __future__ import annotations
 
@@ -70,6 +70,9 @@ class StrictOfflineHTMLParser(HTMLParser):
         self.errors: list[str] = []
         self.lang = ""
         self.has_viewport = False
+        self.viewport_content = ""
+        self.theme_color_count = 0
+        self.style_count = 0
         self.table_stack: list[int] = []
         self.max_table_columns = 0
 
@@ -80,7 +83,12 @@ class StrictOfflineHTMLParser(HTMLParser):
             self.lang = values.get("lang", "")
         if tag == "meta" and values.get("name", "").lower() == "viewport":
             self.has_viewport = True
-        if tag in {"style", "script", "iframe", "object", "embed"}:
+            self.viewport_content = values.get("content", "")
+        if tag == "meta" and values.get("name", "").lower() == "theme-color":
+            self.theme_color_count += 1
+        if tag == "style":
+            self.style_count += 1
+        if tag in {"script", "iframe", "object", "embed"}:
             self.errors.append(f"禁止 <{tag}>")
         if "style" in values:
             self.errors.append(f"<{tag}> 禁止 style attribute")
@@ -114,16 +122,54 @@ class StrictOfflineHTMLParser(HTMLParser):
 
 def validate_html(path: Path, max_columns: int = 4) -> list[str]:
     parser = StrictOfflineHTMLParser()
-    parser.feed(path.read_text(encoding="utf-8"))
+    text = path.read_text(encoding="utf-8")
+    parser.feed(text)
     errors = list(dict.fromkeys(parser.errors))
     if parser.lang != "zh-Hant-TW":
         errors.append(f'html lang 必須是 "zh-Hant-TW"，目前為 {parser.lang!r}')
     if not parser.has_viewport:
         errors.append("缺少 viewport meta")
+    elif "viewport-fit=cover" not in parser.viewport_content:
+        errors.append("viewport meta 缺少 viewport-fit=cover")
+    if parser.theme_color_count < 2:
+        errors.append("HTML 必須提供 light／dark theme-color")
+    if parser.style_count != 1:
+        errors.append(f"HTML 必須使用一個內嵌 <style>，目前為 {parser.style_count} 個")
+    for required_css in (
+        "prefers-color-scheme: dark",
+        "--spec:",
+        "--explain:",
+        "--infer:",
+        "--example:",
+        "--warn:",
+        ".table-wrap",
+        "-webkit-text-size-adjust: 100%",
+        "safe-area-inset-top",
+        "min-height: 44px",
+        "scroll-snap-type:",
+        "prefers-reduced-motion: reduce",
+        ":focus-visible",
+    ):
+        if required_css not in text:
+            errors.append(f"內嵌 CSS 缺少資訊設計 token：{required_css}")
     if parser.max_table_columns > max_columns:
         errors.append(
             f"表格最多偵測到 {parser.max_table_columns} 欄；iPad 契約建議不超過 {max_columns} 欄"
         )
+    for required_html in (
+        'class="skip-link"',
+        'class="ipad-read-guide"',
+        'class="visual-atlas"',
+        "<summary",
+        "<figure",
+        "<figcaption",
+    ):
+        if required_html not in text:
+            errors.append(f"缺少 iPad 原生閱讀結構：{required_html}")
+    svg_blocks = re.findall(r"<svg\b.*?</svg>", text, re.IGNORECASE | re.DOTALL)
+    for index, block in enumerate(svg_blocks, 1):
+        if "<title" not in block or "<desc" not in block:
+            errors.append(f"第 {index} 個 inline SVG 缺少 title／desc")
     return errors
 
 
@@ -190,12 +236,12 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 20 or formats.count("html") != 10 or formats.count("markdown") != 10:
-        errors.append("輸出契約必須固定為十份 HTML 與十份 Markdown")
+    if len(artifacts) != 28 or formats.count("html") != 14 or formats.count("markdown") != 14:
+        errors.append("輸出契約必須固定為十四份 HTML 與十四份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 5 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的五份報告")
+    if len(report_ids) != 7 or artifact_report_ids != report_ids:
+        errors.append("輸出契約必須完整對應 scope.json 的七份報告")
     artifact_ids = [item.get("id") for item in artifacts]
     if len(artifact_ids) != len(set(artifact_ids)):
         errors.append("artifact ID 不得重複")
@@ -352,7 +398,16 @@ def validate_publish() -> list[str]:
                         f"{artifact['path']} 不得以 {forbidden_heading} 作為教學骨架"
                     )
 
-        expected_figures = included_figures_by_report.get(artifact.get("report_id", ""), [])
+        if artifact.get("report_id") == "base-self-test-hmb-emulation":
+            for required in ("Mental Model", "008C0006h", "HMDL", "DSTRD", "NDT"):
+                if required not in searchable_text:
+                    errors.append(f"{artifact['path']} 缺少 self-test/HMB 教學結構：{required}")
+
+        expected_figures = [
+            item
+            for item in included_figures_by_report.get(artifact.get("report_id", ""), [])
+            if artifact["id"] in item.get("required_artifact_ids", [])
+        ]
         figure_markers = figure_table_ids(text)
         if len(figure_markers) != len(expected_figures):
             errors.append(
@@ -372,6 +427,12 @@ def validate_publish() -> list[str]:
                 errors.append(f"{artifact['path']}：{message}")
             if expected_figures and text.count("<details") < len(expected_figures):
                 errors.append(f"{artifact['path']} 每張 Figure 應使用 details 提供 iPad 摺疊導覽")
+            if expected_figures and text.count('name="figures-') < len(expected_figures):
+                errors.append(f"{artifact['path']} 每張 Figure 應使用原生 details name accordion")
+            if expected_figures and text.count("教學重畫（非 Spec 原圖）") < len(expected_figures):
+                errors.append(f"{artifact['path']} 每張 Figure 應有教學重畫")
+            if expected_figures and text.count("Input → Decode → Validate → Evidence 工作紙") < len(expected_figures):
+                errors.append(f"{artifact['path']} 每張 Figure 應有欄位解碼工作紙")
             if expected_figures and 'id="figure-index"' not in text:
                 errors.append(f"{artifact['path']} 缺少 Figure 索引")
         else:
@@ -388,8 +449,8 @@ def validate_publish() -> list[str]:
                 errors.append(
                     f"{artifact['path']} front matter lang 應為 {expected_lang}"
                 )
-            if expected_figures and text.count('<details markdown="1">') != len(expected_figures):
-                errors.append(f"{artifact['path']} 每張 Figure 應有一個 Markdown details")
+            if expected_figures and text.count('<details markdown="1">') < len(expected_figures):
+                errors.append(f"{artifact['path']} 每張 Figure 應至少有一個 Markdown details")
 
     parity_groups: dict[str, list[tuple[set[str], list[str]]]] = {}
     for artifact in contract.get("artifacts", []):
@@ -469,8 +530,24 @@ def validate_publish() -> list[str]:
             and item.get("scope_entry_id") != "BASE-FWLOG-DEPENDENCY-INCLUDE"
         ):
             errors.append(f"Figure/Table {item['id']} 未對應第五份報告的相依範圍")
+        if (
+            item.get("report_id") == "base-power-features"
+            and item.get("role") == "referenced_dependency"
+            and item.get("scope_entry_id") != "BASE-POWER-DEPENDENCY-INCLUDE"
+        ):
+            errors.append(f"Figure/Table {item['id']} 未對應第六份報告的相依範圍")
+        if (
+            item.get("report_id") == "base-self-test-hmb-emulation"
+            and item.get("role") == "referenced_dependency"
+            and item.get("scope_entry_id") != "BASE-DIAGMEM-DEPENDENCY-INCLUDE"
+        ):
+            errors.append(f"Figure/Table {item['id']} 未對應第七份報告的相依範圍")
         if item.get("id") == "BASEFWLOG-FIG-209" and item.get("mode") != "scope-reduced":
             errors.append("BASEFWLOG-FIG-209 必須標示為 scope-reduced")
+        if item.get("id") in {"BASEPOWER-FIG-200", "BASEPOWER-FIG-466", "BASEPOWER-FIG-468"} and item.get("mode") != "scope-reduced":
+            errors.append(f"{item['id']} 必須標示為 scope-reduced")
+        if item.get("id") in {"BASEDIAGMEM-FIG-200", "BASEDIAGMEM-FIG-209", "BASEDIAGMEM-FIG-338", "BASEDIAGMEM-FIG-466"} and not item.get("scope_reduced"):
+            errors.append(f"{item['id']} 必須標示 scope_reduced")
         if not isinstance(item.get("key_items"), list) or not item.get("key_items"):
             errors.append(f"Figure/Table {item['id']} 缺少來源欄位索引")
         if any(

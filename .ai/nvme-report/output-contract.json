@@ -20,7 +20,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad 中文詳細 Spec 版",
+      "purpose": "iPad 中文快速查詢詳細手冊",
       "required_source_ids": ["NVME-BASE-2.4"]
     },
     {
@@ -62,7 +62,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad 中文詳細 Spec 版",
+      "purpose": "iPad 中文快速查詢詳細手冊",
       "required_source_ids": ["NVME-BASE-2.4"]
     },
     {
@@ -104,7 +104,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad 中文詳細 Spec 版",
+      "purpose": "iPad 中文快速查詢詳細手冊",
       "required_source_ids": ["NVME-BASE-2.4"]
     },
     {
@@ -146,7 +146,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad 中文詳細 Spec 版",
+      "purpose": "iPad 中文快速查詢詳細手冊",
       "required_source_ids": ["NVME-PCIE-TRANSPORT-1.4", "NVME-BASE-2.4"]
     },
     {
@@ -188,7 +188,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad 中文詳細 Spec 版",
+      "purpose": "iPad 中文快速查詢詳細手冊",
       "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
     },
     {
@@ -197,7 +197,7 @@
       "path": "_posts/2026-08-31-nvme-base-firmware-log-admin-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "subset",
       "parity_group": "basefwlog-bilingual",
       "purpose": "中文 GitHub Pages 與 PPT 內容來源",
       "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
@@ -208,24 +208,119 @@
       "path": "_posts/2026-08-31-nvme-base-firmware-log-admin-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "subset",
       "parity_group": "basefwlog-bilingual",
       "purpose": "英文 GitHub Pages 與 PPT 內容來源",
       "required_source_ids": ["NVME-BASE-2.4", "NVME-PCIE-TRANSPORT-1.4"]
+    },
+    {
+      "id": "basepower-tutorial-html",
+      "report_id": "base-power-features",
+      "path": "DOCS/nvme-spec-report/base-power-features/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basepower-detailed-html",
+      "report_id": "base-power-features",
+      "path": "DOCS/nvme-spec-report/base-power-features/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文快速查詢詳細手冊",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basepower-zh-md",
+      "report_id": "base-power-features",
+      "path": "_posts/2026-09-02-nvme-base-power-thermal-features-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basepower-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basepower-en-md",
+      "report_id": "base-power-features",
+      "path": "_posts/2026-09-02-nvme-base-power-thermal-features-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basepower-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4"]
+    },
+    {
+      "id": "basediagmem-tutorial-html",
+      "report_id": "base-self-test-hmb-emulation",
+      "path": "DOCS/nvme-spec-report/base-self-test-hmb-emulation/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basediagmem-detailed-html",
+      "report_id": "base-self-test-hmb-emulation",
+      "path": "DOCS/nvme-spec-report/base-self-test-hmb-emulation/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad 中文快速查詢詳細手冊",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basediagmem-zh-md",
+      "report_id": "base-self-test-hmb-emulation",
+      "path": "_posts/2026-09-02-nvme-base-self-test-hmb-emulation-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basediagmem-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basediagmem-en-md",
+      "report_id": "base-self-test-hmb-emulation",
+      "path": "_posts/2026-09-02-nvme-base-self-test-hmb-emulation-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basediagmem-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
     }
   ],
   "source_markers": {
     "NVME-BASE-2.4": "NVM Express Base Specification, Revision 2.4",
-    "NVME-PCIE-TRANSPORT-1.4": "NVM Express NVMe over PCIe Transport Specification, Revision 1.4"
+    "NVME-PCIE-TRANSPORT-1.4": "NVM Express NVMe over PCIe Transport Specification, Revision 1.4",
+    "NVME-NVM-CS-1.3": "NVM Express NVM Command Set Specification, Revision 1.3"
   },
   "html_policy": {
-    "css_allowed": false,
+    "target_device": "M1 iPad Pro",
+    "safe_interaction_baseline": "Safari 17.2",
+    "progressive_enhancement_target": "Safari 26.x",
+    "css_allowed": true,
+    "inline_css_only": true,
     "javascript_allowed": false,
     "external_resources_allowed": false,
     "inline_svg_allowed": true,
     "relative_images_allowed": true,
     "required_lang": "zh-Hant-TW",
     "viewport_required": true,
+    "viewport_fit_cover_required": true,
+    "theme_color_required": true,
+    "minimum_touch_target_css_px": 44,
+    "minimum_body_font_css_px": 16,
+    "required_native_features": ["details", "summary", "inline-svg", "anchor-navigation"],
+    "required_media_features": ["prefers-color-scheme", "prefers-reduced-motion", "print"],
     "recommended_max_table_columns": 4
   },
   "citation_fields": [
@@ -249,6 +344,9 @@
     "basefwlog-detailed-html",
     "basefwlog-zh-md",
     "basefwlog-en-md",
+    "basepower-detailed-html",
+    "basepower-zh-md",
+    "basepower-en-md",
     "pcie14-detailed-html",
     "pcie14-zh-md",
     "pcie14-en-md"

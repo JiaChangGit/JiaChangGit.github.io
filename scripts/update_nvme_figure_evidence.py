@@ -25,7 +25,15 @@ TEXT_FILES = {
     "base-ch4": "base-ch4.txt",
     "pcie-transport-1.4": "pcie-transport-1.4.txt",
     "base-admin-fw-logs": "base-admin-fw-logs.txt",
+    "base-power-features": "base-full.txt",
+    "base-self-test-hmb-emulation": "base-full.txt",
 }
+TEXT_SOURCE_IDS = {
+    "pcie-transport-1.4": "NVME-PCIE-TRANSPORT-1.4",
+}
+ADDITIONAL_TEXT_FILES = [
+    ("base-self-test-hmb-emulation", "NVME-NVM-CS-1.3", "nvm-cs-full.txt"),
+]
 CAPTION = re.compile(r"^(Figure|Table)\s+(\d+):\s*(.+)$", re.IGNORECASE)
 LEGACY_FIGURE = re.compile(r"^Figure\s+(\d+):\s*(.+)$", re.IGNORECASE)
 TOKEN = re.compile(r"\b[A-Z][A-Z0-9]{1,11}(?:\.[A-Z][A-Z0-9]{1,11})*\b")
@@ -143,6 +151,230 @@ DEPENDENCY_REFERENCES = {
     347: ["3.11.1"],
     348: ["3.11.1"],
     474: ["3.11"],
+}
+
+POWER_REPORT_ID = "base-power-features"
+POWER_REPORT_PREFIX = "BASEPOWER"
+POWER_ARTIFACT_IDS = [
+    "basepower-tutorial-html",
+    "basepower-detailed-html",
+    "basepower-zh-md",
+    "basepower-en-md",
+]
+POWER_DEPENDENCY_FIGURES = {93, 213, 338, 340, 474}
+POWER_FIGURES = {
+    93: ("Common Command Format", "4.1.1", "140-142", "166-168"),
+    197: ("Get Features – Data Pointer", "5.2.12", "209", "235"),
+    198: ("Get Features – Command Dword 10", "5.2.12", "209-210", "235-236"),
+    199: ("Get Features – Command Dword 14", "5.2.12", "210", "236"),
+    200: ("Feature Identifiers for Get Features", "5.2.12", "210-211", "236-237"),
+    201: ("Get Features – Select Supported Capabilities", "5.2.12.2", "212", "238"),
+    202: ("Get Features – Command Specific Status Values", "5.2.12.2", "212", "238"),
+    213: ("SMART / Health Information Log", "5.2.13.1.3", "220-225", "246-251"),
+    338: ("Identify Controller Data Structure", "5.2.14.2.1", "340-364", "366-390"),
+    340: ("Power State Descriptor Data Structure", "5.2.14.2.2", "383-386", "409-412"),
+    463: ("Set Features – Data Pointer", "5.2.30", "456", "482"),
+    464: ("Set Features – Command Dword 10", "5.2.30", "457", "483"),
+    465: ("Set Features – Command Dword 14", "5.2.30", "457", "483"),
+    466: ("Feature Identifiers for Set Features", "5.2.30", "457-459", "483-485"),
+    468: ("Power Management – Command Dword 11", "5.2.30.1.2", "461", "487"),
+    470: ("Temperature Threshold – Command Dword 11", "5.2.30.1.3.1", "463-464", "489-490"),
+    474: ("Asynchronous Event Configuration – Command Dword 11", "5.2.30.1.6", "466-468", "492-494"),
+    475: ("Autonomous Power State Transition – Command Dword 11", "5.2.30.1.7", "468", "494"),
+    476: ("Autonomous Power State Transition Data Structure", "5.2.30.1.7", "469", "495"),
+    477: ("Autonomous Power State Transition Entry", "5.2.30.1.7", "469", "495"),
+    478: ("APST and NOPPME Interaction", "5.2.30.1.7", "469", "495"),
+    482: ("Host Controlled Thermal Management – Command Dword 11", "5.2.30.1.10", "472", "498"),
+    483: ("Non-Operational Power State Configuration – Command Dword 11", "5.2.30.1.11", "472-473", "498-499"),
+    738: ("Power Management Overview", "8.1.19", "666", "692"),
+    739: ("Power State Characteristics", "8.1.19", "667", "693"),
+    740: ("Workload Hints", "8.1.19.3", "669", "695"),
+    741: ("Host Controlled Thermal Management", "8.1.19.5", "671", "697"),
+}
+POWER_KEY_ITEM_OVERRIDES = {
+    93: ["OPC", "CID", "NSID", "MPTR", "DPTR", "CDW10-CDW15"],
+    197: ["DPTR", "PRP1", "PRP2"],
+    198: ["SEL", "FID"],
+    199: ["UIDX"],
+    200: ["FID 02h", "FID 04h", "FID 0Ch", "FID 10h", "FID 11h"],
+    201: ["CHANG", "NSSPEC", "SVBL"],
+    202: ["Invalid Controller Identifier"],
+    213: ["Composite Temperature", "TTC", "Temperature Sensor", "HCTM counters"],
+    338: ["NPSS", "APSTA", "HCTMA", "WCTEMP", "MNTMT", "MXTMT", "RTD3E", "RTD3R"],
+    340: ["MP", "NOPS", "ENLAT", "EXLAT", "IDLP", "ACTP", "RRT/RRL", "RWT/RWL"],
+    463: ["DPTR", "PRP1", "PRP2"],
+    464: ["SV", "FID"],
+    465: ["UIDX"],
+    466: ["FID 02h", "FID 04h", "FID 0Ch", "FID 10h", "FID 11h"],
+    468: ["WH", "PS"],
+    470: ["TMPTHH", "THSEL", "TMPSEL", "TMPTH"],
+    474: ["TTHRY", "SHCW"],
+    475: ["APSTE"],
+    476: ["32 entries", "256 bytes"],
+    477: ["ITPT", "ITPS"],
+    478: ["APSTE", "NOPPME", "host entry", "timer entry", "background operations"],
+    482: ["TMT1", "TMT2"],
+    483: ["NOPPME"],
+    738: ["Static Power Management", "Dynamic Power Management", "Power State Descriptor"],
+    739: ["MP", "IDLP", "ACTP", "ENLAT", "EXLAT"],
+    740: ["WH 000b", "WH 001b", "WH 010b"],
+    741: ["TMT1", "TMT2", "hysteresis", "thermal throttling"],
+}
+POWER_DEPENDENCY_FOCUS = {
+    93: {
+        "zh_tw": "只取 Admin SQE 中 DPTR 與 command-specific dword 的固定位置。",
+        "en": "Use only the fixed Admin-SQE locations of DPTR and command-specific dwords.",
+    },
+    213: {
+        "zh_tw": "只取 temperature、TTC critical warning、warning time、HCTM counters 與 sensor readings。",
+        "en": "Use only temperature, the TTC critical warning, warning time, HCTM counters, and sensor readings.",
+    },
+    338: {
+        "zh_tw": "只取 power/thermal Feature 的 capability gates 與溫度／RTD3 limits。",
+        "en": "Use only capability gates and temperature/RTD3 limits required by the power/thermal Features.",
+    },
+    340: {
+        "zh_tw": "只取 power、operational flag、entry/exit latency、idle/active power 與 relative performance；不取已排除的 IIELL。",
+        "en": "Use power, the operational flag, entry/exit latency, idle/active power, and relative performance; omit the excluded IIELL field.",
+    },
+    474: {
+        "zh_tw": "只取 Temperature Threshold Hysteresis 與 SMART/Health critical-warning 事件 enable 欄位。",
+        "en": "Use only Temperature Threshold Hysteresis and SMART/Health critical-warning event enables.",
+    },
+}
+POWER_DEPENDENCY_REFERENCES = {
+    93: ["5.2.12", "5.2.30"],
+    213: ["5.2.30.1.3", "5.2.30.1.10", "8.1.19.5"],
+    338: ["5.2.30.1.2", "5.2.30.1.7", "5.2.30.1.10", "8.1.19"],
+    340: ["8.1.19", "8.1.19.1", "8.1.19.2"],
+    474: ["5.2.30.1.3.1"],
+}
+
+DIAGMEM_REPORT_ID = "base-self-test-hmb-emulation"
+DIAGMEM_REPORT_PREFIX = "BASEDIAGMEM"
+DIAGMEM_ARTIFACT_IDS = [
+    "basediagmem-tutorial-html",
+    "basediagmem-detailed-html",
+    "basediagmem-zh-md",
+    "basediagmem-en-md",
+]
+DIAGMEM_DEPENDENCY_FIGURES = {
+    ("NVME-BASE-2.4", number)
+    for number in {36, 93, 94, 197, 198, 200, 203, 204, 205, 206, 207, 208, 209, 338, 463, 464, 466}
+}
+DIAGMEM_FIGURES = {
+    ("NVME-BASE-2.4", 36): ("Offset 0h: CAP - Controller Capabilities", "3.1.4.1", "55-58", "81-84"),
+    ("NVME-BASE-2.4", 93): ("Common Command Format", "4.1.1", "140-142", "166-168"),
+    ("NVME-BASE-2.4", 94): ("Common Command Format - Vendor Specific Commands (Optional)", "4.1.1", "143", "169"),
+    ("NVME-BASE-2.4", 176): ("Device Self-test Namespace Test Action", "5.2.6", "199", "225"),
+    ("NVME-BASE-2.4", 177): ("Device Self-test - Command Dword 10", "5.2.6", "199", "225"),
+    ("NVME-BASE-2.4", 178): ("Device Self-test - Command Dword 15", "5.2.6", "200", "226"),
+    ("NVME-BASE-2.4", 179): ("Device Self-test - Command Processing", "5.2.6", "200", "226"),
+    ("NVME-BASE-2.4", 180): ("Device Self-test - Command Specific Status Values", "5.2.6", "201", "227"),
+    ("NVME-BASE-2.4", 197): ("Get Features - Data Pointer", "5.2.12", "209", "235"),
+    ("NVME-BASE-2.4", 198): ("Get Features - Command Dword 10", "5.2.12", "209-210", "235-236"),
+    ("NVME-BASE-2.4", 200): ("Feature Identifiers for Get Features", "5.2.12", "210-211", "236-237"),
+    ("NVME-BASE-2.4", 203): ("Get Log Page - Data Pointer", "5.2.13", "213", "239"),
+    ("NVME-BASE-2.4", 204): ("Get Log Page - Command Dword 10", "5.2.13", "213", "239"),
+    ("NVME-BASE-2.4", 205): ("Get Log Page - Command Dword 11", "5.2.13", "214", "240"),
+    ("NVME-BASE-2.4", 206): ("Get Log Page - Command Dword 12", "5.2.13", "214", "240"),
+    ("NVME-BASE-2.4", 207): ("Get Log Page - Command Dword 13", "5.2.13", "214", "240"),
+    ("NVME-BASE-2.4", 208): ("Get Log Page - Command Dword 14", "5.2.13", "214-215", "240-241"),
+    ("NVME-BASE-2.4", 209): ("Get Log Page - Log Page Identifiers", "5.2.13", "215-216", "241-242"),
+    ("NVME-BASE-2.4", 218): ("Device Self-test Log Page", "5.2.13.1.7", "230", "256"),
+    ("NVME-BASE-2.4", 219): ("Self-test Result Data Structure", "5.2.13.1.7", "231-232", "257-258"),
+    ("NVME-BASE-2.4", 338): ("Identify Controller Data Structure", "5.2.14.2.1", "340-364", "366-390"),
+    ("NVME-BASE-2.4", 463): ("Set Features - Data Pointer", "5.2.30", "456", "482"),
+    ("NVME-BASE-2.4", 464): ("Set Features - Command Dword 10", "5.2.30", "457", "483"),
+    ("NVME-BASE-2.4", 466): ("Feature Identifiers for Set Features", "5.2.30", "457-459", "483-485"),
+    ("NVME-BASE-2.4", 545): ("Host Memory Buffer - Command Dword 11", "5.2.30.2.3", "516-517", "542-543"),
+    ("NVME-BASE-2.4", 546): ("Host Memory Buffer - Command Dword 12", "5.2.30.2.3", "517", "543"),
+    ("NVME-BASE-2.4", 547): ("Host Memory Buffer - Command Dword 13", "5.2.30.2.3", "517", "543"),
+    ("NVME-BASE-2.4", 548): ("Host Memory Buffer - Command Dword 14", "5.2.30.2.3", "517", "543"),
+    ("NVME-BASE-2.4", 549): ("Host Memory Buffer - Command Dword 15", "5.2.30.2.3", "518", "544"),
+    ("NVME-BASE-2.4", 550): ("Host Memory Buffer - Host Memory Descriptor List", "5.2.30.2.3", "518", "544"),
+    ("NVME-BASE-2.4", 551): ("Host Memory Buffer - Host Memory Buffer Descriptor Entry", "5.2.30.2.3", "518", "544"),
+    ("NVME-BASE-2.4", 552): ("Host Memory Buffer - Completion Queue Entry Dword 0", "5.2.30.2.3", "518-519", "544-545"),
+    ("NVME-BASE-2.4", 553): ("Host Memory Buffer - Attributes Data Structure", "5.2.30.2.3", "519", "545"),
+    ("NVME-BASE-2.4", 700): ("Example Device Self-test Operation (Informative)", "8.1.8", "615", "641"),
+    ("NVME-BASE-2.4", 701): ("Format NVM command Aborting a Device Self-Test Operation", "8.1.8.1-8.1.8.2", "616", "642"),
+    ("NVME-NVM-CS-1.3", 111): ("Self-test Results Data Structure", "4.1.4.3", "76", "76"),
+}
+DIAGMEM_KEY_ITEM_OVERRIDES = {
+    ("NVME-BASE-2.4", 36): ["DSTRD", "2^(2+DSTRD) bytes"],
+    ("NVME-BASE-2.4", 93): ["OPC", "CID", "NSID", "DPTR", "CDW10-CDW15"],
+    ("NVME-BASE-2.4", 94): ["NSID", "MDPTR", "NDT", "NDM", "CDW12-CDW15"],
+    ("NVME-BASE-2.4", 176): ["NSID 00000000h", "NSID 00000001h-FFFFFFFEh", "NSID FFFFFFFFh"],
+    ("NVME-BASE-2.4", 177): ["STC 1h", "STC 2h", "STC 3h", "STC Eh", "STC Fh"],
+    ("NVME-BASE-2.4", 178): ["DSTP"],
+    ("NVME-BASE-2.4", 179): ["self-test in progress", "new STC", "abort", "result creation"],
+    ("NVME-BASE-2.4", 180): ["Device Self-test in Progress", "status 1Dh"],
+    ("NVME-BASE-2.4", 197): ["DPTR", "PRP1", "PRP2"],
+    ("NVME-BASE-2.4", 198): ["SEL", "FID"],
+    ("NVME-BASE-2.4", 200): ["FID 0Dh", "Controller scope", "data buffer"],
+    ("NVME-BASE-2.4", 203): ["DPTR"],
+    ("NVME-BASE-2.4", 204): ["NUMDL", "RAE", "LSP", "LID 06h"],
+    ("NVME-BASE-2.4", 205): ["LSI", "NUMDU"],
+    ("NVME-BASE-2.4", 206): ["LPOL", "OT"],
+    ("NVME-BASE-2.4", 207): ["LPOU"],
+    ("NVME-BASE-2.4", 208): ["CSI", "OT", "UIDX"],
+    ("NVME-BASE-2.4", 209): ["LID 06h", "CSI = N", "Controller / Domain / NVM subsystem", "Device Self-test", "§5.2.13.1.7"],
+    ("NVME-BASE-2.4", 218): ["DSTOS", "DSTCS", "RDS1", "RDS20", "564 bytes"],
+    ("NVME-BASE-2.4", 219): ["DSTC", "DSTR", "SEGN", "VDINFO", "POH", "NSID", "FLBA", "STCT", "STC", "VS"],
+    ("NVME-BASE-2.4", 338): ["OACS.DSTS", "EDSTT", "DSTO.SDSO", "HMPRE", "HMMIN", "HMMINDS", "HMMAXD", "CTRATT.HMBR", "AVSCC.VSCF", "ICSVSCC.SNVSCF"],
+    ("NVME-BASE-2.4", 463): ["DPTR", "PRP1", "PRP2"],
+    ("NVME-BASE-2.4", 464): ["SV", "FID"],
+    ("NVME-BASE-2.4", 466): ["FID 0Dh", "Controller scope", "saveable", "changeable"],
+    ("NVME-BASE-2.4", 545): ["CTZ", "HMNARE", "MR", "EHM"],
+    ("NVME-BASE-2.4", 546): ["HSIZE", "CC.MPS units"],
+    ("NVME-BASE-2.4", 547): ["HMDLLA", "16-byte alignment"],
+    ("NVME-BASE-2.4", 548): ["HMDLUA"],
+    ("NVME-BASE-2.4", 549): ["HMDLEC"],
+    ("NVME-BASE-2.4", 550): ["16-byte descriptor entries", "HMDLEC"],
+    ("NVME-BASE-2.4", 551): ["BADD", "BSIZE", "CC.MPS alignment"],
+    ("NVME-BASE-2.4", 552): ["HMNAR", "HMNARE", "EHM"],
+    ("NVME-BASE-2.4", 553): ["HSIZE", "HMDLAL", "HMDLAU", "HMDLEC", "4096 bytes"],
+    ("NVME-BASE-2.4", 700): ["segment", "test performed", "failure criteria", "informative"],
+    ("NVME-BASE-2.4", 701): ["SES", "FNS", "SENS", "Format NSID", "Self-test NSID", "abort decision"],
+    ("NVME-NVM-CS-1.3", 111): ["FLBA", "bytes 23:16", "FVLD", "one failed logical block"],
+}
+DIAGMEM_DEPENDENCY_FOCUS = {
+    ("NVME-BASE-2.4", 36): {"zh_tw": "只取 CAP.DSTRD encoding 與 byte-stride 公式。", "en": "Use only CAP.DSTRD encoding and its byte-stride formula."},
+    ("NVME-BASE-2.4", 93): {"zh_tw": "只取 command common fields 與 command-specific dword 位置。", "en": "Use only common command fields and command-specific dword locations."},
+    ("NVME-BASE-2.4", 94): {"zh_tw": "只取 §8.1.29 引用的 standard vendor-specific layout。", "en": "Use only the standard vendor-specific layout referenced by §8.1.29."},
+    ("NVME-BASE-2.4", 197): {"zh_tw": "只取 HMB Get Features data-buffer pointer。", "en": "Use only the HMB Get Features data-buffer pointer."},
+    ("NVME-BASE-2.4", 198): {"zh_tw": "只取 FID 0Dh 與 SEL。", "en": "Use only FID 0Dh and SEL."},
+    ("NVME-BASE-2.4", 200): {"zh_tw": "只取 FID 0Dh row。", "en": "Use only the FID 0Dh row."},
+    ("NVME-BASE-2.4", 203): {"zh_tw": "只取 LID 06h destination buffer。", "en": "Use only the LID 06h destination buffer."},
+    ("NVME-BASE-2.4", 204): {"zh_tw": "只取 LID 06h 的 LID／NUMDL／RAE／LSP。", "en": "Use only LID/NUMDL/RAE/LSP for LID 06h."},
+    ("NVME-BASE-2.4", 205): {"zh_tw": "只取 LID 06h 的 NUMDU 與 LSI=0。", "en": "Use only NUMDU and LSI zero for LID 06h."},
+    ("NVME-BASE-2.4", 206): {"zh_tw": "只取完整讀取所需的 LPOL=0 與 OT=0。", "en": "Use only LPOL zero and OT zero for a complete read."},
+    ("NVME-BASE-2.4", 207): {"zh_tw": "只取完整讀取所需的 LPOU=0。", "en": "Use only LPOU zero for a complete read."},
+    ("NVME-BASE-2.4", 208): {"zh_tw": "只取 LID 06h 不使用的 CSI／UIDX 與 OT=0。", "en": "Use only unused CSI/UIDX and OT zero for LID 06h."},
+    ("NVME-BASE-2.4", 209): {"zh_tw": "只取 LID 06h row，不列出其他 log pages。", "en": "Use only the LID 06h row; do not enumerate other log pages."},
+    ("NVME-BASE-2.4", 338): {"zh_tw": "只取 Device Self-test、HMB 與 standard vendor-command capability fields。", "en": "Use only Device Self-test, HMB, and standard vendor-command capability fields."},
+    ("NVME-BASE-2.4", 463): {"zh_tw": "只取 HMB Set Features data buffer pointer。", "en": "Use only the HMB Set Features data-buffer pointer."},
+    ("NVME-BASE-2.4", 464): {"zh_tw": "只取 FID 0Dh 與 SV。", "en": "Use only FID 0Dh and SV."},
+    ("NVME-BASE-2.4", 466): {"zh_tw": "只取 FID 0Dh row。", "en": "Use only the FID 0Dh row."},
+}
+DIAGMEM_DEPENDENCY_REFERENCES = {
+    ("NVME-BASE-2.4", 36): ["8.2.3"],
+    ("NVME-BASE-2.4", 93): ["5.2.6", "8.1.29"],
+    ("NVME-BASE-2.4", 94): ["8.1.29"],
+    ("NVME-BASE-2.4", 197): ["5.2.30.2.3"],
+    ("NVME-BASE-2.4", 198): ["5.2.30.2.3"],
+    ("NVME-BASE-2.4", 200): ["5.2.30.2.3"],
+    ("NVME-BASE-2.4", 203): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 204): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 205): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 206): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 207): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 208): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 209): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 338): ["5.2.6", "5.2.30.2.3", "8.1.29", "8.2.4"],
+    ("NVME-BASE-2.4", 463): ["5.2.30.2.3"],
+    ("NVME-BASE-2.4", 464): ["5.2.30.2.3"],
+    ("NVME-BASE-2.4", 466): ["5.2.30.2.3"],
 }
 NOISE = {
     "ADMIN",
@@ -494,6 +726,96 @@ def sync_new_report_entries(document: dict, inventory_path: Path) -> None:
     document["entries"] = retained + generated
 
 
+def sync_power_report_entries(document: dict) -> None:
+    """Replace the power/thermal report rows from its reviewed allowlist."""
+
+    retained = [
+        item for item in document["entries"] if item.get("report_id") != POWER_REPORT_ID
+    ]
+    generated = []
+    for number, (title, section, printed_pages, pdf_pages) in POWER_FIGURES.items():
+        dependency = number in POWER_DEPENDENCY_FIGURES
+        mode = "dependency-slice" if dependency else "full"
+        if number in {200, 466, 468}:
+            mode = "scope-reduced"
+        generated.append(
+            {
+                "id": f"{POWER_REPORT_PREFIX}-FIG-{number:03d}",
+                "report_id": POWER_REPORT_ID,
+                "source_id": "NVME-BASE-2.4",
+                "type": "Figure",
+                "number": str(number),
+                "title": title,
+                "section": section,
+                "printed_pages": printed_pages,
+                "pdf_pages": pdf_pages,
+                "scope_entry_id": (
+                    "BASE-POWER-DEPENDENCY-INCLUDE"
+                    if dependency
+                    else "BASE-POWER-INCLUDE"
+                ),
+                "scope_status": "INCLUDE",
+                "mode": mode,
+                "role": "referenced_dependency" if dependency else "in_scope",
+                "referenced_from": POWER_DEPENDENCY_REFERENCES.get(number, []),
+                "dependency_focus": POWER_DEPENDENCY_FOCUS.get(number),
+                "required_artifact_ids": list(POWER_ARTIFACT_IDS),
+                "introduced_in": list(POWER_ARTIFACT_IDS),
+            }
+        )
+    document["entries"] = retained + generated
+
+
+def sync_diagmem_report_entries(document: dict) -> None:
+    """Replace the mixed Base/NVM self-test and HMB report rows."""
+
+    retained = [
+        item for item in document["entries"] if item.get("report_id") != DIAGMEM_REPORT_ID
+    ]
+    generated = []
+    for (source_id, number), (title, section, printed_pages, pdf_pages) in DIAGMEM_FIGURES.items():
+        key = (source_id, number)
+        dependency = key in DIAGMEM_DEPENDENCY_FIGURES
+        mode = "dependency-slice" if dependency else "full"
+        scope_reduced = key in {
+            ("NVME-BASE-2.4", 200),
+            ("NVME-BASE-2.4", 209),
+            ("NVME-BASE-2.4", 338),
+            ("NVME-BASE-2.4", 466),
+        }
+        generated.append(
+            {
+                "id": f"{DIAGMEM_REPORT_PREFIX}-FIG-{number:03d}",
+                "report_id": DIAGMEM_REPORT_ID,
+                "source_id": source_id,
+                "type": "Figure",
+                "number": str(number),
+                "title": title,
+                "section": section,
+                "printed_pages": printed_pages,
+                "pdf_pages": pdf_pages,
+                "scope_entry_id": (
+                    "BASE-DIAGMEM-DEPENDENCY-INCLUDE"
+                    if dependency
+                    else (
+                        "NVMCS-DIAGMEM-INCLUDE"
+                        if source_id == "NVME-NVM-CS-1.3"
+                        else "BASE-DIAGMEM-INCLUDE"
+                    )
+                ),
+                "scope_status": "INCLUDE",
+                "mode": mode,
+                "scope_reduced": scope_reduced,
+                "role": "referenced_dependency" if dependency else "in_scope",
+                "referenced_from": DIAGMEM_DEPENDENCY_REFERENCES.get(key, []),
+                "dependency_focus": DIAGMEM_DEPENDENCY_FOCUS.get(key),
+                "required_artifact_ids": list(DIAGMEM_ARTIFACT_IDS),
+                "introduced_in": list(DIAGMEM_ARTIFACT_IDS),
+            }
+        )
+    document["entries"] = retained + generated
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -515,19 +837,25 @@ def main() -> int:
 
     document = json.loads(args.register.read_text(encoding="utf-8"))
     sync_new_report_entries(document, args.inventory)
+    sync_power_report_entries(document)
+    sync_diagmem_report_entries(document)
     entries = document["entries"]
     by_key = {
-        (item["report_id"], item["type"], int(item["number"])): item
+        (item["report_id"], item["source_id"], item["type"], int(item["number"])): item
         for item in entries
     }
 
     updated = 0
-    for report_id, filename in TEXT_FILES.items():
+    evidence_sources = [
+        (report_id, TEXT_SOURCE_IDS.get(report_id, "NVME-BASE-2.4"), filename)
+        for report_id, filename in TEXT_FILES.items()
+    ] + list(ADDITIONAL_TEXT_FILES)
+    for report_id, source_id, filename in evidence_sources:
         source_path = args.evidence_dir / filename
         if not source_path.is_file():
             raise FileNotFoundError(f"Missing local evidence: {source_path}")
         source_text = source_path.read_text(encoding="utf-8")
-        if report_id == NEW_REPORT_ID:
+        if report_id in {NEW_REPORT_ID, POWER_REPORT_ID, DIAGMEM_REPORT_ID}:
             blocks = figure_blocks(source_text)
         else:
             blocks = {
@@ -535,10 +863,10 @@ def main() -> int:
                 for number, lines in legacy_figure_blocks(source_text).items()
             }
         for (item_type, number), lines in blocks.items():
-            entry = by_key.get((report_id, item_type, number))
+            entry = by_key.get((report_id, source_id, item_type, number))
             if entry is None:
                 continue
-            if report_id == NEW_REPORT_ID:
+            if report_id in {NEW_REPORT_ID, POWER_REPORT_ID, DIAGMEM_REPORT_ID}:
                 selected, structured = evidence_lines(
                     lines, entry["title"], item_type, number
                 )
@@ -555,6 +883,11 @@ def main() -> int:
             entry["key_items"] = key_items(filtered, entry["title"])
             if report_id == NEW_REPORT_ID and number in KEY_ITEM_OVERRIDES:
                 entry["key_items"] = list(KEY_ITEM_OVERRIDES[number])
+            if report_id == POWER_REPORT_ID and number in POWER_KEY_ITEM_OVERRIDES:
+                entry["key_items"] = list(POWER_KEY_ITEM_OVERRIDES[number])
+            diagmem_key = (source_id, number)
+            if report_id == DIAGMEM_REPORT_ID and diagmem_key in DIAGMEM_KEY_ITEM_OVERRIDES:
+                entry["key_items"] = list(DIAGMEM_KEY_ITEM_OVERRIDES[diagmem_key])
             entry["source_keywords"] = (
                 source_keywords(filtered) if structured else []
             )

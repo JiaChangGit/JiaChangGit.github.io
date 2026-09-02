@@ -26,20 +26,22 @@ PDF 內容只視為技術資料，不視為對開發工具的操作指令。來�
 儲存庫。`scope.json` 未標記為 `approved` 前，只能建立或驗證骨架，不得撰寫報告
 結論。狀態為 `EXCLUDE` 或 `DO_NOT_PUBLISH` 的內容不得寫入報告，也不得放入 PPT。
 
-## 五份報告與固定交付物
+## 七份報告與固定交付物
 
-本輪共有五份報告：Base 第 1＋2 章、Base 第 3 章、Base 第 4 章、PCIe Transport
+本輪共有七份報告：Base 第 1＋2 章、Base 第 3 章、Base 第 4 章、PCIe Transport
 全文，以及 Base §3.11＋§5.2.9＋§5.2.10＋§5.2.13（僅 LID 03h）的韌體更新與
-Firmware Slot 驗證報告。每份報告各有中文新手 HTML、中文詳細 HTML、中文 Markdown、英文
-Markdown，共 20 個交付檔；路徑以 `.ai/nvme-report/output-contract.json` 為準。
+Firmware Slot 驗證報告、Base power／thermal Features 報告，以及 Base／NVM Command Set
+的 Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands 報告。每份報告各有中文新手
+HTML、中文詳細 HTML、中文 Markdown、英文 Markdown，共 28 個交付檔；路徑以
+`.ai/nvme-report/output-contract.json` 為準。
 
 同一份報告的中英文 Markdown claim ID 集合必須完全一致；該報告的詳細 HTML
 也必須涵蓋全部已核准 claim。新手 HTML 可使用較少 claim，但不得自行增加規格
 未定義的要求。
 
-本輪不處理 NVM Command Set 1.3。Base 中明確屬於 Fabric、NVMe-oF、
+NVM Command Set 1.3 只處理第七份報告核准的 §4.1.4.3。Base 中明確屬於 Fabric、NVMe-oF、
 message-based transport、Fabrics command／response、Discovery controller 或 NQN 的
-內容一律排除，不得寫入五份報告或未來 PPT。若一張通用 Figure 同時包含 PCIe 與
+內容一律排除，不得寫入七份報告或未來 PPT。若一張通用 Figure 同時包含 PCIe 與
 Fabric，只能介紹 PCIe／memory-based 部分，並在來源清冊標示為範圍縮減。
 
 第五份報告只發布 `.ai/nvme-report/scope.json` 的 `included_figure_ids` allowlist。
@@ -48,13 +50,29 @@ Fabric，只能介紹 PCIe／memory-based 部分，並在來源清冊標示為�
 本身屬於 Fabrics／Discovery，仍以排除規則優先。Figure 209 只保留 LID 03h row、
 CSI、scope、reference section 與適用註解，不得列出其他 LID。
 
+第六份報告只納入 Base §5.2.12、§5.2.30 共通命令、FID 02h／04h／0Ch／10h／11h，
+以及 §8.1.19 到 §8.1.19.5。必須排除 §5.2.30.1.2.1、§8.1.19.6、§8.1.19.7、
+其他 FID 與所有 Fabrics 內容。Figure 468 使用 `scope-reduced`，只教 WH 與 PS；Figure
+469、742、743、744 不得進入公開輸出。主流程以 Get capability/value → Set policy →
+observe completion／SMART／temperature 組織，不得按 section 或 Figure 順序重排成清單。
+
+第七份報告只納入 Base §5.2.6、§5.2.13.1.7、§5.2.30.2.3、§8.1.8、§8.1.29、
+§8.2.3、§8.2.4，以及 NVM Command Set 1.3 §4.1.4.3。Figure 200、209、338、466
+必須 scope-reduced；Figure 209 只取 LID 06h row，NVM Command Set 只取 Figure 111 的
+FLBA 定義。主體分成 Device Self-test lifecycle、HMB ownership lifecycle 與 encoded
+memory boundary 三條工程主線，不得把其他 log page、Feature、Telemetry 或 Fabrics 內容帶入。
+
 ## HTML 與 iPad 閱讀規則
 
-- 禁止 `<style>`、`style` attribute、stylesheet 及 `<script>`。
-- 禁止外部資源、`iframe`、`object` 與 `embed`。
-- 必須使用 UTF-8、`lang="zh-Hant-TW"` 與 viewport meta。
-- 可使用語意 HTML、Unicode 圖示、自行繪製的 inline SVG 及同目錄相對圖片。
-- 表格以四欄以內為原則；寬表格拆成多張，避免依賴水平捲動。
+- 詳細相容性規格以 `.ai/nvme-report/ipad-html-profile.md` 為準；主要裝置為 M1 iPad Pro，並以 Safari 17.2 為安全互動 baseline、Safari 26.x 為 progressive enhancement。
+- 允許單一內嵌 `<style>` 建立一致的資訊色彩、responsive layout 與 Light／Dark Mode；禁止 `style` attribute 與外部 stylesheet。
+- 禁止 `<script>`、外部資源、`iframe`、`object` 與 `embed`。
+- 必須使用 UTF-8、`lang="zh-Hant-TW"`、`viewport-fit=cover`、light／dark `theme-color` 與 viewport meta。
+- 可使用語意 HTML、Unicode 圖示、自行繪製的 inline SVG 及同目錄相對圖片；顏色必須對應固定語意，不得只靠顏色傳達資訊。
+- anchor 與 `summary` 觸控高度至少 44px；正文至少 16px／1.65 line-height，支援 safe area、`prefers-reduced-motion`、focus-visible 與 print。
+- 表格以四欄以內為原則；寬表格拆成多張。無法再拆的對照表只能在自己的 `.table-wrap` 內橫向滑動，整頁不得 overflow。
+- `details`／`summary` 是 Figure 與 Appendix 的主要無 JavaScript 互動；同組可使用 `name` attribute 作 progressive-enhancement accordion，但內容不能依賴該 attribute 才可閱讀。
+- 每個大主題至少有系統位置圖、流程／sequence、比較、實際範例與 failure／Debug 分支；每張引用 Figure 要有教學重畫與欄位解碼工作紙。
 - 不得為了獨立 HTML 的限制而刪除或修改既有 Jekyll 站台 CSS／JS。
 
 ## 規範性用語與引用

@@ -9,6 +9,23 @@ import json
 import re
 from pathlib import Path
 
+try:
+    from scripts.nvme_teaching_content import (
+        REPORT_GLOSSARIES,
+        REPORT_MODULES,
+        TERM_LIBRARY,
+        expanded_figure_guide,
+        term_definition,
+    )
+except ModuleNotFoundError:  # Direct execution puts scripts/ on sys.path.
+    from nvme_teaching_content import (
+        REPORT_GLOSSARIES,
+        REPORT_MODULES,
+        TERM_LIBRARY,
+        expanded_figure_guide,
+        term_definition,
+    )
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTROL = ROOT / ".ai" / "nvme-report"
@@ -21,7 +38,274 @@ SOURCES = {
         "revision": "1.4",
         "marker": "NVM Express NVMe over PCIe Transport Specification, Revision 1.4",
     },
+    "NVME-NVM-CS-1.3": {
+        "revision": "1.3",
+        "marker": "NVM Express NVM Command Set Specification, Revision 1.3",
+    },
 }
+
+
+HTML_CSS = """
+:root {
+  color-scheme: light dark;
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-2: #edf2f8;
+  --text: #182235;
+  --muted: #53627a;
+  --line: #cbd6e5;
+  --accent: #1d4ed8;
+  --accent-soft: #dbeafe;
+  --spec: #1d4ed8;
+  --spec-soft: #eff6ff;
+  --explain: #0f766e;
+  --explain-soft: #ecfdf5;
+  --infer: #7e22ce;
+  --infer-soft: #faf5ff;
+  --example: #15803d;
+  --example-soft: #f0fdf4;
+  --warn: #c2410c;
+  --warn-soft: #fff7ed;
+  --diagram-line: #475569;
+  --diagram-line-soft: #94a3b8;
+  --command: var(--spec);
+  --command-soft: var(--spec-soft);
+  --object: var(--explain);
+  --object-soft: var(--explain-soft);
+  --decision: var(--infer);
+  --decision-soft: var(--infer-soft);
+  --success: var(--example);
+  --success-soft: var(--example-soft);
+  --failure: var(--warn);
+  --failure-soft: var(--warn-soft);
+  --shadow: 0 10px 28px rgba(31, 53, 84, .10);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+  font-size: 17px;
+  line-height: 1.72;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+a { color: var(--accent); text-underline-offset: .18em; }
+a:focus-visible, summary:focus-visible { outline: 3px solid var(--warn); outline-offset: 3px; }
+code, pre, kbd, samp { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+code { background: var(--surface-2); border-radius: .32rem; padding: .08rem .3rem; }
+pre { background: #101827; color: #e5eefc; border-radius: .8rem; padding: 1rem; overflow: auto; line-height: 1.5; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+  padding-top: env(safe-area-inset-top);
+}
+.topbar-inner, main { width: min(900px, calc(100% - 28px)); margin-inline: auto; }
+.topbar-inner { padding: .7rem 0; white-space: nowrap; overflow-x: auto; }
+.topbar a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: .28rem; }
+section, article, details { scroll-margin-top: 4.25rem; }
+main { padding: 1.3rem 0 4rem; }
+.skip-link { position: fixed; left: .75rem; top: -8rem; z-index: 99; background: var(--warn); color: #fff; border-radius: .5rem; padding: .75rem 1rem; }
+.skip-link:focus { top: calc(.5rem + env(safe-area-inset-top)); }
+.hero {
+  background: linear-gradient(135deg, var(--surface), var(--accent-soft));
+  border: 1px solid var(--line);
+  border-left: .45rem solid var(--accent);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  padding: clamp(1.2rem, 4vw, 2.4rem);
+  margin: 1rem 0 1.5rem;
+}
+.hero h1 { margin: 0 0 .45rem; font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.16; letter-spacing: -.025em; }
+.eyebrow { color: var(--accent); font-size: .78rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+.subtitle { color: var(--muted); font-size: 1.08rem; margin-bottom: 0; }
+section, article.topic-card, details.figure-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+  box-shadow: 0 4px 16px rgba(31, 53, 84, .06);
+  margin: 1rem 0;
+  padding: clamp(1rem, 3vw, 1.55rem);
+}
+section section { box-shadow: none; }
+section > p, article.topic-card > p, .figure-card > p { max-width: 80ch; }
+h2 { margin-top: 0; padding-bottom: .4rem; border-bottom: 2px solid var(--accent-soft); font-size: clamp(1.45rem, 4vw, 2rem); line-height: 1.3; }
+h3 { line-height: 1.35; }
+.toc ol { columns: 2; column-gap: 2rem; }
+.toc li { break-inside: avoid; margin: .3rem 0; }
+.badge {
+  display: inline-block;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: .76rem;
+  font-weight: 800;
+  line-height: 1;
+  padding: .32rem .55rem;
+  vertical-align: .12em;
+}
+.badge-spec { color: var(--spec); background: var(--spec-soft); }
+.badge-explain { color: var(--explain); background: var(--explain-soft); }
+.badge-infer { color: var(--infer); background: var(--infer-soft); }
+.badge-example { color: var(--example); background: var(--example-soft); }
+.badge-warn { color: var(--warn); background: var(--warn-soft); }
+.callout { border-left: .35rem solid; border-radius: .55rem; padding: .8rem 1rem; margin: .85rem 0; }
+.spec { border-color: var(--spec); background: var(--spec-soft); }
+.explain { border-color: var(--explain); background: var(--explain-soft); }
+.infer { border-color: var(--infer); background: var(--infer-soft); }
+.example { border-color: var(--example); background: var(--example-soft); }
+.warning { border-color: var(--warn); background: var(--warn-soft); }
+fieldset { border: 1px solid var(--line); border-left: .35rem solid var(--explain); border-radius: .7rem; background: var(--explain-soft); margin: 1rem 0; padding: 1rem; }
+legend { color: var(--explain); font-weight: 800; padding: 0 .4rem; }
+mark { background: var(--accent-soft); color: var(--accent); border-radius: .3rem; padding: .1rem .35rem; }
+.table-wrap { overflow-x: auto; margin: .85rem 0; border: 1px solid var(--line); border-radius: .7rem; }
+table { width: 100%; min-width: 560px; border-collapse: collapse; background: var(--surface); }
+th, td { border-bottom: 1px solid var(--line); padding: .68rem .72rem; text-align: left; vertical-align: top; }
+th { background: var(--surface-2); color: var(--text); }
+tr:last-child td { border-bottom: 0; }
+.term { color: var(--accent); font-weight: 750; white-space: nowrap; }
+.flow-svg { width: 100%; height: auto; background: var(--surface-2); border: 1px solid var(--line); border-radius: .8rem; }
+.flow-node { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.flow-node-alt { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.flow-line { stroke: var(--accent); stroke-width: 2.2; }
+.flow-text { fill: var(--text); font-size: 14px; font-weight: 650; }
+.mini-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+.mini-card { border: 1px solid var(--line); border-radius: .65rem; background: var(--surface-2); padding: .8rem; }
+.mini-card p { margin: .25rem 0; }
+details { margin: .8rem 0; }
+details > summary { cursor: pointer; color: var(--accent); font-weight: 750; min-height: 44px; display: flex; align-items: center; padding: .35rem .2rem; }
+details.figure-card[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 1rem; padding-bottom: .8rem; }
+.figure-meta { color: var(--muted); font-size: .92rem; }
+.source-note { color: var(--muted); border-top: 1px dashed var(--line); margin-top: .8rem; padding-top: .65rem; font-size: .88rem; }
+.chapter-bridge { color: var(--muted); font-size: 1.04rem; }
+.back { text-align: right; font-size: .9rem; }
+.ipad-toc { background: var(--surface); border: 1px solid var(--line); border-left: .35rem solid var(--accent); border-radius: .8rem; padding: .55rem 1rem; margin: 1rem 0; }
+.ipad-toc > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--accent); font-weight: 800; }
+.ipad-toc a { display: inline-flex; align-items: center; min-height: 44px; padding-block: .3rem; }
+.toc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem .8rem; padding: .55rem 0; }
+.toc-grid a { display: flex; align-items: center; min-height: 44px; border: 1px solid var(--line); border-radius: .55rem; background: var(--surface-2); padding: .45rem .7rem; text-decoration: none; }
+.ipad-read-guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1rem 0; }
+.read-chip { border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); padding: .8rem; }
+.read-chip strong { display: block; color: var(--accent); margin-bottom: .15rem; }
+.visual-atlas { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(76%, 1fr); gap: 1rem; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline proximity; padding: .25rem .15rem 1rem; }
+.visual-card { scroll-snap-align: start; border: 1px solid var(--line); border-top: .32rem solid var(--accent); border-radius: .8rem; background: var(--surface); padding: 1rem; }
+.visual-card[data-visual-kind="architecture"] { border-top-color: var(--object); }
+.visual-card[data-visual-kind="sequence"] { border-top-color: var(--command); }
+.visual-card[data-visual-kind="decode"] { border-top-color: var(--decision); }
+.visual-card[data-visual-kind="state"] { border-top-color: var(--failure); }
+.visual-card h3 { margin-top: 0; }
+.visual-card p:last-child { margin-bottom: 0; }
+.visual-board { border: 1px solid var(--line); border-radius: .8rem; background: var(--surface-2); padding: .65rem; margin: .9rem 0; }
+.visual-board svg { display: block; width: 100%; height: auto; }
+.visual-board figcaption { color: var(--muted); font-size: .86rem; margin-top: .55rem; }
+.v-source, .v-command { fill: var(--command-soft); stroke: var(--command); stroke-width: 2; }
+.v-structure, .v-object { fill: var(--object-soft); stroke: var(--object); stroke-width: 2; }
+.v-state, .v-decision { fill: var(--decision-soft); stroke: var(--decision); stroke-width: 2; }
+.v-evidence, .v-success { fill: var(--success-soft); stroke: var(--success); stroke-width: 3; }
+.v-warning, .v-failure { fill: var(--failure-soft); stroke: var(--failure); stroke-width: 2.5; stroke-dasharray: 7 4; }
+.v-line { stroke: var(--diagram-line); stroke-width: 2.2; fill: none; }
+.v-line-soft { stroke: var(--diagram-line-soft); stroke-width: 1.5; fill: none; }
+.v-line-dashed { stroke: var(--failure); stroke-width: 2; fill: none; stroke-dasharray: 7 5; }
+.v-arrow { fill: var(--diagram-line); stroke: none; }
+.v-arrow-failure { fill: var(--failure); stroke: none; }
+.v-label-bg { fill: var(--surface-2); stroke: none; opacity: .96; }
+.v-label { fill: var(--text); font-size: 14px; font-weight: 700; }
+.v-small { fill: var(--muted); font-size: 11.5px; }
+.v-role { fill: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+.visual-legend { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .55rem; margin: 1rem 0; }
+.legend-item { border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); padding: .72rem; min-width: 0; }
+.legend-item strong { display: block; margin: .2rem 0; }
+.legend-item small { color: var(--muted); }
+.legend-swatch { display: inline-grid; place-items: center; width: 2rem; height: 1.45rem; border: 2px solid; border-radius: .35rem; font-size: .65rem; font-weight: 900; }
+.role-command { color: var(--command); background: var(--command-soft); }
+.role-object { color: var(--object); background: var(--object-soft); }
+.role-decision { color: var(--decision); background: var(--decision-soft); transform: rotate(45deg); border-radius: .18rem; }
+.role-decision > span { transform: rotate(-45deg); }
+.role-success { color: var(--success); background: var(--success-soft); border-style: double; border-width: 3px; }
+.role-failure { color: var(--failure); background: var(--failure-soft); border-style: dashed; }
+.edition-note { border-left: .35rem solid var(--accent); background: var(--accent-soft); border-radius: .65rem; padding: .8rem 1rem; margin: 1rem 0; }
+.reference-module { border-left: .35rem solid var(--decision); }
+.claim-meta { display: grid; grid-template-columns: max-content 1fr; gap: .25rem .8rem; margin: .8rem 0; }
+.claim-meta dt { color: var(--muted); font-weight: 700; }
+.claim-meta dd { margin: 0; }
+.worksheet { border-left: .35rem solid var(--infer); }
+.req-shall { color: var(--warn); background: var(--warn-soft); }
+.req-should { color: #9a6700; background: #fff8c5; }
+.req-may { color: var(--spec); background: var(--spec-soft); }
+.req-reserved { color: var(--muted); background: var(--surface-2); }
+.table-wrap thead th { position: sticky; top: 0; z-index: 1; }
+.table-wrap th:first-child, .table-wrap td:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
+@media (max-width: 700px) {
+  body { font-size: 16px; }
+  .toc ol { columns: 1; }
+  .mini-grid { grid-template-columns: 1fr; }
+  table { min-width: 500px; }
+  .hero { border-radius: .75rem; }
+  .toc-grid, .ipad-read-guide, .visual-legend { grid-template-columns: 1fr; }
+  .visual-atlas { grid-auto-columns: 92%; }
+  .claim-meta { grid-template-columns: 1fr; }
+  .claim-meta dt { margin-top: .35rem; }
+}
+@media (min-width: 1000px) {
+  .topbar-inner, main { width: min(1180px, calc(100% - 48px)); }
+  .toc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .visual-atlas { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
+  .visual-card { scroll-snap-align: none; }
+  .edition-reference .visual-atlas { grid-template-columns: 1fr; }
+  .edition-reference .visual-card { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(16rem, .75fr); gap: 0 1.2rem; align-items: start; }
+  .edition-reference .visual-card > .eyebrow, .edition-reference .visual-card > h3 { grid-column: 1 / -1; }
+  .edition-reference .visual-card > .visual-board { grid-row: span 4; }
+  .edition-reference table { min-width: 680px; }
+}
+@media (pointer: fine) {
+  summary:hover, .toc-grid a:hover, .topbar a:hover { background: var(--accent-soft); border-radius: .4rem; }
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1220;
+    --surface: #131d2e;
+    --surface-2: #1a2940;
+    --text: #e8eef8;
+    --muted: #a8b5c8;
+    --line: #34445d;
+    --accent: #7fb0ff;
+    --accent-soft: #172b4b;
+    --spec: #93c5fd;
+    --spec-soft: #142a49;
+    --explain: #5eead4;
+    --explain-soft: #12332f;
+    --infer: #d8b4fe;
+    --infer-soft: #2c1940;
+    --example: #86efac;
+    --example-soft: #14351f;
+    --warn: #fdba74;
+    --warn-soft: #3d2413;
+    --diagram-line: #cbd5e1;
+    --diagram-line-soft: #64748b;
+    --shadow: 0 10px 28px rgba(0, 0, 0, .28);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .001ms !important; animation-duration: .001ms !important; }
+}
+@media (forced-colors: active) {
+  .callout, .visual-card, .visual-board, .badge, .legend-item, .legend-swatch { forced-color-adjust: auto; border: 2px solid CanvasText; }
+}
+@media print {
+  .topbar { position: static; }
+  body { background: #fff; color: #111; font-size: 11pt; }
+  section, article.topic-card, details.figure-card, .hero { box-shadow: none; break-inside: avoid; }
+  details > * { display: block; }
+  .visual-atlas { display: block; overflow: visible; }
+  .visual-card { break-inside: avoid; margin: 1rem 0; }
+}
+"""
 
 
 def page_shift(value: str, delta: int) -> str:
@@ -38,7 +322,11 @@ def c(
     source="NVME-BASE-2.4",
     scope_entry=None,
 ):
-    pdf_pages = pages if source == "NVME-PCIE-TRANSPORT-1.4" else page_shift(pages, 26)
+    pdf_pages = (
+        pages
+        if source in {"NVME-PCIE-TRANSPORT-1.4", "NVME-NVM-CS-1.3"}
+        else page_shift(pages, 26)
+    )
     return {
         "key": key,
         "source_id": source,
@@ -179,6 +467,98 @@ REPORTS = {
             c("XREF-337", "5.2.9, 5.2.14.1", "202, 340", "來源 §5.2.9 將 Firmware Revision 欄位指向 Figure 337；但 Figure 337 是 Command Set Identifiers，FR 實際列在 Figure 338。未取得另行核准的 errata，因此保留並揭露這個來源內部交叉引用差異，不靜默改寫。", "Source §5.2.9 points Firmware Revision to Figure 337, but Figure 337 contains Command Set Identifiers and FR appears in Figure 338. Without separately approved errata, this report preserves and discloses the internal source discrepancy instead of silently rewriting it."),
         ],
     },
+    "base-power-features": {
+        "prefix": "BASEPOWER",
+        "title_zh": "NVMe Base 2.4：Power／Thermal Features 與 Power Management",
+        "title_en": "NVMe Base 2.4: Power/Thermal Features and Power Management",
+        "source_id": "NVME-BASE-2.4",
+        "scope_entry": "BASE-POWER-INCLUDE",
+        "date": "2026-09-02",
+        "verified_date": "2026-09-02",
+        "range": "§5.2.12、§5.2.30 共通命令、FID 02h／04h／0Ch／10h／11h，以及 §8.1.19～§8.1.19.5；含五張最小 dependency Figure，排除 Power Limit、IIELL、其他 FID 與傳輸專屬內容",
+        "range_en": "§5.2.12, the common §5.2.30 command, FIDs 02h/04h/0Ch/10h/11h, and §8.1.19 through §8.1.19.5; includes five minimum dependency Figures and excludes Power Limit, IIELL, other FIDs, and transport-specific material",
+        "diagram": ["Get capability / value", "Choose host policy", "Set one Feature", "Observe completion / temperature"],
+        "diagram_note_zh": "先用 Get Features 區分支援能力與目前值，再依 Power State Descriptor、溫度能力與工作負載選 policy；Set Features 成功後，以 completion、SMART/Health 與實際 latency／temperature 形成驗證閉環。",
+        "diagram_note_en": "First use Get Features to separate capability from current value. Choose policy from Power State Descriptors, thermal capabilities, and workload; after Set Features succeeds, close the loop with completion evidence, SMART/Health, and observed latency/temperature.",
+        "claims": [
+            c("READ-FIRST", "5.2.12", "209", "Get Features 是讀取 Feature 屬性的 Admin command。工程流程不應從寫入猜測開始，而要先辨認 FID、查 capability，再取得 current／default／saved value。", "Get Features is the Admin command that retrieves Feature attributes. An engineering flow starts by identifying the FID, querying capability, and retrieving current/default/saved values instead of guessing before a write."),
+            c("GET-SELECT", "5.2.12", "209-210", "CDW10.SEL 選擇 current=000b、default=001b、saved=010b 或 supported capabilities=011b；CDW10.FID 選 Feature。其餘 SEL encoding reserved。", "CDW10.SEL selects current=000b, default=001b, saved=010b, or supported capabilities=011b; CDW10.FID selects the Feature. Other SEL encodings are reserved.", "reserved"),
+            c("GET-SAVED", "5.2.12", "210", "若要求 saved value，但 controller 不支援 saved value 或尚無 saved value，controller 會以 default value 運作。這不是『讀取成功就代表曾經儲存』。", "If a saved value is requested but saved values are unsupported or none exists, the controller operates using the default value. A successful read therefore does not prove that a value was previously saved."),
+            c("GET-UIDX", "5.2.12", "210", "CDW14.UIDX 只有在 controller 支援 UUID List 且該 Feature 需要 UUID 關聯時才有意義；未使用時保留為 0。", "CDW14.UIDX is meaningful only when the controller supports the UUID List and the Feature uses a UUID association; otherwise it remains zero."),
+            c("GET-CAP", "5.2.12.1", "211-212", "SEL=011b 時，CQE.DW0 以 CHANG、NSSPEC、SVBL 回報是否可變更、是否 namespace-specific、是否可 save。這三個 capability bits 與 Feature value 是兩種不同資料，不能混解。", "With SEL=011b, CQE.DW0 reports CHANG, NSSPEC, and SVBL: changeable, namespace-specific, and saveable. These capability bits are distinct from the Feature value and must not be decoded as one."),
+            c("GET-STATUS", "5.2.12.2", "212", "若 Get Features 指定不適用的 Controller Identifier，command-specific status 1Fh 是 Invalid Controller Identifier。Debug 要同時保存 SCT、SC、DNR、CDW10、CDW14 與 target controller。", "If Get Features specifies an inapplicable Controller Identifier, command-specific status 1Fh is Invalid Controller Identifier. Debug evidence retains SCT, SC, DNR, CDW10, CDW14, and the target controller."),
+            c("SET-DPTR", "5.2.30", "456-457", "Set Features 的 DPTR 只在所選 Feature 定義 data structure 時使用。以 PRP 指向 buffer 時，該 data buffer 不得跨越超過一個 memory page boundary，因 PRP2 不能在此指向 PRP List。", "Set Features uses DPTR only when the selected Feature defines a data structure. With PRPs, that data buffer shall not cross more than one memory-page boundary because PRP2 cannot point to a PRP List here.", "shall not"),
+            c("SET-SAVE", "5.2.30", "457", "CDW10.SV=1 要求把值保存為跨 reset／power cycle 可用的 saved value；若 Feature 不可 save，controller 會回 Feature Identifier Not Saveable。先讀 SVBL，再決定是否設 SV。", "CDW10.SV=1 requests a saved value that can persist across reset/power-cycle boundaries. If the Feature is not saveable, the controller returns Feature Identifier Not Saveable. Read SVBL before setting SV."),
+            c("SET-AFTER", "5.2.30", "459", "Set Features 成功後，後續 commands 必須（shall）使用新設定。若軟體需要讓一批 commands 一致套用舊值或新值，host 宜（should）先讓既有 in-flight commands 完成，再切換。", "After Set Features succeeds, subsequent commands shall use the new setting. If software needs a batch of commands to use one consistent setting, the host should allow existing in-flight commands to complete before switching.", "shall"),
+            c("FID-SCOPE", "5.2.30", "457-459", "本報告五個 FID 的 scope 都是 Controller。FID 02h、04h、0Ch、11h 不支援 save；FID 10h 支援 save。只有 FID 0Ch 需要 256-byte data structure。", "All five FIDs in this report have Controller scope. FIDs 02h, 04h, 0Ch, and 11h are not saveable; FID 10h is saveable. Only FID 0Ch uses a 256-byte data structure."),
+            c("POWER-STATES", "8.1.19", "666-667", "controller 必須（shall）至少支援一個 power state，最多可（may）支援 32 個，編號從 0 連續排列。PS0 的 maximum power 最高；後續 state 的 maximum power 不得高於前一個 state。", "A controller shall support at least one power state and may support up to 32, numbered contiguously from zero. PS0 has the highest maximum power; each subsequent state's maximum power does not exceed the preceding state.", "shall"),
+            c("POWER-METRICS", "8.1.19", "666-668", "Power State Descriptor（PSD）把 maximum power、operational/non-operational、entry/exit latency、idle/active power 與 relative performance 放在同一份描述。MP 是 sustained maximum；IDLP 與 ACTP 是不同測量情境，不能拿單次瞬間功耗互相比。", "A Power State Descriptor (PSD) combines maximum power, operational/non-operational type, entry/exit latency, idle/active power, and relative performance. MP is a sustained maximum; IDLP and ACTP use different measurement conditions and are not interchangeable with an instantaneous sample."),
+            c("TRANSITION", "8.1.19.1", "668-669", "從舊 state 直接切到新 state 的最大 transition time，是舊 state 的 EXLAT 加上新 state 的 ENLAT。若 controller 內部經過多個 state，則每一段 transition time 相加。", "The maximum direct-transition time from an old state to a new state is the old state's EXLAT plus the new state's ENLAT. If a controller transitions through multiple states, the transition times for every segment are summed."),
+            c("RELATIVE", "8.1.19.2", "668", "Relative Read／Write Throughput 與 Latency 都是『值越小越好』，但只可在相同 characteristic 內比較；throughput code 不能與 latency code 混成一個總分。", "Relative Read/Write Throughput and Latency use smaller-is-better encodings, but comparisons are valid only within the same characteristic. A throughput code and a latency code are not combined into one score."),
+            c("NONOP", "8.1.19", "667-668", "non-operational power state 不處理 I/O commands，但仍可能處理 property、PMR、CMB、Admin／background 或 transport-specific access。『non-operational』不是 controller 關機。", "A non-operational power state does not process I/O commands, but may still service properties, PMR, CMB, Admin/background work, or transport-specific accesses. Non-operational does not mean the controller is powered off.", "may"),
+            c("NONOP-IO", "8.1.19", "668", "host 在手動切入 non-operational state 前宜（should）先 drain I/O。若 I/O command 到達，controller 會自主回到最近使用的 operational state，再處理 I/O。", "The host should drain I/O before manually entering a non-operational state. If an I/O command arrives, the controller autonomously returns to the most recently used operational state before processing I/O.", "should"),
+            c("FID02", "5.2.30.1.2", "460-461", "FID 02h 用 CDW11.PS[4:0] 選 power state、WH[7:5] 提供 workload hint。指定的 PS 必須（shall）在 Identify Controller.NPSS 宣告範圍內；不支援的 PS 應（should）以 Invalid Field in Command 中止。", "FID 02h uses CDW11.PS[4:0] to select a power state and WH[7:5] for a workload hint. PS shall be within the range advertised by Identify Controller.NPSS; an unsupported PS should be aborted with Invalid Field in Command.", "shall"),
+            c("WORKLOAD", "8.1.19.3", "669", "WH=000b 表示未知 workload；001b 對應先 idle、再做 32 筆 random 1 MiB writes、再 idle 的情境；010b 對應 80,000 筆 sequential 128 KiB writes。011b～111b reserved。", "WH=000b means unknown workload; 001b represents idle, 32 random 1-MiB writes, then idle; 010b represents 80,000 sequential 128-KiB writes. Encodings 011b through 111b are reserved.", "reserved"),
+            c("RTD3", "8.1.19.4", "669-670", "RTD3E 與 RTD3R 分別描述進入與恢復時間，供 PCIe D3cold 使用情境評估 idle break-even；NVMe 文字明確說這不是 D3hot 的時間。PCIe D-state 的完整原始行為不在目前提供來源內，不能據此自行補寫。", "RTD3E and RTD3R describe entry and resume time for evaluating idle break-even in a PCIe D3cold use case; the NVMe text explicitly says these are not D3hot times. Complete PCIe D-state semantics are not present in the supplied source and are not invented here."),
+            c("FID04", "5.2.30.1.3", "462-463", "FID 04h 可為 Composite Temperature 與最多八個實作的 temperature sensors 設 over／under threshold。溫度以 Kelvin 編碼；到達 over threshold 或低於等於 under threshold 時，SMART/Health 的 Temperature Threshold critical warning 可能觸發 asynchronous event。", "FID 04h sets over/under thresholds for Composite Temperature and up to eight implemented temperature sensors. Temperature is encoded in Kelvin; reaching an over threshold or falling to/below an under threshold may set the SMART/Health Temperature Threshold critical warning and trigger an asynchronous event.", "may"),
+            c("HYST", "5.2.30.1.3.1", "463-464", "Figure 470 的 TMPSEL 選 sensor、THSEL 選 over/under、TMPTH 是 threshold、TMPTHH 是 hysteresis。over event 在溫度降到 threshold−hysteresis 時結束；under event在溫度升到 threshold+hysteresis 時結束。", "In Figure 470, TMPSEL selects a sensor, THSEL selects over/under, TMPTH is the threshold, and TMPTHH is hysteresis. An over event ends at threshold minus hysteresis; an under event ends at threshold plus hysteresis."),
+            c("FID0C", "5.2.30.1.7", "468-469", "FID 0Ch 的 APSTE=1 啟用 Autonomous Power State Transition（APST）；預設值是 0。啟用只表示 controller 可依 APST table 的 idle timer 自主切換，並不保證一定進入任何特定 state。", "FID 0Ch APSTE=1 enables Autonomous Power State Transition (APST); the default is zero. Enabling it allows controller transitions based on APST-table idle timers; it does not guarantee entry into a particular state."),
+            c("APST-ENTRY", "5.2.30.1.7", "469", "APST data structure 固定 256 bytes，共 32 個 8-byte entries。每格 ITPT[31:8] 是毫秒 idle threshold，ITPS[7:3] 是目標 non-operational state；ITPT=0 會停用該 entry。", "The APST data structure is 256 bytes with 32 eight-byte entries. Each entry uses ITPT[31:8] as the idle threshold in milliseconds and ITPS[7:3] as the target non-operational state; ITPT=0 disables that entry."),
+            c("APST-NOPPME", "5.2.30.1.7", "469", "APSTE 控制 timer-based entry，NOPPME 控制 controller-initiated background operation 是否可暫時超過 non-operational limit。兩者是兩個正交開關：不要把『可自主進 state』誤解成『可為背景工作提高 power』。", "APSTE controls timer-based entry, while NOPPME controls whether controller-initiated background operations may temporarily exceed a non-operational limit. These are orthogonal switches; autonomous state entry does not imply permission to raise power for background work."),
+            c("FID10", "5.2.30.1.10", "471-472", "FID 10h 的 TMT1[31:16] 是較輕度 thermal management threshold，TMT2[15:0] 是較重度 threshold，單位都是 Kelvin；0h 分別停用對應 threshold。", "FID 10h uses TMT1[31:16] as the lighter thermal-management threshold and TMT2[15:0] as the heavier threshold, both in Kelvin; zero independently disables the corresponding threshold."),
+            c("HCTM", "5.2.30.1.10, 8.1.19.5", "472, 670-671", "非零 TMT1 必須（shall）小於 TMT2，且兩者必須落在 MNTMT～MXTMT 內；否則回 Invalid Field in Command。達 TMT1 時 controller 採降低影響的動作，達 TMT2 時採更強動作；hysteresis 由 vendor 決定。", "A nonzero TMT1 shall be less than TMT2, and both shall lie between MNTMT and MXTMT; otherwise the command returns Invalid Field in Command. At TMT1 the controller acts to minimize impact, while TMT2 invokes stronger action; hysteresis is vendor-specific.", "shall"),
+            c("FID11", "5.2.30.1.11", "472-473", "FID 11h 的 NOPPME=1 允許 controller-initiated background operation 暫時把 power 提高到不超過最後一個 operational state 的上限；NOPPME=0 時，這類工作不得超過目前 non-operational state limits。", "FID 11h NOPPME=1 allows a controller-initiated background operation to raise power temporarily, no higher than the last operational state's limit. With NOPPME=0, such work shall not exceed the current non-operational-state limits.", "shall not"),
+            c("OBSERVE", "5.2.13.1.3", "220-225", "設定完成不是驗證終點。SMART/Health 應同時觀察 Composite Temperature、TTC critical warning、warning temperature time、HCTM transition counters 與已實作 sensor readings，再對照 CQE 與 host latency。", "Successful configuration is not the end of verification. Observe SMART/Health Composite Temperature, the TTC critical warning, warning-temperature time, HCTM transition counters, and implemented sensor readings together with CQE and host latency."),
+        ],
+    },
+    "base-self-test-hmb-emulation": {
+        "prefix": "BASEDIAGMEM",
+        "title_zh": "NVMe Base 2.4：Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands",
+        "title_en": "NVMe Base 2.4: Device Self-test, HMB, Doorbell Emulation, and Vendor Commands",
+        "source_id": "NVME-BASE-2.4",
+        "supporting_source_ids": ["NVME-NVM-CS-1.3"],
+        "scope_entry": "BASE-DIAGMEM-INCLUDE",
+        "date": "2026-09-02",
+        "verified_date": "2026-09-02",
+        "range": "Base §5.2.6、§5.2.13.1.7、§5.2.30.2.3、§8.1.8、§8.1.29、§8.2.3、§8.2.4，以及 NVM Command Set 1.3 §4.1.4.3；另含建構命令與能力判斷所需的最小 dependency slice",
+        "range_en": "Base §§5.2.6, 5.2.13.1.7, 5.2.30.2.3, 8.1.8, 8.1.29, 8.2.3, and 8.2.4, plus NVM Command Set 1.3 §4.1.4.3; includes the minimum dependency slice needed to construct commands and gate capabilities",
+        "diagram": ["Discover capability", "Construct command / memory", "Controller background work", "Read completion / log evidence"],
+        "diagram_note_zh": "三條工程主線共享同一個原則：先確認 capability 與 ownership boundary，再提交 command 或 MMIO notification，最後用 CQE、log page 與記憶體生命週期證明結果。",
+        "diagram_note_en": "Three engineering tracks share one rule: establish capability and ownership boundaries, submit the command or MMIO notification, then prove the result with CQEs, log pages, and memory-lifecycle evidence.",
+        "claims": [
+            c("SELFTEST-GATE", "5.2.14.2.1, 8.1.8", "352-358, 614", "啟動 Device Self-test 前，先讀 Identify Controller：OACS.DSTS 判斷 command 是否支援；EDSTT 是 extended operation 在 power state 0 的名目分鐘數；DSTO.SDSO 決定同時只能有一個 subsystem-wide operation，或每個 controller 各一個。這三個欄位回答不同問題。", "Before starting Device Self-test, read Identify Controller. OACS.DSTS gates command support, EDSTT gives the nominal extended-operation time in minutes at power state 0, and DSTO.SDSO selects one subsystem-wide operation versus one operation per controller. These fields answer different questions.", "none", "NVME-BASE-2.4", "BASE-DIAGMEM-DEPENDENCY-INCLUDE"),
+            c("SELFTEST-NSID", "5.2.6", "199", "Device Self-test 由收到 command 的 controller 執行。NSID=00000000h 只測 controller；00000001h～FFFFFFFEh 指定一個 namespace；FFFFFFFFh 包含提交當下可由該 controller 存取的所有 attached namespaces。invalid 與 inactive NSID 會得到不同 status。", "Device Self-test is performed by the controller that receives the command. NSID 00000000h tests only the controller, 00000001h through FFFFFFFEh select one namespace, and FFFFFFFFh includes every attached namespace accessible through that controller when the operation starts. Invalid and inactive NSIDs produce different status results."),
+            c("SELFTEST-STC", "5.2.6", "199-200", "CDW10.STC[3:0] 選動作：1h=short、2h=extended、3h=Host-Initiated Refresh、Eh=vendor specific、Fh=abort；其餘 encoding reserved。只有 STC=Eh 時 CDW15.DSTP 才是 vendor specific，其他情況 CDW15 reserved。", "CDW10.STC[3:0] selects the action: 1h short, 2h extended, 3h Host-Initiated Refresh, Eh vendor specific, and Fh abort; other encodings are reserved. CDW15.DSTP is vendor specific only when STC is Eh and is reserved otherwise.", "reserved"),
+            c("SELFTEST-INPROGRESS", "5.2.6", "200", "已有 operation 時，再送 short、extended 或 Host-Initiated Refresh 必須以 Device Self-test in Progress 中止；vendor-specific 新命令的行為仍是 vendor specific。STC=Fh 則依序中止目前 operation、建立最新 result、清除 current status，最後成功完成 command。", "When an operation is already running, a new short, extended, or Host-Initiated Refresh request is aborted with Device Self-test in Progress; a new vendor-specific request remains vendor specific. STC Fh instead aborts the current operation, creates the newest result, clears current status, and then completes successfully in that order.", "shall"),
+            c("SELFTEST-COMPLETION", "5.2.6", "201", "Device Self-test command 的 Admin CQE 只證明『啟動／中止動作已被處理』，不是背景測試已完成。command-specific status 1Dh 表示已有 operation in progress；software 必須把 CQE 與後續 LID 06h 分開記錄。", "The Admin CQE for Device Self-test proves that the start or abort action was processed, not that the background test finished. Command-specific status 1Dh means an operation is already in progress; software records the CQE separately from later LID 06h evidence."),
+            c("SELFTEST-BACKGROUND", "8.1.8", "614", "Device Self-test 是由 vendor-specific segments 組成的背景工作。若另一個 command 必須暫停測試才能處理，controller 必須（shall）依序 suspend self-test、處理並完成該 command、再 resume self-test；同時可處理哪些 command 則由 vendor 決定。", "Device Self-test is background work composed of vendor-specific segments. If another command requires suspension, the controller shall suspend the self-test, process and complete that command, and then resume the self-test in order. Which commands may run concurrently remains vendor specific.", "shall"),
+            c("SELFTEST-TIMING", "8.1.8.1-8.1.8.2", "615-616", "short operation 應（should）在兩分鐘內完成，且 Controller Level Reset 會中止；extended operation 應在 EDSTT 內完成，必須跨 Controller Level Reset 與 power restoration 持續並於之後 resume。兩者不能共用同一套 reset 預期。", "A short operation should finish within two minutes and is aborted by a Controller Level Reset. An extended operation should finish within EDSTT, shall persist across Controller Level Reset and power restoration, and resumes afterward. The two operations cannot share one reset expectation.", "should"),
+            c("SELFTEST-ABORTS", "8.1.8.1-8.1.8.2", "615-616", "short 與 extended 都會被適用的 Format NVM、sanitize start 或 STC=Fh 中止，namespace 從 inventory 移除時則可能（may）中止。Figure 701 顯示 Format 的 NSID 與 secure-erase 選項會改變是否必須中止，不能只看 opcode。", "Both short and extended operations are aborted by an applicable Format NVM command, sanitize start, or STC Fh, and may be aborted when the namespace is removed from inventory. Figure 701 shows that Format NSID and secure-erase selections affect whether abort is required; the opcode alone is insufficient.", "may"),
+            c("SELFTEST-LOG-COMMAND", "5.2.13", "213-216", "讀取 LID 06h 所需的最小 Get Log Page slice 是：LID=06h、LSP=0、RAE 依事件策略選擇、NUMD 表示 564 bytes、LPOL/LPOU=0、OT=0、CSI=0、UIDX=0。564 bytes=141 dwords，因此 0's-based NUMD=140=008Ch；RAE=0 時 CDW10=008C0006h。", "The minimum Get Log Page slice for LID 06h uses LID 06h, LSP 0, RAE selected by event policy, NUMD for 564 bytes, LPOL/LPOU 0, OT 0, CSI 0, and UIDX 0. 564 bytes are 141 dwords, so zero-based NUMD is 140 or 008Ch; with RAE 0, CDW10 is 008C0006h.", "none", "NVME-BASE-2.4", "BASE-DIAGMEM-DEPENDENCY-INCLUDE"),
+            c("SELFTEST-CURRENT", "5.2.13.1.7", "229-230", "LID 06h 的 byte 0 以 DSTOS 表示目前 operation，byte 1 的 DSTCS[6:0] 是完成百分比；DSTOS=0 時 host 應忽略 DSTCS。controller 在 operation 完成或被中止時，必須先建立 result entry，之後才能把 in-progress status 清為 0。", "In LID 06h, byte 0 DSTOS identifies the current operation and byte 1 DSTCS[6:0] is the completion percentage; the host should ignore DSTCS when DSTOS is zero. When an operation completes or is aborted, the controller creates a result entry before clearing in-progress status to zero."),
+            c("SELFTEST-HISTORY", "5.2.13.1.7", "229-230", "LID 06h 保留 20 筆、每筆 28 bytes 的結果，RDS1 永遠是最新完成或中止的 operation。未使用 entry 必須讓 DSTR=Fh 且 DSTC=0h，其他欄位由 host 忽略；不能把全零以外的殘值當成歷史結果。", "LID 06h retains 20 results of 28 bytes each, with RDS1 always the most recently completed or aborted operation. An unused entry uses DSTR Fh and DSTC 0h, while the host ignores its other fields; residual nonzero bytes are not history records.", "shall"),
+            c("SELFTEST-RESULT", "5.2.13.1.7", "231", "每筆 DSTS 的高 nibble DSTC 表示原始 self-test code，低 nibble DSTR 表示完成／中止原因。只有 DSTR=7h 時 SEGN 才指出第一個失敗 segment；其他 DSTR 下 SEGN 應忽略。", "In each result DSTS, the high-nibble DSTC records the original self-test code and low-nibble DSTR records the completion or abort reason. SEGN identifies the first failed segment only when DSTR is 7h and is ignored for other DSTR values."),
+            c("SELFTEST-VALIDITY", "5.2.13.1.7", "231-232", "VDINFO 的 NSIDVLD、FVLD、SCTVLD、SCVLD 是四個獨立 validity gates。NSID、FLBA、STCT、STC 只有在對應 bit=1 時才可解讀；先驗證 validity，再讀數值，不能用非零值猜測有效。", "VDINFO NSIDVLD, FVLD, SCTVLD, and SCVLD are independent validity gates. NSID, FLBA, STCT, and STC are interpreted only when their corresponding bit is one; validate the bit before the value instead of inferring validity from nonzero data."),
+            c("SELFTEST-NVM-FLBA", "4.1.4.3", "76", "Base 將 Figure 219 的 FLBA 留給 I/O Command Set 定義。NVM Command Set 1.3 規定 bytes 23:16 是造成失敗的 logical block address；若有多個失敗 logical blocks，只回其中一個，且僅 FVLD=1 時有效。", "Base leaves Figure 219 FLBA to the applicable I/O Command Set. NVM Command Set 1.3 defines bytes 23:16 as the logical block address that caused the failure; when multiple logical blocks fail, only one is reported, and it is valid only when FVLD is one.", "none", "NVME-NVM-CS-1.3", "NVMCS-DIAGMEM-INCLUDE"),
+            c("SELFTEST-DEBUG", "5.2.13.1.7, 8.1.8", "229-232, 614-616", "Debug 時把 command、current state 與歷史 result 分成三個時間點：保存 STC／NSID／CQE；輪詢 DSTOS／DSTCS；完成後保存 DSTS、SEGN、VDINFO、POH、NSID、FLBA、STCT、STC 與 vendor bytes。這樣才能分辨 command rejection、operation abort 與 media failure。", "Debugging separates command, current state, and historical result into three timestamps: retain STC/NSID/CQE, poll DSTOS/DSTCS, and after completion retain DSTS, SEGN, VDINFO, POH, NSID, FLBA, STCT, STC, and vendor bytes. This distinguishes command rejection, operation abort, and media failure."),
+            c("HMB-CAPABILITY", "5.2.14.2.1, 8.2.4", "357, 362, 744", "HMPRE=0 表示 HMB 不支援；非零時以 4 KiB units 表示 preferred size，HMMIN 表示 minimum request。HMMINDS 與 HMMAXD 是 descriptor 限制。即使 host 無法提供 HMB，controller 仍必須（shall）正常運作。", "HMPRE zero means HMB is unsupported; a nonzero value is the preferred size in 4-KiB units, while HMMIN gives the minimum request. HMMINDS and HMMAXD constrain descriptors. The controller shall still function correctly when the host cannot provide HMB.", "shall", "NVME-BASE-2.4", "BASE-DIAGMEM-DEPENDENCY-INCLUDE"),
+            c("HMB-OWNERSHIP", "5.2.30.2.3, 8.2.4", "515-516, 744", "HMB 是 host 配置、controller 專用的記憶體租約。Set Features enable 成功後，host 必須（shall）停止寫入 descriptor list 與所有描述的 memory ranges，直到 disable command 完成；這是 ownership transfer，不只是 performance hint。", "HMB is host-allocated memory leased exclusively to the controller. After successful Set Features enable, the host shall stop writing both the descriptor list and every described memory range until disable completes. This is an ownership transfer, not merely a performance hint.", "shall"),
+            c("HMB-SET-COMMAND", "5.2.30, 5.2.30.2.3", "456-459, 516-518", "Set Features 使用 FID=0Dh；CDW11 放 EHM、MR、HMNARE，CDW12 放 HSIZE，CDW13／14 組成 64-bit HMDL address，CDW15 是 HMDLEC。HMDL address 必須 16-byte aligned；HMDLEC=0 必須回 Invalid Field in Command。", "Set Features uses FID 0Dh. CDW11 holds EHM, MR, and HMNARE; CDW12 holds HSIZE; CDW13/14 form the 64-bit HMDL address; and CDW15 is HMDLEC. The HMDL address is 16-byte aligned, and HMDLEC zero returns Invalid Field in Command.", "shall", "NVME-BASE-2.4", "BASE-DIAGMEM-DEPENDENCY-INCLUDE"),
+            c("HMB-DESCRIPTORS", "5.2.30.2.3", "517-518", "HMDL 是連續的 16-byte descriptor array；每個 entry 的 BADD 必須依 CC.MPS memory page size 對齊，BSIZE 以相同 page units 表示連續長度。BSIZE=0 的 entry 由 controller 忽略；HSIZE 應與可用 descriptors 的 page 數相符。", "HMDL is a contiguous array of 16-byte descriptors. Each entry BADD is aligned to the CC.MPS memory-page size, and BSIZE gives a contiguous length in the same page units. The controller ignores an entry whose BSIZE is zero, and HSIZE is reconciled with the usable descriptor-page total."),
+            c("HMB-NUMERIC", "5.2.30.2.3", "516-518", "說明性範例：CC.MPS=0 代表 4 KiB page；HSIZE=64 代表 256 KiB。若 HMDL=00000012_34567000h、HMDLEC=2，CDW13=34567000h、CDW14=00000012h、CDW15=00000002h。兩個 descriptor 各 BSIZE=32 pages 時，合計正好 64 pages。", "Informative example: CC.MPS zero means a 4-KiB page, so HSIZE 64 means 256 KiB. For HMDL 00000012_34567000h and HMDLEC 2, CDW13 is 34567000h, CDW14 is 00000012h, and CDW15 is 00000002h. Two descriptors of BSIZE 32 pages each total exactly 64 pages."),
+            c("HMB-SEQUENCE", "5.2.30.2.3", "515-516", "HMB 已 enable 時再次送 EHM=1 必須以 Command Sequence Error 中止；尚未 enable 時送 EHM=0 則成功但不做事。disable completion 前 controller 應取回所需資料；CQE 被 posted 後才表示 host 可安全修改或回收 buffer。", "Reissuing EHM one while HMB is already enabled is aborted with Command Sequence Error; issuing EHM zero while disabled succeeds without action. Before disable completion, the controller should retrieve needed data; only the posted CQE means the host may safely modify or reclaim the buffer.", "should"),
+            c("HMB-GET", "5.2.12, 5.2.30.2.3", "209-212, 518-519", "Get Features 使用 FID=0Dh；SEL≠supported-capabilities 成功時，CQE.DW0 回 EHM、HMNARE、HMNAR，data buffer 回 4 KiB Attributes data structure，包括 HSIZE、HMDL address 與 HMDLEC。『已啟用』與『目前正在限制 access』是不同狀態。", "Get Features uses FID 0Dh. On successful SEL other than supported capabilities, CQE.DW0 returns EHM, HMNARE, and HMNAR, while the data buffer returns a 4-KiB Attributes structure containing HSIZE, HMDL address, and HMDLEC. Enabled and currently access-restricted are different states.", "none", "NVME-BASE-2.4", "BASE-DIAGMEM-DEPENDENCY-INCLUDE"),
+            c("HMB-NONOP", "5.2.30.2.3", "516-519", "HMNARE 只有 Identify.CTRATT.HMBR=1 時可啟用。HMNARE 是 policy，HMNAR 是 controller 此刻是否真的因 non-operational state 而被限制；Admin commands 與其啟動的 background operations 有明文例外。NOPPME 不改變這項 HMB restriction。", "HMNARE may be enabled only when Identify.CTRATT.HMBR is one. HMNARE is policy, while HMNAR reports whether a non-operational state currently restricts the controller; Admin commands and background operations initiated by them are explicit exceptions. NOPPME does not alter this HMB restriction."),
+            c("HMB-RESET-RTD3", "8.2.4", "744", "HMB 不會跨 Controller Level Reset 保存在 controller。reset 後 host 應重新提供資源；若 MR=1 表示歸還先前內容，size、descriptor-list address、descriptor-list contents 與 HMB contents 必須完全相同。RTD3 前宜先 disable，恢復後再依是否保留內容選 MR。", "HMB is not persistent in the controller across Controller Level Reset. The host should provide resources again afterward. MR one returns prior contents and requires the exact same size, descriptor-list address, descriptor-list contents, and HMB contents. Disable before RTD3, then select MR according to content preservation on resume."),
+            c("HMB-SURPRISE", "8.2.4", "744", "使用 HMB 時發生 surprise removal，controller 必須（shall）確保不造成 data loss 或 data corruption。這不代表 HMB 內容本身具有持久性，而是裝置不得把內部正確性依賴在 host 一定能先走正常 release 流程。", "During surprise removal while HMB is in use, the controller shall ensure no data loss or data corruption. This does not make HMB contents persistent; it means internal correctness cannot depend on the host always completing the normal release flow.", "shall"),
+            c("DOORBELL-STRIDE", "3.1.4.1, 8.2.3", "56, 744", "CAP.DSTRD 的實際間距是 2^(2+DSTRD) bytes。DSTRD=0／2／4 分別得到 4／16／64 bytes；software emulation 可用 64-byte stride 把 doorbells 分散到 cacheline，硬體 NVMe interface 的 expected value 是 0h。", "CAP.DSTRD produces a spacing of 2^(2+DSTRD) bytes. DSTRD values 0, 2, and 4 yield 4, 16, and 64 bytes; software emulation can use 64-byte spacing to separate doorbells by cacheline, while the expected hardware-interface value is 0h."),
+            c("DOORBELL-DEBUG", "8.2.3", "744", "emulator Debug 不只看 doorbell value，也要保存 CAP.DSTRD、計算後 byte stride、queue identifier、被監看的 cacheline 與 write timestamp。把 encoded DSTRD 直接當 bytes 會讓 queue notification 落到錯誤位址。", "Emulator debugging retains not only the doorbell value but CAP.DSTRD, computed byte stride, queue identifier, monitored cacheline, and write timestamp. Treating encoded DSTRD directly as bytes places queue notifications at the wrong address."),
+            c("VENDOR-GATE", "5.2.14.2.1, 8.1.29", "356, 374, 733", "standard Vendor Specific command format 是 optional。AVSCC.VSCF 控制 vendor-specific Admin commands；ICSVSCC.SNVSCF 控制 vendor-specific I/O commands。兩個 capability 必須分開讀，不能因其中一個為 1 就假設另一類命令也使用 Figure 94。", "The standard Vendor Specific command format is optional. AVSCC.VSCF controls vendor-specific Admin commands, while ICSVSCC.SNVSCF controls vendor-specific I/O commands. Read the capabilities independently; one being set does not prove that the other command class uses Figure 94."),
+            c("VENDOR-FORMAT", "4.1.1, 8.1.29", "143, 733", "Figure 94 保留 common CDW0、NSID、metadata/data pointers 與 CDW12-CDW15，並把 CDW10／11 定義成 NDT／NDM。若 command 不使用 NSID，必須清為 0；invalid NSID 在使用時必須回 Invalid Namespace or Format，inactive NSID 行為仍是 vendor specific。", "Figure 94 retains common CDW0, NSID, metadata/data pointers, and CDW12-CDW15, while defining CDW10/11 as NDT/NDM. An unused NSID is cleared to zero; an invalid NSID used by the command returns Invalid Namespace or Format, while inactive-NSID behavior remains vendor specific.", "shall"),
+            c("VENDOR-LENGTH", "4.1.1, 8.1.29", "143, 733", "NDT 與 NDM 是實際 dword 數，不是 0's-based。NDT=00000100h 代表 256 dwords=1024 bytes；driver 可用 NDT／NDM 驗證 application buffer，避免 data 或 metadata transfer overflow。是否支援 standard format 仍先由 VSCF／SNVSCF gate。", "NDT and NDM are actual dword counts, not zero based. NDT 00000100h means 256 dwords or 1024 bytes; a driver can validate application buffers with NDT/NDM to prevent data or metadata-transfer overflow. VSCF or SNVSCF still gates use of the standard format."),
+            c("BOUNDARY-DEBUG", "5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3", "199-201, 515-519, 733, 744", "三條流程的共同 Debug 原則是找第一個 broken boundary：self-test 比對 command→current status→result；HMB 比對 capability→descriptor math→ownership→disable CQE；emulation／vendor command 比對 capability encoding→byte count／stride→實際 memory access。", "All three tracks debug from the first broken boundary: self-test compares command, current status, and result; HMB compares capability, descriptor math, ownership, and disable CQE; emulation/vendor commands compare capability encoding, byte count or stride, and actual memory access."),
+        ],
+    },
     "pcie-transport-1.4": {
         "prefix": "PCIE14",
         "title_zh": "NVMe over PCIe Transport 1.4：完整傳輸綁定",
@@ -225,6 +605,14 @@ POST_IMAGES = {
         "en": "posts/2026/cat_title.jpg",
     },
     "base-admin-fw-logs": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "base-power-features": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "base-self-test-hmb-emulation": {
         "zh": "posts/2026/dogMC_title.jpg",
         "en": "posts/2026/cat_title.jpg",
     },
@@ -303,6 +691,65 @@ CORE_TITLES = {
     "BASEFWLOG-LID03-FRS": ("FRS1-FRS7 與 reserved 區", "FRS1-FRS7 and reserved regions"),
     "BASEFWLOG-RESET-XREF": ("PCIe reset 名稱不能混用", "Do not conflate PCIe reset names"),
     "BASEFWLOG-XREF-337": ("Figure 337／338 交叉引用差異", "Figure 337/338 cross-reference discrepancy"),
+    "BASEPOWER-READ-FIRST": ("先讀後寫：Feature 能力盤點", "Read before write: Feature capability inventory"),
+    "BASEPOWER-GET-SELECT": ("SEL 與 FID", "SEL and FID"),
+    "BASEPOWER-GET-SAVED": ("saved value fallback", "Saved-value fallback"),
+    "BASEPOWER-GET-UIDX": ("UIDX 使用條件", "UIDX applicability"),
+    "BASEPOWER-GET-CAP": ("CHANG／NSSPEC／SVBL", "CHANG/NSSPEC/SVBL"),
+    "BASEPOWER-GET-STATUS": ("Get Features failure evidence", "Get Features failure evidence"),
+    "BASEPOWER-SET-DPTR": ("Set Features data buffer", "Set Features data buffer"),
+    "BASEPOWER-SET-SAVE": ("SV 與 saveability", "SV and saveability"),
+    "BASEPOWER-SET-AFTER": ("成功後的切換邊界", "Post-success transition boundary"),
+    "BASEPOWER-FID-SCOPE": ("五個 FID 的 scope／persistence", "Scope and persistence of the five FIDs"),
+    "BASEPOWER-POWER-STATES": ("power state 編號與上限", "Power-state numbering and limits"),
+    "BASEPOWER-POWER-METRICS": ("Power State Descriptor mental model", "Power State Descriptor mental model"),
+    "BASEPOWER-TRANSITION": ("entry／exit latency 計算", "Entry/exit latency calculation"),
+    "BASEPOWER-RELATIVE": ("relative performance 解讀", "Relative-performance interpretation"),
+    "BASEPOWER-NONOP": ("non-operational 不等於關機", "Non-operational is not powered off"),
+    "BASEPOWER-NONOP-IO": ("I/O 觸發 operational return", "I/O-triggered operational return"),
+    "BASEPOWER-FID02": ("FID 02h：手動 power state", "FID 02h: manual power state"),
+    "BASEPOWER-WORKLOAD": ("Workload Hint", "Workload Hint"),
+    "BASEPOWER-RTD3": ("RTD3E／RTD3R 邊界", "RTD3E/RTD3R boundary"),
+    "BASEPOWER-FID04": ("FID 04h：temperature threshold", "FID 04h: temperature threshold"),
+    "BASEPOWER-HYST": ("temperature hysteresis", "Temperature hysteresis"),
+    "BASEPOWER-FID0C": ("FID 0Ch：APST enable", "FID 0Ch: APST enable"),
+    "BASEPOWER-APST-ENTRY": ("APST 256-byte table", "APST 256-byte table"),
+    "BASEPOWER-APST-NOPPME": ("APSTE × NOPPME", "APSTE × NOPPME"),
+    "BASEPOWER-FID10": ("FID 10h：TMT1／TMT2", "FID 10h: TMT1/TMT2"),
+    "BASEPOWER-HCTM": ("HCTM control loop", "HCTM control loop"),
+    "BASEPOWER-FID11": ("FID 11h：background power permission", "FID 11h: background-power permission"),
+    "BASEPOWER-OBSERVE": ("SMART／Health 驗證閉環", "SMART/Health verification loop"),
+    "BASEDIAGMEM-SELFTEST-GATE": ("先確認 self-test capability 與 concurrency scope", "Gate self-test capability and concurrency scope"),
+    "BASEDIAGMEM-SELFTEST-NSID": ("NSID 決定測試涵蓋範圍", "NSID selects the test scope"),
+    "BASEDIAGMEM-SELFTEST-STC": ("STC 與 CDW15 的命令編碼", "STC and CDW15 command encoding"),
+    "BASEDIAGMEM-SELFTEST-INPROGRESS": ("已有 operation 時的狀態矩陣", "State matrix while an operation is active"),
+    "BASEDIAGMEM-SELFTEST-COMPLETION": ("CQE 不等於測試完成", "A CQE is not test completion"),
+    "BASEDIAGMEM-SELFTEST-BACKGROUND": ("背景測試的 suspend／resume 契約", "Background-test suspend/resume contract"),
+    "BASEDIAGMEM-SELFTEST-TIMING": ("short 與 extended 的 reset 差異", "Reset differences between short and extended tests"),
+    "BASEDIAGMEM-SELFTEST-ABORTS": ("Format、sanitize 與 abort 條件", "Format, sanitize, and abort conditions"),
+    "BASEDIAGMEM-SELFTEST-LOG-COMMAND": ("564-byte LID 06h command 計算", "Constructing the 564-byte LID 06h command"),
+    "BASEDIAGMEM-SELFTEST-CURRENT": ("current operation 與完成百分比", "Current operation and completion percentage"),
+    "BASEDIAGMEM-SELFTEST-HISTORY": ("20 筆 newest-first result ring", "Twenty newest-first results"),
+    "BASEDIAGMEM-SELFTEST-RESULT": ("DSTS 與 SEGN 的條件式解碼", "Conditional DSTS and SEGN decoding"),
+    "BASEDIAGMEM-SELFTEST-VALIDITY": ("VDINFO 是四個獨立 validity gates", "VDINFO contains four independent validity gates"),
+    "BASEDIAGMEM-SELFTEST-NVM-FLBA": ("NVM Command Set 補完 FLBA 語意", "NVM Command Set completes FLBA semantics"),
+    "BASEDIAGMEM-SELFTEST-DEBUG": ("以三個時間點重建 self-test", "Reconstruct self-test across three timestamps"),
+    "BASEDIAGMEM-HMB-CAPABILITY": ("HMB capability 與 descriptor limits", "HMB capability and descriptor limits"),
+    "BASEDIAGMEM-HMB-OWNERSHIP": ("HMB 是 ownership transfer", "HMB is an ownership transfer"),
+    "BASEDIAGMEM-HMB-SET-COMMAND": ("FID 0Dh 的 Set Features layout", "Set Features layout for FID 0Dh"),
+    "BASEDIAGMEM-HMB-DESCRIPTORS": ("HMDL 與 descriptor page math", "HMDL and descriptor page math"),
+    "BASEDIAGMEM-HMB-NUMERIC": ("256 KiB HMB 完整計算", "Complete 256-KiB HMB calculation"),
+    "BASEDIAGMEM-HMB-SEQUENCE": ("enable／disable 的 completion fence", "Enable/disable completion fence"),
+    "BASEDIAGMEM-HMB-GET": ("Get Features 分開讀 policy 與 state", "Get Features separates policy from state"),
+    "BASEDIAGMEM-HMB-NONOP": ("HMNARE 與 HMNAR 不相同", "HMNARE and HMNAR are different"),
+    "BASEDIAGMEM-HMB-RESET-RTD3": ("reset／RTD3 後的 Memory Return", "Memory Return after reset or RTD3"),
+    "BASEDIAGMEM-HMB-SURPRISE": ("surprise removal 的資料正確性", "Data correctness during surprise removal"),
+    "BASEDIAGMEM-DOORBELL-STRIDE": ("DSTRD encoding 到 cacheline stride", "DSTRD encoding to cacheline stride"),
+    "BASEDIAGMEM-DOORBELL-DEBUG": ("emulator 的 doorbell 證據鏈", "Doorbell evidence chain for emulators"),
+    "BASEDIAGMEM-VENDOR-GATE": ("Admin 與 I/O vendor format 分開 gate", "Gate Admin and I/O vendor formats independently"),
+    "BASEDIAGMEM-VENDOR-FORMAT": ("Figure 94 的 boundary-safe layout", "Boundary-safe Figure 94 layout"),
+    "BASEDIAGMEM-VENDOR-LENGTH": ("NDT／NDM 是實際 dword count", "NDT/NDM are actual dword counts"),
+    "BASEDIAGMEM-BOUNDARY-DEBUG": ("從第一個 broken boundary 開始 Debug", "Debug from the first broken boundary"),
     "PCIE14-SCOPE": ("Transport 與 Base 的優先序", "Transport and Base precedence"),
     "PCIE14-CONVENTION": ("PCIe Reset 欄定義", "PCIe Reset-column convention"),
     "PCIE14-KEYWORDS": ("Transport 規範性用語", "Transport normative language"),
@@ -327,6 +774,8 @@ def artifact_ids(report_id: str) -> list[str]:
         "base-ch3": "base3",
         "base-ch4": "base4",
         "base-admin-fw-logs": "basefwlog",
+        "base-power-features": "basepower",
+        "base-self-test-hmb-emulation": "basediagmem",
         "pcie-transport-1.4": "pcie14",
     }[report_id]
     return [
@@ -359,6 +808,8 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     lower_title = title.lower()
     number = figure["number"]
     is_fwlog = figure.get("report_id") == "base-admin-fw-logs"
+    is_power = figure.get("report_id") == "base-power-features"
+    is_diagmem = figure.get("report_id") == "base-self-test-hmb-emulation"
     items = list(figure.get("key_items", []))
     item_text = ", ".join(items)
     first = items[0] if items else title
@@ -591,6 +1042,24 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
                 f"Check that {first} is present, then parse {second} only when the "
                 "returned structure is long enough."
             )
+        elif is_power:
+            purpose = f"Maps the power/thermal control relationship represented by {title}."
+            reading = (
+                f"Trace selector, state or threshold, transition condition, and observation evidence in order. "
+                f"Source-derived checkpoints: {item_text}."
+            )
+            example = (
+                f"Record {first} as raw input, validate {second} against the cited capability or state, "
+                "then correlate completion time with temperature and I/O-latency evidence."
+            )
+        elif is_diagmem:
+            purpose = f"Connects {title} to a self-test, host-memory, doorbell, or vendor-command engineering boundary."
+            reading = (
+                f"Resolve capability and owner first, decode {item_text}, then verify the completion, log, or memory-lifecycle evidence."
+            )
+            example = (
+                f"Capture {first} as raw evidence, validate {second} against the cited section, and reject any state or byte range that crosses the declared boundary."
+            )
         else:
             purpose = f"Explains the specific relationship or example named {title}."
             reading = (
@@ -809,6 +1278,24 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             example = (
                 f"先確認 {first} 已存在，只有在回傳結構長度足夠時才繼續解析 {second}。"
             )
+        elif is_power:
+            purpose = f"呈現〈{title}〉所描述的 power／thermal 控制關係。"
+            reading = (
+                f"依序追蹤 selector、state 或 threshold、transition condition 與觀測證據；"
+                f"來源欄位索引：{item_text}。"
+            )
+            example = (
+                f"保存 {first} 的 raw input，先用引用 capability／state 驗證 {second}，再把 completion time "
+                "與 temperature、I/O latency 證據放在同一條 timeline。"
+            )
+        elif is_diagmem:
+            purpose = f"把〈{title}〉連到 self-test、host memory、doorbell 或 vendor command 的工程邊界。"
+            reading = (
+                f"先辨認 capability 與 owner，再解碼 {item_text}，最後以 completion、log 或 memory lifecycle 證據核對。"
+            )
+            example = (
+                f"保存 {first} 的 raw evidence，依引用 section 驗證 {second}，若 state 或 byte range 超出宣告邊界就拒絕繼續。"
+            )
         else:
             purpose = f"解釋〈{title}〉所指的特定關係或範例。"
             reading = (
@@ -823,7 +1310,7 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             else "這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。"
         )
 
-    if figure.get("mode") == "scope-reduced":
+    if figure.get("mode") == "scope-reduced" or figure.get("scope_reduced"):
         caveat += (
             " Only the PCIe/memory-based portion is in scope."
             if language == "en"
@@ -867,23 +1354,22 @@ def flow_svg(report: dict) -> str:
     for index, label in enumerate(report["diagram"]):
         x = 10 + index * 180
         boxes.append(
-            f'<rect x="{x}" y="35" width="150" height="70" rx="8" '
-            f'fill="#f4f4f4" stroke="#333"/>'
-            f'<text x="{x + 75}" y="75" text-anchor="middle" '
-            f'font-size="14">{html.escape(label)}</text>'
+            f'<rect class="flow-node" x="{x}" y="35" width="150" height="70" rx="8"/>'
+            f'<text class="flow-text" x="{x + 75}" y="75" text-anchor="middle">'
+            f'{html.escape(label)}</text>'
         )
         if index < 3:
             arrows.append(
-                f'<line x1="{x + 150}" y1="70" x2="{x + 178}" y2="70" '
-                'stroke="#333" marker-end="url(#arrow)"/>'
+                f'<line class="flow-line" x1="{x + 150}" y1="70" x2="{x + 178}" y2="70" '
+                'marker-end="url(#arrow)"/>'
             )
     return (
-        '<svg width="100%" height="140" viewBox="0 0 720 140" role="img" '
+        '<svg class="flow-svg" viewBox="0 0 720 140" role="img" '
         'aria-labelledby="flow-title flow-desc">'
         '<title id="flow-title">NVMe report flow</title>'
         f'<desc id="flow-desc">{html.escape(report["diagram_note_zh"])}</desc>'
         '<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" '
-        'refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#333"/>'
+        'refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="currentColor"/>'
         '</marker></defs>'
         + "".join(boxes + arrows)
         + "</svg>"
@@ -960,17 +1446,23 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
         return "先定位 dword 與 bit 範圍，再決定這個欄位用於識別、資料指標或完成狀態。"
     if any(key in claim_id for key in ("PRP", "SGL", "LIST", "IDENTIFIER", "UTF8")):
         return "先驗證長度、alignment、type 與保留值，再沿 pointer 或 entry 順序解析。"
-    if any(key in claim_id for key in ("MMIO", "DOORBELL", "CONFIG", "INTERRUPT", "POWER", "EOM")):
+    if any(key in claim_id for key in ("MMIO", "DOORBELL", "CONFIG", "INTERRUPT", "PCIE14-POWER", "EOM")):
         return "先分辨欄位位於 PCI configuration space、MMIO register、host memory 或 log page。"
+    if any(key in claim_id for key in ("GET-", "SET-", "FID", "APST", "HCTM", "HYST", "NONOP", "TRANSITION", "WORKLOAD", "OBSERVE")):
+        return "先讀 capability 與目前值，再標出 command bit、單位、轉換條件、completion 與觀測證據。"
     if any(key in claim_id for key in ("FW-", "COMMIT", "DOWNLOAD", "UUID")):
         return "把 image portion、firmware slot、Commit Action 與 activation 所需 reset 分成四欄逐項核對。"
     if "LOG-" in claim_id:
         return "先用 LID 決定資料 scope，再核對 transfer length、offset type、RAE 與 log-specific header。"
+    if any(key in claim_id for key in ("SELFTEST", "HMB-", "VENDOR-", "BOUNDARY-")):
+        return "先找 capability gate 與 ownership／state boundary，再核對 encoded value、completion fence 與可觀測證據。"
     return {
         "base-ch1-2": "先確認概念位於規格家族、儲存階層或路徑層級，不把不同層級合併。",
         "base-ch3": "先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。",
         "base-ch4": "先定位資料結構的 byte／dword 邊界，再閱讀欄位條件。",
         "base-admin-fw-logs": "先判斷目前位於 download、commit、activation 或 log verification 階段。",
+        "base-power-features": "先分辨這一層是在描述 capability、host policy、controller state，還是觀測證據。",
+        "base-self-test-hmb-emulation": "先判斷目前處理的是 background operation、host-memory ownership，或 encoded memory boundary。",
         "pcie-transport-1.4": "先找 Base 的通用規則，再疊加 PCIe Transport 的專屬限制。",
     }[report_id]
 
@@ -1002,6 +1494,740 @@ def anchor(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
 
 
+def module_flow_svg(module: dict, language: str) -> str:
+    nodes = module["nodes"][language]
+    width = 820
+    row_height = 82
+    height = 26 + len(nodes) * row_height
+    elements = [
+        '<defs><marker id="module-arrow" markerWidth="8" markerHeight="8" '
+        'refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" '
+        'fill="currentColor"/></marker></defs>'
+    ]
+    for index, label in enumerate(nodes):
+        y = 12 + index * row_height
+        klass = "flow-node-alt" if index % 2 else "flow-node"
+        elements.append(
+            f'<rect class="{klass}" x="90" y="{y}" width="640" height="54" rx="10"/>'
+            f'<text class="flow-text" x="410" y="{y + 33}" text-anchor="middle">'
+            f'{html.escape(label)}</text>'
+        )
+        if index < len(nodes) - 1:
+            elements.append(
+                f'<line class="flow-line" x1="410" y1="{y + 54}" x2="410" '
+                f'y2="{y + 78}" marker-end="url(#module-arrow)"/>'
+            )
+    title = module["title"][language]
+    return (
+        f'<svg class="flow-svg" viewBox="0 0 {width} {height}" role="img" '
+        f'aria-label="{html.escape(title)}"><title>{html.escape(title)}</title>'
+        f'<desc>{html.escape(" → ".join(nodes))}</desc>{"".join(elements)}</svg>'
+    )
+
+
+def svg_label(value: str, limit: int = 28) -> str:
+    clean = re.sub(r"\s+", " ", str(value)).strip()
+    return clean if len(clean) <= limit else clean[: limit - 1] + "…"
+
+
+def svg_label_lines(value: str, limit: int = 16, max_lines: int = 2) -> list[str]:
+    """Wrap an SVG label without allowing connector lines to cross its text."""
+    clean = re.sub(r"\s+", " ", str(value)).strip()
+    if not clean:
+        return [""]
+    raw_tokens = clean.split(" ")
+    tokens: list[str] = []
+    for token in raw_tokens:
+        if len(token) <= limit:
+            tokens.append(token)
+        else:
+            tokens.extend(token[index : index + limit] for index in range(0, len(token), limit))
+    lines: list[str] = []
+    current = ""
+    for token in tokens:
+        candidate = token if not current else current + " " + token
+        if len(candidate) <= limit:
+            current = candidate
+        else:
+            if current:
+                lines.append(current)
+            current = token
+    if current:
+        lines.append(current)
+    if len(lines) > max_lines:
+        lines = lines[:max_lines]
+        lines[-1] = svg_label(lines[-1], max(4, limit - 1))
+    return lines
+
+
+def svg_text_block(
+    value: str,
+    x: float,
+    y: float,
+    *,
+    klass: str = "v-label",
+    limit: int = 16,
+    max_lines: int = 2,
+    line_height: int = 17,
+) -> str:
+    lines = svg_label_lines(value, limit, max_lines)
+    start_y = y - ((len(lines) - 1) * line_height / 2)
+    tspans = "".join(
+        f'<tspan x="{x:g}" y="{start_y + index * line_height:g}">{html.escape(line)}</tspan>'
+        for index, line in enumerate(lines)
+    )
+    return f'<text class="{klass}" x="{x:g}" y="{y:g}" text-anchor="middle">{tspans}</text>'
+
+
+def visual_role(value: str) -> str:
+    lower = str(value).lower()
+    if any(word in lower for word in ("failure", "error", "invalid", "timeout", "abort", "stop", "reserved", "失敗", "錯誤", "無效", "逾時", "中止", "停止", "保留")):
+        return "failure"
+    if any(word in lower for word in ("evidence", "verify", "completion", "cqe", "result", "observe", "log", "trace", "證據", "驗證", "完成", "結果", "觀察", "紀錄")):
+        return "success"
+    if any(word in lower for word in ("capability", "support", "identify", "select", "gate", "threshold", "condition", "能力", "支援", "辨識", "選", "條件", "門檻")):
+        return "decision"
+    if any(word in lower for word in ("command", "host", "submit", "write", "read", "get ", "set ", "sqe", "送出", "提交", "寫", "讀", "命令")):
+        return "command"
+    return "object"
+
+
+def visual_role_label(role: str, language: str) -> str:
+    labels = {
+        "command": {"zh": "REQUEST／INPUT", "en": "REQUEST / INPUT"},
+        "object": {"zh": "OBJECT／STATE", "en": "OBJECT / STATE"},
+        "decision": {"zh": "GATE／RULE", "en": "GATE / RULE"},
+        "success": {"zh": "VALID／EVIDENCE", "en": "VALID / EVIDENCE"},
+        "failure": {"zh": "WARNING／FAILURE", "en": "WARNING / FAILURE"},
+    }
+    return labels[role][language]
+
+
+def visual_role_class(role: str) -> str:
+    return {
+        "command": "v-command",
+        "object": "v-object",
+        "decision": "v-decision",
+        "success": "v-success",
+        "failure": "v-failure",
+    }[role]
+
+
+def module_visual_kind(module_id: str) -> str:
+    if module_id in {
+        "queues", "queue-arbitration", "command", "interrupts",
+        "feature-read-set-loop", "end-to-end-debug",
+    }:
+        return "sequence"
+    if module_id in {
+        "numbers", "sqe", "cqe-status", "prp", "sgl", "identity-text",
+        "mmio-doorbell", "config-error", "eom", "fw-download-geometry",
+        "fw-lid03-proof", "selftest-observe-debug", "hmb-command-math",
+        "encoded-boundary-safety",
+    }:
+        return "decode"
+    if module_id in {
+        "lifecycle", "properties-init", "fw-commit-state", "apst-state-machine",
+        "temperature-event-loop", "hctm-control-loop",
+        "selftest-command-state-machine", "hmb-ownership-lifecycle", "hmb-reset-power",
+    }:
+        return "state"
+    return "architecture"
+
+
+def module_visual_svg(module: dict, language: str) -> str:
+    """Return a relationship-specific view with routed connectors and semantic roles."""
+    nodes = list(module["nodes"][language])[:6]
+    kind = module_visual_kind(module["id"])
+    title = module["title"][language]
+    arrow_id = "atlas-arrow-" + anchor(module["id"])
+    failure_arrow_id = arrow_id + "-failure"
+    head = (
+        f'<svg viewBox="0 0 820 330" role="img" data-visual-kind="{kind}" aria-label="{html.escape(title)}">'
+        f'<title>{html.escape(title)}</title><desc>{html.escape(kind + ": " + " → ".join(nodes))}</desc>'
+        f'<defs><marker id="{arrow_id}" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">'
+        '<path d="M0,0 L0,6 L9,3 z" class="v-arrow"/></marker>'
+        f'<marker id="{failure_arrow_id}" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">'
+        '<path d="M0,0 L0,6 L9,3 z" class="v-arrow-failure"/></marker></defs>'
+    )
+    body: list[str] = []
+    if kind == "sequence":
+        lane_labels = (
+            ["Host／software", "Shared object／buffer", "Controller／evidence"]
+            if language == "zh"
+            else ["Host / software", "Shared object / buffer", "Controller / evidence"]
+        )
+        xs = [130, 410, 690]
+        for x in xs:
+            body.append(f'<line class="v-line-soft" stroke-dasharray="6 6" x1="{x}" y1="62" x2="{x}" y2="315"/>')
+        pairs = [(0, 1), (1, 2), (2, 1), (1, 0), (0, 2), (2, 0)]
+        for index, label in enumerate(nodes):
+            source, target = pairs[index]
+            y = 92 + index * 42
+            middle = (xs[source] + xs[target]) / 2
+            label_width = min(240, max(100, abs(xs[source] - xs[target]) - 30))
+            body.append(
+                f'<line class="v-line" x1="{xs[source]}" y1="{y}" x2="{xs[target]}" y2="{y}" '
+                f'marker-end="url(#{arrow_id})"/>'
+            )
+            body.append(f'<rect class="v-label-bg" x="{middle - label_width / 2}" y="{y - 22}" width="{label_width}" height="18" rx="4"/>')
+            body.append(svg_text_block(label, middle, y - 9, klass="v-small", limit=30, max_lines=1, line_height=14))
+        lane_classes = ["v-command", "v-object", "v-object"]
+        lane_roles = (["HOST", "SHARED OBJECT", "CONTROLLER"] if language == "en" else ["HOST", "SHARED OBJECT", "CONTROLLER"])
+        for x, label, klass, role in zip(xs, lane_labels, lane_classes, lane_roles):
+            body.append(f'<rect class="{klass}" x="{x - 105}" y="18" width="210" height="40" rx="10"/>')
+            body.append(f'<text class="v-role" x="{x - 94}" y="33">{role}</text>')
+            body.append(svg_text_block(label, x, 45, limit=24, max_lines=1))
+    elif kind == "decode":
+        stage_labels = (
+            ["RAW／輸入", "LOCATE／邊界", "DECODE／規則", "VALIDATE／證據"]
+            if language == "zh"
+            else ["RAW / input", "LOCATE / boundary", "DECODE / rule", "VALIDATE / evidence"]
+        )
+        shown = nodes[:4]
+        while len(shown) < 4:
+            shown.append(stage_labels[len(shown)])
+        role_order = ["command", "object", "decision", "success"]
+        for index in range(3):
+            x = 25 + index * 198
+            body.append(f'<line class="v-line" x1="{x + 170}" y1="160" x2="{x + 194}" y2="160" marker-end="url(#{arrow_id})"/>')
+        for index, (stage, label) in enumerate(zip(stage_labels, shown)):
+            x = 25 + index * 198
+            role = role_order[index]
+            klass = visual_role_class(role)
+            body.append(f'<rect class="{klass}" x="{x}" y="90" width="170" height="140" rx="12"/>')
+            body.append(f'<text class="v-role" x="{x + 85}" y="118" text-anchor="middle">{html.escape(stage)}</text>')
+            body.append(svg_text_block(label, x + 85, 160, limit=16, max_lines=2))
+            body.append(f'<text class="v-small" x="{x + 85}" y="194" text-anchor="middle">{index + 1} / 4</text>')
+        body.append(f'<path class="v-line-dashed" d="M705 245 C705 300,115 300,115 245" marker-end="url(#{failure_arrow_id})"/>')
+        body.append(
+            '<text class="v-small" x="410" y="317" text-anchor="middle">'
+            + ("驗證失敗時回到 raw evidence，不用猜測值繼續" if language == "zh" else "On validation failure, return to raw evidence instead of guessing")
+            + "</text>"
+        )
+    elif kind == "state":
+        shown = nodes[:5]
+        count = max(len(shown), 1)
+        box_width = min(132.0, (780 - (count - 1) * 26) / count)
+        gap = 26.0
+        total_width = count * box_width + (count - 1) * gap
+        start_x = (820 - total_width) / 2
+        for index in range(len(shown) - 1):
+            x = start_x + index * (box_width + gap)
+            next_x = start_x + (index + 1) * (box_width + gap)
+            body.append(f'<line class="v-line" x1="{x + box_width}" y1="155" x2="{next_x - 8}" y2="155" marker-end="url(#{arrow_id})"/>')
+        for index, label in enumerate(shown):
+            x = start_x + index * (box_width + gap)
+            role = visual_role(label)
+            klass = visual_role_class(role)
+            body.append(f'<rect class="{klass}" x="{x}" y="105" width="{box_width}" height="100" rx="20"/>')
+            body.append(f'<text class="v-role" x="{x + box_width / 2}" y="128" text-anchor="middle">{visual_role_label(role, language)}</text>')
+            body.append(svg_text_block(label, x + box_width / 2, 164, limit=14, max_lines=2))
+        if len(shown) > 1:
+            first_center = start_x + box_width / 2
+            last_center = start_x + (len(shown) - 1) * (box_width + gap) + box_width / 2
+            body.append(f'<path class="v-line-dashed" d="M{last_center:g} 220 C{last_center:g} 286,{first_center:g} 286,{first_center:g} 220" marker-end="url(#{failure_arrow_id})"/>')
+        body.append(
+            '<text class="v-small" x="410" y="314" text-anchor="middle">'
+            + ("timeout／failure 必須保留 trigger、舊狀態與觀察證據" if language == "zh" else "Timeout or failure retains the trigger, prior state, and observed evidence")
+            + "</text>"
+        )
+    else:
+        hub = nodes[0] if nodes else title
+        children = nodes[1:5]
+        count = max(len(children), 1)
+        child_gap = 24.0
+        child_width = min(176.0, (780 - (count - 1) * child_gap) / count)
+        total_width = count * child_width + (count - 1) * child_gap
+        start_x = (820 - total_width) / 2
+        centers = [start_x + index * (child_width + child_gap) + child_width / 2 for index in range(len(children))]
+        if centers:
+            body.append('<line class="v-line" x1="410" y1="102" x2="410" y2="140"/>')
+            body.append(f'<line class="v-line" x1="{centers[0]:g}" y1="140" x2="{centers[-1]:g}" y2="140"/>')
+            for center in centers:
+                body.append(f'<line class="v-line" x1="{center:g}" y1="140" x2="{center:g}" y2="170" marker-end="url(#{arrow_id})"/>')
+        body.append('<rect class="v-decision" x="250" y="28" width="320" height="74" rx="18"/>')
+        body.append('<text class="v-role" x="410" y="50" text-anchor="middle">MENTAL MODEL／GATE</text>')
+        body.append(svg_text_block(hub, 410, 76, limit=27, max_lines=2))
+        for index, label in enumerate(children):
+            x = start_x + index * (child_width + child_gap)
+            role = visual_role(label)
+            klass = visual_role_class(role)
+            body.append(f'<rect class="{klass}" x="{x}" y="174" width="{child_width}" height="92" rx="12"/>')
+            body.append(f'<text class="v-role" x="{x + child_width / 2}" y="198" text-anchor="middle">{visual_role_label(role, language)}</text>')
+            body.append(svg_text_block(label, x + child_width / 2, 232, limit=16, max_lines=2))
+        body.append(
+            '<text class="v-small" x="410" y="322" text-anchor="middle">'
+            + ("線條表示教學關係；真正 requirement 仍以引用段落為準" if language == "zh" else "Lines show teaching relationships; cited text owns the requirements")
+            + "</text>"
+        )
+    return head + "".join(body) + "</svg>"
+
+
+def report_visual_atlas_html(
+    report_id: str,
+    claims: list[dict],
+    section_id: str = "visual-atlas",
+    tutorial: bool = True,
+) -> str:
+    by_id = {item["id"]: item for item in claims}
+    cards: list[str] = []
+    kind_labels = {
+        "architecture": "Architecture／Dependency",
+        "sequence": "Sequence／Ownership",
+        "decode": "Bit／Field Decode",
+        "state": "State／Failure Loop",
+    }
+    for index, module in enumerate(REPORT_MODULES[report_id], 1):
+        sources = [by_id[item] for item in module["sources"]]
+        kind = module_visual_kind(module["id"])
+        cards.extend(
+            [
+                f'<article class="visual-card" data-visual-kind="{kind}" id="atlas-{html.escape(module["id"])}">',
+                f'<p class="eyebrow">VISUAL {index:02d} · {kind_labels[kind]}</p>',
+                f'<h3>{html.escape(module["title"]["zh"])}</h3>',
+                '<figure class="visual-board">',
+                module_visual_svg(module, "zh"),
+                (
+                    '<figcaption>教學重畫：先辨認圖形類型、節點角色與箭頭方向，再回到 Spec Figure／欄位表核對。</figcaption></figure>'
+                    if tutorial
+                    else '<figcaption>查詢重畫：保留機制邊界、欄位角色與 evidence endpoint；精確要求仍以引用來源為準。</figcaption></figure>'
+                ),
+                ('<p><strong>這張圖回答：</strong>' if tutorial else '<p><strong>查詢用途：</strong>')
+                + html.escape(module["lead"]["zh"])
+                + "</p>",
+                '<p><strong>支援 Figure：</strong>' + ", ".join(f"Figure {value}" for value in module["figures"]) + "</p>",
+                '<p class="source-note">' + "；".join(html.escape(compact_citation(item, "zh")) for item in sources) + "</p>",
+                "</article>",
+            ]
+        )
+    return "".join(
+        [
+            f'<section id="{html.escape(section_id)}"><h2>'
+            + ("概念圖譜：先看關係，再讀規格" if tutorial else "視覺索引：按機制查欄位與證據")
+            + "</h2>",
+            '<p class="chapter-bridge">'
+            + (
+                "iPad 可左右滑動，桌面會自動排成雙欄。Architecture 看元件位置，Sequence 看 actor 交握，Decode 看 bit／byte 轉換，State 看正常與失敗轉移。每張圖都使用固定角色色與文字標籤。"
+                if tutorial
+                else "本區用於快速定位機制，不取代欄位表。桌面採寬版索引，iPad 保留容器內滑動；先找視圖類型，再跳到 claim、Figure 與來源。"
+            )
+            + "</p>",
+            '<div class="visual-atlas" aria-label="主題視覺索引">',
+            *cards,
+            "</div></section>",
+        ]
+    )
+
+
+def ipad_read_guide_html(tutorial: bool) -> str:
+    edition_note = (
+        "這是從零建立 Mental Model 的教學版：先看圖與例子，再讀欄位、規範性文字與 Debug。"
+        if tutorial
+        else "這是工程查詢手冊：先用 keyword／欄位／症狀定位，再核對 requirement、來源與 raw evidence。"
+    )
+    return "".join(
+        [
+            f'<p class="edition-note"><strong>本版用途：</strong>{edition_note}</p>',
+            '<aside class="ipad-read-guide" aria-label="跨裝置閱讀操作">',
+            '<div class="read-chip"><strong>iPad／觸控</strong>點按 details 展開；寬表與圖譜只在自己的容器內滑動。</div>',
+            '<div class="read-chip"><strong>Desktop／鍵盤滑鼠</strong>寬螢幕自動改成雙欄圖譜；Tab、Enter 與瀏覽器尋找均可使用。</div>',
+            '<div class="read-chip"><strong>可搜尋文字</strong>標題、縮寫、角色與來源都保留為 HTML 文字，不把唯一資訊鎖在 SVG。</div>',
+            "</aside>",
+            '<aside class="visual-legend" aria-label="所有報告共用的顏色與形狀語意">',
+            '<div class="legend-item"><span class="legend-swatch role-command">IN</span><strong>藍｜Request／Input</strong><small>host request、command、raw input</small></div>',
+            '<div class="legend-item"><span class="legend-swatch role-object">OBJ</span><strong>青綠｜Object／State</strong><small>queue、buffer、controller object、目前狀態</small></div>',
+            '<div class="legend-item"><span class="legend-swatch role-decision"><span>?</span></span><strong>紫｜Gate／Rule</strong><small>capability、selector、條件與解碼規則</small></div>',
+            '<div class="legend-item"><span class="legend-swatch role-success">OK</span><strong>綠｜Valid／Evidence</strong><small>completion、log、驗證通過與可重算證據</small></div>',
+            '<div class="legend-item"><span class="legend-swatch role-failure">!</span><strong>橘｜Warning／Failure</strong><small>reserved、timeout、invalid、回復分支</small></div>',
+            "</aside>",
+        ]
+    )
+
+
+def generic_toc_html(report_id: str, tutorial: bool) -> str:
+    module_links = "".join(
+        f'<a href="#module-{html.escape(module["id"])}">{html.escape(module["title"]["zh"])}</a>'
+        for module in REPORT_MODULES[report_id]
+    )
+    quick = '' if tutorial else '<a href="#quick-reference">快速查詢</a>'
+    return (
+        '<details class="ipad-toc" open><summary>章節導覽｜iPad 點按收合、Desktop 鍵盤可操作</summary><div class="toc-grid">'
+        '<a href="#scope">範圍與語意</a>' + quick + '<a href="#visual-atlas">Visual Atlas</a>'
+        '<a href="#glossary">縮寫 Glossary</a>' + module_links + '<a href="#claims">Spec 重點</a>'
+        '<a href="#figure-index">Figure 索引</a><a href="#sources">來源與限制</a>'
+        '</div></details>'
+    )
+
+
+def figure_teaching_svg(figure: dict, guide: dict, language: str) -> str:
+    terms = [item[0] for item in guide["terms"]][:4]
+    while len(terms) < 4:
+        terms.append(("evidence" if language == "en" else "驗證證據") if len(terms) == 3 else guide["kind"])
+    title = f"Figure {figure['number']}: {figure['title']}"
+    arrow_id = "figure-arrow-" + anchor(figure["id"])
+    head = (
+        f'<svg viewBox="0 0 820 300" role="img" data-visual-kind="{html.escape(guide["kind"])}" aria-label="{html.escape(title)}">'
+        f'<title>{html.escape(title)}</title><desc>{html.escape(guide["kind_text"])}</desc>'
+        f'<defs><marker id="{arrow_id}" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">'
+        '<path d="M0,0 L0,6 L9,3 z" class="v-arrow"/></marker></defs>'
+    )
+    body: list[str] = []
+    kind = guide["kind"]
+    field_kinds = {"register", "command", "status", "identifier", "layout"}
+    flow_kinds = {"queue", "interrupt", "state"}
+    if kind in field_kinds:
+        headers = ["Locate", "Extract", "Decode", "Validate"]
+        role_order = ["command", "object", "decision", "success"]
+        for index in range(3):
+            x = 22 + index * 198
+            body.append(f'<line class="v-line" x1="{x + 176}" y1="144" x2="{x + 190}" y2="144" marker-end="url(#{arrow_id})"/>')
+        for index, (header, term) in enumerate(zip(headers, terms)):
+            x = 22 + index * 198
+            role = role_order[index]
+            klass = visual_role_class(role)
+            body.append(f'<rect class="{klass}" x="{x}" y="75" width="176" height="138" rx="10"/>')
+            body.append(f'<text class="v-role" x="{x + 88}" y="101" text-anchor="middle">{header.upper()}</text>')
+            body.append(svg_text_block(term, x + 88, 148, limit=17, max_lines=2))
+            body.append(f'<text class="v-small" x="{x + 88}" y="190" text-anchor="middle">{index + 1} / 4</text>')
+    elif kind in flow_kinds:
+        xs = [125, 410, 695]
+        labels = (["Host", "Queue／state", "Controller"] if language == "zh" else ["Host", "Queue / state", "Controller"])
+        for x in xs:
+            body.append(f'<line class="v-line-soft" stroke-dasharray="6 6" x1="{x}" y1="68" x2="{x}" y2="266"/>')
+        pairs = [(0, 1), (1, 2), (2, 1), (1, 0)]
+        for index, term in enumerate(terms):
+            y = 100 + index * 42
+            s, t = pairs[index]
+            body.append(f'<line class="v-line" x1="{xs[s]}" y1="{y}" x2="{xs[t]}" y2="{y}" marker-end="url(#{arrow_id})"/>')
+            middle = (xs[s] + xs[t]) / 2
+            body.append(f'<rect class="v-label-bg" x="{middle - 103}" y="{y - 22}" width="206" height="18" rx="4"/>')
+            body.append(svg_text_block(term, middle, y - 9, klass="v-small", limit=26, max_lines=1, line_height=14))
+        for x, label, klass in zip(xs, labels, ["v-command", "v-object", "v-object"]):
+            body.append(f'<rect class="{klass}" x="{x - 90}" y="24" width="180" height="38" rx="9"/>')
+            body.append(svg_text_block(label, x, 49, limit=20, max_lines=1))
+    elif kind in {"hierarchy", "relationship"}:
+        children = terms[1:4] + ["scope"]
+        centers = [106, 309, 512, 715]
+        body.append('<line class="v-line" x1="410" y1="95" x2="410" y2="132"/>')
+        body.append('<line class="v-line" x1="106" y1="132" x2="715" y2="132"/>')
+        for center in centers:
+            body.append(f'<line class="v-line" x1="{center}" y1="132" x2="{center}" y2="166" marker-end="url(#{arrow_id})"/>')
+        body.append('<rect class="v-decision" x="260" y="25" width="300" height="70" rx="16"/>')
+        body.append('<text class="v-role" x="410" y="47" text-anchor="middle">MODEL／RELATION</text>')
+        body.append(svg_text_block(terms[0], 410, 72, limit=25, max_lines=2))
+        for index, (term, center) in enumerate(zip(children, centers)):
+            role = visual_role(term)
+            body.append(f'<rect class="{visual_role_class(role)}" x="{center - 82}" y="170" width="164" height="88" rx="11"/>')
+            body.append(f'<text class="v-role" x="{center}" y="193" text-anchor="middle">{visual_role_label(role, language)}</text>')
+            body.append(svg_text_block(term, center, 226, limit=15, max_lines=2))
+    else:
+        labels = (["Pointer／selector", "Boundary／length", "Entry／lane", "Result／evidence"] if language == "zh" else ["Pointer / selector", "Boundary / length", "Entry / lane", "Result / evidence"])
+        role_order = ["command", "object", "decision", "success"]
+        for index in range(3):
+            x = 35 + index * 190
+            body.append(f'<line class="v-line" x1="{x + 160}" y1="148" x2="{x + 180}" y2="148" marker-end="url(#{arrow_id})"/>')
+        for index, (label, term) in enumerate(zip(labels, terms)):
+            x = 35 + index * 190
+            role = role_order[index]
+            klass = visual_role_class(role)
+            body.append(f'<rect class="{klass}" x="{x}" y="76" width="160" height="144" rx="8"/>')
+            body.append(f'<text class="v-role" x="{x + 80}" y="104" text-anchor="middle">{html.escape(label.upper())}</text>')
+            body.append(svg_text_block(term, x + 80, 155, limit=15, max_lines=2))
+    body.append(
+        '<text class="v-small" x="410" y="286" text-anchor="middle">'
+        + ("教學重畫：欄位位置與合法值仍須回到引用 Figure 核對" if language == "zh" else "Teaching redraw: verify field positions and legal values in the cited Figure")
+        + "</text>"
+    )
+    return head + "".join(body) + "</svg>"
+
+
+def figure_visual_text(figure: dict, guide: dict, language: str) -> list[str]:
+    terms = [item[0] for item in guide["terms"]][:4]
+    while len(terms) < 4:
+        terms.append("evidence")
+    labels = (
+        ["定位來源", "擷取欄位", "套用編碼", "驗證證據"]
+        if language == "zh"
+        else ["Locate source", "Extract field", "Apply encoding", "Validate evidence"]
+    )
+    return [
+        "```text",
+        f"[{labels[0]}: {terms[0]}]",
+        "          ↓",
+        f"[{labels[1]}: {terms[1]}] → [{labels[2]}: {terms[2]}]",
+        "                                      ↓",
+        f"[{labels[3]}: {terms[3]}]",
+        "```",
+    ]
+
+
+def compact_citation(item: dict, language: str) -> str:
+    if language == "en":
+        return (
+            f"{item['source_id']} Rev. {item['revision']}, §{item['section']}, "
+            f"printed pp. {item['printed_pages']}, PDF pp. {item['pdf_pages']}"
+        )
+    return (
+        f"{item['source_id']} Rev. {item['revision']}，§{item['section']}，"
+        f"文件頁 {item['printed_pages']}，PDF 頁 {item['pdf_pages']}"
+    )
+
+
+def glossary_html(report_id: str, claims: list[dict], tutorial: bool) -> str:
+    by_id = {item["id"]: item for item in claims}
+    rows = []
+    for term, claim_id in REPORT_GLOSSARIES[report_id]:
+        item = by_id[claim_id]
+        rows.append(
+            "<tr><td><span class=\"term\">"
+            + html.escape(term)
+            + "</span></td><td>"
+            + html.escape(TERM_LIBRARY[term]["zh"])
+            + "</td><td><small>"
+            + html.escape(compact_citation(item, "zh"))
+            + "</small></td></tr>"
+        )
+    intro = (
+        "第一次閱讀先掌握全部核心詞；後文再次出現時會直接使用縮寫。"
+        if tutorial
+        else "本表同時是 parser、trace 與設計文件應採用的固定名詞索引。"
+    )
+    return "".join(
+        [
+            '<section id="glossary"><h2>先學縮寫：完整 Glossary</h2>',
+            f'<p class="chapter-bridge">{intro}</p>',
+            '<div class="callout explain"><span class="badge badge-explain">解釋</span> '
+            "縮寫只是欄位名稱的壓縮；真正可用的工程資訊還包括 owner、width、unit、scope 與狀態。"
+            "遇到未定義縮寫時先回本表，不用靠字面猜測。</div>",
+            '<div class="table-wrap"><table><thead><tr><th>縮寫／名詞</th><th>第一次出現時要懂的意思</th><th>來源</th></tr></thead><tbody>',
+            *rows,
+            "</tbody></table></div></section>",
+        ]
+    )
+
+
+def modules_html(report_id: str, claims: list[dict], tutorial: bool) -> str:
+    by_id = {item["id"]: item for item in claims}
+    parts = (
+        [
+            '<section id="learning-path"><h2>教學主線：Mental Model、完整流程與 Debug</h2>',
+            '<p class="chapter-bridge">以下不依 Spec section 排列，而依「問題 → 元件關係 → 正常流程 → 數值／狀態範例 → failure branch → Debug」組織。流程圖負責時間順序，比較表負責差異；兩者不能互相替代。</p>',
+        ]
+        if tutorial
+        else [
+            '<section id="learning-path"><h2>詳細手冊：機制索引與欄位決策表</h2>',
+            '<p class="chapter-bridge">本區不重走教學故事。每個模組改用「適用問題、判讀條件、例子／反例、證據與來源」壓縮，供 implementation review、trace triage 與 code review 快速查核。</p>',
+        ]
+    )
+    for index, module in enumerate(REPORT_MODULES[report_id], 1):
+        sources = [by_id[item] for item in module["sources"]]
+        if tutorial:
+            parts.extend(
+                [
+                    f'<article class="topic-card" id="module-{html.escape(module["id"])}">',
+                    f'<p class="eyebrow">LEARNING MODULE {index:02d}</p>',
+                    f'<h3>{html.escape(module["title"]["zh"])}</h3>',
+                    '<p><span class="badge badge-explain">解釋</span> '
+                    + html.escape(module["lead"]["zh"])
+                    + "</p>",
+                    '<figure><figcaption><strong>流程視圖：</strong>只表達先後與 owner；條件差異請看下方比較表。</figcaption>',
+                    module_flow_svg(module, "zh"),
+                    "</figure>",
+                    '<h4>比較：這些概念差在哪裡</h4><div class="table-wrap"><table><thead><tr>'
+                    '<th>項目</th><th>它回答什麼</th><th>Engineer 注意事項</th></tr></thead><tbody>',
+                ]
+            )
+        else:
+            parts.extend(
+                [
+                    f'<article class="topic-card reference-module" id="module-{html.escape(module["id"])}">',
+                    f'<p class="eyebrow">MECHANISM INDEX {index:02d}</p>',
+                    f'<h3>{html.escape(module["title"]["zh"])}</h3>',
+                    '<div class="mini-grid"><div class="mini-card"><strong>適用問題</strong><p>'
+                    + html.escape(module["lead"]["zh"])
+                    + '</p></div><div class="mini-card"><strong>判讀終點</strong><p>'
+                    + html.escape(module["nodes"]["zh"][-1])
+                    + "；必須能回指 raw evidence 與來源條件。</p></div></div>",
+                    '<h4>條件／差異速查</h4><div class="table-wrap"><table><thead><tr>'
+                    '<th>對象</th><th>判讀問題</th><th>實作／Debug 條件</th></tr></thead><tbody>',
+                ]
+            )
+        for row in module["rows"]["zh"]:
+            parts.append("<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>")
+        if tutorial:
+            parts.extend(
+                [
+                    "</tbody></table></div>",
+                    '<div class="callout example"><span class="badge badge-example">具體範例</span> '
+                    + html.escape(module["example"]["zh"])
+                    + "</div>",
+                    '<div class="callout warning"><span class="badge badge-warn">常見誤解／Debug</span> '
+                    + html.escape(module["pitfall"]["zh"])
+                    + "</div>",
+                ]
+            )
+        else:
+            parts.extend(
+                [
+                    "</tbody></table></div>",
+                    '<div class="mini-grid"><div class="mini-card"><strong>Informative example</strong><p>'
+                    + html.escape(module["example"]["zh"])
+                    + '</p></div><div class="mini-card"><strong>Failure／triage</strong><p>'
+                    + html.escape(module["pitfall"]["zh"])
+                    + "</p></div></div>",
+                ]
+            )
+        parts.extend(
+            [
+                '<p class="source-note"><strong>支援來源：</strong>'
+                + "；".join(html.escape(compact_citation(item, "zh")) for item in sources)
+                + "。<strong>關聯 Figure：</strong>"
+                + ", ".join(f"Figure {number}" for number in module["figures"])
+                + "。</p>",
+                '<p class="back"><a href="#top">回到頂端</a></p></article>',
+            ]
+        )
+    parts.append("</section>")
+    return "".join(parts)
+
+
+def normative_badge_html(keyword: str) -> str:
+    normalized = (keyword or "none").lower()
+    if normalized in {"shall", "shall not", "mandatory"}:
+        klass = "req-shall"
+    elif normalized in {"should", "should not"}:
+        klass = "req-should"
+    elif normalized in {"may", "optional"}:
+        klass = "req-may"
+    else:
+        klass = "req-reserved"
+    return f'<span class="badge {klass}">{html.escape(normalized)}</span>'
+
+
+def quick_reference_html(report_id: str, claims: list[dict]) -> str:
+    """Build the scan-first front section used only by the detailed iPad manual."""
+    rows = []
+    for item in (claim for claim in claims if claim["figure"] is None):
+        keyword = item["normative_keyword"] or "none"
+        rows.append(
+            '<tr><td><a href="#claim-'
+            + html.escape(item["id"])
+            + '">'
+            + html.escape(item["heading_zh_tw"])
+            + "</a></td><td><code>"
+            + html.escape(keyword)
+            + "</code></td><td>"
+            + html.escape(tutorial_check(report_id, item["id"]))
+            + "</td><td><small>"
+            + html.escape(compact_citation(item, "zh"))
+            + "</small></td></tr>"
+        )
+    return "".join(
+        [
+            '<section id="quick-reference"><h2>快速查詢入口</h2>',
+            '<p class="chapter-bridge">這一版不是從頭帶讀的課本。遇到 command、欄位、status 或 trace 問題時，先用下表定位 requirement，再跳到完整論述與 Figure 證據。</p>',
+            '<div class="callout explain"><span class="badge badge-explain">查詢順序</span> 症狀或問題 → 找主題 → 核對 normative keyword → 讀來源位置 → 再展開相關 Figure。<strong>shall</strong> 與 <strong>may</strong> 不可互換。</div>',
+            '<div class="table-wrap"><table><thead><tr><th>主題</th><th>keyword</th><th>快速判讀問題</th><th>來源</th></tr></thead><tbody>',
+            *rows,
+            "</tbody></table></div>",
+            '<p class="back"><a href="#top">回到頂端</a></p></section>',
+        ]
+    )
+
+
+def figure_card_html(figure: dict, item: dict, tutorial: bool) -> str:
+    base = figure_explanation(figure, "zh")
+    guide = expanded_figure_guide(figure, "zh")
+    parts = [
+        f'<details class="figure-card" name="figures-{anchor(figure_group(figure))}" id="figure-{figure["number"]}" '
+        f'data-figure-table-id="{figure["id"]}">',
+        f'<summary>Figure {figure["number"]}: {html.escape(figure["title"])}</summary>',
+        f'<p class="figure-meta">§{html.escape(figure["section"])} ｜ '
+        f'文件頁 {html.escape(figure["printed_pages"])} ｜ PDF 頁 {html.escape(figure["pdf_pages"])} ｜ '
+        f'教學類型：{html.escape(guide["kind"])}</p>',
+        '<div class="callout spec"><span class="badge badge-spec">SPEC</span> '
+        + normative_badge_html(item["normative_keyword"])
+        + " "
+        f'<span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></div>',
+        '<h4>這張 Figure 在完整流程中的位置</h4>',
+        f'<p>{html.escape(guide["context"])}</p>',
+        f'<p>{html.escape(guide["kind_text"])}</p>',
+        '<figure class="visual-board">',
+        figure_teaching_svg(figure, guide, "zh"),
+        '<figcaption>教學重畫（非 Spec 原圖）：以形狀、顏色與箭頭呈現閱讀順序；精確 bit range／encoding 仍以引用來源為準。</figcaption></figure>',
+        '<h4>讀圖前先懂這些縮寫／欄位</h4>',
+        '<div class="table-wrap"><table><thead><tr><th>縮寫／欄位</th><th>白話解釋</th></tr></thead><tbody>',
+    ]
+    for term, definition in guide["terms"]:
+        parts.append(
+            f'<tr><td><span class="term">{html.escape(term)}</span></td>'
+            f'<td>{html.escape(definition)}</td></tr>'
+        )
+    parts.extend(
+        [
+            "</tbody></table></div>",
+            '<h4>照這個順序讀，不要直接跳到數值</h4><ol>',
+            *[f"<li>{html.escape(step)}</li>" for step in guide["steps"]],
+            "</ol>",
+            '<h4>Input → Decode → Validate → Evidence 工作紙</h4>',
+            '<div class="table-wrap worksheet"><table><thead><tr><th>階段</th><th>本 Figure 要記錄什麼</th><th>停止條件</th></tr></thead><tbody>',
+            f'<tr><td>Input</td><td>Figure {figure["number"]} 對應的完整 raw register／buffer／CQE snapshot</td><td>來源物件、scope 或 snapshot 時機不明</td></tr>',
+            f'<tr><td>Decode</td><td>{html.escape(", ".join(term for term, _ in guide["terms"]) or figure["title"])}</td><td>bit／byte boundary、unit 或 encoding rule 尚未確認</td></tr>',
+            f'<tr><td>Validate</td><td>§{html.escape(figure["section"])} 前後條件、capability gate、實際 length／state</td><td>reserved value、越界、unsupported capability 或互斥條件衝突</td></tr>',
+            '<tr><td>Evidence</td><td>raw value、decoded value、decision、timestamp 與 owner</td><td>只有結論、沒有可重算的原始證據</td></tr>',
+            "</tbody></table></div>",
+            '<h4>這張圖能回答什麼，不能回答什麼</h4>',
+            '<div class="table-wrap"><table><thead><tr><th>判讀層級</th><th>內容</th></tr></thead><tbody>',
+            *[
+                "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
+                for row in guide["answers"]
+            ],
+            "</tbody></table></div>",
+            '<div class="callout example"><span class="badge badge-example">範例</span> '
+            + html.escape(guide["example"])
+            + "</div>",
+            '<div class="callout warning"><span class="badge badge-warn">常見誤解</span> '
+            + html.escape(guide["misconception"])
+            + "</div>",
+            '<h4>Debug 對照表</h4><div class="table-wrap"><table><thead><tr><th>症狀</th><th>先查什麼</th></tr></thead><tbody>',
+            *[
+                "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
+                for row in guide["debug"]
+            ],
+            "</tbody></table></div>",
+            '<h4>讀完後應能回答</h4><ol>',
+            *[f"<li>{html.escape(value)}</li>" for value in guide["check"]],
+            "</ol>",
+        ]
+    )
+    if not tutorial:
+        parts.extend(
+            [
+                '<h4>詳細追溯資料</h4><div class="mini-grid">',
+                '<div class="mini-card"><strong>來源欄位索引</strong><p>'
+                + html.escape(base["item_text"])
+                + "</p></div>",
+                '<div class="mini-card"><strong>來源 keyword 索引</strong><p>'
+                + html.escape(base["keyword_text"])
+                + "</p></div>",
+                '<div class="mini-card"><strong>Claim ID</strong><p><code>'
+                + html.escape(item["id"])
+                + "</code></p></div>",
+                '<div class="mini-card"><strong>Figure claim keyword</strong><p><code>none</code></p></div>',
+                "</div>",
+            ]
+        )
+    parts.extend(
+        [
+            f'<p class="source-note">{html.escape(item["citation_zh_tw"])}</p>',
+            '<p class="back"><a href="#figure-index">回到 Figure 索引</a> ｜ '
+            '<a href="#top">回到頂端</a></p></details>',
+        ]
+    )
+    return "".join(parts)
+
+
 def render_html(
     report_id: str,
     report: dict,
@@ -1009,10 +2235,11 @@ def render_html(
     figures: list[dict],
     tutorial: bool,
 ) -> str:
-    source_markers = [SOURCES[report["source_id"]]["marker"]]
+    source_ids = [report["source_id"], *report.get("supporting_source_ids", [])]
+    source_markers = [SOURCES[source_id]["marker"] for source_id in source_ids]
     if report_id == "pcie-transport-1.4":
         source_markers.append(SOURCES["NVME-BASE-2.4"]["marker"])
-    label = "新手教學版" if tutorial else "詳細 Spec 版"
+    label = "新手教學版｜iPad／Desktop" if tutorial else "快速查詢詳細手冊｜iPad／Desktop"
     figure_groups: list[str] = []
     for figure in figures:
         group = figure_group(figure)
@@ -1030,23 +2257,41 @@ def render_html(
         "讀法、條件與說明性範例。欄位表雖以表格呈現，在本範圍的規格中仍以 Figure 編號。</p>"
     )
 
+    quick_nav = (
+        '' if tutorial else '<a href="#quick-reference">快查</a> ｜ '
+    )
     parts = [
         "<!doctype html>",
         '<html lang="zh-Hant-TW">',
         "<head>",
         '<meta charset="utf-8">',
-        '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+        '<meta name="theme-color" content="#f4f7fb" media="(prefers-color-scheme: light)">',
+        '<meta name="theme-color" content="#0c1220" media="(prefers-color-scheme: dark)">',
         f"<title>{html.escape(report['title_zh'])}｜{label}</title>",
+        f"<style>{HTML_CSS}</style>",
         "</head>",
-        "<body>",
-        '<nav id="top" aria-label="章節導覽"><a href="#scope">範圍</a> ｜ '
-        '<a href="#map">流程圖</a> ｜ <a href="#claims">規格重點</a> ｜ '
-        '<a href="#figure-index">Figure 索引</a> ｜ '
-        '<a href="#sources">來源</a></nav>',
-        "<main>",
-        f"<h1>{html.escape(report['title_zh'])}｜{label}</h1>",
-        "<p>用途：供具備 PCIe 與 NVMe 基礎的工程人員在 iPad 離線閱讀，"
-        "並作為 100 分鐘簡報的內容來源。</p>",
+        '<body class="edition-tutorial">' if tutorial else '<body class="edition-reference">',
+        '<a class="skip-link" href="#content">跳到正文</a>',
+        '<nav class="topbar" id="top" aria-label="章節導覽"><div class="topbar-inner">'
+        '<a href="#scope">範圍</a> ｜ ' + quick_nav + '<a href="#glossary">縮寫</a> ｜ '
+        '<a href="#visual-atlas">圖解</a> ｜ <a href="#learning-path">Mental Model</a> ｜ <a href="#claims">Spec 重點</a> ｜ '
+        '<a href="#figure-index">Figure 教學</a> ｜ <a href="#sources">來源</a></div></nav>',
+        '<main id="content">',
+        '<header class="hero"><p class="eyebrow">NVME ENGINEERING NOTES · '
+        + html.escape(label)
+        + "</p>",
+        f"<h1>{html.escape(report['title_zh'])}</h1>",
+        '<p class="subtitle">'
+        + (
+            "從縮寫與 Mental Model 開始，用圖、比較、數值範例與 failure branch 建立可用於開發及 Debug 的因果模型。"
+            if tutorial
+            else "以 keyword、欄位、command、status、Figure 與來源位置快速查詢；保留可直接核對的規範性強度與工程證據。"
+        )
+        + "</p>",
+        "</header>",
+        generic_toc_html(report_id, tutorial),
+        ipad_read_guide_html(tutorial),
         '<section id="scope"><h2>範圍與閱讀方式</h2>',
         f"<p><strong>納入：</strong>{html.escape(report['range'])}。"
         "正文只保留 PCIe／memory-based 與通用 NVMe 內容；"
@@ -1060,27 +2305,37 @@ def render_html(
         )
         + "100 分鐘口頭報告應以規格重點與必講 Figure 為主；其餘 Figure 作為附錄查閱，"
         "但仍完整保留於本檔。</p>",
-        "<table><thead><tr><th>keyword</th><th>台灣繁體中文</th>"
+        '<div class="table-wrap"><table><thead><tr><th>keyword</th><th>台灣繁體中文</th>'
         "<th>強度</th></tr></thead><tbody>"
         "<tr><td>shall</td><td>必須</td><td>強制要求</td></tr>"
         "<tr><td>may</td><td>可、得</td><td>允許選擇</td></tr>"
         "<tr><td>should</td><td>宜、建議</td><td>有偏好的建議</td></tr>"
         "<tr><td>optional</td><td>選用</td>"
-        "<td>不要求支援；實作後仍依定義</td></tr></tbody></table></section>",
+        "<td>不要求支援；實作後仍依定義</td></tr></tbody></table></div></section>",
         '<section id="map"><h2>整體流程圖</h2>',
         flow_svg(report),
         f"<p>{html.escape(report['diagram_note_zh'])}</p></section>",
+        glossary_html(report_id, claims, tutorial),
+        report_visual_atlas_html(report_id, claims, tutorial=tutorial),
+        quick_reference_html(report_id, claims) if not tutorial else "",
+        modules_html(report_id, claims, tutorial),
         '<section id="claims"><h2>規格重點</h2>',
+        '<p class="chapter-bridge">前面的 Mental Model 解釋元件如何互動；本節回到可逐條追溯的 Spec 結論。詳細版保留 claim ID 與 normative keyword，新手版則先提供判讀問題。</p>',
     ]
     core_claims = [item for item in claims if item["figure"] is None]
     for index, item in enumerate(core_claims, 1):
         heading = item["heading_zh_tw"]
         parts.extend(
             [
-                f"<article><h3>{index}. {heading}</h3>",
-                f'<p><span data-claim-id="{item["id"]}">'
-                f'{html.escape(item["zh_tw"])}</span></p>',
-                f"<p><small>{html.escape(item['citation_zh_tw'])}</small></p>"
+                f'<article class="topic-card" id="claim-{html.escape(item["id"])}"><p class="eyebrow">SPEC FINDING {index:02d}</p><h3>{heading}</h3>',
+                '<div class="callout spec"><span class="badge badge-spec">SPEC</span> '
+                + normative_badge_html(item["normative_keyword"])
+                + " "
+                + f'<span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></div>',
+                '<p><span class="badge badge-explain">解釋</span> 本結論要放回前述流程判讀：先確認物件與 scope，'
+                '再核對 capability／state，最後才把欄位值轉成 software decision。欄位存在不等於功能已啟用，'
+                '成功 completion 也不自動代表下一個 lifecycle 階段已完成。</p>',
+                f'<p class="source-note">{html.escape(item["citation_zh_tw"])}</p>'
                 "</article>",
             ]
         )
@@ -1111,7 +2366,8 @@ def render_html(
                 for group in figure_groups
             ],
             "</ul></section>",
-            '<section id="figures"><h2>Figure 逐圖導讀</h2>',
+            '<section id="figures"><h2>Figure／欄位表教學參考</h2>',
+            '<p class="chapter-bridge">Spec 在本範圍以 Figure 編號同時表示架構圖、流程圖、register bit-field 與欄位表。每張卡片都先教縮寫與上下文，再說讀法、範例、限制與 Debug；主教學仍以前面的知識流程為骨架。</p>',
         ]
     )
     figure_claims = {
@@ -1120,7 +2376,6 @@ def render_html(
     active_group = ""
     for figure in figures:
         item = figure_claims[int(figure["number"])]
-        details = figure_explanation(figure, "zh")
         group = figure_group(figure)
         if group != active_group:
             if active_group:
@@ -1130,43 +2385,7 @@ def render_html(
                 f'<section id="section-{anchor(group)}"><h3>'
                 f'{html.escape(figure_group_label(group, "zh"))}</h3>'
             )
-        figure_anchor = f"figure-{figure['number']}"
-        parts.extend(
-            [
-                f'<details id="{figure_anchor}" data-figure-table-id="{figure["id"]}">',
-                f'<summary><strong>Figure {figure["number"]}: '
-                f'{html.escape(figure["title"])}</strong></summary>',
-                f'<p><span data-claim-id="{item["id"]}">'
-                f'{html.escape(item["zh_tw"])}</span></p>',
-                "<ul>",
-                f"<li><strong>解決的問題：</strong>{html.escape(details['purpose'])}</li>",
-                f"<li><strong>閱讀順序：</strong>{html.escape(details['reading'])}</li>",
-                f"<li><strong>條件與限制：</strong>{html.escape(details['caveat'])}</li>",
-                "<li><strong>說明性範例（informative example）：</strong>"
-                f"{html.escape(details['example'])} 此例不新增規格要求。</li>",
-            ]
-        )
-        if not tutorial:
-            parts.extend(
-                [
-                    "<li><strong>來源欄位索引：</strong>"
-                    + html.escape(details["item_text"])
-                    + "。</li>",
-                    "<li><strong>來源 keyword 索引：</strong>"
-                    + html.escape(details["keyword_text"])
-                    + "；Figure 導讀本身的 normative keyword 為 none。</li>",
-                    "<li><strong>追溯鍵：</strong>" + html.escape(item["id"]) + "。</li>",
-                ]
-            )
-        parts.extend(
-            [
-                "</ul>",
-                f"<p><small>{html.escape(item['citation_zh_tw'])}</small></p>",
-                '<p><a href="#figure-index">回到 Figure 索引</a> ｜ '
-                '<a href="#top">回到頂端</a></p>',
-                "</details>",
-            ]
-        )
+        parts.append(figure_card_html(figure, item, tutorial))
     if active_group:
         parts.append("</section>")
     parts.extend(
@@ -1186,6 +2405,255 @@ def render_html(
         ]
     )
     return "\n".join(parts)
+
+
+def glossary_markdown(report_id: str, claims: list[dict], language: str) -> list[str]:
+    english = language == "en"
+    by_id = {item["id"]: item for item in claims}
+    out = [
+        "## " + ("Acronyms first: complete glossary" if english else "先學縮寫：完整 Glossary"),
+        "",
+        (
+            "Every abbreviation below is introduced before it is used in the slide narrative. The term alone is never enough: retain owner, width, unit, scope, and state."
+            if english
+            else "下列縮寫會在投影片主線使用前先定義。縮寫本身永遠不夠；設計與 Debug 還要保留 owner、width、unit、scope 與 state。"
+        ),
+        "",
+        (
+            "| Acronym / term | Plain-language meaning | Source |"
+            if english
+            else "| 縮寫／名詞 | 白話解釋 | 來源 |"
+        ),
+        "|---|---|---|",
+    ]
+    for term, claim_id in REPORT_GLOSSARIES[report_id]:
+        item = by_id[claim_id]
+        out.append(
+            f"| `{term}` | {TERM_LIBRARY[term][language]} | {compact_citation(item, language)} |"
+        )
+    out.extend([""])
+    return out
+
+
+def modules_markdown(report_id: str, claims: list[dict], language: str) -> list[str]:
+    english = language == "en"
+    by_id = {item["id"]: item for item in claims}
+    out = [
+        "## " + ("Mental Model and complete teaching path" if english else "Mental Model 與完整教學流程"),
+        "",
+        (
+            "The modules follow engineering causality rather than specification-section order. Related Figures return at the point where they support the flow."
+            if english
+            else "以下依工程因果而非 Spec section 排列；相關 Figure 會回到它支援的流程節點，不以編號順序取代教學故事線。"
+        ),
+        "",
+    ]
+    for index, module in enumerate(REPORT_MODULES[report_id], 1):
+        sources = [by_id[item] for item in module["sources"]]
+        out.extend(
+            [
+                f"### Module {index:02d}: {module['title'][language]}",
+                "",
+                ("**Explanation.** " if english else "**解釋。** ") + module["lead"][language],
+                "",
+                "```text",
+                "\n  ↓\n".join(module["nodes"][language]),
+                "```",
+                "",
+                "#### " + ("Comparison" if english else "比較：這些概念差在哪裡"),
+                "",
+                (
+                    "| Item | What it answers | Engineering note |"
+                    if english
+                    else "| 項目 | 它回答什麼 | Engineer 注意事項 |"
+                ),
+                "|---|---|---|",
+            ]
+        )
+        for row in module["rows"][language]:
+            out.append("| " + " | ".join(row) + " |")
+        out.extend(
+            [
+                "",
+                ("**Informative example.** " if english else "**說明性範例。** ")
+                + module["example"][language],
+                "",
+                ("**Common mistake / debugging.** " if english else "**常見誤解／Debug。** ")
+                + module["pitfall"][language],
+                "",
+                ("**Supporting sources:** " if english else "**支援來源：** ")
+                + "; ".join(compact_citation(item, language) for item in sources),
+                "",
+                ("**Related Figures:** " if english else "**關聯 Figure：** ")
+                + ", ".join(f"Figure {number}" for number in module["figures"]),
+                "",
+            ]
+        )
+    return out
+
+
+def module_visual_text(module: dict, language: str) -> list[str]:
+    nodes = [svg_label(value, 34) for value in module["nodes"][language]][:6]
+    kind = module_visual_kind(module["id"])
+    if kind == "architecture":
+        hub = nodes[0]
+        branches = nodes[1:]
+        lines = [f"[{hub}]"]
+        for index, value in enumerate(branches):
+            branch = "└─" if index == len(branches) - 1 else "├─"
+            lines.append(f"  {branch} [{value}]")
+        return lines
+    if kind == "sequence":
+        lines = ["Host / software        Shared object        Controller / evidence"]
+        for index, value in enumerate(nodes):
+            prefix = "Host → Shared" if index % 4 == 0 else "Shared → Controller" if index % 4 == 1 else "Controller → Shared" if index % 4 == 2 else "Shared → Host"
+            lines.append(f"{prefix}: {value}")
+        return lines
+    if kind == "decode":
+        labels = ["RAW", "LOCATE", "DECODE", "VALIDATE"]
+        shown = nodes[:4]
+        while len(shown) < 4:
+            shown.append("evidence")
+        return [" → ".join(f"[{label}: {value}]" for label, value in zip(labels, shown)), "VALIDATE fail ──→ return to RAW evidence"]
+    return [" → ".join(f"[{value}]" for value in nodes), "timeout / failure ──→ preserve trigger + previous state + evidence"]
+
+
+def visual_atlas_markdown(report_id: str, claims: list[dict], language: str) -> list[str]:
+    english = language == "en"
+    by_id = {item["id"]: item for item in claims}
+    out = [
+        "## " + ("Visual atlas: locate the system before reading fields" if english else "Visual Atlas：先用圖建立整體位置"),
+        "",
+        (
+            "Each redraw answers a different question: architecture locates components, sequence shows ownership, decode turns bits into engineering values, and state views preserve failure evidence. These are teaching redraws, not copies of specification artwork."
+            if english
+            else "每張教學重畫回答不同問題：Architecture 定位元件、Sequence 顯示 ownership、Decode 把 bits 轉成工程值、State 保留 failure evidence；它們不是 Spec 原圖的複製。"
+        ),
+        "",
+    ]
+    for index, module in enumerate(REPORT_MODULES[report_id], 1):
+        sources = [by_id[value] for value in module["sources"]]
+        out.extend(
+            [
+                f"### Visual {index:02d}: {module['title'][language]}",
+                "",
+                f"**View type:** `{module_visual_kind(module['id'])}`",
+                "",
+                "```text",
+                *module_visual_text(module, language),
+                "```",
+                "",
+                ("**Question answered:** " if english else "**回答的問題：** ") + module["lead"][language],
+                "",
+                ("**Supporting Figures:** " if english else "**支援 Figure：** ") + ", ".join(f"Figure {value}" for value in module["figures"]),
+                "",
+                ("**Sources:** " if english else "**來源：** ") + "; ".join(compact_citation(item, language) for item in sources),
+                "",
+            ]
+        )
+    return out
+
+
+def figure_card_markdown(
+    figure: dict, item: dict, language: str
+) -> list[str]:
+    english = language == "en"
+    base = figure_explanation(figure, language)
+    guide = expanded_figure_guide(figure, language)
+    statement = item["en"] if english else item["zh_tw"]
+    citation = item["citation_en"] if english else item["citation_zh_tw"]
+    out = [
+        '<details markdown="1">',
+        f"<summary><strong>Figure {figure['number']}: {html.escape(figure['title'])}</strong></summary>",
+        "",
+        f"<!-- claim:{item['id']} figure-table:{figure['id']} -->",
+        "",
+        ("**SPEC.** " if english else "**SPEC。** ") + statement,
+        "",
+        "#### " + ("Where this Figure fits" if english else "這張 Figure 在完整流程中的位置"),
+        "",
+        guide["context"],
+        "",
+        guide["kind_text"],
+        "",
+        "#### " + ("Teaching redraw" if english else "教學重畫（非 Spec 原圖）"),
+        "",
+        *figure_visual_text(figure, guide, language),
+        "",
+        "#### " + ("Terms to learn before reading" if english else "讀圖前先懂這些縮寫／欄位"),
+        "",
+        ("| Term | Plain-language meaning |" if english else "| 縮寫／欄位 | 白話解釋 |"),
+        "|---|---|",
+    ]
+    for term, definition in guide["terms"]:
+        out.append(f"| `{term}` | {definition} |")
+    out.extend(
+        [
+            "",
+            "#### " + ("Read in this order" if english else "照這個順序讀，不要直接跳到數值"),
+            "",
+        ]
+    )
+    for index, step in enumerate(guide["steps"], 1):
+        out.append(f"{index}. {step}")
+    out.extend(
+        [
+            "",
+            "#### " + ("Input → Decode → Validate → Evidence worksheet" if english else "Input → Decode → Validate → Evidence 工作紙"),
+            "",
+            ("| Stage | Record | Stop condition |" if english else "| 階段 | 要記錄什麼 | 停止條件 |"),
+            "|---|---|---|",
+            (f"| Input | Complete raw register, buffer, or CQE snapshot for Figure {figure['number']} | Object, scope, or snapshot timing is unknown |" if english else f"| Input | Figure {figure['number']} 對應的完整 raw register／buffer／CQE snapshot | 來源物件、scope 或 snapshot 時機不明 |"),
+            ("| Decode | Indexed fields, byte/bit range, unit, and encoding rule | A boundary, unit, or encoding rule is unconfirmed |" if english else "| Decode | 來源欄位、byte／bit range、unit 與 encoding rule | 任一邊界、單位或編碼尚未確認 |"),
+            (f"| Validate | §{figure['section']} conditions, capability gate, actual length or state | Reserved value, overrun, unsupported capability, or contradictory condition |" if english else f"| Validate | §{figure['section']} 前後條件、capability gate、實際 length／state | reserved、越界、unsupported 或互斥條件衝突 |"),
+            ("| Evidence | Raw value, decoded value, decision, timestamp, and owner | A conclusion exists without recomputable evidence |" if english else "| Evidence | raw value、decoded value、decision、timestamp 與 owner | 只有結論、沒有可重算證據 |"),
+            "",
+            "#### " + ("What it answers and what it does not" if english else "這張圖能回答什麼，不能回答什麼"),
+            "",
+            ("| Reading level | Content |" if english else "| 判讀層級 | 內容 |"),
+            "|---|---|",
+        ]
+    )
+    for row in guide["answers"]:
+        out.append("| " + " | ".join(row) + " |")
+    out.extend(
+        [
+            "",
+            ("**Informative example.** " if english else "**說明性範例。** ") + guide["example"],
+            "",
+            ("**Common misconception.** " if english else "**常見誤解。** ") + guide["misconception"],
+            "",
+            "#### " + ("Debug matrix" if english else "Debug 對照表"),
+            "",
+            ("| Symptom | First checks |" if english else "| 症狀 | 先查什麼 |"),
+            "|---|---|",
+        ]
+    )
+    for row in guide["debug"]:
+        out.append("| " + " | ".join(row) + " |")
+    out.extend(
+        [
+            "",
+            "#### " + ("Questions the reader should now answer" if english else "讀完後應能回答"),
+            "",
+        ]
+    )
+    for index, value in enumerate(guide["check"], 1):
+        out.append(f"{index}. {value}")
+    out.extend(
+        [
+            "",
+            ("**Source field index:** " if english else "**來源欄位索引：** ") + base["item_text"],
+            "",
+            ("**Source keyword index:** " if english else "**來源 keyword 索引：** ") + base["keyword_text"],
+            "",
+            f"> {citation}",
+            "",
+            "</details>",
+            "",
+        ]
+    )
+    return out
 
 
 def frontmatter(
@@ -1253,7 +2721,10 @@ def render_markdown(
         "",
         "## " + ("Source versions" if english else "來源版本"),
         "",
-        SOURCES[report["source_id"]]["marker"],
+        *[
+            SOURCES[source_id]["marker"]
+            for source_id in [report["source_id"], *report.get("supporting_source_ids", [])]
+        ],
     ]
     if report_id == "pcie-transport-1.4":
         out.append(SOURCES["NVME-BASE-2.4"]["marker"])
@@ -1290,7 +2761,20 @@ def render_markdown(
                 "「宜／建議」，optional 譯為「選用」。本文不提高或降低原文語氣。"
             ),
             "",
-            "## " + ("Specification findings" if english else "規格重點"),
+        ]
+    )
+    out.extend(glossary_markdown(report_id, claims, language))
+    out.extend(visual_atlas_markdown(report_id, claims, language))
+    out.extend(modules_markdown(report_id, claims, language))
+    out.extend(
+        [
+            "## " + ("Source-located specification findings" if english else "可追溯的規格重點"),
+            "",
+            (
+                "The mental model above explains causality. This section preserves each source-located conclusion and its normative strength for speaker notes and review."
+                if english
+                else "前面的 Mental Model 解釋因果；本節保留每個可追溯結論與 normative 強度，供講者備註與審查。"
+            ),
             "",
         ]
     )
@@ -1306,6 +2790,12 @@ def render_markdown(
                 f"<!-- claim:{item['id']} -->",
                 "",
                 text,
+                "",
+                (
+                    "**Explanation.** Place this finding back into the teaching flow: establish object and scope, check capability and state, then convert the field into a software decision. Field presence is not proof of enablement, and a successful completion does not by itself prove that the next lifecycle stage has completed."
+                    if english
+                    else "**解釋。** 把本結論放回教學流程：先確認物件與 scope，再核對 capability 與 state，最後才轉成 software decision。欄位存在不等於功能已啟用，成功 completion 也不自動代表下一個 lifecycle 階段已完成。"
+                ),
                 "",
                 f"> {citation}",
                 "",
@@ -1350,7 +2840,7 @@ def render_markdown(
         )
     out.extend(
         [
-            "## " + ("Figure-by-Figure Guide" if english else "Figure 逐圖導讀"),
+            "## " + ("Figure and field-table teaching reference" if english else "Figure／欄位表教學參考"),
             "",
             (
                 ("The requested text contains no numbered Table reference. " if report_id == "base-admin-fw-logs" else "")
@@ -1371,9 +2861,6 @@ def render_markdown(
     active_group = ""
     for figure in figures:
         item = figure_claims[int(figure["number"])]
-        details = figure_explanation(figure, language)
-        statement = item["en"] if english else item["zh_tw"]
-        citation = item["citation_en"] if english else item["citation_zh_tw"]
         group = figure_group(figure)
         if group != active_group:
             active_group = group
@@ -1385,55 +2872,7 @@ def render_markdown(
                     "",
                 ]
             )
-        out.extend(
-            [
-                '<details markdown="1">',
-                f"<summary><strong>Figure {figure['number']}: "
-                f"{html.escape(figure['title'])}</strong></summary>",
-                "",
-                f"<!-- claim:{item['id']} figure-table:{figure['id']} -->",
-                "",
-                statement,
-                "",
-                "- Purpose: " + details["purpose"]
-                if english
-                else "- 解決的問題：" + details["purpose"],
-                "",
-                "- How to read: " + details["reading"]
-                if english
-                else "- 閱讀順序：" + details["reading"],
-                "",
-                (
-                    "- Conditions and limits: " + details["caveat"]
-                    if english
-                    else "- 條件與限制：" + details["caveat"]
-                ),
-                "",
-                (
-                    "- Informative example: "
-                    + details["example"]
-                    + " This example adds no requirement."
-                    if english
-                    else "- 說明性範例（informative example）："
-                    + details["example"]
-                    + " 此例不新增規格要求。"
-                ),
-                "",
-                (
-                    "- Source field index: " + details["item_text"]
-                    if english
-                    else "- 來源欄位索引：" + details["item_text"]
-                ),
-                "",
-                (
-                    "- Source keyword index: " + details["keyword_text"]
-                    if english
-                    else "- 來源 keyword 索引：" + details["keyword_text"]
-                ),
-                "",
-            ]
-        )
-        out.extend([f"> {citation}", "", "</details>", ""])
+        out.extend(figure_card_markdown(figure, item, language))
     out.extend(
         [
             "## " + ("Use and limitations" if english else "使用與限制"),
@@ -1565,7 +3004,9 @@ def firmware_claim_order(claims: list[dict]) -> list[dict]:
     return [by_id[claim_id] for part in FIRMWARE_PARTS for claim_id in part["claims"]]
 
 
-def firmware_figure_appendix_html(claims: list[dict], figures: list[dict]) -> list[str]:
+def firmware_figure_appendix_html(
+    claims: list[dict], figures: list[dict], tutorial: bool = False
+) -> list[str]:
     figure_claims = {
         int(item["figure"]): item for item in claims if item["figure"] is not None
     }
@@ -1576,27 +3017,435 @@ def firmware_figure_appendix_html(claims: list[dict], figures: list[dict]) -> li
     ]
     for figure in figures:
         item = figure_claims[int(figure["number"])]
-        details = figure_explanation(figure, "zh")
-        role = "最小相依切片" if figure.get("role") == "referenced_dependency" else "主範圍證據"
+        out.append(figure_card_html(figure, item, tutorial=tutorial))
+    out.append("</section>")
+    return out
+
+
+FW_GLOSSARY = [
+    ("Domain", "Firmware slots 的共享與 activation 範圍；不一定等於單一 controller。", "The sharing and activation scope for firmware slots; not necessarily one controller."),
+    ("Firmware image", "可下載、驗證、保存並啟用的 firmware 內容。", "Firmware content that can be downloaded, validated, stored, and activated."),
+    ("Firmware slot", "保存一個 firmware revision 的邏輯位置；不等於目前正在執行。", "A logical location holding one firmware revision; not necessarily the executing revision."),
+    ("Activation", "讓某個 slot 的 image 成為 controller 正在執行的 firmware。", "Making the image in a slot become the firmware executed by the controller."),
+    ("FR", "Firmware Revision；目前正在執行的 8-byte ASCII revision。", "Firmware Revision; the eight-byte ASCII revision currently executing."),
+    ("FRMW", "Firmware Updates capability byte；集合 SMUD、FAWR、NOFS、FFSRO。", "Firmware Updates capability byte containing SMUD, FAWR, NOFS, and FFSRO."),
+    ("SMUD", "Support Multiple Update Detection；能否偵測重疊 update sequence。", "Support Multiple Update Detection; whether overlapping update sequences can be detected."),
+    ("FAWR", "Firmware Activation Without Reset；是否支援不經 reset 的 activation。", "Firmware Activation Without Reset support."),
+    ("NOFS", "Number Of Firmware Slots；domain 支援 1 到 7 個 slots。", "Number Of Firmware Slots; one through seven slots in the domain."),
+    ("FFSRO", "First Firmware Slot Read Only；slot 1 是否唯讀。", "First Firmware Slot Read Only."),
+    ("MTFA", "Maximum Time for Firmware Activation；activation 暫停 command processing 的上限，100 ms units。", "Maximum Time for Firmware Activation; command-processing pause in 100 ms units."),
+    ("FWUG", "Firmware Update Granularity；NUMD／OFST 的 granularity 與 alignment，4 KiB units。", "Firmware Update Granularity for NUMD/OFST alignment, in 4 KiB units."),
+    ("MPTFAWR", "Maximum Processing Time for Firmware Activation Without Reset；CA=011b command 完成時間，100 ms units。", "Maximum Processing Time for Firmware Activation Without Reset, in 100 ms units."),
+    ("DPTR / PRP", "Data Pointer／Physical Region Page；指向本次 transfer buffer。", "Data Pointer / Physical Region Page identifying the transfer buffer."),
+    ("NUMD / OFST", "0's-based dword count／image-relative dword offset。", "Zero-based dword count / image-relative dword offset."),
+    ("CA / FS", "Commit Action／Firmware Slot；決定 Commit 做什麼、作用在哪個 slot。", "Commit Action / Firmware Slot selecting the operation and target slot."),
+    ("MUD", "Multiple Update Detected；Firmware Commit CQE 的 overlap 證據。", "Multiple Update Detected; overlap evidence in the Firmware Commit CQE."),
+    ("LID / RAE", "Log Page Identifier／Retain Asynchronous Event。", "Log Page Identifier / Retain Asynchronous Event."),
+    ("AFI", "Active Firmware Info；LID 03h byte 0。", "Active Firmware Info in byte 0 of LID 03h."),
+    ("NAFS / CAFS", "Next／Current Active Firmware Slot。", "Next / Current Active Firmware Slot."),
+    ("FRS1…FRS7", "Firmware Revision for Slot 1…7；每格 8-byte ASCII。", "Firmware Revision for Slots 1 through 7; eight ASCII bytes each."),
+]
+
+
+def fw_claim_html(item: dict) -> list[str]:
+    return [
+        f'<p><strong>[SPEC]</strong> <span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></p>',
+        f"<p><small>{html.escape(item['citation_zh_tw'])}</small></p>",
+    ]
+
+
+def fw_glossary_html(claims: list[dict], compact: bool = False) -> str:
+    by_id = {item["id"]: item for item in claims}
+    rows = REPORT_GLOSSARIES["base-admin-fw-logs"]
+    if compact:
+        rows = rows[:18]
+    return (
+        '<div class="table-wrap"><table>'
+        "<thead><tr><th>縮寫／名詞</th><th>先用一句話理解</th><th>來源</th></tr></thead><tbody>"
+        + "".join(
+            f'<tr><td><span class="term">{html.escape(term)}</span></td>'
+            f"<td>{html.escape(TERM_LIBRARY[term]['zh'])}</td>"
+            f"<td><small>{html.escape(compact_citation(by_id[claim_id], 'zh'))}</small></td></tr>"
+            for term, claim_id in rows
+        )
+        + "</tbody></table></div>"
+    )
+
+
+def fw_html_shell_start(report: dict, label: str, subtitle: str, toc: str) -> list[str]:
+    reference = "快速查詢" in label
+    words_target = "ref-first-words" if reference else "words"
+    model_target = "ref-start" if reference else "model"
+    example_target = "ref-lid03" if reference else "example-story"
+    debug_target = "ref-debug" if reference else "debug-story"
+    return [
+        "<!doctype html>",
+        '<html lang="zh-Hant-TW">',
+        "<head>",
+        '<meta charset="utf-8">',
+        '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+        '<meta name="theme-color" content="#f4f7fb" media="(prefers-color-scheme: light)">',
+        '<meta name="theme-color" content="#0c1220" media="(prefers-color-scheme: dark)">',
+        f"<title>{html.escape(report['title_zh'])}｜{label}</title>",
+        f"<style>{HTML_CSS}</style>",
+        "</head>",
+        '<body class="edition-reference">' if reference else '<body class="edition-tutorial">',
+        '<a class="skip-link" href="#content">跳到正文</a>',
+        f'<nav class="topbar" id="top"><div class="topbar-inner"><a href="#{words_target}">縮寫</a> ｜ '
+        '<a href="#fw-visual-atlas">圖解</a> ｜ '
+        f'<a href="#{model_target}">Mental Model</a> ｜ <a href="#{example_target}">End-to-End</a> ｜ '
+        f'<a href="#{debug_target}">Debug</a> ｜ <a href="#figure-index">Figure 教學</a></div></nav>',
+        '<main id="content"><header class="hero"><p class="eyebrow">NVME-BASE-2.4 · REVISION 2.4 · 2026-09-02</p>',
+        f"<h1>{html.escape(report['title_zh'])}</h1>",
+        f'<p class="subtitle"><mark>{html.escape(label)}</mark>　{html.escape(subtitle)}</p>',
+        "</header>",
+        '<nav aria-label="目錄"><details class="ipad-toc" open><summary><strong>Contents／章節導覽</strong></summary>',
+        toc,
+        "</details></nav>",
+        ipad_read_guide_html(not reference),
+    ]
+
+
+def render_firmware_tutorial_html(
+    report: dict, claims: list[dict], figures: list[dict]
+) -> str:
+    by_id = {item["id"]: item for item in claims if item["figure"] is None}
+
+    def add(ids: list[str]) -> list[str]:
+        result: list[str] = []
+        for claim_id in ids:
+            result.extend(fw_claim_html(by_id[claim_id]))
+        return result
+
+    toc = """<ol>
+<li><a href="#promise">這份教學要回答什麼</a></li>
+<li><a href="#words">先把縮寫變成人話</a></li>
+<li><a href="#model">Mental Model：四種 firmware 狀態</a></li>
+<li><a href="#download-story">Download：bytes 如何變成 NUMD／OFST</a></li>
+<li><a href="#commit-story">Commit：CA 如何決定 activation</a></li>
+<li><a href="#verify-story">LID 03h：怎麼知道更新成功</a></li>
+<li><a href="#example-story">End-to-End Example</a></li>
+<li><a href="#debug-story">Debug：從症狀反推哪一步錯</a></li>
+<li><a href="#tutorial-sources">來源與限制</a></li>
+</ol>"""
+    out = fw_html_shell_start(
+        report,
+        "新手教學版｜iPad／Desktop",
+        "先理解狀態與因果，再看 command 欄位",
+        toc,
+    )
+    out.extend(
+        [
+            '<section id="promise"><h2>這份教學要回答什麼</h2>',
+            '<fieldset><legend><strong>讀完應該能做到</strong></legend>',
+            "<p>看到一個 firmware image 時，能判斷它目前只是下載中、已放進 slot、已排定 activation，還是已經在執行；能算出 Firmware Image Download 與 LID 03h 的 command 欄位；也能從 completion status、AFI 與 FRSx 找出 Debug 下一步。</p>",
+            "</fieldset>",
+            "<p>全文只教 Base 2.4 §3.11、§5.2.9、§5.2.10 與 Firmware Slot Information（LID 03h）。其他 log pages 不混進來。讀者可先把 <em>firmware update</em> 想成搬家：Download 是把箱子搬到門口，Commit 是驗收並放進指定房間，Activation 才是正式入住；LID 03h 是入住後的門牌與房間清冊。</p>",
+            "</section><hr>",
+            '<section id="words"><h2>先把縮寫變成人話</h2>',
+            "<p>後面第一次看到縮寫時，不必猜。先用這張表建立最低限度的字彙；每個縮寫的 bit、unit 與例外會在真正使用它的流程中再教一次。</p>",
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>先懂這四個詞</th><th>它在流程中的角色</th></tr></thead><tbody>',
+            "<tr><td>Firmware image</td><td>被 download、驗證與 activation 的內容</td></tr>",
+            "<tr><td>Firmware slot</td><td>保存 image 的位置；有內容不等於 active</td></tr>",
+            "<tr><td>Domain</td><td>多個 controllers 共用 slots 的範圍</td></tr>",
+            "<tr><td>Activation</td><td>讓 slot image 真正開始執行</td></tr>",
+            "</tbody></table>",
+            '<details><summary><strong>需要時展開：完整縮寫表</strong></summary>',
+            fw_glossary_html(claims),
+            "</details>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            report_visual_atlas_html("base-admin-fw-logs", claims, "fw-visual-atlas", True),
+            '<section id="model"><h2>Mental Model：先分清楚四種 firmware 狀態</h2>',
+            firmware_mental_model_svg(),
+            "<p>一個 downloaded image 還不屬於任何可執行狀態；Firmware Commit 驗證它，並依 Commit Action（CA）決定要放置、排定 activation，或立即 activation。Firmware slot 則是 domain 共享的容器，所以 Debug 不可只看發出 command 的 PCI Function。</p>",
+            "<p>Multi-Domain Subsystem（MDS）bit 告訴 host 是否有多個 domains；Domain Identifier（DID）標出 controller 所屬 domain；UUID List（ULIST）bit 則表示是否支援 UUID List reporting。</p>",
+        ]
+    )
+    out.extend(add(["BASEFWLOG-MODEL-DOMAIN", "BASEFWLOG-CAP-MDS-ULIST"]))
+    out.extend(
+        [
+            '<fieldset><legend><strong>[解釋] 開始前先讀能力</strong></legend>',
+            "<p><code>FRMW</code> 告訴你有幾個 slots、slot 1 能不能寫、能不能免 reset activation；<code>FWUG</code> 決定 download 切片要怎麼對齊；<code>MTFA</code> 與 <code>MPTFAWR</code> 則是兩種不同時間概念。先讀能力，後面的 command 才有合法參數。</p>",
+            "</fieldset>",
+        ]
+    )
+    out.extend(
+        add(
+            [
+                "BASEFWLOG-CAP-FRMW",
+                "BASEFWLOG-CAP-FWUG",
+                "BASEFWLOG-CAP-MTFA",
+                "BASEFWLOG-CAP-MPTFAWR",
+            ]
+        )
+    )
+    out.extend(
+        [
+            "<p><strong>[推論]</strong> 建議在 driver log 中把 FRMW、FWUG、MTFA、MPTFAWR 與 DID 當成同一份 update context；否則後面只留下 command bytes，無法判斷參數當時是否合法。</p>",
+            '<fieldset><legend><strong>來源導覽</strong></legend><p>Identify Controller：Figure 338；本教學使用 FR（文件/PDF 340/366）、MDS／ULIST（346/372）、FRMW（354/380）、MTFA（357/383）、FWUG（359/385）、DID／MPTFAWR（364/390）。</p></fieldset>',
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="download-story"><h2>Download：bytes 如何變成 NUMD／OFST</h2>',
+            "<p>Controller 不知道「第 2 個檔案區塊」；它只知道這一筆 command 從 image 的哪個 dword 開始，以及總共有幾個 dwords。這就是 <code>OFST</code> 與 <code>NUMD</code>。</p>",
+            '''<pre aria-label="Firmware image portion layout">image byte 0
+│
+├── portion A: OFST=0       ── 4 KiB
+├── portion B: OFST=0400h   ── 4 KiB
+└── portion C: OFST=0800h   ── 4 KiB</pre>''',
+            '<fieldset><legend><strong>0\'s-based 不要心算</strong></legend>',
+            "<p><samp>actual dwords = NUMD + 1</samp><br><samp>transfer bytes = (NUMD + 1) × 4</samp><br><samp>image byte offset = OFST × 4</samp></p>",
+            "</fieldset>",
+            '<fieldset><legend><strong>來源導覽</strong></legend><p>Common Command Format：Figure 93，文件頁 140-142／PDF 頁 166-168。Firmware Image Download：Figures 190-193，文件頁 205-206／PDF 頁 231-232。</p></fieldset>',
+        ]
+    )
+    out.extend(
+        add(
+            [
+                "BASEFWLOG-FW-SEQUENCE",
+                "BASEFWLOG-DOWNLOAD-RANGE",
+                "BASEFWLOG-DOWNLOAD-FIELDS",
+                "BASEFWLOG-FW-DISCARD",
+            ]
+        )
+    )
+    out.extend(
+        [
+            '<fieldset><legend><strong>[說明性範例] 一段 4 KiB</strong></legend>',
+            "<p>4096 bytes ÷ 4 = 1024 dwords，所以 <code>NUMD=1024−1=1023=03FFh</code>。第二段從 byte 4096 開始，所以 <code>OFST=4096÷4=1024=0400h</code>。若 FWUG=1h，這組 length 與 offset 同時符合 4 KiB granularity／alignment。</p>",
+            "</fieldset>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="commit-story"><h2>Commit：CA 如何決定 activation</h2>',
+            "<p>Download 完成只代表 controller 收到 image portions。Firmware Commit 才驗證 image 並選 slot；CA（Commit Action）再決定成功後的狀態轉移。</p>",
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>CA</th><th>放進 slot</th><th>何時 active</th><th>接著觀察</th></tr></thead><tbody>',
+            "<tr><td>000b</td><td>是</td><td>不 activation</td><td>FRSx</td></tr>",
+            "<tr><td>001b</td><td>是</td><td>下次合適 CLR</td><td>NAFS → reset → CAFS</td></tr>",
+            "<tr><td>010b</td><td>使用既有 slot</td><td>下次合適 CLR</td><td>NAFS → reset → CAFS</td></tr>",
+            "<tr><td>011b</td><td>新 image 或既有 slot</td><td>立即</td><td>command completion → CAFS</td></tr>",
+            "</tbody></table>",
+        ]
+    )
+    out.extend(
+        add(
+            [
+                "BASEFWLOG-COMMIT-PURPOSE",
+                "BASEFWLOG-COMMIT-CDW10",
+                "BASEFWLOG-COMMIT-MUD",
+                "BASEFWLOG-COMMIT-STATUS",
+                "BASEFWLOG-FW-RESET",
+                "BASEFWLOG-FW-IMMEDIATE",
+                "BASEFWLOG-FW-FAILURE",
+                "BASEFWLOG-RESET-XREF",
+            ]
+        )
+    )
+    out.extend(
+        [
+            '<fieldset><legend><strong>[警告] Success 不等於現在已 active</strong></legend>',
+            "<p>CA=000b 只放置；CA=001b／010b 仍欠一次能觸發 activation 的 CLR；CA=011b 才是立即路徑，而且 command 會等到成功或失敗。Completion status 若點名 Conventional Reset，就不能拿 FLR 當同義詞。</p>",
+            "</fieldset>",
+            '<fieldset><legend><strong>來源導覽</strong></legend><p>Firmware Commit CDW10、CQE.DW0 與 status：Figures 187-189，文件頁 203-205／PDF 頁 229-231。Activation event／enable：Figures 155、474，文件/PDF 頁 186/212、466-468/492-494。</p></fieldset>',
+            '<details><summary><strong>進階但必要：UUID List 為什麼可能強迫 reset</strong></summary>',
+        ]
+    )
+    out.extend(add(["BASEFWLOG-UUID-LIST", "BASEFWLOG-UUID-RESET"]))
+    out.extend(
+        [
+            "<p>[解釋] UUID Index 是位置型語意；同一 entry 換成不同有效 UUID，舊 command 的 index 可能指向不同意義，因此 affected controllers 必須一起跨過 reset 邊界。</p></details>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="verify-story"><h2>LID 03h：怎麼知道更新成功</h2>',
+            "<p>LID 是 Log Page Identifier；03h 指 Firmware Slot Information。它固定回傳 512 bytes。AFI 告訴你 current／next active slot，FRS1 到 FRS7 則是每個 slot 的 8-byte ASCII revision。</p>",
+            firmware_afi_svg(),
+            '<fieldset><legend><strong>完整讀取 LID 03h 的 command</strong></legend>',
+            "<p><code>NSID=0h</code>；PRP 指向 512-byte buffer；512 bytes=128 dwords，所以 <code>NUMD=127=007Fh</code>；<code>LID=03h</code>、<code>LSP=0</code>、<code>RAE=0</code>，因此 <code>CDW10=007F0003h</code>。</p>",
+            "</fieldset>",
+        ]
+    )
+    out.extend(
+        add(
+            [
+                "BASEFWLOG-LOG-COMMAND",
+                "BASEFWLOG-LOG-LENGTH",
+                "BASEFWLOG-LOG-RAE",
+                "BASEFWLOG-LOG-SCOPE",
+                "BASEFWLOG-LID03-DESCRIPTION",
+                "BASEFWLOG-LID03-AFI",
+                "BASEFWLOG-LID03-FRS",
+            ]
+        )
+    )
+    out.extend(
+        [
+            '<fieldset><legend><strong>[說明性範例] AFI=21h</strong></legend>',
+            "<p><code>NAFS=(21h≫4)&amp;7=2</code>，<code>CAFS=21h&amp;7=1</code>。意思是目前從 slot 1 執行，controller 指出 slot 2 會在下一次合適 CLR activation。它不是「slot 2 已 active」。</p>",
+            "</fieldset>",
+            '<fieldset><legend><strong>來源導覽</strong></legend><p>Get Log Page command：Figures 203-208，文件頁 213-215／PDF 頁 239-241；LID 03h row：Figure 209，文件/PDF 頁 215/241；Firmware Slot Information layout：Figure 215，文件/PDF 頁 226/252。</p></fieldset>',
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="example-story"><h2>End-to-End Example：12 KiB image 更新到 slot 2</h2>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>階段</th><th>具體值</th><th>成功後狀態</th></tr></thead><tbody>',
+            "<tr><td>Read capability</td><td>NOFS=3、FFSRO=1、FWUG=1h</td><td>選可寫 slot 2；4 KiB 對齊</td></tr>",
+            "<tr><td>Download ×3</td><td>NUMD=03FFh；OFST=0／0400h／0800h</td><td>12 KiB portions 已下載，尚未 commit</td></tr>",
+            "<tr><td>Commit</td><td>CA=001b、FS=2；CDW10=0000000Ah</td><td>slot 2 已放置，排定下次 CLR</td></tr>",
+            "<tr><td>Pre-reset LID 03h</td><td>CDW10=007F0003h；例如 AFI=21h</td><td>CAFS=1、NAFS=2</td></tr>",
+            "<tr><td>Required reset</td><td>依完整 SCT／SC 選 reset</td><td>重新初始化 controller／I/O queues</td></tr>",
+            "<tr><td>Post-reset verify</td><td>CAFS=2；FRS2 與 Identify.FR 相符</td><td>slot 2 正在執行</td></tr>",
+            "</tbody></table>",
+            "<p><strong>[推論]</strong> FRS2 正確但 CAFS 仍為 1，通常代表 placement 已成功、activation 邊界尚未完成；先查 CA、Firmware Commit status 與真正執行的 reset 類型。</p>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="debug-story"><h2>Debug：從症狀反推哪一步錯</h2>',
+            '<svg width="100%" height="270" viewBox="0 0 820 270" role="img" aria-labelledby="debug-title debug-desc"><title id="debug-title">Firmware update debug decision flow</title><desc id="debug-desc">A decision flow from download failure through commit status and LID 03h verification.</desc><defs><marker id="debug-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="currentColor"/></marker></defs><rect x="20" y="20" width="180" height="55" fill="none" stroke="currentColor"/><text x="110" y="52" text-anchor="middle" fill="currentColor">Download failed?</text><rect x="250" y="20" width="220" height="55" fill="none" stroke="currentColor"/><text x="360" y="44" text-anchor="middle" fill="currentColor">NUMD / OFST / FWUG</text><text x="360" y="63" text-anchor="middle" fill="currentColor">PRP + overlap</text><line x1="200" y1="47" x2="248" y2="47" stroke="currentColor" marker-end="url(#debug-arrow)"/><rect x="20" y="108" width="180" height="55" fill="none" stroke="currentColor"/><text x="110" y="140" text-anchor="middle" fill="currentColor">Commit failed?</text><rect x="250" y="108" width="220" height="55" fill="none" stroke="currentColor"/><text x="360" y="132" text-anchor="middle" fill="currentColor">SCT / SC + MUD</text><text x="360" y="151" text-anchor="middle" fill="currentColor">NOFS / FFSRO / CA</text><line x1="200" y1="135" x2="248" y2="135" stroke="currentColor" marker-end="url(#debug-arrow)"/><rect x="20" y="196" width="180" height="55" fill="none" stroke="currentColor"/><text x="110" y="228" text-anchor="middle" fill="currentColor">Verify mismatch?</text><rect x="250" y="196" width="220" height="55" fill="none" stroke="currentColor"/><text x="360" y="220" text-anchor="middle" fill="currentColor">DID + CAFS / NAFS</text><text x="360" y="239" text-anchor="middle" fill="currentColor">FRSx + Identify.FR</text><line x1="200" y1="223" x2="248" y2="223" stroke="currentColor" marker-end="url(#debug-arrow)"/><path d="M470,47 C650,47 650,223 472,223" fill="none" stroke="currentColor" marker-end="url(#debug-arrow)"/><text x="650" y="130" text-anchor="middle" fill="currentColor">record every boundary</text></svg>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>症狀</th><th>第一個要看的證據</th><th>不要先做什麼</th></tr></thead><tbody>',
+            "<tr><td>Invalid Field during Download</td><td>(NUMD+1)×4、OFST×4、FWUG、PRP</td><td>不要直接縮小 random chunk 重試</td></tr>",
+            "<tr><td>Invalid Firmware Slot</td><td>NOFS、FFSRO、FS</td><td>不要假設 slot 1 可寫</td></tr>",
+            "<tr><td>Reset-required status</td><td>完整 SCT／SC</td><td>不要把 FLR、CLR、Conventional Reset 混用</td></tr>",
+            "<tr><td>FRS2 有值但 CAFS=1</td><td>CA、NAFS、reset 類型</td><td>不要再次 download 同一 image</td></tr>",
+            "<tr><td>讀到另一組 slot 狀態</td><td>MDS、DID、處理 command 的 controller</td><td>不要只用 PCI Function 當 scope</td></tr>",
+            "</tbody></table>",
+            "<p><strong>最小紀錄集合：</strong>FRMW、FWUG、MTFA、MPTFAWR、DID、每筆 NUMD／OFST、Commit CDW10、完整 CQE status／MUD、實際 reset 類型、activation 前後的 512-byte LID 03h。</p>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            *firmware_figure_appendix_html(claims, figures, tutorial=True),
+            '<section id="tutorial-sources"><h2>來源與限制</h2>',
+            f"<p>{html.escape(report['range'])}。</p>",
+            "<p>NVM Express Base Specification, Revision 2.4。另以 NVM Express NVMe over PCIe Transport Specification, Revision 1.4, §3.3, 文件／PDF 頁 11，辨識 Conventional Reset 與 Function Level Reset。</p>",
+            "<p>未納入其他 Errata、ECN、Technical Proposal、controller vendor 文件或 PCI Express Base Specification 原文。若來源集合改變，應以頁內 claim ID 重新核對。</p>",
+            '<p><a href="#top">回到目錄</a></p></section>',
+            "</main></body></html>",
+            "",
+        ]
+    )
+    return "\n".join(out)
+
+
+def render_firmware_reference_html(
+    report: dict, claims: list[dict], figures: list[dict]
+) -> str:
+    by_id = {item["id"]: item for item in claims if item["figure"] is None}
+    toc = """<ol>
+<li><a href="#ref-start">End-to-End 一頁式操作順序</a></li>
+<li><a href="#ref-glossary">縮寫與能力欄位</a></li>
+<li><a href="#ref-download">Firmware Image Download</a></li>
+<li><a href="#ref-commit">Firmware Commit／status</a></li>
+<li><a href="#ref-lid03">Get Log Page LID 03h</a></li>
+<li><a href="#ref-debug">Debug lookup</a></li>
+<li><a href="#ref-claims">Normative／source detail</a></li>
+<li><a href="#appendix">完整 Figure evidence appendix</a></li>
+</ol>"""
+    out = fw_html_shell_start(
+        report,
+        "快速查詢詳細手冊｜iPad／Desktop",
+        "先查欄位與 status，再展開來源證據",
+        toc,
+    )
+    out.extend(
+        [
+            '<section id="ref-first-words"><h2>快查前先對齊縮寫</h2>',
+            '<p>先確認欄位名稱與工程角色，再進入一頁式操作順序；完整 glossary 與每個 bit／unit 仍保留在後方。</p>',
+            fw_glossary_html(claims, compact=True),
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="ref-start"><h2>End-to-End 一頁式操作順序</h2>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>階段</th><th>必要輸入／欄位</th><th>完成證據</th><th>失敗先查</th></tr></thead><tbody>',
+            "<tr><td>1. Capability</td><td>FRMW、FWUG、MTFA、MPTFAWR、MDS／DID</td><td>選出合法 slot／chunk／activation path</td><td>NOFS、FFSRO、FAWR</td></tr>",
+            "<tr><td>2. Download</td><td>PRP、NUMD、OFST</td><td>每筆 Admin CQE success</td><td>0's-based、alignment、overlap</td></tr>",
+            "<tr><td>3. Commit</td><td>CA、FS、必要時 BPID</td><td>CQE SCT／SC＋MUD</td><td>slot、image、reset status</td></tr>",
+            "<tr><td>4. Activate</td><td>立即或指定 reset</td><td>controller／queues 重新可用</td><td>MTFA、MPTFAWR、reset 類型</td></tr>",
+            "<tr><td>5. Verify</td><td>NSID=0、LID=03h、NUMD=127</td><td>CAFS／FRSx／Identify.FR 一致</td><td>domain、NAFS、buffer layout</td></tr>",
+            "</tbody></table>",
+            '<fieldset><legend><strong>Golden command</strong></legend><p>LID 03h full read：<code>NSID=00000000h</code>、<code>CDW10=007F0003h</code>、<code>CDW11-14=00000000h</code>、PRP 指向至少 512-byte destination buffer。</p></fieldset>',
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="ref-glossary"><h2>縮寫與能力欄位</h2>',
+            fw_glossary_html(claims),
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            report_visual_atlas_html("base-admin-fw-logs", claims, "fw-visual-atlas", False),
+            '<section id="ref-download"><h2>Firmware Image Download 快查</h2>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>位置</th><th>欄位</th><th>公式／規則</th><th>錯誤風險</th></tr></thead><tbody>',
+            "<tr><td>DPTR</td><td>PRP1／PRP2</td><td>NVMe/PCIe Admin 不使用 SGL</td><td>page crossing／buffer direction</td></tr>",
+            "<tr><td>CDW10[31:0]</td><td>NUMD</td><td>bytes=(NUMD+1)×4</td><td>off-by-one、FWUG</td></tr>",
+            "<tr><td>CDW11[31:0]</td><td>OFST</td><td>byte offset=OFST×4</td><td>first portion shall 0h</td></tr>",
+            "<tr><td>CQE SC=14h</td><td>Overlapping Range</td><td>ranges overlap 或 granularity/alignment 問題</td><td>先重建 byte intervals</td></tr>",
+            "</tbody></table>",
+            '''<pre>4 KiB portion: 4096 / 4 = 1024 dwords → NUMD = 1023 = 03FFh
+portion at byte 8192: 8192 / 4 = OFST 2048 = 0800h</pre>''',
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="ref-commit"><h2>Firmware Commit／status 快查</h2>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>CA</th><th>定義</th><th>FS</th><th>activation</th></tr></thead><tbody>',
+            "<tr><td>000b</td><td>Downloaded image 取代 slot image</td><td>0=controller 選；1-7=指定</td><td>不 activation</td></tr>",
+            "<tr><td>001b</td><td>Downloaded image 取代 slot image</td><td>同左</td><td>下次合適 CLR</td></tr>",
+            "<tr><td>010b</td><td>使用既有 slot image</td><td>指定既有 slot</td><td>下次合適 CLR</td></tr>",
+            "<tr><td>011b</td><td>Downloaded 或既有 slot image</td><td>指定 slot</td><td>立即；非 background</td></tr>",
+            "<tr><td>100b-101b</td><td>Reserved</td><td>—</td><td>—</td></tr>",
+            "<tr><td>110b／111b</td><td>replace／activate Boot Partition</td><td>由 BPID 選</td><td>Boot Partition path</td></tr>",
+            "</tbody></table>",
+            '<h3>Command-specific status（SCT=1h）</h3>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>SC</th><th>名稱</th><th>工程含意</th></tr></thead><tbody>',
+            "<tr><td>06h</td><td>Invalid Firmware Slot</td><td>slot invalid、read-only 或超過 NOFS</td></tr>",
+            "<tr><td>07h</td><td>Invalid Firmware Image</td><td>image invalid／未載入，或 slot 無 image</td></tr>",
+            "<tr><td>0Bh</td><td>Requires Conventional Reset</td><td>先做 FLR／Controller Reset 仍繼續舊 image</td></tr>",
+            "<tr><td>10h</td><td>Requires NVM Subsystem Reset</td><td>其他 CLR 仍繼續舊 image</td></tr>",
+            "<tr><td>11h</td><td>Requires Controller Level Reset</td><td>下次 CLR activation；用於 CA=011b path</td></tr>",
+            "<tr><td>12h</td><td>Maximum Time Violation</td><td>已 commit、未 active；可用 CA=010b 排定</td></tr>",
+            "<tr><td>13h</td><td>Activation Prohibited</td><td>vendor-specific 禁止 activation</td></tr>",
+            "<tr><td>14h</td><td>Overlapping Range</td><td>download ranges overlap</td></tr>",
+            "<tr><td>1Eh</td><td>Boot Partition Write Prohibited</td><td>write locked</td></tr>",
+            "<tr><td>3Dh</td><td>Manufacturing Default Personality Required</td><td>firmware 與 personality settings 不相容</td></tr>",
+            "</tbody></table>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="ref-lid03"><h2>Get Log Page LID 03h 快查</h2>',
+            firmware_afi_svg(),
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>位置</th><th>欄位</th><th>值／解碼</th><th>限制</th></tr></thead><tbody>',
+            "<tr><td>Common NSID</td><td>NSID</td><td>0h</td><td>未使用 namespace</td></tr>",
+            "<tr><td>CDW10[31:16]</td><td>NUMDL</td><td>007Fh</td><td>128 dwords，0's-based</td></tr>",
+            "<tr><td>CDW10[15]</td><td>RAE</td><td>0=清 event；1=保留</td><td>失敗時 shall retain</td></tr>",
+            "<tr><td>CDW10[14:8]</td><td>LSP</td><td>0h</td><td>LID 03h 未定義</td></tr>",
+            "<tr><td>CDW10[7:0]</td><td>LID</td><td>03h</td><td>Firmware Slot Information</td></tr>",
+            "<tr><td>CDW11-14</td><td>NUMDU／offset／selector</td><td>full read 時 0h</td><td>CSI=N、OT=0、UIDX=0</td></tr>",
+            "<tr><td>byte 0</td><td>AFI</td><td>NAFS=[6:4]、CAFS=[2:0]</td><td>bits 7、3 reserved</td></tr>",
+            "<tr><td>bytes 8:63</td><td>FRS1-FRS7</td><td>各 8-byte ASCII</td><td>invalid／unsupported shall 0h</td></tr>",
+            "<tr><td>bytes 1:7、64:511</td><td>Reserved</td><td>不解析</td><td>不可當額外 slot</td></tr>",
+            "</tbody></table>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="ref-debug"><h2>Debug lookup</h2>',
+            '<table border="1" cellpadding="8" cellspacing="0" width="100%"><thead><tr><th>症狀</th><th>欄位／證據</th><th>判斷</th><th>動作</th></tr></thead><tbody>',
+            "<tr><td>Download Invalid Field</td><td>PRP、NUMD、OFST、FWUG</td><td>length／alignment</td><td>以 bytes 重算</td></tr>",
+            "<tr><td>MUD≠0</td><td>MEFWO／ASQFWO</td><td>不同 interface／queue overlap</td><td>序列化 update</td></tr>",
+            "<tr><td>Commit SC 0Bh／10h／11h</td><td>完整 SC</td><td>reset scope 不同</td><td>執行指定 reset</td></tr>",
+            "<tr><td>NAFS 正確、CAFS 未變</td><td>CA、SC、reset trace</td><td>pending 未跨 activation boundary</td><td>確認 reset 方法</td></tr>",
+            "<tr><td>FRSx=0h</td><td>NOFS、slot validity</td><td>unsupported／no valid revision</td><td>不要解成 ASCII</td></tr>",
+            "<tr><td>不同 controller 結果不同</td><td>MDS、DID</td><td>可能跨 domain</td><td>在同 domain 比較</td></tr>",
+            "</tbody></table>",
+            '<p><a href="#top">回到目錄</a></p></section><hr>',
+            '<section id="ref-claims"><h2>Normative／source detail</h2>',
+            "<p>[SPEC] 段落是可追溯的規格轉述；[推論] 與表格中的工程動作不提高 requirement 強度。依主題展開，避免快速查詢頁被長文淹沒。</p>",
+        ]
+    )
+    for part in FIRMWARE_PARTS:
         out.extend(
             [
-                "<details><summary><strong>Figure "
-                + str(figure["number"])
-                + ": "
-                + html.escape(figure["title"])
-                + "</strong> — "
-                + role
-                + "</summary>",
-                f'<!-- figure-table:{figure["id"]} -->',
-                f'<p><strong>[SPEC]</strong> <span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></p>',
-                "<p><strong>[解釋]</strong> " + html.escape(details["purpose"] + " " + details["reading"]) + "</p>",
-                "<p><strong>來源欄位索引：</strong> " + html.escape(details["item_text"]) + "</p>",
-                "<p><small>" + html.escape(item["citation_zh_tw"]) + "</small></p>",
+                f"<details><summary><strong>{html.escape(part['zh'])}</strong></summary>",
+                "<p><strong>[解釋]</strong> " + html.escape(part["intro_zh"]) + "</p>",
+            ]
+        )
+        for claim_id in part["claims"]:
+            item = by_id[claim_id]
+            out.extend([f"<h3>{html.escape(item['heading_zh_tw'])}</h3>"])
+            out.extend(fw_claim_html(item))
+        out.extend(
+            [
+                "<p><strong>[推論]</strong> " + html.escape(part["inference_zh"]) + "</p>",
                 "</details>",
             ]
         )
-    out.append("</section>")
-    return out
+    out.extend(['<p><a href="#top">回到目錄</a></p></section><hr>'])
+    out.extend(firmware_figure_appendix_html(claims, figures))
+    out.extend(
+        [
+            '<section><h2>來源與限制</h2>',
+            f"<p>{html.escape(report['range'])}。</p>",
+            "<p>NVM Express Base Specification, Revision 2.4；NVM Express NVMe over PCIe Transport Specification, Revision 1.4（僅 §3.3）。查證日期：2026-09-01。</p>",
+            "<p>未納入額外 Errata、ECN、Technical Proposal、controller vendor 文件或 PCI Express Base Specification 原文。</p>",
+            '<p><a href="#top">回到目錄</a></p></section>',
+            "</main></body></html>",
+            "",
+        ]
+    )
+    return "\n".join(out)
 
 
 def render_firmware_html(
@@ -1763,41 +3612,7 @@ def firmware_figure_appendix_markdown(
     ]
     for figure in figures:
         item = figure_claims[int(figure["number"])]
-        details = figure_explanation(figure, language)
-        statement = item["en"] if english else item["zh_tw"]
-        citation = item["citation_en"] if english else item["citation_zh_tw"]
-        role = (
-            "minimum dependency slice"
-            if english and figure.get("role") == "referenced_dependency"
-            else "最小相依切片"
-            if figure.get("role") == "referenced_dependency"
-            else "main-scope evidence"
-            if english
-            else "主範圍證據"
-        )
-        out.extend(
-            [
-                '<details markdown="1">',
-                f"<summary><strong>Figure {figure['number']}: {html.escape(figure['title'])}</strong> — {role}</summary>",
-                "",
-                f"<!-- claim:{item['id']} figure-table:{figure['id']} -->",
-                "",
-                "**[SPEC]** " + statement,
-                "",
-                ("**[Explanation]** " if english else "**[解釋]** ")
-                + details["purpose"]
-                + " "
-                + details["reading"],
-                "",
-                ("Source field index: " if english else "來源欄位索引：")
-                + details["item_text"],
-                "",
-                "> " + citation,
-                "",
-                "</details>",
-                "",
-            ]
-        )
+        out.extend(figure_card_markdown(figure, item, language))
     return out
 
 
@@ -1917,6 +3732,259 @@ def render_firmware_markdown(
     return "\n".join(out)
 
 
+def fw_ppt_claim_notes(items: list[dict], language: str) -> list[str]:
+    english = language == "en"
+    out = [
+        '<details markdown="1">',
+        "<summary><strong>Speaker notes / source claims</strong></summary>"
+        if english
+        else "<summary><strong>講者備註／來源論點</strong></summary>",
+        "",
+    ]
+    for item in items:
+        out.extend(
+            [
+                f"<!-- claim:{item['id']} -->",
+                "",
+                "**[SPEC]** " + (item["en"] if english else item["zh_tw"]),
+                "",
+                "> " + (item["citation_en"] if english else item["citation_zh_tw"]),
+                "",
+            ]
+        )
+    out.extend(["</details>", ""])
+    return out
+
+
+def render_firmware_ppt_markdown(
+    report: dict, claims: list[dict], figures: list[dict], language: str
+) -> str:
+    english = language == "en"
+    by_id = {item["id"]: item for item in claims if item["figure"] is None}
+    title = report["title_en"] if english else report["title_zh"]
+    description = (
+        "Slide-ready bilingual source for firmware update and LID 03h."
+        if english
+        else "Firmware update 與 LID 03h 的投影片製作稿。"
+    )
+    out = [
+        frontmatter("base-admin-fw-logs", title, description, language),
+        f"# {title}",
+        "",
+        (
+            "PPT authoring edition. The Chinese and English editions use the same slide modules, claim order, calculations, and source boundaries."
+            if english
+            else "PPT 製作版。中文版與英文版使用完全相同的 slide modules、claim 順序、計算與來源邊界。"
+        ),
+        "",
+        SOURCES["NVME-BASE-2.4"]["marker"],
+        "",
+        SOURCES["NVME-PCIE-TRANSPORT-1.4"]["marker"]
+        + (" — §3.3 only" if english else " — 僅 §3.3"),
+        "",
+        "---",
+        "",
+        "## Slide 01 — " + ("The real problem" if english else "真正要解決的問題"),
+        "",
+        (
+            "> A successful download is not a successful activation. Track placement, pending activation, the reset boundary, and post-activation evidence separately."
+            if english
+            else "> Download 成功不等於 activation 成功；必須分開追蹤 placement、pending activation、reset 邊界與 activation 後證據。"
+        ),
+        "",
+        "```text",
+        "Download -> Commit / place -> activate now or later -> reset if required -> LID 03h verify",
+        "```",
+        "",
+        "---",
+        "",
+        "## Slide 02 — " + ("Vocabulary before fields" if english else "先教名詞，再看欄位"),
+        "",
+        (
+            "| State | Meaning | Evidence |\n|---|---|---|\n| Downloaded | Portions are temporary | NUMD / OFST |\n| Stored | Image is in a slot | FRSx |\n| Pending | Slot is selected for a later reset | NAFS |\n| Active | Image is executing | CAFS + Identify.FR |"
+            if english
+            else "| 狀態 | 意義 | 證據 |\n|---|---|---|\n| Downloaded | portions 暫存中 | NUMD／OFST |\n| Stored | image 已在 slot | FRSx |\n| Pending | 排定下一次 reset | NAFS |\n| Active | image 正在執行 | CAFS＋Identify.FR |"
+        ),
+        "",
+        "---",
+        "",
+            "## Slide 03 — " + ("Mental Model and capability gate" if english else "Mental Model 與 capability gate"),
+        "",
+        (
+            "Firmware slots belong to a domain. Before constructing a command, read FRMW, FWUG, MTFA, MPTFAWR, MDS/DID, and the current FR."
+            if english
+            else "Firmware slots 屬於 domain。建構 command 前，先讀 FRMW、FWUG、MTFA、MPTFAWR、MDS／DID 與目前 FR。"
+        ),
+        "",
+        (
+            "| Field | Question answered | Unit / range |\n|---|---|---|\n| FRMW | slots, read-only, immediate activation | bits |\n| FWUG | chunk granularity and alignment | 4 KiB |\n| MTFA | command-processing pause | 100 ms |\n| MPTFAWR | CA=011b completion estimate | 100 ms |"
+            if english
+            else "| 欄位 | 回答的問題 | unit／range |\n|---|---|---|\n| FRMW | slots、read-only、立即 activation | bits |\n| FWUG | chunk granularity／alignment | 4 KiB |\n| MTFA | command processing 暫停 | 100 ms |\n| MPTFAWR | CA=011b completion estimate | 100 ms |"
+        ),
+        "",
+        ("Source map: Figure 338 (printed/PDF 340-365/366-391); Figures 347-348 (396/422)." if english else "來源地圖：Figure 338（文件/PDF 340-365/366-391）；Figures 347-348（396/422）。"),
+        "",
+    ]
+    out.extend(fw_ppt_claim_notes([by_id[item] for item in FIRMWARE_PARTS[0]["claims"]], language))
+    out.extend(
+        [
+            "---",
+            "",
+            "## Slide 04 — " + ("Download means dword ranges" if english else "Download 的本質是 dword ranges"),
+            "",
+            "```text",
+            "bytes = (NUMD + 1) × 4",
+            "byte offset = OFST × 4",
+            "```",
+            "",
+            (
+                "**Example:** 4 KiB = 1024 dwords, so NUMD=03FFh. A portion beginning at byte 8192 uses OFST=0800h."
+                if english
+                else "**範例：**4 KiB=1024 dwords，所以 NUMD=03FFh；從 byte 8192 開始的 portion 使用 OFST=0800h。"
+            ),
+            "",
+            ("Source map: Figure 93 (140-142/166-168); Figures 190-193 (205-206/231-232)." if english else "來源地圖：Figure 93（文件/PDF 140-142/166-168）；Figures 190-193（205-206/231-232）。"),
+            "",
+        ]
+    )
+    out.extend(fw_ppt_claim_notes([by_id[item] for item in FIRMWARE_PARTS[1]["claims"]], language))
+    commit_claims = [by_id[item] for item in FIRMWARE_PARTS[2]["claims"]]
+    out.extend(
+        [
+            "---",
+            "",
+            "## Slide 05 — " + ("Commit Action is a state transition" if english else "Commit Action 是狀態轉移"),
+            "",
+            (
+                "| CA | Placement | Activation |\n|---|---|---|\n| 000b | downloaded image -> slot | none |\n| 001b | downloaded image -> slot | next capable CLR |\n| 010b | existing slot | next capable CLR |\n| 011b | downloaded or existing slot | immediate; command waits |"
+                if english
+                else "| CA | placement | activation |\n|---|---|---|\n| 000b | downloaded image → slot | 不 activation |\n| 001b | downloaded image → slot | 下次合適 CLR |\n| 010b | existing slot | 下次合適 CLR |\n| 011b | downloaded／existing slot | 立即；command 等結果 |"
+            ),
+            "",
+            ("Source map: Figures 187-189 (203-205/229-231)." if english else "來源地圖：Figures 187-189（文件/PDF 203-205/229-231）。"),
+            "",
+        ]
+    )
+    out.extend(fw_ppt_claim_notes(commit_claims[:5], language))
+    out.extend(
+        [
+            "---",
+            "",
+            "## Slide 06 — " + ("Activation has four branches" if english else "Activation 有四條分支"),
+            "",
+            "```text",
+            "CA 000b -> stored only",
+            "CA 001b / 010b -> pending -> required CLR -> reinitialize",
+            "CA 011b -> command in progress -> success or reset-required / time / prohibited status",
+            "load failure -> most recently active image -> baseline read-only fallback",
+            "```",
+            "",
+            ("Source map: Figures 155 and 474 (186/212 and 466-468/492-494); Figures 347-348 (396/422)." if english else "來源地圖：Figures 155、474（文件/PDF 186/212、466-468/492-494）；Figures 347-348（396/422）。"),
+            "",
+        ]
+    )
+    out.extend(fw_ppt_claim_notes(commit_claims[5:], language))
+    out.extend(
+        [
+            "---",
+            "",
+            "## Slide 07 — " + ("Status selects recovery" if english else "Status 決定 recovery"),
+            "",
+            (
+                "| SC | Meaning | Correct direction |\n|---|---|---|\n| 06h / 07h | invalid slot / image | fix target or image |\n| 0Bh | Conventional Reset required | do not substitute FLR |\n| 10h | NVM Subsystem Reset required | smaller reset keeps old image |\n| 11h | Controller Level Reset required | activate at next CLR |\n| 12h | maximum-time violation | image committed; schedule with CA=010b |\n| 13h / 14h | prohibited / overlap | policy or range fix |"
+                if english
+                else "| SC | 意義 | 正確方向 |\n|---|---|---|\n| 06h／07h | invalid slot／image | 修正 target／image |\n| 0Bh | 需要 Conventional Reset | 不可用 FLR 代替 |\n| 10h | 需要 NVM Subsystem Reset | 小範圍 reset 仍跑舊 image |\n| 11h | 需要 Controller Level Reset | 下次 CLR activation |\n| 12h | maximum-time violation | image 已 commit；可用 CA=010b 排定 |\n| 13h／14h | prohibited／overlap | 修正 policy／range |"
+            ),
+            "",
+            "---",
+            "",
+            "## Slide 08 — " + ("Construct the LID 03h command" if english else "建構 LID 03h command"),
+            "",
+            "```text",
+            "512 bytes / 4 = 128 dwords",
+            "NUMD = 128 - 1 = 127 = 007Fh",
+            "CDW10 = NUMDL[31:16] | RAE=0 | LSP=0 | LID=03h",
+            "      = 007F0003h",
+            "```",
+            "",
+            ("Source map: Figure 93 (140-142/166-168); Figures 203-209 (213-216/239-242)." if english else "來源地圖：Figure 93（文件/PDF 140-142/166-168）；Figures 203-209（213-216/239-242）。"),
+            "",
+        ]
+    )
+    lid_claims = [by_id[item] for item in FIRMWARE_PARTS[3]["claims"]]
+    out.extend(fw_ppt_claim_notes(lid_claims[:5], language))
+    out.extend(
+        [
+            "---",
+            "",
+            "## Slide 09 — " + ("Decode AFI before revision strings" if english else "先解 AFI，再讀 revision strings"),
+            "",
+            "```text",
+            "byte 0: [7 R][6:4 NAFS][3 R][2:0 CAFS]",
+            "bytes 1:7: reserved",
+            "bytes 8:63: FRS1 ... FRS7 (8 bytes each)",
+            "bytes 64:511: reserved",
+            "```",
+            "",
+            (
+                "**Example:** AFI=21h means NAFS=2 and CAFS=1. Slot 2 is pending; slot 1 is still executing."
+                if english
+                else "**範例：**AFI=21h 代表 NAFS=2、CAFS=1；slot 2 pending，slot 1 仍在執行。"
+            ),
+            "",
+            ("Source map: Figure 215 (printed/PDF 226/252)." if english else "來源地圖：Figure 215（文件/PDF 226/252）。"),
+            "",
+        ]
+    )
+    out.extend(fw_ppt_claim_notes(lid_claims[5:], language))
+    out.extend(
+        [
+            "---",
+            "",
+            "## Slide 10 — End-to-End Example",
+            "",
+            (
+                "| Stage | Concrete value | Evidence |\n|---|---|---|\n| Capability | NOFS=3, FFSRO=1, FWUG=1h | choose writable slot 2 |\n| Download | NUMD=03FFh; OFST=0/0400h/0800h | 12 KiB transferred |\n| Commit | CA=001b, FS=2, CDW10=0000000Ah | slot 2 pending |\n| Pre-reset | LID03 CDW10=007F0003h, AFI=21h | CAFS1 / NAFS2 |\n| Post-reset | CAFS=2, FRS2=Identify.FR | activation verified |"
+                if english
+                else "| 階段 | 具體值 | 證據 |\n|---|---|---|\n| Capability | NOFS=3、FFSRO=1、FWUG=1h | 選可寫 slot 2 |\n| Download | NUMD=03FFh；OFST=0／0400h／0800h | 12 KiB transferred |\n| Commit | CA=001b、FS=2、CDW10=0000000Ah | slot 2 pending |\n| Pre-reset | LID03 CDW10=007F0003h、AFI=21h | CAFS1／NAFS2 |\n| Post-reset | CAFS=2、FRS2=Identify.FR | activation verified |"
+            ),
+            "",
+            "---",
+            "",
+            "## Slide 11 — " + ("Debug from the first broken boundary" if english else "從第一個斷掉的邊界開始 Debug"),
+            "",
+            (
+                "| Symptom | First evidence |\n|---|---|\n| Download Invalid Field | PRP, NUMD, OFST, FWUG |\n| Commit invalid slot | NOFS, FFSRO, FS |\n| Reset-required SC | full SCT/SC and actual reset trace |\n| FRS2 valid, CAFS still 1 | CA, NAFS, reset type |\n| controllers disagree | MDS, DID, processing controller |"
+                if english
+                else "| 症狀 | 第一證據 |\n|---|---|\n| Download Invalid Field | PRP、NUMD、OFST、FWUG |\n| Commit invalid slot | NOFS、FFSRO、FS |\n| reset-required SC | 完整 SCT／SC＋實際 reset trace |\n| FRS2 valid、CAFS 仍 1 | CA、NAFS、reset type |\n| controllers 結果不同 | MDS、DID、processing controller |"
+            ),
+            "",
+            "---",
+            "",
+            "## Slide 12 — " + ("Takeaway and source boundary" if english else "結論與來源邊界"),
+            "",
+            (
+                "> Treat firmware update as a state machine with domain scope. Commands move the state; completion status selects recovery; LID 03h proves the resulting slot state."
+                if english
+                else "> 把 firmware update 當成具有 domain scope 的 state machine：command 推進狀態、completion status 選 recovery、LID 03h 證明最後 slot 狀態。"
+            ),
+            "",
+            ("Included: " + report["range_en"] if english else "納入：" + report["range"]),
+            "",
+            (
+                "Verification date: 2026-09-01. No additional errata, ECNs, vendor documents, or PCI Express Base Specification source text are included."
+                if english
+                else "查證日期：2026-09-01。未納入額外 Errata、ECN、vendor 文件或 PCI Express Base Specification 原文。"
+            ),
+            "",
+        ]
+    )
+    out.extend(glossary_markdown("base-admin-fw-logs", claims, language))
+    out.extend(visual_atlas_markdown("base-admin-fw-logs", claims, language))
+    out.extend(firmware_figure_appendix_markdown(claims, figures, language))
+    return "\n".join(out)
+
+
 def main() -> int:
     argparse.ArgumentParser(description=__doc__).parse_args()
     contract = json.loads(
@@ -1967,12 +4035,14 @@ def main() -> int:
         ids = artifact_ids(report_id)
         if report_id == "base-admin-fw-logs":
             output_text = {
-                ids[0]: render_firmware_html(report, report_claims, figures, True),
-                ids[1]: render_firmware_html(report, report_claims, figures, False),
-                ids[2]: render_firmware_markdown(
+                ids[0]: render_firmware_tutorial_html(report, report_claims, figures),
+                ids[1]: render_firmware_reference_html(
+                    report, report_claims, figures
+                ),
+                ids[2]: render_firmware_ppt_markdown(
                     report, report_claims, figures, "zh"
                 ),
-                ids[3]: render_firmware_markdown(
+                ids[3]: render_firmware_ppt_markdown(
                     report, report_claims, figures, "en"
                 ),
             }
@@ -2005,7 +4075,9 @@ def main() -> int:
             "optional",
             "reserved",
             "shall",
+            "shall not",
             "should",
+            "should not",
             "none",
         ],
         "claims": all_claims,

@@ -83,6 +83,72 @@
       "dependency_figures": [
         "93", "155", "337", "338", "347", "348", "474"
       ]
+    },
+    {
+      "id": "base-power-features",
+      "title_zh_tw": "NVMe Base 2.4 Power／Thermal Features 與 Power Management",
+      "title_en": "NVMe Base 2.4 Power/Thermal Features and Power Management",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "5.2.12",
+        "5.2.30 common command",
+        "5.2.30.1.2 before 5.2.30.1.2.1",
+        "5.2.30.1.3",
+        "5.2.30.1.7",
+        "5.2.30.1.10",
+        "5.2.30.1.11",
+        "8.1.19 through 8.1.19.5"
+      ],
+      "printed_pages": "209-212, 456-473 (selected FIDs only), 666-671 (before §8.1.19.6)",
+      "pdf_pages": "235-238, 482-499 (selected FIDs only), 692-697 (before §8.1.19.6)",
+      "included_figure_ids": [
+        "BASEPOWER-FIG-093", "BASEPOWER-FIG-197", "BASEPOWER-FIG-198",
+        "BASEPOWER-FIG-199", "BASEPOWER-FIG-200", "BASEPOWER-FIG-201",
+        "BASEPOWER-FIG-202", "BASEPOWER-FIG-213", "BASEPOWER-FIG-338",
+        "BASEPOWER-FIG-340", "BASEPOWER-FIG-463", "BASEPOWER-FIG-464",
+        "BASEPOWER-FIG-465", "BASEPOWER-FIG-466", "BASEPOWER-FIG-468",
+        "BASEPOWER-FIG-470", "BASEPOWER-FIG-474", "BASEPOWER-FIG-475",
+        "BASEPOWER-FIG-476", "BASEPOWER-FIG-477", "BASEPOWER-FIG-478",
+        "BASEPOWER-FIG-482", "BASEPOWER-FIG-483", "BASEPOWER-FIG-738",
+        "BASEPOWER-FIG-739", "BASEPOWER-FIG-740", "BASEPOWER-FIG-741"
+      ],
+      "dependency_figures": ["93", "213", "338", "340", "474"]
+    },
+    {
+      "id": "base-self-test-hmb-emulation",
+      "title_zh_tw": "NVMe Base 2.4 Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands",
+      "title_en": "NVMe Base 2.4 Device Self-test, HMB, Doorbell Emulation, and Vendor Commands",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "5.2.6",
+        "5.2.13.1.7",
+        "5.2.30.2.3",
+        "8.1.8",
+        "8.1.29",
+        "8.2.3",
+        "8.2.4",
+        "NVME-NVM-CS-1.3 4.1.4.3"
+      ],
+      "printed_pages": "Base 199-201, 229-232, 515-519, 614-616, 733, 744; NVM Command Set 76",
+      "pdf_pages": "Base 225-227, 255-258, 541-545, 640-642, 759, 770; NVM Command Set 76",
+      "included_figure_ids": [
+        "BASEDIAGMEM-FIG-036", "BASEDIAGMEM-FIG-093", "BASEDIAGMEM-FIG-094",
+        "BASEDIAGMEM-FIG-111", "BASEDIAGMEM-FIG-176", "BASEDIAGMEM-FIG-177",
+        "BASEDIAGMEM-FIG-178", "BASEDIAGMEM-FIG-179", "BASEDIAGMEM-FIG-180",
+        "BASEDIAGMEM-FIG-197", "BASEDIAGMEM-FIG-198", "BASEDIAGMEM-FIG-200",
+        "BASEDIAGMEM-FIG-203", "BASEDIAGMEM-FIG-204", "BASEDIAGMEM-FIG-205",
+        "BASEDIAGMEM-FIG-206", "BASEDIAGMEM-FIG-207", "BASEDIAGMEM-FIG-208",
+        "BASEDIAGMEM-FIG-209", "BASEDIAGMEM-FIG-218", "BASEDIAGMEM-FIG-219",
+        "BASEDIAGMEM-FIG-338", "BASEDIAGMEM-FIG-463", "BASEDIAGMEM-FIG-464",
+        "BASEDIAGMEM-FIG-466", "BASEDIAGMEM-FIG-545", "BASEDIAGMEM-FIG-546",
+        "BASEDIAGMEM-FIG-547", "BASEDIAGMEM-FIG-548", "BASEDIAGMEM-FIG-549",
+        "BASEDIAGMEM-FIG-550", "BASEDIAGMEM-FIG-551", "BASEDIAGMEM-FIG-552",
+        "BASEDIAGMEM-FIG-553", "BASEDIAGMEM-FIG-700", "BASEDIAGMEM-FIG-701"
+      ],
+      "dependency_figures": [
+        "36", "93", "94", "197", "198", "200", "203", "204", "205",
+        "206", "207", "208", "209", "338", "463", "464", "466"
+      ]
     }
   ],
   "interpretation_sources": [
@@ -191,12 +257,108 @@
       "note": "排除 Exported NVM Subsystem Change Event，以及 message-based/Fabrics 與 Discovery 專用 log page 內容"
     },
     {
+      "id": "BASE-POWER-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "5.2.12",
+        "5.2.30 common command",
+        "5.2.30.1.2 before 5.2.30.1.2.1",
+        "5.2.30.1.3",
+        "5.2.30.1.7",
+        "5.2.30.1.10",
+        "5.2.30.1.11",
+        "8.1.19 through 8.1.19.5"
+      ],
+      "note": "只納入 Get Features、Set Features 共通命令、FID 02h/04h/0Ch/10h/11h，以及 Power Management 到 Host Controlled Thermal Management 的完整教學流程"
+    },
+    {
+      "id": "BASE-POWER-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["referenced dependencies outside the requested main sections"],
+      "figures": ["93", "213", "338", "340", "474"],
+      "note": "只取建立 power/thermal mental model 與 debug observation loop 所需的 SQE、SMART/Health、Identify Controller、Power State Descriptor 與 AEC 欄位"
+    },
+    {
+      "id": "BASE-POWER-IIELL-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["5.2.30.1.2.1", "8.1.19.7"],
+      "figures": ["469"],
+      "note": "依使用者指示排除 Idle I/O Exit Latency Limit；Figure 468 只保留 WH 與 PS，不教 IIELL"
+    },
+    {
+      "id": "BASE-POWER-LIMIT-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["8.1.19.6"],
+      "figures": ["742", "743", "744"],
+      "note": "依使用者指示排除 Power Limit"
+    },
+    {
+      "id": "BASE-POWER-OTHER-FIDS-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["5.2.30.1 except FID 02h, 04h, 0Ch, 10h, and 11h"],
+      "note": "Set Features 只教五個核准的 Feature Identifier；其他 FID 不發佈"
+    },
+    {
+      "id": "BASE-POWER-FABRIC-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["5.2.30.3", "Figure 474 Discovery-only fields"],
+      "note": "排除 message-based Set Features 與 Discovery/Fabrics 專屬事件欄位"
+    },
+    {
+      "id": "BASE-DIAGMEM-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["5.2.6", "5.2.13.1.7", "5.2.30.2.3", "8.1.8", "8.1.29", "8.2.3", "8.2.4"],
+      "note": "以 Device Self-test lifecycle、HMB ownership lifecycle、doorbell-emulation stride 與 standard vendor-command boundary safety 組織主教學"
+    },
+    {
+      "id": "NVMCS-DIAGMEM-INCLUDE",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": ["4.1.4.3"],
+      "note": "只納入 LID 06h Self-test Result 的 NVM Command Set specific FLBA 定義"
+    },
+    {
+      "id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["referenced dependencies outside the requested main sections"],
+      "figures": ["36", "93", "94", "197", "198", "200", "203", "204", "205", "206", "207", "208", "209", "338", "463", "464", "466"],
+      "note": "只取 command construction、Get/Set Features、Get Log Page、capability gates 與 length／stride calculation 所需欄位，不擴張成完整章節"
+    },
+    {
+      "id": "BASE-DIAGMEM-OTHER-CONTENT-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": [
+        "5.2.13.1 except 5.2.13.1.7",
+        "5.2.30 except the common dependency slice and 5.2.30.2.3",
+        "8.1 except 8.1.8 and 8.1.29",
+        "8.2 except 8.2.3 and 8.2.4",
+        "8.1.13 beyond the Host-Initiated Refresh cross-reference"
+      ],
+      "note": "本報告不把相依交叉引用擴張為額外主題"
+    },
+    {
+      "id": "BASE-DIAGMEM-FABRIC-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["5.2.30.3", "message-based controller material", "Discovery-only Identify fields"],
+      "note": "排除所有 Fabrics、Discovery 與 message-based transport 內容"
+    },
+    {
       "id": "NVMCS13-EXCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "EXCLUDE",
-      "sections": ["all"],
-      "note": "本次五份報告不使用 NVM Command Set 1.3"
+      "sections": ["all except 4.1.4.3"],
+      "note": "第七份報告只使用 §4.1.4.3；其他 NVM Command Set 1.3 內容不發佈"
     }
   ],
-  "approval_note": "使用者於 2026-09-01 核准重構第五份報告：只教 Base 2.4 §3.11、§5.2.9、§5.2.10 與 §5.2.13.1.4 LID 03h；§5.2.13 共通欄位與範圍外 Figure 僅保留理解所需的最小 dependency slice，其他四份報告不變"
+  "approval_note": "使用者於 2026-09-02 核准新增第七份四版本報告：Base 2.4 §5.2.6、§5.2.13.1.7、§5.2.30.2.3、§8.1.8、§8.1.29、§8.2.3、§8.2.4 與 NVM Command Set 1.3 §4.1.4.3；所有 Fabrics／Discovery／message-based 內容排除。既有六份報告範圍維持不變。"
 }

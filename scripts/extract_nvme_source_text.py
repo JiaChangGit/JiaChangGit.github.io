@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_FILES = {
     "base": "NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf",
     "pcie": "NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf",
+    "nvm": "NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf",
 }
 RANGES = {
     "base-ch1-2": ("base", [(27, 63)]),
@@ -46,6 +47,31 @@ RANGES = {
             (492, 494),
         ],
     ),
+    # Compact source slices used by the two newest Base reports.  The file name
+    # is retained for compatibility with the evidence refresher; this is not a
+    # wholesale copy of the specification.
+    "base-full": (
+        "base",
+        [
+            (81, 84),
+            (166, 169),
+            (225, 227),
+            (235, 242),
+            (246, 251),
+            (255, 258),
+            (366, 390),
+            (409, 412),
+            (482, 499),
+            (541, 545),
+            (640, 642),
+            (692, 697),
+            (759, 759),
+            (770, 770),
+        ],
+    ),
+    # §4.1.4.3 and Figure 111 are the only NVM Command Set content approved for
+    # the Device Self-test/HMB report.
+    "nvm-cs-full": ("nvm", [(76, 76)]),
 }
 FIGURE = re.compile(r"^Figure\s+(\d+):\s*(.+)$", re.IGNORECASE)
 TABLE = re.compile(r"^Table\s+(\d+):\s*(.+)$", re.IGNORECASE)

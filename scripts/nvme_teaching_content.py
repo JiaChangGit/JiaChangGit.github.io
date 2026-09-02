@@ -1,0 +1,1278 @@
+#!/usr/bin/env python3
+"""Shared teaching content for the NVMe report renderers.
+
+The module stores compact, bilingual teaching structures.  It never stores
+verbatim specification paragraphs or source artwork.
+"""
+
+from __future__ import annotations
+
+import re
+
+
+def b(zh: str, en: str) -> dict[str, str]:
+    return {"zh": zh, "en": en}
+
+
+TERM_LIBRARY: dict[str, dict[str, str]] = {
+    "NVMe": b("Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。", "Non-Volatile Memory Express, the specification family for a host interface to a non-volatile-memory subsystem."),
+    "NVM": b("Non-Volatile Memory，斷電後仍能保存資料的記憶體。", "Non-Volatile Memory, memory that retains data without power."),
+    "I/O": b("Input/Output，對 namespace 執行資料輸入與輸出的操作類別。", "Input/Output, the class of data operations performed on a namespace."),
+    "Admin": b("Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。", "Administrative, the control path used to create, configure, query, or manage controllers and queues."),
+    "SQ": b("Submission Queue，主機放入命令的提交佇列。", "Submission Queue, the queue into which the host places commands."),
+    "CQ": b("Completion Queue，controller 放入完成結果的完成佇列。", "Completion Queue, the queue into which a controller posts command completions."),
+    "SQE": b("Submission Queue Entry，SQ 中的一筆命令資料結構。", "Submission Queue Entry, one command structure in an SQ."),
+    "CQE": b("Completion Queue Entry，CQ 中的一筆完成結果資料結構。", "Completion Queue Entry, one completion-result structure in a CQ."),
+    "NSID": b("Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。", "Namespace Identifier, a controller-visible numeric handle for a namespace; the identifier is not the namespace object itself."),
+    "NVM subsystem": b("NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。", "NVM subsystem, the NVMe system boundary containing controllers, ports, namespaces, and non-volatile storage resources."),
+    "namespace": b("namespace，主機透過 controller 存取的一份已格式化非揮發性容量。", "Namespace, a formatted quantity of non-volatile memory accessed by a host through a controller."),
+    "NVM Set": b("NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。", "NVM Set, a capacity grouping that associates namespaces with a managed set of NVM resources."),
+    "Endurance Group": b("Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。", "Endurance Group, a group of NVM resources for isolating and reporting endurance-related state."),
+    "Reclaim Group": b("Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。", "Reclaim Group, a set of non-volatile storage resources with shared reclamation behavior."),
+    "Reclaim Unit": b("Reclaim Unit，controller 執行媒體回收時使用的較小管理粒度。", "Reclaim Unit, a smaller management granularity used when a controller reclaims media."),
+    "SR-IOV": b("Single Root I/O Virtualization，讓一個 PCIe 裝置呈現一個 PF 與多個 VF 的虛擬化能力。", "Single Root I/O Virtualization, a PCIe capability that exposes one PF and multiple VFs from one device."),
+    "PF": b("Physical Function，具有完整 PCIe 設定能力、可管理相關 VF 的實體功能。", "Physical Function, a full-featured PCIe function that can manage associated VFs."),
+    "VF": b("Virtual Function，由 SR-IOV 建立、資源較受限的 PCIe 虛擬功能。", "Virtual Function, a resource-constrained virtual PCIe function created by SR-IOV."),
+    "Dword": b("Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。", "Double word, four bytes or 32 bits; NVMe command fields are commonly identified by CDW number."),
+    "CDW": b("Command Dword，SQE 中以 32-bit 為單位編號的命令欄位。", "Command Dword, a 32-bit numbered command field in an SQE."),
+    "0's-based": b("0's-based encoding，以 0 表示實際數量 1；解碼公式通常是欄位值加 1。", "Zero-based encoding, where field value zero represents an actual quantity of one; decoding generally adds one."),
+    "controller": b("controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。", "Controller, the entity that implements the NVMe interface, fetches commands, and reports completions."),
+    "I/O controller": b("I/O controller，可執行使用者資料 I/O command 的 controller 類型。", "I/O controller, a controller type capable of executing user-data I/O commands."),
+    "Administrative controller": b("Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。", "Administrative controller, a management-oriented controller type that does not execute user-data I/O commands."),
+    "CAP": b("Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。", "Controller Capabilities, the controller property at offset 00h that reports queue, page-size, timeout, and other capabilities."),
+    "CC": b("Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。", "Controller Configuration, the property through which the host selects settings and enables or disables a controller."),
+    "CSTS": b("Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。", "Controller Status, the property through which a controller reports ready, fatal-status, and shutdown state."),
+    "EN": b("Enable，CC 中控制 controller enable state 的 bit。", "Enable, the CC bit controlling controller enable state."),
+    "RDY": b("Ready，CSTS 中表示 controller 是否已準備正常處理 command 的 bit。", "Ready, the CSTS bit indicating whether the controller is ready for normal command processing."),
+    "AQA": b("Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。", "Admin Queue Attributes, the property describing Admin SQ and Admin CQ sizes."),
+    "ASQ": b("Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。", "Admin Submission Queue Base Address, the base address of the Admin SQ in addressable memory."),
+    "ACQ": b("Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。", "Admin Completion Queue Base Address, the base address of the Admin CQ in addressable memory."),
+    "NSSR": b("NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。", "NVM Subsystem Reset, the property used to initiate an NVM subsystem reset."),
+    "NSSD": b("NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。", "NVM Subsystem Shutdown, the property controlling the wider-scope subsystem shutdown."),
+    "SHN": b("Shutdown Notification，CC 中由 host 宣告 shutdown 類型的欄位。", "Shutdown Notification, the CC field through which the host declares a shutdown type."),
+    "SHST": b("Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。", "Shutdown Status, the CSTS field through which the controller reports shutdown progress."),
+    "CRTO": b("Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。", "Controller Ready Timeouts, the property reporting wait times for specific ready modes."),
+    "CMB": b("Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。", "Controller Memory Buffer, controller-provided memory in which selected queues or data structures may reside."),
+    "PMR": b("Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。", "Persistent Memory Region, a controller-exposed memory region with persistence semantics."),
+    "BIR": b("BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。", "BAR Indicator Register, a selector identifying the PCIe BAR that contains a memory structure."),
+    "MPS": b("Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。", "Memory Page Size, the controller memory-page-size setting; it affects queue addresses and PRP alignment."),
+    "KATO": b("Keep Alive Timeout，host 與 controller 約定的存活逾時設定。", "Keep Alive Timeout, the negotiated liveness timeout between host and controller."),
+    "KATT": b("Keep Alive Timeout Total，controller 用於偵測逾時的總時間基準。", "Keep Alive Timeout Total, the controller timing basis for detecting a keep-alive timeout."),
+    "FDP": b("Flexible Data Placement，把資料放置提示與媒體回收管理連結的能力。", "Flexible Data Placement, a capability connecting data-placement hints with media-reclamation management."),
+    "DPTR": b("Data Pointer，SQE 中指出 command data buffer 的欄位。", "Data Pointer, the SQE field identifying a command data buffer."),
+    "MPTR": b("Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。", "Metadata Pointer, the SQE field identifying a separate metadata buffer."),
+    "PRP": b("Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。", "Physical Region Page, a pointer format describing a host-addressable data buffer in memory-page units."),
+    "SGL": b("Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。", "Scatter Gather List, a descriptor-and-segment format for one or more data-buffer regions."),
+    "PSDT": b("PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。", "PRP or SGL for Data Transfer, the CDW0 field selecting PRP or SGL interpretation for DPTR."),
+    "CID": b("Command Identifier，與 SQ identifier 合用以辨識 outstanding command。", "Command Identifier, used with the SQ identifier to identify an outstanding command."),
+    "SQID": b("Submission Queue Identifier，辨識 command 所屬 SQ 的數值。", "Submission Queue Identifier, the numeric identifier of the SQ containing a command."),
+    "SCT": b("Status Code Type，先決定 status 所屬大類，再解讀 SC。", "Status Code Type, the category selected before interpreting SC."),
+    "SC": b("Status Code，在 SCT 上下文中表示具體完成結果的 code。", "Status Code, the specific completion result interpreted in the context of SCT."),
+    "DNR": b("Do Not Retry，CQE status 中提示以相同 command 重試預期不會成功的 bit。", "Do Not Retry, a CQE-status bit indicating that retrying the same command is not expected to succeed."),
+    "CRD": b("Command Retry Delay，status 中選擇 controller 建議重試延遲值的欄位。", "Command Retry Delay, the status field selecting a controller-recommended retry delay."),
+    "P": b("Phase Tag，讓 host 判斷 CQ slot 是否包含新 completion 的翻轉 bit。", "Phase Tag, the toggling bit used by the host to decide whether a CQ slot contains a new completion."),
+    "PBAO": b("Page Base Address and Offset，第一個 PRP entry 中同時包含 page base 與 page 內 offset 的配置。", "Page Base Address and Offset, the first-PRP layout combining a page base address with an in-page offset."),
+    "VID": b("Vendor ID，由 PCI-SIG 配置、辨識 vendor 的 identifier。", "Vendor ID, a PCI-SIG-assigned identifier for a vendor."),
+    "SSVID": b("Subsystem Vendor ID，辨識 subsystem vendor 的 PCI identifier。", "Subsystem Vendor ID, the PCI identifier for a subsystem vendor."),
+    "SN": b("Serial Number，辨識一個產品實例的序號字串。", "Serial Number, a string identifying a product instance."),
+    "MN": b("Model Number，辨識產品型號的字串。", "Model Number, a string identifying a product model."),
+    "OUI": b("Organizationally Unique Identifier，由 IEEE 配置給組織的 identifier 前綴。", "Organizationally Unique Identifier, an IEEE-assigned identifier prefix for an organization."),
+    "EUI64": b("64-bit Extended Unique Identifier，使用 IEEE 配置空間建立的 64-bit identifier。", "64-bit Extended Unique Identifier, a 64-bit identifier constructed from IEEE-assigned space."),
+    "NGUID": b("Namespace Globally Unique Identifier，namespace 的 128-bit 全域識別值。", "Namespace Globally Unique Identifier, a 128-bit global identifier for a namespace."),
+    "UUID": b("Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。", "Universally Unique Identifier, a 128-bit identifier whose association scope is defined by the containing structure."),
+    "NAA": b("Network Address Authority，WWN 中選擇 identifier 格式與配置方式的 nibble。", "Network Address Authority, the WWN nibble selecting an identifier format and assignment method."),
+    "WWN": b("World Wide Name，用於儲存與網路裝置識別的全域名稱格式。", "World Wide Name, a global naming format used for storage and networking devices."),
+    "UTF-8": b("Unicode Transformation Format - 8-bit，以一到四個 bytes 編碼 Unicode code point 的文字格式。", "Unicode Transformation Format - 8-bit, a text encoding that represents a Unicode code point with one to four bytes."),
+    "PCIe": b("PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。", "PCI Express, the transport and device interconnect used by an NVMe memory-based controller."),
+    "MMIO": b("Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。", "Memory-Mapped I/O, access to device registers through CPU memory operations."),
+    "BAR": b("Base Address Register，PCI configuration space 中用來定位裝置 memory space 的 register。", "Base Address Register, a PCI-configuration-space register locating a device memory space."),
+    "DSTRD": b("Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。", "Doorbell Stride, the CAP field determining spacing between adjacent doorbell registers."),
+    "SQyTDBL": b("Submission Queue y Tail Doorbell，host 用來公布 SQ y 新 tail 的 MMIO register。", "Submission Queue y Tail Doorbell, the MMIO register through which the host publishes the new tail of SQ y."),
+    "CQyHDBL": b("Completion Queue y Head Doorbell，host 用來公布 CQ y 已消費 head 的 MMIO register。", "Completion Queue y Head Doorbell, the MMIO register through which the host publishes the consumed head of CQ y."),
+    "MSI": b("Message Signaled Interrupt，透過 memory write message 傳遞 interrupt 的 PCI 機制。", "Message Signaled Interrupt, a PCI mechanism that delivers an interrupt through a memory-write message."),
+    "MSI-X": b("MSI-X，提供較多 vectors、獨立遮罩與 table 的延伸 message-signaled interrupt 機制。", "MSI-X, an extended message-signaled-interrupt mechanism with more vectors, per-vector masking, and a table."),
+    "IV": b("Interrupt Vector，Completion Queue 指定的 interrupt vector 編號。", "Interrupt Vector, the vector number assigned to a Completion Queue."),
+    "FLR": b("Function Level Reset，只重設一個 PCIe Function 的 reset 方法。", "Function Level Reset, a reset method scoped to one PCIe Function."),
+    "AER": b("Advanced Error Reporting，PCIe 用來分類、遮罩與記錄 link／transaction error 的 capability。", "Advanced Error Reporting, the PCIe capability for classifying, masking, and logging link or transaction errors."),
+    "TLP": b("Transaction Layer Packet，PCIe transaction layer 傳送的 packet。", "Transaction Layer Packet, a packet carried by the PCIe transaction layer."),
+    "MPS (PCIe)": b("Max Payload Size，PCIe Device Control 中限制 TLP payload 大小的設定。", "Max Payload Size, the PCIe Device Control setting limiting TLP payload size."),
+    "MRRS": b("Max Read Request Size，PCIe Function 可發出之 read request 的最大大小設定。", "Max Read Request Size, the setting limiting the size of read requests issued by a PCIe Function."),
+    "AERCAP": b("Advanced Error Reporting Capability，AER extended capability 結構的基底位置。", "Advanced Error Reporting Capability, the base of the AER extended-capability structure."),
+    "EOM": b("Eye Opening Measurement，量測 PCIe receiver eye opening 的程序與 log data。", "Eye Opening Measurement, the procedure and log data for measuring a PCIe receiver eye opening."),
+    "TDISP": b("TEE Device Interface Security Protocol，平台隔離與裝置介面狀態相關的 PCIe 安全協定。", "TEE Device Interface Security Protocol, a PCIe security protocol related to platform isolation and device-interface state."),
+    "PMCAP": b("Power Management Capability，PCI power-management capability 結構的基底位置。", "Power Management Capability, the base of the PCI power-management capability structure."),
+    "MSICAP": b("MSI Capability，MSI capability 結構的基底位置。", "MSI Capability, the base of the MSI capability structure."),
+    "MSIXCAP": b("MSI-X Capability，MSI-X capability 結構的基底位置。", "MSI-X Capability, the base of the MSI-X capability structure."),
+    "PXCAP": b("PCI Express Capability，PCIe capability 結構的基底位置。", "PCI Express Capability, the base of the PCIe capability structure."),
+    "PBA": b("Pending Bit Array，MSI-X 中記錄尚待處理 vector 的 bit array。", "Pending Bit Array, the MSI-X bit array recording vectors that are pending service."),
+    "LID": b("Log Page Identifier，Get Log Page command 用來選擇 log page 的欄位。", "Log Page Identifier, the Get Log Page field selecting a log page."),
+    "LID 03h": b("Firmware Slot Information log page 的 identifier 03h。", "Identifier 03h for the Firmware Slot Information log page."),
+    "AFI": b("Active Firmware Info，LID 03h 中同時包含目前 active slot 與下一次 reset 後預定 active slot 的 byte。", "Active Firmware Info, the LID 03h byte containing the current active slot and the slot scheduled for the next reset."),
+    "CAFS": b("Current Active Firmware Slot，AFI 低三 bits，指出目前正在執行的 firmware slot。", "Current Active Firmware Slot, the low three AFI bits identifying the currently executing firmware slot."),
+    "NAFS": b("Next Active Firmware Slot，AFI bits 6:4，指出下一次 reset 後預定啟用的 slot；0 表示未排定。", "Next Active Firmware Slot, AFI bits 6:4 identifying the slot scheduled for the next reset; zero means none is scheduled."),
+    "FRS": b("Firmware Revision for Slot，LID 03h 中每個 slot 的八-byte revision 字串欄位。", "Firmware Revision for Slot, the eight-byte revision-string field for each slot in LID 03h."),
+    "FR": b("Firmware Revision，Identify Controller 回報目前 active firmware revision 的八-byte ASCII 欄位。", "Firmware Revision, the eight-byte ASCII Identify Controller field reporting the active firmware revision."),
+    "FRMW": b("Firmware Updates，Identify Controller 中回報 slot 數、slot 1 read-only 與 activation 能力的欄位。", "Firmware Updates, the Identify Controller field reporting slot count, slot-1 read-only state, and activation capabilities."),
+    "FWUG": b("Firmware Update Granularity，download portion 的 granularity／alignment 能力欄位。", "Firmware Update Granularity, the capability field governing download-portion granularity and alignment."),
+    "MTFA": b("Maximum Time for Firmware Activation，activation 可能暫停 command processing 的最長時間。", "Maximum Time for Firmware Activation, the maximum time activation may pause command processing."),
+    "MPTFAWR": b("Maximum Processing Time for Firmware Activation Without Reset，立即 activation 不需要 reset 時的最大處理時間。", "Maximum Processing Time for Firmware Activation Without Reset, the maximum processing time for immediate activation without a reset."),
+    "MDS": b("Multiple Domain Subsystem，指出 NVM subsystem 是否包含多個 domains 的能力 bit。", "Multiple Domain Subsystem, the capability bit indicating whether an NVM subsystem contains multiple domains."),
+    "DID": b("Domain Identifier，辨識 NVM subsystem 內 domain 的 identifier。", "Domain Identifier, the identifier of a domain within an NVM subsystem."),
+    "ULIST": b("UUID List，指出 controller 是否支援 UUID List data structure 的能力 bit。", "UUID List, the capability bit indicating support for the UUID List data structure."),
+    "NUMD": b("Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。", "Number of Dwords, a zero-based transfer-dword count; actual bytes = (NUMD + 1) × 4."),
+    "NUMDL": b("Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。", "Number of Dwords Lower, the low 16 bits of Get Log Page NUMD."),
+    "NUMDU": b("Number of Dwords Upper，Get Log Page 的 NUMD 高 16 bits。", "Number of Dwords Upper, the high 16 bits of Get Log Page NUMD."),
+    "OFST": b("Offset，Firmware Image Download 中以 dword 為單位的 image-relative offset。", "Offset, the dword-based image-relative offset in Firmware Image Download."),
+    "RAE": b("Retain Asynchronous Event，Get Log Page 是否保留相關 asynchronous event 的 selector。", "Retain Asynchronous Event, the Get Log Page selector controlling retention of a related asynchronous event."),
+    "LSP": b("Log Specific Field，意義由所選 log page 定義的 command selector。", "Log Specific Field, a command selector whose meaning is defined by the selected log page."),
+    "LSI": b("Log Specific Identifier，意義由所選 log page 定義的 identifier。", "Log Specific Identifier, an identifier whose meaning is defined by the selected log page."),
+    "LPOL": b("Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。", "Log Page Offset Lower, the low 32 bits of the Get Log Page byte offset."),
+    "LPOU": b("Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。", "Log Page Offset Upper, the high 32 bits of the Get Log Page byte offset."),
+    "CSI": b("Command Set Identifier，選擇與 log page 相關的 command set context。", "Command Set Identifier, the command-set context associated with a log page."),
+    "UIDX": b("UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。", "UUID Index, an index into the UUID List; zero indicates that no UUID is specified."),
+    "CA": b("Commit Action，Firmware Commit 中選擇 replace、activate 與 reset policy 的欄位。", "Commit Action, the Firmware Commit field selecting replacement, activation, and reset policy."),
+    "FS": b("Firmware Slot，Firmware Commit 中選擇目標 slot 的欄位。", "Firmware Slot, the Firmware Commit field selecting the target slot."),
+    "MUD": b("Multiple Update Detected，completion 中指出 controller 偵測到 overlapping firmware update sequence 的 bit。", "Multiple Update Detected, the completion bit indicating detection of overlapping firmware-update sequences."),
+    "AEN": b("Asynchronous Event Notification，controller 透過已提交 Asynchronous Event Request 回報事件的通知。", "Asynchronous Event Notification, a notification delivered through a submitted Asynchronous Event Request."),
+    "FID": b("Feature Identifier，Get／Set Features 用來選擇功能的 8-bit identifier。", "Feature Identifier, the eight-bit identifier selecting a function in Get/Set Features."),
+    "SEL": b("Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。", "Select, the Get Features field choosing current, default, saved, or supported-capabilities view."),
+    "SV": b("Save，Set Features 要求 controller 同時保存所設定 value 的 bit。", "Save, the Set Features bit requesting that the controller also save the configured value."),
+    "SVBL": b("Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。", "Saveable, the supported-capabilities bit indicating whether a Feature can be saved."),
+    "CHANG": b("Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。", "Changeable, the capability bit indicating whether Set Features can modify the Feature value."),
+    "NSSPEC": b("Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。", "Namespace Specific, the capability bit indicating whether a Feature has per-namespace scope."),
+    "PSD": b("Power State Descriptor，描述一個 power state 的 power、latency、operational 屬性與 relative performance。", "Power State Descriptor, the structure describing power, latency, operational type, and relative performance for one power state."),
+    "PS": b("Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。", "Power State, a controller power/performance operating point; PS0 has the highest maximum power."),
+    "NPSS": b("Number of Power States Support，以 0's-based 方式回報最高支援 power-state number。", "Number of Power States Support, the zero-based field reporting the highest supported power-state number."),
+    "MP": b("Maximum Power，一個 power state 的 sustained maximum power。", "Maximum Power, the sustained maximum power of a power state."),
+    "NOPS": b("Non-Operational State，Power State Descriptor 中指出該 state 不處理 I/O commands 的 bit。", "Non-Operational State, the PSD bit indicating that the state does not process I/O commands."),
+    "ENLAT": b("Entry Latency，進入該 power state 的 maximum latency，單位為 microseconds。", "Entry Latency, the maximum latency to enter a power state, in microseconds."),
+    "EXLAT": b("Exit Latency，離開該 power state 的 maximum latency，單位為 microseconds。", "Exit Latency, the maximum latency to exit a power state, in microseconds."),
+    "IDLP": b("Idle Power，依規格 idle 測量條件描述的 typical power。", "Idle Power, typical power under the specification's idle measurement conditions."),
+    "ACTP": b("Active Power，在指定 workload 與時間窗下描述的 average active power。", "Active Power, average active power under the specified workload and time window."),
+    "WH": b("Workload Hint，host 提供給 controller 的 workload category 提示，不是效能保證。", "Workload Hint, a host-supplied workload category hint rather than a performance guarantee."),
+    "APST": b("Autonomous Power State Transition，controller 依 idle timer 自主切到 non-operational state 的機制。", "Autonomous Power State Transition, the mechanism for controller-directed entry into non-operational states based on idle timers."),
+    "APSTE": b("Autonomous Power State Transition Enable，啟用 APST table timer 判斷的 bit。", "Autonomous Power State Transition Enable, the bit enabling APST-table timer evaluation."),
+    "ITPT": b("Idle Time Prior to Transition，APST entry 的 idle threshold，單位為 milliseconds。", "Idle Time Prior to Transition, the APST-entry idle threshold in milliseconds."),
+    "ITPS": b("Idle Transition Power State，APST entry 選擇的目標 non-operational power state。", "Idle Transition Power State, the target non-operational power state selected by an APST entry."),
+    "NOPPME": b("Non-Operational Power State Permissive Mode Enable，控制 controller background work 能否暫時超過 non-operational power limit。", "Non-Operational Power State Permissive Mode Enable, controlling whether controller background work may temporarily exceed a non-operational power limit."),
+    "TMPSEL": b("Temperature Sensor Select，選擇 Composite Temperature 或 sensor 1 到 8 的欄位。", "Temperature Sensor Select, the field choosing Composite Temperature or sensor 1 through 8."),
+    "THSEL": b("Threshold Type Select，選擇 over-temperature 或 under-temperature threshold。", "Threshold Type Select, choosing an over-temperature or under-temperature threshold."),
+    "TMPTH": b("Temperature Threshold，16-bit Kelvin threshold value。", "Temperature Threshold, a 16-bit threshold value in Kelvin."),
+    "TMPTHH": b("Temperature Threshold Hysteresis，結束 threshold event 時使用的 Kelvin hysteresis。", "Temperature Threshold Hysteresis, Kelvin hysteresis used when ending a threshold event."),
+    "TTC": b("Temperature Threshold Critical Warning，SMART／Health Critical Warning 中的溫度 threshold bit。", "Temperature Threshold Critical Warning, the temperature-threshold bit in SMART/Health Critical Warning."),
+    "HCTM": b("Host Controlled Thermal Management，host 以 TMT1／TMT2 建立兩階段 controller thermal response。", "Host Controlled Thermal Management, the two-stage controller thermal response configured by host TMT1/TMT2 values."),
+    "TMT1": b("Thermal Management Temperature 1，較輕度 thermal-management threshold，單位 Kelvin。", "Thermal Management Temperature 1, the lighter thermal-management threshold in Kelvin."),
+    "TMT2": b("Thermal Management Temperature 2，較強 thermal-management threshold，單位 Kelvin。", "Thermal Management Temperature 2, the stronger thermal-management threshold in Kelvin."),
+    "MNTMT": b("Minimum Thermal Management Temperature，HCTM 可設定的最低 Kelvin 值。", "Minimum Thermal Management Temperature, the minimum Kelvin value accepted for HCTM."),
+    "MXTMT": b("Maximum Thermal Management Temperature，HCTM 可設定的最高 Kelvin 值。", "Maximum Thermal Management Temperature, the maximum Kelvin value accepted for HCTM."),
+    "WCTEMP": b("Warning Composite Temperature Threshold，Identify Controller 回報的 composite warning threshold。", "Warning Composite Temperature Threshold, the composite warning threshold reported by Identify Controller."),
+    "RTD3E": b("Runtime D3 Entry Latency，controller 進入 PCIe D3cold 使用情境的預期時間。", "Runtime D3 Entry Latency, the expected time for entering a PCIe D3cold use case."),
+    "RTD3R": b("Runtime D3 Resume Latency，controller 從 PCIe D3cold 使用情境恢復的預期時間。", "Runtime D3 Resume Latency, the expected time for resuming from a PCIe D3cold use case."),
+    "DST": b("Device Self-test，用背景 diagnostic segments 檢查 controller 與可選 namespace media 的操作。", "Device Self-test, a background operation using diagnostic segments to check a controller and optional namespace media."),
+    "OACS.DSTS": b("Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。", "The Device Self-test Supported bit in Optional Admin Command Support, gating availability of the command."),
+    "STC": b("Self-test Code，Device Self-test CDW10 中選 short、extended、refresh、vendor-specific 或 abort 的 nibble。", "Self-test Code, the CDW10 nibble selecting short, extended, refresh, vendor-specific, or abort action."),
+    "DSTP": b("Device Self-test Parameter，只有 vendor-specific STC=Eh 時才有 vendor-defined 語意的 CDW15。", "Device Self-test Parameter, CDW15 with vendor-defined meaning only for vendor-specific STC Eh."),
+    "DSTO": b("Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。", "Device Self-test Options, the Identify Controller field reporting refresh and concurrency options."),
+    "SDSO": b("Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。", "Single Device Self-test Operation, the bit selecting one subsystem-wide operation or one per controller."),
+    "EDSTT": b("Extended Device Self-test Time，在 power state 0 下的 extended test 名目完成分鐘數。", "Extended Device Self-test Time, the nominal extended-test duration in minutes at power state 0."),
+    "DSTOS": b("Device Self-test Operation Status，LID 06h 中表示目前 operation 類型的 nibble。", "Device Self-test Operation Status, the LID 06h nibble identifying the current operation."),
+    "DSTCS": b("Device Self-test Completion Status，LID 06h 中的 0 到 100 完成百分比。", "Device Self-test Completion Status, the LID 06h completion percentage from 0 through 100."),
+    "DSTR": b("Device Self-test Result，結果 entry 中表示成功、abort 或 segment failure 的 nibble。", "Device Self-test Result, the result-entry nibble identifying success, abort, or segment failure."),
+    "SEGN": b("Segment Number，只有 DSTR=7h 時指出第一個失敗 diagnostic segment。", "Segment Number, identifying the first failed diagnostic segment only when DSTR is 7h."),
+    "VDINFO": b("Valid Diagnostic Information，分別 gate NSID、FLBA、SCT 與 SC 的 validity bitmap。", "Valid Diagnostic Information, the bitmap independently gating NSID, FLBA, SCT, and SC."),
+    "FVLD": b("Failing LBA Valid，決定 FLBA 欄位是否可解讀的 validity bit。", "Failing LBA Valid, the validity bit determining whether FLBA may be interpreted."),
+    "FLBA": b("Failing LBA，NVM Command Set 定義為造成 self-test failure 的其中一個 logical block address。", "Failing LBA, defined by the NVM Command Set as one logical block address that caused self-test failure."),
+    "POH": b("Power On Hours，self-test result 建立時累積的 power-on hours，不含指定 low-power 時間。", "Power On Hours, accumulated power-on hours when a self-test result is created, excluding specified low-power time."),
+    "HMB": b("Host Memory Buffer，由 host 配置並在 enable 期間交由 controller 專用的 volatile memory ranges。", "Host Memory Buffer, volatile memory ranges allocated by the host for exclusive controller use while enabled."),
+    "HMPRE": b("Host Memory Buffer Preferred Size，以 4 KiB units 回報 controller 偏好的配置大小。", "Host Memory Buffer Preferred Size, the controller's preferred allocation in 4-KiB units."),
+    "HMMIN": b("Host Memory Buffer Minimum Size，以 4 KiB units 回報 controller 要求的最低大小。", "Host Memory Buffer Minimum Size, the controller's minimum requested size in 4-KiB units."),
+    "HMMINDS": b("Host Memory Buffer Minimum Descriptor Entry Size，每個可用 descriptor 的最低 4 KiB-unit 大小。", "Host Memory Buffer Minimum Descriptor Entry Size, the minimum usable descriptor size in 4-KiB units."),
+    "HMMAXD": b("Host Memory Maximum Descriptor Entries，controller 可使用的 descriptor entry 上限。", "Host Memory Maximum Descriptor Entries, the maximum descriptor-entry count the controller can use."),
+    "HMDL": b("Host Memory Descriptor List，連續存放 16-byte HMB descriptors 的 host-memory array。", "Host Memory Descriptor List, a contiguous host-memory array of 16-byte HMB descriptors."),
+    "HMDLEC": b("Host Memory Descriptor List Entry Count，HMDL 中有效 entries 的數量。", "Host Memory Descriptor List Entry Count, the number of valid entries in the HMDL."),
+    "HSIZE": b("Host Memory Buffer Size，以 CC.MPS memory-page units 表示的 HMB 總大小。", "Host Memory Buffer Size, the total HMB size in CC.MPS memory-page units."),
+    "EHM": b("Enable Host Memory，啟用或停用 controller 使用 HMB 的 bit。", "Enable Host Memory, the bit enabling or disabling controller use of HMB."),
+    "MR": b("Memory Return，表示 host 歸還完全相同的舊 HMB size、addresses、descriptors 與 contents。", "Memory Return, indicating return of exactly the same previous HMB size, addresses, descriptors, and contents."),
+    "HMNARE": b("Host Memory Non-operational Access Restriction Enable，配置 non-operational HMB access policy 的 bit。", "Host Memory Non-operational Access Restriction Enable, the bit configuring non-operational HMB-access policy."),
+    "HMNAR": b("Host Memory Non-operational Access Restricted，回報 restriction 此刻是否實際生效的 state bit。", "Host Memory Non-operational Access Restricted, the state bit reporting whether restriction is currently active."),
+    "BADD": b("Buffer Address，HMB descriptor 中依 CC.MPS 對齊的 memory-page address。", "Buffer Address, the CC.MPS-aligned memory-page address in an HMB descriptor."),
+    "BSIZE": b("Buffer Size，HMB descriptor 中以 CC.MPS pages 表示的連續範圍長度。", "Buffer Size, the contiguous range length in CC.MPS pages in an HMB descriptor."),
+    "NDT": b("Number of Dwords in Data Transfer，standard vendor-specific format 中的實際 data dword 數。", "Number of Dwords in Data Transfer, the actual data-dword count in the standard vendor-specific format."),
+    "NDM": b("Number of Dwords in Metadata Transfer，standard vendor-specific format 中的實際 metadata dword 數。", "Number of Dwords in Metadata Transfer, the actual metadata-dword count in the standard vendor-specific format."),
+    "AVSCC": b("Admin Vendor Specific Command Configuration，回報 vendor-specific Admin command format 的 Identify field。", "Admin Vendor Specific Command Configuration, the Identify field reporting the vendor-specific Admin-command format."),
+    "ICSVSCC": b("I/O Command Set Vendor Specific Command Configuration，回報 vendor-specific I/O command format 的 Identify field。", "I/O Command Set Vendor Specific Command Configuration, the Identify field reporting the vendor-specific I/O-command format."),
+    "VSCF": b("Vendor Specific Command Format，AVSCC 中表示 Admin commands 是否使用 Figure 94 的 bit。", "Vendor Specific Command Format, the AVSCC bit indicating whether Admin commands use Figure 94."),
+    "SNVSCF": b("Same NVM Vendor Specific Command Format，ICSVSCC 中表示 I/O commands 是否使用 Figure 94 的 bit。", "Same NVM Vendor Specific Command Format, the ICSVSCC bit indicating whether I/O commands use Figure 94."),
+}
+
+
+REPORT_GLOSSARIES: dict[str, list[tuple[str, str]]] = {
+    "base-ch1-2": [
+        ("NVMe", "BASE12-FAMILY"), ("NVM", "BASE12-FAMILY"), ("I/O", "BASE12-COMMANDSET"),
+        ("Admin", "BASE12-COMMANDSET"), ("SQ", "BASE12-QUEUE"), ("CQ", "BASE12-QUEUE"),
+        ("SQE", "BASE12-QUEUE"), ("CQE", "BASE12-QUEUE"), ("NSID", "BASE12-SUBSYSTEM"),
+        ("NVM subsystem", "BASE12-STORAGE"), ("namespace", "BASE12-STORAGE"),
+        ("NVM Set", "BASE12-STORAGE"), ("Endurance Group", "BASE12-STORAGE"),
+        ("Reclaim Group", "BASE12-STORAGE"), ("Reclaim Unit", "BASE12-STORAGE"),
+        ("SR-IOV", "BASE12-MULTIPATH"), ("PF", "BASE12-MULTIPATH"), ("VF", "BASE12-MULTIPATH"),
+        ("Dword", "BASE12-DWORD"), ("0's-based", "BASE12-NUMBERS"),
+    ],
+    "base-ch3": [
+        ("controller", "BASE3-TYPES"), ("I/O controller", "BASE3-TYPES"),
+        ("Administrative controller", "BASE3-TYPES"), ("CAP", "BASE3-INIT"),
+        ("CC", "BASE3-INIT"), ("CSTS", "BASE3-INIT"), ("EN", "BASE3-INIT"),
+        ("RDY", "BASE3-INIT"), ("AQA", "BASE3-INIT"), ("ASQ", "BASE3-INIT"),
+        ("ACQ", "BASE3-INIT"), ("NSID", "BASE3-NAMESPACE"), ("NSSR", "BASE3-RESET"),
+        ("NSSD", "BASE3-SHUTDOWN"), ("SHN", "BASE3-SHUTDOWN"), ("SHST", "BASE3-SHUTDOWN"),
+        ("CRTO", "BASE3-INIT"), ("CMB", "BASE3-PROPERTY"), ("PMR", "BASE3-PROPERTY"),
+        ("BIR", "BASE3-PROPERTY"), ("MPS", "BASE3-QUEUE"), ("KATO", "BASE3-KEEPALIVE"),
+        ("KATT", "BASE3-KEEPALIVE"), ("FDP", "BASE3-MEDIA"), ("NVM Set", "BASE3-MEDIA"),
+        ("Endurance Group", "BASE3-MEDIA"), ("Reclaim Group", "BASE3-MEDIA"),
+        ("Reclaim Unit", "BASE3-MEDIA"), ("NVM subsystem", "BASE3-DOMAIN"),
+    ],
+    "base-ch4": [
+        ("SQE", "BASE4-SQE"), ("CQE", "BASE4-CQE"), ("CDW", "BASE4-SQE"),
+        ("CID", "BASE4-CID"), ("SQID", "BASE4-CID"), ("NSID", "BASE4-SQE"),
+        ("PSDT", "BASE4-PSDT"), ("DPTR", "BASE4-PSDT"), ("MPTR", "BASE4-SQE"),
+        ("PRP", "BASE4-PRP"), ("SGL", "BASE4-SGL"), ("SCT", "BASE4-STATUS"),
+        ("SC", "BASE4-STATUS"), ("DNR", "BASE4-STATUS"), ("CRD", "BASE4-STATUS"),
+        ("P", "BASE4-PHASE"), ("PBAO", "BASE4-PRP"), ("VID", "BASE4-IDENTIFIER"),
+        ("SSVID", "BASE4-IDENTIFIER"), ("SN", "BASE4-IDENTIFIER"), ("MN", "BASE4-IDENTIFIER"),
+        ("OUI", "BASE4-IDENTIFIER"), ("EUI64", "BASE4-IDENTIFIER"),
+        ("NGUID", "BASE4-IDENTIFIER"), ("UUID", "BASE4-IDENTIFIER"),
+        ("NAA", "BASE4-IDENTIFIER"), ("WWN", "BASE4-IDENTIFIER"), ("UTF-8", "BASE4-UTF8"),
+    ],
+    "pcie-transport-1.4": [
+        ("PCIe", "PCIE14-OVERVIEW"), ("NVMe", "PCIE14-SCOPE"), ("MMIO", "PCIE14-MMIO"),
+        ("BAR", "PCIE14-MMIO"), ("CAP", "PCIE14-DOORBELL"), ("DSTRD", "PCIE14-DOORBELL"),
+        ("SQ", "PCIE14-COMMAND"), ("CQ", "PCIE14-COMMAND"),
+        ("SQE", "PCIE14-COMMAND"), ("CQE", "PCIE14-COMMAND"),
+        ("SQyTDBL", "PCIE14-DOORBELL"), ("CQyHDBL", "PCIE14-DOORBELL"),
+        ("MSI", "PCIE14-INTERRUPT"), ("MSI-X", "PCIE14-INTERRUPT"),
+        ("IV", "PCIE14-QUEUE"), ("FLR", "PCIE14-RESET"), ("AER", "PCIE14-ERROR"),
+        ("TLP", "PCIE14-ERROR"), ("MPS (PCIe)", "PCIE14-CONFIG"), ("MRRS", "PCIE14-CONFIG"),
+        ("PMCAP", "PCIE14-CONFIG"), ("MSICAP", "PCIE14-CONFIG"),
+        ("MSIXCAP", "PCIE14-CONFIG"), ("PXCAP", "PCIE14-CONFIG"),
+        ("AERCAP", "PCIE14-CONFIG"), ("BIR", "PCIE14-CONFIG"),
+        ("PBA", "PCIE14-CONFIG"), ("EOM", "PCIE14-EOM"), ("TDISP", "PCIE14-SECURITY"),
+    ],
+    "base-admin-fw-logs": [
+        ("LID", "BASEFWLOG-LOG-COMMAND"), ("LID 03h", "BASEFWLOG-LID03-DESCRIPTION"),
+        ("AFI", "BASEFWLOG-LID03-AFI"), ("CAFS", "BASEFWLOG-LID03-AFI"),
+        ("NAFS", "BASEFWLOG-LID03-AFI"), ("FRS", "BASEFWLOG-LID03-FRS"),
+        ("FR", "BASEFWLOG-CAP-FR"), ("FRMW", "BASEFWLOG-CAP-FRMW"),
+        ("FWUG", "BASEFWLOG-CAP-FWUG"), ("MTFA", "BASEFWLOG-CAP-MTFA"),
+        ("MPTFAWR", "BASEFWLOG-CAP-MPTFAWR"), ("MDS", "BASEFWLOG-CAP-MDS-ULIST"),
+        ("DID", "BASEFWLOG-CAP-MDS-ULIST"), ("ULIST", "BASEFWLOG-CAP-MDS-ULIST"),
+        ("UUID", "BASEFWLOG-UUID-LIST"), ("DPTR", "BASEFWLOG-DOWNLOAD-FIELDS"),
+        ("PRP", "BASEFWLOG-DOWNLOAD-FIELDS"), ("NUMD", "BASEFWLOG-DOWNLOAD-FIELDS"),
+        ("NUMDL", "BASEFWLOG-LOG-COMMAND"), ("NUMDU", "BASEFWLOG-LOG-COMMAND"),
+        ("OFST", "BASEFWLOG-DOWNLOAD-FIELDS"), ("RAE", "BASEFWLOG-LOG-RAE"),
+        ("LSP", "BASEFWLOG-LOG-COMMAND"), ("LSI", "BASEFWLOG-LOG-COMMAND"),
+        ("LPOL", "BASEFWLOG-LOG-OFFSET"), ("LPOU", "BASEFWLOG-LOG-OFFSET"),
+        ("CSI", "BASEFWLOG-LOG-COMMAND"), ("UIDX", "BASEFWLOG-LOG-COMMAND"),
+        ("CA", "BASEFWLOG-COMMIT-CDW10"), ("FS", "BASEFWLOG-COMMIT-CDW10"),
+        ("MUD", "BASEFWLOG-COMMIT-MUD"), ("SCT", "BASEFWLOG-COMMIT-STATUS"),
+        ("SC", "BASEFWLOG-COMMIT-STATUS"), ("CQE", "BASEFWLOG-COMMIT-STATUS"),
+        ("AEN", "BASEFWLOG-LOG-RAE"),
+    ],
+    "base-power-features": [
+        ("FID", "BASEPOWER-READ-FIRST"), ("SEL", "BASEPOWER-GET-SELECT"),
+        ("UIDX", "BASEPOWER-GET-UIDX"), ("CHANG", "BASEPOWER-GET-CAP"),
+        ("NSSPEC", "BASEPOWER-GET-CAP"), ("SVBL", "BASEPOWER-GET-CAP"),
+        ("SV", "BASEPOWER-SET-SAVE"), ("DPTR", "BASEPOWER-SET-DPTR"),
+        ("PRP", "BASEPOWER-SET-DPTR"), ("CQE", "BASEPOWER-GET-STATUS"),
+        ("SCT", "BASEPOWER-GET-STATUS"), ("SC", "BASEPOWER-GET-STATUS"),
+        ("PSD", "BASEPOWER-POWER-METRICS"), ("PS", "BASEPOWER-FID02"),
+        ("NPSS", "BASEPOWER-FID02"), ("MP", "BASEPOWER-POWER-METRICS"),
+        ("NOPS", "BASEPOWER-NONOP"), ("ENLAT", "BASEPOWER-TRANSITION"),
+        ("EXLAT", "BASEPOWER-TRANSITION"), ("IDLP", "BASEPOWER-POWER-METRICS"),
+        ("ACTP", "BASEPOWER-POWER-METRICS"), ("WH", "BASEPOWER-WORKLOAD"),
+        ("APST", "BASEPOWER-FID0C"), ("APSTE", "BASEPOWER-FID0C"),
+        ("ITPT", "BASEPOWER-APST-ENTRY"), ("ITPS", "BASEPOWER-APST-ENTRY"),
+        ("NOPPME", "BASEPOWER-FID11"), ("TMPSEL", "BASEPOWER-HYST"),
+        ("THSEL", "BASEPOWER-HYST"), ("TMPTH", "BASEPOWER-HYST"),
+        ("TMPTHH", "BASEPOWER-HYST"), ("TTC", "BASEPOWER-FID04"),
+        ("HCTM", "BASEPOWER-HCTM"), ("TMT1", "BASEPOWER-FID10"),
+        ("TMT2", "BASEPOWER-FID10"), ("MNTMT", "BASEPOWER-HCTM"),
+        ("MXTMT", "BASEPOWER-HCTM"), ("WCTEMP", "BASEPOWER-FID04"),
+        ("RTD3E", "BASEPOWER-RTD3"), ("RTD3R", "BASEPOWER-RTD3"),
+    ],
+    "base-self-test-hmb-emulation": [
+        ("DST", "BASEDIAGMEM-SELFTEST-GATE"), ("OACS.DSTS", "BASEDIAGMEM-SELFTEST-GATE"),
+        ("STC", "BASEDIAGMEM-SELFTEST-STC"), ("DSTP", "BASEDIAGMEM-SELFTEST-STC"),
+        ("DSTO", "BASEDIAGMEM-SELFTEST-GATE"), ("SDSO", "BASEDIAGMEM-SELFTEST-GATE"),
+        ("EDSTT", "BASEDIAGMEM-SELFTEST-TIMING"), ("DSTOS", "BASEDIAGMEM-SELFTEST-CURRENT"),
+        ("DSTCS", "BASEDIAGMEM-SELFTEST-CURRENT"), ("DSTR", "BASEDIAGMEM-SELFTEST-RESULT"),
+        ("SEGN", "BASEDIAGMEM-SELFTEST-RESULT"), ("VDINFO", "BASEDIAGMEM-SELFTEST-VALIDITY"),
+        ("FVLD", "BASEDIAGMEM-SELFTEST-NVM-FLBA"), ("FLBA", "BASEDIAGMEM-SELFTEST-NVM-FLBA"),
+        ("POH", "BASEDIAGMEM-SELFTEST-DEBUG"), ("HMB", "BASEDIAGMEM-HMB-OWNERSHIP"),
+        ("HMPRE", "BASEDIAGMEM-HMB-CAPABILITY"), ("HMMIN", "BASEDIAGMEM-HMB-CAPABILITY"),
+        ("HMMINDS", "BASEDIAGMEM-HMB-CAPABILITY"), ("HMMAXD", "BASEDIAGMEM-HMB-CAPABILITY"),
+        ("HMDL", "BASEDIAGMEM-HMB-DESCRIPTORS"), ("HMDLEC", "BASEDIAGMEM-HMB-SET-COMMAND"),
+        ("HSIZE", "BASEDIAGMEM-HMB-NUMERIC"), ("EHM", "BASEDIAGMEM-HMB-SEQUENCE"),
+        ("MR", "BASEDIAGMEM-HMB-RESET-RTD3"), ("HMNARE", "BASEDIAGMEM-HMB-NONOP"),
+        ("HMNAR", "BASEDIAGMEM-HMB-NONOP"), ("BADD", "BASEDIAGMEM-HMB-DESCRIPTORS"),
+        ("BSIZE", "BASEDIAGMEM-HMB-DESCRIPTORS"), ("DSTRD", "BASEDIAGMEM-DOORBELL-STRIDE"),
+        ("NDT", "BASEDIAGMEM-VENDOR-LENGTH"), ("NDM", "BASEDIAGMEM-VENDOR-LENGTH"),
+        ("AVSCC", "BASEDIAGMEM-VENDOR-GATE"), ("ICSVSCC", "BASEDIAGMEM-VENDOR-GATE"),
+        ("VSCF", "BASEDIAGMEM-VENDOR-GATE"), ("SNVSCF", "BASEDIAGMEM-VENDOR-GATE"),
+        ("NSID", "BASEDIAGMEM-SELFTEST-NSID"), ("CQE", "BASEDIAGMEM-SELFTEST-COMPLETION"),
+        ("FID", "BASEDIAGMEM-HMB-SET-COMMAND"), ("SEL", "BASEDIAGMEM-HMB-GET"),
+    ],
+}
+
+
+REPORT_MODULES: dict[str, list[dict]] = {
+    "base-ch1-2": [
+        {
+            "id": "family",
+            "title": b("先找對規格：不要把文件關係看成 protocol stack", "Find the owning specification: do not read document applicability as a protocol stack"),
+            "lead": b("遇到一個 command、register 或資料格式時，第一個問題不是『它在哪一頁』，而是『哪一份規格擁有這個定義』。Base 提供通用協定，Transport 補上 PCIe 綁定，I/O Command Set 再定義 namespace 資料操作。Figure 1 的框線代表適用關係，不代表封包一定逐層穿過這些方塊。", "When a command, register, or data format appears, the first question is not merely where it is located, but which specification owns the definition. Base supplies the common protocol, the Transport adds the PCIe binding, and an I/O Command Set defines namespace data operations. The boxes in Figure 1 show applicability, not mandatory packet traversal through a stack."),
+            "nodes": b(["需求：我要做什麼？", "Base：共通機制", "PCIe Transport：記憶體與 register 綁定", "I/O Command Set：資料操作語意"], ["Need: what operation?", "Base: common mechanism", "PCIe Transport: memory and register binding", "I/O Command Set: data-operation semantics"]),
+            "rows": b([
+                ["Base", "共通 command、queue、status 與資料結構", "不要假設它定義所有 PCIe register 細節"],
+                ["PCIe Transport", "BAR、MMIO、doorbell、interrupt 與 PCIe-specific 行為", "衝突時不能覆蓋 Base"],
+                ["I/O Command Set", "特定 namespace I/O command 與延伸資料結構", "不負責重新定義 transport"],
+            ], [
+                ["Base", "Common commands, queues, status, and structures", "Do not assume it owns every PCIe-register detail"],
+                ["PCIe Transport", "BARs, MMIO, doorbells, interrupts, and PCIe-specific behavior", "It does not override Base in a conflict"],
+                ["I/O Command Set", "Specific namespace I/O commands and extensions", "It does not redefine the transport"],
+            ]),
+            "example": b("要實作 Firmware Image Download：先在 Base 找 command 欄位與 completion status，再到 PCIe Transport 確認 Admin command 的資料指標與 memory access 限制。若未閱讀 I/O Command Set，仍可理解此 Admin command；反過來只讀 PCIe Transport 則得不到完整 command 語意。", "To implement Firmware Image Download, read Base for command fields and completion status, then use the PCIe Transport for Admin-command data-pointer and memory-access constraints. The Admin command can be understood without an I/O Command Set, while the PCIe Transport alone does not provide complete command semantics."),
+            "pitfall": b("常見錯誤是看到 Figure 1 的上下位置便推論『上層一定呼叫下層』。正確做法是把每一個技術論點標成 owner、extension 或 binding，再引用真正擁有 normative requirement 的來源。", "A common mistake is to infer a call stack from vertical placement in Figure 1. Label each statement as an owner definition, extension, or binding, then cite the source that actually owns the normative requirement."),
+            "sources": ["BASE12-FAMILY", "BASE12-COMMANDSET"],
+            "figures": [1, 5],
+        },
+        {
+            "id": "numbers",
+            "title": b("先解碼數值，再解讀欄位", "Decode the number before interpreting the field"),
+            "lead": b("NVMe 的數字同時帶有進位、單位、寬度、endian 與是否 0's-based 等資訊。欄位值看似相同，只要其中一項不同，實際意義就可能完全不同。Figure 2 與 Figure 3 是後續所有 register、SQE、CQE 與 log page 計算的共同底座。", "An NVMe number carries radix, unit, width, endian convention, and sometimes zero-based encoding. Equal-looking field values can represent different quantities when any one of these attributes differs. Figures 2 and 3 are the common foundation for later register, SQE, CQE, and log-page calculations."),
+            "nodes": b(["原始 bits", "確認 bit/byte 範圍", "套用 radix 與 endian", "套用 unit／0's-based", "得到工程值"], ["Raw bits", "Confirm bit/byte range", "Apply radix and endian", "Apply unit/zero-based rule", "Obtain engineering value"]),
+            "rows": b([
+                ["1000", "十進位 1000", "若無 b/h 後綴則按十進位"],
+                ["1000b", "二進位 8", "b 是 radix，不是 bit 單位"],
+                ["1000h", "十六進位 4096", "常見於 offset 與 register value"],
+                ["NUMD=0", "實際 1 dword", "只有欄位明載 0's-based 才加 1"],
+            ], [
+                ["1000", "Decimal 1000", "No b/h suffix means decimal"],
+                ["1000b", "Binary value 8", "b is a radix marker, not a bit unit"],
+                ["1000h", "Hexadecimal value 4096", "Common for offsets and register values"],
+                ["NUMD=0", "One actual dword", "Add one only when the field is explicitly zero-based"],
+            ]),
+            "example": b("說明性範例：一個 512-byte transfer 含 512 ÷ 4 = 128 dwords。若 NUMD 是 0's-based，編碼值為 128 - 1 = 127 = 007Fh。若錯把 007Fh 當成 byte count，buffer 會短少；若忘記減 1，controller 會被要求傳輸 129 dwords。", "Informative example: a 512-byte transfer contains 512 / 4 = 128 dwords. If NUMD is zero-based, the encoded value is 128 - 1 = 127 = 007Fh. Treating 007Fh as a byte count under-allocates the buffer; forgetting the subtraction requests 129 dwords."),
+            "pitfall": b("Debug 時把五項資訊寫在同一行：raw value、bit range、radix、unit、encoding rule。只印出十進位結果而沒有原始 hex，通常不足以定位 off-by-one、byte swap 或單位錯誤。", "During debugging, record five items together: raw value, bit range, radix, unit, and encoding rule. A decimal result without the original hexadecimal value is usually insufficient to isolate off-by-one, byte-swap, or unit defects."),
+            "sources": ["BASE12-NUMBERS", "BASE12-DWORD"],
+            "figures": [2, 3],
+        },
+        {
+            "id": "queues",
+            "title": b("Queue pair 是所有 command flow 的交通規則", "Queue pairs are the traffic rules for every command flow"),
+            "lead": b("host 不把 command 直接寫進 controller。host 先在記憶體中的 SQE 建好命令，再公布新的 SQ tail；controller 取走命令後執行，最後把 CQE 放進 CQ。Figure 6 的 1:1 與 Figure 7 的 n:1 差異在於多個 SQ 是否共用同一個 CQ，不是 command 是否共用同一個 SQE。", "The host does not write a command directly into the controller. It builds an SQE in memory and publishes a new SQ tail; the controller fetches and executes the command, then places a CQE into a CQ. The 1:1 and n:1 distinction in Figures 6 and 7 concerns whether multiple SQs share one CQ, not whether commands share one SQE."),
+            "nodes": b(["host 填 SQE", "host 公布 SQ tail", "controller fetch／execute", "controller 寫 CQE", "host 消費 CQE"], ["Host fills SQE", "Host publishes SQ tail", "Controller fetches/executes", "Controller writes CQE", "Host consumes CQE"]),
+            "rows": b([
+                ["Admin queue pair", "一個 Admin SQ 對一個 Admin CQ", "初始化與管理路徑"],
+                ["I/O 1:1", "一個 I/O SQ 對一個 I/O CQ", "追蹤簡單、隔離清楚"],
+                ["I/O n:1", "多個 I/O SQ 共用一個 I/O CQ", "完成路徑整併，仍以 SQID/CID 找回命令"],
+            ], [
+                ["Admin queue pair", "One Admin SQ to one Admin CQ", "Initialization and management path"],
+                ["I/O 1:1", "One I/O SQ to one I/O CQ", "Simple tracking and clear isolation"],
+                ["I/O n:1", "Multiple I/O SQs share one I/O CQ", "Merged completion path; SQID/CID still recover the command"],
+            ]),
+            "example": b("說明性範例：SQ 3 與 SQ 4 共用 CQ 2。兩筆 command 都使用 CID 5 仍可區分，因唯一鍵是 (SQID, CID)：(3,5) 與 (4,5)。只用 CID 建 outstanding-command map，會把其中一筆 completion 配錯。", "Informative example: SQ 3 and SQ 4 share CQ 2. Both commands may use CID 5 and remain distinguishable because the identity key is (SQID, CID): (3,5) and (4,5). An outstanding-command map keyed only by CID can associate a completion with the wrong command."),
+            "pitfall": b("Queue bug 要分三個 ownership：誰寫 entry、誰推進 pointer、誰能重用 slot。把『doorbell 已寫』誤當成『command 已完成』，或在 CQE 尚未消費前重用資源，都是典型生命週期錯誤。", "A queue defect is easier to isolate by separating three ownership questions: who writes the entry, who advances the pointer, and who may reuse the slot. Treating a doorbell write as command completion, or reusing resources before CQE consumption, are classic lifecycle errors."),
+            "sources": ["BASE12-QUEUE", "BASE12-SUBSYSTEM"],
+            "figures": [6, 7],
+        },
+        {
+            "id": "objects",
+            "title": b("從 namespace 往上建立儲存與路徑 Mental Model", "Build the storage and path mental model upward from a namespace"),
+            "lead": b("namespace 是 host 實際存取的格式化容量，但容量管理、耐久度、回收與路徑都發生在不同層級。Figures 11-18 用 NVM Set 或 Reclaim Group 描述容量包含關係，Figures 19-22 則改看 controller、port、path 與 PCIe Function。兩組圖回答不同問題，不能疊成單一樹狀圖後便認為每層都一對一。", "A namespace is the formatted capacity actually accessed by the host, while capacity management, endurance, reclamation, and paths live at different levels. Figures 11-18 describe containment using NVM Sets or Reclaim Groups; Figures 19-22 instead show controllers, ports, paths, and PCIe Functions. The two groups answer different questions and must not be collapsed into a falsely one-to-one tree."),
+            "nodes": b(["NVM subsystem", "Domain／Endurance Group", "NVM Set 或 Reclaim Group", "Namespace", "Controller-visible NSID"], ["NVM subsystem", "Domain/Endurance Group", "NVM Set or Reclaim Group", "Namespace", "Controller-visible NSID"]),
+            "rows": b([
+                ["multi-path I/O", "同一 host、同一 namespace、兩條以上獨立路徑", "重點是 path redundancy"],
+                ["namespace sharing", "兩個以上 hosts 存取同一 shared namespace", "重點是 host ownership 與 coordination"],
+                ["SR-IOV", "一個 PCIe 裝置呈現 PF/VF", "PCIe Function 不必等同獨立 subsystem"],
+            ], [
+                ["Multi-path I/O", "One host and one namespace with two or more independent paths", "Focus: path redundancy"],
+                ["Namespace sharing", "Two or more hosts access one shared namespace", "Focus: host ownership and coordination"],
+                ["SR-IOV", "One PCIe device exposes PFs/VFs", "A PCIe Function need not be an independent subsystem"],
+            ]),
+            "example": b("說明性範例：host A 經 controller 1 與 controller 2 都能存取 namespace X，這是 multi-path。host B 也經 controller 2 存取同一 namespace X，才同時構成 namespace sharing。NSID 在兩個 controller 上可能不同，因此跨 controller 比對時應先確認 namespace identity，而不是直接比較 NSID 數值。", "Informative example: host A accesses namespace X through controllers 1 and 2, creating multi-path I/O. When host B also accesses the same namespace X through controller 2, namespace sharing is present as well. NSIDs may differ between controllers, so cross-controller comparison begins with namespace identity rather than raw NSID equality."),
+            "pitfall": b("Debug 圖上同時標出 object ID、owner 與 scope。『controller 看得到 NSID』只表示存在一條存取關係，不表示該 controller 擁有底層媒體，也不表示另一個 controller 使用相同 NSID。", "On a debug diagram, label object identity, owner, and scope separately. A controller seeing an NSID proves an access relationship; it does not prove ownership of the underlying media or equal NSID values on another controller."),
+            "sources": ["BASE12-STORAGE", "BASE12-SUBSYSTEM", "BASE12-MULTIPATH", "BASE12-ASYMMETRY"],
+            "figures": [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22],
+        },
+    ],
+    "base-ch3": [
+        {
+            "id": "identity",
+            "title": b("先分清 controller 類型、ID 與能力", "Separate controller type, identity, and capability first"),
+            "lead": b("Controller type 回答『能做哪類工作』，Controller ID 回答『這是哪一個 controller』，support-requirement Figure 回答『在這個上下文中 command／log／feature 的支援強度』。Figures 23-32 應連續閱讀，但三種問題不能合併成一個布林值。", "Controller type answers what work a controller can perform, Controller ID answers which controller it is, and support-requirement Figures answer the required support level of a command, log, or feature in a particular context. Figures 23-32 belong in one reading sequence, but the three questions cannot be collapsed into one Boolean."),
+            "nodes": b(["辨識 controller type", "取得 Controller ID", "查 command/log/feature support row", "建立允許操作集合"], ["Identify controller type", "Obtain Controller ID", "Resolve command/log/feature support row", "Build the allowed operation set"]),
+            "rows": b([
+                ["I/O controller", "可執行使用者資料 I/O", "仍需逐項查 optional capability"],
+                ["Administrative controller", "管理用途、無資料 I/O command", "不能因有 Admin Queue 就當成 I/O controller"],
+                ["support marker", "針對 row 與上下文描述強度", "不能脫離 column／footnote 解讀"],
+            ], [
+                ["I/O controller", "Can execute user-data I/O", "Optional capabilities still require individual checks"],
+                ["Administrative controller", "Management purpose without data I/O commands", "An Admin Queue does not make it an I/O controller"],
+                ["Support marker", "Expresses support strength for a row and context", "Never decode it without its column and footnote"],
+            ]),
+            "example": b("說明性範例：偵測到一個 Administrative controller 時，軟體仍會建立 Admin SQ/CQ 並執行管理 command，但不應把 namespace data path 掛到它。若只用『存在 Admin Queue』判斷 controller type，I/O 與 Administrative controller 會被錯誤歸成同類。", "Informative example: after detecting an Administrative controller, software still creates the Admin SQ/CQ and performs management commands, but it must not attach a namespace data path to that controller. Classifying by the mere presence of an Admin Queue incorrectly merges I/O and Administrative controllers."),
+            "pitfall": b("能力矩陣解析器要保留 row、column、footnote 與 controller type 四個維度。把 O、M 或條件註記抽成全域 capability，會在另一種 controller 或 command-set context 中得到錯誤結論。", "A capability-matrix parser must preserve row, column, footnote, and controller type. Promoting an O, M, or conditional note into a global capability creates incorrect results in another controller or command-set context."),
+            "sources": ["BASE3-STATIC", "BASE3-TYPES", "BASE3-ORDER"],
+            "figures": [23, 24, 25, 26, 27, 28, 30, 31, 32],
+        },
+        {
+            "id": "properties-init",
+            "title": b("從 CAP 到 CSTS.RDY：初始化是一條有前置條件的狀態機", "From CAP to CSTS.RDY: initialization is a state machine with preconditions"),
+            "lead": b("Properties 不是彼此獨立的 register 清單。CAP 先限制 page size、queue 與 timeout 能力；AQA、ASQ、ACQ 建立 Admin queues；CC 選擇設定並以 EN 啟動；最後由 CSTS.RDY 宣告 controller 已能正常處理命令。Figures 33-46 與 Figure 57 應沿這條因果鏈閱讀。", "Properties are not an independent register list. CAP constrains page-size, queue, and timeout capabilities; AQA, ASQ, and ACQ establish Admin queues; CC selects settings and enables the controller; CSTS.RDY finally declares readiness for normal command processing. Figures 33-46 and Figure 57 should be read along this causal chain."),
+            "nodes": b(["讀 CAP／VS", "配置 AQA、ASQ、ACQ", "設定 CC 欄位", "寫 CC.EN=1", "等待 CSTS.RDY=1 或 timeout"], ["Read CAP/VS", "Configure AQA, ASQ, ACQ", "Select CC fields", "Write CC.EN=1", "Wait for CSTS.RDY=1 or timeout"]),
+            "rows": b([
+                ["CAP", "能力與界限", "在寫設定前讀"], ["AQA/ASQ/ACQ", "Admin queue 大小與位址", "需符合 page/alignment 能力"],
+                ["CC", "host 選擇與 enable", "寫入值要與 CAP 相容"], ["CSTS", "controller 回報狀態", "RDY/CFS/SHST 不可互相替代"],
+            ], [
+                ["CAP", "Capabilities and limits", "Read before writing configuration"], ["AQA/ASQ/ACQ", "Admin-queue sizes and addresses", "Must match page and alignment capabilities"],
+                ["CC", "Host selections and enable", "Written values must be compatible with CAP"], ["CSTS", "Controller-reported state", "RDY, CFS, and SHST are not interchangeable"],
+            ]),
+            "example": b("說明性範例：host 選擇 4 KiB MPS，ASQ 與 ACQ base address 因而必須依該 page size 對齊。寫 CC.EN=1 後，host 以 CAP／CRTO 指定的時間界限等待 CSTS.RDY=1；若 CFS 先出現，流程應進入 error recovery，而不是繼續建立 I/O queues。", "Informative example: the host selects a 4 KiB MPS, so ASQ and ACQ base addresses must obey that page-size alignment. After writing CC.EN=1, the host waits for CSTS.RDY=1 within the CAP/CRTO time bound. If CFS appears first, the flow enters error recovery rather than creating I/O queues."),
+            "pitfall": b("初始化 log 至少保留每次 property access 的 offset、width、raw value 與 timestamp。只記『enable failed』無法分辨不相容設定、位址對齊、CFS 或單純尚未超過 ready timeout。", "Initialization logs should retain offset, width, raw value, and timestamp for each property access. A single 'enable failed' message cannot distinguish incompatible settings, address alignment, CFS, or a ready transition still within its timeout."),
+            "sources": ["BASE3-PROPERTY", "BASE3-INIT"],
+            "figures": [33, 34, 36, 37, 38, 41, 42, 44, 45, 46, 57],
+        },
+        {
+            "id": "queue-arbitration",
+            "title": b("Ring buffer、doorbell 與 arbitration 要分三層理解", "Separate ring-buffer state, doorbells, and arbitration"),
+            "lead": b("Figure 73/74 說明 queue 的 empty/full 判定，Figure 80/81 說明多個 SQ 競爭 controller 服務時的 arbitration。前者處理單一 ring 的 head/tail 狀態，後者處理多個 candidate SQ 的選擇；priority 屬於 SQ，不是每筆 command 自帶的獨立優先權。", "Figures 73 and 74 define empty/full state for a queue, while Figures 80 and 81 define arbitration among SQs competing for controller service. The first problem concerns head/tail state within one ring; the second selects among candidate SQs. Priority belongs to the SQ, not to each command as an independent priority."),
+            "nodes": b(["host 寫 SQE", "host 推進 tail", "arbiter 選 SQ", "controller 推進 SQ head", "controller 發 CQE", "host 推進 CQ head"], ["Host writes SQE", "Host advances tail", "Arbiter selects SQ", "Controller advances SQ head", "Controller posts CQE", "Host advances CQ head"]),
+            "rows": b([
+                ["empty", "head == tail 且 phase／ownership 符合 empty 定義", "沒有可取走 entry"],
+                ["full", "下一個 tail 會追上尚未釋放 head", "host 不得覆寫 entry"],
+                ["Round Robin", "候選 SQ 輪流取得服務", "不代表 command completion 依提交順序"],
+                ["Weighted RR + Urgent", "priority class 與 weight 影響選擇", "仍需依適用設定解讀"],
+            ], [
+                ["Empty", "Head equals tail under the empty ownership definition", "No entry can be fetched"],
+                ["Full", "The next tail would reach an unreleased head", "The host must not overwrite an entry"],
+                ["Round Robin", "Candidate SQs take turns receiving service", "Completion order is not submission order"],
+                ["Weighted RR + Urgent", "Priority class and weight influence selection", "Interpret only under the applicable configuration"],
+            ]),
+            "example": b("說明性範例：深度 4 的 SQ 只有四個 slot，但 full/empty 判定還需要 ownership 規則；不能只用 tail-head 的無號差值。若 SQ 1 與 SQ 2 同時有 command，arbiter 先選 SQ 2 也不代表 SQ 2 的 command 一定先完成，因 command 執行時間仍可能不同。", "Informative example: an SQ of depth four has four slots, but full/empty detection still needs the ownership rule; an unsigned tail-minus-head value alone is insufficient. If SQ 1 and SQ 2 both contain commands, selecting SQ 2 first does not guarantee its command completes first because execution times may differ."),
+            "pitfall": b("Debug 時分開記錄 software tail、doorbell value、controller-consumed head 與 completion SQHD。四個值混成一個『queue index』會遮蔽 lost doorbell、stale head、slot reuse 與 arbitration starvation 等不同根因。", "During debugging, record the software tail, doorbell value, controller-consumed head, and completion SQHD separately. Combining them into one 'queue index' hides distinct root causes such as a lost doorbell, stale head, premature slot reuse, or arbitration starvation."),
+            "sources": ["BASE3-QUEUE", "BASE3-PROCESS", "BASE3-ORDER"],
+            "figures": [73, 74, 80, 81],
+        },
+        {
+            "id": "memory-capacity",
+            "title": b("CMB、PMR、capacity 與 namespace 是不同資源視角", "CMB, PMR, capacity, and namespaces are different resource views"),
+            "lead": b("CMB/PMR properties 描述 controller 暴露的 memory region 位置、能力與狀態；capacity Figures 86-89 描述 NVM subsystem 各層級可用或已配置容量。兩者都談 memory，卻不是同一種空間，也不能用同一個『剩餘容量』欄位合併。", "CMB and PMR properties describe the location, capability, and state of controller-exposed memory regions; capacity Figures 86-89 describe available or allocated capacity at NVM-subsystem levels. Both concern memory, but they are different spaces and cannot be merged into one free-capacity value."),
+            "nodes": b(["辨識資源類型", "由 BIR 找 BAR", "核對 enable/status", "依用途放置資料", "另外追蹤 namespace/capacity 階層"], ["Identify resource type", "Use BIR to select BAR", "Check enable/status", "Place data for the allowed use", "Track namespace/capacity hierarchy separately"]),
+            "rows": b([
+                ["CMB", "controller-provided working memory", "是否能放 SQ/CQ/list/data 由能力 bit 決定"],
+                ["PMR", "具有持久性語意的 region", "enable、ready、error 與 address control 要一起看"],
+                ["capacity model", "subsystem／group／set／namespace 的容量", "不同層級欄位不可直接相減"],
+            ], [
+                ["CMB", "Controller-provided working memory", "Capability bits decide whether SQs, CQs, lists, or data may reside there"],
+                ["PMR", "A region with persistence semantics", "Enable, ready, error, and address control must be read together"],
+                ["Capacity model", "Capacity of subsystem/group/set/namespace levels", "Fields from different levels must not be subtracted directly"],
+            ]),
+            "example": b("說明性範例：CMB size 足以容納一個 SQ，不代表 controller 的 namespace 多出同樣容量；前者是 queue/data structure 的放置資源，後者才是 host 可格式化與存取的非揮發性容量。", "Informative example: enough CMB space for an SQ does not add the same amount of namespace capacity. The former is placement space for queues or data structures; the latter is formatted non-volatile capacity accessible to the host."),
+            "pitfall": b("Memory-map debug 圖至少用不同區塊標 host memory、CMB、PMR 與 namespace media。若 address 屬於 CMB/PMR，還要保留 BIR、BAR base、offset、enable 與 ready 狀態，不能只印最終 CPU virtual address。", "A memory-map debug diagram should separate host memory, CMB, PMR, and namespace media. For a CMB or PMR address, retain BIR, BAR base, offset, enable state, and ready state rather than logging only the final CPU virtual address."),
+            "sources": ["BASE3-PROPERTY", "BASE3-CAPACITY", "BASE3-MEDIA"],
+            "figures": [47, 48, 52, 53, 54, 55, 58, 59, 60, 61, 62, 63, 64, 86, 87, 88, 89],
+        },
+        {
+            "id": "lifecycle",
+            "title": b("Shutdown、reset、Keep Alive 與 firmware update 的 recovery 邊界", "Recovery boundaries across shutdown, reset, Keep Alive, and firmware update"),
+            "lead": b("Lifecycle 事件的共同問題是『哪一層狀態仍有效』。Normal shutdown 由 CC.SHN/CSTS.SHST 協調，reset 分成 subsystem/controller/queue 層級，Keep Alive 監測 host-controller 存活，firmware activation 又可能要求特定 reset。相同的『暫時無法處理 command』症狀，不代表可以使用相同 recovery。", "The common lifecycle question is which layer of state remains valid. Normal shutdown coordinates through CC.SHN and CSTS.SHST; resets exist at subsystem, controller, and queue levels; Keep Alive monitors host-controller liveness; firmware activation may require a particular reset. The same temporary inability to process commands does not imply the same recovery."),
+            "nodes": b(["辨識事件來源", "決定影響 scope", "停止新工作", "等待狀態／timeout", "重建被清除的資源", "驗證可恢復 I/O"], ["Identify event source", "Determine affected scope", "Stop new work", "Wait for state/timeout", "Rebuild cleared resources", "Verify I/O recovery"]),
+            "rows": b([
+                ["normal shutdown", "保護性停止與狀態回報", "看 SHN/SHST"],
+                ["controller reset", "controller 層級狀態", "queue 是否保留要依 reset 類型"],
+                ["NVM subsystem reset", "更大 subsystem scope", "可能影響多個 controllers"],
+                ["Keep Alive timeout", "liveness failure", "不能直接等同 media failure"],
+            ], [
+                ["Normal shutdown", "Protected stop with progress reporting", "Observe SHN/SHST"],
+                ["Controller reset", "Controller-scope state", "Queue preservation depends on reset type"],
+                ["NVM subsystem reset", "Wider subsystem scope", "May affect multiple controllers"],
+                ["Keep Alive timeout", "Liveness failure", "Must not be equated with media failure"],
+            ]),
+            "example": b("說明性範例：host 要做 normal shutdown 時先停止提交新 I/O，設定 CC.SHN，再監看 CSTS.SHST。若等待期間發生 controller fatal status，後續 recovery 應按 reset scope 重建資源，而不是假設 normal shutdown 已完成。", "Informative example: for a normal shutdown, the host stops submitting new I/O, sets CC.SHN, and observes CSTS.SHST. If controller fatal status appears while waiting, subsequent recovery follows reset scope and rebuilds resources rather than assuming normal shutdown completed."),
+            "pitfall": b("Recovery trace 必須記錄 trigger、scope、開始/完成 timestamp、timeout source 與重建清單。只記『reset device』會讓 queue-level、controller-level 與 subsystem-level state loss 無法區分。", "A recovery trace must record trigger, scope, start/completion timestamps, timeout source, and rebuild list. A single 'reset device' message makes queue-level, controller-level, and subsystem-level state loss indistinguishable."),
+            "sources": ["BASE3-SHUTDOWN", "BASE3-RESET", "BASE3-KEEPALIVE", "BASE3-FIRMWARE"],
+            "figures": [43, 56, 84, 85, 90, 91],
+        },
+    ],
+    "base-ch4": [
+        {
+            "id": "sqe",
+            "title": b("先固定 64-byte SQE 骨架，再套 command-specific 欄位", "Fix the 64-byte SQE skeleton before applying command-specific fields"),
+            "lead": b("Common SQE 先固定 CDW0、NSID、metadata/data pointer 與 CDW10-15 的位置。OPC 選 command，CID 建立完成關聯，PSDT 決定 DPTR 解讀方式；只有完成這些 common 欄位後，才應進入個別 command 的 CDW10-15 定義。Figures 92-94 是後續所有 command construction 的座標系。", "The common SQE fixes the locations of CDW0, NSID, metadata/data pointers, and CDW10-15. OPC selects the command, CID creates the completion association, and PSDT selects DPTR interpretation. Only after these common fields are established should command-specific CDW10-15 definitions be applied. Figures 92-94 are the coordinate system for all later command construction."),
+            "nodes": b(["清空 64-byte SQE", "填 CDW0：OPC/CID/PSDT", "依 command 填 NSID", "建立 MPTR/DPTR", "填 CDW10-15", "最後提交"], ["Clear 64-byte SQE", "Fill CDW0: OPC/CID/PSDT", "Fill NSID for command", "Build MPTR/DPTR", "Fill CDW10-15", "Submit last"]),
+            "rows": b([
+                ["CDW0", "command identity 與 data-pointer selector", "所有 commands 共用"],
+                ["NSID", "namespace scope", "不用時必須依 command 定義清零或使用特殊值"],
+                ["MPTR/DPTR", "metadata 與 data buffer", "由 PSDT 與 command 規則決定"],
+                ["CDW10-15", "command-specific payload", "不能跨 command 借用語意"],
+            ], [
+                ["CDW0", "Command identity and data-pointer selector", "Common to all commands"],
+                ["NSID", "Namespace scope", "When unused, clear or use a special value only as the command defines"],
+                ["MPTR/DPTR", "Metadata and data buffers", "Selected by PSDT and command rules"],
+                ["CDW10-15", "Command-specific payload", "Never borrow semantics from another command"],
+            ]),
+            "example": b("說明性範例：同一個 CID 可以在不同 SQ 使用，但同一 SQ 內 outstanding command 不可用相同 CID 造成識別衝突。driver 建 SQE 時以 (SQID,CID) 建 tracking key，填完全部欄位並完成必要 memory ordering 後才更新 SQ tail。", "Informative example: the same CID can be used on different SQs, but outstanding commands within one SQ must not create an identity collision. The driver tracks commands by (SQID,CID), completes every SQE field and required memory ordering, and only then updates the SQ tail."),
+            "pitfall": b("保留 raw 64 bytes 的 SQE dump，並同時印出 decode 後欄位。只保存高階 command object，無法查出 bit shift、endianness、未清 reserved bits 或錯誤 PSDT。", "Retain the raw 64-byte SQE dump together with decoded fields. A high-level command object alone cannot expose bit shifts, endian defects, uncleared reserved bits, or an incorrect PSDT."),
+            "sources": ["BASE4-SQE", "BASE4-CID", "BASE4-PSDT"],
+            "figures": [92, 93, 94],
+        },
+        {
+            "id": "cqe-status",
+            "title": b("CQE 先解 ownership，再解 identity，最後解 status", "Decode CQE ownership first, identity second, and status last"),
+            "lead": b("host 先用 Phase Tag 判斷 CQ slot 是否是新 completion；確定 ownership 後再用 SQID/CID 找回 command，最後以 SCT 選 status 類別並解 SC、DNR、CRD。Figures 97-109 必須按這個順序讀，否則 stale CQE 或錯誤類別會被當成真實 command failure。", "The host first uses the Phase Tag to determine whether a CQ slot contains a new completion. After ownership is established, SQID/CID recovers the command; SCT then selects the status category before SC, DNR, and CRD are interpreted. Figures 97-109 must be read in this order so a stale CQE or wrong category is not mistaken for a command failure."),
+            "nodes": b(["檢查 Phase Tag", "讀 SQHD/SQID/CID", "用 SQID/CID 找 command", "解 SCT", "解 SC/DNR/CRD", "推進 CQ head"], ["Check Phase Tag", "Read SQHD/SQID/CID", "Recover command by SQID/CID", "Decode SCT", "Decode SC/DNR/CRD", "Advance CQ head"]),
+            "rows": b([
+                ["SCT", "status 大類", "一定先解"], ["SC", "類別內具體結果", "不能脫離 SCT"],
+                ["DNR", "同 command 重試預期", "不是永久硬體故障的同義詞"], ["CRD", "建議 retry delay selector", "只有適用 status 才使用"],
+            ], [
+                ["SCT", "Status category", "Always decode first"], ["SC", "Specific result within the category", "Never interpret without SCT"],
+                ["DNR", "Expectation for retrying the same command", "Not synonymous with permanent hardware failure"], ["CRD", "Recommended retry-delay selector", "Use only for an applicable status"],
+            ]),
+            "example": b("說明性範例：SC 數值 02h 在不同 SCT 下可能屬於不同 status 表。正確 log 應保存完整 status field，再輸出 P、SCT、SC、DNR、CRD 與原始 16-bit value。只印『SC=2』不足以決定 recovery。", "Informative example: SC value 02h can belong to different status tables under different SCT values. A correct log retains the complete status field and reports P, SCT, SC, DNR, CRD, and the raw 16-bit value. 'SC=2' alone is insufficient for recovery."),
+            "pitfall": b("CQ wrap bug 常表現成重複完成或 command 永不完成。核對 producer/consumer 預期 phase、CQ head doorbell 與每個 slot 的 raw DW3；不要在驗證 Phase Tag 前讀取其他 CQE 欄位作決策。", "CQ-wrap defects commonly appear as duplicate completions or commands that never complete. Compare producer/consumer expected phase, the CQ-head doorbell, and raw DW3 for each slot; do not act on other CQE fields before validating the Phase Tag."),
+            "sources": ["BASE4-CQE", "BASE4-STATUS", "BASE4-PHASE"],
+            "figures": [97, 98, 99, 101, 102, 103, 104, 105, 107, 108, 109],
+        },
+        {
+            "id": "prp",
+            "title": b("PRP 計算：第一頁可有 offset，後續 entry 回到 page boundary", "PRP calculation: the first page may have an offset; later entries return to page boundaries"),
+            "lead": b("PRP1 可以指向第一個 memory page 內任意 byte，能承載的第一段長度是 page_size - offset。若資料跨過第一頁，PRP2 依剩餘長度代表第二頁或 PRP List；後續 page address 必須符合 page alignment。Figures 110-113 是 address calculation，不只是 pointer 名稱表。", "PRP1 may address any byte within the first memory page, so first-segment capacity is page_size minus offset. If data crosses that page, PRP2 represents either the second page or a PRP List depending on remaining length; later page addresses must be page aligned. Figures 110-113 define address calculation, not merely pointer names."),
+            "nodes": b(["取得 MPS/page size", "算 PRP1 page offset", "算第一頁可用 bytes", "算 remaining bytes", "決定 PRP2=page 或 list", "驗證後續 page alignment"], ["Obtain MPS/page size", "Compute PRP1 page offset", "Compute bytes available in first page", "Compute remaining bytes", "Choose PRP2 page or list", "Validate later-page alignment"]),
+            "rows": b([
+                ["資料不跨第一頁", "只需 PRP1", "PRP2 不承載下一段"],
+                ["剩餘資料只需一頁", "PRP2 指第二個 data page", "address page-aligned"],
+                ["剩餘資料超過一頁", "PRP2 指 PRP List", "list entries 再指 data pages"],
+            ], [
+                ["Data stays in first page", "PRP1 is sufficient", "PRP2 does not carry another segment"],
+                ["Remaining data fits one page", "PRP2 addresses the second data page", "Address is page aligned"],
+                ["Remaining data exceeds one page", "PRP2 addresses a PRP List", "List entries address data pages"],
+            ]),
+            "example": b("說明性範例：page size 4096 bytes，PRP1 offset 1000，transfer 9000 bytes。第一頁可放 4096-1000=3096 bytes，剩 5904 bytes，需要兩個後續 pages；因此 PRP2 應指向至少含兩個 data-page addresses 的 PRP List。", "Informative example: with a 4096-byte page, PRP1 offset 1000, and a 9000-byte transfer, the first page carries 4096-1000=3096 bytes. The remaining 5904 bytes require two later pages, so PRP2 addresses a PRP List containing at least two data-page addresses."),
+            "pitfall": b("PRP debug dump 要包含 MPS、transfer length、PRP1 offset、每個 entry 的 physical address 與涵蓋 byte interval。只檢查 address 非零，抓不到 list/page 誤判、少一頁或把 virtual address 當 physical address。", "A PRP debug dump should include MPS, transfer length, PRP1 offset, each physical address, and the byte interval covered by each entry. Checking only for nonzero addresses misses list-versus-page mistakes, a missing final page, or use of a virtual address as a physical address."),
+            "sources": ["BASE4-PRP", "BASE4-PSDT"],
+            "figures": [110, 111, 112, 113],
+        },
+        {
+            "id": "sgl",
+            "title": b("SGL 是 typed descriptor chain，不是另一種 PRP List", "An SGL is a typed descriptor chain, not another PRP List"),
+            "lead": b("SGL descriptor 同時包含 type/subtype、address 與 length；Data Block 指向資料，Segment／Last Segment 指向更多 descriptors，Bit Bucket 表示資料不需實際放入 memory。Figures 114-125 應先讀 type，再讀該 type 對 address/length 的語意，不能只沿 address 盲走。", "An SGL descriptor combines type/subtype, address, and length. A Data Block addresses data, Segment and Last Segment address more descriptors, and Bit Bucket represents data that need not be stored in memory. Figures 114-125 require type-first decoding; blindly following an address before decoding type is incorrect."),
+            "nodes": b(["由 PSDT 選 SGL", "讀 descriptor type/subtype", "驗證 length", "若為 data：加入 interval", "若為 segment：走訪 descriptors", "遇 Last Segment 結束"], ["Select SGL through PSDT", "Read descriptor type/subtype", "Validate length", "For data: add interval", "For segment: walk descriptors", "Stop at Last Segment"]),
+            "rows": b([
+                ["PRP", "page-based addresses", "第一頁 offset + 後續 page alignment"],
+                ["SGL Data Block", "address + byte length", "資料區段可用 descriptor 表示"],
+                ["SGL Segment", "address + descriptor-list length", "指向下一層 descriptors，不是 data"],
+                ["Bit Bucket", "只消耗 transfer length", "不代表可讀寫的 memory buffer"],
+            ], [
+                ["PRP", "Page-based addresses", "First-page offset plus later-page alignment"],
+                ["SGL Data Block", "Address plus byte length", "A descriptor represents a data region"],
+                ["SGL Segment", "Address plus descriptor-list length", "Points to more descriptors, not data"],
+                ["Bit Bucket", "Consumes transfer length only", "Does not represent a readable or writable memory buffer"],
+            ]),
+            "example": b("說明性範例：requested transfer 為 12 KiB，兩個 Data Block descriptors 分別描述 8 KiB 與 4 KiB，總 length 正好覆蓋 request。若第一個 descriptor 實際是 Segment，8 KiB 便是 descriptor list 長度而非 data 長度，parser 的累加結果會完全錯誤。", "Informative example: a 12 KiB request is covered by two Data Block descriptors of 8 KiB and 4 KiB. If the first descriptor is actually a Segment, its 8 KiB value describes a descriptor-list length rather than data length, and a parser that accumulates it as data is fundamentally wrong."),
+            "pitfall": b("SGL validator 應同時限制 nesting、descriptor count、總 byte length、overflow 與 loop。每走一步先記 type/subtype，再決定 address 指向 data 或另一串 descriptors；順序顛倒會造成越界或循環。", "An SGL validator should bound nesting, descriptor count, total byte length, overflow, and loops. At every step, log type/subtype before deciding whether the address denotes data or another descriptor sequence; reversing that order can cause out-of-bounds traversal or cycles."),
+            "sources": ["BASE4-SGL", "BASE4-PSDT"],
+            "figures": [114, 115, 116, 117, 118, 119, 120, 121, 122, 125],
+        },
+        {
+            "id": "identity-text",
+            "title": b("Feature、identifier、list 與 UTF-8 都需要先驗證 scope", "Features, identifiers, lists, and UTF-8 all require scope validation"),
+            "lead": b("Feature 的 current/default/saved value 是時間與 persistence scope；VID、SN、EUI64、NGUID、UUID 是 identity scope；Controller/Namespace List 是 count 與 array boundary；UTF-8 是 byte sequence 與 code-point boundary。Figures 126-142 表面分散，實際都在教 parser 不可脫離 scope。", "Feature current/default/saved values define time and persistence scope; VID, SN, EUI64, NGUID, and UUID define identity scope; Controller/Namespace Lists define count and array boundaries; UTF-8 defines byte-sequence and code-point boundaries. Figures 126-142 appear diverse but share one parser rule: never interpret a value without its scope."),
+            "nodes": b(["辨識資料種類", "取得 width/count", "確認 authority/scope", "驗證 reserved/padding", "建立穩定 comparison key"], ["Identify data kind", "Obtain width/count", "Confirm authority/scope", "Validate reserved/padding", "Build a stable comparison key"]),
+            "rows": b([
+                ["VID/SSVID", "vendor/subsystem vendor", "配置 authority 不同"], ["SN/MN", "產品 instance/model 字串", "需依固定欄位與 padding 解讀"],
+                ["EUI64/NGUID/UUID", "不同格式與 uniqueness scope", "不可只因長度相近互換"], ["List", "count + identifiers", "先驗證 count 再走訪"],
+            ], [
+                ["VID/SSVID", "Vendor/subsystem-vendor identity", "Assignment authorities differ"], ["SN/MN", "Product instance/model strings", "Interpret fixed fields and padding"],
+                ["EUI64/NGUID/UUID", "Different formats and uniqueness scopes", "Similar length does not make them interchangeable"], ["List", "Count plus identifiers", "Validate count before iteration"],
+            ]),
+            "example": b("說明性範例：Namespace List 的 count 宣稱有 5 個 IDs，但實際 buffer 只含 3 個完整 entries。安全 parser 以 buffer length 與格式上限先拒絕，不應因 count 欄位看似合法就讀取第四個 entry。UTF-8 固定欄位也同理：截斷在多-byte character 中間時不能接受半個字元。", "Informative example: a Namespace List claims five IDs but the returned buffer contains only three complete entries. A safe parser rejects the structure using buffer length and format limits rather than reading a fourth entry because the count looks plausible. A fixed UTF-8 field follows the same boundary rule: a truncated multibyte character is not accepted as half a character."),
+            "pitfall": b("identity database 同時保存 value、type、width、source object 與 scope。只存十六進位字串會讓 EUI64、NGUID、UUID 或不同 controller 下的 identifier 發生假相等。", "An identity database stores value, type, width, source object, and scope together. Storing only a hexadecimal string can create false equality among EUI64, NGUID, UUID, or identifiers obtained from different controllers."),
+            "sources": ["BASE4-FEATURE", "BASE4-IDENTIFIER", "BASE4-LISTS", "BASE4-UTF8"],
+            "figures": [126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 142],
+        },
+    ],
+    "pcie-transport-1.4": [
+        {
+            "id": "layers",
+            "title": b("Base 定義 NVMe，PCIe Transport 定義它如何落在 PCIe 上", "Base defines NVMe; the PCIe Transport defines how it is realized on PCIe"),
+            "lead": b("Figure 1 說明文件適用關係，Figure 2 再把 protocol responsibility 分層。工程上應把『command 語意』與『如何透過 host memory、MMIO、configuration space、interrupt 傳送』分開查證；Transport 發現衝突時不能改寫 Base。", "Figure 1 shows document applicability and Figure 2 separates protocol responsibility. Engineering analysis separates command semantics from the way host memory, MMIO, configuration space, and interrupts carry the operation. The Transport does not rewrite Base when the two conflict."),
+            "nodes": b(["Base command/queue/status", "PCIe memory binding", "BAR/MMIO/host memory", "PCIe transaction/link", "controller execution"], ["Base command/queue/status", "PCIe memory binding", "BAR/MMIO/host memory", "PCIe transaction/link", "Controller execution"]),
+            "rows": b([
+                ["Base", "command 與 completion 的共通語意", "最高優先序的 NVMe 定義"],
+                ["PCIe Transport", "address、register、doorbell、interrupt 綁定", "補充 PCIe-specific 要求"],
+                ["PCI-SIG 規格", "原生 PCIe capability/transaction 語意", "本報告只引用來源明載的 NVMe-specific 部分"],
+            ], [
+                ["Base", "Common command and completion semantics", "Highest-precedence NVMe definition"],
+                ["PCIe Transport", "Address, register, doorbell, and interrupt binding", "Adds PCIe-specific requirements"],
+                ["PCI-SIG specifications", "Native PCIe capability and transaction semantics", "This report covers only NVMe-specific statements present in the supplied source"],
+            ]),
+            "example": b("說明性範例：Firmware Commit 的 CA/FS 與 status code 在 Base 解讀；SQE 放在 host memory、doorbell 位於 BAR0/1 memory space、completion 如何觸發 MSI-X，則由 PCIe Transport 補足。", "Informative example: Base defines Firmware Commit CA/FS and status codes. The PCIe Transport adds where the SQE resides in host memory, where the doorbell resides in BAR0/1 memory space, and how a completion can trigger MSI-X."),
+            "pitfall": b("設計文件的每個欄位旁標 owner specification。若一個 bug report 把 command status、PCIe AER 與 device register access 混成『NVMe error』，recovery 層級通常也會選錯。", "Label the owning specification beside every field in a design document. A defect report that merges command status, PCIe AER, and device-register access into one 'NVMe error' usually chooses the wrong recovery layer as well."),
+            "sources": ["PCIE14-SCOPE", "PCIE14-CONVENTION", "PCIE14-OVERVIEW"],
+            "figures": [1, 2],
+        },
+        {
+            "id": "mmio-doorbell",
+            "title": b("從 BAR 到 doorbell offset：每一步都保留單位", "From BAR to doorbell offset: preserve units at every step"),
+            "lead": b("NVMe controller registers 位於 BAR0/BAR1 指定的 memory space。Doorbell 從 1000h 起，queue y 的 SQ tail 與 CQ head 依 CAP.DSTRD 計算間距。Figures 3-6 要連成 address derivation，而不是四張獨立 register 表。", "NVMe controller registers reside in the memory space designated by BAR0/BAR1. Doorbells begin at 1000h; SQ-tail and CQ-head registers for queue y are spaced using CAP.DSTRD. Figures 3-6 form one address derivation rather than four independent register tables."),
+            "nodes": b(["讀 BAR0/BAR1", "建立 MMIO base", "讀 CAP.DSTRD", "算 stride=4<<DSTRD", "帶入 queue y 與 SQ/CQ index", "以合法 width 存取"], ["Read BAR0/BAR1", "Map MMIO base", "Read CAP.DSTRD", "Compute stride=4<<DSTRD", "Insert queue y and SQ/CQ index", "Access with a legal width"]),
+            "rows": b([
+                ["SQ y tail", "1000h + (2y) × (4 << DSTRD)", "host 公布新 SQ tail"],
+                ["CQ y head", "1000h + (2y+1) × (4 << DSTRD)", "host 公布已消費 CQ head"],
+                ["doorbell value", "queue pointer", "不含 SQE/CQE 本體"],
+            ], [
+                ["SQ y tail", "1000h + (2y) x (4 << DSTRD)", "Host publishes a new SQ tail"],
+                ["CQ y head", "1000h + (2y+1) x (4 << DSTRD)", "Host publishes a consumed CQ head"],
+                ["Doorbell value", "Queue pointer", "Does not contain the SQE or CQE body"],
+            ]),
+            "example": b("說明性範例：DSTRD=1，stride=4<<1=8 bytes。queue 3 的 SQ tail offset =1000h+(6×8)=1030h；CQ head offset =1000h+(7×8)=1038h。兩者只差一個 stride。若把 DSTRD 當成 byte count，所有非零 DSTRD 的 doorbell 位址都會錯。", "Informative example: with DSTRD=1, stride=4<<1=8 bytes. SQ-tail offset for queue 3 is 1000h+(6x8)=1030h; CQ-head offset is 1000h+(7x8)=1038h. They differ by one stride. Treating DSTRD itself as a byte count makes every nonzero-DSTRD doorbell address wrong."),
+            "pitfall": b("doorbell trace 保存 BAR base、DSTRD、queue ID、公式中間值、final physical address、written pointer 與 access width。若 only log final virtual address，無法辨別 BAR mapping、stride 或 queue index 哪一步出錯。", "A doorbell trace retains BAR base, DSTRD, queue ID, formula intermediates, final physical address, written pointer, and access width. Logging only the final virtual address cannot distinguish BAR mapping, stride, or queue-index defects."),
+            "sources": ["PCIE14-MMIO", "PCIE14-DOORBELL"],
+            "figures": [3, 4, 5, 6],
+        },
+        {
+            "id": "command",
+            "title": b("Figure 8 的八步 command processing 是 ownership handoff", "The eight Figure 8 command-processing steps are ownership handoffs"),
+            "lead": b("SQE、doorbell、controller fetch、CQE、interrupt 與 CQ head 不是同一個事件的不同名稱，而是 host/controller 之間逐步移交 ownership。正確順序同時決定 memory ordering 與資源何時可重用。", "SQE creation, doorbell write, controller fetch, CQE posting, interrupt delivery, and CQ-head update are not names for one event; they are successive ownership handoffs between host and controller. Their order governs both memory ordering and resource reuse."),
+            "nodes": b(["1 host 寫 SQE", "2 host 寫 SQ tail doorbell", "3 controller fetch", "4 execute", "5 controller 寫 CQE", "6 interrupt", "7 host 處理 CQE", "8 host 寫 CQ head doorbell"], ["1 Host writes SQE", "2 Host writes SQ-tail doorbell", "3 Controller fetches", "4 Execute", "5 Controller writes CQE", "6 Interrupt", "7 Host processes CQE", "8 Host writes CQ-head doorbell"]),
+            "rows": b([
+                ["SQ slot reuse", "controller 已消費該 SQE", "由完成資訊的 SQHD 協助追蹤"],
+                ["command buffer reuse", "command 已 completion 且資料可見", "依 command/data direction 核對"],
+                ["CQ slot release", "host 已完整消費 CQE", "之後才寫 CQ head doorbell"],
+            ], [
+                ["SQ-slot reuse", "Controller has consumed the SQE", "Completion SQHD assists tracking"],
+                ["Command-buffer reuse", "Command completed and data is visible", "Check command and data direction"],
+                ["CQ-slot release", "Host completely consumed the CQE", "Then write the CQ-head doorbell"],
+            ]),
+            "example": b("說明性範例：host 先寫 doorbell、後補 SQE 的最後一個 dword，controller 可能 fetch 到半成品。另一個方向，host 在讀完 CQE 前先更新 CQ head，controller 可能重用該 CQ slot。兩者都是 ownership 順序錯誤，不是 command opcode 問題。", "Informative example: if the host rings the doorbell before writing the final SQE dword, the controller may fetch a partial command. In the other direction, updating CQ head before fully reading the CQE can let the controller reuse that CQ slot. Both are ownership-ordering failures, not opcode failures."),
+            "pitfall": b("時間軸同時記錄 CPU core、SQ tail、doorbell MMIO、SQHD、CQ phase、interrupt vector 與 CQ head。分散在不同 log 的事件需用 CID/SQID 與 timestamp 對齊，才能定位 lost interrupt、stale phase 或 memory-ordering 問題。", "A timeline records CPU core, SQ tail, doorbell MMIO, SQHD, CQ phase, interrupt vector, and CQ head. Events from separate logs are aligned by CID/SQID and timestamp to isolate lost interrupts, stale phase, or memory-ordering defects."),
+            "sources": ["PCIE14-COMMAND", "PCIE14-QUEUE"],
+            "figures": [7, 8],
+        },
+        {
+            "id": "interrupts",
+            "title": b("Interrupt mode 比較：vector 數量、遮罩與 latency 是三個維度", "Interrupt-mode comparison: vector count, masking, and latency are separate dimensions"),
+            "lead": b("pin-based、single-message MSI、multiple-message MSI 與 MSI-X 的差異不只效能。它們提供的 vector 數、masking 位置與 capability structure 不同；interrupt coalescing 另外決定多個 completion 何時合併通知。Figure 9 與 Figures 34-46 應配合 queue-to-vector mapping 閱讀。", "Pin-based, single-message MSI, multiple-message MSI, and MSI-X differ in more than performance. They provide different vector counts, masking locations, and capability structures; interrupt coalescing separately controls when multiple completions produce a notification. Figure 9 and Figures 34-46 belong with queue-to-vector mapping."),
+            "nodes": b(["選 interrupt capability", "配置 enable/vector", "建立 CQ 時指定 IV", "controller 產生 interrupt", "host service 所有相關 CQ", "必要時調 coalescing"], ["Select interrupt capability", "Configure enable/vector", "Assign IV when creating CQ", "Controller generates interrupt", "Host services every related CQ", "Tune coalescing if needed"]),
+            "rows": b([
+                ["pin-based", "傳統共享線路", "共享與 masking 行為不同"],
+                ["single MSI", "單一 message/vector", "多個 CQ 可能共享服務路徑"],
+                ["multiple MSI", "一組連續 messages", "受 MME/MMC 等能力限制"],
+                ["MSI-X", "table-based 多 vectors、獨立 mask", "規格建議優先使用"],
+            ], [
+                ["Pin-based", "Legacy shared signaling", "Sharing and masking differ"],
+                ["Single MSI", "One message/vector", "Multiple CQs may share a service path"],
+                ["Multiple MSI", "A set of contiguous messages", "Constrained by MME/MMC capability"],
+                ["MSI-X", "Table-based vectors with independent masks", "Preferred by the specification"],
+            ]),
+            "example": b("說明性範例：CQ 1 與 CQ 2 共用 vector 5。收到 vector 5 時，handler 不能只檢查 CQ 1；它必須處理所有映射到該 vector 的相關 CQs。提高 coalescing threshold 可減少 interrupts，但可能增加 CQE 等待時間。", "Informative example: CQ 1 and CQ 2 share vector 5. When vector 5 arrives, the handler cannot inspect only CQ 1; it services every relevant CQ mapped to the vector. Raising the coalescing threshold can reduce interrupt rate while increasing CQE wait time."),
+            "pitfall": b("Interrupt debug 分開檢查 capability enable、CQ IV、MSI/MSI-X mask、pending state、controller CQE 與 host handler。只有『沒有進 ISR』不足以判斷是 controller 沒送、PCIe 沒傳、vector 被 mask 或 handler 漏掃 CQ。", "Interrupt debugging separates capability enable, CQ IV, MSI/MSI-X mask, pending state, controller CQE, and host handler. 'ISR did not run' cannot distinguish no generation, failed PCIe delivery, a masked vector, or a handler that skipped a CQ."),
+            "sources": ["PCIE14-INTERRUPT", "PCIE14-QUEUE", "PCIE14-HOST"],
+            "figures": [9, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+        },
+        {
+            "id": "config-error",
+            "title": b("Configuration space 是 capability map；AER 是 transport error map", "Configuration space is a capability map; AER is a transport-error map"),
+            "lead": b("Figures 10-67 從 Type 0 header 走到 Power Management、MSI/MSI-X、PCIe capability 與 AER。閱讀順序應先找 capability pointer／extended capability，再以該 capability base 加 offset；AER status/mask/severity/header log 應視為一組，不可只截取單一 error bit。", "Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Locate the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits."),
+            "nodes": b(["讀 Type 0 header", "定位 capability chain", "解析 PM/MSI/MSI-X/PXCAP", "定位 AERCAP", "讀 status+mask+severity", "必要時保存 header/TLP prefix"], ["Read Type 0 header", "Locate capability chain", "Parse PM/MSI/MSI-X/PXCAP", "Locate AERCAP", "Read status+mask+severity", "Preserve header/TLP prefix if needed"]),
+            "rows": b([
+                ["NVMe CQE status", "command 執行結果", "由 NVMe command context 解"],
+                ["PCIe Device Status", "PCIe Function 狀態摘要", "位於 PCIe capability"],
+                ["AER", "correctable/uncorrectable transport errors", "status、mask、severity、header 一起看"],
+                ["power state", "slot limit 與 device power 控制", "不得選超過 slot power limit 的 NVMe state"],
+            ], [
+                ["NVMe CQE status", "Command execution result", "Decode in NVMe command context"],
+                ["PCIe Device Status", "PCIe Function status summary", "Located in PCIe capability"],
+                ["AER", "Correctable/uncorrectable transport errors", "Read status, mask, severity, and header together"],
+                ["Power state", "Slot limit and device power control", "Never choose an NVMe state above the slot power limit"],
+            ]),
+            "example": b("說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 決定 correctable/uncorrectable handling，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。", "Informative example: when an AERUCES bit is set, first check its mask to determine reporting, then its severity for handling, and finally the header log for transaction context. The bit cannot be translated directly into an NVMe SC."),
+            "pitfall": b("configuration dump 要保留 capability base，而不只保存 register value。相同 offset 若相對於不同 capability base 會指到不同欄位；AER snapshot 也應在清除 RW1C status 前一次保存完整集合。", "A configuration dump retains the capability base as well as register values. The same relative offset under a different capability base denotes a different field. Capture the complete AER set before clearing any RW1C status."),
+            "sources": ["PCIE14-CONFIG", "PCIE14-ERROR", "PCIE14-POWER"],
+            "figures": list(range(10, 68)),
+        },
+        {
+            "id": "eom",
+            "title": b("EOM parser：先 size，再 header，再 lane descriptor", "EOM parser: size first, header second, lane descriptors third"),
+            "lead": b("Physical Interface Receiver Eye Opening Measurement log page 是變長資料結構。host 先確認 support 與需要的大小，再讀 specific parameter/identifier、header、lane descriptor 與 measurement data。Figures 70-77 應形成 parser pipeline，而不是把每個欄位表獨立翻譯。", "The Physical Interface Receiver Eye Opening Measurement log page is variable length. The host confirms support and required size before parsing specific parameters/identifiers, the header, lane descriptors, and measurement data. Figures 70-77 form a parser pipeline rather than independent field translations."),
+            "nodes": b(["確認 LID/support", "查所需 size", "配置 buffer 並取 log", "驗證 header/count", "逐 lane 解析 descriptor", "依 unit/scale 解 measurement"], ["Confirm LID/support", "Query required size", "Allocate buffer and fetch log", "Validate header/count", "Parse each lane descriptor", "Apply measurement unit/scale"]),
+            "rows": b([
+                ["specific parameter", "選量測動作與品質/狀態", "先決定 request context"],
+                ["specific identifier", "選 lane/test context", "避免把不同量測混在一起"],
+                ["header", "全域長度與配置", "所有後續 offset 的基準"],
+                ["lane descriptor", "每 lane 邊界/狀態", "只在 buffer 內走訪"],
+            ], [
+                ["Specific parameter", "Selects measurement action and quality/state", "Establish request context first"],
+                ["Specific identifier", "Selects lane/test context", "Prevents mixing different measurements"],
+                ["Header", "Global length and layout", "Base for every later offset"],
+                ["Lane descriptor", "Per-lane boundaries and status", "Walk only within returned buffer"],
+            ]),
+            "example": b("說明性範例：header 宣稱有 8 個 lane descriptors，但 buffer length 只能容納 6 個完整 descriptors。parser 應回報 truncated structure 並停止，不得根據平台預期 lane count 讀過 buffer 結尾。", "Informative example: the header claims eight lane descriptors while the returned buffer can contain only six complete descriptors. The parser reports a truncated structure and stops; it must not read beyond the buffer because the platform was expected to have eight lanes."),
+            "pitfall": b("保存 request parameter、identifier、returned byte count、header-declared size、lane number 與 measurement status。只有最終 eye 圖不足以重現 selector、length 或 lane mapping 錯誤。", "Retain request parameter, identifier, returned byte count, header-declared size, lane number, and measurement status. A final eye plot alone cannot reproduce selector, length, or lane-mapping defects."),
+            "sources": ["PCIE14-EOM", "PCIE14-HOST"],
+            "figures": [70, 71, 72, 73, 74, 75, 76, 77],
+        },
+    ],
+    "base-admin-fw-logs": [
+        {
+            "id": "fw-capability-plan",
+            "title": b("先讀能力，再決定 firmware update 計畫", "Read capabilities before choosing a firmware-update plan"),
+            "lead": b("Firmware update 不是固定 command recipe。FRMW 決定 slot 與 activation 能力，FWUG 決定 download chunk 的 granularity／alignment，MTFA 與 MPTFAWR 決定 host 能等待多久，MDS／DID 則決定結果影響哪一組 controllers。", "Firmware update is not a fixed command recipe. FRMW controls slots and activation capability, FWUG controls download granularity and alignment, MTFA and MPTFAWR bound waiting time, and MDS/DID define which controllers share the result."),
+            "nodes": b(["Identify Controller snapshot", "FRMW：slot／activation", "FWUG：chunk／alignment", "MTFA／MPTFAWR：timeout", "MDS／DID：sharing scope", "產生合法更新計畫"], ["Identify Controller snapshot", "FRMW: slots / activation", "FWUG: chunks / alignment", "MTFA / MPTFAWR: timeout", "MDS / DID: sharing scope", "Build a legal update plan"]),
+            "rows": b([
+                ["FRMW", "可用 slots、slot 1 read-only、activation 能力", "選 FS 與 CA 前先讀"],
+                ["FWUG", "download portion 的粒度與對齊", "先換成 bytes，再切 image"],
+                ["MTFA／MPTFAWR", "可能暫停與立即 activation 的時間界線", "timeout 不可寫死"],
+                ["MDS／DID", "firmware slots 的共享 domain", "不可只用 PCI Function 當 scope"],
+            ], [
+                ["FRMW", "Available slots, slot-1 read-only state, activation capability", "Read before selecting FS and CA"],
+                ["FWUG", "Download-portion granularity and alignment", "Convert to bytes before splitting the image"],
+                ["MTFA / MPTFAWR", "Timing bounds for activation interruption", "Do not hard-code timeout"],
+                ["MDS / DID", "Domain that shares firmware slots", "A PCI Function is not the complete scope"],
+            ]),
+            "example": b("若 FWUG 解碼為 4 KiB，12 KiB image 可切成三個 4 KiB portions；最後一筆不是任意長度的尾包。計畫還要先確認 slot 2 合法且不是 read-only，並依 activation path 選擇 timeout。", "If FWUG decodes to 4 KiB, a 12 KiB image can be split into three 4 KiB portions; the final transfer is not an arbitrary short tail. The plan must also establish that slot 2 is legal and writable and select a timeout for the activation path."),
+            "pitfall": b("只保存 command trace、不保存 capability snapshot，會讓相同 firmware image 在不同 controller revision 上出現不同結果時無法重現。", "A command trace without the capability snapshot cannot explain why the same firmware image behaves differently on another controller revision."),
+            "sources": ["BASEFWLOG-CAP-FRMW", "BASEFWLOG-CAP-FWUG", "BASEFWLOG-CAP-MTFA", "BASEFWLOG-CAP-MPTFAWR", "BASEFWLOG-CAP-MDS-ULIST"],
+            "figures": [337, 338],
+        },
+        {
+            "id": "fw-download-geometry",
+            "title": b("Download 是 byte range 幾何，不是把檔案直接丟給 controller", "Download is byte-range geometry, not a direct file upload"),
+            "lead": b("每筆 Firmware Image Download 都用 DPTR 指向 host buffer，再用 0's-based NUMD 表示 transfer dwords、用 OFST 表示 image-relative dword offset。host 必須同時證明 buffer、length、offset、FWUG 與前後 portions 沒有 gap／overlap。", "Each Firmware Image Download uses DPTR for the host buffer, zero-based NUMD for transfer dwords, and OFST for the image-relative dword offset. The host must prove buffer validity, length, offset, FWUG compliance, and absence of gaps or overlaps."),
+            "nodes": b(["image bytes", "依 FWUG 切 portions", "bytes ÷ 4 → dwords", "NUMD = dwords - 1", "OFST = 已送 bytes ÷ 4", "CQE success 後前進"], ["Image bytes", "Split by FWUG", "bytes / 4 → dwords", "NUMD = dwords - 1", "OFST = sent bytes / 4", "Advance after CQE success"]),
+            "rows": b([
+                ["DPTR", "本筆 transfer 的 host buffer", "地址有效不代表 length 正確"],
+                ["NUMD", "本筆 dword 數的 0's-based encoding", "4096 bytes → 1024 dwords → 03FFh"],
+                ["OFST", "image 起點的 dword offset", "第二個 4 KiB portion 為 1024 dwords"],
+                ["FWUG", "portion alignment／granularity gate", "全 image 與每筆 portion 分開檢查"],
+            ], [
+                ["DPTR", "Host buffer for this transfer", "A valid address does not prove a valid length"],
+                ["NUMD", "Zero-based dword count for this transfer", "4096 bytes → 1024 dwords → 03FFh"],
+                ["OFST", "Dword offset from the image start", "The second 4 KiB portion starts at 1024 dwords"],
+                ["FWUG", "Portion alignment and granularity gate", "Validate the image and each portion separately"],
+            ]),
+            "example": b("12 KiB image、4 KiB chunks：portion 0 使用 NUMD=03FFh、OFST=00000000h；portion 1 使用 NUMD=03FFh、OFST=00000400h；portion 2 使用 NUMD=03FFh、OFST=00000800h。三筆 completion 都成功後才可 Commit。", "For a 12 KiB image in 4 KiB chunks: portion 0 uses NUMD=03FFh and OFST=00000000h; portion 1 uses NUMD=03FFh and OFST=00000400h; portion 2 uses NUMD=03FFh and OFST=00000800h. Commit follows only after all three completions succeed."),
+            "pitfall": b("最常見錯誤是把 OFST 當 byte offset、把 NUMD 當實際 dword count，或在 CQE 尚未確認 success 前重用 buffer。", "Common errors include treating OFST as a byte offset, treating NUMD as an actual dword count, or reusing a buffer before its CQE proves success."),
+            "sources": ["BASEFWLOG-DOWNLOAD-RANGE", "BASEFWLOG-DOWNLOAD-FIELDS"],
+            "figures": [93, 190, 191, 192, 193],
+        },
+        {
+            "id": "fw-commit-state",
+            "title": b("Commit 把 downloaded portions 轉成 slot state 與 activation policy", "Commit converts downloaded portions into slot state and activation policy"),
+            "lead": b("Commit Action（CA）不是成功／失敗旗標；它同時決定 replace、activate 與 reset boundary。Firmware Slot（FS）選擇目標 slot，CQE status 決定下一步是驗證、執行特定 reset、等待，還是停止。", "Commit Action (CA) is not a success flag; it selects replacement, activation, and reset boundary. Firmware Slot (FS) selects the target slot, while CQE status determines whether software verifies, performs a specific reset, waits, or stops."),
+            "nodes": b(["downloaded portions 完整", "填 CA／FS", "controller 驗證 image", "放入 slot／排定或立即 activation", "解完整 SCT／SC／MUD", "依 status 選 reset／verify／stop"], ["Downloaded portions complete", "Encode CA / FS", "Controller validates image", "Place in slot / schedule or activate", "Decode complete SCT / SC / MUD", "Choose reset / verify / stop"]),
+            "rows": b([
+                ["CA", "replace 與 activation 行為", "不可只記十進位值"],
+                ["FS", "目標 firmware slot", "0 可能代表 controller 選 slot，依定義判讀"],
+                ["SCT／SC", "成功、reset scope 或失敗原因", "0Bh、10h、11h 的 reset scope 不同"],
+                ["MUD", "重疊 update sequence 證據", "即使 abort 也可能有效"],
+            ], [
+                ["CA", "Replacement and activation behavior", "Do not log only a decimal value"],
+                ["FS", "Target firmware slot", "Zero may let the controller choose; follow the definition"],
+                ["SCT / SC", "Success, reset scope, or failure cause", "0Bh, 10h, and 11h imply different reset scopes"],
+                ["MUD", "Evidence of overlapping update sequences", "It may be meaningful even when the command aborts"],
+            ]),
+            "example": b("若 completion 回報 Firmware Activation Requires Controller Level Reset，Commit 本身可已成功，但 image 尚未成為 current active firmware。software 應記錄 status、執行正確 reset，再以 Identify.FR 與 LID 03h 驗證。", "If completion reports Firmware Activation Requires Controller Level Reset, Commit may have succeeded while the image is not yet current. Software records the status, performs the specified reset, and then verifies Identify.FR and LID 03h."),
+            "pitfall": b("把所有 activation-required status 都當成『重試 Commit』會重複修改 slot，甚至製造 MUD。先依 SCT／SC 選 recovery branch。", "Treating every activation-required status as 'retry Commit' can modify the slot again and create MUD. Select the recovery branch from SCT/SC first."),
+            "sources": ["BASEFWLOG-COMMIT-PURPOSE", "BASEFWLOG-COMMIT-CDW10", "BASEFWLOG-COMMIT-MUD", "BASEFWLOG-COMMIT-STATUS"],
+            "figures": [187, 188, 189],
+        },
+        {
+            "id": "fw-lid03-proof",
+            "title": b("LID 03h 驗證不是只讀一個版本字串", "LID 03h verification is more than reading one revision string"),
+            "lead": b("Get Log Page 先用 common command 欄位建立 512-byte transfer，再以 LID=03h 選 Firmware Slot Information。AFI 同時拆成 CAFS 與 NAFS，FRS1-FRS7 表示各 slots 的 revision；最後還要用 Identify.FR 與 domain scope 交叉確認。", "Get Log Page first builds a 512-byte transfer from common command fields and selects Firmware Slot Information with LID=03h. AFI separates CAFS from NAFS, FRS1-FRS7 report slot revisions, and Identify.FR plus domain scope provide the final cross-check."),
+            "nodes": b(["建立 Get Log Page SQE", "LID=03h／NUMD=127", "讀滿 512-byte buffer", "AFI → CAFS／NAFS", "FRS1-FRS7 逐 slot 解碼", "與 Identify.FR／預期 domain 比對"], ["Build Get Log Page SQE", "LID=03h / NUMD=127", "Read the 512-byte buffer", "AFI → CAFS / NAFS", "Decode FRS1-FRS7 per slot", "Compare Identify.FR and expected domain"]),
+            "rows": b([
+                ["CAFS", "目前執行中的 slot", "它不是 next-reset intent"],
+                ["NAFS", "下一個 reset 後預定 active slot", "0 表示未排定"],
+                ["FRSx", "slot x 的 8-byte revision", "全 0h 不是 ASCII 字串"],
+                ["Identify.FR", "目前 active revision 的獨立觀察", "與 CAFS 對應 FRSx 交叉確認"],
+            ], [
+                ["CAFS", "Currently executing slot", "It is not next-reset intent"],
+                ["NAFS", "Slot scheduled after the next reset", "Zero means none scheduled"],
+                ["FRSx", "Eight-byte revision for slot x", "All-zero bytes are not an ASCII string"],
+                ["Identify.FR", "Independent observation of current revision", "Cross-check against the FRSx selected by CAFS"],
+            ]),
+            "example": b("AFI=22h 時，CAFS=2、NAFS=2；表示 slot 2 現在 active，且 reset 後仍預定 slot 2。若 CAFS=1、NAFS=2，代表 activation 尚未跨過 reset boundary。此解碼是說明性範例，仍須以 Figure 215 的 bit 定義核對。", "With AFI=22h, CAFS=2 and NAFS=2: slot 2 is current and remains scheduled after reset. CAFS=1 with NAFS=2 means activation has not crossed the reset boundary. This is an informative decode and remains subject to the bit definitions in Figure 215."),
+            "pitfall": b("只比對 FRS2 字串而不讀 CAFS，無法證明 slot 2 正在執行；只讀 CAFS 而不比對 Identify.FR，也無法排除 parser offset 或 stale buffer 問題。", "Comparing FRS2 without CAFS does not prove slot 2 is executing; reading CAFS without Identify.FR does not exclude a parser-offset or stale-buffer defect."),
+            "sources": ["BASEFWLOG-LOG-COMMAND", "BASEFWLOG-LOG-LENGTH", "BASEFWLOG-LOG-SCOPE", "BASEFWLOG-LID03-AFI", "BASEFWLOG-LID03-FRS", "BASEFWLOG-CAP-FR"],
+            "figures": [203, 204, 205, 206, 207, 208, 209, 215, 338],
+        },
+    ],
+    "base-power-features": [
+        {
+            "id": "feature-read-set-loop",
+            "title": b("先 Get、再 Set、最後重新觀測", "Get first, Set second, then observe again"),
+            "lead": b("Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。", "A Feature is not a simple register. The host first reads capability with SEL=011b, then retrieves current/default/saved views, confirms scope and persistence, and only then writes. Set completion proves command outcome; a follow-up Get and runtime telemetry prove that software observes the new policy."),
+            "nodes": b(["Identify capability gates", "Get SEL=011b", "Get current/default", "選 FID-specific value", "Set + decode CQE", "Get again + observe runtime"], ["Identify capability gates", "Get SEL=011b", "Get current/default", "Choose FID-specific value", "Set + decode CQE", "Get again + observe runtime"]),
+            "rows": b([
+                ["SEL=000b", "current value", "確認此刻 controller policy"],
+                ["SEL=001b", "default value", "建立 rollback baseline"],
+                ["SEL=010b", "saved value", "不等於一定曾經 save"],
+                ["SEL=011b", "CHANG／NSSPEC／SVBL", "寫入前的 capability gate"],
+            ], [
+                ["SEL=000b", "Current value", "Observe current controller policy"],
+                ["SEL=001b", "Default value", "Establish a rollback baseline"],
+                ["SEL=010b", "Saved value", "Does not prove a value was saved"],
+                ["SEL=011b", "CHANG/NSSPEC/SVBL", "Capability gate before writing"],
+            ]),
+            "example": b("讀 FID 02h current 時 CDW10=00000002h；讀 supported capabilities 時 SEL=3，所以 CDW10=(3×100h)+02h=00000302h。若 CHANG=0，流程在 Set 前停止；若 CHANG=1，再依 NPSS 與 PSD 組合 CDW11。", "For FID 02h current, CDW10=00000002h. For supported capabilities, SEL=3 so CDW10=(3×100h)+02h=00000302h. If CHANG=0, stop before Set; if CHANG=1, construct CDW11 from NPSS and the PSDs."),
+            "pitfall": b("不要只印『Get succeeded』。保留原始 CDW10／CDW14、CQE.DW0、SCT／SC／DNR，以及 current/default/saved/capability 哪一個 view；否則同一個 32-bit 回傳值會被錯解成不同語意。", "Do not log only 'Get succeeded.' Retain raw CDW10/CDW14, CQE.DW0, SCT/SC/DNR, and the selected current/default/saved/capability view; otherwise the same 32-bit result can be decoded with the wrong semantics."),
+            "sources": ["BASEPOWER-READ-FIRST", "BASEPOWER-GET-SELECT", "BASEPOWER-GET-CAP", "BASEPOWER-SET-SAVE", "BASEPOWER-SET-AFTER"],
+            "figures": [93, 197, 198, 199, 200, 201, 202, 463, 464, 465, 466],
+        },
+        {
+            "id": "power-state-mental-model",
+            "title": b("Power state 是 power、latency 與 performance 的多維 operating point", "A power state is a multidimensional power, latency, and performance operating point"),
+            "lead": b("只看 state number 無法判斷是否適合 workload。每一個 PSD 要一起讀 MP、NOPS、ENLAT／EXLAT、IDLP／ACTP 與 relative performance。PS 數字增加通常降低 maximum power，但不代表所有 latency 或 throughput 一定以固定比例變差。", "A state number alone cannot establish workload suitability. Read MP, NOPS, ENLAT/EXLAT, IDLP/ACTP, and relative performance together in each PSD. Increasing PS numbers reduce maximum power monotonically, but latency and throughput do not necessarily change by a fixed ratio."),
+            "nodes": b(["Identify.NPSS", "讀 PSD[0..NPSS]", "分 operational／non-operational", "算 transition budget", "套 workload latency SLO", "選 FID 02h PS／WH"], ["Identify.NPSS", "Read PSD[0..NPSS]", "Classify operational/non-operational", "Compute transition budget", "Apply workload-latency SLO", "Choose FID 02h PS/WH"]),
+            "rows": b([
+                ["MP", "sustained maximum power", "不是瞬間 sample"],
+                ["IDLP／ACTP", "idle typical／active average", "測量條件不同"],
+                ["ENLAT／EXLAT", "進入／離開 maximum latency", "跨 state 必須相加"],
+                ["RRT/RRL/RWT/RWL", "relative throughput／latency", "只在同類 characteristic 比較"],
+            ], [
+                ["MP", "Sustained maximum power", "Not an instantaneous sample"],
+                ["IDLP/ACTP", "Idle typical / active average", "Different measurement conditions"],
+                ["ENLAT/EXLAT", "Maximum entry/exit latency", "Sum across transitions"],
+                ["RRT/RRL/RWT/RWL", "Relative throughput/latency", "Compare only like characteristics"],
+            ]),
+            "example": b("說明性計算：目前 PS1.EXLAT=100 µs，目標 PS3.ENLAT=2500 µs，直接 transition budget=2600 µs。若 controller 路徑是 PS1→PS2→PS3，還要加入 PS1.EXLAT+PS2.ENLAT 與 PS2.EXLAT+PS3.ENLAT 的每一段，不可仍用 2600 µs。", "Informative calculation: current PS1.EXLAT=100 µs and target PS3.ENLAT=2500 µs produce a direct-transition budget of 2600 µs. If the path is PS1→PS2→PS3, sum PS1.EXLAT+PS2.ENLAT and PS2.EXLAT+PS3.ENLAT instead of reusing 2600 µs."),
+            "pitfall": b("FID 02h Set 成功只證明 controller 接受 PS。Debug 還要保存 NPSS、完整目標 PSD、設定前 state、WH、CQE timestamp、第一筆 I/O latency；non-operational state 又要檢查 I/O 是否先 drain。", "A successful FID 02h Set proves only that the controller accepted PS. Debug evidence also needs NPSS, the complete target PSD, previous state, WH, CQE timestamp, and first-I/O latency; entry into a non-operational state additionally requires checking whether I/O was drained."),
+            "sources": ["BASEPOWER-POWER-STATES", "BASEPOWER-POWER-METRICS", "BASEPOWER-TRANSITION", "BASEPOWER-RELATIVE", "BASEPOWER-NONOP", "BASEPOWER-FID02", "BASEPOWER-WORKLOAD"],
+            "figures": [338, 340, 468, 738, 739, 740],
+        },
+        {
+            "id": "apst-state-machine",
+            "title": b("APST 是由 idle timer 驅動的 state machine", "APST is a state machine driven by idle timers"),
+            "lead": b("APST 的 256-byte buffer 不是 performance table，而是 32 個『idle 多久後進哪個 non-operational state』的 rules。APSTE 決定 timer rules 是否生效；每個 ITPT=0 entry 不參與；I/O 到達又會讓 controller 回到最近 operational state。", "The 256-byte APST buffer is not a performance table. It contains 32 rules stating which non-operational state to enter after a given idle duration. APSTE enables timer rules, entries with ITPT=0 are inactive, and arriving I/O returns the controller to its most recent operational state."),
+            "nodes": b(["APSTE=1", "I/O 完成後開始 idle", "持續 idle > ITPT", "轉到 ITPS non-operational", "I/O 到達", "回到最近 operational PS"], ["APSTE=1", "Start idle after I/O completes", "Continuous idle > ITPT", "Enter ITPS non-operational", "I/O arrives", "Return to most recent operational PS"]),
+            "rows": b([
+                ["APSTE=0", "只允許 host-directed entry", "table 可存在但 timer 不驅動"],
+                ["APSTE=1", "host 或 timer entry", "ITPT 必須連續滿足"],
+                ["NOPPME=0", "background work 不得超過 non-op limits", "可能延後 controller work"],
+                ["NOPPME=1", "background work 可暫時提高 power", "上限仍受最後 operational state 限制"],
+            ], [
+                ["APSTE=0", "Host-directed entry only", "The table may exist but timers do not drive entry"],
+                ["APSTE=1", "Host- or timer-directed entry", "ITPT must be met continuously"],
+                ["NOPPME=0", "Background work stays within non-op limits", "Controller work may be deferred"],
+                ["NOPPME=1", "Background work may raise power temporarily", "Still capped by the last operational state"],
+            ]),
+            "example": b("entry 要在 idle 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 07D00000h；ITPS=3，放入 bits7:3 得 18h，所以低 dword=07D00018h。其餘 reserved bits 與 entry 高 dword 保持 0，32 entries 合計 256 bytes。", "To enter PS3 after 2000 ms idle: ITPT=2000=07D0h, shifted into bits31:8 gives 07D00000h; ITPS=3 in bits7:3 gives 18h, so the low dword is 07D00018h. Reserved bits and the entry high dword remain zero; 32 entries total 256 bytes."),
+            "pitfall": b("常見錯誤包括把 ITPT 當 microseconds、把 ITPS 填 operational state、沒有把未使用 entries 清零，或讓 256-byte PRP buffer 跨越不允許的 page boundary。trace 應保留整個 buffer 的 hash 與逐 entry decode。", "Common errors include treating ITPT as microseconds, selecting an operational ITPS, leaving unused entries nonzero, or placing the 256-byte PRP buffer across an unsupported page boundary. Retain a hash of the full buffer and a per-entry decode."),
+            "sources": ["BASEPOWER-FID0C", "BASEPOWER-APST-ENTRY", "BASEPOWER-APST-NOPPME", "BASEPOWER-NONOP-IO", "BASEPOWER-SET-DPTR"],
+            "figures": [463, 475, 476, 477, 478],
+        },
+        {
+            "id": "temperature-event-loop",
+            "title": b("Temperature Threshold 把 sensor、event 與 clear point 連成一條線", "Temperature Threshold connects sensor, event, and clear point"),
+            "lead": b("FID 04h 不只是一個溫度數字。TMPSEL 決定讀哪個 sensor，THSEL 決定 over 或 under，TMPTH 決定觸發點，TMPTHH 決定離開 event 的 clear point；SMART/Health.TTC 與 AEC enable 則把 controller 狀態送回 host。", "FID 04h is more than a temperature number. TMPSEL selects a sensor, THSEL selects over or under, TMPTH sets the trigger point, TMPTHH sets the event clear point, and SMART/Health.TTC plus AEC enable return controller state to the host."),
+            "nodes": b(["選 Composite／Sensor", "設定 over／under TMPTH", "設定 TMPTHH", "溫度跨 threshold", "TTC + optional AEN", "跨 clear point 後結束 event"], ["Select Composite/Sensor", "Set over/under TMPTH", "Set TMPTHH", "Temperature crosses threshold", "TTC + optional AEN", "Event ends after clear point"]),
+            "rows": b([
+                ["TMPSEL", "Composite 或 sensor 1-8", "Get 不使用 all-sensors selector"],
+                ["THSEL", "over／under", "比較方向相反"],
+                ["TMPTH", "觸發 Kelvin", "log raw K 及轉換後 °C"],
+                ["TMPTHH", "clear hysteresis Kelvin", "不是第二個觸發 threshold"],
+            ], [
+                ["TMPSEL", "Composite or sensor 1-8", "Get does not use all-sensors selection"],
+                ["THSEL", "Over/under", "Comparison direction is reversed"],
+                ["TMPTH", "Trigger Kelvin", "Log raw K and converted °C"],
+                ["TMPTHH", "Clear hysteresis in Kelvin", "Not a second trigger threshold"],
+            ]),
+            "example": b("Composite over threshold=343 K（約 70 °C）、hysteresis=5 K：TMPSEL=0、THSEL=0、TMPTH=0157h、TMPTHH=5，所以 CDW11=(5<<22)+0157h=01400157h。event 於 ≥343 K 觸發，降到 338 K（約 65 °C）才結束。", "For a Composite over threshold of 343 K (about 70 °C) and 5 K hysteresis: TMPSEL=0, THSEL=0, TMPTH=0157h, and TMPTHH=5, giving CDW11=(5<<22)+0157h=01400157h. The event triggers at ≥343 K and ends only after falling to 338 K (about 65 °C)."),
+            "pitfall": b("若 AEN 沒出現，不要立刻判定 threshold 沒作用。依序檢查 AEC.TTHRY／SHCW enable、TTC bit、實際 sensor raw Kelvin、threshold type、hysteresis clear point 與 outstanding Asynchronous Event Request。", "If no AEN appears, do not immediately conclude that the threshold failed. Check AEC.TTHRY/SHCW enables, TTC, raw sensor Kelvin, threshold type, hysteresis clear point, and an outstanding Asynchronous Event Request in order."),
+            "sources": ["BASEPOWER-FID04", "BASEPOWER-HYST", "BASEPOWER-OBSERVE"],
+            "figures": [213, 470, 474],
+        },
+        {
+            "id": "hctm-control-loop",
+            "title": b("HCTM 用兩個 threshold 區分輕度與重度 thermal response", "HCTM uses two thresholds for lighter and stronger thermal response"),
+            "lead": b("HCTM 的目的不是指定固定 clock 或固定 power state，而是讓 host 提供 TMT1／TMT2 兩個 temperature boundaries。controller 在 TMT1 優先降低 performance impact，在 TMT2 則必須更積極控制 temperature；實際 hysteresis 與內部動作屬 vendor implementation。", "HCTM does not select a fixed clock or power state. It gives the controller two temperature boundaries, TMT1/TMT2. At TMT1 the controller minimizes performance impact; at TMT2 it applies stronger thermal control. Actual hysteresis and internal actions are vendor implementation details."),
+            "nodes": b(["讀 HCTMA／MNTMT／MXTMT", "選 TMT1<TMT2", "Set FID10h", "temperature 到 TMT1", "temperature 到 TMT2", "讀 SMART counters／latency"], ["Read HCTMA/MNTMT/MXTMT", "Choose TMT1<TMT2", "Set FID10h", "Temperature reaches TMT1", "Temperature reaches TMT2", "Read SMART counters/latency"]),
+            "rows": b([
+                ["TMT1", "較輕度控制起點", "目標是 minimize impact"],
+                ["TMT2", "較強控制起點", "溫控優先於 impact"],
+                ["MNTMT／MXTMT", "合法設定範圍", "先做 host-side validation"],
+                ["SMART counters", "transition count／time", "證明 control loop 真的動作"],
+            ], [
+                ["TMT1", "Lighter-control boundary", "Objective is to minimize impact"],
+                ["TMT2", "Stronger-control boundary", "Thermal control takes priority"],
+                ["MNTMT/MXTMT", "Legal configuration range", "Validate on the host first"],
+                ["SMART counters", "Transition count/time", "Evidence that the control loop acted"],
+            ]),
+            "example": b("若 MNTMT=273 K、MXTMT=373 K，選 TMT1=343 K、TMT2=353 K 合法，CDW11=(0157h<<16)+0161h=01570161h。FID 10h 可 save；若 capability.SVBL=1 且 policy 要保存，CDW10.SV=1、FID=10h，所以 CDW10=80000010h。", "If MNTMT=273 K and MXTMT=373 K, TMT1=343 K and TMT2=353 K are legal, and CDW11=(0157h<<16)+0161h=01570161h. FID 10h is saveable; if SVBL=1 and policy requires persistence, CDW10.SV=1 with FID=10h gives CDW10=80000010h."),
+            "pitfall": b("TMT1=TMT2、TMT1>TMT2、超出 MNTMT／MXTMT 或把 Celsius 直接寫入 Kelvin 欄位，都應在 host 端先攔截。實機驗證要記錄 ambient、airflow、workload、sensor sampling cadence 與 host latency，否則 performance impact 無法比較。", "Reject TMT1=TMT2, TMT1>TMT2, out-of-range values, or Celsius written directly into Kelvin fields on the host. Hardware validation records ambient, airflow, workload, sensor cadence, and host latency so performance impact remains comparable."),
+            "sources": ["BASEPOWER-FID10", "BASEPOWER-HCTM", "BASEPOWER-OBSERVE"],
+            "figures": [213, 338, 482, 741],
+        },
+        {
+            "id": "end-to-end-debug",
+            "title": b("把 policy、state、event 與量測串成可重現的 Debug 證據", "Connect policy, state, events, and measurements into reproducible debug evidence"),
+            "lead": b("Power／thermal 問題通常不是一個 bit 錯，而是 capability、policy、transition、background work、thermal event 與 host workload 沒有放在同一條 timeline。FID 11h 的 NOPPME、APST、manual PS、HCTM 與 RTD3 又分別控制不同層次，不能互相替代。", "Power/thermal defects rarely reduce to one wrong bit. Capability, policy, transition, background work, thermal events, and host workload must share one timeline. FID 11h NOPPME, APST, manual PS, HCTM, and RTD3 control different layers and do not replace one another."),
+            "nodes": b(["capability snapshot", "raw Get／Set commands", "CQE + timestamp", "APST／PS transition", "temperature／TTC／HCTM", "I/O latency + recovery decision"], ["Capability snapshot", "Raw Get/Set commands", "CQE + timestamp", "APST/PS transition", "Temperature/TTC/HCTM", "I/O latency + recovery decision"]),
+            "rows": b([
+                ["Policy plane", "FID02/04/0C/10/11 raw values", "證明 host 要求什麼"],
+                ["State plane", "PSD、APST timer、I/O return", "證明 controller 在哪個 state"],
+                ["Thermal plane", "sensor、TTC、HCTM counters", "證明溫控何時介入"],
+                ["Outcome plane", "CQE、latency、power／temperature trace", "證明影響與 recovery"],
+            ], [
+                ["Policy plane", "Raw FID02/04/0C/10/11 values", "Proves what the host requested"],
+                ["State plane", "PSD, APST timer, I/O return", "Proves controller-state context"],
+                ["Thermal plane", "Sensors, TTC, HCTM counters", "Proves when thermal control acted"],
+                ["Outcome plane", "CQE, latency, power/temperature trace", "Proves impact and recovery"],
+            ]),
+            "example": b("案例：APSTE=1、idle 2 s 後進 PS3，NOPPME=0。3 s 時 controller background work 未提高 power；4 s 的第一筆 read 先觸發回 operational state，latency spike 應與 PS3.EXLAT 對照。若同時溫度跨 TMT1，還要以 HCTM counter 與 sensor timeline 分辨 exit latency 與 thermal throttling。", "Case: APSTE=1 enters PS3 after 2 s idle and NOPPME=0. At 3 s, controller background work cannot raise power. The first read at 4 s returns to an operational state, and its latency spike is compared with PS3.EXLAT. If temperature also crosses TMT1, HCTM counters and the sensor timeline separate exit latency from thermal throttling."),
+            "pitfall": b("不要用單一結果倒推原因。先問 Set 是否成功、Get 是否讀到預期值、APST timer 是否連續滿足、NOPPME 是否允許 background power、temperature 是否跨 TMT1/TMT2，最後才判斷 controller bug。", "Do not infer cause from one outcome. Establish Set success, follow-up Get value, continuous APST idle time, NOPPME background-power permission, and TMT1/TMT2 crossings before classifying a controller defect."),
+            "sources": ["BASEPOWER-APST-NOPPME", "BASEPOWER-FID11", "BASEPOWER-RTD3", "BASEPOWER-OBSERVE", "BASEPOWER-GET-STATUS"],
+            "figures": [202, 213, 340, 478, 483],
+        },
+    ],
+    "base-self-test-hmb-emulation": [
+        {
+            "id": "three-boundaries",
+            "title": b("先分清三個 boundary：operation、memory ownership、encoded address", "Start with three boundaries: operation, memory ownership, and encoded address"),
+            "lead": b("這組章節不是同一個 feature。Device Self-test 管背景 diagnostic operation；HMB 管 host memory 的 ownership transfer；DSTRD 與 vendor command format 管 encoded value 如何轉成安全的 memory access。共同方法是先找 capability gate，再找狀態或 ownership 轉換，最後找可觀測證據。", "These sections do not describe one feature. Device Self-test manages a background diagnostic operation, HMB manages ownership transfer of host memory, and DSTRD plus the vendor-command format turn encoded values into safe memory accesses. The shared method is to locate a capability gate, identify the state or ownership transition, and then collect observable evidence."),
+            "nodes": b(["Identify capability", "選 engineering track", "提交 command／配置 memory", "controller 進入新狀態", "CQE／log／memory fence", "Debug 第一個斷點"], ["Identify capability", "Choose engineering track", "Submit command / allocate memory", "Controller enters new state", "CQE/log/memory fence", "Debug first broken boundary"]),
+            "rows": b([
+                ["Self-test", "operation lifecycle", "CQE + LID 06h"],
+                ["HMB", "exclusive ownership lifecycle", "Get FID 0Dh + disable CQE"],
+                ["Doorbell emulation", "encoded byte stride", "MMIO address/write trace"],
+                ["Vendor command", "buffer-length contract", "VSCF/SNVSCF + NDT/NDM"],
+            ], [
+                ["Self-test", "Operation lifecycle", "CQE + LID 06h"],
+                ["HMB", "Exclusive-ownership lifecycle", "Get FID 0Dh + disable CQE"],
+                ["Doorbell emulation", "Encoded byte stride", "MMIO address/write trace"],
+                ["Vendor command", "Buffer-length contract", "VSCF/SNVSCF + NDT/NDM"],
+            ]),
+            "example": b("同樣看到 Successful Completion，self-test 只代表 operation 已開始，HMB disable 則代表 ownership 已回到 host。status code 相同，不代表 completion boundary 相同。", "The same Successful Completion means only that a self-test operation started, but for HMB disable it returns ownership to the host. Equal status codes do not imply equal completion boundaries."),
+            "pitfall": b("不要把所有內容都寫成『command 成功／失敗』。先標明成功代表哪個 state transition、哪一方此刻擁有 memory，以及還需要哪一個 log 或 Get Features 才能證明後續結果。", "Do not reduce every topic to command success or failure. Record which transition succeeded, who currently owns memory, and which log or Get Features result is still required to prove the later outcome."),
+            "sources": ["BASEDIAGMEM-SELFTEST-COMPLETION", "BASEDIAGMEM-HMB-OWNERSHIP", "BASEDIAGMEM-DOORBELL-STRIDE", "BASEDIAGMEM-VENDOR-GATE"],
+            "figures": [36, 94, 176, 545],
+        },
+        {
+            "id": "selftest-command-state-machine",
+            "title": b("Device Self-test：先 gate capability，再提交一個背景 operation", "Device Self-test: gate capability before submitting a background operation"),
+            "lead": b("Self-test 不是同步 diagnostic RPC。Host 先用 OACS.DSTS、DSTO.SDSO 與 EDSTT 決定支援、concurrency scope 與時間預期，再用 NSID 與 STC 建構 command。Admin CQE 回來時，背景 operation 才剛進入可由 LID 06h 觀察的生命週期。", "Self-test is not a synchronous diagnostic RPC. The host first uses OACS.DSTS, DSTO.SDSO, and EDSTT to establish support, concurrency scope, and timing, then constructs the command from NSID and STC. When the Admin CQE returns, the background operation has only entered the lifecycle observed through LID 06h."),
+            "nodes": b(["OACS.DSTS=1", "讀 SDSO／EDSTT", "選 NSID + STC", "提交 Admin SQE", "CQE: start accepted", "輪詢 LID 06h"], ["OACS.DSTS=1", "Read SDSO/EDSTT", "Choose NSID + STC", "Submit Admin SQE", "CQE: start accepted", "Poll LID 06h"]),
+            "rows": b([
+                ["NSID=0", "只包含 controller", "不測 namespace media"],
+                ["active NSID", "指定 namespace", "invalid 與 inactive status 不同"],
+                ["NSID=FFFFFFFFh", "所有 attached／accessible namespaces", "集合以 start 時點為準"],
+                ["STC=Fh", "abort current operation", "成功不代表曾有 operation"],
+            ], [
+                ["NSID=0", "Controller only", "No namespace media"],
+                ["Active NSID", "One namespace", "Invalid and inactive status differ"],
+                ["NSID=FFFFFFFFh", "All attached/accessible namespaces", "Set is captured at start"],
+                ["STC=Fh", "Abort current operation", "Success does not prove one existed"],
+            ]),
+            "example": b("啟動 namespace 5 的 short test：NSID=00000005h、STC=1h，因此 CDW10=00000001h、CDW15=0。若立刻再送 extended STC=2h，應預期 command-specific status 1Dh，而不是建立第二個 operation。", "To start a short test for namespace 5, use NSID 00000005h and STC 1h, so CDW10 is 00000001h and CDW15 is zero. Immediately issuing extended STC 2h should produce command-specific status 1Dh rather than a second operation."),
+            "pitfall": b("最常見的錯誤是把 CQE timestamp 當完成時間，或在 SDSO=1 時只看單一 controller 的 local state。trace 至少保存 controller ID、NSID、STC、CDW15、CQE status 與後續第一筆 LID 06h。", "The common failure is treating the CQE timestamp as test completion or checking only controller-local state when SDSO is one. Retain controller ID, NSID, STC, CDW15, CQE status, and the first subsequent LID 06h."),
+            "sources": ["BASEDIAGMEM-SELFTEST-GATE", "BASEDIAGMEM-SELFTEST-NSID", "BASEDIAGMEM-SELFTEST-STC", "BASEDIAGMEM-SELFTEST-INPROGRESS", "BASEDIAGMEM-SELFTEST-COMPLETION"],
+            "figures": [93, 176, 177, 178, 179, 180, 338],
+        },
+        {
+            "id": "selftest-observe-debug",
+            "title": b("LID 06h：把 current operation 與 20 筆 history 分開解碼", "LID 06h: decode current operation separately from twenty history entries"),
+            "lead": b("log header 的 DSTOS／DSTCS 回答『現在跑到哪裡』；RDS1～RDS20 回答『之前怎麼結束』。result entry 又分成 operation code、result reason、segment、validity bitmap 與 diagnostic payload。NVM Command Set 只在 FVLD=1 時賦予 FLBA 明確的 LBA 語意。", "DSTOS/DSTCS in the header answer what is running now, while RDS1 through RDS20 answer how earlier operations ended. Each result then separates operation code, result reason, segment, validity bitmap, and diagnostic payload. The NVM Command Set gives FLBA an LBA meaning only when FVLD is one."),
+            "nodes": b(["Get LID06 564 bytes", "讀 DSTOS／DSTCS", "選 RDS1 newest", "解 DSTC／DSTR", "依 VDINFO gate fields", "NVM FLBA + timeline"], ["Get LID06 564 bytes", "Read DSTOS/DSTCS", "Select newest RDS1", "Decode DSTC/DSTR", "Gate fields with VDINFO", "NVM FLBA + timeline"]),
+            "rows": b([
+                ["DSTOS/DSTCS", "current state/progress", "DSTOS=0 時忽略 percentage"],
+                ["DSTR=7h + SEGN", "已知第一個 failed segment", "其他 DSTR 忽略 SEGN"],
+                ["FVLD + FLBA", "其中一個 failing LBA", "不是所有失敗 LBA 清單"],
+                ["POH + STCT/STC", "failure context", "仍需 validity bits"],
+            ], [
+                ["DSTOS/DSTCS", "Current state/progress", "Ignore percentage when DSTOS=0"],
+                ["DSTR=7h + SEGN", "Known first failed segment", "Ignore SEGN for other DSTR"],
+                ["FVLD + FLBA", "One failing LBA", "Not a list of every failed LBA"],
+                ["POH + STCT/STC", "Failure context", "Validity bits still apply"],
+            ]),
+            "example": b("完整 log 是 564 bytes=141 dwords，因此 NUMD=140=008Ch。LSP=0、RAE=0 時 CDW10=008C0006h。若 RDS1.DSTS=17h，high nibble 1h 表示 short test，low nibble 7h 表示已知 failed segment；此時才讀 SEGN。", "The complete log is 564 bytes or 141 dwords, so NUMD is 140 or 008Ch. With LSP 0 and RAE 0, CDW10 is 008C0006h. If RDS1.DSTS is 17h, high nibble 1h means short test and low nibble 7h means a known failed segment; only then read SEGN."),
+            "pitfall": b("parser 不得以 FLBA 非零就宣告 media failure。先檢查 DSTR、再檢查 FVLD 與 NSIDVLD，最後依 NVM Command Set 解 bytes 23:16；同時保存 raw 28-byte result，避免 validity 判斷錯後失去原始證據。", "A parser must not declare media failure because FLBA is nonzero. Check DSTR, then FVLD and NSIDVLD, and only then decode bytes 23:16 under the NVM Command Set. Preserve the raw 28-byte result so a validity-decoding defect does not destroy evidence."),
+            "sources": ["BASEDIAGMEM-SELFTEST-LOG-COMMAND", "BASEDIAGMEM-SELFTEST-CURRENT", "BASEDIAGMEM-SELFTEST-HISTORY", "BASEDIAGMEM-SELFTEST-RESULT", "BASEDIAGMEM-SELFTEST-VALIDITY", "BASEDIAGMEM-SELFTEST-NVM-FLBA", "BASEDIAGMEM-SELFTEST-DEBUG"],
+            "figures": [203, 204, 205, 206, 207, 208, 209, 218, 219, 111, 700, 701],
+        },
+        {
+            "id": "hmb-ownership-lifecycle",
+            "title": b("HMB：enable／disable completion 是 ownership fence", "HMB: enable/disable completion is an ownership fence"),
+            "lead": b("HMB 的 value 不在『給 controller 一塊 cache』這句話，而在 ownership protocol。Host 配置 pages 與 descriptor list，enable 成功後停止寫入；controller 使用並初始化；host 要回收時先 disable，直到 CQE posted 才重新取得修改權。", "HMB is not merely controller cache. It is an ownership protocol: the host allocates pages and a descriptor list, stops writing after successful enable, the controller initializes and uses them, and the host disables HMB before reclaiming memory. Modification rights return only when the CQE is posted."),
+            "nodes": b(["讀 HMPRE/HMMIN/limits", "配置 pages + HMDL", "Set FID0Dh EHM=1", "controller exclusive use", "Set EHM=0", "disable CQE→host reclaim"], ["Read HMPRE/HMMIN/limits", "Allocate pages + HMDL", "Set FID0Dh EHM=1", "Controller exclusive use", "Set EHM=0", "Disable CQE→host reclaim"]),
+            "rows": b([
+                ["Before enable", "host owns and initializes descriptors", "validate alignment/count"],
+                ["After enable CQE", "controller exclusive use", "host shall not write"],
+                ["Disable in flight", "controller may still retrieve data", "host still waits"],
+                ["After disable CQE", "host may modify/reclaim", "record fence timestamp"],
+            ], [
+                ["Before enable", "Host owns and initializes descriptors", "Validate alignment/count"],
+                ["After enable CQE", "Controller exclusive use", "Host shall not write"],
+                ["Disable in flight", "Controller may still retrieve data", "Host still waits"],
+                ["After disable CQE", "Host may modify/reclaim", "Record fence timestamp"],
+            ]),
+            "example": b("如果 driver 在送出 EHM=0 後、CQE 到達前就解除 DMA mapping，controller 仍可能依規格取回必要資料；這是 use-after-unmap。正確 fence 是 disable completion，而不是 SQ tail doorbell write。", "If a driver removes DMA mappings after issuing EHM zero but before its CQE, the controller may still retrieve required data; that is a use-after-unmap. The correct fence is disable completion, not the SQ-tail doorbell write."),
+            "pitfall": b("把 enable CQE 當作『host 仍可讀寫、controller 只是偶爾使用』會造成 data race。測試應對 HMDL 與每段 pages 建立 write-protection／DMA ownership trace，並在 disable CQE 後才解除。", "Treating enable completion as shared host/controller access creates a data race. Track write protection and DMA ownership for HMDL and every range, and release them only after disable completion."),
+            "sources": ["BASEDIAGMEM-HMB-CAPABILITY", "BASEDIAGMEM-HMB-OWNERSHIP", "BASEDIAGMEM-HMB-SEQUENCE", "BASEDIAGMEM-HMB-SURPRISE"],
+            "figures": [338, 545, 552, 553],
+        },
+        {
+            "id": "hmb-command-math",
+            "title": b("HMB command 與 descriptor：所有 size、count、address 都要對同一份 page math", "HMB commands and descriptors: reconcile every size, count, and address with one page model"),
+            "lead": b("HSIZE、BSIZE 與 BADD 都依 CC.MPS；HMPRE／HMMIN／HMMINDS 則依 4 KiB units。兩套 unit 不能混用。HMDL 本身要 16-byte aligned，entries 固定 16 bytes；HMDLEC 是 entry count，不是 0's-based，也不是 byte length。", "HSIZE, BSIZE, and BADD use CC.MPS pages, while HMPRE, HMMIN, and HMMINDS use 4-KiB units. The unit systems are not interchangeable. HMDL is 16-byte aligned with fixed 16-byte entries, and HMDLEC is an entry count—not zero based and not a byte length."),
+            "nodes": b(["CC.MPS→page bytes", "HMPRE/HMMIN→target bytes", "切成 aligned ranges", "寫 16-byte entries", "sum(BSIZE)=HSIZE", "組 CDW11..15"], ["CC.MPS→page bytes", "HMPRE/HMMIN→target bytes", "Split aligned ranges", "Write 16-byte entries", "sum(BSIZE)=HSIZE", "Build CDW11..15"]),
+            "rows": b([
+                ["HMPRE/HMMIN", "4 KiB units", "capability request"],
+                ["HSIZE/BSIZE", "CC.MPS units", "configured memory"],
+                ["HMDL address", "16-byte aligned", "CDW13 low + CDW14 high"],
+                ["BADD", "CC.MPS aligned", "BSIZE=0 entry ignored"],
+            ], [
+                ["HMPRE/HMMIN", "4-KiB units", "Capability request"],
+                ["HSIZE/BSIZE", "CC.MPS units", "Configured memory"],
+                ["HMDL address", "16-byte aligned", "CDW13 low + CDW14 high"],
+                ["BADD", "CC.MPS aligned", "BSIZE=0 entry ignored"],
+            ]),
+            "example": b("CC.MPS=0、HSIZE=64 時是 256 KiB。HMDL=00000012_34567000h、HMDLEC=2，故 CDW13=34567000h、CDW14=00000012h、CDW15=2。兩個 BSIZE=32 的 ranges 各 128 KiB，合計 256 KiB。", "With CC.MPS zero and HSIZE 64, HMB is 256 KiB. HMDL 00000012_34567000h and HMDLEC 2 produce CDW13 34567000h, CDW14 00000012h, and CDW15 2. Two BSIZE-32 ranges are 128 KiB each, totaling 256 KiB."),
+            "pitfall": b("常見錯誤是把 HMPRE 直接填進 HSIZE，而裝置使用 8 KiB CC.MPS；或 HMDLEC=2 卻只 map 一個 16-byte entry。driver 應同時 log capability units、CC.MPS、每個 BADD/BSIZE、sum pages 與 command dwords。", "A common error copies HMPRE directly into HSIZE while CC.MPS is 8 KiB, or sets HMDLEC two while mapping one 16-byte entry. Log capability units, CC.MPS, every BADD/BSIZE, page sum, and command dwords together."),
+            "sources": ["BASEDIAGMEM-HMB-SET-COMMAND", "BASEDIAGMEM-HMB-DESCRIPTORS", "BASEDIAGMEM-HMB-NUMERIC", "BASEDIAGMEM-HMB-GET"],
+            "figures": [197, 198, 200, 463, 464, 466, 545, 546, 547, 548, 549, 550, 551, 552, 553],
+        },
+        {
+            "id": "hmb-reset-power",
+            "title": b("HMB 跨 non-operational state、RTD3 與 reset 的三種不同邊界", "HMB across non-operational state, RTD3, and reset: three different boundaries"),
+            "lead": b("HMNARE 是 access policy，HMNAR 是此刻 state；MR 則描述 reset／RTD3 後是否歸還完全相同的舊內容。這三者不能互換。Controller Level Reset 會讓 controller 丟失 HMB assignment，RTD3 前應先 release，而 non-operational restriction 只限制特定 state 下的 access。", "HMNARE is access policy, HMNAR is current state, and MR says whether exactly the same prior contents are returned after reset or RTD3. They are not interchangeable. Controller Level Reset loses the assignment, RTD3 calls for release beforehand, and non-operational restriction only limits access in selected states."),
+            "nodes": b(["HMB enabled", "optional HMNARE policy", "non-op→HMNAR state", "disable before RTD3/reset", "preserve or replace contents", "MR=1 exact-match return"], ["HMB enabled", "Optional HMNARE policy", "Non-op→HMNAR state", "Disable before RTD3/reset", "Preserve or replace contents", "MR=1 exact-match return"]),
+            "rows": b([
+                ["HMNARE", "configured policy", "需要 CTRATT.HMBR"],
+                ["HMNAR", "current restriction state", "可能因 operational state 而為 0"],
+                ["MR=1", "return identical old HMB", "size/address/list/content 全相同"],
+                ["MR=0", "new undefined contents", "controller 重新初始化"],
+            ], [
+                ["HMNARE", "Configured policy", "Requires CTRATT.HMBR"],
+                ["HMNAR", "Current restriction state", "May be zero in operational state"],
+                ["MR=1", "Return identical old HMB", "Same size/address/list/content"],
+                ["MR=0", "New undefined contents", "Controller initializes again"],
+            ]),
+            "example": b("resume 後 allocator 給了相同 pages 但 HMDL 搬到新 address，就不能設 MR=1，因為 descriptor-list address 也必須完全相同。此時以 MR=0 當新 allocation 重新 enable。", "If the allocator returns the same pages after resume but moves HMDL to a new address, MR cannot be one because the descriptor-list address must also match exactly. Enable it as a new MR-zero allocation."),
+            "pitfall": b("不要只 hash data pages；MR validation 還要比較 HSIZE、HMDL address、HMDLEC、每個 descriptor 與全部 HMB contents。另把 NOPPME 當成 HMNARE 開關也是錯誤，規格明確說兩者無影響。", "Do not hash only data pages. MR validation compares HSIZE, HMDL address, HMDLEC, every descriptor, and all HMB contents. NOPPME is also not an HMNARE control; the specification explicitly separates them."),
+            "sources": ["BASEDIAGMEM-HMB-NONOP", "BASEDIAGMEM-HMB-RESET-RTD3", "BASEDIAGMEM-HMB-SURPRISE"],
+            "figures": [338, 545, 552, 553],
+        },
+        {
+            "id": "encoded-boundary-safety",
+            "title": b("DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary", "DSTRD and NDT/NDM: decode to byte boundaries before memory access"),
+            "lead": b("software emulator 與 vendor command passthrough 都在處理 untrusted encoded values。DSTRD 要套 2^(2+x) 才是 bytes；NDT／NDM 已是實際 dword count，要乘 4、不能再加 1。正確公式不同，但目的相同：在 MMIO 或 DMA 前先證明 address 與 length。", "Software emulators and vendor-command passthrough both handle untrusted encoded values. DSTRD becomes bytes through 2^(2+x); NDT/NDM are already actual dword counts and are multiplied by four without adding one. The formulas differ, but both prove address and length before MMIO or DMA."),
+            "nodes": b(["讀 capability bit／field", "選正確公式", "轉成 byte stride／length", "檢查 overflow／alignment", "執行 MMIO／DMA", "保存 raw+decoded trace"], ["Read capability bit/field", "Select the correct formula", "Convert to byte stride/length", "Check overflow/alignment", "Perform MMIO/DMA", "Retain raw+decoded trace"]),
+            "rows": b([
+                ["DSTRD", "2^(2+x) bytes", "0→4 B；4→64 B"],
+                ["NDT", "value×4 data bytes", "不是 0's-based"],
+                ["NDM", "value×4 metadata bytes", "獨立 buffer bound"],
+                ["VSCF/SNVSCF", "format gate", "Admin 與 I/O 分開"],
+            ], [
+                ["DSTRD", "2^(2+x) bytes", "0→4 B; 4→64 B"],
+                ["NDT", "Value×4 data bytes", "Not zero based"],
+                ["NDM", "Value×4 metadata bytes", "Independent buffer bound"],
+                ["VSCF/SNVSCF", "Format gate", "Admin and I/O are separate"],
+            ]),
+            "example": b("emulator 設 DSTRD=4 得 64-byte stride，可讓每個 doorbell 使用離散 cacheline。vendor command 的 NDT=0100h 則是 256 dwords=1024 bytes，不是 1028 bytes。兩者都要同時保存 raw encoded value 與 decoded bytes。", "An emulator with DSTRD 4 gets a 64-byte stride and can place doorbells on discrete cachelines. Vendor-command NDT 0100h is 256 dwords or 1024 bytes—not 1028 bytes. Retain both raw encoding and decoded bytes for each."),
+            "pitfall": b("同一套 helper 若把所有 NVMe length 都當 0's-based，NDT／NDM 會多配置或多傳 4 bytes；若把 DSTRD 直接乘 4，又會在 DSTRD>0 時算錯。每個欄位的公式必須跟 Figure source 綁定。", "A helper that treats every NVMe length as zero based adds four bytes to NDT/NDM. Multiplying DSTRD directly by four also fails for nonzero values. Bind each field's formula to its owning Figure."),
+            "sources": ["BASEDIAGMEM-DOORBELL-STRIDE", "BASEDIAGMEM-DOORBELL-DEBUG", "BASEDIAGMEM-VENDOR-GATE", "BASEDIAGMEM-VENDOR-FORMAT", "BASEDIAGMEM-VENDOR-LENGTH", "BASEDIAGMEM-BOUNDARY-DEBUG"],
+            "figures": [36, 93, 94, 338],
+        },
+    ],
+}
+
+
+def term_definition(term: str, language: str) -> str:
+    if term in TERM_LIBRARY:
+        return TERM_LIBRARY[term][language]
+    base = term.split(".", 1)[0]
+    if base in TERM_LIBRARY:
+        member = term.split(".", 1)[1]
+        if language == "en":
+            return f"{TERM_LIBRARY[base][language]} Here {term} selects its {member} member field."
+        return f"{TERM_LIBRARY[base][language]} 此處的 {term} 進一步指定其中的 {member} 子欄位。"
+    if language == "en":
+        return "A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used."
+    return "這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。"
+
+
+def figure_kind(title: str) -> str:
+    lower = title.lower()
+    if re.match(r"^offset\s+", lower):
+        return "register"
+    if "command dword" in lower or "common command format" in lower or "data pointer" in lower:
+        return "command"
+    if "status code" in lower or "error" in lower:
+        return "status"
+    if any(word in lower for word in ("prp ", "prp list", "sgl ", "data block", "bit bucket")):
+        return "memory"
+    if any(word in lower for word in ("queue", "command processing", "phase tag", "arbitration")):
+        return "queue"
+    if any(word in lower for word in ("namespace", "subsystem", "domain", "nvm set", "endurance", "capacity")):
+        return "hierarchy"
+    if any(word in lower for word in ("identifier", "serial number", "model number", "oui", "eui64", "nguid", "uuid", "wwn")):
+        return "identifier"
+    if any(word in lower for word in ("interrupt", "msi", "msi-x")):
+        return "interrupt"
+    if any(word in lower for word in ("shutdown", "reset", "timeout", "state", "initialization")):
+        return "state"
+    if any(word in lower for word in ("eye", "eve diagram", "eom", "lane descriptor")):
+        return "measurement"
+    if any(word in lower for word in ("configuration space", "capability", "register", "field", "layout", "format", "structure", "values")):
+        return "layout"
+    return "relationship"
+
+
+KIND_TEXT = {
+    "register": b(
+        "這是一張 register／property 欄位表。先由 base offset 定位，再核對 access width、reset value 與 bit range；最後才把 bit value 轉成狀態或能力。讀表時把整個 register snapshot 留著，避免只擷取單一 bit 而失去相鄰條件。",
+        "This is a register or property field table. Locate the base offset, verify access width, reset value, and bit range, and only then convert bits into state or capability. Preserve the complete register snapshot so adjacent conditions are not lost by extracting one bit.",
+    ),
+    "command": b(
+        "這是一張 command construction 欄位表。先建立 common SQE，再定位指定 CDW，依 bit range 填值，清除 reserved bits，最後配合 transfer length、buffer 與 completion status 驗證。欄位名稱相同也不代表不同 command 具有相同語意。",
+        "This is a command-construction field table. Build the common SQE, locate the specified CDW, encode each bit range, clear reserved bits, and validate the result against transfer length, buffer, and completion status. Equal field names do not imply equal semantics across commands.",
+    ),
+    "status": b(
+        "這是一張 status／error 分類表。先確定 status 所在資料結構與類別，再解 individual code、控制 bit 與 retry 指示。Reserved value 維持未定義；不要因名稱相似便映射到另一層 error code。",
+        "This is a status or error classification. Identify the containing structure and category before decoding the individual code, control bits, and retry indication. Reserved values remain uninterpreted, and a similar name does not map the code into another error layer.",
+    ),
+    "memory": b(
+        "這是一張 data-buffer mapping 圖。閱讀順序是 pointer type、address、length、page/segment boundary、下一個 entry。每一步都要維護已涵蓋的 byte interval，才能檢查 overlap、gap、overflow 與 alignment。",
+        "This is a data-buffer mapping Figure. Read pointer type, address, length, page or segment boundary, and next entry in that order. Maintain the byte interval covered at every step to detect overlap, gaps, overflow, and alignment defects.",
+    ),
+    "queue": b(
+        "這是一張 queue／command flow 圖。先標 host 與 controller 的 ownership，再追 head、tail、phase 或 arbitration 的改變；箭頭代表狀態或 ownership 轉移，不自動代表 command 已完成。",
+        "This is a queue or command-flow Figure. Label host and controller ownership first, then trace head, tail, phase, or arbitration changes. An arrow represents a state or ownership transition and does not automatically prove command completion.",
+    ),
+    "hierarchy": b(
+        "這是一張 object／capacity 關係圖。分開『包含』、『可存取』、『以 identifier 指向』與『共享』四種關係。相鄰方塊不一定一對一，identifier 也不等於被指向的實體或邏輯物件。",
+        "This is an object or capacity relationship Figure. Separate containment, accessibility, identifier reference, and sharing. Adjacent boxes need not be one-to-one, and an identifier is not the physical or logical object it references.",
+    ),
+    "identifier": b(
+        "這是一張 identifier 格式圖。先記錄 width 與 encoding，再辨識 issuing authority、uniqueness scope、reserved value 與有效生命週期；不要把長度相同的 identifiers 當成可互換。",
+        "This is an identifier-format Figure. Record width and encoding, then identify assignment authority, uniqueness scope, reserved values, and lifetime. Equal-width identifiers are not automatically interchangeable.",
+    ),
+    "interrupt": b(
+        "這是一張 interrupt delivery／capability 圖。把 vector source、enable、mask、pending、delivery 與 handler service 分開；interrupt 只通知有工作，CQE 才是 command completion 的資料來源。",
+        "This is an interrupt-delivery or capability Figure. Separate vector source, enable, mask, pending state, delivery, and handler service. An interrupt only signals work; the CQE remains the source of command-completion data.",
+    ),
+    "state": b(
+        "這是一張 state／timing 圖。沿箭頭記錄 trigger、觀察者、完成條件與 timeout source。相同狀態名稱若位於不同 reset scope，不能推論保留相同 queue 或 controller state。",
+        "This is a state or timing Figure. Follow each arrow while recording trigger, observer, completion condition, and timeout source. Similar state names under different reset scopes do not imply preservation of the same queue or controller state.",
+    ),
+    "measurement": b(
+        "這是一張量測資料圖。先確認 support、request selector 與 returned length，再解析 header、descriptor、unit 與 scale；只對實際回傳且完整的 lane／entry 產生結果。",
+        "This is a measurement-data Figure. Confirm support, request selectors, and returned length before parsing headers, descriptors, units, and scale. Produce results only for complete lanes or entries actually returned.",
+    ),
+    "layout": b(
+        "這是一張結構／能力欄位表。先用結構 base 與 offset 定位，依 byte/bit 順序讀取，再把 capability gate、value encoding 與 reserved area 分開。表中的存在不等於功能一定支援。",
+        "This is a structure or capability field table. Locate it using the structure base and offset, read in byte/bit order, and separate capability gates, value encoding, and reserved areas. Presence in the table does not mean the function is supported.",
+    ),
+    "relationship": b(
+        "這張圖用來說明特定關係或範例。先辨識每個元件的類型與 owner，再沿連線判斷是資料流、控制流、包含關係或條件關係；圖形位置本身不新增 normative requirement。",
+        "This Figure explains a specific relationship or example. Identify each component type and owner, then decide whether each connection represents data flow, control flow, containment, or a condition. Visual placement alone creates no normative requirement.",
+    ),
+}
+
+
+def expanded_figure_guide(figure: dict, language: str) -> dict:
+    kind = figure_kind(figure["title"])
+    items = list(figure.get("key_items", []))
+    shown = items[:6]
+    terms = [(item, term_definition(item, language)) for item in shown]
+    first = shown[0] if shown else figure["title"]
+    second = shown[1] if len(shown) > 1 else ("the cited condition" if language == "en" else "引用條件")
+    if language == "en":
+        context = (
+            f"Figure {figure['number']} sits in §{figure['section']} and acts as a {kind} checkpoint. "
+            f"Read it after the report mental model has established the owning object and before software turns {first} into a decision. "
+            "The Figure supports the cited section; it is not a substitute for the surrounding normative text."
+        )
+        steps = [
+            f"Locate the structure, register, queue, or object named by the caption and confirm that §{figure['section']} is the applicable context.",
+            f"Decode {first} at its stated width and position; do not infer its unit or reset behavior from the abbreviation.",
+            f"Cross-check {second} as an independent condition, then validate every count, address, selector, or state against the returned buffer and capability gates.",
+            "Keep reserved values uninterpreted and record the raw bytes or register value before converting the result into a software state.",
+        ]
+        answers = [
+            ["It answers", f"How the cited section organizes {first}, {second}, and the other indexed fields."],
+            ["It does not answer", "Whether an optional capability is implemented, whether a command completed, or whether a value from another scope is equivalent."],
+            ["Cross-check", f"The surrounding text in §{figure['section']}, the capability that enables the structure, and the actual transfer or register width."],
+        ]
+        example = (
+            f"Informative example: capture the raw value or buffer associated with Figure {figure['number']}. "
+            f"Annotate the bytes containing {first}, decode them, and independently verify {second}. "
+            "If either field exceeds the returned boundary, selects a reserved encoding, or conflicts with the capability context, stop the parser or command builder and report the exact field rather than continuing with a guessed default. "
+            "This example describes a verification method and adds no requirement."
+        )
+        debug = [
+            ["Wrong value", "Check byte/bit range, endian, radix, zero-based encoding, and unit."],
+            ["Intermittent behavior", "Check ownership, update order, snapshot timing, and whether two actors share the object."],
+            ["Parser overrun", "Compare declared count/length with actual returned bytes before walking the next entry."],
+            ["Unexpected status", "Preserve the full category and context; do not log an isolated numeric code."],
+        ]
+        misconception = (
+            f"A common misreading is to treat the presence of {first} in the Figure as proof that the capability is enabled or that the value is valid. "
+            "A layout defines where and how to interpret a field when applicable; support, state, command outcome, and scope still come from their own gates and surrounding requirements."
+        )
+        check = [
+            f"Can the reader expand {first} and state its unit or object scope?",
+            f"Can the reader explain why {second} is checked separately?",
+            "Can the reader identify the raw evidence that would distinguish an encoding error from a real controller state?",
+        ]
+    else:
+        context = (
+            f"Figure {figure['number']} 位於 §{figure['section']}，在本流程中是「{kind}」檢查點。"
+            f"先由主教學確認 owner 與物件層級，再用本圖把 {first} 轉成可驗證的欄位；"
+            "Figure 支援引用段落，但不能取代前後 normative 文字。"
+        )
+        steps = [
+            f"先由 caption 找到資料結構、register、queue 或物件，並確認目前適用的上下文確實是 §{figure['section']}。",
+            f"依圖中指定的寬度與位置解碼 {first}；縮寫本身不能用來猜 unit、reset value 或 encoding。",
+            f"把 {second} 當成獨立條件交叉檢查，再以實際 buffer 長度與 capability gate 驗證 count、address、selector 或 state。",
+            "保留值維持未解讀；把結果轉成 software state 前，先保存 raw bytes 或完整 register value。",
+        ]
+        answers = [
+            ["這張圖回答", f"§{figure['section']} 如何排列 {first}、{second} 與其他來源欄位。"],
+            ["這張圖不回答", "optional capability 是否已實作、command 是否完成，或另一個 scope 的同名值是否相等。"],
+            ["還要交叉檢查", f"§{figure['section']} 前後文字、啟用此結構的 capability，以及實際 transfer／register width。"],
+        ]
+        example = (
+            f"說明性範例（informative example）：保存 Figure {figure['number']} 對應的 raw value 或 buffer，"
+            f"標出包含 {first} 的 bytes 並解碼，再獨立核對 {second}。若任一欄位超出實際回傳邊界、"
+            "選到 reserved encoding，或與 capability context 衝突，parser／command builder 應停止並指出精確欄位，"
+            "不可用猜測的 default 繼續。此例只示範驗證方法，不新增規格要求。"
+        )
+        debug = [
+            ["數值不符", "檢查 byte/bit range、endian、radix、0's-based 與 unit。"],
+            ["偶發錯誤", "檢查 ownership、更新順序、snapshot 時機，以及物件是否由多個 actors 共享。"],
+            ["parser 越界", "走訪下一個 entry 前，用實際回傳 bytes 核對宣告 count/length。"],
+            ["status 不預期", "保留完整 category 與 context，不只印單一數字 code。"],
+        ]
+        misconception = (
+            f"常見誤讀是：Figure 中出現 {first}，便代表 capability 一定開啟或欄位值一定有效。"
+            "layout 只定義適用時的位置與解法；support、state、command outcome 與 scope 仍要由各自 gate 和前後 requirement 判定。"
+        )
+        check = [
+            f"能否展開 {first} 的意思，並說出它的 unit 或 object scope？",
+            f"能否說明為什麼 {second} 必須獨立檢查？",
+            "能否指出哪一份 raw evidence 可區分 encoding bug 與 controller 真實狀態？",
+        ]
+    return {
+        "kind": kind,
+        "context": context,
+        "kind_text": KIND_TEXT[kind][language],
+        "terms": terms,
+        "steps": steps,
+        "answers": answers,
+        "example": example,
+        "debug": debug,
+        "misconception": misconception,
+        "check": check,
+    }

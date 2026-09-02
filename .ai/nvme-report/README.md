@@ -1,15 +1,15 @@
 # NVMe 報告控制資料
 
-此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 20 個輸出的契約。
+此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 28 個輸出的契約。
 它不保存 PDF 原文。一般重建只讀取此目錄中的追蹤資料，不需要 PDF，也不會把規格原文
 帶進 GitHub Pages。
 
 ## 唯一資料來源與重建流程
 
-- `scope.json`：五份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
+- `scope.json`：七份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
 - `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。報告若在 `scope.json` 宣告 `included_figure_ids`，該 allowlist 是實際發布集合；清冊中其他舊證據列只供追溯，不得出現在輸出。
 - `claims.json`：由產生器重建；不手動維護。
-- `output-contract.json`：20 個輸出路徑與格式要求。
+- `output-contract.json`：28 個輸出路徑與格式要求。
 
 一般內容更新後，依序執行：
 
@@ -40,8 +40,8 @@ python3 -B scripts/build_nvme_reports.py
 
 ## 執行階段
 
-1. `setup`：驗證來源登記、五份報告、20 個輸出路徑與規則骨架。
-2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、20 個輸出存在且通過檢查。
+1. `setup`：驗證來源登記、七份報告、28 個輸出路徑與規則骨架。
+2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、28 個輸出存在且通過檢查。
 3. `auto`：`scope.json` 的 `production_status` 為 `ready_for_publish` 時執行
    `publish`，否則執行 `setup`。
 
@@ -60,7 +60,7 @@ python3 -B scripts/build_nvme_reports.py
 - `figure`、`table`：不適用時為 `null`；
 - `printed_pages`、`pdf_pages`；
 - `normative_keyword`：`mandatory`、`may`、`optional`、`reserved`、`shall`、
-  `should`、`none` 之一；
+  `shall not`、`should`、`should not`、`none` 之一；
 - `zh_tw` 與 `en`：同一技術結論的兩種語言；
 - `citation_zh_tw` 與 `citation_en`：輸出中必須逐字出現的完整來源定位；
 - `scope_entry_id`：對應已核准範圍。
@@ -91,6 +91,20 @@ Appendix，不得產生「Figure 逐圖導讀」。明確排除或未列入 allo
 第五份報告另登記 `referenced_dependency` Figure：只教學主範圍交叉引用所需部分，
 必須記錄 `referenced_from` 並使用 `dependency-slice` 模式。若相依 Figure 屬於
 Fabrics／Discovery，仍維持排除，不因引用而發佈。
+
+第六份 power／thermal Features 報告同樣使用 Figure allowlist 與 `referenced_dependency`
+slice。Figure 200／466 只保留核准的五個 FID rows，Figure 468 只保留 WH／PS，Figure
+474 只保留 temperature event 所需欄位；不得藉由 dependency Figure 擴張到被排除的小節。
+
+第七份 Device Self-test／HMB／Doorbell Emulation／Vendor Commands 報告登記 36 張 Figure
+allowlist，其中 17 張是主範圍理解所需的 `referenced_dependency` slice。Figure 200／209／
+338／466 只呈現本報告交叉引用所需的欄位或資料列；NVM Command Set Figure 111 只解釋
+§4.1.4.3 的 FLBA 語意。任何 Fabrics／Discovery 內容仍維持排除。
+
+HTML 依 `ipad-html-profile.md` 建立 M1 iPad Pro 可直接閱讀的 Claude Code 類型工程資訊設計：
+單一內嵌 CSS、Light／Dark Mode、44px touch target、safe-area、responsive inline SVG、原生
+`details` accordion、scroll-snap 視覺卡與 table container。JavaScript、外部 stylesheet、
+外部字型與外部資源仍禁止。
 
 驗證器還會核對 claim 的完整正文與順序，而不只檢查隱藏標記；中英文 Markdown 必須
 具有相同 claim 集合與排列。輸出不得出現 Fabrics、message-based transport、Discovery
