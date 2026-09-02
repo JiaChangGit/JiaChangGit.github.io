@@ -315,12 +315,12 @@ class NvmeReportContractTest(unittest.TestCase):
             ROOT / "_posts/2026-08-31-nvme-base-firmware-log-admin-en.md"
         ).read_text(encoding="utf-8")
 
-        self.assertIn("iPad 新手教學版", tutorial)
+        self.assertIn("新手教學版｜iPad／Desktop", tutorial)
         self.assertIn("先把縮寫變成人話", tutorial)
         self.assertIn("四種 firmware 狀態", tutorial)
         self.assertEqual(len(VALIDATOR.figure_table_ids(tutorial)), 22)
 
-        self.assertIn("iPad 快速查詢詳細手冊", reference)
+        self.assertIn("快速查詢詳細手冊｜iPad／Desktop", reference)
         self.assertIn("Command-specific status（SCT=1h）", reference)
         self.assertIn("完整 Figure evidence appendix", reference)
         self.assertEqual(len(VALIDATOR.figure_table_ids(reference)), 22)
@@ -334,6 +334,76 @@ class NvmeReportContractTest(unittest.TestCase):
             VALIDATOR.claim_id_sequence(zh_ppt),
             VALIDATOR.claim_id_sequence(en_ppt),
         )
+
+    def test_all_html_share_responsive_visual_language(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        html_artifacts = [item for item in contract["artifacts"] if item["format"] == "html"]
+        self.assertEqual(len(html_artifacts), 14)
+        for artifact in html_artifacts:
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            with self.subTest(artifact=artifact["id"]):
+                self.assertIn('<meta name="color-scheme" content="light dark">', text)
+                self.assertIn('@media (min-width: 1200px)', text)
+                self.assertIn('class="visual-legend"', text)
+                for role in ("command", "object", "decision", "success", "failure"):
+                    self.assertIn(f'class="legend-swatch role-{role}"', text)
+                self.assertRegex(text, r'<body class="edition-(?:tutorial|reference)">')
+                self.assertIn('data-visual-kind="', text)
+                if artifact["id"].endswith("tutorial-html"):
+                    self.assertIn("箭頭只表示", text)
+                else:
+                    self.assertIn("詳細版查詢重畫", text)
+
+    def test_light_and_dark_semantic_palettes_meet_text_contrast(self):
+        source = BUILD_SCRIPT.read_text(encoding="utf-8")
+        root_blocks = re.findall(r":root\s*\{(.*?)\}", source, re.DOTALL)
+        palettes = []
+        for block in root_blocks:
+            values = dict(re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{6})", block))
+            if values:
+                palettes.append(values)
+        self.assertGreaterEqual(len(palettes), 2)
+
+        def luminance(color: str) -> float:
+            channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+            linear = [
+                value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+                for value in channels
+            ]
+            return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+        for palette_name, palette in zip(("light", "dark"), palettes[:2]):
+            for role in ("spec", "explain", "infer", "example", "warn"):
+                foreground = luminance(palette[role])
+                background = luminance(palette[f"{role}-soft"])
+                ratio = (max(foreground, background) + 0.05) / (
+                    min(foreground, background) + 0.05
+                )
+                with self.subTest(palette=palette_name, role=role):
+                    self.assertGreaterEqual(ratio, 4.5)
+
+    def test_tutorial_and_reference_html_have_distinct_information_architectures(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        by_report: dict[str, dict[str, str]] = {}
+        for artifact in contract["artifacts"]:
+            if artifact["format"] != "html":
+                continue
+            by_report.setdefault(artifact["report_id"], {})[artifact["purpose"]] = (
+                ROOT / artifact["path"]
+            ).read_text(encoding="utf-8")
+        for report_id, editions in by_report.items():
+            tutorial = next(value for key, value in editions.items() if "新手教學" in key)
+            reference = next(value for key, value in editions.items() if "快速查詢" in key)
+            with self.subTest(report=report_id):
+                self.assertIn('class="edition-tutorial"', tutorial)
+                self.assertIn('class="edition-reference"', reference)
+                self.assertNotEqual(tutorial, reference)
+                self.assertIn("常見誤解", tutorial)
+                self.assertTrue("快速查詢" in reference or "Reference" in reference)
 
     def test_markdown_language_and_site_layout_are_language_aware(self):
         contract = json.loads(
@@ -410,7 +480,11 @@ class NvmeReportContractTest(unittest.TestCase):
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         policy = contract["html_policy"]
-        self.assertEqual(policy["target_device"], "M1 iPad Pro")
+        self.assertEqual(policy["target_device"], "M1 iPad Pro and desktop browsers")
+        self.assertEqual(
+            policy["representative_viewports"],
+            ["834x1194", "1194x834", "1440x1000"],
+        )
         self.assertEqual(policy["safe_interaction_baseline"], "Safari 17.2")
         self.assertFalse(policy["javascript_allowed"])
         self.assertEqual(policy["minimum_touch_target_css_px"], 44)
@@ -439,10 +513,13 @@ class NvmeReportContractTest(unittest.TestCase):
             self.assertIn("safe-area-inset-top", text)
             self.assertNotIn("<script", text.lower())
             self.assertGreaterEqual(text.count('name="figures-'), expected)
-            self.assertGreaterEqual(text.count("教學重畫（非 Spec 原圖）"), expected)
-            self.assertGreaterEqual(
-                text.count("Input → Decode → Validate → Evidence 工作紙"), expected
-            )
+            if artifact["id"].endswith("tutorial-html"):
+                self.assertGreaterEqual(text.count("新手教學重畫（非 Spec 原圖）"), expected)
+            else:
+                self.assertGreaterEqual(text.count("詳細版查詢重畫"), expected)
+                self.assertGreaterEqual(
+                    text.count("Input／Decode／Validate／Evidence"), expected
+                )
 
     def test_every_edition_has_deep_teaching_content_and_semantic_color(self):
         contract = json.loads(

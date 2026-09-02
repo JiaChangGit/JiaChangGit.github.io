@@ -192,8 +192,8 @@ details.figure-card[open] > summary { border-bottom: 1px solid var(--line); marg
 .ipad-read-guide { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin: 1rem 0; }
 .read-chip { border: 1px solid var(--line); border-radius: .7rem; background: var(--surface); padding: .8rem; }
 .read-chip strong { display: block; color: var(--accent); margin-bottom: .15rem; }
-.visual-atlas { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(76%, 1fr); gap: 1rem; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline proximity; padding: .25rem .15rem 1rem; }
-.visual-card { scroll-snap-align: start; border: 1px solid var(--line); border-top: .32rem solid var(--accent); border-radius: .8rem; background: var(--surface); padding: 1rem; }
+.visual-atlas { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; overflow: visible; padding: .25rem .15rem 1rem; }
+.visual-card { min-width: 0; border: 1px solid var(--line); border-top: .32rem solid var(--accent); border-radius: .8rem; background: var(--surface); padding: 1rem; }
 .visual-card[data-visual-kind="architecture"] { border-top-color: var(--object); }
 .visual-card[data-visual-kind="sequence"] { border-top-color: var(--command); }
 .visual-card[data-visual-kind="decode"] { border-top-color: var(--decision); }
@@ -238,7 +238,7 @@ details.figure-card[open] > summary { border-bottom: 1px solid var(--line); marg
 .req-should { color: #9a6700; background: #fff8c5; }
 .req-may { color: var(--spec); background: var(--spec-soft); }
 .req-reserved { color: var(--muted); background: var(--surface-2); }
-.table-wrap thead th { position: sticky; top: 0; z-index: 1; }
+.table-wrap thead th { position: sticky; top: calc(58px + env(safe-area-inset-top)); z-index: 2; }
 .table-wrap th:first-child, .table-wrap td:first-child { position: sticky; left: 0; background: var(--surface); z-index: 1; }
 @media (max-width: 700px) {
   body { font-size: 16px; }
@@ -247,15 +247,13 @@ details.figure-card[open] > summary { border-bottom: 1px solid var(--line); marg
   table { min-width: 500px; }
   .hero { border-radius: .75rem; }
   .toc-grid, .ipad-read-guide, .visual-legend { grid-template-columns: 1fr; }
-  .visual-atlas { grid-auto-columns: 92%; }
   .claim-meta { grid-template-columns: 1fr; }
   .claim-meta dt { margin-top: .35rem; }
 }
-@media (min-width: 1000px) {
+@media (min-width: 1200px) {
   .topbar-inner, main { width: min(1180px, calc(100% - 48px)); }
   .toc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .visual-atlas { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)); overflow: visible; scroll-snap-type: none; }
-  .visual-card { scroll-snap-align: none; }
+  .visual-atlas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .edition-reference .visual-atlas { grid-template-columns: 1fr; }
   .edition-reference .visual-card { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(16rem, .75fr); gap: 0 1.2rem; align-items: start; }
   .edition-reference .visual-card > .eyebrow, .edition-reference .visual-card > h3 { grid-column: 1 / -1; }
@@ -304,6 +302,7 @@ details.figure-card[open] > summary { border-bottom: 1px solid var(--line); marg
   details > * { display: block; }
   .visual-atlas { display: block; overflow: visible; }
   .visual-card { break-inside: avoid; margin: 1rem 0; }
+  .table-wrap thead th { position: static; }
 }
 """
 
@@ -1351,27 +1350,30 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
 def flow_svg(report: dict) -> str:
     boxes = []
     arrows = []
-    for index, label in enumerate(report["diagram"]):
-        x = 10 + index * 180
+    labels = list(report["diagram"])[:4]
+    role_order = ["command", "object", "decision", "success"]
+    for index, label in enumerate(labels):
+        x = 20 + index * 200
+        role = role_order[index]
         boxes.append(
-            f'<rect class="flow-node" x="{x}" y="35" width="150" height="70" rx="8"/>'
-            f'<text class="flow-text" x="{x + 75}" y="75" text-anchor="middle">'
-            f'{html.escape(label)}</text>'
+            f'<rect class="{visual_role_class(role)}" x="{x}" y="35" width="170" height="88" rx="10"/>'
+            f'<text class="v-role" x="{x + 85}" y="57" text-anchor="middle">{visual_role_label(role, "zh")}</text>'
+            + svg_text_block(label, x + 85, 91, limit=16, max_lines=2)
         )
-        if index < 3:
+        if index < len(labels) - 1:
             arrows.append(
-                f'<line class="flow-line" x1="{x + 150}" y1="70" x2="{x + 178}" y2="70" '
+                f'<line class="v-line" x1="{x + 170}" y1="79" x2="{x + 190}" y2="79" '
                 'marker-end="url(#arrow)"/>'
             )
     return (
-        '<svg class="flow-svg" viewBox="0 0 720 140" role="img" '
+        '<svg class="flow-svg" viewBox="0 0 820 158" role="img" data-visual-kind="sequence" '
         'aria-labelledby="flow-title flow-desc">'
         '<title id="flow-title">NVMe report flow</title>'
         f'<desc id="flow-desc">{html.escape(report["diagram_note_zh"])}</desc>'
         '<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" '
-        'refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="currentColor"/>'
+        'refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" class="v-arrow"/>'
         '</marker></defs>'
-        + "".join(boxes + arrows)
+        + "".join(arrows + boxes)
         + "</svg>"
     )
 
@@ -1499,27 +1501,30 @@ def module_flow_svg(module: dict, language: str) -> str:
     width = 820
     row_height = 82
     height = 26 + len(nodes) * row_height
+    arrow_id = "module-arrow-" + anchor(module["id"])
     elements = [
-        '<defs><marker id="module-arrow" markerWidth="8" markerHeight="8" '
+        f'<defs><marker id="{arrow_id}" markerWidth="8" markerHeight="8" '
         'refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" '
-        'fill="currentColor"/></marker></defs>'
+        'class="v-arrow"/></marker></defs>'
     ]
+    for index in range(len(nodes) - 1):
+        y = 12 + index * row_height
+        elements.append(
+            f'<line class="v-line" x1="410" y1="{y + 58}" x2="410" '
+            f'y2="{y + 76}" marker-end="url(#{arrow_id})"/>'
+        )
     for index, label in enumerate(nodes):
         y = 12 + index * row_height
-        klass = "flow-node-alt" if index % 2 else "flow-node"
+        role = visual_role(label)
+        klass = visual_role_class(role)
         elements.append(
-            f'<rect class="{klass}" x="90" y="{y}" width="640" height="54" rx="10"/>'
-            f'<text class="flow-text" x="410" y="{y + 33}" text-anchor="middle">'
-            f'{html.escape(label)}</text>'
+            f'<rect class="{klass}" x="90" y="{y}" width="640" height="58" rx="10"/>'
+            f'<text class="v-role" x="112" y="{y + 22}">{visual_role_label(role, language)}</text>'
+            + svg_text_block(label, 410, y + 38, limit=52, max_lines=1)
         )
-        if index < len(nodes) - 1:
-            elements.append(
-                f'<line class="flow-line" x1="410" y1="{y + 54}" x2="410" '
-                f'y2="{y + 78}" marker-end="url(#module-arrow)"/>'
-            )
     title = module["title"][language]
     return (
-        f'<svg class="flow-svg" viewBox="0 0 {width} {height}" role="img" '
+        f'<svg class="flow-svg" viewBox="0 0 {width} {height}" role="img" data-visual-kind="sequence" '
         f'aria-label="{html.escape(title)}"><title>{html.escape(title)}</title>'
         f'<desc>{html.escape(" → ".join(nodes))}</desc>{"".join(elements)}</svg>'
     )
@@ -1642,8 +1647,9 @@ def module_visual_svg(module: dict, language: str) -> str:
     title = module["title"][language]
     arrow_id = "atlas-arrow-" + anchor(module["id"])
     failure_arrow_id = arrow_id + "-failure"
+    visual_height = 360 if kind == "decode" else 330
     head = (
-        f'<svg viewBox="0 0 820 330" role="img" data-visual-kind="{kind}" aria-label="{html.escape(title)}">'
+        f'<svg viewBox="0 0 820 {visual_height}" role="img" data-visual-kind="{kind}" aria-label="{html.escape(title)}">'
         f'<title>{html.escape(title)}</title><desc>{html.escape(kind + ": " + " → ".join(nodes))}</desc>'
         f'<defs><marker id="{arrow_id}" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">'
         '<path d="M0,0 L0,6 L9,3 z" class="v-arrow"/></marker>'
@@ -1680,33 +1686,37 @@ def module_visual_svg(module: dict, language: str) -> str:
             body.append(svg_text_block(label, x, 45, limit=24, max_lines=1))
     elif kind == "decode":
         stage_labels = (
-            ["RAW／輸入", "LOCATE／邊界", "DECODE／規則", "VALIDATE／證據"]
+            ["RAW／輸入", "LOCATE／邊界", "DECODE／規則", "VALIDATE／條件", "APPLY／建構", "EVIDENCE／結果"]
             if language == "zh"
-            else ["RAW / input", "LOCATE / boundary", "DECODE / rule", "VALIDATE / evidence"]
+            else ["RAW / input", "LOCATE / boundary", "DECODE / rule", "VALIDATE / gate", "APPLY / build", "EVIDENCE / result"]
         )
-        shown = nodes[:4]
-        while len(shown) < 4:
+        shown = nodes[:6]
+        while len(shown) < 6:
             shown.append(stage_labels[len(shown)])
-        role_order = ["command", "object", "decision", "success"]
-        for index in range(3):
-            x = 25 + index * 198
-            body.append(f'<line class="v-line" x1="{x + 170}" y1="160" x2="{x + 194}" y2="160" marker-end="url(#{arrow_id})"/>')
-        for index, (stage, label) in enumerate(zip(stage_labels, shown)):
-            x = 25 + index * 198
+        positions = [(35, 45), (310, 45), (585, 45), (585, 190), (310, 190), (35, 190)]
+        role_order = ["command", "object", "decision", "decision", "command", "success"]
+        for (x1, y1), (x2, y2) in zip(positions, positions[1:]):
+            if y1 == y2 and x2 > x1:
+                body.append(f'<line class="v-line" x1="{x1 + 200}" y1="{y1 + 48}" x2="{x2 - 10}" y2="{y2 + 48}" marker-end="url(#{arrow_id})"/>')
+            elif y1 == y2:
+                body.append(f'<line class="v-line" x1="{x1}" y1="{y1 + 48}" x2="{x2 + 210}" y2="{y2 + 48}" marker-end="url(#{arrow_id})"/>')
+            else:
+                body.append(f'<line class="v-line" x1="{x1 + 100}" y1="{y1 + 96}" x2="{x2 + 100}" y2="{y2 - 10}" marker-end="url(#{arrow_id})"/>')
+        for index, (stage, label, (x, y)) in enumerate(zip(stage_labels, shown, positions)):
             role = role_order[index]
             klass = visual_role_class(role)
-            body.append(f'<rect class="{klass}" x="{x}" y="90" width="170" height="140" rx="12"/>')
-            body.append(f'<text class="v-role" x="{x + 85}" y="118" text-anchor="middle">{html.escape(stage)}</text>')
-            body.append(svg_text_block(label, x + 85, 160, limit=16, max_lines=2))
-            body.append(f'<text class="v-small" x="{x + 85}" y="194" text-anchor="middle">{index + 1} / 4</text>')
-        body.append(f'<path class="v-line-dashed" d="M705 245 C705 300,115 300,115 245" marker-end="url(#{failure_arrow_id})"/>')
+            body.append(f'<rect class="{klass}" x="{x}" y="{y}" width="200" height="96" rx="12"/>')
+            body.append(f'<text class="v-role" x="{x + 100}" y="{y + 23}" text-anchor="middle">{html.escape(stage)}</text>')
+            body.append(svg_text_block(label, x + 100, y + 54, limit=19, max_lines=2))
+            body.append(f'<text class="v-small" x="{x + 100}" y="{y + 84}" text-anchor="middle">{index + 1} / 6</text>')
+        body.append(f'<path class="v-line-dashed" d="M135 296 C135 326,18 326,18 93 L25 93" marker-end="url(#{failure_arrow_id})"/>')
         body.append(
-            '<text class="v-small" x="410" y="317" text-anchor="middle">'
+            '<text class="v-small" x="410" y="347" text-anchor="middle">'
             + ("驗證失敗時回到 raw evidence，不用猜測值繼續" if language == "zh" else "On validation failure, return to raw evidence instead of guessing")
             + "</text>"
         )
     elif kind == "state":
-        shown = nodes[:5]
+        shown = nodes[:6]
         count = max(len(shown), 1)
         box_width = min(132.0, (780 - (count - 1) * 26) / count)
         gap = 26.0
@@ -1734,9 +1744,9 @@ def module_visual_svg(module: dict, language: str) -> str:
         )
     else:
         hub = nodes[0] if nodes else title
-        children = nodes[1:5]
+        children = nodes[1:6]
         count = max(len(children), 1)
-        child_gap = 24.0
+        child_gap = 18.0
         child_width = min(176.0, (780 - (count - 1) * child_gap) / count)
         total_width = count * child_width + (count - 1) * child_gap
         start_x = (820 - total_width) / 2
@@ -1808,9 +1818,9 @@ def report_visual_atlas_html(
             + "</h2>",
             '<p class="chapter-bridge">'
             + (
-                "iPad 可左右滑動，桌面會自動排成雙欄。Architecture 看元件位置，Sequence 看 actor 交握，Decode 看 bit／byte 轉換，State 看正常與失敗轉移。每張圖都使用固定角色色與文字標籤。"
+                "iPad 採垂直單欄，桌面會自動排成雙欄。Architecture 看元件位置，Sequence 看 actor 交握，Decode 看 bit／byte 轉換，State 看正常與失敗轉移。每張圖都使用固定角色色與文字標籤。"
                 if tutorial
-                else "本區用於快速定位機制，不取代欄位表。桌面採寬版索引，iPad 保留容器內滑動；先找視圖類型，再跳到 claim、Figure 與來源。"
+                else "本區用於快速定位機制，不取代欄位表。桌面採寬版索引，iPad 採垂直單欄；先找視圖類型，再跳到 claim、Figure 與來源。"
             )
             + "</p>",
             '<div class="visual-atlas" aria-label="主題視覺索引">',
@@ -1830,7 +1840,7 @@ def ipad_read_guide_html(tutorial: bool) -> str:
         [
             f'<p class="edition-note"><strong>本版用途：</strong>{edition_note}</p>',
             '<aside class="ipad-read-guide" aria-label="跨裝置閱讀操作">',
-            '<div class="read-chip"><strong>iPad／觸控</strong>點按 details 展開；寬表與圖譜只在自己的容器內滑動。</div>',
+            '<div class="read-chip"><strong>iPad／觸控</strong>點按 details 展開；圖譜採單欄，只有無法再拆的寬表在自己的容器內滑動。</div>',
             '<div class="read-chip"><strong>Desktop／鍵盤滑鼠</strong>寬螢幕自動改成雙欄圖譜；Tab、Enter 與瀏覽器尋找均可使用。</div>',
             '<div class="read-chip"><strong>可搜尋文字</strong>標題、縮寫、角色與來源都保留為 HTML 文字，不把唯一資訊鎖在 SVG。</div>',
             "</aside>",
@@ -2128,6 +2138,15 @@ def quick_reference_html(report_id: str, claims: list[dict]) -> str:
             '<section id="quick-reference"><h2>快速查詢入口</h2>',
             '<p class="chapter-bridge">這一版不是從頭帶讀的課本。遇到 command、欄位、status 或 trace 問題時，先用下表定位 requirement，再跳到完整論述與 Figure 證據。</p>',
             '<div class="callout explain"><span class="badge badge-explain">查詢順序</span> 症狀或問題 → 找主題 → 核對 normative keyword → 讀來源位置 → 再展開相關 Figure。<strong>shall</strong> 與 <strong>may</strong> 不可互換。</div>',
+            '<h3>Debug evidence 記錄模板</h3>',
+            '<p>快速查詢的終點不是「找到一個看起來相符的欄位」，而是留下另一位 engineer 可以重算的證據鏈。先固定時間點與 owner，再保存完整原始資料；只抄 decoded 結果會失去 endian、reserved bit、length 與 snapshot 一致性的檢查機會。接著把 capability gate、command input、completion 或觀測資料分開記錄，避免把「支援此機制」「已要求執行」和「已完成」混成同一個布林值。最後才引用下表的 requirement 與來源頁，寫出 decision 以及尚未被證明的部分。</p>',
+            '<div class="table-wrap"><table><thead><tr><th>證據層</th><th>必須保存</th><th>判讀前的停止條件</th></tr></thead><tbody>',
+            '<tr><td>Context</td><td>controller／namespace 身分、scope、lifecycle state、timestamp、觸發事件</td><td>不知道資料屬於哪個物件或哪個時間點</td></tr>',
+            '<tr><td>Raw input</td><td>完整 command dwords、register value、buffer bytes、length、offset 與單位</td><td>只有轉換後數值，無法重新解碼</td></tr>',
+            '<tr><td>Gate／result</td><td>capability、selector、completion SCT／SC、相關 log 或 event</td><td>support、request、completion、observation 任一層缺失</td></tr>',
+            '<tr><td>Decision</td><td>引用的 section／Figure／頁碼、normative keyword、預期與實際差異</td><td>結論超出引用條件，或把 informative example 當成 requirement</td></tr>',
+            '</tbody></table></div>',
+            '<div class="callout warning"><span class="badge badge-warn">邊界</span> 同一欄位名稱若出現在不同 command、log page、controller scope 或 namespace scope，不得直接互相比較。先確認資料結構版本、byte range、0\'s-based encoding、單位與更新時機；遇到 Reserved／undefined value 時停止推導，不以 vendor 慣例補成規格行為。</div>',
             '<div class="table-wrap"><table><thead><tr><th>主題</th><th>keyword</th><th>快速判讀問題</th><th>來源</th></tr></thead><tbody>',
             *rows,
             "</tbody></table></div>",
@@ -2150,72 +2169,97 @@ def figure_card_html(figure: dict, item: dict, tutorial: bool) -> str:
         + normative_badge_html(item["normative_keyword"])
         + " "
         f'<span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></div>',
-        '<h4>這張 Figure 在完整流程中的位置</h4>',
-        f'<p>{html.escape(guide["context"])}</p>',
-        f'<p>{html.escape(guide["kind_text"])}</p>',
-        '<figure class="visual-board">',
-        figure_teaching_svg(figure, guide, "zh"),
-        '<figcaption>教學重畫（非 Spec 原圖）：以形狀、顏色與箭頭呈現閱讀順序；精確 bit range／encoding 仍以引用來源為準。</figcaption></figure>',
-        '<h4>讀圖前先懂這些縮寫／欄位</h4>',
-        '<div class="table-wrap"><table><thead><tr><th>縮寫／欄位</th><th>白話解釋</th></tr></thead><tbody>',
     ]
-    for term, definition in guide["terms"]:
-        parts.append(
-            f'<tr><td><span class="term">{html.escape(term)}</span></td>'
-            f'<td>{html.escape(definition)}</td></tr>'
-        )
-    parts.extend(
-        [
-            "</tbody></table></div>",
-            '<h4>照這個順序讀，不要直接跳到數值</h4><ol>',
-            *[f"<li>{html.escape(step)}</li>" for step in guide["steps"]],
-            "</ol>",
-            '<h4>Input → Decode → Validate → Evidence 工作紙</h4>',
-            '<div class="table-wrap worksheet"><table><thead><tr><th>階段</th><th>本 Figure 要記錄什麼</th><th>停止條件</th></tr></thead><tbody>',
-            f'<tr><td>Input</td><td>Figure {figure["number"]} 對應的完整 raw register／buffer／CQE snapshot</td><td>來源物件、scope 或 snapshot 時機不明</td></tr>',
-            f'<tr><td>Decode</td><td>{html.escape(", ".join(term for term, _ in guide["terms"]) or figure["title"])}</td><td>bit／byte boundary、unit 或 encoding rule 尚未確認</td></tr>',
-            f'<tr><td>Validate</td><td>§{html.escape(figure["section"])} 前後條件、capability gate、實際 length／state</td><td>reserved value、越界、unsupported capability 或互斥條件衝突</td></tr>',
-            '<tr><td>Evidence</td><td>raw value、decoded value、decision、timestamp 與 owner</td><td>只有結論、沒有可重算的原始證據</td></tr>',
-            "</tbody></table></div>",
-            '<h4>這張圖能回答什麼，不能回答什麼</h4>',
-            '<div class="table-wrap"><table><thead><tr><th>判讀層級</th><th>內容</th></tr></thead><tbody>',
-            *[
-                "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
-                for row in guide["answers"]
-            ],
-            "</tbody></table></div>",
-            '<div class="callout example"><span class="badge badge-example">範例</span> '
-            + html.escape(guide["example"])
-            + "</div>",
-            '<div class="callout warning"><span class="badge badge-warn">常見誤解</span> '
-            + html.escape(guide["misconception"])
-            + "</div>",
-            '<h4>Debug 對照表</h4><div class="table-wrap"><table><thead><tr><th>症狀</th><th>先查什麼</th></tr></thead><tbody>',
-            *[
-                "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
-                for row in guide["debug"]
-            ],
-            "</tbody></table></div>",
-            '<h4>讀完後應能回答</h4><ol>',
-            *[f"<li>{html.escape(value)}</li>" for value in guide["check"]],
-            "</ol>",
-        ]
-    )
-    if not tutorial:
+    if tutorial:
         parts.extend(
             [
-                '<h4>詳細追溯資料</h4><div class="mini-grid">',
-                '<div class="mini-card"><strong>來源欄位索引</strong><p>'
-                + html.escape(base["item_text"])
-                + "</p></div>",
-                '<div class="mini-card"><strong>來源 keyword 索引</strong><p>'
-                + html.escape(base["keyword_text"])
-                + "</p></div>",
-                '<div class="mini-card"><strong>Claim ID</strong><p><code>'
-                + html.escape(item["id"])
-                + "</code></p></div>",
-                '<div class="mini-card"><strong>Figure claim keyword</strong><p><code>none</code></p></div>',
+                '<h4>先知道它在故事中的位置</h4>',
+                f'<p>{html.escape(guide["context"])}</p>',
+                f'<p>{html.escape(guide["kind_text"])}</p>',
+                '<figure class="visual-board">',
+                figure_teaching_svg(figure, guide, "zh"),
+                '<figcaption>新手教學重畫（非 Spec 原圖）：箭頭只表示閱讀／因果方向，不穿越節點文字；顏色與形狀依頁首固定圖例。</figcaption></figure>',
+                '<h4>讀圖前先學縮寫／欄位</h4>',
+                '<div class="table-wrap"><table><thead><tr><th>縮寫／欄位</th><th>白話解釋</th></tr></thead><tbody>',
+            ]
+        )
+        for term, definition in guide["terms"]:
+            parts.append(
+                f'<tr><td><span class="term">{html.escape(term)}</span></td>'
+                f'<td>{html.escape(definition)}</td></tr>'
+            )
+        parts.extend(
+            [
+                "</tbody></table></div>",
+                '<h4>照這個順序讀</h4><ol>',
+                *[f"<li>{html.escape(step)}</li>" for step in guide["steps"]],
+                "</ol>",
+                '<div class="callout example"><span class="badge badge-example">具體範例</span> '
+                + html.escape(guide["example"])
+                + "</div>",
+                '<div class="callout warning"><span class="badge badge-warn">常見誤解</span> '
+                + html.escape(guide["misconception"])
+                + "</div>",
+                '<h4>能回答／不能回答</h4><div class="table-wrap"><table><thead><tr><th>判讀層級</th><th>內容</th></tr></thead><tbody>',
+                *[
+                    "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
+                    for row in guide["answers"]
+                ],
+                "</tbody></table></div>",
+                '<h4>Debug 對照表</h4><div class="table-wrap"><table><thead><tr><th>症狀</th><th>先查什麼</th></tr></thead><tbody>',
+                *[
+                    "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
+                    for row in guide["debug"]
+                ],
+                "</tbody></table></div>",
+                '<h4>讀完後應能回答</h4><ol>',
+                *[f"<li>{html.escape(value)}</li>" for value in guide["check"]],
+                "</ol>",
+            ]
+        )
+    else:
+        parts.extend(
+            [
+                '<h4>追溯與欄位索引</h4><div class="mini-grid">',
+                '<div class="mini-card"><strong>來源欄位索引</strong><p>' + html.escape(base["item_text"]) + "</p></div>",
+                '<div class="mini-card"><strong>來源 keyword 索引</strong><p>' + html.escape(base["keyword_text"]) + "</p></div>",
+                '<div class="mini-card"><strong>Claim ID</strong><p><code>' + html.escape(item["id"]) + "</code></p></div>",
+                '<div class="mini-card"><strong>Figure role</strong><p>' + html.escape(figure.get("role", "in_scope")) + "／" + html.escape(figure.get("mode", "full")) + "</p></div>",
                 "</div>",
+                '<figure class="visual-board">',
+                figure_teaching_svg(figure, guide, "zh"),
+                '<figcaption>詳細版查詢重畫：用固定角色色定位 input、object、gate、evidence 與 failure；精確 bit range／encoding 仍以來源 Figure 為準。</figcaption></figure>',
+                '<h4>欄位／名詞速查</h4><div class="table-wrap"><table><thead><tr><th>欄位</th><th>固定解釋</th></tr></thead><tbody>',
+            ]
+        )
+        for term, definition in guide["terms"]:
+            parts.append(f'<tr><td><code>{html.escape(term)}</code></td><td>{html.escape(definition)}</td></tr>')
+        parts.extend(
+            [
+                "</tbody></table></div>",
+                '<h4>Input／Decode／Validate／Evidence</h4><div class="table-wrap worksheet"><table><thead><tr><th>階段</th><th>必備資料</th><th>停止條件</th></tr></thead><tbody>',
+                f'<tr><td>Input</td><td>Figure {figure["number"]} 的 raw register／buffer／CQE snapshot</td><td>owner、scope 或 snapshot 時機不明</td></tr>',
+                f'<tr><td>Decode</td><td>{html.escape(", ".join(term for term, _ in guide["terms"]) or figure["title"])}</td><td>bit／byte boundary、unit 或 encoding 未確認</td></tr>',
+                f'<tr><td>Validate</td><td>§{html.escape(figure["section"])} 的 capability、length、state 與互斥條件</td><td>reserved、越界、unsupported 或條件衝突</td></tr>',
+                '<tr><td>Evidence</td><td>raw value、decoded value、decision、timestamp、owner</td><td>只有結論，無法重算</td></tr>',
+                "</tbody></table></div>",
+                '<h4>適用邊界</h4><div class="table-wrap"><table><thead><tr><th>可／不可回答</th><th>內容</th></tr></thead><tbody>',
+                *[
+                    "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
+                    for row in guide["answers"]
+                ],
+                "</tbody></table></div>",
+                '<h4>症狀索引</h4><div class="table-wrap"><table><thead><tr><th>症狀</th><th>第一個證據</th></tr></thead><tbody>',
+                *[
+                    "<tr>" + "".join(f"<td>{html.escape(value)}</td>" for value in row) + "</tr>"
+                    for row in guide["debug"]
+                ],
+                "</tbody></table></div>",
+                '<div class="mini-grid"><div class="mini-card"><strong>Informative example</strong><p>'
+                + html.escape(guide["example"])
+                + '</p></div><div class="mini-card"><strong>Caveat</strong><p>'
+                + html.escape(guide["misconception"])
+                + "</p></div></div>",
             ]
         )
     parts.extend(
@@ -2266,6 +2310,7 @@ def render_html(
         "<head>",
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+        '<meta name="color-scheme" content="light dark">',
         '<meta name="theme-color" content="#f4f7fb" media="(prefers-color-scheme: light)">',
         '<meta name="theme-color" content="#0c1220" media="(prefers-color-scheme: dark)">',
         f"<title>{html.escape(report['title_zh'])}｜{label}</title>",
@@ -2332,29 +2377,39 @@ def render_html(
                 + normative_badge_html(item["normative_keyword"])
                 + " "
                 + f'<span data-claim-id="{item["id"]}">{html.escape(item["zh_tw"])}</span></div>',
-                '<p><span class="badge badge-explain">解釋</span> 本結論要放回前述流程判讀：先確認物件與 scope，'
-                '再核對 capability／state，最後才把欄位值轉成 software decision。欄位存在不等於功能已啟用，'
-                '成功 completion 也不自動代表下一個 lifecycle 階段已完成。</p>',
-                f'<p class="source-note">{html.escape(item["citation_zh_tw"])}</p>'
-                "</article>",
             ]
         )
         if tutorial:
-            parts.insert(
-                len(parts) - 1,
-                "<p><strong>新手檢查點：</strong>"
+            parts.extend(
+                [
+                    '<p><span class="badge badge-explain">讀法</span> '
+                    + html.escape(heading)
+                    + " 必須放回本章的 actor、scope 與 lifecycle boundary；先證明適用條件，再解碼欄位，最後才判斷結果。</p>",
+                    "<p><strong>動手檢查：</strong>"
                 + html.escape(tutorial_check(report_id, item["id"]))
-                + "</p>",
+                    + "</p>",
+                ]
             )
         else:
-            parts.insert(
-                len(parts) - 1,
-                "<dl><dt>Claim ID</dt><dd>"
+            parts.append(
+                '<dl class="claim-meta"><dt>Claim ID</dt><dd><code>'
                 + html.escape(item["id"])
-                + "</dd><dt>規範性 keyword</dt><dd>"
-                + html.escape(item["normative_keyword"])
-                + "</dd></dl>",
+                + "</code></dd><dt>Normative keyword</dt><dd>"
+                + normative_badge_html(item["normative_keyword"])
+                + "</dd><dt>Section／pages</dt><dd>§"
+                + html.escape(item["section"])
+                + "；文件頁 "
+                + html.escape(item["printed_pages"])
+                + "；PDF 頁 "
+                + html.escape(item["pdf_pages"])
+                + "</dd></dl>"
             )
+        parts.extend(
+            [
+                f'<p class="source-note">{html.escape(item["citation_zh_tw"])}</p>',
+                "</article>",
+            ]
+        )
     parts.extend(
         [
             '</section><section id="figure-index"><h2>Figure 索引</h2>',
@@ -2510,11 +2565,12 @@ def module_visual_text(module: dict, language: str) -> list[str]:
             lines.append(f"{prefix}: {value}")
         return lines
     if kind == "decode":
-        labels = ["RAW", "LOCATE", "DECODE", "VALIDATE"]
-        shown = nodes[:4]
-        while len(shown) < 4:
+        labels = ["RAW", "LOCATE", "DECODE", "VALIDATE", "APPLY", "EVIDENCE"]
+        shown = nodes[:6]
+        while len(shown) < 6:
             shown.append("evidence")
-        return [" → ".join(f"[{label}: {value}]" for label, value in zip(labels, shown)), "VALIDATE fail ──→ return to RAW evidence"]
+        stages = [f"[{label}: {value}]" for label, value in zip(labels, shown)]
+        return [" → ".join(stages[:3]), " → ".join(stages[3:]), "VALIDATE fail ──→ return to RAW evidence"]
     return [" → ".join(f"[{value}]" for value in nodes), "timeout / failure ──→ preserve trigger + previous state + evidence"]
 
 
@@ -2971,31 +3027,32 @@ FIRMWARE_PARTS = [
 
 
 def firmware_mental_model_svg() -> str:
-    return """<svg width="100%" height="240" viewBox="0 0 820 240" role="img" aria-labelledby="fw-model-title fw-model-desc">
+    return """<svg width="100%" height="260" viewBox="0 0 820 260" role="img" data-visual-kind="sequence" aria-labelledby="fw-model-title fw-model-desc">
 <title id="fw-model-title">Firmware update mental model</title>
 <desc id="fw-model-desc">Downloaded portions are committed to a shared firmware slot, selected for activation, and then observed through Identify FR and LID 03h.</desc>
-<defs><marker id="fw-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="currentColor"/></marker></defs>
-<rect x="20" y="70" width="150" height="70" fill="none" stroke="currentColor"/><text x="95" y="96" text-anchor="middle" fill="currentColor">Downloaded</text><text x="95" y="120" text-anchor="middle" fill="currentColor">image portions</text>
-<rect x="230" y="40" width="170" height="130" fill="none" stroke="currentColor"/><text x="315" y="66" text-anchor="middle" fill="currentColor">Domain-shared slots</text><text x="315" y="95" text-anchor="middle" fill="currentColor">slot 1 · current</text><text x="315" y="120" text-anchor="middle" fill="currentColor">slot 2 · next</text><text x="315" y="145" text-anchor="middle" fill="currentColor">slot 3…7</text>
-<rect x="470" y="70" width="140" height="70" fill="none" stroke="currentColor"/><text x="540" y="96" text-anchor="middle" fill="currentColor">Running</text><text x="540" y="120" text-anchor="middle" fill="currentColor">firmware</text>
-<rect x="670" y="40" width="130" height="130" fill="none" stroke="currentColor"/><text x="735" y="70" text-anchor="middle" fill="currentColor">Observation</text><text x="735" y="100" text-anchor="middle" fill="currentColor">Identify.FR</text><text x="735" y="127" text-anchor="middle" fill="currentColor">LID 03h AFI</text><text x="735" y="151" text-anchor="middle" fill="currentColor">FRS1…FRS7</text>
-<line x1="170" y1="105" x2="228" y2="105" stroke="currentColor" marker-end="url(#fw-arrow)"/><text x="199" y="91" text-anchor="middle" fill="currentColor">Commit</text>
-<line x1="400" y1="105" x2="468" y2="105" stroke="currentColor" marker-end="url(#fw-arrow)"/><text x="434" y="91" text-anchor="middle" fill="currentColor">activate</text>
-<line x1="610" y1="105" x2="668" y2="105" stroke="currentColor" marker-end="url(#fw-arrow)"/>
-<path d="M315,170 C315,220 540,220 540,142" fill="none" stroke="currentColor" marker-end="url(#fw-arrow)"/><text x="425" y="218" text-anchor="middle" fill="currentColor">immediate or reset boundary</text>
+<defs><marker id="fw-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" class="v-arrow"/></marker><marker id="fw-gate-arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" class="v-arrow-failure"/></marker></defs>
+<line class="v-line" x1="170" y1="106" x2="218" y2="106" marker-end="url(#fw-arrow)"/><line class="v-line" x1="410" y1="106" x2="458" y2="106" marker-end="url(#fw-arrow)"/><line class="v-line" x1="610" y1="106" x2="658" y2="106" marker-end="url(#fw-arrow)"/>
+<path class="v-line-dashed" d="M315,174 C315,228 540,228 540,146" marker-end="url(#fw-gate-arrow)"/>
+<rect class="v-command" x="20" y="66" width="150" height="80" rx="12"/><text class="v-role" x="95" y="88" text-anchor="middle">REQUEST</text><text class="v-label" x="95" y="111" text-anchor="middle">Downloaded</text><text class="v-label" x="95" y="132" text-anchor="middle">image portions</text>
+<rect class="v-object" x="220" y="36" width="190" height="138" rx="12"/><text class="v-role" x="315" y="59" text-anchor="middle">SHARED OBJECT</text><text class="v-label" x="315" y="84" text-anchor="middle">Domain-shared slots</text><text class="v-small" x="315" y="111" text-anchor="middle">slot 1 · current</text><text class="v-small" x="315" y="133" text-anchor="middle">slot 2 · next</text><text class="v-small" x="315" y="155" text-anchor="middle">slot 3…7</text>
+<rect class="v-decision" x="460" y="66" width="150" height="80" rx="12"/><text class="v-role" x="535" y="88" text-anchor="middle">ACTIVATION GATE</text><text class="v-label" x="535" y="113" text-anchor="middle">Running firmware</text>
+<rect class="v-success" x="660" y="36" width="140" height="138" rx="12"/><text class="v-role" x="730" y="59" text-anchor="middle">EVIDENCE</text><text class="v-label" x="730" y="84" text-anchor="middle">Observation</text><text class="v-small" x="730" y="111" text-anchor="middle">Identify.FR</text><text class="v-small" x="730" y="133" text-anchor="middle">LID 03h AFI</text><text class="v-small" x="730" y="155" text-anchor="middle">FRS1…FRS7</text>
+<rect class="v-label-bg" x="175" y="78" width="40" height="20" rx="5"/><text class="v-small" x="195" y="92" text-anchor="middle">Commit</text><rect class="v-label-bg" x="414" y="78" width="42" height="20" rx="5"/><text class="v-small" x="435" y="92" text-anchor="middle">select</text>
+<text class="v-small" x="427" y="244" text-anchor="middle">immediate activation or reset boundary</text>
 </svg>"""
 
 
 def firmware_afi_svg() -> str:
-    return """<svg width="100%" height="170" viewBox="0 0 820 170" role="img" aria-labelledby="afi-title afi-desc">
+    return """<svg width="100%" height="190" viewBox="0 0 820 190" role="img" data-visual-kind="decode" aria-labelledby="afi-title afi-desc">
 <title id="afi-title">AFI and Firmware Slot Information layout</title>
 <desc id="afi-desc">AFI byte zero contains NAFS in bits six through four and CAFS in bits two through zero, followed by reserved bytes and seven eight-byte revision fields.</desc>
-<text x="20" y="28" fill="currentColor">AFI byte 0</text>
-<rect x="20" y="40" width="80" height="38" fill="none" stroke="currentColor"/><rect x="100" y="40" width="240" height="38" fill="none" stroke="currentColor"/><rect x="340" y="40" width="80" height="38" fill="none" stroke="currentColor"/><rect x="420" y="40" width="240" height="38" fill="none" stroke="currentColor"/>
-<text x="60" y="64" text-anchor="middle" fill="currentColor">R</text><text x="220" y="64" text-anchor="middle" fill="currentColor">NAFS [6:4]</text><text x="380" y="64" text-anchor="middle" fill="currentColor">R</text><text x="540" y="64" text-anchor="middle" fill="currentColor">CAFS [2:0]</text>
-<text x="20" y="108" fill="currentColor">512-byte log page</text>
-<rect x="20" y="120" width="70" height="34" fill="none" stroke="currentColor"/><rect x="90" y="120" width="90" height="34" fill="none" stroke="currentColor"/><rect x="180" y="120" width="390" height="34" fill="none" stroke="currentColor"/><rect x="570" y="120" width="230" height="34" fill="none" stroke="currentColor"/>
-<text x="55" y="142" text-anchor="middle" fill="currentColor">AFI</text><text x="135" y="142" text-anchor="middle" fill="currentColor">R 1:7</text><text x="375" y="142" text-anchor="middle" fill="currentColor">FRS1…FRS7 · bytes 8:63</text><text x="685" y="142" text-anchor="middle" fill="currentColor">Reserved 64:511</text>
+<text class="v-label" x="20" y="28">AFI byte 0 · bit ruler</text>
+<rect class="v-failure" x="20" y="42" width="80" height="42"/><rect class="v-decision" x="100" y="42" width="240" height="42"/><rect class="v-failure" x="340" y="42" width="80" height="42"/><rect class="v-success" x="420" y="42" width="240" height="42"/>
+<text class="v-label" x="60" y="68" text-anchor="middle">R [7]</text><text class="v-label" x="220" y="68" text-anchor="middle">NAFS [6:4]</text><text class="v-label" x="380" y="68" text-anchor="middle">R [3]</text><text class="v-label" x="540" y="68" text-anchor="middle">CAFS [2:0]</text>
+<text class="v-small" x="20" y="103">橘色虛線欄位為 Reserved；綠色欄位是目前 active slot 證據。</text>
+<text class="v-label" x="20" y="130">512-byte log page · memory layout</text>
+<rect class="v-success" x="20" y="142" width="70" height="36"/><rect class="v-failure" x="90" y="142" width="90" height="36"/><rect class="v-object" x="180" y="142" width="390" height="36"/><rect class="v-failure" x="570" y="142" width="230" height="36"/>
+<text class="v-label" x="55" y="165" text-anchor="middle">AFI</text><text class="v-label" x="135" y="165" text-anchor="middle">R 1:7</text><text class="v-label" x="375" y="165" text-anchor="middle">FRS1…FRS7 · bytes 8:63</text><text class="v-label" x="685" y="165" text-anchor="middle">Reserved 64:511</text>
 </svg>"""
 
 
@@ -3084,6 +3141,7 @@ def fw_html_shell_start(report: dict, label: str, subtitle: str, toc: str) -> li
         "<head>",
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">',
+        '<meta name="color-scheme" content="light dark">',
         '<meta name="theme-color" content="#f4f7fb" media="(prefers-color-scheme: light)">',
         '<meta name="theme-color" content="#0c1220" media="(prefers-color-scheme: dark)">',
         f"<title>{html.escape(report['title_zh'])}｜{label}</title>",

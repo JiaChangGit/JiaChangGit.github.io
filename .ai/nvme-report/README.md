@@ -101,10 +101,12 @@ allowlist，其中 17 張是主範圍理解所需的 `referenced_dependency` sli
 338／466 只呈現本報告交叉引用所需的欄位或資料列；NVM Command Set Figure 111 只解釋
 §4.1.4.3 的 FLBA 語意。任何 Fabrics／Discovery 內容仍維持排除。
 
-HTML 依 `ipad-html-profile.md` 建立 M1 iPad Pro 可直接閱讀的 Claude Code 類型工程資訊設計：
-單一內嵌 CSS、Light／Dark Mode、44px touch target、safe-area、responsive inline SVG、原生
-`details` accordion、scroll-snap 視覺卡與 table container。JavaScript、外部 stylesheet、
-外部字型與外部資源仍禁止。
+HTML 依 `ipad-html-profile.md` 建立 M1 iPad Pro 與 desktop 可直接閱讀的工程資訊設計。
+每個用途只產生一份 responsive HTML：iPad 採單欄、desktop 可放寬 Visual Atlas；不建立內容重複的
+裝置副本。共同能力包括單一內嵌 CSS、Light／Dark Mode、44px touch target、safe-area、responsive
+inline SVG、原生 `details` accordion、iPad 單欄／desktop 雙欄圖譜與獨立 table container。JavaScript、外部
+stylesheet、外部字型與外部資源仍禁止。所有報告共用 Request／Object／Gate／Evidence／Failure
+五種顏色與形狀語意，且不得只靠顏色傳達資訊。
 
 驗證器還會核對 claim 的完整正文與順序，而不只檢查隱藏標記；中英文 Markdown 必須
 具有相同 claim 集合與排列。輸出不得出現 Fabrics、message-based transport、Discovery

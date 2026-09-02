@@ -111,15 +111,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 02: Device Self-test: gate capability before submitting a background operation
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[OACS.DSTS=1]
-  ├─ [Read SDSO/EDSTT]
-  ├─ [Choose NSID + STC]
-  ├─ [Submit Admin SQE]
-  ├─ [CQE: start accepted]
-  └─ [Poll LID 06h]
+[OACS.DSTS=1] → [Read SDSO/EDSTT] → [Choose NSID + STC] → [Submit Admin SQE] → [CQE: start accepted] → [Poll LID 06h]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** Self-test is not a synchronous diagnostic RPC. The host first uses OACS.DSTS, DSTO.SDSO, and EDSTT to establish support, concurrency scope, and timing, then constructs the command from NSID and STC. When the Admin CQE returns, the background operation has only entered the lifecycle observed through LID 06h.
@@ -130,15 +126,12 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 03: LID 06h: decode current operation separately from twenty history entries
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[Get LID06 564 bytes]
-  ├─ [Read DSTOS/DSTCS]
-  ├─ [Select newest RDS1]
-  ├─ [Decode DSTC/DSTR]
-  ├─ [Gate fields with VDINFO]
-  └─ [NVM FLBA + timeline]
+[RAW: Get LID06 564 bytes] → [LOCATE: Read DSTOS/DSTCS] → [DECODE: Select newest RDS1]
+[VALIDATE: Decode DSTC/DSTR] → [APPLY: Gate fields with VDINFO] → [EVIDENCE: NVM FLBA + timeline]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **Question answered:** DSTOS/DSTCS in the header answer what is running now, while RDS1 through RDS20 answer how earlier operations ended. Each result then separates operation code, result reason, segment, validity bitmap, and diagnostic payload. The NVM Command Set gives FLBA an LBA meaning only when FVLD is one.
@@ -149,15 +142,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 04: HMB: enable/disable completion is an ownership fence
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[Read HMPRE/HMMIN/limits]
-  ├─ [Allocate pages + HMDL]
-  ├─ [Set FID0Dh EHM=1]
-  ├─ [Controller exclusive use]
-  ├─ [Set EHM=0]
-  └─ [Disable CQE→host reclaim]
+[Read HMPRE/HMMIN/limits] → [Allocate pages + HMDL] → [Set FID0Dh EHM=1] → [Controller exclusive use] → [Set EHM=0] → [Disable CQE→host reclaim]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** HMB is not merely controller cache. It is an ownership protocol: the host allocates pages and a descriptor list, stops writing after successful enable, the controller initializes and uses them, and the host disables HMB before reclaiming memory. Modification rights return only when the CQE is posted.
@@ -168,15 +157,12 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 05: HMB commands and descriptors: reconcile every size, count, and address with one page model
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[CC.MPS→page bytes]
-  ├─ [HMPRE/HMMIN→target bytes]
-  ├─ [Split aligned ranges]
-  ├─ [Write 16-byte entries]
-  ├─ [sum(BSIZE)=HSIZE]
-  └─ [Build CDW11..15]
+[RAW: CC.MPS→page bytes] → [LOCATE: HMPRE/HMMIN→target bytes] → [DECODE: Split aligned ranges]
+[VALIDATE: Write 16-byte entries] → [APPLY: sum(BSIZE)=HSIZE] → [EVIDENCE: Build CDW11..15]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **Question answered:** HSIZE, BSIZE, and BADD use CC.MPS pages, while HMPRE, HMMIN, and HMMINDS use 4-KiB units. The unit systems are not interchangeable. HMDL is 16-byte aligned with fixed 16-byte entries, and HMDLEC is an entry count—not zero based and not a byte length.
@@ -187,15 +173,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 06: HMB across non-operational state, RTD3, and reset: three different boundaries
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[HMB enabled]
-  ├─ [Optional HMNARE policy]
-  ├─ [Non-op→HMNAR state]
-  ├─ [Disable before RTD3/reset]
-  ├─ [Preserve or replace contents]
-  └─ [MR=1 exact-match return]
+[HMB enabled] → [Optional HMNARE policy] → [Non-op→HMNAR state] → [Disable before RTD3/reset] → [Preserve or replace contents] → [MR=1 exact-match return]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** HMNARE is access policy, HMNAR is current state, and MR says whether exactly the same prior contents are returned after reset or RTD3. They are not interchangeable. Controller Level Reset loses the assignment, RTD3 calls for release beforehand, and non-operational restriction only limits access in selected states.
@@ -206,15 +188,12 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 07: DSTRD and NDT/NDM: decode to byte boundaries before memory access
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[Read capability bit/field]
-  ├─ [Select the correct formula]
-  ├─ [Convert to byte stride/length]
-  ├─ [Check overflow/alignment]
-  ├─ [Perform MMIO/DMA]
-  └─ [Retain raw+decoded trace]
+[RAW: Read capability bit/field] → [LOCATE: Select the correct formula] → [DECODE: Convert to byte stride/length]
+[VALIDATE: Check overflow/alignment] → [APPLY: Perform MMIO/DMA] → [EVIDENCE: Retain raw+decoded trace]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **Question answered:** Software emulators and vendor-command passthrough both handle untrusted encoded values. DSTRD becomes bytes through 2^(2+x); NDT/NDM are already actual dword counts and are multiplied by four without adding one. The formulas differ, but both prove address and length before MMIO or DMA.

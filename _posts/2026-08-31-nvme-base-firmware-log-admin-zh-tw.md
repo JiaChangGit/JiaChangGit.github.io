@@ -455,15 +455,12 @@ bytes 64:511: reserved
 
 ### Visual 02: Download 是 byte range 幾何，不是把檔案直接丟給 controller
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[image bytes]
-  ├─ [依 FWUG 切 portions]
-  ├─ [bytes ÷ 4 → dwords]
-  ├─ [NUMD = dwords - 1]
-  ├─ [OFST = 已送 bytes ÷ 4]
-  └─ [CQE success 後前進]
+[RAW: image bytes] → [LOCATE: 依 FWUG 切 portions] → [DECODE: bytes ÷ 4 → dwords]
+[VALIDATE: NUMD = dwords - 1] → [APPLY: OFST = 已送 bytes ÷ 4] → [EVIDENCE: CQE success 後前進]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **回答的問題：** 每筆 Firmware Image Download 都用 DPTR 指向 host buffer，再用 0's-based NUMD 表示 transfer dwords、用 OFST 表示 image-relative dword offset。host 必須同時證明 buffer、length、offset、FWUG 與前後 portions 沒有 gap／overlap。
@@ -474,15 +471,11 @@ bytes 64:511: reserved
 
 ### Visual 03: Commit 把 downloaded portions 轉成 slot state 與 activation policy
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[downloaded portions 完整]
-  ├─ [填 CA／FS]
-  ├─ [controller 驗證 image]
-  ├─ [放入 slot／排定或立即 activation]
-  ├─ [解完整 SCT／SC／MUD]
-  └─ [依 status 選 reset／verify／stop]
+[downloaded portions 完整] → [填 CA／FS] → [controller 驗證 image] → [放入 slot／排定或立即 activation] → [解完整 SCT／SC／MUD] → [依 status 選 reset／verify／stop]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** Commit Action（CA）不是成功／失敗旗標；它同時決定 replace、activate 與 reset boundary。Firmware Slot（FS）選擇目標 slot，CQE status 決定下一步是驗證、執行特定 reset、等待，還是停止。
@@ -493,15 +486,12 @@ bytes 64:511: reserved
 
 ### Visual 04: LID 03h 驗證不是只讀一個版本字串
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[建立 Get Log Page SQE]
-  ├─ [LID=03h／NUMD=127]
-  ├─ [讀滿 512-byte buffer]
-  ├─ [AFI → CAFS／NAFS]
-  ├─ [FRS1-FRS7 逐 slot 解碼]
-  └─ [與 Identify.FR／預期 domain 比對]
+[RAW: 建立 Get Log Page SQE] → [LOCATE: LID=03h／NUMD=127] → [DECODE: 讀滿 512-byte buffer]
+[VALIDATE: AFI → CAFS／NAFS] → [APPLY: FRS1-FRS7 逐 slot 解碼] → [EVIDENCE: 與 Identify.FR／預期 domain 比對]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **回答的問題：** Get Log Page 先用 common command 欄位建立 512-byte transfer，再以 LID=03h 選 Firmware Slot Information。AFI 同時拆成 CAFS 與 NAFS，FRS1-FRS7 表示各 slots 的 revision；最後還要用 Identify.FR 與 domain scope 交叉確認。

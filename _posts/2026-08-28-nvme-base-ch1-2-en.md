@@ -91,7 +91,8 @@ Each redraw answers a different question: architecture locates components, seque
 **View type:** `decode`
 
 ```text
-[RAW: Raw bits] → [LOCATE: Confirm bit/byte range] → [DECODE: Apply radix and endian] → [VALIDATE: Apply unit/zero-based rule]
+[RAW: Raw bits] → [LOCATE: Confirm bit/byte range] → [DECODE: Apply radix and endian]
+[VALIDATE: Apply unit/zero-based rule] → [APPLY: Obtain engineering value] → [EVIDENCE: evidence]
 VALIDATE fail ──→ return to RAW evidence
 ```
 

@@ -111,15 +111,11 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 02: Device Self-test：先 gate capability，再提交一個背景 operation
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[OACS.DSTS=1]
-  ├─ [讀 SDSO／EDSTT]
-  ├─ [選 NSID + STC]
-  ├─ [提交 Admin SQE]
-  ├─ [CQE: start accepted]
-  └─ [輪詢 LID 06h]
+[OACS.DSTS=1] → [讀 SDSO／EDSTT] → [選 NSID + STC] → [提交 Admin SQE] → [CQE: start accepted] → [輪詢 LID 06h]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** Self-test 不是同步 diagnostic RPC。Host 先用 OACS.DSTS、DSTO.SDSO 與 EDSTT 決定支援、concurrency scope 與時間預期，再用 NSID 與 STC 建構 command。Admin CQE 回來時，背景 operation 才剛進入可由 LID 06h 觀察的生命週期。
@@ -130,15 +126,12 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 03: LID 06h：把 current operation 與 20 筆 history 分開解碼
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[Get LID06 564 bytes]
-  ├─ [讀 DSTOS／DSTCS]
-  ├─ [選 RDS1 newest]
-  ├─ [解 DSTC／DSTR]
-  ├─ [依 VDINFO gate fields]
-  └─ [NVM FLBA + timeline]
+[RAW: Get LID06 564 bytes] → [LOCATE: 讀 DSTOS／DSTCS] → [DECODE: 選 RDS1 newest]
+[VALIDATE: 解 DSTC／DSTR] → [APPLY: 依 VDINFO gate fields] → [EVIDENCE: NVM FLBA + timeline]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **回答的問題：** log header 的 DSTOS／DSTCS 回答『現在跑到哪裡』；RDS1～RDS20 回答『之前怎麼結束』。result entry 又分成 operation code、result reason、segment、validity bitmap 與 diagnostic payload。NVM Command Set 只在 FVLD=1 時賦予 FLBA 明確的 LBA 語意。
@@ -149,15 +142,11 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 04: HMB：enable／disable completion 是 ownership fence
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[讀 HMPRE/HMMIN/limits]
-  ├─ [配置 pages + HMDL]
-  ├─ [Set FID0Dh EHM=1]
-  ├─ [controller exclusive use]
-  ├─ [Set EHM=0]
-  └─ [disable CQE→host reclaim]
+[讀 HMPRE/HMMIN/limits] → [配置 pages + HMDL] → [Set FID0Dh EHM=1] → [controller exclusive use] → [Set EHM=0] → [disable CQE→host reclaim]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** HMB 的 value 不在『給 controller 一塊 cache』這句話，而在 ownership protocol。Host 配置 pages 與 descriptor list，enable 成功後停止寫入；controller 使用並初始化；host 要回收時先 disable，直到 CQE posted 才重新取得修改權。
@@ -168,15 +157,12 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 05: HMB command 與 descriptor：所有 size、count、address 都要對同一份 page math
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[CC.MPS→page bytes]
-  ├─ [HMPRE/HMMIN→target bytes]
-  ├─ [切成 aligned ranges]
-  ├─ [寫 16-byte entries]
-  ├─ [sum(BSIZE)=HSIZE]
-  └─ [組 CDW11..15]
+[RAW: CC.MPS→page bytes] → [LOCATE: HMPRE/HMMIN→target bytes] → [DECODE: 切成 aligned ranges]
+[VALIDATE: 寫 16-byte entries] → [APPLY: sum(BSIZE)=HSIZE] → [EVIDENCE: 組 CDW11..15]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **回答的問題：** HSIZE、BSIZE 與 BADD 都依 CC.MPS；HMPRE／HMMIN／HMMINDS 則依 4 KiB units。兩套 unit 不能混用。HMDL 本身要 16-byte aligned，entries 固定 16 bytes；HMDLEC 是 entry count，不是 0's-based，也不是 byte length。
@@ -187,15 +173,11 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 06: HMB 跨 non-operational state、RTD3 與 reset 的三種不同邊界
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[HMB enabled]
-  ├─ [optional HMNARE policy]
-  ├─ [non-op→HMNAR state]
-  ├─ [disable before RTD3/reset]
-  ├─ [preserve or replace contents]
-  └─ [MR=1 exact-match return]
+[HMB enabled] → [optional HMNARE policy] → [non-op→HMNAR state] → [disable before RTD3/reset] → [preserve or replace contents] → [MR=1 exact-match return]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** HMNARE 是 access policy，HMNAR 是此刻 state；MR 則描述 reset／RTD3 後是否歸還完全相同的舊內容。這三者不能互換。Controller Level Reset 會讓 controller 丟失 HMB assignment，RTD3 前應先 release，而 non-operational restriction 只限制特定 state 下的 access。
@@ -206,15 +188,12 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 07: DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[讀 capability bit／field]
-  ├─ [選正確公式]
-  ├─ [轉成 byte stride／length]
-  ├─ [檢查 overflow／alignment]
-  ├─ [執行 MMIO／DMA]
-  └─ [保存 raw+decoded trace]
+[RAW: 讀 capability bit／field] → [LOCATE: 選正確公式] → [DECODE: 轉成 byte stride／length]
+[VALIDATE: 檢查 overflow／alignment] → [APPLY: 執行 MMIO／DMA] → [EVIDENCE: 保存 raw+decoded trace]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **回答的問題：** software emulator 與 vendor command passthrough 都在處理 untrusted encoded values。DSTRD 要套 2^(2+x) 才是 bytes；NDT／NDM 已是實際 dword count，要乘 4、不能再加 1。正確公式不同，但目的相同：在 MMIO 或 DMA 前先證明 address 與 length。

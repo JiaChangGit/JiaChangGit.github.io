@@ -82,7 +82,8 @@ Each redraw answers a different question: architecture locates components, seque
 **View type:** `decode`
 
 ```text
-[RAW: Clear 64-byte SQE] → [LOCATE: Fill CDW0: OPC/CID/PSDT] → [DECODE: Fill NSID for command] → [VALIDATE: Build MPTR/DPTR]
+[RAW: Clear 64-byte SQE] → [LOCATE: Fill CDW0: OPC/CID/PSDT] → [DECODE: Fill NSID for command]
+[VALIDATE: Build MPTR/DPTR] → [APPLY: Fill CDW10-15] → [EVIDENCE: Submit last]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -97,7 +98,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: Check Phase Tag] → [LOCATE: Read SQHD/SQID/CID] → [DECODE: Recover command by SQID/CID] → [VALIDATE: Decode SCT]
+[RAW: Check Phase Tag] → [LOCATE: Read SQHD/SQID/CID] → [DECODE: Recover command by SQID/CID]
+[VALIDATE: Decode SCT] → [APPLY: Decode SC/DNR/CRD] → [EVIDENCE: Advance CQ head]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -112,7 +114,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: Obtain MPS/page size] → [LOCATE: Compute PRP1 page offset] → [DECODE: Compute bytes available in first …] → [VALIDATE: Compute remaining bytes]
+[RAW: Obtain MPS/page size] → [LOCATE: Compute PRP1 page offset] → [DECODE: Compute bytes available in first …]
+[VALIDATE: Compute remaining bytes] → [APPLY: Choose PRP2 page or list] → [EVIDENCE: Validate later-page alignment]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -127,7 +130,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: Select SGL through PSDT] → [LOCATE: Read descriptor type/subtype] → [DECODE: Validate length] → [VALIDATE: For data: add interval]
+[RAW: Select SGL through PSDT] → [LOCATE: Read descriptor type/subtype] → [DECODE: Validate length]
+[VALIDATE: For data: add interval] → [APPLY: For segment: walk descriptors] → [EVIDENCE: Stop at Last Segment]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -142,7 +146,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: Identify data kind] → [LOCATE: Obtain width/count] → [DECODE: Confirm authority/scope] → [VALIDATE: Validate reserved/padding]
+[RAW: Identify data kind] → [LOCATE: Obtain width/count] → [DECODE: Confirm authority/scope]
+[VALIDATE: Validate reserved/padding] → [APPLY: Build a stable comparison key] → [EVIDENCE: evidence]
 VALIDATE fail ──→ return to RAW evidence
 ```
 

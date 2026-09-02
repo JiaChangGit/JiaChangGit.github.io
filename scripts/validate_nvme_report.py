@@ -71,6 +71,7 @@ class StrictOfflineHTMLParser(HTMLParser):
         self.lang = ""
         self.has_viewport = False
         self.viewport_content = ""
+        self.has_color_scheme = False
         self.theme_color_count = 0
         self.style_count = 0
         self.table_stack: list[int] = []
@@ -84,6 +85,8 @@ class StrictOfflineHTMLParser(HTMLParser):
         if tag == "meta" and values.get("name", "").lower() == "viewport":
             self.has_viewport = True
             self.viewport_content = values.get("content", "")
+        if tag == "meta" and values.get("name", "").lower() == "color-scheme":
+            self.has_color_scheme = values.get("content", "").strip() == "light dark"
         if tag == "meta" and values.get("name", "").lower() == "theme-color":
             self.theme_color_count += 1
         if tag == "style":
@@ -131,6 +134,8 @@ def validate_html(path: Path, max_columns: int = 4) -> list[str]:
         errors.append("缺少 viewport meta")
     elif "viewport-fit=cover" not in parser.viewport_content:
         errors.append("viewport meta 缺少 viewport-fit=cover")
+    if not parser.has_color_scheme:
+        errors.append('缺少 color-scheme meta，或 content 不是 "light dark"')
     if parser.theme_color_count < 2:
         errors.append("HTML 必須提供 light／dark theme-color")
     if parser.style_count != 1:
@@ -142,13 +147,19 @@ def validate_html(path: Path, max_columns: int = 4) -> list[str]:
         "--infer:",
         "--example:",
         "--warn:",
+        "--diagram-line:",
+        "--command:",
+        "--object:",
+        "--decision:",
+        "--success:",
+        "--failure:",
         ".table-wrap",
         "-webkit-text-size-adjust: 100%",
         "safe-area-inset-top",
         "min-height: 44px",
-        "scroll-snap-type:",
         "prefers-reduced-motion: reduce",
         ":focus-visible",
+        "@media (min-width: 1200px)",
     ):
         if required_css not in text:
             errors.append(f"內嵌 CSS 缺少資訊設計 token：{required_css}")
@@ -160,12 +171,22 @@ def validate_html(path: Path, max_columns: int = 4) -> list[str]:
         'class="skip-link"',
         'class="ipad-read-guide"',
         'class="visual-atlas"',
+        'class="visual-legend"',
+        'class="legend-swatch role-command"',
+        'class="legend-swatch role-object"',
+        'class="legend-swatch role-decision"',
+        'class="legend-swatch role-success"',
+        'class="legend-swatch role-failure"',
         "<summary",
         "<figure",
         "<figcaption",
     ):
         if required_html not in text:
             errors.append(f"缺少 iPad 原生閱讀結構：{required_html}")
+    if not re.search(r'<body class="edition-(?:tutorial|reference)">', text):
+        errors.append("HTML 必須標示 tutorial 或 reference edition")
+    if 'data-visual-kind="' not in text:
+        errors.append("HTML 圖解缺少 data-visual-kind，無法辨識圖形用途")
     svg_blocks = re.findall(r"<svg\b.*?</svg>", text, re.IGNORECASE | re.DOTALL)
     for index, block in enumerate(svg_blocks, 1):
         if "<title" not in block or "<desc" not in block:
@@ -429,10 +450,14 @@ def validate_publish() -> list[str]:
                 errors.append(f"{artifact['path']} 每張 Figure 應使用 details 提供 iPad 摺疊導覽")
             if expected_figures and text.count('name="figures-') < len(expected_figures):
                 errors.append(f"{artifact['path']} 每張 Figure 應使用原生 details name accordion")
-            if expected_figures and text.count("教學重畫（非 Spec 原圖）") < len(expected_figures):
-                errors.append(f"{artifact['path']} 每張 Figure 應有教學重畫")
-            if expected_figures and text.count("Input → Decode → Validate → Evidence 工作紙") < len(expected_figures):
-                errors.append(f"{artifact['path']} 每張 Figure 應有欄位解碼工作紙")
+            if artifact["id"].endswith("tutorial-html"):
+                if expected_figures and text.count("新手教學重畫（非 Spec 原圖）") < len(expected_figures):
+                    errors.append(f"{artifact['path']} 每張 Figure 應有新手讀圖教學")
+            else:
+                if expected_figures and text.count("詳細版查詢重畫") < len(expected_figures):
+                    errors.append(f"{artifact['path']} 每張 Figure 應有詳細查詢重畫")
+                if expected_figures and text.count("Input／Decode／Validate／Evidence") < len(expected_figures):
+                    errors.append(f"{artifact['path']} 每張 Figure 應有欄位解碼索引")
             if expected_figures and 'id="figure-index"' not in text:
                 errors.append(f"{artifact['path']} 缺少 Figure 索引")
         else:

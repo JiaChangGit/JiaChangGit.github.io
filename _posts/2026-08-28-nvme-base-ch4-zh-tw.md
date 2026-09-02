@@ -82,7 +82,8 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 **View type:** `decode`
 
 ```text
-[RAW: 清空 64-byte SQE] → [LOCATE: 填 CDW0：OPC/CID/PSDT] → [DECODE: 依 command 填 NSID] → [VALIDATE: 建立 MPTR/DPTR]
+[RAW: 清空 64-byte SQE] → [LOCATE: 填 CDW0：OPC/CID/PSDT] → [DECODE: 依 command 填 NSID]
+[VALIDATE: 建立 MPTR/DPTR] → [APPLY: 填 CDW10-15] → [EVIDENCE: 最後提交]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -97,7 +98,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: 檢查 Phase Tag] → [LOCATE: 讀 SQHD/SQID/CID] → [DECODE: 用 SQID/CID 找 command] → [VALIDATE: 解 SCT]
+[RAW: 檢查 Phase Tag] → [LOCATE: 讀 SQHD/SQID/CID] → [DECODE: 用 SQID/CID 找 command]
+[VALIDATE: 解 SCT] → [APPLY: 解 SC/DNR/CRD] → [EVIDENCE: 推進 CQ head]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -112,7 +114,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: 取得 MPS/page size] → [LOCATE: 算 PRP1 page offset] → [DECODE: 算第一頁可用 bytes] → [VALIDATE: 算 remaining bytes]
+[RAW: 取得 MPS/page size] → [LOCATE: 算 PRP1 page offset] → [DECODE: 算第一頁可用 bytes]
+[VALIDATE: 算 remaining bytes] → [APPLY: 決定 PRP2=page 或 list] → [EVIDENCE: 驗證後續 page alignment]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -127,7 +130,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: 由 PSDT 選 SGL] → [LOCATE: 讀 descriptor type/subtype] → [DECODE: 驗證 length] → [VALIDATE: 若為 data：加入 interval]
+[RAW: 由 PSDT 選 SGL] → [LOCATE: 讀 descriptor type/subtype] → [DECODE: 驗證 length]
+[VALIDATE: 若為 data：加入 interval] → [APPLY: 若為 segment：走訪 descriptors] → [EVIDENCE: 遇 Last Segment 結束]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -142,7 +146,8 @@ VALIDATE fail ──→ return to RAW evidence
 **View type:** `decode`
 
 ```text
-[RAW: 辨識資料種類] → [LOCATE: 取得 width/count] → [DECODE: 確認 authority/scope] → [VALIDATE: 驗證 reserved/padding]
+[RAW: 辨識資料種類] → [LOCATE: 取得 width/count] → [DECODE: 確認 authority/scope]
+[VALIDATE: 驗證 reserved/padding] → [APPLY: 建立穩定 comparison key] → [EVIDENCE: evidence]
 VALIDATE fail ──→ return to RAW evidence
 ```
 

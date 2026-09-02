@@ -91,15 +91,16 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 01: 先 Get、再 Set、最後重新觀測
 
-**View type:** `architecture`
+**View type:** `sequence`
 
 ```text
-[Identify capability gates]
-  ├─ [Get SEL=011b]
-  ├─ [Get current/default]
-  ├─ [選 FID-specific value]
-  ├─ [Set + decode CQE]
-  └─ [Get again + observe runtime]
+Host / software        Shared object        Controller / evidence
+Host → Shared: Identify capability gates
+Shared → Controller: Get SEL=011b
+Controller → Shared: Get current/default
+Shared → Host: 選 FID-specific value
+Host → Shared: Set + decode CQE
+Shared → Controller: Get again + observe runtime
 ```
 
 **回答的問題：** Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。
@@ -129,15 +130,11 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 03: APST 是由 idle timer 驅動的 state machine
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[APSTE=1]
-  ├─ [I/O 完成後開始 idle]
-  ├─ [持續 idle > ITPT]
-  ├─ [轉到 ITPS non-operational]
-  ├─ [I/O 到達]
-  └─ [回到最近 operational PS]
+[APSTE=1] → [I/O 完成後開始 idle] → [持續 idle > ITPT] → [轉到 ITPS non-operational] → [I/O 到達] → [回到最近 operational PS]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** APST 的 256-byte buffer 不是 performance table，而是 32 個『idle 多久後進哪個 non-operational state』的 rules。APSTE 決定 timer rules 是否生效；每個 ITPT=0 entry 不參與；I/O 到達又會讓 controller 回到最近 operational state。
@@ -148,15 +145,11 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 04: Temperature Threshold 把 sensor、event 與 clear point 連成一條線
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[選 Composite／Sensor]
-  ├─ [設定 over／under TMPTH]
-  ├─ [設定 TMPTHH]
-  ├─ [溫度跨 threshold]
-  ├─ [TTC + optional AEN]
-  └─ [跨 clear point 後結束 event]
+[選 Composite／Sensor] → [設定 over／under TMPTH] → [設定 TMPTHH] → [溫度跨 threshold] → [TTC + optional AEN] → [跨 clear point 後結束 event]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** FID 04h 不只是一個溫度數字。TMPSEL 決定讀哪個 sensor，THSEL 決定 over 或 under，TMPTH 決定觸發點，TMPTHH 決定離開 event 的 clear point；SMART/Health.TTC 與 AEC enable 則把 controller 狀態送回 host。
@@ -167,15 +160,11 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 05: HCTM 用兩個 threshold 區分輕度與重度 thermal response
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[讀 HCTMA／MNTMT／MXTMT]
-  ├─ [選 TMT1<TMT2]
-  ├─ [Set FID10h]
-  ├─ [temperature 到 TMT1]
-  ├─ [temperature 到 TMT2]
-  └─ [讀 SMART counters／latency]
+[讀 HCTMA／MNTMT／MXTMT] → [選 TMT1<TMT2] → [Set FID10h] → [temperature 到 TMT1] → [temperature 到 TMT2] → [讀 SMART counters／latency]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **回答的問題：** HCTM 的目的不是指定固定 clock 或固定 power state，而是讓 host 提供 TMT1／TMT2 兩個 temperature boundaries。controller 在 TMT1 優先降低 performance impact，在 TMT2 則必須更積極控制 temperature；實際 hysteresis 與內部動作屬 vendor implementation。
@@ -186,15 +175,16 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 
 ### Visual 06: 把 policy、state、event 與量測串成可重現的 Debug 證據
 
-**View type:** `architecture`
+**View type:** `sequence`
 
 ```text
-[capability snapshot]
-  ├─ [raw Get／Set commands]
-  ├─ [CQE + timestamp]
-  ├─ [APST／PS transition]
-  ├─ [temperature／TTC／HCTM]
-  └─ [I/O latency + recovery decision]
+Host / software        Shared object        Controller / evidence
+Host → Shared: capability snapshot
+Shared → Controller: raw Get／Set commands
+Controller → Shared: CQE + timestamp
+Shared → Host: APST／PS transition
+Host → Shared: temperature／TTC／HCTM
+Shared → Controller: I/O latency + recovery decision
 ```
 
 **回答的問題：** Power／thermal 問題通常不是一個 bit 錯，而是 capability、policy、transition、background work、thermal event 與 host workload 沒有放在同一條 timeline。FID 11h 的 NOPPME、APST、manual PS、HCTM 與 RTD3 又分別控制不同層次，不能互相替代。

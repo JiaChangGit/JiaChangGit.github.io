@@ -62,7 +62,7 @@ observe completion／SMART／temperature 組織，不得按 section 或 Figure �
 FLBA 定義。主體分成 Device Self-test lifecycle、HMB ownership lifecycle 與 encoded
 memory boundary 三條工程主線，不得把其他 log page、Feature、Telemetry 或 Fabrics 內容帶入。
 
-## HTML 與 iPad 閱讀規則
+## HTML 與 iPad／Desktop 閱讀規則
 
 - 詳細相容性規格以 `.ai/nvme-report/ipad-html-profile.md` 為準；主要裝置為 M1 iPad Pro，並以 Safari 17.2 為安全互動 baseline、Safari 26.x 為 progressive enhancement。
 - 允許單一內嵌 `<style>` 建立一致的資訊色彩、responsive layout 與 Light／Dark Mode；禁止 `style` attribute 與外部 stylesheet。
@@ -73,6 +73,9 @@ memory boundary 三條工程主線，不得把其他 log page、Feature、Teleme
 - 表格以四欄以內為原則；寬表格拆成多張。無法再拆的對照表只能在自己的 `.table-wrap` 內橫向滑動，整頁不得 overflow。
 - `details`／`summary` 是 Figure 與 Appendix 的主要無 JavaScript 互動；同組可使用 `name` attribute 作 progressive-enhancement accordion，但內容不能依賴該 attribute 才可閱讀。
 - 每個大主題至少有系統位置圖、流程／sequence、比較、實際範例與 failure／Debug 分支；每張引用 Figure 要有教學重畫與欄位解碼工作紙。
+- 每個用途只維護一份 responsive HTML；11 吋 iPad portrait／landscape 採單欄，viewport 達 1200px 的 desktop 才放寬至約 1180px 與兩欄 Visual Atlas，不建立內容重複的裝置副本。
+- 所有報告固定使用五種視覺角色：藍=Request／Input、青綠=Object／State、紫=Gate／Rule、綠=Valid／Evidence、橘色虛線=Warning／Failure；connector 使用中性灰，線不得穿過 node 或文字。角色必須同時用形狀與文字標示。
+- 新手 HTML 依縮寫→Mental Model→完整流程→例子→誤解→Debug 教學；詳細 HTML 依機制、keyword、欄位 boundary、證據與症狀索引查詢。中文／英文 Markdown 才要求內容結構一致，且供 PPT 使用。
 - 不得為了獨立 HTML 的限制而刪除或修改既有 Jekyll 站台 CSS／JS。
 
 ## 規範性用語與引用

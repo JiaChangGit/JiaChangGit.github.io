@@ -102,7 +102,8 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 **View type:** `decode`
 
 ```text
-[RAW: 讀 BAR0/BAR1] → [LOCATE: 建立 MMIO base] → [DECODE: 讀 CAP.DSTRD] → [VALIDATE: 算 stride=4<<DSTRD]
+[RAW: 讀 BAR0/BAR1] → [LOCATE: 建立 MMIO base] → [DECODE: 讀 CAP.DSTRD]
+[VALIDATE: 算 stride=4<<DSTRD] → [APPLY: 帶入 queue y 與 SQ/CQ index] → [EVIDENCE: 以合法 width 存取]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -154,11 +155,12 @@ Shared → Controller: 必要時調 coalescing
 
 ### Visual 05: Configuration space 是 capability map；AER 是 transport error map
 
-**View type:** `state`
+**View type:** `decode`
 
 ```text
-[讀 Type 0 header] → [定位 capability chain] → [解析 PM/MSI/MSI-X/PXCAP] → [定位 AERCAP] → [讀 status+mask+severity] → [必要時保存 header/TLP prefix]
-timeout / failure ──→ preserve trigger + previous state + evidence
+[RAW: 讀 Type 0 header] → [LOCATE: 定位 capability chain] → [DECODE: 解析 PM/MSI/MSI-X/PXCAP]
+[VALIDATE: 定位 AERCAP] → [APPLY: 讀 status+mask+severity] → [EVIDENCE: 必要時保存 header/TLP prefix]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **回答的問題：** Figures 10-67 從 Type 0 header 走到 Power Management、MSI/MSI-X、PCIe capability 與 AER。閱讀順序應先找 capability pointer／extended capability，再以該 capability base 加 offset；AER status/mask/severity/header log 應視為一組，不可只截取單一 error bit。
@@ -172,7 +174,8 @@ timeout / failure ──→ preserve trigger + previous state + evidence
 **View type:** `decode`
 
 ```text
-[RAW: 確認 LID/support] → [LOCATE: 查所需 size] → [DECODE: 配置 buffer 並取 log] → [VALIDATE: 驗證 header/count]
+[RAW: 確認 LID/support] → [LOCATE: 查所需 size] → [DECODE: 配置 buffer 並取 log]
+[VALIDATE: 驗證 header/count] → [APPLY: 逐 lane 解析 descriptor] → [EVIDENCE: 依 unit/scale 解 measurement]
 VALIDATE fail ──→ return to RAW evidence
 ```
 

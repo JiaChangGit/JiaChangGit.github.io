@@ -102,7 +102,8 @@ Each redraw answers a different question: architecture locates components, seque
 **View type:** `decode`
 
 ```text
-[RAW: Read BAR0/BAR1] → [LOCATE: Map MMIO base] → [DECODE: Read CAP.DSTRD] → [VALIDATE: Compute stride=4<<DSTRD]
+[RAW: Read BAR0/BAR1] → [LOCATE: Map MMIO base] → [DECODE: Read CAP.DSTRD]
+[VALIDATE: Compute stride=4<<DSTRD] → [APPLY: Insert queue y and SQ/CQ index] → [EVIDENCE: Access with a legal width]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
@@ -154,11 +155,12 @@ Shared → Controller: Tune coalescing if needed
 
 ### Visual 05: Configuration space is a capability map; AER is a transport-error map
 
-**View type:** `state`
+**View type:** `decode`
 
 ```text
-[Read Type 0 header] → [Locate capability chain] → [Parse PM/MSI/MSI-X/PXCAP] → [Locate AERCAP] → [Read status+mask+severity] → [Preserve header/TLP prefix if nee…]
-timeout / failure ──→ preserve trigger + previous state + evidence
+[RAW: Read Type 0 header] → [LOCATE: Locate capability chain] → [DECODE: Parse PM/MSI/MSI-X/PXCAP]
+[VALIDATE: Locate AERCAP] → [APPLY: Read status+mask+severity] → [EVIDENCE: Preserve header/TLP prefix if nee…]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **Question answered:** Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Locate the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits.
@@ -172,7 +174,8 @@ timeout / failure ──→ preserve trigger + previous state + evidence
 **View type:** `decode`
 
 ```text
-[RAW: Confirm LID/support] → [LOCATE: Query required size] → [DECODE: Allocate buffer and fetch log] → [VALIDATE: Validate header/count]
+[RAW: Confirm LID/support] → [LOCATE: Query required size] → [DECODE: Allocate buffer and fetch log]
+[VALIDATE: Validate header/count] → [APPLY: Parse each lane descriptor] → [EVIDENCE: Apply measurement unit/scale]
 VALIDATE fail ──→ return to RAW evidence
 ```
 

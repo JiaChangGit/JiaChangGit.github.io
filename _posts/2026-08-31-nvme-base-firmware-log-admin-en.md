@@ -455,15 +455,12 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 02: Download is byte-range geometry, not a direct file upload
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[Image bytes]
-  ├─ [Split by FWUG]
-  ├─ [bytes / 4 → dwords]
-  ├─ [NUMD = dwords - 1]
-  ├─ [OFST = sent bytes / 4]
-  └─ [Advance after CQE success]
+[RAW: Image bytes] → [LOCATE: Split by FWUG] → [DECODE: bytes / 4 → dwords]
+[VALIDATE: NUMD = dwords - 1] → [APPLY: OFST = sent bytes / 4] → [EVIDENCE: Advance after CQE success]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **Question answered:** Each Firmware Image Download uses DPTR for the host buffer, zero-based NUMD for transfer dwords, and OFST for the image-relative dword offset. The host must prove buffer validity, length, offset, FWUG compliance, and absence of gaps or overlaps.
@@ -474,15 +471,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 03: Commit converts downloaded portions into slot state and activation policy
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[Downloaded portions complete]
-  ├─ [Encode CA / FS]
-  ├─ [Controller validates image]
-  ├─ [Place in slot / schedule or activ…]
-  ├─ [Decode complete SCT / SC / MUD]
-  └─ [Choose reset / verify / stop]
+[Downloaded portions complete] → [Encode CA / FS] → [Controller validates image] → [Place in slot / schedule or activ…] → [Decode complete SCT / SC / MUD] → [Choose reset / verify / stop]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** Commit Action (CA) is not a success flag; it selects replacement, activation, and reset boundary. Firmware Slot (FS) selects the target slot, while CQE status determines whether software verifies, performs a specific reset, waits, or stops.
@@ -493,15 +486,12 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 04: LID 03h verification is more than reading one revision string
 
-**View type:** `architecture`
+**View type:** `decode`
 
 ```text
-[Build Get Log Page SQE]
-  ├─ [LID=03h / NUMD=127]
-  ├─ [Read the 512-byte buffer]
-  ├─ [AFI → CAFS / NAFS]
-  ├─ [Decode FRS1-FRS7 per slot]
-  └─ [Compare Identify.FR and expected …]
+[RAW: Build Get Log Page SQE] → [LOCATE: LID=03h / NUMD=127] → [DECODE: Read the 512-byte buffer]
+[VALIDATE: AFI → CAFS / NAFS] → [APPLY: Decode FRS1-FRS7 per slot] → [EVIDENCE: Compare Identify.FR and expected …]
+VALIDATE fail ──→ return to RAW evidence
 ```
 
 **Question answered:** Get Log Page first builds a 512-byte transfer from common command fields and selects Firmware Slot Information with LID=03h. AFI separates CAFS from NAFS, FRS1-FRS7 report slot revisions, and Identify.FR plus domain scope provide the final cross-check.

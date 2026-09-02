@@ -91,15 +91,16 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 01: Get first, Set second, then observe again
 
-**View type:** `architecture`
+**View type:** `sequence`
 
 ```text
-[Identify capability gates]
-  ├─ [Get SEL=011b]
-  ├─ [Get current/default]
-  ├─ [Choose FID-specific value]
-  ├─ [Set + decode CQE]
-  └─ [Get again + observe runtime]
+Host / software        Shared object        Controller / evidence
+Host → Shared: Identify capability gates
+Shared → Controller: Get SEL=011b
+Controller → Shared: Get current/default
+Shared → Host: Choose FID-specific value
+Host → Shared: Set + decode CQE
+Shared → Controller: Get again + observe runtime
 ```
 
 **Question answered:** A Feature is not a simple register. The host first reads capability with SEL=011b, then retrieves current/default/saved views, confirms scope and persistence, and only then writes. Set completion proves command outcome; a follow-up Get and runtime telemetry prove that software observes the new policy.
@@ -129,15 +130,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 03: APST is a state machine driven by idle timers
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[APSTE=1]
-  ├─ [Start idle after I/O completes]
-  ├─ [Continuous idle > ITPT]
-  ├─ [Enter ITPS non-operational]
-  ├─ [I/O arrives]
-  └─ [Return to most recent operational…]
+[APSTE=1] → [Start idle after I/O completes] → [Continuous idle > ITPT] → [Enter ITPS non-operational] → [I/O arrives] → [Return to most recent operational…]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** The 256-byte APST buffer is not a performance table. It contains 32 rules stating which non-operational state to enter after a given idle duration. APSTE enables timer rules, entries with ITPT=0 are inactive, and arriving I/O returns the controller to its most recent operational state.
@@ -148,15 +145,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 04: Temperature Threshold connects sensor, event, and clear point
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[Select Composite/Sensor]
-  ├─ [Set over/under TMPTH]
-  ├─ [Set TMPTHH]
-  ├─ [Temperature crosses threshold]
-  ├─ [TTC + optional AEN]
-  └─ [Event ends after clear point]
+[Select Composite/Sensor] → [Set over/under TMPTH] → [Set TMPTHH] → [Temperature crosses threshold] → [TTC + optional AEN] → [Event ends after clear point]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** FID 04h is more than a temperature number. TMPSEL selects a sensor, THSEL selects over or under, TMPTH sets the trigger point, TMPTHH sets the event clear point, and SMART/Health.TTC plus AEC enable return controller state to the host.
@@ -167,15 +160,11 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 05: HCTM uses two thresholds for lighter and stronger thermal response
 
-**View type:** `architecture`
+**View type:** `state`
 
 ```text
-[Read HCTMA/MNTMT/MXTMT]
-  ├─ [Choose TMT1<TMT2]
-  ├─ [Set FID10h]
-  ├─ [Temperature reaches TMT1]
-  ├─ [Temperature reaches TMT2]
-  └─ [Read SMART counters/latency]
+[Read HCTMA/MNTMT/MXTMT] → [Choose TMT1<TMT2] → [Set FID10h] → [Temperature reaches TMT1] → [Temperature reaches TMT2] → [Read SMART counters/latency]
+timeout / failure ──→ preserve trigger + previous state + evidence
 ```
 
 **Question answered:** HCTM does not select a fixed clock or power state. It gives the controller two temperature boundaries, TMT1/TMT2. At TMT1 the controller minimizes performance impact; at TMT2 it applies stronger thermal control. Actual hysteresis and internal actions are vendor implementation details.
@@ -186,15 +175,16 @@ Each redraw answers a different question: architecture locates components, seque
 
 ### Visual 06: Connect policy, state, events, and measurements into reproducible debug evidence
 
-**View type:** `architecture`
+**View type:** `sequence`
 
 ```text
-[Capability snapshot]
-  ├─ [Raw Get/Set commands]
-  ├─ [CQE + timestamp]
-  ├─ [APST/PS transition]
-  ├─ [Temperature/TTC/HCTM]
-  └─ [I/O latency + recovery decision]
+Host / software        Shared object        Controller / evidence
+Host → Shared: Capability snapshot
+Shared → Controller: Raw Get/Set commands
+Controller → Shared: CQE + timestamp
+Shared → Host: APST/PS transition
+Host → Shared: Temperature/TTC/HCTM
+Shared → Controller: I/O latency + recovery decision
 ```
 
 **Question answered:** Power/thermal defects rarely reduce to one wrong bit. Capability, policy, transition, background work, thermal events, and host workload must share one timeline. FID 11h NOPPME, APST, manual PS, HCTM, and RTD3 control different layers and do not replace one another.

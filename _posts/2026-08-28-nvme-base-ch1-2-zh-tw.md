@@ -91,7 +91,8 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 **View type:** `decode`
 
 ```text
-[RAW: 原始 bits] → [LOCATE: 確認 bit/byte 範圍] → [DECODE: 套用 radix 與 endian] → [VALIDATE: 套用 unit／0's-based]
+[RAW: 原始 bits] → [LOCATE: 確認 bit/byte 範圍] → [DECODE: 套用 radix 與 endian]
+[VALIDATE: 套用 unit／0's-based] → [APPLY: 得到工程值] → [EVIDENCE: evidence]
 VALIDATE fail ──→ return to RAW evidence
 ```
 
