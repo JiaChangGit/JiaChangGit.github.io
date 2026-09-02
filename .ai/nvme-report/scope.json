@@ -149,6 +149,46 @@
         "36", "93", "94", "197", "198", "200", "203", "204", "205",
         "206", "207", "208", "209", "338", "463", "464", "466"
       ]
+    },
+    {
+      "id": "base-self-test-namespace-management",
+      "title_zh_tw": "NVMe Base 2.4 Device Self-test 與 Namespace Management",
+      "title_en": "NVMe Base 2.4 Device Self-test and Namespace Management",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "5.2.6",
+        "5.2.13.1.7 (LID 06h only)",
+        "5.2.24",
+        "5.2.25",
+        "8.1.8",
+        "8.1.17 except 8.1.17.3",
+        "NVME-NVM-CS-1.3 2.1.1",
+        "NVME-NVM-CS-1.3 4.1.4.3",
+        "NVME-NVM-CS-1.3 4.1.6",
+        "NVME-NVM-CS-1.3 5.8"
+      ],
+      "printed_pages": "Base 199-201, 229-232, 444-448, 614-616, 660-663 before §8.1.17.3; NVM Command Set 13-14, 76, 110-113, 165",
+      "pdf_pages": "Base 225-227, 255-258, 470-474, 640-642, 686-689 before §8.1.17.3; NVM Command Set 13-14, 76, 110-113, 165",
+      "included_figure_ids": [
+        "BASENSMGMT-FIG-036", "BASENSMGMT-FIG-093", "BASENSMGMT-FIG-111",
+        "BASENSMGMT-FIG-123", "BASENSMGMT-FIG-127", "BASENSMGMT-FIG-132",
+        "BASENSMGMT-FIG-133", "BASENSMGMT-FIG-134", "BASENSMGMT-FIG-139",
+        "BASENSMGMT-FIG-155", "BASENSMGMT-FIG-176", "BASENSMGMT-FIG-177",
+        "BASENSMGMT-FIG-178", "BASENSMGMT-FIG-179", "BASENSMGMT-FIG-180",
+        "BASENSMGMT-FIG-203", "BASENSMGMT-FIG-204", "BASENSMGMT-FIG-205",
+        "BASENSMGMT-FIG-206", "BASENSMGMT-FIG-207", "BASENSMGMT-FIG-208",
+        "BASENSMGMT-FIG-209", "BASENSMGMT-FIG-218", "BASENSMGMT-FIG-219",
+        "BASENSMGMT-FIG-304", "BASENSMGMT-FIG-338", "BASENSMGMT-FIG-346",
+        "BASENSMGMT-FIG-442", "BASENSMGMT-FIG-443", "BASENSMGMT-FIG-444",
+        "BASENSMGMT-FIG-445", "BASENSMGMT-FIG-446", "BASENSMGMT-FIG-447",
+        "BASENSMGMT-FIG-448", "BASENSMGMT-FIG-449", "BASENSMGMT-FIG-450",
+        "BASENSMGMT-FIG-474", "BASENSMGMT-FIG-700", "BASENSMGMT-FIG-701"
+      ],
+      "dependency_figures": [
+        "Base 36", "Base 93", "Base 139", "Base 155", "Base 203-209",
+        "Base 304", "Base 338", "Base 346", "Base 474",
+        "NVM Command Set 123", "NVM Command Set 127", "NVM Command Set 132-133"
+      ]
     }
   ],
   "interpretation_sources": [
@@ -353,12 +393,49 @@
       "note": "排除所有 Fabrics、Discovery 與 message-based transport 內容"
     },
     {
+      "id": "BASE-NSMGMT-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["5.2.6", "5.2.13.1.7 (LID 06h only)", "5.2.24", "5.2.25", "8.1.8", "8.1.17", "8.1.17.1", "8.1.17.2"],
+      "note": "以 Device Self-test evidence lifecycle 與 namespace create／attach／detach／delete／restore lifecycle 組織主教學"
+    },
+    {
+      "id": "NVMCS-NSMGMT-INCLUDE",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": ["2.1.1", "4.1.4.3", "4.1.6", "5.8"],
+      "note": "納入 namespace capacity mental model、LID 06h FLBA、NVM create payload、data protection／FDP validation 與 granularity hints"
+    },
+    {
+      "id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": ["referenced dependencies outside the requested main sections"],
+      "figures": ["36", "93", "139", "155", "203", "204", "205", "206", "207", "208", "209", "304", "338", "346", "474"],
+      "note": "只取 CSS、common SQE、Controller List、LID 06h Get Log Page、namespace event、DNCS、NMS／attachment limits、ANAGRPID 與 event-enable bits 所需欄位"
+    },
+    {
+      "id": "NVMCS-NSMGMT-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": ["referenced dependencies outside the requested main sections"],
+      "figures": ["123", "127", "132", "133"],
+      "note": "只取 §2.1.1／§4.1.6／§5.8 直接引用的 Identify Namespace、masking 與 granularity 欄位，不擴張成完整 Identify 章節"
+    },
+    {
+      "id": "BASE-NSMGMT-EXPLICIT-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": ["8.1.17.3", "5.2.13.1 except LID 06h", "all Fabrics, Exported NVM Subsystem, Underlying Namespace, Management Endpoint, and message-based material"],
+      "note": "依使用者指示排除 §8.1.17.3；共用章節中只保留 PCIe／memory-based 與一般 controller 適用內容"
+    },
+    {
       "id": "NVMCS13-EXCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "EXCLUDE",
-      "sections": ["all except 4.1.4.3"],
-      "note": "第七份報告只使用 §4.1.4.3；其他 NVM Command Set 1.3 內容不發佈"
+      "sections": ["all except approved report slices in 2.1.1, 4.1.4.3, 4.1.6, and 5.8"],
+      "note": "只發佈第七、八份報告明確核准的 NVM Command Set 1.3 範圍"
     }
   ],
-  "approval_note": "使用者於 2026-09-02 核准新增第七份四版本報告：Base 2.4 §5.2.6、§5.2.13.1.7、§5.2.30.2.3、§8.1.8、§8.1.29、§8.2.3、§8.2.4 與 NVM Command Set 1.3 §4.1.4.3；所有 Fabrics／Discovery／message-based 內容排除。既有六份報告範圍維持不變。"
+  "approval_note": "使用者於 2026-09-02 核准新增第八份四版本報告：Base 2.4 §8.1.8、§5.2.6、§5.2.13.1.7（僅 LID 06h）、§8.1.17（排除 §8.1.17.3）、§5.2.24、§5.2.25，以及 NVM Command Set 1.3 §4.1.4.3、§2.1.1、§4.1.6、§5.8；所有 Fabrics／Discovery／message-based 內容排除。既有七份報告範圍維持不變。"
 }

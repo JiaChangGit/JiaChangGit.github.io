@@ -27,12 +27,14 @@ TEXT_FILES = {
     "base-admin-fw-logs": "base-admin-fw-logs.txt",
     "base-power-features": "base-full.txt",
     "base-self-test-hmb-emulation": "base-full.txt",
+    "base-self-test-namespace-management": "base-full.txt",
 }
 TEXT_SOURCE_IDS = {
     "pcie-transport-1.4": "NVME-PCIE-TRANSPORT-1.4",
 }
 ADDITIONAL_TEXT_FILES = [
     ("base-self-test-hmb-emulation", "NVME-NVM-CS-1.3", "nvm-cs-full.txt"),
+    ("base-self-test-namespace-management", "NVME-NVM-CS-1.3", "nvm-cs-full.txt"),
 ]
 CAPTION = re.compile(r"^(Figure|Table)\s+(\d+):\s*(.+)$", re.IGNORECASE)
 LEGACY_FIGURE = re.compile(r"^Figure\s+(\d+):\s*(.+)$", re.IGNORECASE)
@@ -375,6 +377,145 @@ DIAGMEM_DEPENDENCY_REFERENCES = {
     ("NVME-BASE-2.4", 463): ["5.2.30.2.3"],
     ("NVME-BASE-2.4", 464): ["5.2.30.2.3"],
     ("NVME-BASE-2.4", 466): ["5.2.30.2.3"],
+}
+
+NSMGMT_REPORT_ID = "base-self-test-namespace-management"
+NSMGMT_REPORT_PREFIX = "BASENSMGMT"
+NSMGMT_ARTIFACT_IDS = [
+    "basensmgmt-tutorial-html",
+    "basensmgmt-detailed-html",
+    "basensmgmt-zh-md",
+    "basensmgmt-en-md",
+]
+NSMGMT_DEPENDENCY_FIGURES = {
+    ("NVME-BASE-2.4", number)
+    for number in {36, 93, 139, 155, 203, 204, 205, 206, 207, 208, 209, 304, 338, 346, 474}
+} | {
+    ("NVME-NVM-CS-1.3", number) for number in {123, 127, 132, 133}
+}
+NSMGMT_FIGURES = {
+    ("NVME-BASE-2.4", 36): ("Offset 0h: CAP - Controller Capabilities", "3.1.4.1", "55-58", "81-84"),
+    ("NVME-BASE-2.4", 93): ("Common Command Format", "4.1.1", "140-142", "166-168"),
+    ("NVME-BASE-2.4", 139): ("Controller List Format", "4.6.1", "172", "198"),
+    ("NVME-BASE-2.4", 155): ("Asynchronous Event Information - Notice", "5.2.2.1", "186", "212"),
+    ("NVME-BASE-2.4", 176): ("Device Self-test Namespace Test Action", "5.2.6", "199", "225"),
+    ("NVME-BASE-2.4", 177): ("Device Self-test - Command Dword 10", "5.2.6", "199", "225"),
+    ("NVME-BASE-2.4", 178): ("Device Self-test - Command Dword 15", "5.2.6", "200", "226"),
+    ("NVME-BASE-2.4", 179): ("Device Self-test - Command Processing", "5.2.6", "200", "226"),
+    ("NVME-BASE-2.4", 180): ("Device Self-test - Command Specific Status Values", "5.2.6", "201", "227"),
+    ("NVME-BASE-2.4", 203): ("Get Log Page - Data Pointer", "5.2.13", "213", "239"),
+    ("NVME-BASE-2.4", 204): ("Get Log Page - Command Dword 10", "5.2.13", "213", "239"),
+    ("NVME-BASE-2.4", 205): ("Get Log Page - Command Dword 11", "5.2.13", "214", "240"),
+    ("NVME-BASE-2.4", 206): ("Get Log Page - Command Dword 12", "5.2.13", "214", "240"),
+    ("NVME-BASE-2.4", 207): ("Get Log Page - Command Dword 13", "5.2.13", "214", "240"),
+    ("NVME-BASE-2.4", 208): ("Get Log Page - Command Dword 14", "5.2.13", "214-215", "240-241"),
+    ("NVME-BASE-2.4", 209): ("Get Log Page - Log Page Identifiers", "5.2.13", "215-216", "241-242"),
+    ("NVME-BASE-2.4", 218): ("Device Self-test Log Page", "5.2.13.1.7", "230", "256"),
+    ("NVME-BASE-2.4", 219): ("Self-test Result Data Structure", "5.2.13.1.7", "231-232", "257-258"),
+    ("NVME-BASE-2.4", 304): ("Manufacturer Default Configuration Status Log Page", "5.2.13.1.31", "301-302", "327-328"),
+    ("NVME-BASE-2.4", 338): ("Identify Controller Data Structure", "5.2.14.2.1", "340, 353, 365, 378", "366, 379, 391, 404"),
+    ("NVME-BASE-2.4", 346): ("Identify - I/O Command Set Independent Identify Namespace Data Structure", "5.2.14.2.3", "391-394", "417-420"),
+    ("NVME-BASE-2.4", 442): ("Namespace Attachment - Data Pointer", "5.2.24", "445", "471"),
+    ("NVME-BASE-2.4", 443): ("Namespace Attachment - Command Dword 10", "5.2.24", "445", "471"),
+    ("NVME-BASE-2.4", 444): ("Namespace Attachment - Command Specific Status Values", "5.2.24", "445", "471"),
+    ("NVME-BASE-2.4", 445): ("Namespace Management - Data Pointer", "5.2.25", "446", "472"),
+    ("NVME-BASE-2.4", 446): ("Namespace Management - Command Dword 10", "5.2.25", "446-447", "472-473"),
+    ("NVME-BASE-2.4", 447): ("Namespace Management - Command Dword 11", "5.2.25", "447", "473"),
+    ("NVME-BASE-2.4", 448): ("Namespace Management - Data Structure for Create", "5.2.25", "447", "473"),
+    ("NVME-BASE-2.4", 449): ("Namespace Management - Command Specific Status Values", "5.2.25", "448", "474"),
+    ("NVME-BASE-2.4", 450): ("Namespace Management - Completion Queue Entry Dword 0", "5.2.25", "448", "474"),
+    ("NVME-BASE-2.4", 474): ("Asynchronous Event Configuration - Command Dword 11", "5.2.30.1.6", "466-468", "492-494"),
+    ("NVME-BASE-2.4", 700): ("Example Device Self-test Operation (Informative)", "8.1.8", "615", "641"),
+    ("NVME-BASE-2.4", 701): ("Format NVM command Aborting a Device Self-Test Operation", "8.1.8.1-8.1.8.2", "616", "642"),
+    ("NVME-NVM-CS-1.3", 111): ("Self-test Results Data Structure", "4.1.4.3", "76", "76"),
+    ("NVME-NVM-CS-1.3", 123): ("Identify - Identify Namespace Data Structure, NVM Command Set", "4.1.5.1", "85-87", "85-87"),
+    ("NVME-NVM-CS-1.3", 127): ("NVM Command Set I/O Command Set Specific Identify Namespace Data Structure", "4.1.5.3", "97-101", "97-101"),
+    ("NVME-NVM-CS-1.3", 132): ("Namespace Granularity List", "4.1.5.8", "108", "108"),
+    ("NVME-NVM-CS-1.3", 133): ("Namespace Granularity Descriptor", "4.1.5.8", "108", "108"),
+    ("NVME-NVM-CS-1.3", 134): ("Namespace Management - Host Specified Fields", "4.1.6.4", "112-113", "112-113"),
+}
+NSMGMT_KEY_ITEM_OVERRIDES = {
+    ("NVME-BASE-2.4", 36): ["CSS", "active I/O Command Set"],
+    ("NVME-BASE-2.4", 93): ["OPC", "NSID", "DPTR", "CDW10-CDW15"],
+    ("NVME-BASE-2.4", 139): ["NUMCIDS", "Controller Identifier list", "4096 bytes"],
+    ("NVME-BASE-2.4", 155): ["Attached Namespace Attribute Changed", "Allocated Namespace Attribute Changed", "CNS 02h", "CNS 10h"],
+    ("NVME-BASE-2.4", 176): ["NSID 00000000h", "active NSID", "NSID FFFFFFFFh"],
+    ("NVME-BASE-2.4", 177): ["STC 1h", "STC 2h", "STC 3h", "STC Eh", "STC Fh"],
+    ("NVME-BASE-2.4", 178): ["DSTP"],
+    ("NVME-BASE-2.4", 179): ["self-test in progress", "abort", "result creation"],
+    ("NVME-BASE-2.4", 180): ["Device Self-test in Progress", "status 1Dh"],
+    ("NVME-BASE-2.4", 203): ["DPTR", "LID 06h destination buffer"],
+    ("NVME-BASE-2.4", 204): ["NUMDL", "RAE", "LSP", "LID 06h"],
+    ("NVME-BASE-2.4", 205): ["LSI", "NUMDU"],
+    ("NVME-BASE-2.4", 206): ["LPOL", "OT"],
+    ("NVME-BASE-2.4", 207): ["LPOU"],
+    ("NVME-BASE-2.4", 208): ["CSI", "OT", "UIDX"],
+    ("NVME-BASE-2.4", 209): ["LID 06h", "CSI = N", "Controller / Domain / NVM subsystem", "Device Self-test"],
+    ("NVME-BASE-2.4", 218): ["DSTOS", "DSTCS", "RDS1-RDS20", "564 bytes"],
+    ("NVME-BASE-2.4", 219): ["DSTC", "DSTR", "SEGN", "VDINFO", "NSID", "FLBA", "STCT", "STC"],
+    ("NVME-BASE-2.4", 304): ["DNCS", "default namespace configuration status"],
+    ("NVME-BASE-2.4", 338): ["OACS.DSTS", "EDSTT", "DSTO.SDSO", "OACS.NMS", "RDNCS", "MAXDNA", "MAXCNA"],
+    ("NVME-BASE-2.4", 346): ["ANAGRPID", "NVMSETID", "ENDGID"],
+    ("NVME-BASE-2.4", 442): ["DPTR", "Controller List", "one page boundary"],
+    ("NVME-BASE-2.4", 443): ["SEL 0h Attach", "SEL 1h Detach"],
+    ("NVME-BASE-2.4", 444): ["status 18h-1Ch", "status 25h", "status 27h", "status 29h-2Ah"],
+    ("NVME-BASE-2.4", 445): ["DPTR", "4096-byte create buffer"],
+    ("NVME-BASE-2.4", 446): ["SEL 0h Create", "SEL 1h Delete", "SEL 2h Restore"],
+    ("NVME-BASE-2.4", 447): ["CSI", "NVM Command Set 00h"],
+    ("NVME-BASE-2.4", 448): ["SIOCS bytes 0:511", "reserved bytes 512:1023", "VS bytes 1024:4095"],
+    ("NVME-BASE-2.4", 449): ["Invalid Format", "Insufficient Capacity", "NSID Unavailable", "Thin Provisioning Not Supported"],
+    ("NVME-BASE-2.4", 450): ["CQE DW0", "created NSID"],
+    ("NVME-BASE-2.4", 474): ["Attached Namespace Attribute Notices", "Allocated Namespace Attribute Notices"],
+    ("NVME-BASE-2.4", 700): ["segment", "test performed", "failure criteria", "informative"],
+    ("NVME-BASE-2.4", 701): ["SES", "FNS", "SENS", "Format NSID", "Self-test NSID", "abort decision"],
+    ("NVME-NVM-CS-1.3", 111): ["FLBA", "bytes 23:16", "FVLD", "one failed logical block"],
+    ("NVME-NVM-CS-1.3", 123): ["NSZE", "NCAP", "NUSE", "NSFEAT.THINP", "FLBAS", "DPS", "NMIC"],
+    ("NVME-NVM-CS-1.3", 127): ["LBSTM", "Storage Tag Masking Level", "LBAFEE"],
+    ("NVME-NVM-CS-1.3", 132): ["NGA.GDM", "ND", "NGD0-NGD63", "CNS 16h"],
+    ("NVME-NVM-CS-1.3", 133): ["NSG bytes 7:0", "NCG bytes 15:8", "byte units"],
+    ("NVME-NVM-CS-1.3", 134): ["NSZE", "NCAP", "FLBAS", "DPS", "NMIC", "ANAGRPID", "NVMSETID", "ENDGID", "LBSTM", "NPHNDLS", "Placement Handle List"],
+}
+NSMGMT_DEPENDENCY_FOCUS = {
+    ("NVME-BASE-2.4", 36): {"zh_tw": "只取 restore default 所需的 active I/O Command Set context。", "en": "Use only the active-I/O-Command-Set context needed by restore default."},
+    ("NVME-BASE-2.4", 93): {"zh_tw": "只取 Self-test／Namespace commands 共用的 NSID、DPTR 與 command dwords。", "en": "Use only NSID, DPTR, and command dwords shared by Self-test and Namespace commands."},
+    ("NVME-BASE-2.4", 139): {"zh_tw": "只取 Namespace Attachment 使用的 4096-byte Controller List。", "en": "Use only the 4096-byte Controller List consumed by Namespace Attachment."},
+    ("NVME-BASE-2.4", 155): {"zh_tw": "只取 Attached／Allocated Namespace Attribute Changed notices。", "en": "Use only Attached/Allocated Namespace Attribute Changed notices."},
+    ("NVME-BASE-2.4", 203): {"zh_tw": "只取 LID 06h destination buffer。", "en": "Use only the LID 06h destination buffer."},
+    ("NVME-BASE-2.4", 204): {"zh_tw": "只取 LID 06h 的 LID／NUMDL／RAE／LSP。", "en": "Use only LID/NUMDL/RAE/LSP for LID 06h."},
+    ("NVME-BASE-2.4", 205): {"zh_tw": "只取 LID 06h 的 NUMDU 與 LSI=0。", "en": "Use only NUMDU and LSI zero for LID 06h."},
+    ("NVME-BASE-2.4", 206): {"zh_tw": "只取完整讀取的 LPOL=0 與 OT=0。", "en": "Use only LPOL zero and OT zero for a complete read."},
+    ("NVME-BASE-2.4", 207): {"zh_tw": "只取完整讀取的 LPOU=0。", "en": "Use only LPOU zero for a complete read."},
+    ("NVME-BASE-2.4", 208): {"zh_tw": "只取 LID 06h 未使用的 CSI／UIDX 與 OT=0。", "en": "Use only unused CSI/UIDX and OT zero for LID 06h."},
+    ("NVME-BASE-2.4", 209): {"zh_tw": "只取 LID 06h row，不列其他 log page。", "en": "Use only the LID 06h row; do not enumerate other log pages."},
+    ("NVME-BASE-2.4", 304): {"zh_tw": "只取 restore default 後的 DNCS observation。", "en": "Use only DNCS observation after restore default."},
+    ("NVME-BASE-2.4", 338): {"zh_tw": "只取 Self-test 與 Namespace Management capability／limit fields。", "en": "Use only Self-test and Namespace Management capability/limit fields."},
+    ("NVME-BASE-2.4", 346): {"zh_tw": "只取 create／identify 會用到的 namespace group identifiers。", "en": "Use only namespace group identifiers used by create/identify."},
+    ("NVME-BASE-2.4", 474): {"zh_tw": "只取 attached／allocated namespace notice enable bits。", "en": "Use only attached/allocated namespace notice-enable bits."},
+    ("NVME-NVM-CS-1.3", 123): {"zh_tw": "只取容量、格式與 sharing／protection 欄位。", "en": "Use only capacity, format, sharing, and protection fields."},
+    ("NVME-NVM-CS-1.3", 127): {"zh_tw": "只取 §4.1.6.2 直接引用的 LBSTM mask capability。", "en": "Use only LBSTM mask capability directly referenced by §4.1.6.2."},
+    ("NVME-NVM-CS-1.3", 132): {"zh_tw": "只取 CNS 16h list header 與 descriptor mapping。", "en": "Use only the CNS 16h list header and descriptor mapping."},
+    ("NVME-NVM-CS-1.3", 133): {"zh_tw": "只取 NSG／NCG byte-unit hints。", "en": "Use only NSG/NCG byte-unit hints."},
+}
+NSMGMT_DEPENDENCY_REFERENCES = {
+    ("NVME-BASE-2.4", 36): ["5.2.25.1"],
+    ("NVME-BASE-2.4", 93): ["5.2.6", "5.2.24", "5.2.25", "8.1.17"],
+    ("NVME-BASE-2.4", 139): ["5.2.24"],
+    ("NVME-BASE-2.4", 155): ["8.1.17", "8.1.17.1"],
+    ("NVME-BASE-2.4", 203): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 204): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 205): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 206): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 207): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 208): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 209): ["5.2.13.1.7"],
+    ("NVME-BASE-2.4", 304): ["5.2.25.1"],
+    ("NVME-BASE-2.4", 338): ["5.2.6", "5.2.24", "5.2.25.1", "8.1.17"],
+    ("NVME-BASE-2.4", 346): ["8.1.17"],
+    ("NVME-BASE-2.4", 474): ["8.1.17.2"],
+    ("NVME-NVM-CS-1.3", 123): ["2.1.1", "4.1.6"],
+    ("NVME-NVM-CS-1.3", 127): ["4.1.6.2"],
+    ("NVME-NVM-CS-1.3", 132): ["5.8"],
+    ("NVME-NVM-CS-1.3", 133): ["5.8"],
 }
 NOISE = {
     "ADMIN",
@@ -816,6 +957,66 @@ def sync_diagmem_report_entries(document: dict) -> None:
     document["entries"] = retained + generated
 
 
+def sync_nsmgmt_report_entries(document: dict) -> None:
+    """Replace the mixed Base/NVM self-test and namespace-management rows."""
+
+    retained = [
+        item for item in document["entries"] if item.get("report_id") != NSMGMT_REPORT_ID
+    ]
+    generated = []
+    for (source_id, number), (title, section, printed_pages, pdf_pages) in NSMGMT_FIGURES.items():
+        key = (source_id, number)
+        dependency = key in NSMGMT_DEPENDENCY_FIGURES
+        scope_reduced = key in {
+            ("NVME-BASE-2.4", 36),
+            ("NVME-BASE-2.4", 155),
+            ("NVME-BASE-2.4", 209),
+            ("NVME-BASE-2.4", 338),
+            ("NVME-BASE-2.4", 346),
+            ("NVME-BASE-2.4", 474),
+            ("NVME-NVM-CS-1.3", 123),
+            ("NVME-NVM-CS-1.3", 127),
+            ("NVME-NVM-CS-1.3", 132),
+            ("NVME-NVM-CS-1.3", 133),
+        }
+        scope_entry = (
+            "BASE-NSMGMT-DEPENDENCY-INCLUDE"
+            if dependency and source_id == "NVME-BASE-2.4"
+            else (
+                "NVMCS-NSMGMT-DEPENDENCY-INCLUDE"
+                if dependency
+                else (
+                    "NVMCS-NSMGMT-INCLUDE"
+                    if source_id == "NVME-NVM-CS-1.3"
+                    else "BASE-NSMGMT-INCLUDE"
+                )
+            )
+        )
+        generated.append(
+            {
+                "id": f"{NSMGMT_REPORT_PREFIX}-FIG-{number:03d}",
+                "report_id": NSMGMT_REPORT_ID,
+                "source_id": source_id,
+                "type": "Figure",
+                "number": str(number),
+                "title": title,
+                "section": section,
+                "printed_pages": printed_pages,
+                "pdf_pages": pdf_pages,
+                "scope_entry_id": scope_entry,
+                "scope_status": "INCLUDE",
+                "mode": "dependency-slice" if dependency else "full",
+                "scope_reduced": scope_reduced,
+                "role": "referenced_dependency" if dependency else "in_scope",
+                "referenced_from": NSMGMT_DEPENDENCY_REFERENCES.get(key, []),
+                "dependency_focus": NSMGMT_DEPENDENCY_FOCUS.get(key),
+                "required_artifact_ids": list(NSMGMT_ARTIFACT_IDS),
+                "introduced_in": list(NSMGMT_ARTIFACT_IDS),
+            }
+        )
+    document["entries"] = retained + generated
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -839,6 +1040,7 @@ def main() -> int:
     sync_new_report_entries(document, args.inventory)
     sync_power_report_entries(document)
     sync_diagmem_report_entries(document)
+    sync_nsmgmt_report_entries(document)
     entries = document["entries"]
     by_key = {
         (item["report_id"], item["source_id"], item["type"], int(item["number"])): item
@@ -855,7 +1057,7 @@ def main() -> int:
         if not source_path.is_file():
             raise FileNotFoundError(f"Missing local evidence: {source_path}")
         source_text = source_path.read_text(encoding="utf-8")
-        if report_id in {NEW_REPORT_ID, POWER_REPORT_ID, DIAGMEM_REPORT_ID}:
+        if report_id in {NEW_REPORT_ID, POWER_REPORT_ID, DIAGMEM_REPORT_ID, NSMGMT_REPORT_ID}:
             blocks = figure_blocks(source_text)
         else:
             blocks = {
@@ -866,7 +1068,7 @@ def main() -> int:
             entry = by_key.get((report_id, source_id, item_type, number))
             if entry is None:
                 continue
-            if report_id in {NEW_REPORT_ID, POWER_REPORT_ID, DIAGMEM_REPORT_ID}:
+            if report_id in {NEW_REPORT_ID, POWER_REPORT_ID, DIAGMEM_REPORT_ID, NSMGMT_REPORT_ID}:
                 selected, structured = evidence_lines(
                     lines, entry["title"], item_type, number
                 )
@@ -888,6 +1090,8 @@ def main() -> int:
             diagmem_key = (source_id, number)
             if report_id == DIAGMEM_REPORT_ID and diagmem_key in DIAGMEM_KEY_ITEM_OVERRIDES:
                 entry["key_items"] = list(DIAGMEM_KEY_ITEM_OVERRIDES[diagmem_key])
+            if report_id == NSMGMT_REPORT_ID and diagmem_key in NSMGMT_KEY_ITEM_OVERRIDES:
+                entry["key_items"] = list(NSMGMT_KEY_ITEM_OVERRIDES[diagmem_key])
             entry["source_keywords"] = (
                 source_keywords(filtered) if structured else []
             )

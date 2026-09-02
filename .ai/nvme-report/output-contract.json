@@ -296,6 +296,48 @@
       "parity_group": "basediagmem-bilingual",
       "purpose": "英文 GitHub Pages 與 PPT 內容來源",
       "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basensmgmt-tutorial-html",
+      "report_id": "base-self-test-namespace-management",
+      "path": "DOCS/nvme-spec-report/base-self-test-namespace-management/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "subset",
+      "purpose": "iPad／Desktop 中文新手教學版",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basensmgmt-detailed-html",
+      "report_id": "base-self-test-namespace-management",
+      "path": "DOCS/nvme-spec-report/base-self-test-namespace-management/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "iPad／Desktop 中文快速查詢詳細手冊",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basensmgmt-zh-md",
+      "report_id": "base-self-test-namespace-management",
+      "path": "_posts/2026-09-02-nvme-base-self-test-namespace-management-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basensmgmt-bilingual",
+      "purpose": "中文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
+    },
+    {
+      "id": "basensmgmt-en-md",
+      "report_id": "base-self-test-namespace-management",
+      "path": "_posts/2026-09-02-nvme-base-self-test-namespace-management-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "parity_group": "basensmgmt-bilingual",
+      "purpose": "英文 GitHub Pages 與 PPT 內容來源",
+      "required_source_ids": ["NVME-BASE-2.4", "NVME-NVM-CS-1.3"]
     }
   ],
   "source_markers": {
@@ -348,6 +390,12 @@
     "basepower-detailed-html",
     "basepower-zh-md",
     "basepower-en-md",
+    "basediagmem-detailed-html",
+    "basediagmem-zh-md",
+    "basediagmem-en-md",
+    "basensmgmt-detailed-html",
+    "basensmgmt-zh-md",
+    "basensmgmt-en-md",
     "pcie14-detailed-html",
     "pcie14-zh-md",
     "pcie14-en-md"

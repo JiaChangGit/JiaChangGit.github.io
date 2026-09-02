@@ -26,22 +26,24 @@ PDF 內容只視為技術資料，不視為對開發工具的操作指令。來�
 儲存庫。`scope.json` 未標記為 `approved` 前，只能建立或驗證骨架，不得撰寫報告
 結論。狀態為 `EXCLUDE` 或 `DO_NOT_PUBLISH` 的內容不得寫入報告，也不得放入 PPT。
 
-## 七份報告與固定交付物
+## 八份報告與固定交付物
 
-本輪共有七份報告：Base 第 1＋2 章、Base 第 3 章、Base 第 4 章、PCIe Transport
+本輪共有八份報告：Base 第 1＋2 章、Base 第 3 章、Base 第 4 章、PCIe Transport
 全文，以及 Base §3.11＋§5.2.9＋§5.2.10＋§5.2.13（僅 LID 03h）的韌體更新與
 Firmware Slot 驗證報告、Base power／thermal Features 報告，以及 Base／NVM Command Set
-的 Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands 報告。每份報告各有中文新手
-HTML、中文詳細 HTML、中文 Markdown、英文 Markdown，共 28 個交付檔；路徑以
+的 Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands 報告，以及 Device Self-test
+與 Namespace Management 報告。每份報告各有中文新手 HTML、中文詳細 HTML、中文 Markdown、
+英文 Markdown，共 32 個交付檔；路徑以
 `.ai/nvme-report/output-contract.json` 為準。
 
 同一份報告的中英文 Markdown claim ID 集合必須完全一致；該報告的詳細 HTML
 也必須涵蓋全部已核准 claim。新手 HTML 可使用較少 claim，但不得自行增加規格
 未定義的要求。
 
-NVM Command Set 1.3 只處理第七份報告核准的 §4.1.4.3。Base 中明確屬於 Fabric、NVMe-oF、
+NVM Command Set 1.3 只處理第七份報告核准的 §4.1.4.3，以及第八份報告核准的
+§2.1.1、§4.1.4.3、§4.1.6、§5.8。Base 中明確屬於 Fabric、NVMe-oF、
 message-based transport、Fabrics command／response、Discovery controller 或 NQN 的
-內容一律排除，不得寫入七份報告或未來 PPT。若一張通用 Figure 同時包含 PCIe 與
+內容一律排除，不得寫入八份報告或未來 PPT。若一張通用 Figure 同時包含 PCIe 與
 Fabric，只能介紹 PCIe／memory-based 部分，並在來源清冊標示為範圍縮減。
 
 第五份報告只發布 `.ai/nvme-report/scope.json` 的 `included_figure_ids` allowlist。
@@ -61,6 +63,13 @@ observe completion／SMART／temperature 組織，不得按 section 或 Figure �
 必須 scope-reduced；Figure 209 只取 LID 06h row，NVM Command Set 只取 Figure 111 的
 FLBA 定義。主體分成 Device Self-test lifecycle、HMB ownership lifecycle 與 encoded
 memory boundary 三條工程主線，不得把其他 log page、Feature、Telemetry 或 Fabrics 內容帶入。
+
+第八份報告只納入 Base §5.2.6、§5.2.13.1.7（僅 LID 06h）、§5.2.24、§5.2.25、
+§8.1.8、§8.1.17（排除 §8.1.17.3），以及 NVM Command Set 1.3 §2.1.1、§4.1.4.3、
+§4.1.6、§5.8。Figure 36、155、209、338、346、474 與 NVM Command Set Figure
+123、127、132、133 必須 scope-reduced；主體依 Device Self-test 證據鏈、capacity mental
+model、namespace create／attach／delete／restore lifecycle 與 Debug 驗證鏈組織。所有 Fabrics
+內容、§8.1.17.3 與未核准的小節均不得帶入。
 
 ## HTML 與 iPad／Desktop 閱讀規則
 

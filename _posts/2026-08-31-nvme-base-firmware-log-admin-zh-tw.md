@@ -420,7 +420,7 @@ bytes 64:511: reserved
 | `LSI` | Log Specific Identifier，意義由所選 log page 定義的 identifier。 | NVME-BASE-2.4 Rev. 2.4，§4.1.1, 5.2.13，文件頁 140-142, 212-215，PDF 頁 166-168, 238-241 |
 | `LPOL` | Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。 | NVME-BASE-2.4 Rev. 2.4，§5.2.13，文件頁 214-215，PDF 頁 240-241 |
 | `LPOU` | Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。 | NVME-BASE-2.4 Rev. 2.4，§5.2.13，文件頁 214-215，PDF 頁 240-241 |
-| `CSI` | Command Set Identifier，選擇與 log page 相關的 command set context。 | NVME-BASE-2.4 Rev. 2.4，§4.1.1, 5.2.13，文件頁 140-142, 212-215，PDF 頁 166-168, 238-241 |
+| `CSI` | Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。 | NVME-BASE-2.4 Rev. 2.4，§4.1.1, 5.2.13，文件頁 140-142, 212-215，PDF 頁 166-168, 238-241 |
 | `UIDX` | UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。 | NVME-BASE-2.4 Rev. 2.4，§4.1.1, 5.2.13，文件頁 140-142, 212-215，PDF 頁 166-168, 238-241 |
 | `CA` | Commit Action，Firmware Commit 中選擇 replace、activate 與 reset policy 的欄位。 | NVME-BASE-2.4 Rev. 2.4，§5.2.9，文件頁 203，PDF 頁 229 |
 | `FS` | Firmware Slot，Firmware Commit 中選擇目標 slot 的欄位。 | NVME-BASE-2.4 Rev. 2.4，§5.2.9，文件頁 203，PDF 頁 229 |
@@ -1506,7 +1506,7 @@ Figure 208 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 
 | 縮寫／欄位 | 白話解釋 |
 |---|---|
-| `CSI` | Command Set Identifier，選擇與 log page 相關的 command set context。 |
+| `CSI` | Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。 |
 | `OT` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
 | `UIDX` | UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。 |
 

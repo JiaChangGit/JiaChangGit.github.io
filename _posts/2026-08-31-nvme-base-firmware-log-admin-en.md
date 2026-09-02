@@ -420,7 +420,7 @@ Every abbreviation below is introduced before it is used in the slide narrative.
 | `LSI` | Log Specific Identifier, an identifier whose meaning is defined by the selected log page. | NVME-BASE-2.4 Rev. 2.4, §4.1.1, 5.2.13, printed pp. 140-142, 212-215, PDF pp. 166-168, 238-241 |
 | `LPOL` | Log Page Offset Lower, the low 32 bits of the Get Log Page byte offset. | NVME-BASE-2.4 Rev. 2.4, §5.2.13, printed pp. 214-215, PDF pp. 240-241 |
 | `LPOU` | Log Page Offset Upper, the high 32 bits of the Get Log Page byte offset. | NVME-BASE-2.4 Rev. 2.4, §5.2.13, printed pp. 214-215, PDF pp. 240-241 |
-| `CSI` | Command Set Identifier, the command-set context associated with a log page. | NVME-BASE-2.4 Rev. 2.4, §4.1.1, 5.2.13, printed pp. 140-142, 212-215, PDF pp. 166-168, 238-241 |
+| `CSI` | Command Set Identifier, selecting the I/O Command Set context for a command or log page. | NVME-BASE-2.4 Rev. 2.4, §4.1.1, 5.2.13, printed pp. 140-142, 212-215, PDF pp. 166-168, 238-241 |
 | `UIDX` | UUID Index, an index into the UUID List; zero indicates that no UUID is specified. | NVME-BASE-2.4 Rev. 2.4, §4.1.1, 5.2.13, printed pp. 140-142, 212-215, PDF pp. 166-168, 238-241 |
 | `CA` | Commit Action, the Firmware Commit field selecting replacement, activation, and reset policy. | NVME-BASE-2.4 Rev. 2.4, §5.2.9, printed pp. 203, PDF pp. 229 |
 | `FS` | Firmware Slot, the Firmware Commit field selecting the target slot. | NVME-BASE-2.4 Rev. 2.4, §5.2.9, printed pp. 203, PDF pp. 229 |
@@ -1506,7 +1506,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 
 | Term | Plain-language meaning |
 |---|---|
-| `CSI` | Command Set Identifier, the command-set context associated with a log page. |
+| `CSI` | Command Set Identifier, selecting the I/O Command Set context for a command or log page. |
 | `OT` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
 | `UIDX` | UUID Index, an index into the UUID List; zero indicates that no UUID is specified. |
 

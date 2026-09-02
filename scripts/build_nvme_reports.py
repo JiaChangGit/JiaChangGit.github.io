@@ -558,6 +558,57 @@ REPORTS = {
             c("BOUNDARY-DEBUG", "5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3", "199-201, 515-519, 733, 744", "三條流程的共同 Debug 原則是找第一個 broken boundary：self-test 比對 command→current status→result；HMB 比對 capability→descriptor math→ownership→disable CQE；emulation／vendor command 比對 capability encoding→byte count／stride→實際 memory access。", "All three tracks debug from the first broken boundary: self-test compares command, current status, and result; HMB compares capability, descriptor math, ownership, and disable CQE; emulation/vendor commands compare capability encoding, byte count or stride, and actual memory access."),
         ],
     },
+    "base-self-test-namespace-management": {
+        "prefix": "BASENSMGMT",
+        "title_zh": "NVMe Base 2.4：Device Self-test 與 Namespace Management",
+        "title_en": "NVMe Base 2.4: Device Self-test and Namespace Management",
+        "source_id": "NVME-BASE-2.4",
+        "supporting_source_ids": ["NVME-NVM-CS-1.3"],
+        "scope_entry": "BASE-NSMGMT-INCLUDE",
+        "date": "2026-09-02",
+        "verified_date": "2026-09-02",
+        "range": "Base §5.2.6、§5.2.13.1.7（僅 LID 06h）、§5.2.24、§5.2.25、§8.1.8、§8.1.17（排除 §8.1.17.3），以及 NVM Command Set 1.3 §2.1.1、§4.1.4.3、§4.1.6、§5.8；另含理解與實作所需的最小 dependency slice",
+        "range_en": "Base §§5.2.6, 5.2.13.1.7 (LID 06h only), 5.2.24, 5.2.25, 8.1.8, and 8.1.17 (excluding §8.1.17.3), plus NVM Command Set 1.3 §§2.1.1, 4.1.4.3, 4.1.6, and 5.8; includes the minimum dependency slice needed for understanding and implementation",
+        "diagram": ["Discover capability and capacity", "Run self-test / construct namespace", "Observe LID 06h / receive NSID", "Attach, verify, detach, or delete"],
+        "diagram_note_zh": "本報告把診斷與配置分成兩條生命週期：Self-test 用 LID 06h 證明背景 operation 的結果；Namespace Management 先建立未附掛 namespace，再用 Controller List 建立可存取關係，最後以 event、Identify 與 CQE 關閉驗證迴路。",
+        "diagram_note_en": "The report separates diagnostic and provisioning lifecycles. LID 06h proves the result of a background self-test, while Namespace Management first creates an unattached namespace, then uses a Controller List to establish access and closes verification through events, Identify data, and CQEs.",
+        "claims": [
+            c("SELFTEST-GATE", "5.2.14.2.1, 8.1.8", "353-358, 614", "啟動 Device Self-test 前先讀 Identify Controller：OACS.DSTS 判斷 command 是否支援；EDSTT 是 extended operation 在 power state 0 的名目分鐘數；DSTO.SDSO 決定同時只有一個 subsystem-wide operation，或每個 controller 各一個。三者分別是支援、時間與 concurrency scope。", "Before starting Device Self-test, read Identify Controller. OACS.DSTS gates command support, EDSTT gives the nominal extended-operation duration in minutes at power state 0, and DSTO.SDSO selects one subsystem-wide operation versus one operation per controller. They describe support, time, and concurrency scope respectively.", "none", "NVME-BASE-2.4", "BASE-NSMGMT-DEPENDENCY-INCLUDE"),
+            c("SELFTEST-NSID", "5.2.6", "199", "Device Self-test 由收到 command 的 controller 執行。NSID=00000000h 只測 controller；00000001h～FFFFFFFEh 指定一個 active namespace；FFFFFFFFh 包含提交當下該 controller 可存取的所有 attached namespaces。invalid 與 inactive NSID 是不同錯誤。", "Device Self-test is performed by the controller receiving the command. NSID 00000000h tests only that controller; 00000001h through FFFFFFFEh select one active namespace; and FFFFFFFFh includes all attached namespaces accessible through that controller when the operation starts. Invalid and inactive NSIDs are distinct errors."),
+            c("SELFTEST-STC", "5.2.6", "199-200", "CDW10.STC[3:0] 選動作：1h=short、2h=extended、3h=Host-Initiated Refresh、Eh=vendor specific、Fh=abort；其餘 encoding reserved。只有 STC=Eh 時 CDW15.DSTP 才是 vendor specific，其他 STC 下 CDW15 reserved。", "CDW10.STC[3:0] selects 1h short, 2h extended, 3h Host-Initiated Refresh, Eh vendor specific, or Fh abort; the other encodings are reserved. CDW15.DSTP is vendor specific only when STC is Eh and is reserved for other STC values.", "reserved"),
+            c("SELFTEST-INPROGRESS", "5.2.6", "200", "已有 operation 時，再送 short、extended 或 Host-Initiated Refresh 必須以 Device Self-test in Progress 中止；STC=Fh 則依序中止目前 operation、建立最新 result、清除 current status，再成功完成 abort command。", "While an operation is active, a new short, extended, or Host-Initiated Refresh request shall be aborted with Device Self-test in Progress. STC Fh instead aborts the current operation, creates the newest result, clears current status, and successfully completes the abort command in that order.", "shall"),
+            c("SELFTEST-COMPLETION", "5.2.6", "201", "Device Self-test 的 Admin CQE 只證明啟動或中止動作已被處理，不代表背景測試完成。software 必須把 command CQE、LID 06h current state 與最後 result entry 當成三個不同時間點。", "The Device Self-test Admin CQE proves only that the start or abort action was processed; it does not mean that the background test has finished. Software treats the command CQE, current LID 06h state, and final result entry as three distinct timestamps."),
+            c("SELFTEST-BACKGROUND", "8.1.8", "614", "Device Self-test 是由 vendor-specific segments 組成的背景工作。若處理另一個 command 必須暫停測試，controller 必須（shall）依序 suspend self-test、處理並完成該 command、再 resume self-test；可同時處理哪些 command 仍由 vendor 決定。", "Device Self-test is background work composed of vendor-specific segments. If processing another command requires suspension, the controller shall suspend the self-test, process and complete that command, and resume the self-test in order. Which commands may run concurrently remains vendor specific.", "shall"),
+            c("SELFTEST-TIMING", "8.1.8.1-8.1.8.2", "615-616", "short operation 應（should）在兩分鐘內完成，Controller Level Reset 會中止；extended operation 應在 EDSTT 內完成，必須跨 Controller Level Reset 與 power restoration 持續並於之後 resume。兩種測試不能共用同一套 reset 預期。", "A short operation should finish within two minutes and is aborted by Controller Level Reset. An extended operation should finish within EDSTT, shall persist across Controller Level Reset and power restoration, and resumes afterward. The two test types do not share one reset expectation.", "should"),
+            c("SELFTEST-ABORTS", "8.1.8.1-8.1.8.2", "615-616", "short 與 extended 都會被適用的 Format NVM、sanitize start 或 STC=Fh 中止，namespace 從 inventory 移除時則可能（may）中止。Figure 701 顯示必須同時看 Format NSID、secure-erase 選項與 Self-test NSID。", "Both short and extended operations are aborted by an applicable Format NVM command, sanitize start, or STC Fh, and may be aborted when the namespace is removed from inventory. Figure 701 requires the Format NSID, secure-erase selection, and Self-test NSID to be evaluated together.", "may"),
+            c("SELFTEST-LOG-COMMAND", "5.2.13", "213-216", "完整讀取 LID 06h 使用 564 bytes=141 dwords，因此 0's-based NUMD=140=008Ch；LID=06h、LSP=0、LPOL/LPOU=0、OT=0、CSI=0、UIDX=0。RAE=0 時 CDW10=008C0006h。", "A complete LID 06h read transfers 564 bytes or 141 dwords, so zero-based NUMD is 140 or 008Ch. Use LID 06h, LSP zero, LPOL/LPOU zero, OT zero, CSI zero, and UIDX zero. With RAE zero, CDW10 is 008C0006h.", "none", "NVME-BASE-2.4", "BASE-NSMGMT-DEPENDENCY-INCLUDE"),
+            c("SELFTEST-CURRENT", "5.2.13.1.7", "229-230", "LID 06h byte 0 的 DSTOS 表示目前 operation，byte 1 的 DSTCS[6:0] 是完成百分比；DSTOS=0 時 host 應忽略 DSTCS。operation 完成或中止時，controller 必須先建立 result entry，再把 in-progress status 清為 0。", "In LID 06h, byte 0 DSTOS identifies the current operation and byte 1 DSTCS[6:0] gives completion percentage; the host should ignore DSTCS when DSTOS is zero. When an operation completes or is aborted, the controller creates a result entry before clearing in-progress status to zero.", "shall"),
+            c("SELFTEST-HISTORY", "5.2.13.1.7", "229-232", "LID 06h 保留 20 筆、每筆 28 bytes 的結果，RDS1 是最新一筆。DSTS 高 nibble DSTC 記原始 self-test code，低 nibble DSTR 記完成或中止原因；只有 DSTR=7h 時 SEGN 才可解讀。", "LID 06h retains twenty 28-byte results with RDS1 newest. The high DSTS nibble DSTC records the original self-test code and the low nibble DSTR records completion or abort reason. SEGN is interpreted only when DSTR is 7h."),
+            c("SELFTEST-VALIDITY", "5.2.13.1.7", "231-232", "VDINFO 的 NSIDVLD、FVLD、SCTVLD、SCVLD 是四個獨立 validity gates。NSID、FLBA、STCT、STC 只有在對應 bit=1 時才可讀；parser 不得以欄位非零猜測有效。", "VDINFO NSIDVLD, FVLD, SCTVLD, and SCVLD are four independent validity gates. NSID, FLBA, STCT, and STC are interpreted only when the corresponding bit is one; a parser does not infer validity from a nonzero field."),
+            c("SELFTEST-NVM-FLBA", "4.1.4.3", "76", "NVM Command Set 1.3 將 result bytes 23:16 定義為造成失敗的 logical block address。若多個 logical blocks 失敗，只回其中一個，而且僅在 FVLD=1 時有效。", "NVM Command Set 1.3 defines result bytes 23:16 as the logical block address that caused the failure. If multiple logical blocks fail, only one is reported, and it is valid only when FVLD is one.", "none", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("CAPACITY-MODEL", "2.1.1", "13-14", "Namespace Size（NSZE）是 LBA 0 到 n−1 的總 logical blocks；Namespace Capacity（NCAP）是任一時點最多可配置的 blocks；Namespace Utilization（NUSE）是目前已配置 blocks。永遠遵守 NSZE ≥ NCAP ≥ NUSE。", "Namespace Size (NSZE) is the total logical-block range from LBA zero through n minus one; Namespace Capacity (NCAP) is the maximum allocatable blocks at any time; and Namespace Utilization (NUSE) is the number currently allocated. NSZE is always at least NCAP, which is at least NUSE.", "none", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("THIN-PROVISIONING", "2.1.1", "13", "NSFEAT.THINP=1 時，controller 可（may）回報 NCAP<NSZE，並必須（shall）追蹤 NUSE。THINP=0 時，controller 必須回報 NCAP=NSZE，且可讓 NUSE 永遠等於 NCAP。", "With NSFEAT.THINP one, a controller may report NCAP below NSZE and shall track NUSE. With THINP zero, the controller shall report NCAP equal to NSZE and may report NUSE as always equal to NCAP.", "shall", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("NSMGMT-CAPABILITY", "8.1.17", "660", "完整 Namespace Management capability 由 Namespace Management command 與 Namespace Attachment command 組成。支援時 controller 必須支援兩者、設 OACS.NMS=1、支援 Attached Namespace Attribute Changed event；Allocated event 為 should，Namespace Granularity 與 Restore Default 為 may。", "The complete Namespace Management capability consists of Namespace Management and Namespace Attachment. A supporting controller shall implement both, set OACS.NMS to one, and support the Attached Namespace Attribute Changed event; the Allocated event is a should, while Namespace Granularity and Restore Default are may capabilities.", "shall"),
+            c("NSID-LIFECYCLE", "8.1.17", "660", "create 成功後 namespace 已 allocated 但尚未 attached，因此對 controller 尚非 active。detach 使該 controller 上的 NSID 變 inactive；delete 使 subsystem 中的 NSID 變 unallocated。受影響的 outstanding 或後續 commands 依 inactive NSID 處理。", "After create succeeds, the namespace is allocated but not attached and therefore is not active on a controller. Detach makes its NSID inactive on that controller; delete makes the NSID unallocated in the subsystem. Affected outstanding and later commands are handled as though issued to an inactive NSID."),
+            c("CREATE-PREFLIGHT", "8.1.17.1", "661-662", "create 前先以 NSID=FFFFFFFFh、CNS=00h 讀 common namespace capabilities；若支援，再用 CNS=16h 讀 Namespace Granularity，並確認可用 capacity。這三步完成後才建立 4096-byte create buffer。", "Before create, read common namespace capabilities with NSID FFFFFFFFh and CNS 00h; if supported, read Namespace Granularity with CNS 16h and determine available capacity. Only then construct the 4096-byte create buffer."),
+            c("CREATE-BASE-COMMAND", "5.2.25", "446-448", "Create 使用 NSID=0、SEL=0h 與 CSI=00h（NVM Command Set）。DPTR 指向 4096-byte data structure：bytes 0:511 是 I/O Command Set specific、512:1023 reserved、1024:4095 vendor specific。reserved bytes 由 host 清為 0。", "Create uses NSID zero, SEL 0h, and CSI 00h for the NVM Command Set. DPTR identifies a 4096-byte structure: bytes 0:511 are I/O-Command-Set-specific, 512:1023 are reserved, and 1024:4095 are vendor specific. The host clears reserved bytes to zero.", "reserved"),
+            c("CREATE-NVM-PAYLOAD", "4.1.6.4", "111-113", "NVM create payload 的主要 host-specified fields 是 NSZE、NCAP、FLBAS、DPS、NMIC、ANAGRPID、NVMSETID、ENDGID、LBSTM、NPHNDLS 與 Placement Handle List。成功 create 後，namespace 依這些屬性格式化；未使用的 reserved fields 應清為 0。", "The primary host-specified NVM create fields are NSZE, NCAP, FLBAS, DPS, NMIC, ANAGRPID, NVMSETID, ENDGID, LBSTM, NPHNDLS, and the Placement Handle List. After successful create, the namespace is formatted with these attributes, and unused reserved fields should be zero.", "should", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("PROTECTION-VALIDATION", "4.1.6.2", "110", "End-to-end Data Protection 設定在 create 時套用。LBAFEE 未啟用時，特定 16-bit STS 非零、32-bit 或 64-bit Guard Protection Information 組合必須以 Invalid Namespace or Format 中止；LBSTM 不符合 Figure 127 capability 時則回 Invalid Field in Command。", "End-to-end Data Protection settings are applied during create. Without LBAFEE, specified combinations using nonzero STS with 16-bit, or 32-bit or 64-bit Guard Protection Information, are aborted with Invalid Namespace or Format. An LBSTM that violates Figure 127 capability returns Invalid Field in Command.", "shall", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("FDP-VALIDATION", "4.1.6.3", "110-111", "只有指定 Endurance Group 已啟用 Flexible Data Placement（FDP）且 SEL=Create 時，NPHNDLS 與 Placement Handle List 才參與驗證。NPHNDLS 不得大於支援的 Reclaim Unit Handles 或 128；重複、越界、格式不相容或無可用 handle 會導向 Invalid Placement Handle List 或 Invalid Format。", "NPHNDLS and the Placement Handle List participate in validation only when Flexible Data Placement (FDP) is enabled in the selected Endurance Group and SEL is Create. NPHNDLS may not exceed the supported Reclaim Unit Handles or 128; duplicates, out-of-range handles, incompatible formats, or no available handle lead to Invalid Placement Handle List or Invalid Format.", "shall", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("GROUP-SELECTION", "8.1.17", "661", "NVMSETID／ENDGID 的決策矩陣為：兩者 0 由 controller 選兩者；NVMSETID=0、ENDGID≠0 時由指定 Endurance Group 內選 NVM Set；NVMSETID≠0、ENDGID=0 必須 Invalid Field；兩者非 0 時只有該 NVM Set 確實屬於指定 Endurance Group 才可配置。", "The NVMSETID/ENDGID matrix is: both zero lets the controller choose both; NVMSETID zero with nonzero ENDGID selects an NVM Set inside the specified Endurance Group; nonzero NVMSETID with zero ENDGID is Invalid Field; and both nonzero are valid only when that NVM Set belongs to the specified Endurance Group.", "shall"),
+            c("ALLOCATION-ROUNDING", "8.1.17", "661", "controller 可（may）按內部 allocation unit 把實際消耗容量向上取整。Spec 範例中，32 blocks×4 KiB=128 KiB 的 namespace，在 1 MiB allocation unit 下可消耗 1 MiB；因此 capacity consumption 不一定等於 logical block size×block count。", "A controller may round actual capacity consumption up to an internal allocation unit. In the specification example, 32 blocks times 4 KiB equals a 128-KiB namespace but may consume 1 MiB with a 1-MiB allocation unit; capacity consumption therefore need not equal logical-block size times block count.", "may"),
+            c("GRANULARITY-HINTS", "5.8", "165", "Namespace Granularity 的 NSG 與 NCG 都是 byte-unit hints。若 NSZE×LBA size 可整除 NSG、NCAP×LBA size 可整除 NCG 且 NSZE=NCAP，配置為 fully provisioned 且全部容量可由 LBA 定址；不符合 hint 可能浪費容量，但 otherwise-valid create 不得只因違反 hint 被中止。", "Namespace Granularity NSG and NCG are byte-unit hints. If NSZE times LBA size is divisible by NSG, NCAP times LBA size is divisible by NCG, and NSZE equals NCAP, the namespace is fully provisioned and all allocated capacity is LBA-addressable. Violating a hint may waste capacity, but an otherwise valid create shall not be aborted solely for that reason.", "shall not", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("ATTACH-COMMAND", "5.2.24", "444-445", "Namespace Attachment 的 DPTR 指向 4096-byte Controller List；SEL=0h attach、SEL=1h detach。以 PRP 指向此 buffer 時不得使用 PRP List，因 buffer 不可跨越超過一個 memory-page boundary。attach／detach 狀態跨所有 reset events 保留。", "Namespace Attachment DPTR points to a 4096-byte Controller List; SEL 0h attaches and SEL 1h detaches. With PRPs, the buffer cannot use a PRP List because it may not cross more than one memory-page boundary. Attach/detach state persists across all reset events.", "shall not"),
+            c("ATTACH-LIMITS", "5.2.24", "444-445", "attach 前分別核對 Domain aggregate MAXDNA 與每個 I/O controller 的 MAXCNA；非零 limit 被超過時回 Namespace Attachment Limit Exceeded。還要核對 I/O Command Set support／enable state，不能把所有 attach failure 都歸成同一種 status。", "Before attach, check Domain-aggregate MAXDNA and per-I/O-controller MAXCNA separately. Exceeding a nonzero limit returns Namespace Attachment Limit Exceeded. I/O Command Set support and enablement are additional independent gates, so attach failures do not collapse to one status."),
+            c("CREATE-COMPLETION", "5.2.25, 8.1.17.1", "446-448, 662", "Create 成功時 controller 選擇可用 NSID，CQE.DW0 回傳該 NSID；此刻 namespace 尚未 attached。software 必須先保存 returned NSID，再以 Namespace Attachment 建立 controller access，不能在 create CQE 後直接送 I/O。", "On successful create, the controller selects an available NSID and returns it in CQE DW0; the namespace is still unattached. Software preserves the returned NSID and then establishes controller access through Namespace Attachment instead of issuing I/O immediately after the create CQE."),
+            c("DELETE", "5.2.25, 8.1.17.1", "446, 448, 662", "Delete 的 NSID 指定已建立 namespace；FFFFFFFFh 表示 delete all，即使目前零個 namespaces 也成功。delete 會使 namespace 從 subsystem 消失並具有 detach side effect；host 應先 detach 所有 controllers，讓 event 與 outstanding-I/O 行為更可控。", "Delete NSID selects a created namespace, while FFFFFFFFh means delete all and succeeds even when no namespace exists. Delete removes the namespace and has a detach side effect; the host should detach it from every controller first so events and outstanding-I/O behavior remain controlled.", "should"),
+            c("RESTORE-DEFAULT", "5.2.25.1", "447-448", "Restore Default 使用 SEL=2h，NSID 應為 0 且 controller 會忽略它。先讀 RDNCS，刪除 subsystem 中所有 namespaces，再送 restore；若仍有 namespace，回 Command Sequence Error。成功前 controller 必須套用 current active firmware image 的 default configuration 並設 DNCS=1。", "Restore Default uses SEL 2h; NSID should be zero and is ignored by the controller. Check RDNCS, delete every namespace in the subsystem, and then issue restore; any remaining namespace causes Command Sequence Error. Before success, the controller applies the current active firmware image's default configuration and sets DNCS to one.", "shall"),
+            c("COMMAND-STATUS", "5.2.24-5.2.25", "445, 448", "Debug 要保留 command-specific status：Attachment 可回 already attached 18h、private 19h、not attached 1Ah、Controller List invalid 1Ch、ANA attach failed 25h、limit 27h、I/O Command Set 29h／2Ah；Management 可回 Invalid Format 0Ah、insufficient capacity 15h、NSID unavailable 16h、thin provisioning unsupported 1Bh、ANA group invalid 24h。", "Debug evidence retains command-specific status. Attachment may return already attached 18h, private 19h, not attached 1Ah, Controller List invalid 1Ch, ANA attach failed 25h, limit 27h, or I/O Command Set 29h/2Ah. Management may return Invalid Format 0Ah, insufficient capacity 15h, NSID unavailable 16h, thin provisioning unsupported 1Bh, or ANA group invalid 24h."),
+            c("NAMESPACE-EVENTS", "8.1.17.1-8.1.17.2", "662-663", "create 改變 Allocated Namespace ID list；attach／detach 改變 Active Namespace ID list；delete 可能同時改變兩者。啟用對應 notice 時，host 收到 asynchronous event 後應重新 Identify，而不是只用 event code 猜新 inventory。§8.1.17.2 對處理 delete 的 controller 與其他 controllers 規定不同 event reporting。", "Create changes the Allocated Namespace ID list, attach/detach changes the Active Namespace ID list, and delete may change both. When the corresponding notice is enabled, the host reissues Identify after the asynchronous event rather than inferring inventory from the event code alone. Section 8.1.17.2 distinguishes the controller processing delete from the other controllers."),
+            c("GRANULARITY-EXAMPLE", "5.8", "165", "說明性範例：LBA=4 KiB、NSG=1 MiB（256 LBAs）、NCG=2 MiB（512 LBAs）。NSZE=NCAP=1024 同時滿足兩種 granularity；NSZE=1000、NCAP=1000 不滿足 NSG／NCG 整除，但若其他欄位都合法，controller 不得只因這個 hint violation 中止 create。", "Informative example: with 4-KiB LBAs, NSG 1 MiB equals 256 LBAs and NCG 2 MiB equals 512 LBAs. NSZE and NCAP of 1024 satisfy both granularities. Values of 1000 violate NSG/NCG divisibility, but an otherwise valid create is not aborted solely for that hint violation.", "shall not", "NVME-NVM-CS-1.3", "NVMCS-NSMGMT-INCLUDE"),
+            c("END-TO-END-DEBUG", "5.2.24-5.2.25, 8.1.17.1", "444-448, 661-663", "完整 trace 至少保存：OACS.NMS／limits、common Identify 與 granularity snapshot、4096-byte create buffer、raw SQE、CQE.DW0 NSID、Controller List、attach CQE、AER、重新 Identify 結果，以及 detach／delete 後的 inactive／unallocated 狀態。第一個不一致的 boundary 才是 Debug 起點。", "A complete trace retains OACS.NMS and limits, common Identify and granularity snapshots, the 4096-byte create buffer, raw SQE, CQE DW0 NSID, Controller List, attach CQE, AER, refreshed Identify result, and inactive/unallocated state after detach/delete. The first inconsistent boundary is the debugging start point."),
+        ],
+    },
     "pcie-transport-1.4": {
         "prefix": "PCIE14",
         "title_zh": "NVMe over PCIe Transport 1.4：完整傳輸綁定",
@@ -612,6 +663,10 @@ POST_IMAGES = {
         "en": "posts/2026/cat_title.jpg",
     },
     "base-self-test-hmb-emulation": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
+    "base-self-test-namespace-management": {
         "zh": "posts/2026/dogMC_title.jpg",
         "en": "posts/2026/cat_title.jpg",
     },
@@ -749,6 +804,40 @@ CORE_TITLES = {
     "BASEDIAGMEM-VENDOR-FORMAT": ("Figure 94 的 boundary-safe layout", "Boundary-safe Figure 94 layout"),
     "BASEDIAGMEM-VENDOR-LENGTH": ("NDT／NDM 是實際 dword count", "NDT/NDM are actual dword counts"),
     "BASEDIAGMEM-BOUNDARY-DEBUG": ("從第一個 broken boundary 開始 Debug", "Debug from the first broken boundary"),
+    "BASENSMGMT-SELFTEST-GATE": ("先確認 Self-test capability 與 concurrency scope", "Gate Self-test capability and concurrency scope"),
+    "BASENSMGMT-SELFTEST-NSID": ("NSID 決定 Self-test 涵蓋範圍", "NSID selects Self-test scope"),
+    "BASENSMGMT-SELFTEST-STC": ("STC 與 CDW15 的命令編碼", "STC and CDW15 command encoding"),
+    "BASENSMGMT-SELFTEST-INPROGRESS": ("operation in progress 的命令矩陣", "Command matrix while an operation is active"),
+    "BASENSMGMT-SELFTEST-COMPLETION": ("CQE 不等於背景測試完成", "A CQE is not background-test completion"),
+    "BASENSMGMT-SELFTEST-BACKGROUND": ("背景測試的 suspend／resume 契約", "Background-test suspend/resume contract"),
+    "BASENSMGMT-SELFTEST-TIMING": ("short 與 extended 的 reset 差異", "Reset differences between short and extended tests"),
+    "BASENSMGMT-SELFTEST-ABORTS": ("Format、sanitize 與 abort 條件", "Format, sanitize, and abort conditions"),
+    "BASENSMGMT-SELFTEST-LOG-COMMAND": ("564-byte LID 06h command 計算", "Constructing the 564-byte LID 06h command"),
+    "BASENSMGMT-SELFTEST-CURRENT": ("current operation 與完成百分比", "Current operation and completion percentage"),
+    "BASENSMGMT-SELFTEST-HISTORY": ("20 筆 newest-first result history", "Twenty newest-first result entries"),
+    "BASENSMGMT-SELFTEST-VALIDITY": ("先驗證 validity bit 再讀欄位", "Validate the validity bit before the field"),
+    "BASENSMGMT-SELFTEST-NVM-FLBA": ("NVM Command Set 補完 FLBA 語意", "NVM Command Set completes FLBA semantics"),
+    "BASENSMGMT-CAPACITY-MODEL": ("NSZE、NCAP、NUSE 的容量不等式", "The NSZE, NCAP, NUSE capacity inequality"),
+    "BASENSMGMT-THIN-PROVISIONING": ("THINP 決定 NCAP／NUSE 回報責任", "THINP governs NCAP/NUSE reporting"),
+    "BASENSMGMT-NSMGMT-CAPABILITY": ("完整 capability 是 Manage 加 Attach", "The complete capability combines Manage and Attach"),
+    "BASENSMGMT-NSID-LIFECYCLE": ("allocated、active、inactive、unallocated", "Allocated, active, inactive, and unallocated"),
+    "BASENSMGMT-CREATE-PREFLIGHT": ("create 前的 capability／capacity 盤點", "Capability and capacity preflight before create"),
+    "BASENSMGMT-CREATE-BASE-COMMAND": ("Base 4096-byte create envelope", "The Base 4096-byte create envelope"),
+    "BASENSMGMT-CREATE-NVM-PAYLOAD": ("NVM host-specified create fields", "NVM host-specified create fields"),
+    "BASENSMGMT-PROTECTION-VALIDATION": ("Protection Information 與 LBSTM gates", "Protection Information and LBSTM gates"),
+    "BASENSMGMT-FDP-VALIDATION": ("FDP Placement Handle validation", "FDP Placement Handle validation"),
+    "BASENSMGMT-GROUP-SELECTION": ("NVMSETID／ENDGID 決策矩陣", "NVMSETID/ENDGID decision matrix"),
+    "BASENSMGMT-ALLOCATION-ROUNDING": ("requested size 不等於 capacity consumption", "Requested size need not equal capacity consumption"),
+    "BASENSMGMT-GRANULARITY-HINTS": ("NSG／NCG 是配置提示而非合法性門檻", "NSG/NCG are allocation hints, not validity gates"),
+    "BASENSMGMT-ATTACH-COMMAND": ("Controller List 建立 access relationship", "Controller List establishes access relationships"),
+    "BASENSMGMT-ATTACH-LIMITS": ("MAXDNA 與 MAXCNA 是兩層 limits", "MAXDNA and MAXCNA are two levels of limits"),
+    "BASENSMGMT-CREATE-COMPLETION": ("CQE.DW0 回 NSID，但尚未 attached", "CQE DW0 returns an NSID that is not yet attached"),
+    "BASENSMGMT-DELETE": ("detach 後再 delete 的可控流程", "A controlled detach-then-delete flow"),
+    "BASENSMGMT-RESTORE-DEFAULT": ("RDNCS、delete-all 與 DNCS", "RDNCS, delete-all, and DNCS"),
+    "BASENSMGMT-COMMAND-STATUS": ("用 command-specific status 定位 failure gate", "Use command-specific status to locate the failed gate"),
+    "BASENSMGMT-NAMESPACE-EVENTS": ("AER 後重新 Identify inventory", "Refresh Identify inventory after AER"),
+    "BASENSMGMT-GRANULARITY-EXAMPLE": ("4 KiB LBA 的 NSG／NCG 計算", "NSG/NCG calculation with 4-KiB LBAs"),
+    "BASENSMGMT-END-TO-END-DEBUG": ("從第一個生命週期邊界開始 Debug", "Debug from the first lifecycle boundary"),
     "PCIE14-SCOPE": ("Transport 與 Base 的優先序", "Transport and Base precedence"),
     "PCIE14-CONVENTION": ("PCIe Reset 欄定義", "PCIe Reset-column convention"),
     "PCIE14-KEYWORDS": ("Transport 規範性用語", "Transport normative language"),
@@ -775,6 +864,7 @@ def artifact_ids(report_id: str) -> list[str]:
         "base-admin-fw-logs": "basefwlog",
         "base-power-features": "basepower",
         "base-self-test-hmb-emulation": "basediagmem",
+        "base-self-test-namespace-management": "basensmgmt",
         "pcie-transport-1.4": "pcie14",
     }[report_id]
     return [
@@ -809,6 +899,7 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     is_fwlog = figure.get("report_id") == "base-admin-fw-logs"
     is_power = figure.get("report_id") == "base-power-features"
     is_diagmem = figure.get("report_id") == "base-self-test-hmb-emulation"
+    is_nsmgmt = figure.get("report_id") == "base-self-test-namespace-management"
     items = list(figure.get("key_items", []))
     item_text = ", ".join(items)
     first = items[0] if items else title
@@ -1059,6 +1150,14 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             example = (
                 f"Capture {first} as raw evidence, validate {second} against the cited section, and reject any state or byte range that crosses the declared boundary."
             )
+        elif is_nsmgmt:
+            purpose = f"Connects {title} to the Self-test evidence path or namespace lifecycle."
+            reading = (
+                f"Identify the object and lifecycle state, decode {item_text}, then verify the next transition with a CQE, log, event, or Identify snapshot."
+            )
+            example = (
+                f"Capture {first} as raw input, validate {second} against the cited capability and state, then record the resulting lifecycle transition."
+            )
         else:
             purpose = f"Explains the specific relationship or example named {title}."
             reading = (
@@ -1295,6 +1394,14 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             example = (
                 f"保存 {first} 的 raw evidence，依引用 section 驗證 {second}，若 state 或 byte range 超出宣告邊界就拒絕繼續。"
             )
+        elif is_nsmgmt:
+            purpose = f"把〈{title}〉連到 Self-test 證據路徑或 namespace lifecycle。"
+            reading = (
+                f"先確認物件與 lifecycle state，再解碼 {item_text}，最後以 CQE、log、event 或 Identify snapshot 驗證下一個 transition。"
+            )
+            example = (
+                f"保存 {first} 的 raw input，依 capability 與目前 state 驗證 {second}，再記錄實際發生的 lifecycle transition。"
+            )
         else:
             purpose = f"解釋〈{title}〉所指的特定關係或範例。"
             reading = (
@@ -1409,8 +1516,8 @@ def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
     result = {
         "id": f"{figure_id}-CLAIM",
         "report_id": report_id,
-        "source_id": report["source_id"],
-        "revision": SOURCES[report["source_id"]]["revision"],
+        "source_id": figure["source_id"],
+        "revision": SOURCES[figure["source_id"]]["revision"],
         "section": figure["section"],
         "figure": str(figure["number"]),
         "table": None,
@@ -1458,6 +1565,8 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
         return "先用 LID 決定資料 scope，再核對 transfer length、offset type、RAE 與 log-specific header。"
     if any(key in claim_id for key in ("SELFTEST", "HMB-", "VENDOR-", "BOUNDARY-")):
         return "先找 capability gate 與 ownership／state boundary，再核對 encoded value、completion fence 與可觀測證據。"
+    if any(key in claim_id for key in ("NSMGMT", "NSID-LIFECYCLE", "CREATE-", "ATTACH-", "DELETE", "RESTORE", "CAPACITY-MODEL", "THIN-PROVISIONING", "GRANULARITY", "GROUP-SELECTION", "PROTECTION", "FDP-")):
+        return "先標出 namespace 的 allocated／attached state，再核對 capability、容量、command buffer、CQE／AER 與重新 Identify 的證據。"
     return {
         "base-ch1-2": "先確認概念位於規格家族、儲存階層或路徑層級，不把不同層級合併。",
         "base-ch3": "先寫清楚動作主體是 host 或 controller，再核對當下 lifecycle state。",
@@ -1465,6 +1574,7 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
         "base-admin-fw-logs": "先判斷目前位於 download、commit、activation 或 log verification 階段。",
         "base-power-features": "先分辨這一層是在描述 capability、host policy、controller state，還是觀測證據。",
         "base-self-test-hmb-emulation": "先判斷目前處理的是 background operation、host-memory ownership，或 encoded memory boundary。",
+        "base-self-test-namespace-management": "先判斷目前處理的是 diagnostic operation、namespace object state，或 controller access relationship。",
         "pcie-transport-1.4": "先找 Base 的通用規則，再疊加 PCIe Transport 的專屬限制。",
     }[report_id]
 
@@ -1621,20 +1731,21 @@ def visual_role_class(role: str) -> str:
 def module_visual_kind(module_id: str) -> str:
     if module_id in {
         "queues", "queue-arbitration", "command", "interrupts",
-        "feature-read-set-loop", "end-to-end-debug",
+        "feature-read-set-loop", "end-to-end-debug", "namespace-end-to-end-debug", "namespace-events",
     }:
         return "sequence"
     if module_id in {
         "numbers", "sqe", "cqe-status", "prp", "sgl", "identity-text",
         "mmio-doorbell", "config-error", "eom", "fw-download-geometry",
         "fw-lid03-proof", "selftest-observe-debug", "hmb-command-math",
-        "encoded-boundary-safety",
+        "encoded-boundary-safety", "namespace-create-payload", "capacity-granularity-math",
     }:
         return "decode"
     if module_id in {
         "lifecycle", "properties-init", "fw-commit-state", "apst-state-machine",
         "temperature-event-loop", "hctm-control-loop",
         "selftest-command-state-machine", "hmb-ownership-lifecycle", "hmb-reset-power",
+        "namespace-lifecycle", "delete-restore-state",
     }:
         return "state"
     return "architecture"

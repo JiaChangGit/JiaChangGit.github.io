@@ -1,15 +1,15 @@
 # NVMe 報告控制資料
 
-此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 28 個輸出的契約。
+此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 32 個輸出的契約。
 它不保存 PDF 原文。一般重建只讀取此目錄中的追蹤資料，不需要 PDF，也不會把規格原文
 帶進 GitHub Pages。
 
 ## 唯一資料來源與重建流程
 
-- `scope.json`：七份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
+- `scope.json`：八份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
 - `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。報告若在 `scope.json` 宣告 `included_figure_ids`，該 allowlist 是實際發布集合；清冊中其他舊證據列只供追溯，不得出現在輸出。
 - `claims.json`：由產生器重建；不手動維護。
-- `output-contract.json`：28 個輸出路徑與格式要求。
+- `output-contract.json`：32 個輸出路徑與格式要求。
 
 一般內容更新後，依序執行：
 
@@ -40,8 +40,8 @@ python3 -B scripts/build_nvme_reports.py
 
 ## 執行階段
 
-1. `setup`：驗證來源登記、七份報告、28 個輸出路徑與規則骨架。
-2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、28 個輸出存在且通過檢查。
+1. `setup`：驗證來源登記、八份報告、32 個輸出路徑與規則骨架。
+2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、32 個輸出存在且通過檢查。
 3. `auto`：`scope.json` 的 `production_status` 為 `ready_for_publish` 時執行
    `publish`，否則執行 `setup`。
 
@@ -100,6 +100,11 @@ slice。Figure 200／466 只保留核准的五個 FID rows，Figure 468 只保�
 allowlist，其中 17 張是主範圍理解所需的 `referenced_dependency` slice。Figure 200／209／
 338／466 只呈現本報告交叉引用所需的欄位或資料列；NVM Command Set Figure 111 只解釋
 §4.1.4.3 的 FLBA 語意。任何 Fabrics／Discovery 內容仍維持排除。
+
+第八份 Device Self-test／Namespace Management 報告登記 39 張 Figure allowlist，其中 19 張
+是理解命令、Identify 欄位、log 與 NVM payload 所需的 `referenced_dependency` slice。Base
+Figure 36／155／209／338／346／474 與 NVM Command Set Figure 123／127／132／133 只呈現
+核准範圍需要的欄位；§8.1.17.3 與所有 Fabrics／Discovery 內容仍維持排除。
 
 HTML 依 `ipad-html-profile.md` 建立 M1 iPad Pro 與 desktop 可直接閱讀的工程資訊設計。
 每個用途只產生一份 responsive HTML：iPad 採單欄、desktop 可放寬 Visual Atlas；不建立內容重複的

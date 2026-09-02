@@ -6417,7 +6417,7 @@ Figure 70 位於 §3.9，在本流程中是「identifier」檢查點。先由主
 | 縮寫／欄位 | 白話解釋 |
 |---|---|
 | `CSI1` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
-| `CSI` | Command Set Identifier，選擇與 log page 相關的 command set context。 |
+| `CSI` | Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。 |
 
 #### 照這個順序讀，不要直接跳到數值
 

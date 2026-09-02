@@ -6417,7 +6417,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 | Term | Plain-language meaning |
 |---|---|
 | `CSI1` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
-| `CSI` | Command Set Identifier, the command-set context associated with a log page. |
+| `CSI` | Command Set Identifier, selecting the I/O Command Set context for a command or log page. |
 
 #### Read in this order
 

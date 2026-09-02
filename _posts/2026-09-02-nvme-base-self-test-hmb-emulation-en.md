@@ -864,7 +864,7 @@ This is a structure or capability field table. Locate it using the structure bas
 
 **Source keyword index:** none
 
-> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.4.3, Figure 111, printed pages 76, PDF pages 76
+> Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, Figure 111, printed pages 76, PDF pages 76
 
 </details>
 
@@ -2965,7 +2965,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 | `NUMDL` | Number of Dwords Lower, the low 16 bits of Get Log Page NUMD. |
 | `RAE` | Retain Asynchronous Event, the Get Log Page selector controlling retention of a related asynchronous event. |
 | `LSP` | Log Specific Field, a command selector whose meaning is defined by the selected log page. |
-| `LID 06h` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
+| `LID 06h` | Identifier 06h for the Device Self-test Log Page, containing current operation state and twenty historical results. |
 
 #### Read in this order
 
@@ -3287,7 +3287,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 
 | Term | Plain-language meaning |
 |---|---|
-| `CSI` | Command Set Identifier, the command-set context associated with a log page. |
+| `CSI` | Command Set Identifier, selecting the I/O Command Set context for a command or log page. |
 | `OT` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
 | `UIDX` | UUID Index, an index into the UUID List; zero indicates that no UUID is specified. |
 
@@ -3369,7 +3369,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 
 | Term | Plain-language meaning |
 |---|---|
-| `LID 06h` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
+| `LID 06h` | Identifier 06h for the Device Self-test Log Page, containing current operation state and twenty historical results. |
 | `CSI = N` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
 | `Controller / Domain / NVM subsystem` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |
 | `Device Self-test` | A source field label in this Figure. Its bit range, value encoding, and conditions are read from the cited Figure before the value is used. |

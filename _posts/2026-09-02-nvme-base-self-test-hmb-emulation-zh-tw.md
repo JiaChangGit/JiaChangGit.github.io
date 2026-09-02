@@ -864,7 +864,7 @@ Figure 111 位於 §4.1.4.3，在本流程中是「layout」檢查點。先由�
 
 **來源 keyword 索引：** none
 
-> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.4.3, Figure 111, 文件頁 76, PDF 頁 76
+> 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, Figure 111, 文件頁 76, PDF 頁 76
 
 </details>
 
@@ -2965,7 +2965,7 @@ Figure 204 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 | `NUMDL` | Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。 |
 | `RAE` | Retain Asynchronous Event，Get Log Page 是否保留相關 asynchronous event 的 selector。 |
 | `LSP` | Log Specific Field，意義由所選 log page 定義的 command selector。 |
-| `LID 06h` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
+| `LID 06h` | Device Self-test Log Page 的 identifier 06h；同時包含 current operation 與 20 筆歷史結果。 |
 
 #### 照這個順序讀，不要直接跳到數值
 
@@ -3287,7 +3287,7 @@ Figure 208 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 
 | 縮寫／欄位 | 白話解釋 |
 |---|---|
-| `CSI` | Command Set Identifier，選擇與 log page 相關的 command set context。 |
+| `CSI` | Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。 |
 | `OT` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
 | `UIDX` | UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。 |
 
@@ -3369,7 +3369,7 @@ Figure 209 位於 §5.2.13，在本流程中是「identifier」檢查點。先�
 
 | 縮寫／欄位 | 白話解釋 |
 |---|---|
-| `LID 06h` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
+| `LID 06h` | Device Self-test Log Page 的 identifier 06h；同時包含 current operation 與 20 筆歷史結果。 |
 | `CSI = N` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
 | `Controller / Domain / NVM subsystem` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |
 | `Device Self-test` | 這是本 Figure 內的來源欄位名稱；使用前要回到引用 Figure 核對 bit range、編碼值與適用條件。 |

@@ -63,15 +63,15 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_seven_reports_and_twenty_eight_requested_artifacts(self):
+    def test_contract_has_eight_reports_and_thirty_two_requested_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 28)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 14)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 14)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 7)
+        self.assertEqual(len(artifacts), 32)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 16)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 16)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 8)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -82,6 +82,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 "basefwlog-bilingual",
                 "basepower-bilingual",
                 "basediagmem-bilingual",
+                "basensmgmt-bilingual",
             },
         )
 
@@ -227,6 +228,45 @@ class NvmeReportContractTest(unittest.TestCase):
             set(diagmem_scope["included_figure_ids"]),
         )
 
+        nsmgmt_report = [
+            item for item in register["entries"]
+            if item["report_id"] == "base-self-test-namespace-management"
+            and item["scope_status"] == "INCLUDE"
+        ]
+        nsmgmt_dependencies = [
+            item for item in nsmgmt_report if item.get("role") == "referenced_dependency"
+        ]
+        expected_nsmgmt_numbers = {
+            "36", "93", "111", "123", "127", "132", "133", "134", "139",
+            "155", "176", "177", "178", "179", "180", "203", "204", "205",
+            "206", "207", "208", "209", "218", "219", "304", "338", "346",
+            "442", "443", "444", "445", "446", "447", "448", "449", "450",
+            "474", "700", "701",
+        }
+        expected_nsmgmt_dependencies = {
+            "36", "93", "123", "127", "132", "133", "139", "155", "203",
+            "204", "205", "206", "207", "208", "209", "304", "338", "346",
+            "474",
+        }
+        self.assertEqual(len(nsmgmt_report), 39)
+        self.assertEqual({item["number"] for item in nsmgmt_report}, expected_nsmgmt_numbers)
+        self.assertEqual(
+            {item["number"] for item in nsmgmt_dependencies},
+            expected_nsmgmt_dependencies,
+        )
+        for number in ("36", "155", "209", "338", "346", "474", "123", "127", "132", "133"):
+            item = next(item for item in nsmgmt_report if item["number"] == number)
+            self.assertEqual(item["mode"], "dependency-slice")
+            self.assertTrue(item["scope_reduced"])
+        nsmgmt_scope = next(
+            item for item in scope["reports"]
+            if item["id"] == "base-self-test-namespace-management"
+        )
+        self.assertEqual(
+            {item["id"] for item in nsmgmt_report},
+            set(nsmgmt_scope["included_figure_ids"]),
+        )
+
     def test_selftest_hmb_report_has_exact_scope_and_numeric_teaching(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
@@ -247,6 +287,29 @@ class NvmeReportContractTest(unittest.TestCase):
                 "§4.1.4.4", "Figure 112", "§5.2.30.3", "§8.1.30",
             ):
                 self.assertNotIn(excluded, text)
+        self.assertEqual(len(texts), 4)
+        self.assertNotEqual(texts[0], texts[1])
+        self.assertEqual(
+            VALIDATOR.claim_id_sequence(texts[2]),
+            VALIDATOR.claim_id_sequence(texts[3]),
+        )
+
+    def test_selftest_namespace_report_has_exact_scope_and_numeric_teaching(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        texts = []
+        for artifact in contract["artifacts"]:
+            if artifact["report_id"] != "base-self-test-namespace-management":
+                continue
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            texts.append(text)
+            for required in (
+                "Mental Model", "Debug", "LID 06h", "008C0006h", "NSZE", "NCAP",
+                "NUSE", "THINP", "NVMSETID", "ENDGID", "Controller List", "DNCS",
+                "NVM Express NVM Command Set Specification, Revision 1.3",
+            ):
+                self.assertIn(required.lower(), text.lower())
         self.assertEqual(len(texts), 4)
         self.assertNotEqual(texts[0], texts[1])
         self.assertEqual(
@@ -340,7 +403,7 @@ class NvmeReportContractTest(unittest.TestCase):
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         html_artifacts = [item for item in contract["artifacts"] if item["format"] == "html"]
-        self.assertEqual(len(html_artifacts), 14)
+        self.assertEqual(len(html_artifacts), 16)
         for artifact in html_artifacts:
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             with self.subTest(artifact=artifact["id"]):
@@ -424,6 +487,8 @@ class NvmeReportContractTest(unittest.TestCase):
             "basepower-en-md": "posts/2026/cat_title.jpg",
             "basediagmem-zh-md": "posts/2026/dogMC_title.jpg",
             "basediagmem-en-md": "posts/2026/cat_title.jpg",
+            "basensmgmt-zh-md": "posts/2026/dogMC_title.jpg",
+            "basensmgmt-en-md": "posts/2026/cat_title.jpg",
         }
         for artifact in contract["artifacts"]:
             if artifact["format"] != "markdown":
@@ -540,6 +605,8 @@ class NvmeReportContractTest(unittest.TestCase):
             "basepower-zh-md": 50000, "basepower-en-md": 70000,
             "basediagmem-tutorial-html": 50000, "basediagmem-detailed-html": 55000,
             "basediagmem-zh-md": 60000, "basediagmem-en-md": 65000,
+            "basensmgmt-tutorial-html": 70000, "basensmgmt-detailed-html": 70000,
+            "basensmgmt-zh-md": 80000, "basensmgmt-en-md": 130000,
         }
 
         class VisibleText(HTMLParser):
@@ -592,6 +659,7 @@ class NvmeReportContractTest(unittest.TestCase):
             ("_posts/2026-08-28-nvme-pcie-transport-1-4-zh-tw.md", "_posts/2026-08-28-nvme-pcie-transport-1-4-en.md"),
             ("_posts/2026-09-02-nvme-base-power-thermal-features-zh-tw.md", "_posts/2026-09-02-nvme-base-power-thermal-features-en.md"),
             ("_posts/2026-09-02-nvme-base-self-test-hmb-emulation-zh-tw.md", "_posts/2026-09-02-nvme-base-self-test-hmb-emulation-en.md"),
+            ("_posts/2026-09-02-nvme-base-self-test-namespace-management-zh-tw.md", "_posts/2026-09-02-nvme-base-self-test-namespace-management-en.md"),
         ]
         for zh_path, en_path in pairs:
             zh = (ROOT / zh_path).read_text(encoding="utf-8")
@@ -604,6 +672,15 @@ class NvmeReportContractTest(unittest.TestCase):
                 re.findall(r"figure-table:([A-Z0-9-]+)", zh),
                 re.findall(r"figure-table:([A-Z0-9-]+)", en),
             )
+
+    def test_post_excerpt_is_plain_text_before_truncation(self):
+        layout = (ROOT / "_layouts/post.html").read_text(encoding="utf-8")
+        excerpt_line = next(
+            line for line in layout.splitlines() if "page.content | markdownify" in line
+        )
+        self.assertLess(excerpt_line.index("strip_html"), excerpt_line.index("truncatewords"))
+        self.assertIn("normalize_whitespace", excerpt_line)
+        self.assertTrue(excerpt_line.index("escape") > excerpt_line.index("truncatewords"))
 
     def test_publish_contract_passes_after_claims_and_outputs_are_built(self):
         result = subprocess.run(

@@ -11135,6 +11135,1694 @@
       ],
       "source_keywords": [],
       "evidence_digest": "aa4dc39548eb6a7634cab6f03f2bf7a0998ace4001de950e517f4f98952d8b07"
+    },
+    {
+      "id": "BASENSMGMT-FIG-036",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "36",
+      "title": "Offset 0h: CAP - Controller Capabilities",
+      "section": "3.1.4.1",
+      "printed_pages": "55-58",
+      "pdf_pages": "81-84",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.25.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 restore default 所需的 active I/O Command Set context。",
+        "en": "Use only the active-I/O-Command-Set context needed by restore default."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "CSS",
+        "active I/O Command Set"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "232faae6b72aeb960edcd68bc90f40b267e55e98b70898e5a9c28c84d8d15465"
+    },
+    {
+      "id": "BASENSMGMT-FIG-093",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.6",
+        "5.2.24",
+        "5.2.25",
+        "8.1.17"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Self-test／Namespace commands 共用的 NSID、DPTR 與 command dwords。",
+        "en": "Use only NSID, DPTR, and command dwords shared by Self-test and Namespace commands."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "OPC",
+        "NSID",
+        "DPTR",
+        "CDW10-CDW15"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "25b9363a3436d52757f8c7bd52607c92508ec2053fcb58197c5d5b863884c339"
+    },
+    {
+      "id": "BASENSMGMT-FIG-139",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "139",
+      "title": "Controller List Format",
+      "section": "4.6.1",
+      "printed_pages": "172",
+      "pdf_pages": "198",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.24"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Namespace Attachment 使用的 4096-byte Controller List。",
+        "en": "Use only the 4096-byte Controller List consumed by Namespace Attachment."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NUMCIDS",
+        "Controller Identifier list",
+        "4096 bytes"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "b6aeafa5b47dcc031aea5eac9fd4cd6d96d7b0d89d8e907666a0caef472d8628"
+    },
+    {
+      "id": "BASENSMGMT-FIG-155",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "155",
+      "title": "Asynchronous Event Information - Notice",
+      "section": "5.2.2.1",
+      "printed_pages": "186",
+      "pdf_pages": "212",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.17",
+        "8.1.17.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Attached／Allocated Namespace Attribute Changed notices。",
+        "en": "Use only Attached/Allocated Namespace Attribute Changed notices."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "Attached Namespace Attribute Changed",
+        "Allocated Namespace Attribute Changed",
+        "CNS 02h",
+        "CNS 10h"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "e5be12574b55bf64c36737aa9cdf76b30af811f2921d7b03a709a5f50ae2a81d"
+    },
+    {
+      "id": "BASENSMGMT-FIG-176",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "176",
+      "title": "Device Self-test Namespace Test Action",
+      "section": "5.2.6",
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NSID 00000000h",
+        "active NSID",
+        "NSID FFFFFFFFh"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASENSMGMT-FIG-177",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "177",
+      "title": "Device Self-test - Command Dword 10",
+      "section": "5.2.6",
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "STC 1h",
+        "STC 2h",
+        "STC 3h",
+        "STC Eh",
+        "STC Fh"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "004339cad9364e0239c74b7ea3e7bc44a1dab6f0a7f77fb3b3494bff08d56da6"
+    },
+    {
+      "id": "BASENSMGMT-FIG-178",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "178",
+      "title": "Device Self-test - Command Dword 15",
+      "section": "5.2.6",
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DSTP"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "2ad287ef8aad9bab5c1da89f0e70d4c91149b74c40890162f056a406ed4ffa99"
+    },
+    {
+      "id": "BASENSMGMT-FIG-179",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "179",
+      "title": "Device Self-test - Command Processing",
+      "section": "5.2.6",
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "self-test in progress",
+        "abort",
+        "result creation"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "BASENSMGMT-FIG-180",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "180",
+      "title": "Device Self-test - Command Specific Status Values",
+      "section": "5.2.6",
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "Device Self-test in Progress",
+        "status 1Dh"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6d4bc3642b37ee9f5b29a7edc462cc5759f077155fd237b45fbbb45986e1196c"
+    },
+    {
+      "id": "BASENSMGMT-FIG-203",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page - Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h destination buffer。",
+        "en": "Use only the LID 06h destination buffer."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "LID 06h destination buffer"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "9f812461ced24765733536a48df25cf21f14933a69fb63fbb3b117922c356840"
+    },
+    {
+      "id": "BASENSMGMT-FIG-204",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page - Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h 的 LID／NUMDL／RAE／LSP。",
+        "en": "Use only LID/NUMDL/RAE/LSP for LID 06h."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID 06h"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "4989c9738a6cdc6358b35d182434f3d0c8236a451b47446729313978f93d74a8"
+    },
+    {
+      "id": "BASENSMGMT-FIG-205",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page - Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h 的 NUMDU 與 LSI=0。",
+        "en": "Use only NUMDU and LSI zero for LID 06h."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "LSI",
+        "NUMDU"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "16f1ce386246a3298152c89bf9ec856be1730417110de64fa390cb3c89f2d6a8"
+    },
+    {
+      "id": "BASENSMGMT-FIG-206",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page - Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取完整讀取的 LPOL=0 與 OT=0。",
+        "en": "Use only LPOL zero and OT zero for a complete read."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "LPOL",
+        "OT"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "778ad76bf4dec5aec029c36e1e9c17f0b123dcaa8376370d2c6bb7c96c3c6a69"
+    },
+    {
+      "id": "BASENSMGMT-FIG-207",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page - Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取完整讀取的 LPOU=0。",
+        "en": "Use only LPOU zero for a complete read."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "LPOU"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "983ad5b20d224f9e0aa82afbe3d22ea2cfc043f3257e1f5ced8c73afba86856f"
+    },
+    {
+      "id": "BASENSMGMT-FIG-208",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page - Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h 未使用的 CSI／UIDX 與 OT=0。",
+        "en": "Use only unused CSI/UIDX and OT zero for LID 06h."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "CSI",
+        "OT",
+        "UIDX"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "4a8c40ec366a80c1955fb1a2560a88a04677f281f02dc6c57135733af54de0c7"
+    },
+    {
+      "id": "BASENSMGMT-FIG-209",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page - Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-216",
+      "pdf_pages": "241-242",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.7"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 LID 06h row，不列其他 log page。",
+        "en": "Use only the LID 06h row; do not enumerate other log pages."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "LID 06h",
+        "CSI = N",
+        "Controller / Domain / NVM subsystem",
+        "Device Self-test"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "4d32050785c1435a6e9ed069e53a7502142e2ba440bf2c676f3a7e70cc09ddfd"
+    },
+    {
+      "id": "BASENSMGMT-FIG-218",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "218",
+      "title": "Device Self-test Log Page",
+      "section": "5.2.13.1.7",
+      "printed_pages": "230",
+      "pdf_pages": "256",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DSTOS",
+        "DSTCS",
+        "RDS1-RDS20",
+        "564 bytes"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "604732478aadaad283532efa13c89b5cbfa2ef1be237794f41a83ab372e4b9aa"
+    },
+    {
+      "id": "BASENSMGMT-FIG-219",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "219",
+      "title": "Self-test Result Data Structure",
+      "section": "5.2.13.1.7",
+      "printed_pages": "231-232",
+      "pdf_pages": "257-258",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DSTC",
+        "DSTR",
+        "SEGN",
+        "VDINFO",
+        "NSID",
+        "FLBA",
+        "STCT",
+        "STC"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ce3852e7d9bc74ed5f4b9114bfb90fbb5e66c6f984bb5bdd9f2f798eb584bc05"
+    },
+    {
+      "id": "BASENSMGMT-FIG-304",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "304",
+      "title": "Manufacturer Default Configuration Status Log Page",
+      "section": "5.2.13.1.31",
+      "printed_pages": "301-302",
+      "pdf_pages": "327-328",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.25.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 restore default 後的 DNCS observation。",
+        "en": "Use only DNCS observation after restore default."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DNCS",
+        "default namespace configuration status"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "9fd8d64747f02daacdf85ddce946417322fe9edf4614d209a353b5fbcf8b61f3"
+    },
+    {
+      "id": "BASENSMGMT-FIG-338",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify Controller Data Structure",
+      "section": "5.2.14.2.1",
+      "printed_pages": "340, 353, 365, 378",
+      "pdf_pages": "366, 379, 391, 404",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.6",
+        "5.2.24",
+        "5.2.25.1",
+        "8.1.17"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Self-test 與 Namespace Management capability／limit fields。",
+        "en": "Use only Self-test and Namespace Management capability/limit fields."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "OACS.DSTS",
+        "EDSTT",
+        "DSTO.SDSO",
+        "OACS.NMS",
+        "RDNCS",
+        "MAXDNA",
+        "MAXCNA"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43"
+    },
+    {
+      "id": "BASENSMGMT-FIG-346",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "346",
+      "title": "Identify - I/O Command Set Independent Identify Namespace Data Structure",
+      "section": "5.2.14.2.3",
+      "printed_pages": "391-394",
+      "pdf_pages": "417-420",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.17"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 create／identify 會用到的 namespace group identifiers。",
+        "en": "Use only namespace group identifiers used by create/identify."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "ANAGRPID",
+        "NVMSETID",
+        "ENDGID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "6991568fa65eaf4528909afd3246dbb7c1e7bb840e432ed705322661ddac71c5"
+    },
+    {
+      "id": "BASENSMGMT-FIG-442",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "442",
+      "title": "Namespace Attachment - Data Pointer",
+      "section": "5.2.24",
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "Controller List",
+        "one page boundary"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4744e2e710cefbd3b06dc65c458c93525f6aedf5a170cf5e178c5dab0b595893"
+    },
+    {
+      "id": "BASENSMGMT-FIG-443",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "443",
+      "title": "Namespace Attachment - Command Dword 10",
+      "section": "5.2.24",
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "SEL 0h Attach",
+        "SEL 1h Detach"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "0139a33ad8d9d678e2ab075683065c021f523468d4dd4be7035c4c6504187828"
+    },
+    {
+      "id": "BASENSMGMT-FIG-444",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "444",
+      "title": "Namespace Attachment - Command Specific Status Values",
+      "section": "5.2.24",
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "status 18h-1Ch",
+        "status 25h",
+        "status 27h",
+        "status 29h-2Ah"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "dc1bb2e957296a4bc09e9b2e442240d0be44aa784b614bd1f50bbe52dc221b0b"
+    },
+    {
+      "id": "BASENSMGMT-FIG-445",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "445",
+      "title": "Namespace Management - Data Pointer",
+      "section": "5.2.25",
+      "printed_pages": "446",
+      "pdf_pages": "472",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "DPTR",
+        "4096-byte create buffer"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4744e2e710cefbd3b06dc65c458c93525f6aedf5a170cf5e178c5dab0b595893"
+    },
+    {
+      "id": "BASENSMGMT-FIG-446",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "446",
+      "title": "Namespace Management - Command Dword 10",
+      "section": "5.2.25",
+      "printed_pages": "446-447",
+      "pdf_pages": "472-473",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "SEL 0h Create",
+        "SEL 1h Delete",
+        "SEL 2h Restore"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "d3ba4543866bdcc28325aaa1a455abc4da5afe2630f75e3713d969b31753a0e2"
+    },
+    {
+      "id": "BASENSMGMT-FIG-447",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "447",
+      "title": "Namespace Management - Command Dword 11",
+      "section": "5.2.25",
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "CSI",
+        "NVM Command Set 00h"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "8b9c7aa3479c1a0bbbaa86b2d8199c3c81a9ca0a8fdf8a7c44510bede5a28690"
+    },
+    {
+      "id": "BASENSMGMT-FIG-448",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "448",
+      "title": "Namespace Management - Data Structure for Create",
+      "section": "5.2.25",
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "SIOCS bytes 0:511",
+        "reserved bytes 512:1023",
+        "VS bytes 1024:4095"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "4b0c094416be97e520ae158965d3c1304f322d55e5413562992f06d05285350a"
+    },
+    {
+      "id": "BASENSMGMT-FIG-449",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "449",
+      "title": "Namespace Management - Command Specific Status Values",
+      "section": "5.2.25",
+      "printed_pages": "448",
+      "pdf_pages": "474",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "Invalid Format",
+        "Insufficient Capacity",
+        "NSID Unavailable",
+        "Thin Provisioning Not Supported"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "8fe741ebe9d434f692ed19db74b6803275f3665365065e7d75aeb827d2af95a5"
+    },
+    {
+      "id": "BASENSMGMT-FIG-450",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "450",
+      "title": "Namespace Management - Completion Queue Entry Dword 0",
+      "section": "5.2.25",
+      "printed_pages": "448",
+      "pdf_pages": "474",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "CQE DW0",
+        "created NSID"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "9e78390d22ad0bf7d565ef4cb04ad15eeb8c00ecd92c6b0a5ab5e547c7c02526"
+    },
+    {
+      "id": "BASENSMGMT-FIG-474",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "474",
+      "title": "Asynchronous Event Configuration - Command Dword 11",
+      "section": "5.2.30.1.6",
+      "printed_pages": "466-468",
+      "pdf_pages": "492-494",
+      "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.17.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 attached／allocated namespace notice enable bits。",
+        "en": "Use only attached/allocated namespace notice-enable bits."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "Attached Namespace Attribute Notices",
+        "Allocated Namespace Attribute Notices"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "e42bb6d6e74bbf241f3803d4821ca01dcae8227e7e09d7387c3bbd43f26e0398"
+    },
+    {
+      "id": "BASENSMGMT-FIG-700",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "700",
+      "title": "Example Device Self-test Operation (Informative)",
+      "section": "8.1.8",
+      "printed_pages": "615",
+      "pdf_pages": "641",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "segment",
+        "test performed",
+        "failure criteria",
+        "informative"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "96b060473c88269eb665a4fb7d80720b026be46ad25f9d50e07a2a5c77412fcc"
+    },
+    {
+      "id": "BASENSMGMT-FIG-701",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "701",
+      "title": "Format NVM command Aborting a Device Self-Test Operation",
+      "section": "8.1.8.1-8.1.8.2",
+      "printed_pages": "616",
+      "pdf_pages": "642",
+      "scope_entry_id": "BASE-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "SES",
+        "FNS",
+        "SENS",
+        "Format NSID",
+        "Self-test NSID",
+        "abort decision"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional"
+      ],
+      "evidence_digest": "c6a520f05cd5f8a6939e379628b1893d4d22805b474d6f508db35a53b5c19861"
+    },
+    {
+      "id": "BASENSMGMT-FIG-111",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "111",
+      "title": "Self-test Results Data Structure",
+      "section": "4.1.4.3",
+      "printed_pages": "76",
+      "pdf_pages": "76",
+      "scope_entry_id": "NVMCS-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "FLBA",
+        "bytes 23:16",
+        "FVLD",
+        "one failed logical block"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "aa4dc39548eb6a7634cab6f03f2bf7a0998ace4001de950e517f4f98952d8b07"
+    },
+    {
+      "id": "BASENSMGMT-FIG-123",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "123",
+      "title": "Identify - Identify Namespace Data Structure, NVM Command Set",
+      "section": "4.1.5.1",
+      "printed_pages": "85-87",
+      "pdf_pages": "85-87",
+      "scope_entry_id": "NVMCS-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "2.1.1",
+        "4.1.6"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取容量、格式與 sharing／protection 欄位。",
+        "en": "Use only capacity, format, sharing, and protection fields."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NSZE",
+        "NCAP",
+        "NUSE",
+        "NSFEAT.THINP",
+        "FLBAS",
+        "DPS",
+        "NMIC"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "f61808fd36ea2dccb627dea5a07822c436555526d8a113f5dfd4cf5960975857"
+    },
+    {
+      "id": "BASENSMGMT-FIG-127",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "127",
+      "title": "NVM Command Set I/O Command Set Specific Identify Namespace Data Structure",
+      "section": "4.1.5.3",
+      "printed_pages": "97-101",
+      "pdf_pages": "97-101",
+      "scope_entry_id": "NVMCS-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "4.1.6.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 §4.1.6.2 直接引用的 LBSTM mask capability。",
+        "en": "Use only LBSTM mask capability directly referenced by §4.1.6.2."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "LBSTM",
+        "Storage Tag Masking Level",
+        "LBAFEE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "668099bf02e1ed65879c78f14063a315f0220e4305fb7de533ce30d78eaa2624"
+    },
+    {
+      "id": "BASENSMGMT-FIG-132",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "132",
+      "title": "Namespace Granularity List",
+      "section": "4.1.5.8",
+      "printed_pages": "108",
+      "pdf_pages": "108",
+      "scope_entry_id": "NVMCS-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.8"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 CNS 16h list header 與 descriptor mapping。",
+        "en": "Use only the CNS 16h list header and descriptor mapping."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NGA.GDM",
+        "ND",
+        "NGD0-NGD63",
+        "CNS 16h"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "29ff649003a34bcdbdcc12e987acc860731df53746e94466cdcb3b9f8cef4928"
+    },
+    {
+      "id": "BASENSMGMT-FIG-133",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "133",
+      "title": "Namespace Granularity Descriptor",
+      "section": "4.1.5.8",
+      "printed_pages": "108",
+      "pdf_pages": "108",
+      "scope_entry_id": "NVMCS-NSMGMT-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.8"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 NSG／NCG byte-unit hints。",
+        "en": "Use only NSG/NCG byte-unit hints."
+      },
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NSG bytes 7:0",
+        "NCG bytes 15:8",
+        "byte units"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2d4ff15a4c49d8f0ffd70626c2b5348325e830839be092a811e96e2f5ef9e623"
+    },
+    {
+      "id": "BASENSMGMT-FIG-134",
+      "report_id": "base-self-test-namespace-management",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "134",
+      "title": "Namespace Management - Host Specified Fields",
+      "section": "4.1.6.4",
+      "printed_pages": "112-113",
+      "pdf_pages": "112-113",
+      "scope_entry_id": "NVMCS-NSMGMT-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "introduced_in": [
+        "basensmgmt-tutorial-html",
+        "basensmgmt-detailed-html",
+        "basensmgmt-zh-md",
+        "basensmgmt-en-md"
+      ],
+      "key_items": [
+        "NSZE",
+        "NCAP",
+        "FLBAS",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID",
+        "ENDGID",
+        "LBSTM",
+        "NPHNDLS",
+        "Placement Handle List"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c850eeedd5a4fe45d32d7037b0d3a2e6ccecbe88b89a4b14455215ca6e6b6aec"
     }
   ]
 }

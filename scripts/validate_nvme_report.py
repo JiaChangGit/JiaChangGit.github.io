@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 七份報告、二十八個版本、來源定位與離線 HTML 契約。"""
+"""驗證 NVMe 八份報告、三十二個版本、來源定位與離線 HTML 契約。"""
 
 from __future__ import annotations
 
@@ -257,12 +257,12 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 28 or formats.count("html") != 14 or formats.count("markdown") != 14:
-        errors.append("輸出契約必須固定為十四份 HTML 與十四份 Markdown")
+    if len(artifacts) != 32 or formats.count("html") != 16 or formats.count("markdown") != 16:
+        errors.append("輸出契約必須固定為十六份 HTML 與十六份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 7 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的七份報告")
+    if len(report_ids) != 8 or artifact_report_ids != report_ids:
+        errors.append("輸出契約必須完整對應 scope.json 的八份報告")
     artifact_ids = [item.get("id") for item in artifacts]
     if len(artifact_ids) != len(set(artifact_ids)):
         errors.append("artifact ID 不得重複")
@@ -424,6 +424,16 @@ def validate_publish() -> list[str]:
                 if required not in searchable_text:
                     errors.append(f"{artifact['path']} 缺少 self-test/HMB 教學結構：{required}")
 
+        if artifact.get("report_id") == "base-self-test-namespace-management":
+            for required in (
+                "Mental Model", "008C0006h", "NSZE", "NUSE", "NVMSETID",
+                "Controller List", "DNCS", "Debug",
+            ):
+                if required not in searchable_text:
+                    errors.append(
+                        f"{artifact['path']} 缺少 self-test/namespace 教學結構：{required}"
+                    )
+
         expected_figures = [
             item
             for item in included_figures_by_report.get(artifact.get("report_id", ""), [])
@@ -567,11 +577,26 @@ def validate_publish() -> list[str]:
             and item.get("scope_entry_id") != "BASE-DIAGMEM-DEPENDENCY-INCLUDE"
         ):
             errors.append(f"Figure/Table {item['id']} 未對應第七份報告的相依範圍")
+        if item.get("report_id") == "base-self-test-namespace-management" and item.get("role") == "referenced_dependency":
+            expected_scope = (
+                "NVMCS-NSMGMT-DEPENDENCY-INCLUDE"
+                if item.get("source_id") == "NVME-NVM-CS-1.3"
+                else "BASE-NSMGMT-DEPENDENCY-INCLUDE"
+            )
+            if item.get("scope_entry_id") != expected_scope:
+                errors.append(f"Figure/Table {item['id']} 未對應第八份報告的相依範圍")
         if item.get("id") == "BASEFWLOG-FIG-209" and item.get("mode") != "scope-reduced":
             errors.append("BASEFWLOG-FIG-209 必須標示為 scope-reduced")
         if item.get("id") in {"BASEPOWER-FIG-200", "BASEPOWER-FIG-466", "BASEPOWER-FIG-468"} and item.get("mode") != "scope-reduced":
             errors.append(f"{item['id']} 必須標示為 scope-reduced")
         if item.get("id") in {"BASEDIAGMEM-FIG-200", "BASEDIAGMEM-FIG-209", "BASEDIAGMEM-FIG-338", "BASEDIAGMEM-FIG-466"} and not item.get("scope_reduced"):
+            errors.append(f"{item['id']} 必須標示 scope_reduced")
+        if item.get("id") in {
+            "BASENSMGMT-FIG-036", "BASENSMGMT-FIG-155", "BASENSMGMT-FIG-209",
+            "BASENSMGMT-FIG-338", "BASENSMGMT-FIG-346", "BASENSMGMT-FIG-474",
+            "BASENSMGMT-FIG-123", "BASENSMGMT-FIG-127", "BASENSMGMT-FIG-132",
+            "BASENSMGMT-FIG-133",
+        } and not item.get("scope_reduced"):
             errors.append(f"{item['id']} 必須標示 scope_reduced")
         if not isinstance(item.get("key_items"), list) or not item.get("key_items"):
             errors.append(f"Figure/Table {item['id']} 缺少來源欄位索引")
