@@ -1400,6 +1400,12 @@ KIND_TEXT = {
 
 
 def expanded_figure_guide(figure: dict, language: str) -> dict:
+    if figure.get('report_id') == 'nvm-command-set-1.3':
+        try:
+            from scripts.nvme_nvmcs_figures import expanded_guide
+        except ModuleNotFoundError:
+            from nvme_nvmcs_figures import expanded_guide
+        return expanded_guide(figure, language)
     if figure.get("report_id") == "base-boot-telemetry-sanitize":
         try:
             from scripts.nvme_bts_figures import expanded_guide

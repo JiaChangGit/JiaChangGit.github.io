@@ -10,6 +10,13 @@ import re
 from pathlib import Path
 
 try:
+    from scripts.nvme_nvm_command_set import install as install_nvmcs
+    from scripts.nvme_nvmcs_figures import guide_for as nvmcs_figure_guide
+except ModuleNotFoundError:
+    from nvme_nvm_command_set import install as install_nvmcs
+    from nvme_nvmcs_figures import guide_for as nvmcs_figure_guide
+
+try:
     from scripts.nvme_boot_telemetry_sanitize import install as install_bts
     from scripts.nvme_bts_figures import guide_for as bts_figure_guide
     from scripts.nvme_report_questions import render_questions
@@ -657,6 +664,7 @@ REPORTS = {
 }
 
 POST_IMAGES = {
+    "nvm-command-set-1.3": {"zh": "posts/2026/dogMC_title.jpg", "en": "posts/2026/cat_title.jpg"},
     "base-boot-telemetry-sanitize": {
         "zh": "posts/2026/dogMC_title.jpg",
         "en": "posts/2026/cat_title.jpg",
@@ -876,6 +884,7 @@ CORE_TITLES = {
 }
 
 install_bts(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES)
+install_nvmcs(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES)
 
 
 def artifact_ids(report_id: str) -> list[str]:
@@ -888,6 +897,7 @@ def artifact_ids(report_id: str) -> list[str]:
         "base-self-test-hmb-emulation": "basediagmem",
         "base-self-test-namespace-management": "basensmgmt",
         "base-boot-telemetry-sanitize": "basebts",
+        "nvm-command-set-1.3": "nvmcs13",
         "pcie-transport-1.4": "pcie14",
     }[report_id]
     return [
@@ -916,9 +926,9 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
 def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     """Return a source-specific, non-verbatim guide for one Figure."""
 
-    if figure.get("report_id") == "base-boot-telemetry-sanitize":
+    if figure.get("report_id") in {"base-boot-telemetry-sanitize", "nvm-command-set-1.3"}:
         return {
-            "purpose": bts_figure_guide(figure, language),
+            "purpose": (nvmcs_figure_guide if figure['report_id'] == 'nvm-command-set-1.3' else bts_figure_guide)(figure, language),
             "reading": "Decode the source-specific fields below." if language == "en" else "依下列來源欄位逐項解碼。",
             "example": "Apply the worked example in the linked teaching module." if language == "en" else "套用相應教學單元的具體案例。",
             "caveat": "Preserve target, state, and applicability; the original cross-reference is retained when suspected to be misplaced." if language == "en" else "保留 target、state 與適用條件；疑似錯置的原引用仍保留供核對。",
@@ -1609,6 +1619,7 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
         "base-self-test-hmb-emulation": "先判斷目前處理的是 background operation、host-memory ownership，或 encoded memory boundary。",
         "base-self-test-namespace-management": "先判斷目前處理的是 diagnostic operation、namespace object state，或 controller access relationship。",
         "base-boot-telemetry-sanitize": "先確認 Boot、Telemetry 或 Sanitize 的 target/state，再核對能力、命令與回傳證據。",
+        "nvm-command-set-1.3": "先辨識 namespace 與 LBA format，再核對 command、capability、單位與完成證據。",
         "pcie-transport-1.4": "先找 Base 的通用規則，再疊加 PCIe Transport 的專屬限制。",
     }[report_id]
 
@@ -1641,6 +1652,8 @@ def anchor(value: str) -> str:
 
 
 def module_flow_svg(module: dict, language: str) -> str:
+    if module['id'].startswith('nvmcs-'):
+        return bts_module_svg(module, language)
     if module["id"] in {"boot-read", "boot-protection", "telemetry-layout", "telemetry-capture", "sanitize-scope", "sanitize-command", "sanitize-state", "sanitize-read"}:
         return bts_module_svg(module, language) + (bts_state_table() if module["id"] == "sanitize-state" else "")
     nodes = module["nodes"][language]
@@ -1794,6 +1807,8 @@ def module_visual_kind(module_id: str) -> str:
 
 
 def module_visual_svg(module: dict, language: str) -> str:
+    if module['id'].startswith('nvmcs-'):
+        return bts_module_svg(module, language)
     if module["id"] in {"boot-read", "boot-protection", "telemetry-layout", "telemetry-capture", "sanitize-scope", "sanitize-command", "sanitize-state", "sanitize-read"}:
         return bts_module_svg(module, language) + (bts_state_table() if module["id"] == "sanitize-state" else "")
     """Return a relationship-specific view with routed connectors and semantic roles."""
@@ -2028,6 +2043,14 @@ def generic_toc_html(report_id: str, tutorial: bool) -> str:
 
 
 def figure_teaching_svg(figure: dict, guide: dict, language: str) -> str:
+    if figure['report_id'] == 'nvm-command-set-1.3':
+        try:
+            from scripts.nvme_nvmcs_visuals import diagram
+        except ModuleNotFoundError:
+            from nvme_nvmcs_visuals import diagram
+        original = diagram(figure, language)
+        if original:
+            return original
     if figure["id"] == "BASEBTS-BASE-FIG-772":
         return bts_state_svg() + bts_state_table()
     terms = [item[0] for item in guide["terms"]][:4]
@@ -2707,6 +2730,8 @@ def modules_markdown(report_id: str, claims: list[dict], language: str) -> list[
 
 
 def module_visual_text(module: dict, language: str) -> list[str]:
+    if module['id'].startswith('nvmcs-'):
+        return [f'{i+1}. {node}' for i, node in enumerate(module['nodes'][language])]
     if module["id"] == "sanitize-state":
         return [" | ".join(row) for row in BTS_TRANSITIONS]
     if module["id"].startswith(("boot-", "telemetry-", "sanitize-")):
@@ -2881,7 +2906,8 @@ def frontmatter(
     lang = "en" if language == "en" else "zh-Hant-TW"
     image = POST_IMAGES[report_id][language]
     report_date = REPORTS[report_id].get("date", "2026-08-28")
-    permalink = f"permalink: /nvme/boot-telemetry-sanitize-{'en' if language == 'en' else 'zh-tw'}/\n" if report_id == "base-boot-telemetry-sanitize" else ""
+    slugs = {'base-boot-telemetry-sanitize': 'boot-telemetry-sanitize', 'nvm-command-set-1.3': 'nvm-command-set-1-3'}
+    permalink = f"permalink: /nvme/{slugs[report_id]}-{'en' if language == 'en' else 'zh-tw'}/\n" if report_id in slugs else ""
     return f"""---
 {permalink}layout: post
 read_time: true

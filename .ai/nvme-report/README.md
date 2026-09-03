@@ -1,15 +1,15 @@
 # NVMe 報告控制資料
 
-此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 36 個輸出的契約。
+此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 40 個輸出的契約。
 它不保存 PDF 原文。一般重建只讀取此目錄中的追蹤資料，不需要 PDF，也不會把規格原文
 帶進 GitHub Pages。
 
 ## 唯一資料來源與重建流程
 
-- `scope.json`：九份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
+- `scope.json`：十份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
 - `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。報告若在 `scope.json` 宣告 `included_figure_ids`，該 allowlist 是實際發布集合；清冊中其他舊證據列只供追溯，不得出現在輸出。
 - `claims.json`：由產生器重建；不手動維護。
-- `output-contract.json`：36 個輸出路徑與格式要求。
+- `output-contract.json`：40 個輸出路徑與格式要求。
 
 一般內容更新後，依序執行：
 
@@ -40,8 +40,8 @@ python3 -B scripts/build_nvme_reports.py
 
 ## 執行階段
 
-1. `setup`：驗證來源登記、九份報告、36 個輸出路徑與規則骨架。
-2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、36 個輸出存在且通過檢查。
+1. `setup`：驗證來源登記、十份報告、40 個輸出路徑與規則骨架。
+2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、40 個輸出存在且通過檢查。
 3. `auto`：`scope.json` 的 `production_status` 為 `ready_for_publish` 時執行
    `publish`，否則執行 `setup`。
 
@@ -122,3 +122,13 @@ controller、capsule 或 NQN 等本輪排除主題，也不得留下「待補」
 `scripts/nvme_boot_telemetry_sanitize.py` 與 `scripts/nvme_bts_*.py`。全系列問答
 由 `scripts/nvme_report_questions.py` 產生並驗證。完整範圍、雙語修正、來源查核及
 重建步驟見 [2026-09-03 查核記錄](../../docs/nvme-bilingual-review-2026-09-03.md)。
+
+第十份獨立 NVM Command Set 1.3 報告的雙語內容與逐圖教材位於
+`scripts/nvme_nvm_command_set.py`、`scripts/nvme_nvmcs_figures.py`。包含 memory-based
+§5.4 範本，Figure 189 移除 NQN 欄位；本機 LBA Migration Queue 亦保留。來源查核：
+
+```text
+python3 -B scripts/verify_nvme_bts_sources.py --source-dir <PDF 所在目錄> --report-id nvm-command-set-1.3
+```
+
+新增範圍與查核記錄見 [NVM Command Set review](../../docs/nvme-nvm-command-set-1-3-review-2026-09-03.md)。

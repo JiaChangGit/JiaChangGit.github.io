@@ -1,5 +1,7 @@
 ## NVMe reports / 規格教學
 
+[NVM Command Set 1.3 獨立報告：中文](https://jiachanggit.github.io/nvme/nvm-command-set-1-3-zh-tw/) · [English](https://jiachanggit.github.io/nvme/nvm-command-set-1-3-en/) · [範圍與查核](docs/nvme-nvm-command-set-1-3-review-2026-09-03.md)
+
 [9 份報告與中英文問答索引](docs/nvme-bilingual-review-2026-09-03.md) · [Boot／Telemetry／Sanitize 中文](https://jiachanggit.github.io/nvme/boot-telemetry-sanitize-zh-tw/) · [English](https://jiachanggit.github.io/nvme/boot-telemetry-sanitize-en/)
 
 demo site now [mirrored](https://weathered-bread-8229.on.fleek.co/) in [IPFS](https://github.com/ipfs/ipfs#quick-summary)!

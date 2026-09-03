@@ -14,11 +14,14 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--source-dir', required=True, type=Path)
     parser.add_argument('--refresh', action='store_true', help='Refresh digests for the complete registered page ranges')
+    parser.add_argument('--report-id', default='base-boot-telemetry-sanitize', help='Report whose registered source pages are checked')
     args = parser.parse_args()
     control = ROOT / '.ai/nvme-report'
     sources = json.loads((control/'source-register.json').read_text())['sources']
     register = json.loads((control/'figure-table-register.json').read_text())
-    figures = [f for f in register['entries'] if f['report_id']=='base-boot-telemetry-sanitize']
+    figures = [f for f in register['entries'] if f['report_id']==args.report_id]
+    if not figures:
+        raise ValueError(f'No figures registered for {args.report_id}')
     pages = {}
     for source in sources:
         if source['id'] not in {f['source_id'] for f in figures}:
@@ -43,7 +46,7 @@ def main():
             raise ValueError(f"Caption missing: {figure['id']}")
     if args.refresh:
         (control/'figure-table-register.json').write_text(json.dumps(register, ensure_ascii=False, indent=2)+'\n')
-    print(f'Verified 2 source identities and {len(figures)} complete Figure page ranges/captions' + ('; refreshed page digests' if args.refresh else '/digests'))
+    print(f'Verified {len(pages)} source identities and {len(figures)} complete Figure page ranges/captions' + ('; refreshed page digests' if args.refresh else '/digests'))
 
 
 if __name__ == '__main__':

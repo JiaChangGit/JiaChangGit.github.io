@@ -39,6 +39,12 @@ TERMS = {
 
 
 def definition(term, report_id, language, fallback):
+    if report_id == 'nvm-command-set-1.3':
+        try:
+            from scripts.nvme_nvmcs_figures import definition as nvm_definition
+        except ModuleNotFoundError:
+            from nvme_nvmcs_figures import definition as nvm_definition
+        return nvm_definition(term, language)
     if report_id == "base-boot-telemetry-sanitize" and term in TERMS:
         return TERMS[term][language]
     if report_id == "base-self-test-namespace-management" and term == "SEL":

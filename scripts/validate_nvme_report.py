@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 九份報告、三十六個版本、來源定位與離線 HTML 契約。"""
+"""驗證 NVMe 十份報告、四十個版本、來源定位與離線 HTML 契約。"""
 
 from __future__ import annotations
 
@@ -43,9 +43,18 @@ SOURCE_KEYWORDS = {
     "shall",
     "should",
     "may",
+    "mandatory",
     "optional",
     "reserved",
 }
+
+
+def forbidden_published(text: str, report_id: str):
+    # NVM 1.3 §5.4 explicitly defines a memory-based template. The standalone
+    # full-command-set scope includes it; its NQN field remains excluded.
+    if report_id == 'nvm-command-set-1.3':
+        text = re.sub(r'\bExported\s+NVM\s+Subsystem\b', '', text, flags=re.I)
+    return FORBIDDEN_PUBLISHED.search(text)
 
 
 def load_json(name: str) -> dict:
@@ -257,12 +266,12 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 36 or formats.count("html") != 18 or formats.count("markdown") != 18:
-        errors.append("輸出契約必須固定為十八份 HTML 與十八份 Markdown")
+    if len(artifacts) != 40 or formats.count("html") != 20 or formats.count("markdown") != 20:
+        errors.append("輸出契約必須固定為二十份 HTML 與二十份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 9 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的九份報告")
+    if len(report_ids) != 10 or artifact_report_ids != report_ids:
+        errors.append("輸出契約必須完整對應 scope.json 的十份報告")
     artifact_ids = [item.get("id") for item in artifacts]
     if len(artifact_ids) != len(set(artifact_ids)):
         errors.append("artifact ID 不得重複")
@@ -412,7 +421,7 @@ def validate_publish() -> list[str]:
                 errors.append(
                     f"{artifact['path']} 的 {claim_id} 正文應完整出現一次，目前 {body_count} 次"
                 )
-        forbidden = FORBIDDEN_PUBLISHED.search(searchable_text)
+        forbidden = forbidden_published(searchable_text, artifact['report_id'])
         if forbidden:
             errors.append(
                 f"{artifact['path']} 出現排除範圍詞彙：{forbidden.group(0)}"

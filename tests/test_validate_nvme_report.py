@@ -22,6 +22,47 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_standalone_command_set_covers_all_figures_without_transport_leakage(self):
+        from scripts.nvme_nvm_command_set import MODULES, REPORT_ID
+        from scripts.nvme_report_questions import question_bank
+        data = json.loads((ROOT / '.ai/nvme-report/figure-table-register.json').read_text())
+        figures = [f for f in data['entries'] if f['report_id'] == REPORT_ID]
+        primary = [f for f in figures if f['source_id'] == 'NVME-NVM-CS-1.3']
+        self.assertEqual({int(f['number']) for f in primary}, set(range(1,203)))
+        self.assertEqual(len(figures), 220)
+        self.assertTrue(all(f['scope_status']=='INCLUDE' for f in figures))
+        self.assertEqual(len(MODULES), 37)
+        self.assertEqual(len(question_bank(REPORT_ID, MODULES)), 148)
+        self.assertEqual({n for m in MODULES for n in m['figures']}, set(range(1,203)))
+        for n in (1,13,15,16,17,189):
+            self.assertEqual(next(f for f in primary if int(f['number'])==n)['mode'], 'scope-reduced')
+        self.assertIsNone(VALIDATOR.forbidden_published('Reference Exported NVM Subsystem Template', REPORT_ID))
+        self.assertIsNotNone(VALIDATOR.forbidden_published('Exported NVM Subsystem', 'base-boot-telemetry-sanitize'))
+        for term in ('Fabrics', 'Discovery', 'NQN', 'message-based', 'command capsule'):
+            self.assertIsNotNone(VALIDATOR.forbidden_published('Exported NVM Subsystem '+term, REPORT_ID))
+
+    def test_published_crc_vectors_and_tag_packing_recompute(self):
+        # Independent bitwise calculation verifies published numeric examples.
+        # Polynomial is reflected for this least-significant-bit-first loop.
+        def crc(data, width, polynomial):
+            mask=(1<<width)-1
+            reflected=int(f'{polynomial:0{width}b}'[::-1],2)
+            value=mask
+            for byte in data:
+                value ^= byte
+                for _ in range(8):
+                    value=(value>>1) ^ (reflected if value&1 else 0)
+            return value ^ mask
+        self.assertEqual(crc(bytes(4096),32,0x1EDC6F41),0x98F94189)
+        check=crc(b'123456789',64,0xAD93D23594C93659)
+        self.assertEqual(check,0xAE8B14860A799888)
+        self.assertEqual(int(f'{check:064b}'[::-1],2),0x11199E506128D175)
+        self.assertEqual(crc(bytes(4096),64,0xAD93D23594C93659),0x6482D367EB22B64E)
+        self.assertEqual(crc(bytes([255])*4096,64,0xAD93D23594C93659),0xC0DDBA7302ECA3AC)
+        space=(0x12345<<30)|0x2A
+        self.assertEqual(space>>32,0x48D1)
+        self.assertEqual(space&0xFFFFFFFF,0x4000002A)
+
     def test_answered_question_banks_detect_missing_answer_and_bad_order(self):
         from scripts.build_nvme_reports import REPORT_MODULES
         from scripts.nvme_report_questions import question_bank, validate_questions
@@ -107,15 +148,15 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_nine_reports_and_thirty_six_requested_artifacts(self):
+    def test_contract_has_ten_reports_and_forty_requested_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 36)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 18)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 18)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 9)
+        self.assertEqual(len(artifacts), 40)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 20)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 20)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 10)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -128,6 +169,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 "basediagmem-bilingual",
                 "basensmgmt-bilingual",
                 "basebts-bilingual",
+                "nvmcs13-bilingual",
             },
         )
 
@@ -448,7 +490,7 @@ class NvmeReportContractTest(unittest.TestCase):
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         html_artifacts = [item for item in contract["artifacts"] if item["format"] == "html"]
-        self.assertEqual(len(html_artifacts), 18)
+        self.assertEqual(len(html_artifacts), 20)
         for artifact in html_artifacts:
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             with self.subTest(artifact=artifact["id"]):
@@ -519,6 +561,8 @@ class NvmeReportContractTest(unittest.TestCase):
         )
         expected_images = {
             "basebts-zh-md": "posts/2026/dogMC_title.jpg",
+            "nvmcs13-zh-md": "posts/2026/dogMC_title.jpg",
+            "nvmcs13-en-md": "posts/2026/cat_title.jpg",
             "basebts-en-md": "posts/2026/cat_title.jpg",
             "base12-zh-md": "posts/2026/dogMC_title.jpg",
             "base12-en-md": "posts/2026/cat_title.jpg",
@@ -564,7 +608,7 @@ class NvmeReportContractTest(unittest.TestCase):
         )
         for artifact in contract["artifacts"]:
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            self.assertIsNone(VALIDATOR.FORBIDDEN_PUBLISHED.search(text))
+            self.assertIsNone(VALIDATOR.forbidden_published(text, artifact['report_id']))
             for phrase in VALIDATOR.PLACEHOLDER_PHRASES:
                 self.assertNotIn(phrase, text)
 
@@ -692,7 +736,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 visible = text
                 self.assertIn("glossary", text.lower())
                 self.assertIn("Debug", text)
-            if artifact["report_id"] == "base-boot-telemetry-sanitize":
+            if artifact["report_id"] in {"base-boot-telemetry-sanitize", "nvm-command-set-1.3"}:
                 # New report: coverage is checked directly, without a historical length baseline.
                 continue
             self.assertGreaterEqual(

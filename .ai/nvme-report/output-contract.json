@@ -472,6 +472,60 @@
         "NVME-NVM-CS-1.3"
       ],
       "parity_group": "basebts-bilingual"
+    },
+    {
+      "id": "nvmcs13-tutorial-html",
+      "report_id": "nvm-command-set-1.3",
+      "path": "DOCS/nvme-spec-report/nvm-command-set-1.3/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文新手教學",
+      "required_source_ids": [
+        "NVME-NVM-CS-1.3",
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "nvmcs13-detailed-html",
+      "report_id": "nvm-command-set-1.3",
+      "path": "DOCS/nvme-spec-report/nvm-command-set-1.3/detailed-spec-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文詳細規格快速查詢",
+      "required_source_ids": [
+        "NVME-NVM-CS-1.3",
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "nvmcs13-zh-md",
+      "report_id": "nvm-command-set-1.3",
+      "path": "_posts/2026-09-03-nvme-nvm-command-set-1-3-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "purpose": "Source-located teaching report",
+      "required_source_ids": [
+        "NVME-NVM-CS-1.3",
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "nvmcs13-bilingual"
+    },
+    {
+      "id": "nvmcs13-en-md",
+      "report_id": "nvm-command-set-1.3",
+      "path": "_posts/2026-09-03-nvme-nvm-command-set-1-3-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "all",
+      "purpose": "Source-located teaching report",
+      "required_source_ids": [
+        "NVME-NVM-CS-1.3",
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "nvmcs13-bilingual"
     }
   ],
   "source_markers": {
