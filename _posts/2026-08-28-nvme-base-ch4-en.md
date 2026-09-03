@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-08-28-nvme-base-ch4-zh-tw %})
+
 
 # NVMe Base 2.4 Chapter 4: SQE, CQE, Status, PRP, and SGL
 
@@ -484,7 +486,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §4.1
 
 <details markdown="1">
-<summary><strong>Figure 92: Command Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 92: Command Dword 0</strong></summary>
 
 <!-- claim:BASE4-FIG-092-CLAIM figure-table:BASE4-FIG-092 -->
 
@@ -569,7 +571,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASE4-FIG-093-CLAIM figure-table:BASE4-FIG-093 -->
 
@@ -654,7 +656,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
 
 <!-- claim:BASE4-FIG-094-CLAIM figure-table:BASE4-FIG-094 -->
 
@@ -743,7 +745,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 ### §4.2
 
 <details markdown="1">
-<summary><strong>Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets</strong></summary>
 
 <!-- claim:BASE4-FIG-097-CLAIM figure-table:BASE4-FIG-097 -->
 
@@ -828,7 +830,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 98: Completion Queue Entry: DW 2</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 98: Completion Queue Entry: DW 2</strong></summary>
 
 <!-- claim:BASE4-FIG-098-CLAIM figure-table:BASE4-FIG-098 -->
 
@@ -913,7 +915,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 99: Completion Queue Entry: DW 3</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 99: Completion Queue Entry: DW 3</strong></summary>
 
 <!-- claim:BASE4-FIG-099-CLAIM figure-table:BASE4-FIG-099 -->
 
@@ -997,7 +999,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 101: Completion Queue Entry: Status Field</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 101: Completion Queue Entry: Status Field</strong></summary>
 
 <!-- claim:BASE4-FIG-101-CLAIM figure-table:BASE4-FIG-101 -->
 
@@ -1082,7 +1084,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 102: Status Code - Status Code Type Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 102: Status Code - Status Code Type Values</strong></summary>
 
 <!-- claim:BASE4-FIG-102-CLAIM figure-table:BASE4-FIG-102 -->
 
@@ -1163,7 +1165,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 103: Status Code - Generic Command Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 103: Status Code - Generic Command Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-103-CLAIM figure-table:BASE4-FIG-103 -->
 
@@ -1248,7 +1250,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 104: Status Code - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 104: Status Code - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-104-CLAIM figure-table:BASE4-FIG-104 -->
 
@@ -1331,7 +1333,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific</strong></summary>
 
 <!-- claim:BASE4-FIG-105-CLAIM figure-table:BASE4-FIG-105 -->
 
@@ -1414,7 +1416,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 107: Status Code - Media and Data Integrity Error Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 107: Status Code - Media and Data Integrity Error Values</strong></summary>
 
 <!-- claim:BASE4-FIG-107-CLAIM figure-table:BASE4-FIG-107 -->
 
@@ -1496,7 +1498,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 108: Status Code - Path Related Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 108: Status Code - Path Related Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-108-CLAIM figure-table:BASE4-FIG-108 -->
 
@@ -1578,7 +1580,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 109: Phase Tag bit Transition Example</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 109: Phase Tag bit Transition Example</strong></summary>
 
 <!-- claim:BASE4-FIG-109-CLAIM figure-table:BASE4-FIG-109 -->
 
@@ -1662,7 +1664,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 ### §4.3
 
 <details markdown="1">
-<summary><strong>Figure 110: PRP Entry Layout</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 110: PRP Entry Layout</strong></summary>
 
 <!-- claim:BASE4-FIG-110-CLAIM figure-table:BASE4-FIG-110 -->
 
@@ -1742,7 +1744,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 111: PRP Entry - Page Base Address and Offset</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 111: PRP Entry - Page Base Address and Offset</strong></summary>
 
 <!-- claim:BASE4-FIG-111-CLAIM figure-table:BASE4-FIG-111 -->
 
@@ -1823,7 +1825,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 112: PRP List Layout for Physically Contiguous Memory Pages</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 112: PRP List Layout for Physically Contiguous Memory Pages</strong></summary>
 
 <!-- claim:BASE4-FIG-112-CLAIM figure-table:BASE4-FIG-112 -->
 
@@ -1904,7 +1906,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 113: PRP List Layout for Physically Non-Contiguous Memory Pages</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 113: PRP List Layout for Physically Non-Contiguous Memory Pages</strong></summary>
 
 <!-- claim:BASE4-FIG-113-CLAIM figure-table:BASE4-FIG-113 -->
 
@@ -1986,7 +1988,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 114: SGL Validation Error Conditions</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 114: SGL Validation Error Conditions</strong></summary>
 
 <!-- claim:BASE4-FIG-114-CLAIM figure-table:BASE4-FIG-114 -->
 
@@ -2066,7 +2068,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 115: SGL Segment</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 115: SGL Segment</strong></summary>
 
 <!-- claim:BASE4-FIG-115-CLAIM figure-table:BASE4-FIG-115 -->
 
@@ -2146,7 +2148,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 116: Generic SGL Descriptor Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 116: Generic SGL Descriptor Format</strong></summary>
 
 <!-- claim:BASE4-FIG-116-CLAIM figure-table:BASE4-FIG-116 -->
 
@@ -2231,7 +2233,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 117: SGL Descriptor Type</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 117: SGL Descriptor Type</strong></summary>
 
 <!-- claim:BASE4-FIG-117-CLAIM figure-table:BASE4-FIG-117 -->
 
@@ -2311,7 +2313,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 118: SGL Descriptor Sub Type Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 118: SGL Descriptor Sub Type Values</strong></summary>
 
 <!-- claim:BASE4-FIG-118-CLAIM figure-table:BASE4-FIG-118 -->
 
@@ -2391,7 +2393,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 119: SGL Data Block descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 119: SGL Data Block descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-119-CLAIM figure-table:BASE4-FIG-119 -->
 
@@ -2476,7 +2478,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 120: SGL Bit Bucket descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 120: SGL Bit Bucket descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-120-CLAIM figure-table:BASE4-FIG-120 -->
 
@@ -2561,7 +2563,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 121: SGL Segment descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 121: SGL Segment descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-121-CLAIM figure-table:BASE4-FIG-121 -->
 
@@ -2646,7 +2648,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 122: SGL Last Segment descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 122: SGL Last Segment descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-122-CLAIM figure-table:BASE4-FIG-122 -->
 
@@ -2731,7 +2733,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 125: SGL Read Example</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 125: SGL Read Example</strong></summary>
 
 <!-- claim:BASE4-FIG-125-CLAIM figure-table:BASE4-FIG-125 -->
 
@@ -2815,7 +2817,7 @@ This is a data-buffer mapping Figure. Read pointer type, address, length, page o
 ### §4.4
 
 <details markdown="1">
-<summary><strong>Figure 126: Current Value after Reset with Scope of Entire NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 126: Current Value after Reset with Scope of Entire NVM Subsystem</strong></summary>
 
 <!-- claim:BASE4-FIG-126-CLAIM figure-table:BASE4-FIG-126 -->
 
@@ -2895,7 +2897,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 127: Current Value after Reset with Scope of Subset of the NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 127: Current Value after Reset with Scope of Subset of the NVM Subsystem</strong></summary>
 
 <!-- claim:BASE4-FIG-127-CLAIM figure-table:BASE4-FIG-127 -->
 
@@ -2979,7 +2981,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §4.5
 
 <details markdown="1">
-<summary><strong>Figure 128: PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 128: PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</strong></summary>
 
 <!-- claim:BASE4-FIG-128-CLAIM figure-table:BASE4-FIG-128 -->
 
@@ -3061,7 +3063,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 129: Serial Number (SN) and Model Number (MN)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 129: Serial Number (SN) and Model Number (MN)</strong></summary>
 
 <!-- claim:BASE4-FIG-129-CLAIM figure-table:BASE4-FIG-129 -->
 
@@ -3142,7 +3144,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 130: IEEE OUI Identifier (IEEE)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 130: IEEE OUI Identifier (IEEE)</strong></summary>
 
 <!-- claim:BASE4-FIG-130-CLAIM figure-table:BASE4-FIG-130 -->
 
@@ -3223,7 +3225,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 131: IEEE Extended Unique Identifier (EUI64), MA-L Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 131: IEEE Extended Unique Identifier (EUI64), MA-L Format</strong></summary>
 
 <!-- claim:BASE4-FIG-131-CLAIM figure-table:BASE4-FIG-131 -->
 
@@ -3307,7 +3309,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 132: IEEE Extended Unique Identifier (EUI64), OUI Identifier</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 132: IEEE Extended Unique Identifier (EUI64), OUI Identifier</strong></summary>
 
 <!-- claim:BASE4-FIG-132-CLAIM figure-table:BASE4-FIG-132 -->
 
@@ -3389,7 +3391,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 133: IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 133: IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</strong></summary>
 
 <!-- claim:BASE4-FIG-133-CLAIM figure-table:BASE4-FIG-133 -->
 
@@ -3474,7 +3476,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 134: MA-L similarity to WWN</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 134: MA-L similarity to WWN</strong></summary>
 
 <!-- claim:BASE4-FIG-134-CLAIM figure-table:BASE4-FIG-134 -->
 
@@ -3555,7 +3557,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 135: Namespace Globally Unique Identifier (NGUID)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 135: Namespace Globally Unique Identifier (NGUID)</strong></summary>
 
 <!-- claim:BASE4-FIG-135-CLAIM figure-table:BASE4-FIG-135 -->
 
@@ -3636,7 +3638,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 136: Namespace Globally Unique Identifier (NGUID), OUI</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 136: Namespace Globally Unique Identifier (NGUID), OUI</strong></summary>
 
 <!-- claim:BASE4-FIG-136-CLAIM figure-table:BASE4-FIG-136 -->
 
@@ -3720,7 +3722,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 137: Namespace Globally Unique Identifier</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 137: Namespace Globally Unique Identifier</strong></summary>
 
 <!-- claim:BASE4-FIG-137-CLAIM figure-table:BASE4-FIG-137 -->
 
@@ -3804,7 +3806,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 138: Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 138: Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</strong></summary>
 
 <!-- claim:BASE4-FIG-138-CLAIM figure-table:BASE4-FIG-138 -->
 
@@ -3892,7 +3894,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §4.6
 
 <details markdown="1">
-<summary><strong>Figure 139: Controller List Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 139: Controller List Format</strong></summary>
 
 <!-- claim:BASE4-FIG-139-CLAIM figure-table:BASE4-FIG-139 -->
 
@@ -3973,7 +3975,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 140: Namespace List Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 140: Namespace List Format</strong></summary>
 
 <!-- claim:BASE4-FIG-140-CLAIM figure-table:BASE4-FIG-140 -->
 
@@ -4058,7 +4060,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §4.8
 
 <details markdown="1">
-<summary><strong>Figure 142: UTF-8 Input Processing</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 142: UTF-8 Input Processing</strong></summary>
 
 <!-- claim:BASE4-FIG-142-CLAIM figure-table:BASE4-FIG-142 -->
 
@@ -4140,3 +4142,221 @@ This Figure explains a specific relationship or example. Identify each component
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+20 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Fix the 64-byte SQE skeleton before applying command-specific fields”?
+
+<!-- qa:base-ch4-sqe-lead -->
+
+**Answer.**
+
+The common SQE fixes the locations of CDW0, NSID, metadata/data pointers, and CDW10-15. OPC selects the command, CID creates the completion association, and PSDT selects DPTR interpretation. Only after these common fields are established should command-specific CDW10-15 definitions be applied. Figures 92-94 are the coordinate system for all later command construction.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 139-143, PDF pages 165-169; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140, PDF pages 166; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q02. Which concepts or conditions must be distinguished in “Fix the 64-byte SQE skeleton before applying command-specific fields”?
+
+<!-- qa:base-ch4-sqe-rows -->
+
+**Answer.**
+
+- CDW0 — Command identity and data-pointer selector — Common to all commands
+- NSID — Namespace scope — When unused, clear or use a special value only as the command defines
+- MPTR/DPTR — Metadata and data buffers — Selected by PSDT and command rules
+- CDW10-15 — Command-specific payload — Never borrow semantics from another command
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 139-143, PDF pages 165-169; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140, PDF pages 166; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q03. How does “Fix the 64-byte SQE skeleton before applying command-specific fields” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch4-sqe-example -->
+
+**Answer.**
+
+Informative example: the same CID can be used on different SQs, but outstanding commands within one SQ must not create an identity collision. The driver tracks commands by (SQID,CID), completes every SQE field and required memory ordering, and only then updates the SQ tail.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 139-143, PDF pages 165-169; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140, PDF pages 166; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q04. What misinterpretation is most likely in “Fix the 64-byte SQE skeleton before applying command-specific fields”, and how is it debugged?
+
+<!-- qa:base-ch4-sqe-pitfall -->
+
+**Answer.**
+
+Retain the raw 64-byte SQE dump together with decoded fields. A high-level command object alone cannot expose bit shifts, endian defects, uncleared reserved bits, or an incorrect PSDT.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 139-143, PDF pages 165-169; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140, PDF pages 166; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q05. What is the governing interpretation for “Decode CQE ownership first, identity second, and status last”?
+
+<!-- qa:base-ch4-cqe-status-lead -->
+
+**Answer.**
+
+The host first uses the Phase Tag to determine whether a CQ slot contains a new completion. After ownership is established, SQID/CID recovers the command; SCT then selects the status category before SC, DNR, and CRD are interpreted. Figures 97-109 must be read in this order so a stale CQE or wrong category is not mistaken for a command failure.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, printed pages 144-145, PDF pages 170-171; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, printed pages 145-155, PDF pages 171-181; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, printed pages 155-158, PDF pages 181-184
+
+### Q06. Which concepts or conditions must be distinguished in “Decode CQE ownership first, identity second, and status last”?
+
+<!-- qa:base-ch4-cqe-status-rows -->
+
+**Answer.**
+
+- SCT — Status category — Always decode first
+- SC — Specific result within the category — Never interpret without SCT
+- DNR — Expectation for retrying the same command — Not synonymous with permanent hardware failure
+- CRD — Recommended retry-delay selector — Use only for an applicable status
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, printed pages 144-145, PDF pages 170-171; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, printed pages 145-155, PDF pages 171-181; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, printed pages 155-158, PDF pages 181-184
+
+### Q07. How does “Decode CQE ownership first, identity second, and status last” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch4-cqe-status-example -->
+
+**Answer.**
+
+Informative example: SC value 02h can belong to different status tables under different SCT values. A correct log retains the complete status field and reports P, SCT, SC, DNR, CRD, and the raw 16-bit value. 'SC=2' alone is insufficient for recovery.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, printed pages 144-145, PDF pages 170-171; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, printed pages 145-155, PDF pages 171-181; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, printed pages 155-158, PDF pages 181-184
+
+### Q08. What misinterpretation is most likely in “Decode CQE ownership first, identity second, and status last”, and how is it debugged?
+
+<!-- qa:base-ch4-cqe-status-pitfall -->
+
+**Answer.**
+
+CQ-wrap defects commonly appear as duplicate completions or commands that never complete. Compare producer/consumer expected phase, the CQ-head doorbell, and raw DW3 for each slot; do not act on other CQE fields before validating the Phase Tag.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, printed pages 144-145, PDF pages 170-171; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, printed pages 145-155, PDF pages 171-181; Source: NVME-BASE-2.4, Rev. 2.4, §4.2.4, printed pages 155-158, PDF pages 181-184
+
+### Q09. What is the governing interpretation for “PRP calculation: the first page may have an offset; later entries return to page boundaries”?
+
+<!-- qa:base-ch4-prp-lead -->
+
+**Answer.**
+
+PRP1 may address any byte within the first memory page, so first-segment capacity is page_size minus offset. If data crosses that page, PRP2 represents either the second page or a PRP List depending on remaining length; later page addresses must be page aligned. Figures 110-113 define address calculation, not merely pointer names.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, printed pages 158-159, PDF pages 184-185; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q10. Which concepts or conditions must be distinguished in “PRP calculation: the first page may have an offset; later entries return to page boundaries”?
+
+<!-- qa:base-ch4-prp-rows -->
+
+**Answer.**
+
+- Data stays in first page — PRP1 is sufficient — PRP2 does not carry another segment
+- Remaining data fits one page — PRP2 addresses the second data page — Address is page aligned
+- Remaining data exceeds one page — PRP2 addresses a PRP List — List entries address data pages
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, printed pages 158-159, PDF pages 184-185; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q11. How does “PRP calculation: the first page may have an offset; later entries return to page boundaries” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch4-prp-example -->
+
+**Answer.**
+
+Informative example: with a 4096-byte page, PRP1 offset 1000, and a 9000-byte transfer, the first page carries 4096-1000=3096 bytes. The remaining 5904 bytes require two later pages, so PRP2 addresses a PRP List containing at least two data-page addresses.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, printed pages 158-159, PDF pages 184-185; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q12. What misinterpretation is most likely in “PRP calculation: the first page may have an offset; later entries return to page boundaries”, and how is it debugged?
+
+<!-- qa:base-ch4-prp-pitfall -->
+
+**Answer.**
+
+A PRP debug dump should include MPS, transfer length, PRP1 offset, each physical address, and the byte interval covered by each entry. Checking only for nonzero addresses misses list-versus-page mistakes, a missing final page, or use of a virtual address as a physical address.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.1, printed pages 158-159, PDF pages 184-185; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q13. What is the governing interpretation for “An SGL is a typed descriptor chain, not another PRP List”?
+
+<!-- qa:base-ch4-sgl-lead -->
+
+**Answer.**
+
+An SGL descriptor combines type/subtype, address, and length. A Data Block addresses data, Segment and Last Segment address more descriptors, and Bit Bucket represents data that need not be stored in memory. Figures 114-125 require type-first decoding; blindly following an address before decoding type is incorrect.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, printed pages 159-166, PDF pages 185-192; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q14. Which concepts or conditions must be distinguished in “An SGL is a typed descriptor chain, not another PRP List”?
+
+<!-- qa:base-ch4-sgl-rows -->
+
+**Answer.**
+
+- PRP — Page-based addresses — First-page offset plus later-page alignment
+- SGL Data Block — Address plus byte length — A descriptor represents a data region
+- SGL Segment — Address plus descriptor-list length — Points to more descriptors, not data
+- Bit Bucket — Consumes transfer length only — Does not represent a readable or writable memory buffer
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, printed pages 159-166, PDF pages 185-192; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q15. How does “An SGL is a typed descriptor chain, not another PRP List” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch4-sgl-example -->
+
+**Answer.**
+
+Informative example: a 12 KiB request is covered by two Data Block descriptors of 8 KiB and 4 KiB. If the first descriptor is actually a Segment, its 8 KiB value describes a descriptor-list length rather than data length, and a parser that accumulates it as data is fundamentally wrong.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, printed pages 159-166, PDF pages 185-192; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q16. What misinterpretation is most likely in “An SGL is a typed descriptor chain, not another PRP List”, and how is it debugged?
+
+<!-- qa:base-ch4-sgl-pitfall -->
+
+**Answer.**
+
+An SGL validator should bound nesting, descriptor count, total byte length, overflow, and loops. At every step, log type/subtype before deciding whether the address denotes data or another descriptor sequence; reversing that order can cause out-of-bounds traversal or cycles.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.3.2, printed pages 159-166, PDF pages 185-192; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, printed pages 140-142, PDF pages 166-168
+
+### Q17. What is the governing interpretation for “Features, identifiers, lists, and UTF-8 all require scope validation”?
+
+<!-- qa:base-ch4-identity-text-lead -->
+
+**Answer.**
+
+Feature current/default/saved values define time and persistence scope; VID, SN, EUI64, NGUID, and UUID define identity scope; Controller/Namespace Lists define count and array boundaries; UTF-8 defines byte-sequence and code-point boundaries. Figures 126-142 appear diverse but share one parser rule: never interpret a value without its scope.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.4, printed pages 166-169, PDF pages 192-195; Source: NVME-BASE-2.4, Rev. 2.4, §4.5, printed pages 169-172, PDF pages 195-198; Source: NVME-BASE-2.4, Rev. 2.4, §4.6, printed pages 172-173, PDF pages 198-199; Source: NVME-BASE-2.4, Rev. 2.4, §4.8, printed pages 175, PDF pages 201
+
+### Q18. Which concepts or conditions must be distinguished in “Features, identifiers, lists, and UTF-8 all require scope validation”?
+
+<!-- qa:base-ch4-identity-text-rows -->
+
+**Answer.**
+
+- VID/SSVID — Vendor/subsystem-vendor identity — Assignment authorities differ
+- SN/MN — Product instance/model strings — Interpret fixed fields and padding
+- EUI64/NGUID/UUID — Different formats and uniqueness scopes — Similar length does not make them interchangeable
+- List — Count plus identifiers — Validate count before iteration
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.4, printed pages 166-169, PDF pages 192-195; Source: NVME-BASE-2.4, Rev. 2.4, §4.5, printed pages 169-172, PDF pages 195-198; Source: NVME-BASE-2.4, Rev. 2.4, §4.6, printed pages 172-173, PDF pages 198-199; Source: NVME-BASE-2.4, Rev. 2.4, §4.8, printed pages 175, PDF pages 201
+
+### Q19. How does “Features, identifiers, lists, and UTF-8 all require scope validation” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch4-identity-text-example -->
+
+**Answer.**
+
+Informative example: a Namespace List claims five IDs but the returned buffer contains only three complete entries. A safe parser rejects the structure using buffer length and format limits rather than reading a fourth entry because the count looks plausible. A fixed UTF-8 field follows the same boundary rule: a truncated multibyte character is not accepted as half a character.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.4, printed pages 166-169, PDF pages 192-195; Source: NVME-BASE-2.4, Rev. 2.4, §4.5, printed pages 169-172, PDF pages 195-198; Source: NVME-BASE-2.4, Rev. 2.4, §4.6, printed pages 172-173, PDF pages 198-199; Source: NVME-BASE-2.4, Rev. 2.4, §4.8, printed pages 175, PDF pages 201
+
+### Q20. What misinterpretation is most likely in “Features, identifiers, lists, and UTF-8 all require scope validation”, and how is it debugged?
+
+<!-- qa:base-ch4-identity-text-pitfall -->
+
+**Answer.**
+
+An identity database stores value, type, width, source object, and scope together. Storing only a hexadecimal string can create false equality among EUI64, NGUID, UUID, or identifiers obtained from different controllers.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.4, printed pages 166-169, PDF pages 192-195; Source: NVME-BASE-2.4, Rev. 2.4, §4.5, printed pages 169-172, PDF pages 195-198; Source: NVME-BASE-2.4, Rev. 2.4, §4.6, printed pages 172-173, PDF pages 198-199; Source: NVME-BASE-2.4, Rev. 2.4, §4.8, printed pages 175, PDF pages 201

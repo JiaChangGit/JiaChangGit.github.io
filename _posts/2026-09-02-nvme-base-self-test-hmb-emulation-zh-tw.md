@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-09-02-nvme-base-self-test-hmb-emulation-en %})
+
 
 # NVMe Base 2.4：Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands
 
@@ -47,7 +49,7 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 |---|---|---|
 | `DST` | Device Self-test，用背景 diagnostic segments 檢查 controller 與可選 namespace media 的操作。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 352-358, 614，PDF 頁 378-384, 640 |
 | `OACS.DSTS` | Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 352-358, 614，PDF 頁 378-384, 640 |
-| `STC` | Self-test Code，Device Self-test CDW10 中選 short、extended、refresh、vendor-specific 或 abort 的 nibble。 | NVME-BASE-2.4 Rev. 2.4，§5.2.6，文件頁 199-200，PDF 頁 225-226 |
+| `STC` | Self-test Code 是 Device Self-test CDW10 的動作 nibble；result entry 的 STC 則是 Status Code，須依 SCVLD 判斷有效。 | NVME-BASE-2.4 Rev. 2.4，§5.2.6，文件頁 199-200，PDF 頁 225-226 |
 | `DSTP` | Device Self-test Parameter，只有 vendor-specific STC=Eh 時才有 vendor-defined 語意的 CDW15。 | NVME-BASE-2.4 Rev. 2.4，§5.2.6，文件頁 199-200，PDF 頁 225-226 |
 | `DSTO` | Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 352-358, 614，PDF 頁 378-384, 640 |
 | `SDSO` | Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 352-358, 614，PDF 頁 378-384, 640 |
@@ -786,7 +788,7 @@ NDT 與 NDM 是實際 dword 數，不是 0's-based。NDT=00000100h 代表 256 dw
 ### §4.1
 
 <details markdown="1">
-<summary><strong>Figure 111: Self-test Results Data Structure</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 111: Self-test Results Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-111-CLAIM figure-table:BASEDIAGMEM-FIG-111 -->
 
@@ -873,7 +875,7 @@ Figure 111 位於 §4.1.4.3，在本流程中是「layout」檢查點。先由�
 ### §5.2
 
 <details markdown="1">
-<summary><strong>Figure 176: Device Self-test Namespace Test Action</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 176: Device Self-test Namespace Test Action</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-176-CLAIM figure-table:BASEDIAGMEM-FIG-176 -->
 
@@ -955,7 +957,7 @@ Figure 176 位於 §5.2.6，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 177: Device Self-test - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 177: Device Self-test - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-177-CLAIM figure-table:BASEDIAGMEM-FIG-177 -->
 
@@ -1039,7 +1041,7 @@ Figure 177 位於 §5.2.6，在本流程中是「command」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 178: Device Self-test - Command Dword 15</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 178: Device Self-test - Command Dword 15</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-178-CLAIM figure-table:BASEDIAGMEM-FIG-178 -->
 
@@ -1119,7 +1121,7 @@ Figure 178 位於 §5.2.6，在本流程中是「command」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 179: Device Self-test - Command Processing</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 179: Device Self-test - Command Processing</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-179-CLAIM figure-table:BASEDIAGMEM-FIG-179 -->
 
@@ -1202,7 +1204,7 @@ Figure 179 位於 §5.2.6，在本流程中是「queue」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-180-CLAIM figure-table:BASEDIAGMEM-FIG-180 -->
 
@@ -1283,7 +1285,7 @@ Figure 180 位於 §5.2.6，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 218: Device Self-test Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 218: Device Self-test Log Page</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-218-CLAIM figure-table:BASEDIAGMEM-FIG-218 -->
 
@@ -1367,7 +1369,7 @@ Figure 218 位於 §5.2.13.1.7，在本流程中是「relationship」檢查點�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 219: Self-test Result Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 219: Self-test Result Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-219-CLAIM figure-table:BASEDIAGMEM-FIG-219 -->
 
@@ -1452,7 +1454,7 @@ Figure 219 位於 §5.2.13.1.7，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 545: Host Memory Buffer - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 545: Host Memory Buffer - Command Dword 11</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-545-CLAIM figure-table:BASEDIAGMEM-FIG-545 -->
 
@@ -1535,7 +1537,7 @@ Figure 545 位於 §5.2.30.2.3，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 546: Host Memory Buffer - Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 546: Host Memory Buffer - Command Dword 12</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-546-CLAIM figure-table:BASEDIAGMEM-FIG-546 -->
 
@@ -1616,7 +1618,7 @@ Figure 546 位於 §5.2.30.2.3，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 547: Host Memory Buffer - Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 547: Host Memory Buffer - Command Dword 13</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-547-CLAIM figure-table:BASEDIAGMEM-FIG-547 -->
 
@@ -1697,7 +1699,7 @@ Figure 547 位於 §5.2.30.2.3，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 548: Host Memory Buffer - Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 548: Host Memory Buffer - Command Dword 14</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-548-CLAIM figure-table:BASEDIAGMEM-FIG-548 -->
 
@@ -1777,7 +1779,7 @@ Figure 548 位於 §5.2.30.2.3，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 549: Host Memory Buffer - Command Dword 15</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 549: Host Memory Buffer - Command Dword 15</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-549-CLAIM figure-table:BASEDIAGMEM-FIG-549 -->
 
@@ -1857,7 +1859,7 @@ Figure 549 位於 §5.2.30.2.3，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 550: Host Memory Buffer - Host Memory Descriptor List</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 550: Host Memory Buffer - Host Memory Descriptor List</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-550-CLAIM figure-table:BASEDIAGMEM-FIG-550 -->
 
@@ -1938,7 +1940,7 @@ Figure 550 位於 §5.2.30.2.3，在本流程中是「relationship」檢查點�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 551: Host Memory Buffer - Host Memory Buffer Descriptor Entry</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 551: Host Memory Buffer - Host Memory Buffer Descriptor Entry</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-551-CLAIM figure-table:BASEDIAGMEM-FIG-551 -->
 
@@ -2020,7 +2022,7 @@ Figure 551 位於 §5.2.30.2.3，在本流程中是「relationship」檢查點�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 552: Host Memory Buffer - Completion Queue Entry Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 552: Host Memory Buffer - Completion Queue Entry Dword 0</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-552-CLAIM figure-table:BASEDIAGMEM-FIG-552 -->
 
@@ -2102,7 +2104,7 @@ Figure 552 位於 §5.2.30.2.3，在本流程中是「queue」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 553: Host Memory Buffer - Attributes Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 553: Host Memory Buffer - Attributes Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-553-CLAIM figure-table:BASEDIAGMEM-FIG-553 -->
 
@@ -2190,7 +2192,7 @@ Figure 553 位於 §5.2.30.2.3，在本流程中是「layout」檢查點。先�
 ### §8.1
 
 <details markdown="1">
-<summary><strong>Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-700-CLAIM figure-table:BASEDIAGMEM-FIG-700 -->
 
@@ -2273,7 +2275,7 @@ Figure 700 位於 §8.1.8，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-701-CLAIM figure-table:BASEDIAGMEM-FIG-701 -->
 
@@ -2362,7 +2364,7 @@ Figure 701 位於 §8.1.8.1-8.1.8.2，在本流程中是「layout」檢查點。
 ### 引用相依 Figure（位於主章節範圍外）
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-036-CLAIM figure-table:BASEDIAGMEM-FIG-036 -->
 
@@ -2443,7 +2445,7 @@ Figure 36 位於 §3.1.4.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-093-CLAIM figure-table:BASEDIAGMEM-FIG-093 -->
 
@@ -2527,7 +2529,7 @@ Figure 93 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-094-CLAIM figure-table:BASEDIAGMEM-FIG-094 -->
 
@@ -2611,7 +2613,7 @@ Figure 94 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 197: Get Features - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 197: Get Features - Data Pointer</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-197-CLAIM figure-table:BASEDIAGMEM-FIG-197 -->
 
@@ -2693,7 +2695,7 @@ Figure 197 位於 §5.2.12，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 198: Get Features - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 198: Get Features - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-198-CLAIM figure-table:BASEDIAGMEM-FIG-198 -->
 
@@ -2774,7 +2776,7 @@ Figure 198 位於 §5.2.12，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 200: Feature Identifiers for Get Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 200: Feature Identifiers for Get Features</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-200-CLAIM figure-table:BASEDIAGMEM-FIG-200 -->
 
@@ -2856,7 +2858,7 @@ Figure 200 位於 §5.2.12，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 203: Get Log Page - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 203: Get Log Page - Data Pointer</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-203-CLAIM figure-table:BASEDIAGMEM-FIG-203 -->
 
@@ -2936,7 +2938,7 @@ Figure 203 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 204: Get Log Page - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 204: Get Log Page - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-204-CLAIM figure-table:BASEDIAGMEM-FIG-204 -->
 
@@ -3019,7 +3021,7 @@ Figure 204 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 205: Get Log Page - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 205: Get Log Page - Command Dword 11</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-205-CLAIM figure-table:BASEDIAGMEM-FIG-205 -->
 
@@ -3100,7 +3102,7 @@ Figure 205 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 206: Get Log Page - Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 206: Get Log Page - Command Dword 12</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-206-CLAIM figure-table:BASEDIAGMEM-FIG-206 -->
 
@@ -3181,7 +3183,7 @@ Figure 206 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 207: Get Log Page - Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 207: Get Log Page - Command Dword 13</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-207-CLAIM figure-table:BASEDIAGMEM-FIG-207 -->
 
@@ -3261,7 +3263,7 @@ Figure 207 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 208: Get Log Page - Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 208: Get Log Page - Command Dword 14</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-208-CLAIM figure-table:BASEDIAGMEM-FIG-208 -->
 
@@ -3343,7 +3345,7 @@ Figure 208 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-209-CLAIM figure-table:BASEDIAGMEM-FIG-209 -->
 
@@ -3427,7 +3429,7 @@ Figure 209 位於 §5.2.13，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify Controller Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify Controller Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-338-CLAIM figure-table:BASEDIAGMEM-FIG-338 -->
 
@@ -3512,7 +3514,7 @@ Figure 338 位於 §5.2.14.2.1，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 463: Set Features - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 463: Set Features - Data Pointer</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-463-CLAIM figure-table:BASEDIAGMEM-FIG-463 -->
 
@@ -3594,7 +3596,7 @@ Figure 463 位於 §5.2.30，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 464: Set Features - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 464: Set Features - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-464-CLAIM figure-table:BASEDIAGMEM-FIG-464 -->
 
@@ -3675,7 +3677,7 @@ Figure 464 位於 §5.2.30，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 466: Feature Identifiers for Set Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 466: Feature Identifiers for Set Features</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-466-CLAIM figure-table:BASEDIAGMEM-FIG-466 -->
 
@@ -3760,3 +3762,308 @@ Figure 466 位於 §5.2.30，在本流程中是「identifier」檢查點。先�
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 28 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先分清三個 boundary：operation、memory ownership、encoded address」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-lead -->
+
+**答。**
+
+這組章節不是同一個 feature。Device Self-test 管背景 diagnostic operation；HMB 管 host memory 的 ownership transfer；DSTRD 與 vendor command format 管 encoded value 如何轉成安全的 memory access。共同方法是先找 capability gate，再找狀態或 ownership 轉換，最後找可觀測證據。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759
+
+### Q02. 「先分清三個 boundary：operation、memory ownership、encoded address」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-rows -->
+
+**答。**
+
+- Self-test — operation lifecycle — CQE + LID 06h
+- HMB — exclusive ownership lifecycle — Get FID 0Dh + disable CQE
+- Doorbell emulation — encoded byte stride — MMIO address/write trace
+- Vendor command — buffer-length contract — VSCF/SNVSCF + NDT/NDM
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759
+
+### Q03. 「先分清三個 boundary：operation、memory ownership、encoded address」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-example -->
+
+**答。**
+
+同樣看到 Successful Completion，self-test 只代表 operation 已開始，HMB disable 則代表 ownership 已回到 host。status code 相同，不代表 completion boundary 相同。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759
+
+### Q04. 「先分清三個 boundary：operation、memory ownership、encoded address」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-pitfall -->
+
+**答。**
+
+不要把所有內容都寫成『command 成功／失敗』。先標明成功代表哪個 state transition、哪一方此刻擁有 memory，以及還需要哪一個 log 或 Get Features 才能證明後續結果。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759
+
+### Q05. 「Device Self-test：先 gate capability，再提交一個背景 operation」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-lead -->
+
+**答。**
+
+Self-test 不是同步 diagnostic RPC。Host 先用 OACS.DSTS、DSTO.SDSO 與 EDSTT 決定支援、concurrency scope 與時間預期，再用 NSID 與 STC 建構 command。Admin CQE 回來時，背景 operation 才剛進入可由 LID 06h 觀察的生命週期。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 352-358, 614, PDF 頁 378-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 200, PDF 頁 226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227
+
+### Q06. 「Device Self-test：先 gate capability，再提交一個背景 operation」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-rows -->
+
+**答。**
+
+- NSID=0 — 只包含 controller — 不測 namespace media
+- active NSID — 指定 namespace — invalid 與 inactive status 不同
+- NSID=FFFFFFFFh — 所有 attached／accessible namespaces — 集合以 start 時點為準
+- STC=Fh — abort current operation — 成功不代表曾有 operation
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 352-358, 614, PDF 頁 378-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 200, PDF 頁 226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227
+
+### Q07. 「Device Self-test：先 gate capability，再提交一個背景 operation」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-example -->
+
+**答。**
+
+啟動 namespace 5 的 short test：NSID=00000005h、STC=1h，因此 CDW10=00000001h、CDW15=0。若立刻再送 extended STC=2h，應預期 command-specific status 1Dh，而不是建立第二個 operation。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 352-358, 614, PDF 頁 378-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 200, PDF 頁 226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227
+
+### Q08. 「Device Self-test：先 gate capability，再提交一個背景 operation」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-pitfall -->
+
+**答。**
+
+最常見的錯誤是把 CQE timestamp 當完成時間，或在 SDSO=1 時只看單一 controller 的 local state。trace 至少保存 controller ID、NSID、STC、CDW15、CQE status 與後續第一筆 LID 06h。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 352-358, 614, PDF 頁 378-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 200, PDF 頁 226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227
+
+### Q09. 「LID 06h：把 current operation 與 20 筆 history 分開解碼」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-lead -->
+
+**答。**
+
+log header 的 DSTOS／DSTCS 回答『現在跑到哪裡』；RDS1～RDS20 回答『之前怎麼結束』。result entry 又分成 operation code、result reason、segment、validity bitmap 與 diagnostic payload。NVM Command Set 只在 FVLD=1 時賦予 FLBA 明確的 LBA 語意。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-216, PDF 頁 239-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231, PDF 頁 257; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, 文件頁 229-232, 614-616, PDF 頁 255-258, 640-642
+
+### Q10. 「LID 06h：把 current operation 與 20 筆 history 分開解碼」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-rows -->
+
+**答。**
+
+- DSTOS/DSTCS — current state/progress — DSTOS=0 時忽略 percentage
+- DSTR=7h + SEGN — 已知第一個 failed segment — 其他 DSTR 忽略 SEGN
+- FVLD + FLBA — 其中一個 failing LBA — 不是所有失敗 LBA 清單
+- POH + STCT/STC — failure context — 仍需 validity bits
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-216, PDF 頁 239-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231, PDF 頁 257; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, 文件頁 229-232, 614-616, PDF 頁 255-258, 640-642
+
+### Q11. 「LID 06h：把 current operation 與 20 筆 history 分開解碼」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-example -->
+
+**答。**
+
+完整 log 是 564 bytes=141 dwords，因此 NUMD=140=008Ch。LSP=0、RAE=0 時 CDW10=008C0006h。若 RDS1.DSTS=17h，high nibble 1h 表示 short test，low nibble 7h 表示已知 failed segment；此時才讀 SEGN。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-216, PDF 頁 239-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231, PDF 頁 257; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, 文件頁 229-232, 614-616, PDF 頁 255-258, 640-642
+
+### Q12. 「LID 06h：把 current operation 與 20 筆 history 分開解碼」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-pitfall -->
+
+**答。**
+
+parser 不得以 FLBA 非零就宣告 media failure。先檢查 DSTR、再檢查 FVLD 與 NSIDVLD，最後依 NVM Command Set 解 bytes 23:16；同時保存 raw 28-byte result，避免 validity 判斷錯後失去原始證據。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-216, PDF 頁 239-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231, PDF 頁 257; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, 文件頁 229-232, 614-616, PDF 頁 255-258, 640-642
+
+### Q13. 「HMB：enable／disable completion 是 ownership fence」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-lead -->
+
+**答。**
+
+HMB 的 value 不在『給 controller 一塊 cache』這句話，而在 ownership protocol。Host 配置 pages 與 descriptor list，enable 成功後停止寫入；controller 使用並初始化；host 要回收時先 disable，直到 CQE posted 才重新取得修改權。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, 文件頁 357, 362, 744, PDF 頁 383, 388, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 515-516, PDF 頁 541-542; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q14. 「HMB：enable／disable completion 是 ownership fence」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-rows -->
+
+**答。**
+
+- Before enable — host owns and initializes descriptors — validate alignment/count
+- After enable CQE — controller exclusive use — host shall not write
+- Disable in flight — controller may still retrieve data — host still waits
+- After disable CQE — host may modify/reclaim — record fence timestamp
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, 文件頁 357, 362, 744, PDF 頁 383, 388, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 515-516, PDF 頁 541-542; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q15. 「HMB：enable／disable completion 是 ownership fence」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-example -->
+
+**答。**
+
+如果 driver 在送出 EHM=0 後、CQE 到達前就解除 DMA mapping，controller 仍可能依規格取回必要資料；這是 use-after-unmap。正確 fence 是 disable completion，而不是 SQ tail doorbell write。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, 文件頁 357, 362, 744, PDF 頁 383, 388, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 515-516, PDF 頁 541-542; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q16. 「HMB：enable／disable completion 是 ownership fence」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-pitfall -->
+
+**答。**
+
+把 enable CQE 當作『host 仍可讀寫、controller 只是偶爾使用』會造成 data race。測試應對 HMDL 與每段 pages 建立 write-protection／DMA ownership trace，並在 disable CQE 後才解除。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, 文件頁 357, 362, 744, PDF 頁 383, 388, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, 文件頁 515-516, 744, PDF 頁 541-542, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 515-516, PDF 頁 541-542; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q17. 「HMB command 與 descriptor：所有 size、count、address 都要對同一份 page math」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-lead -->
+
+**答。**
+
+HSIZE、BSIZE 與 BADD 都依 CC.MPS；HMPRE／HMMIN／HMMINDS 則依 4 KiB units。兩套 unit 不能混用。HMDL 本身要 16-byte aligned，entries 固定 16 bytes；HMDLEC 是 entry count，不是 0's-based，也不是 byte length。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545
+
+### Q18. 「HMB command 與 descriptor：所有 size、count、address 都要對同一份 page math」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-rows -->
+
+**答。**
+
+- HMPRE/HMMIN — 4 KiB units — capability request
+- HSIZE/BSIZE — CC.MPS units — configured memory
+- HMDL address — 16-byte aligned — CDW13 low + CDW14 high
+- BADD — CC.MPS aligned — BSIZE=0 entry ignored
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545
+
+### Q19. 「HMB command 與 descriptor：所有 size、count、address 都要對同一份 page math」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-example -->
+
+**答。**
+
+CC.MPS=0、HSIZE=64 時是 256 KiB。HMDL=00000012_34567000h、HMDLEC=2，故 CDW13=34567000h、CDW14=00000012h、CDW15=2。兩個 BSIZE=32 的 ranges 各 128 KiB，合計 256 KiB。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545
+
+### Q20. 「HMB command 與 descriptor：所有 size、count、address 都要對同一份 page math」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-pitfall -->
+
+**答。**
+
+常見錯誤是把 HMPRE 直接填進 HSIZE，而裝置使用 8 KiB CC.MPS；或 HMDLEC=2 卻只 map 一個 16-byte entry。driver 應同時 log capability units、CC.MPS、每個 BADD/BSIZE、sum pages 與 command dwords。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545
+
+### Q21. 「HMB 跨 non-operational state、RTD3 與 reset 的三種不同邊界」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-lead -->
+
+**答。**
+
+HMNARE 是 access policy，HMNAR 是此刻 state；MR 則描述 reset／RTD3 後是否歸還完全相同的舊內容。這三者不能互換。Controller Level Reset 會讓 controller 丟失 HMB assignment，RTD3 前應先 release，而 non-operational restriction 只限制特定 state 下的 access。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-519, PDF 頁 542-545; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q22. 「HMB 跨 non-operational state、RTD3 與 reset 的三種不同邊界」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-rows -->
+
+**答。**
+
+- HMNARE — configured policy — 需要 CTRATT.HMBR
+- HMNAR — current restriction state — 可能因 operational state 而為 0
+- MR=1 — return identical old HMB — size/address/list/content 全相同
+- MR=0 — new undefined contents — controller 重新初始化
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-519, PDF 頁 542-545; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q23. 「HMB 跨 non-operational state、RTD3 與 reset 的三種不同邊界」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-example -->
+
+**答。**
+
+resume 後 allocator 給了相同 pages 但 HMDL 搬到新 address，就不能設 MR=1，因為 descriptor-list address 也必須完全相同。此時以 MR=0 當新 allocation 重新 enable。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-519, PDF 頁 542-545; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q24. 「HMB 跨 non-operational state、RTD3 與 reset 的三種不同邊界」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-pitfall -->
+
+**答。**
+
+不要只 hash data pages；MR validation 還要比較 HSIZE、HMDL address、HMDLEC、每個 descriptor 與全部 HMB contents。另把 NOPPME 當成 HMNARE 開關也是錯誤，規格明確說兩者無影響。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-519, PDF 頁 542-545; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770
+
+### Q25. 「DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-lead -->
+
+**答。**
+
+software emulator 與 vendor command passthrough 都在處理 untrusted encoded values。DSTRD 要套 2^(2+x) 才是 bytes；NDT／NDM 已是實際 dword count，要乘 4、不能再加 1。正確公式不同，但目的相同：在 MMIO 或 DMA 前先證明 address 與 length。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.3, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, 文件頁 199-201, 515-519, 733, 744, PDF 頁 225-227, 541-545, 759, 770
+
+### Q26. 「DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-rows -->
+
+**答。**
+
+- DSTRD — 2^(2+x) bytes — 0→4 B；4→64 B
+- NDT — value×4 data bytes — 不是 0's-based
+- NDM — value×4 metadata bytes — 獨立 buffer bound
+- VSCF/SNVSCF — format gate — Admin 與 I/O 分開
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.3, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, 文件頁 199-201, 515-519, 733, 744, PDF 頁 225-227, 541-545, 759, 770
+
+### Q27. 「DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-example -->
+
+**答。**
+
+emulator 設 DSTRD=4 得 64-byte stride，可讓每個 doorbell 使用離散 cacheline。vendor command 的 NDT=0100h 則是 256 dwords=1024 bytes，不是 1028 bytes。兩者都要同時保存 raw encoded value 與 decoded bytes。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.3, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, 文件頁 199-201, 515-519, 733, 744, PDF 頁 225-227, 541-545, 759, 770
+
+### Q28. 「DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-pitfall -->
+
+**答。**
+
+同一套 helper 若把所有 NVMe length 都當 0's-based，NDT／NDM 會多配置或多傳 4 bytes；若把 DSTRD 直接乘 4，又會在 DSTRD>0 時算錯。每個欄位的公式必須跟 Figure source 綁定。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770; 來源：NVME-BASE-2.4, Rev. 2.4, §8.2.3, 文件頁 744, PDF 頁 770; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, 文件頁 199-201, 515-519, 733, 744, PDF 頁 225-227, 541-545, 759, 770

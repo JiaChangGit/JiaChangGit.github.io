@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-08-28-nvme-base-ch4-en %})
+
 
 # NVMe Base 2.4 第 4 章：SQE、CQE、Status、PRP 與 SGL
 
@@ -484,7 +486,7 @@ Controller List 與 Namespace List 都先給出數量，再排列 identifier；�
 ### §4.1
 
 <details markdown="1">
-<summary><strong>Figure 92: Command Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 92: Command Dword 0</strong></summary>
 
 <!-- claim:BASE4-FIG-092-CLAIM figure-table:BASE4-FIG-092 -->
 
@@ -569,7 +571,7 @@ Figure 92 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASE4-FIG-093-CLAIM figure-table:BASE4-FIG-093 -->
 
@@ -654,7 +656,7 @@ Figure 93 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
 
 <!-- claim:BASE4-FIG-094-CLAIM figure-table:BASE4-FIG-094 -->
 
@@ -743,7 +745,7 @@ Figure 94 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 ### §4.2
 
 <details markdown="1">
-<summary><strong>Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 97: Common Completion Queue Entry Layout - Admin and All I/O Command Sets</strong></summary>
 
 <!-- claim:BASE4-FIG-097-CLAIM figure-table:BASE4-FIG-097 -->
 
@@ -828,7 +830,7 @@ Figure 97 位於 §4.2.1，在本流程中是「queue」檢查點。先由主教
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 98: Completion Queue Entry: DW 2</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 98: Completion Queue Entry: DW 2</strong></summary>
 
 <!-- claim:BASE4-FIG-098-CLAIM figure-table:BASE4-FIG-098 -->
 
@@ -913,7 +915,7 @@ Figure 98 位於 §4.2.1，在本流程中是「queue」檢查點。先由主教
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 99: Completion Queue Entry: DW 3</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 99: Completion Queue Entry: DW 3</strong></summary>
 
 <!-- claim:BASE4-FIG-099-CLAIM figure-table:BASE4-FIG-099 -->
 
@@ -997,7 +999,7 @@ Figure 99 位於 §4.2.1，在本流程中是「queue」檢查點。先由主教
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 101: Completion Queue Entry: Status Field</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 101: Completion Queue Entry: Status Field</strong></summary>
 
 <!-- claim:BASE4-FIG-101-CLAIM figure-table:BASE4-FIG-101 -->
 
@@ -1082,7 +1084,7 @@ Figure 101 位於 §4.2.3，在本流程中是「queue」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 102: Status Code - Status Code Type Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 102: Status Code - Status Code Type Values</strong></summary>
 
 <!-- claim:BASE4-FIG-102-CLAIM figure-table:BASE4-FIG-102 -->
 
@@ -1163,7 +1165,7 @@ Figure 102 位於 §4.2.3，在本流程中是「status」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 103: Status Code - Generic Command Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 103: Status Code - Generic Command Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-103-CLAIM figure-table:BASE4-FIG-103 -->
 
@@ -1248,7 +1250,7 @@ Figure 103 位於 §4.2.3，在本流程中是「status」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 104: Status Code - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 104: Status Code - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-104-CLAIM figure-table:BASE4-FIG-104 -->
 
@@ -1331,7 +1333,7 @@ Figure 104 位於 §4.2.3.2，在本流程中是「status」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 105: Status Code - Command Specific Status Values, I/O Command Set Specific</strong></summary>
 
 <!-- claim:BASE4-FIG-105-CLAIM figure-table:BASE4-FIG-105 -->
 
@@ -1414,7 +1416,7 @@ Figure 105 位於 §4.2.3.2，在本流程中是「status」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 107: Status Code - Media and Data Integrity Error Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 107: Status Code - Media and Data Integrity Error Values</strong></summary>
 
 <!-- claim:BASE4-FIG-107-CLAIM figure-table:BASE4-FIG-107 -->
 
@@ -1496,7 +1498,7 @@ Figure 107 位於 §4.2.3.2，在本流程中是「status」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 108: Status Code - Path Related Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 108: Status Code - Path Related Status Values</strong></summary>
 
 <!-- claim:BASE4-FIG-108-CLAIM figure-table:BASE4-FIG-108 -->
 
@@ -1578,7 +1580,7 @@ Figure 108 位於 §4.2.3.3，在本流程中是「status」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 109: Phase Tag bit Transition Example</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 109: Phase Tag bit Transition Example</strong></summary>
 
 <!-- claim:BASE4-FIG-109-CLAIM figure-table:BASE4-FIG-109 -->
 
@@ -1662,7 +1664,7 @@ Figure 109 位於 §4.2.4，在本流程中是「queue」檢查點。先由主�
 ### §4.3
 
 <details markdown="1">
-<summary><strong>Figure 110: PRP Entry Layout</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 110: PRP Entry Layout</strong></summary>
 
 <!-- claim:BASE4-FIG-110-CLAIM figure-table:BASE4-FIG-110 -->
 
@@ -1742,7 +1744,7 @@ Figure 110 位於 §4.3.1，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 111: PRP Entry - Page Base Address and Offset</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 111: PRP Entry - Page Base Address and Offset</strong></summary>
 
 <!-- claim:BASE4-FIG-111-CLAIM figure-table:BASE4-FIG-111 -->
 
@@ -1823,7 +1825,7 @@ Figure 111 位於 §4.3.1，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 112: PRP List Layout for Physically Contiguous Memory Pages</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 112: PRP List Layout for Physically Contiguous Memory Pages</strong></summary>
 
 <!-- claim:BASE4-FIG-112-CLAIM figure-table:BASE4-FIG-112 -->
 
@@ -1904,7 +1906,7 @@ Figure 112 位於 §4.3.1，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 113: PRP List Layout for Physically Non-Contiguous Memory Pages</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 113: PRP List Layout for Physically Non-Contiguous Memory Pages</strong></summary>
 
 <!-- claim:BASE4-FIG-113-CLAIM figure-table:BASE4-FIG-113 -->
 
@@ -1986,7 +1988,7 @@ Figure 113 位於 §4.3.1，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 114: SGL Validation Error Conditions</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 114: SGL Validation Error Conditions</strong></summary>
 
 <!-- claim:BASE4-FIG-114-CLAIM figure-table:BASE4-FIG-114 -->
 
@@ -2066,7 +2068,7 @@ Figure 114 位於 §4.3.2，在本流程中是「status」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 115: SGL Segment</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 115: SGL Segment</strong></summary>
 
 <!-- claim:BASE4-FIG-115-CLAIM figure-table:BASE4-FIG-115 -->
 
@@ -2146,7 +2148,7 @@ Figure 115 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 116: Generic SGL Descriptor Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 116: Generic SGL Descriptor Format</strong></summary>
 
 <!-- claim:BASE4-FIG-116-CLAIM figure-table:BASE4-FIG-116 -->
 
@@ -2231,7 +2233,7 @@ Figure 116 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 117: SGL Descriptor Type</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 117: SGL Descriptor Type</strong></summary>
 
 <!-- claim:BASE4-FIG-117-CLAIM figure-table:BASE4-FIG-117 -->
 
@@ -2311,7 +2313,7 @@ Figure 117 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 118: SGL Descriptor Sub Type Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 118: SGL Descriptor Sub Type Values</strong></summary>
 
 <!-- claim:BASE4-FIG-118-CLAIM figure-table:BASE4-FIG-118 -->
 
@@ -2391,7 +2393,7 @@ Figure 118 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 119: SGL Data Block descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 119: SGL Data Block descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-119-CLAIM figure-table:BASE4-FIG-119 -->
 
@@ -2476,7 +2478,7 @@ Figure 119 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 120: SGL Bit Bucket descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 120: SGL Bit Bucket descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-120-CLAIM figure-table:BASE4-FIG-120 -->
 
@@ -2561,7 +2563,7 @@ Figure 120 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 121: SGL Segment descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 121: SGL Segment descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-121-CLAIM figure-table:BASE4-FIG-121 -->
 
@@ -2646,7 +2648,7 @@ Figure 121 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 122: SGL Last Segment descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 122: SGL Last Segment descriptor</strong></summary>
 
 <!-- claim:BASE4-FIG-122-CLAIM figure-table:BASE4-FIG-122 -->
 
@@ -2731,7 +2733,7 @@ Figure 122 位於 §4.3.2，在本流程中是「memory」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 125: SGL Read Example</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 125: SGL Read Example</strong></summary>
 
 <!-- claim:BASE4-FIG-125-CLAIM figure-table:BASE4-FIG-125 -->
 
@@ -2815,7 +2817,7 @@ Figure 125 位於 §4.3.2.1，在本流程中是「memory」檢查點。先由�
 ### §4.4
 
 <details markdown="1">
-<summary><strong>Figure 126: Current Value after Reset with Scope of Entire NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 126: Current Value after Reset with Scope of Entire NVM Subsystem</strong></summary>
 
 <!-- claim:BASE4-FIG-126-CLAIM figure-table:BASE4-FIG-126 -->
 
@@ -2895,7 +2897,7 @@ Figure 126 位於 §4.4，在本流程中是「hierarchy」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 127: Current Value after Reset with Scope of Subset of the NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 127: Current Value after Reset with Scope of Subset of the NVM Subsystem</strong></summary>
 
 <!-- claim:BASE4-FIG-127-CLAIM figure-table:BASE4-FIG-127 -->
 
@@ -2979,7 +2981,7 @@ Figure 127 位於 §4.4，在本流程中是「hierarchy」檢查點。先由主
 ### §4.5
 
 <details markdown="1">
-<summary><strong>Figure 128: PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 128: PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</strong></summary>
 
 <!-- claim:BASE4-FIG-128-CLAIM figure-table:BASE4-FIG-128 -->
 
@@ -3061,7 +3063,7 @@ Figure 128 位於 §4.5.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 129: Serial Number (SN) and Model Number (MN)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 129: Serial Number (SN) and Model Number (MN)</strong></summary>
 
 <!-- claim:BASE4-FIG-129-CLAIM figure-table:BASE4-FIG-129 -->
 
@@ -3142,7 +3144,7 @@ Figure 129 位於 §4.5.2，在本流程中是「identifier」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 130: IEEE OUI Identifier (IEEE)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 130: IEEE OUI Identifier (IEEE)</strong></summary>
 
 <!-- claim:BASE4-FIG-130-CLAIM figure-table:BASE4-FIG-130 -->
 
@@ -3223,7 +3225,7 @@ Figure 130 位於 §4.5.3，在本流程中是「identifier」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 131: IEEE Extended Unique Identifier (EUI64), MA-L Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 131: IEEE Extended Unique Identifier (EUI64), MA-L Format</strong></summary>
 
 <!-- claim:BASE4-FIG-131-CLAIM figure-table:BASE4-FIG-131 -->
 
@@ -3307,7 +3309,7 @@ Figure 131 位於 §4.5.4，在本流程中是「identifier」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 132: IEEE Extended Unique Identifier (EUI64), OUI Identifier</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 132: IEEE Extended Unique Identifier (EUI64), OUI Identifier</strong></summary>
 
 <!-- claim:BASE4-FIG-132-CLAIM figure-table:BASE4-FIG-132 -->
 
@@ -3389,7 +3391,7 @@ Figure 132 位於 §4.5.4，在本流程中是「identifier」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 133: IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 133: IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</strong></summary>
 
 <!-- claim:BASE4-FIG-133-CLAIM figure-table:BASE4-FIG-133 -->
 
@@ -3474,7 +3476,7 @@ Figure 133 位於 §4.5.4，在本流程中是「identifier」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 134: MA-L similarity to WWN</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 134: MA-L similarity to WWN</strong></summary>
 
 <!-- claim:BASE4-FIG-134-CLAIM figure-table:BASE4-FIG-134 -->
 
@@ -3555,7 +3557,7 @@ Figure 134 位於 §4.5.4，在本流程中是「identifier」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 135: Namespace Globally Unique Identifier (NGUID)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 135: Namespace Globally Unique Identifier (NGUID)</strong></summary>
 
 <!-- claim:BASE4-FIG-135-CLAIM figure-table:BASE4-FIG-135 -->
 
@@ -3636,7 +3638,7 @@ Figure 135 位於 §4.5.5，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 136: Namespace Globally Unique Identifier (NGUID), OUI</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 136: Namespace Globally Unique Identifier (NGUID), OUI</strong></summary>
 
 <!-- claim:BASE4-FIG-136-CLAIM figure-table:BASE4-FIG-136 -->
 
@@ -3720,7 +3722,7 @@ Figure 136 位於 §4.5.5，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 137: Namespace Globally Unique Identifier</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 137: Namespace Globally Unique Identifier</strong></summary>
 
 <!-- claim:BASE4-FIG-137-CLAIM figure-table:BASE4-FIG-137 -->
 
@@ -3804,7 +3806,7 @@ Figure 137 位於 §4.5.5，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 138: Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 138: Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</strong></summary>
 
 <!-- claim:BASE4-FIG-138-CLAIM figure-table:BASE4-FIG-138 -->
 
@@ -3892,7 +3894,7 @@ Figure 138 位於 §4.5.5，在本流程中是「hierarchy」檢查點。先由�
 ### §4.6
 
 <details markdown="1">
-<summary><strong>Figure 139: Controller List Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 139: Controller List Format</strong></summary>
 
 <!-- claim:BASE4-FIG-139-CLAIM figure-table:BASE4-FIG-139 -->
 
@@ -3973,7 +3975,7 @@ Figure 139 位於 §4.6.1，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 140: Namespace List Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 140: Namespace List Format</strong></summary>
 
 <!-- claim:BASE4-FIG-140-CLAIM figure-table:BASE4-FIG-140 -->
 
@@ -4058,7 +4060,7 @@ Figure 140 位於 §4.6.2，在本流程中是「hierarchy」檢查點。先由�
 ### §4.8
 
 <details markdown="1">
-<summary><strong>Figure 142: UTF-8 Input Processing</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 142: UTF-8 Input Processing</strong></summary>
 
 <!-- claim:BASE4-FIG-142-CLAIM figure-table:BASE4-FIG-142 -->
 
@@ -4140,3 +4142,221 @@ Figure 142 位於 §4.8，在本流程中是「relationship」檢查點。先由
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 20 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先固定 64-byte SQE 骨架，再套 command-specific 欄位」的核心判讀規則是什麼？
+
+<!-- qa:base-ch4-sqe-lead -->
+
+**答。**
+
+Common SQE 先固定 CDW0、NSID、metadata/data pointer 與 CDW10-15 的位置。OPC 選 command，CID 建立完成關聯，PSDT 決定 DPTR 解讀方式；只有完成這些 common 欄位後，才應進入個別 command 的 CDW10-15 定義。Figures 92-94 是後續所有 command construction 的座標系。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140, PDF 頁 166; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q02. 「先固定 64-byte SQE 骨架，再套 command-specific 欄位」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch4-sqe-rows -->
+
+**答。**
+
+- CDW0 — command identity 與 data-pointer selector — 所有 commands 共用
+- NSID — namespace scope — 不用時必須依 command 定義清零或使用特殊值
+- MPTR/DPTR — metadata 與 data buffer — 由 PSDT 與 command 規則決定
+- CDW10-15 — command-specific payload — 不能跨 command 借用語意
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140, PDF 頁 166; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q03. 「先固定 64-byte SQE 骨架，再套 command-specific 欄位」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch4-sqe-example -->
+
+**答。**
+
+說明性範例：同一個 CID 可以在不同 SQ 使用，但同一 SQ 內 outstanding command 不可用相同 CID 造成識別衝突。driver 建 SQE 時以 (SQID,CID) 建 tracking key，填完全部欄位並完成必要 memory ordering 後才更新 SQ tail。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140, PDF 頁 166; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q04. 「先固定 64-byte SQE 骨架，再套 command-specific 欄位」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch4-sqe-pitfall -->
+
+**答。**
+
+保留 raw 64 bytes 的 SQE dump，並同時印出 decode 後欄位。只保存高階 command object，無法查出 bit shift、endianness、未清 reserved bits 或錯誤 PSDT。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140, PDF 頁 166; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q05. 「CQE 先解 ownership，再解 identity，最後解 status」的核心判讀規則是什麼？
+
+<!-- qa:base-ch4-cqe-status-lead -->
+
+**答。**
+
+host 先用 Phase Tag 判斷 CQ slot 是否是新 completion；確定 ownership 後再用 SQID/CID 找回 command，最後以 SCT 選 status 類別並解 SC、DNR、CRD。Figures 97-109 必須按這個順序讀，否則 stale CQE 或錯誤類別會被當成真實 command failure。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, 文件頁 144-145, PDF 頁 170-171; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184
+
+### Q06. 「CQE 先解 ownership，再解 identity，最後解 status」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch4-cqe-status-rows -->
+
+**答。**
+
+- SCT — status 大類 — 一定先解
+- SC — 類別內具體結果 — 不能脫離 SCT
+- DNR — 同 command 重試預期 — 不是永久硬體故障的同義詞
+- CRD — 建議 retry delay selector — 只有適用 status 才使用
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, 文件頁 144-145, PDF 頁 170-171; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184
+
+### Q07. 「CQE 先解 ownership，再解 identity，最後解 status」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch4-cqe-status-example -->
+
+**答。**
+
+說明性範例：SC 數值 02h 在不同 SCT 下可能屬於不同 status 表。正確 log 應保存完整 status field，再輸出 P、SCT、SC、DNR、CRD 與原始 16-bit value。只印『SC=2』不足以決定 recovery。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, 文件頁 144-145, PDF 頁 170-171; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184
+
+### Q08. 「CQE 先解 ownership，再解 identity，最後解 status」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch4-cqe-status-pitfall -->
+
+**答。**
+
+CQ wrap bug 常表現成重複完成或 command 永不完成。核對 producer/consumer 預期 phase、CQ head doorbell 與每個 slot 的 raw DW3；不要在驗證 Phase Tag 前讀取其他 CQE 欄位作決策。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, 文件頁 144-145, PDF 頁 170-171; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181; 來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184
+
+### Q09. 「PRP 計算：第一頁可有 offset，後續 entry 回到 page boundary」的核心判讀規則是什麼？
+
+<!-- qa:base-ch4-prp-lead -->
+
+**答。**
+
+PRP1 可以指向第一個 memory page 內任意 byte，能承載的第一段長度是 page_size - offset。若資料跨過第一頁，PRP2 依剩餘長度代表第二頁或 PRP List；後續 page address 必須符合 page alignment。Figures 110-113 是 address calculation，不只是 pointer 名稱表。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, 文件頁 158-159, PDF 頁 184-185; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q10. 「PRP 計算：第一頁可有 offset，後續 entry 回到 page boundary」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch4-prp-rows -->
+
+**答。**
+
+- 資料不跨第一頁 — 只需 PRP1 — PRP2 不承載下一段
+- 剩餘資料只需一頁 — PRP2 指第二個 data page — address page-aligned
+- 剩餘資料超過一頁 — PRP2 指 PRP List — list entries 再指 data pages
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, 文件頁 158-159, PDF 頁 184-185; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q11. 「PRP 計算：第一頁可有 offset，後續 entry 回到 page boundary」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch4-prp-example -->
+
+**答。**
+
+說明性範例：page size 4096 bytes，PRP1 offset 1000，transfer 9000 bytes。第一頁可放 4096-1000=3096 bytes，剩 5904 bytes，需要兩個後續 pages；因此 PRP2 應指向至少含兩個 data-page addresses 的 PRP List。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, 文件頁 158-159, PDF 頁 184-185; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q12. 「PRP 計算：第一頁可有 offset，後續 entry 回到 page boundary」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch4-prp-pitfall -->
+
+**答。**
+
+PRP debug dump 要包含 MPS、transfer length、PRP1 offset、每個 entry 的 physical address 與涵蓋 byte interval。只檢查 address 非零，抓不到 list/page 誤判、少一頁或把 virtual address 當 physical address。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, 文件頁 158-159, PDF 頁 184-185; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q13. 「SGL 是 typed descriptor chain，不是另一種 PRP List」的核心判讀規則是什麼？
+
+<!-- qa:base-ch4-sgl-lead -->
+
+**答。**
+
+SGL descriptor 同時包含 type/subtype、address 與 length；Data Block 指向資料，Segment／Last Segment 指向更多 descriptors，Bit Bucket 表示資料不需實際放入 memory。Figures 114-125 應先讀 type，再讀該 type 對 address/length 的語意，不能只沿 address 盲走。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q14. 「SGL 是 typed descriptor chain，不是另一種 PRP List」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch4-sgl-rows -->
+
+**答。**
+
+- PRP — page-based addresses — 第一頁 offset + 後續 page alignment
+- SGL Data Block — address + byte length — 資料區段可用 descriptor 表示
+- SGL Segment — address + descriptor-list length — 指向下一層 descriptors，不是 data
+- Bit Bucket — 只消耗 transfer length — 不代表可讀寫的 memory buffer
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q15. 「SGL 是 typed descriptor chain，不是另一種 PRP List」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch4-sgl-example -->
+
+**答。**
+
+說明性範例：requested transfer 為 12 KiB，兩個 Data Block descriptors 分別描述 8 KiB 與 4 KiB，總 length 正好覆蓋 request。若第一個 descriptor 實際是 Segment，8 KiB 便是 descriptor list 長度而非 data 長度，parser 的累加結果會完全錯誤。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q16. 「SGL 是 typed descriptor chain，不是另一種 PRP List」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch4-sgl-pitfall -->
+
+**答。**
+
+SGL validator 應同時限制 nesting、descriptor count、總 byte length、overflow 與 loop。每走一步先記 type/subtype，再決定 address 指向 data 或另一串 descriptors；順序顛倒會造成越界或循環。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168
+
+### Q17. 「Feature、identifier、list 與 UTF-8 都需要先驗證 scope」的核心判讀規則是什麼？
+
+<!-- qa:base-ch4-identity-text-lead -->
+
+**答。**
+
+Feature 的 current/default/saved value 是時間與 persistence scope；VID、SN、EUI64、NGUID、UUID 是 identity scope；Controller/Namespace List 是 count 與 array boundary；UTF-8 是 byte sequence 與 code-point boundary。Figures 126-142 表面分散，實際都在教 parser 不可脫離 scope。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 166-169, PDF 頁 192-195; 來源：NVME-BASE-2.4, Rev. 2.4, §4.5, 文件頁 169-172, PDF 頁 195-198; 來源：NVME-BASE-2.4, Rev. 2.4, §4.6, 文件頁 172-173, PDF 頁 198-199; 來源：NVME-BASE-2.4, Rev. 2.4, §4.8, 文件頁 175, PDF 頁 201
+
+### Q18. 「Feature、identifier、list 與 UTF-8 都需要先驗證 scope」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch4-identity-text-rows -->
+
+**答。**
+
+- VID/SSVID — vendor/subsystem vendor — 配置 authority 不同
+- SN/MN — 產品 instance/model 字串 — 需依固定欄位與 padding 解讀
+- EUI64/NGUID/UUID — 不同格式與 uniqueness scope — 不可只因長度相近互換
+- List — count + identifiers — 先驗證 count 再走訪
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 166-169, PDF 頁 192-195; 來源：NVME-BASE-2.4, Rev. 2.4, §4.5, 文件頁 169-172, PDF 頁 195-198; 來源：NVME-BASE-2.4, Rev. 2.4, §4.6, 文件頁 172-173, PDF 頁 198-199; 來源：NVME-BASE-2.4, Rev. 2.4, §4.8, 文件頁 175, PDF 頁 201
+
+### Q19. 「Feature、identifier、list 與 UTF-8 都需要先驗證 scope」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch4-identity-text-example -->
+
+**答。**
+
+說明性範例：Namespace List 的 count 宣稱有 5 個 IDs，但實際 buffer 只含 3 個完整 entries。安全 parser 以 buffer length 與格式上限先拒絕，不應因 count 欄位看似合法就讀取第四個 entry。UTF-8 固定欄位也同理：截斷在多-byte character 中間時不能接受半個字元。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 166-169, PDF 頁 192-195; 來源：NVME-BASE-2.4, Rev. 2.4, §4.5, 文件頁 169-172, PDF 頁 195-198; 來源：NVME-BASE-2.4, Rev. 2.4, §4.6, 文件頁 172-173, PDF 頁 198-199; 來源：NVME-BASE-2.4, Rev. 2.4, §4.8, 文件頁 175, PDF 頁 201
+
+### Q20. 「Feature、identifier、list 與 UTF-8 都需要先驗證 scope」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch4-identity-text-pitfall -->
+
+**答。**
+
+identity database 同時保存 value、type、width、source object 與 scope。只存十六進位字串會讓 EUI64、NGUID、UUID 或不同 controller 下的 identifier 發生假相等。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 166-169, PDF 頁 192-195; 來源：NVME-BASE-2.4, Rev. 2.4, §4.5, 文件頁 169-172, PDF 頁 195-198; 來源：NVME-BASE-2.4, Rev. 2.4, §4.6, 文件頁 172-173, PDF 頁 198-199; 來源：NVME-BASE-2.4, Rev. 2.4, §4.8, 文件頁 175, PDF 頁 201

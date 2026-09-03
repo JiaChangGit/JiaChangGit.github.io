@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-08-28-nvme-base-ch1-2-en %})
+
 
 # NVMe Base 2.4 第 1、2 章：規格語言、PCIe 佇列與儲存模型
 
@@ -399,7 +401,7 @@ multi-path I/O 是同一 host 到同一 namespace 的兩條以上獨立路徑；
 ### §1.1
 
 <details markdown="1">
-<summary><strong>Figure 1: NVMe Family of Specifications</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 1: NVMe Family of Specifications</strong></summary>
 
 <!-- claim:BASE12-FIG-001-CLAIM figure-table:BASE12-FIG-001 -->
 
@@ -483,7 +485,7 @@ Figure 1 位於 §1.1.1，在本流程中是「relationship」檢查點。先由
 ### §1.4
 
 <details markdown="1">
-<summary><strong>Figure 2: Decimal and Binary Units</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 2: Decimal and Binary Units</strong></summary>
 
 <!-- claim:BASE12-FIG-002-CLAIM figure-table:BASE12-FIG-002 -->
 
@@ -563,7 +565,7 @@ Figure 2 位於 §1.4.2，在本流程中是「relationship」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 3: Byte, Word, and Dword Relationships</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 3: Byte, Word, and Dword Relationships</strong></summary>
 
 <!-- claim:BASE12-FIG-003-CLAIM figure-table:BASE12-FIG-003 -->
 
@@ -647,7 +649,7 @@ Figure 3 位於 §1.4.3，在本流程中是「relationship」檢查點。先由
 ### §2
 
 <details markdown="1">
-<summary><strong>Figure 5: Types of NVMe Command Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 5: Types of NVMe Command Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-005-CLAIM figure-table:BASE12-FIG-005 -->
 
@@ -732,7 +734,7 @@ Figure 5 位於 §2，在本流程中是「relationship」檢查點。先由主�
 ### §2.1
 
 <details markdown="1">
-<summary><strong>Figure 6: Queue Pair Example, 1:1 Mapping</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 6: Queue Pair Example, 1:1 Mapping</strong></summary>
 
 <!-- claim:BASE12-FIG-006-CLAIM figure-table:BASE12-FIG-006 -->
 
@@ -813,7 +815,7 @@ Figure 6 位於 §2.1，在本流程中是「queue」檢查點。先由主教學
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 7: Queue Pair Example, n:1 Mapping</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 7: Queue Pair Example, n:1 Mapping</strong></summary>
 
 <!-- claim:BASE12-FIG-007-CLAIM figure-table:BASE12-FIG-007 -->
 
@@ -897,7 +899,7 @@ Figure 7 位於 §2.1，在本流程中是「queue」檢查點。先由主教學
 ### §2.3
 
 <details markdown="1">
-<summary><strong>Figure 11: Simple NVM Storage Hierarchy with NVM Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 11: Simple NVM Storage Hierarchy with NVM Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-011-CLAIM figure-table:BASE12-FIG-011 -->
 
@@ -978,7 +980,7 @@ Figure 11 位於 §2.3.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group</strong></summary>
 
 <!-- claim:BASE12-FIG-012-CLAIM figure-table:BASE12-FIG-012 -->
 
@@ -1059,7 +1061,7 @@ Figure 12 位於 §2.3.1，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
 
 <!-- claim:BASE12-FIG-013-CLAIM figure-table:BASE12-FIG-013 -->
 
@@ -1140,7 +1142,7 @@ Figure 13 位於 §2.3.1，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 14: Complex NVM Storage Hierarchy with NVM Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 14: Complex NVM Storage Hierarchy with NVM Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-014-CLAIM figure-table:BASE12-FIG-014 -->
 
@@ -1221,7 +1223,7 @@ Figure 14 位於 §2.3.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
 
 <!-- claim:BASE12-FIG-015-CLAIM figure-table:BASE12-FIG-015 -->
 
@@ -1302,7 +1304,7 @@ Figure 15 位於 §2.3.1，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 16: Single-Namespace NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 16: Single-Namespace NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-016-CLAIM figure-table:BASE12-FIG-016 -->
 
@@ -1383,7 +1385,7 @@ Figure 16 位於 §2.3.3，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 17: Two-Namespace NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 17: Two-Namespace NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-017-CLAIM figure-table:BASE12-FIG-017 -->
 
@@ -1464,7 +1466,7 @@ Figure 17 位於 §2.3.3，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 18: Complex NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 18: Complex NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-018-CLAIM figure-table:BASE12-FIG-018 -->
 
@@ -1548,7 +1550,7 @@ Figure 18 位於 §2.3.3，在本流程中是「hierarchy」檢查點。先由�
 ### §2.4
 
 <details markdown="1">
-<summary><strong>Figure 19: NVM Express Controller with Two Namespaces</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 19: NVM Express Controller with Two Namespaces</strong></summary>
 
 <!-- claim:BASE12-FIG-019-CLAIM figure-table:BASE12-FIG-019 -->
 
@@ -1629,7 +1631,7 @@ Figure 19 位於 §2.4.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 20: NVM Subsystem with Two Controllers and One Port</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 20: NVM Subsystem with Two Controllers and One Port</strong></summary>
 
 <!-- claim:BASE12-FIG-020-CLAIM figure-table:BASE12-FIG-020 -->
 
@@ -1710,7 +1712,7 @@ Figure 20 位於 §2.4.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 21: NVM Subsystem with Two Controllers and Two Ports</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 21: NVM Subsystem with Two Controllers and Two Ports</strong></summary>
 
 <!-- claim:BASE12-FIG-021-CLAIM figure-table:BASE12-FIG-021 -->
 
@@ -1791,7 +1793,7 @@ Figure 21 位於 §2.4.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</strong></summary>
 
 <!-- claim:BASE12-FIG-022-CLAIM figure-table:BASE12-FIG-022 -->
 
@@ -1874,3 +1876,176 @@ Figure 22 位於 §2.4.1，在本流程中是「relationship」檢查點。先�
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 16 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先找對規格：不要把文件關係看成 protocol stack」的核心判讀規則是什麼？
+
+<!-- qa:base-ch1-2-family-lead -->
+
+**答。**
+
+遇到一個 command、register 或資料格式時，第一個問題不是『它在哪一頁』，而是『哪一份規格擁有這個定義』。Base 提供通用協定，Transport 補上 PCIe 綁定，I/O Command Set 再定義 namespace 資料操作。Figure 1 的框線代表適用關係，不代表封包一定逐層穿過這些方塊。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59
+
+### Q02. 「先找對規格：不要把文件關係看成 protocol stack」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch1-2-family-rows -->
+
+**答。**
+
+- Base — 共通 command、queue、status 與資料結構 — 不要假設它定義所有 PCIe register 細節
+- PCIe Transport — BAR、MMIO、doorbell、interrupt 與 PCIe-specific 行為 — 衝突時不能覆蓋 Base
+- I/O Command Set — 特定 namespace I/O command 與延伸資料結構 — 不負責重新定義 transport
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59
+
+### Q03. 「先找對規格：不要把文件關係看成 protocol stack」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch1-2-family-example -->
+
+**答。**
+
+要實作 Firmware Image Download：先在 Base 找 command 欄位與 completion status，再到 PCIe Transport 確認 Admin command 的資料指標與 memory access 限制。若未閱讀 I/O Command Set，仍可理解此 Admin command；反過來只讀 PCIe Transport 則得不到完整 command 語意。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59
+
+### Q04. 「先找對規格：不要把文件關係看成 protocol stack」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch1-2-family-pitfall -->
+
+**答。**
+
+常見錯誤是看到 Figure 1 的上下位置便推論『上層一定呼叫下層』。正確做法是把每一個技術論點標成 owner、extension 或 binding，再引用真正擁有 normative requirement 的來源。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59
+
+### Q05. 「先解碼數值，再解讀欄位」的核心判讀規則是什麼？
+
+<!-- qa:base-ch1-2-numbers-lead -->
+
+**答。**
+
+NVMe 的數字同時帶有進位、單位、寬度、endian 與是否 0's-based 等資訊。欄位值看似相同，只要其中一項不同，實際意義就可能完全不同。Figure 2 與 Figure 3 是後續所有 register、SQE、CQE 與 log page 計算的共同底座。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31; 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31
+
+### Q06. 「先解碼數值，再解讀欄位」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch1-2-numbers-rows -->
+
+**答。**
+
+- 1000 — 十進位 1000 — 若無 b/h 後綴則按十進位
+- 1000b — 二進位 8 — b 是 radix，不是 bit 單位
+- 1000h — 十六進位 4096 — 常見於 offset 與 register value
+- NUMD=0 — 實際 1 dword — 只有欄位明載 0's-based 才加 1
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31; 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31
+
+### Q07. 「先解碼數值，再解讀欄位」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch1-2-numbers-example -->
+
+**答。**
+
+說明性範例：一個 512-byte transfer 含 512 ÷ 4 = 128 dwords。若 NUMD 是 0's-based，編碼值為 128 - 1 = 127 = 007Fh。若錯把 007Fh 當成 byte count，buffer 會短少；若忘記減 1，controller 會被要求傳輸 129 dwords。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31; 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31
+
+### Q08. 「先解碼數值，再解讀欄位」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch1-2-numbers-pitfall -->
+
+**答。**
+
+Debug 時把五項資訊寫在同一行：raw value、bit range、radix、unit、encoding rule。只印出十進位結果而沒有原始 hex，通常不足以定位 off-by-one、byte swap 或單位錯誤。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31; 來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31
+
+### Q09. 「Queue pair 是所有 command flow 的交通規則」的核心判讀規則是什麼？
+
+<!-- qa:base-ch1-2-queues-lead -->
+
+**答。**
+
+host 不把 command 直接寫進 controller。host 先在記憶體中的 SQE 建好命令，再公布新的 SQ tail；controller 取走命令後執行，最後把 CQE 放進 CQ。Figure 6 的 1:1 與 Figure 7 的 n:1 差異在於多個 SQ 是否共用同一個 CQ，不是 command 是否共用同一個 SQE。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61
+
+### Q10. 「Queue pair 是所有 command flow 的交通規則」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch1-2-queues-rows -->
+
+**答。**
+
+- Admin queue pair — 一個 Admin SQ 對一個 Admin CQ — 初始化與管理路徑
+- I/O 1:1 — 一個 I/O SQ 對一個 I/O CQ — 追蹤簡單、隔離清楚
+- I/O n:1 — 多個 I/O SQ 共用一個 I/O CQ — 完成路徑整併，仍以 SQID/CID 找回命令
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61
+
+### Q11. 「Queue pair 是所有 command flow 的交通規則」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch1-2-queues-example -->
+
+**答。**
+
+說明性範例：SQ 3 與 SQ 4 共用 CQ 2。兩筆 command 都使用 CID 5 仍可區分，因唯一鍵是 (SQID, CID)：(3,5) 與 (4,5)。只用 CID 建 outstanding-command map，會把其中一筆 completion 配錯。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61
+
+### Q12. 「Queue pair 是所有 command flow 的交通規則」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch1-2-queues-pitfall -->
+
+**答。**
+
+Queue bug 要分三個 ownership：誰寫 entry、誰推進 pointer、誰能重用 slot。把『doorbell 已寫』誤當成『command 已完成』，或在 CQE 尚未消費前重用資源，都是典型生命週期錯誤。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61
+
+### Q13. 「從 namespace 往上建立儲存與路徑 Mental Model」的核心判讀規則是什麼？
+
+<!-- qa:base-ch1-2-objects-lead -->
+
+**答。**
+
+namespace 是 host 實際存取的格式化容量，但容量管理、耐久度、回收與路徑都發生在不同層級。Figures 11-18 用 NVM Set 或 Reclaim Group 描述容量包含關係，Figures 19-22 則改看 controller、port、path 與 PCIe Function。兩組圖回答不同問題，不能疊成單一樹狀圖後便認為每層都一對一。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63
+
+### Q14. 「從 namespace 往上建立儲存與路徑 Mental Model」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch1-2-objects-rows -->
+
+**答。**
+
+- multi-path I/O — 同一 host、同一 namespace、兩條以上獨立路徑 — 重點是 path redundancy
+- namespace sharing — 兩個以上 hosts 存取同一 shared namespace — 重點是 host ownership 與 coordination
+- SR-IOV — 一個 PCIe 裝置呈現 PF/VF — PCIe Function 不必等同獨立 subsystem
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63
+
+### Q15. 「從 namespace 往上建立儲存與路徑 Mental Model」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch1-2-objects-example -->
+
+**答。**
+
+說明性範例：host A 經 controller 1 與 controller 2 都能存取 namespace X，這是 multi-path。host B 也經 controller 2 存取同一 namespace X，才同時構成 namespace sharing。NSID 在兩個 controller 上可能不同，因此跨 controller 比對時應先確認 namespace identity，而不是直接比較 NSID 數值。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63
+
+### Q16. 「從 namespace 往上建立儲存與路徑 Mental Model」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch1-2-objects-pitfall -->
+
+**答。**
+
+Debug 圖上同時標出 object ID、owner 與 scope。『controller 看得到 NSID』只表示存在一條存取關係，不表示該 controller 擁有底層媒體，也不表示另一個 controller 使用相同 NSID。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59; 來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63; 來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63

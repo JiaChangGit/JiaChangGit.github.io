@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-08-28-nvme-base-ch3-en %})
+
 
 # NVMe Base 2.4 第 3 章：Controller、Queue、初始化與重設
 
@@ -517,7 +519,7 @@ privileged action 會影響其他 host 或 controller；firmware update 分成 i
 ### §3.1
 
 <details markdown="1">
-<summary><strong>Figure 23: Controller Types</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 23: Controller Types</strong></summary>
 
 <!-- claim:BASE3-FIG-023-CLAIM figure-table:BASE3-FIG-023 -->
 
@@ -597,7 +599,7 @@ Figure 23 位於 §3.1.3，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 24: NVM Subsystem with Three I/O Controllers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 24: NVM Subsystem with Three I/O Controllers</strong></summary>
 
 <!-- claim:BASE3-FIG-024-CLAIM figure-table:BASE3-FIG-024 -->
 
@@ -679,7 +681,7 @@ Figure 24 位於 §3.1.3.1，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 25: NVM Subsystem with One Administrative and Two I/O Controllers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 25: NVM Subsystem with One Administrative and Two I/O Controllers</strong></summary>
 
 <!-- claim:BASE3-FIG-025-CLAIM figure-table:BASE3-FIG-025 -->
 
@@ -761,7 +763,7 @@ Figure 25 位於 §3.1.3.2，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 26: NVM Subsystem with One Administrative Controller</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 26: NVM Subsystem with One Administrative Controller</strong></summary>
 
 <!-- claim:BASE3-FIG-026-CLAIM figure-table:BASE3-FIG-026 -->
 
@@ -843,7 +845,7 @@ Figure 26 位於 §3.1.3.2，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 27: Controller IDs FFF0h to FFFFh</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 27: Controller IDs FFF0h to FFFFh</strong></summary>
 
 <!-- claim:BASE3-FIG-027-CLAIM figure-table:BASE3-FIG-027 -->
 
@@ -924,7 +926,7 @@ Figure 27 位於 §3.1.3.3，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 28: Admin Command Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 28: Admin Command Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-028-CLAIM figure-table:BASE3-FIG-028 -->
 
@@ -1007,7 +1009,7 @@ Figure 28 位於 §3.1.3.3.3，在本流程中是「relationship」檢查點。�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 30: Common I/O Command Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 30: Common I/O Command Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-030-CLAIM figure-table:BASE3-FIG-030 -->
 
@@ -1088,7 +1090,7 @@ Figure 30 位於 §3.1.3.4，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 31: Log Page Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 31: Log Page Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-031-CLAIM figure-table:BASE3-FIG-031 -->
 
@@ -1173,7 +1175,7 @@ Figure 31 位於 §3.1.3.4，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 32: Feature Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 32: Feature Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-032-CLAIM figure-table:BASE3-FIG-032 -->
 
@@ -1258,7 +1260,7 @@ Figure 32 位於 §3.1.3.5，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 33: Property Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 33: Property Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-033-CLAIM figure-table:BASE3-FIG-033 -->
 
@@ -1343,7 +1345,7 @@ Figure 33 位於 §3.1.4，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 34: Memory-Based Property Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 34: Memory-Based Property Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-034-CLAIM figure-table:BASE3-FIG-034 -->
 
@@ -1424,7 +1426,7 @@ Figure 34 位於 §3.1.4，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
 
 <!-- claim:BASE3-FIG-036-CLAIM figure-table:BASE3-FIG-036 -->
 
@@ -1509,7 +1511,7 @@ Figure 36 位於 §3.1.4.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 37: Specification Version Descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 37: Specification Version Descriptor</strong></summary>
 
 <!-- claim:BASE3-FIG-037-CLAIM figure-table:BASE3-FIG-037 -->
 
@@ -1591,7 +1593,7 @@ Figure 37 位於 §3.1.4.1，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 38: NVM Express Base Specification Version Property Reset Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 38: NVM Express Base Specification Version Property Reset Values</strong></summary>
 
 <!-- claim:BASE3-FIG-038-CLAIM figure-table:BASE3-FIG-038 -->
 
@@ -1673,7 +1675,7 @@ Figure 38 位於 §3.1.4.1，在本流程中是「state」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 39: Offset Ch: INTMS - Interrupt Mask Set</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 39: Offset Ch: INTMS - Interrupt Mask Set</strong></summary>
 
 <!-- claim:BASE3-FIG-039-CLAIM figure-table:BASE3-FIG-039 -->
 
@@ -1757,7 +1759,7 @@ Figure 39 位於 §3.1.4.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 40: Offset 10h: INTMC - Interrupt Mask Clear</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 40: Offset 10h: INTMC - Interrupt Mask Clear</strong></summary>
 
 <!-- claim:BASE3-FIG-040-CLAIM figure-table:BASE3-FIG-040 -->
 
@@ -1840,7 +1842,7 @@ Figure 40 位於 §3.1.4.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 41: Offset 14h: CC - Controller Configuration</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 41: Offset 14h: CC - Controller Configuration</strong></summary>
 
 <!-- claim:BASE3-FIG-041-CLAIM figure-table:BASE3-FIG-041 -->
 
@@ -1925,7 +1927,7 @@ Figure 41 位於 §3.1.4.5，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 42: Offset 1Ch: CSTS - Controller Status</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 42: Offset 1Ch: CSTS - Controller Status</strong></summary>
 
 <!-- claim:BASE3-FIG-042-CLAIM figure-table:BASE3-FIG-042 -->
 
@@ -2010,7 +2012,7 @@ Figure 42 位於 §3.1.4.5，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 43: Offset 20h: NSSR - NVM Subsystem Reset</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 43: Offset 20h: NSSR - NVM Subsystem Reset</strong></summary>
 
 <!-- claim:BASE3-FIG-043-CLAIM figure-table:BASE3-FIG-043 -->
 
@@ -2092,7 +2094,7 @@ Figure 43 位於 §3.1.4.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 44: Offset 24h: AQA - Admin Queue Attributes</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 44: Offset 24h: AQA - Admin Queue Attributes</strong></summary>
 
 <!-- claim:BASE3-FIG-044-CLAIM figure-table:BASE3-FIG-044 -->
 
@@ -2174,7 +2176,7 @@ Figure 44 位於 §3.1.4.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address</strong></summary>
 
 <!-- claim:BASE3-FIG-045-CLAIM figure-table:BASE3-FIG-045 -->
 
@@ -2257,7 +2259,7 @@ Figure 45 位於 §3.1.4.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address</strong></summary>
 
 <!-- claim:BASE3-FIG-046-CLAIM figure-table:BASE3-FIG-046 -->
 
@@ -2340,7 +2342,7 @@ Figure 46 位於 §3.1.4.9，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location</strong></summary>
 
 <!-- claim:BASE3-FIG-047-CLAIM figure-table:BASE3-FIG-047 -->
 
@@ -2425,7 +2427,7 @@ Figure 47 位於 §3.1.4.9，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size</strong></summary>
 
 <!-- claim:BASE3-FIG-048-CLAIM figure-table:BASE3-FIG-048 -->
 
@@ -2510,7 +2512,7 @@ Figure 48 位於 §3.1.4.11，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 49: Offset 40h: BPINFO - Boot Partition Information</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 49: Offset 40h: BPINFO - Boot Partition Information</strong></summary>
 
 <!-- claim:BASE3-FIG-049-CLAIM figure-table:BASE3-FIG-049 -->
 
@@ -2595,7 +2597,7 @@ Figure 49 位於 §3.1.4.12，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select</strong></summary>
 
 <!-- claim:BASE3-FIG-050-CLAIM figure-table:BASE3-FIG-050 -->
 
@@ -2678,7 +2680,7 @@ Figure 50 位於 §3.1.4.12，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location</strong></summary>
 
 <!-- claim:BASE3-FIG-051-CLAIM figure-table:BASE3-FIG-051 -->
 
@@ -2759,7 +2761,7 @@ Figure 51 位於 §3.1.4.14，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</strong></summary>
 
 <!-- claim:BASE3-FIG-052-CLAIM figure-table:BASE3-FIG-052 -->
 
@@ -2844,7 +2846,7 @@ Figure 52 位於 §3.1.4.14，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status</strong></summary>
 
 <!-- claim:BASE3-FIG-053-CLAIM figure-table:BASE3-FIG-053 -->
 
@@ -2929,7 +2931,7 @@ Figure 53 位於 §3.1.4.16，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</strong></summary>
 
 <!-- claim:BASE3-FIG-054-CLAIM figure-table:BASE3-FIG-054 -->
 
@@ -3014,7 +3016,7 @@ Figure 54 位於 §3.1.4.16，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</strong></summary>
 
 <!-- claim:BASE3-FIG-055-CLAIM figure-table:BASE3-FIG-055 -->
 
@@ -3099,7 +3101,7 @@ Figure 55 位於 §3.1.4.19，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown</strong></summary>
 
 <!-- claim:BASE3-FIG-056-CLAIM figure-table:BASE3-FIG-056 -->
 
@@ -3182,7 +3184,7 @@ Figure 56 位於 §3.1.4.19，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 57: Offset 68h: CRTO - Controller Ready Timeouts</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 57: Offset 68h: CRTO - Controller Ready Timeouts</strong></summary>
 
 <!-- claim:BASE3-FIG-057-CLAIM figure-table:BASE3-FIG-057 -->
 
@@ -3267,7 +3269,7 @@ Figure 57 位於 §3.1.4.21，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities</strong></summary>
 
 <!-- claim:BASE3-FIG-058-CLAIM figure-table:BASE3-FIG-058 -->
 
@@ -3352,7 +3354,7 @@ Figure 58 位於 §3.1.4.21，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control</strong></summary>
 
 <!-- claim:BASE3-FIG-059-CLAIM figure-table:BASE3-FIG-059 -->
 
@@ -3434,7 +3436,7 @@ Figure 59 位於 §3.1.4.22，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status</strong></summary>
 
 <!-- claim:BASE3-FIG-060-CLAIM figure-table:BASE3-FIG-060 -->
 
@@ -3519,7 +3521,7 @@ Figure 60 位於 §3.1.4.23，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</strong></summary>
 
 <!-- claim:BASE3-FIG-061-CLAIM figure-table:BASE3-FIG-061 -->
 
@@ -3603,7 +3605,7 @@ Figure 61 位於 §3.1.4.24，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</strong></summary>
 
 <!-- claim:BASE3-FIG-062-CLAIM figure-table:BASE3-FIG-062 -->
 
@@ -3688,7 +3690,7 @@ Figure 62 位於 §3.1.4.24，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</strong></summary>
 
 <!-- claim:BASE3-FIG-063-CLAIM figure-table:BASE3-FIG-063 -->
 
@@ -3771,7 +3773,7 @@ Figure 63 位於 §3.1.4.26，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</strong></summary>
 
 <!-- claim:BASE3-FIG-064-CLAIM figure-table:BASE3-FIG-064 -->
 
@@ -3856,7 +3858,7 @@ Figure 64 位於 §3.1.4.26，在本流程中是「register」檢查點。先由
 ### §3.2
 
 <details markdown="1">
-<summary><strong>Figure 65: NSID Types and Relationship to Namespace</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 65: NSID Types and Relationship to Namespace</strong></summary>
 
 <!-- claim:BASE3-FIG-065-CLAIM figure-table:BASE3-FIG-065 -->
 
@@ -3937,7 +3939,7 @@ Figure 65 位於 §3.2.1，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 66: NSID Types</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 66: NSID Types</strong></summary>
 
 <!-- claim:BASE3-FIG-066-CLAIM figure-table:BASE3-FIG-066 -->
 
@@ -4017,7 +4019,7 @@ Figure 66 位於 §3.2.1.5，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 67: NVM Sets and Associated Namespaces</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 67: NVM Sets and Associated Namespaces</strong></summary>
 
 <!-- claim:BASE3-FIG-067-CLAIM figure-table:BASE3-FIG-067 -->
 
@@ -4098,7 +4100,7 @@ Figure 67 位於 §3.2.2，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 68: NVM Set Aware Admin Commands</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 68: NVM Set Aware Admin Commands</strong></summary>
 
 <!-- claim:BASE3-FIG-068-CLAIM figure-table:BASE3-FIG-068 -->
 
@@ -4179,7 +4181,7 @@ Figure 68 位於 §3.2.2，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 69: NVM Sets and Associated Namespaces</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 69: NVM Sets and Associated Namespaces</strong></summary>
 
 <!-- claim:BASE3-FIG-069-CLAIM figure-table:BASE3-FIG-069 -->
 
@@ -4260,7 +4262,7 @@ Figure 69 位於 §3.2.3，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 70: Flexible Data Placement Logical View of Non-Volatile Storage</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 70: Flexible Data Placement Logical View of Non-Volatile Storage</strong></summary>
 
 <!-- claim:BASE3-FIG-070-CLAIM figure-table:BASE3-FIG-070 -->
 
@@ -4340,7 +4342,7 @@ Figure 70 位於 §3.2.4，在本流程中是「relationship」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 71: Example 1 Domain Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 71: Example 1 Domain Structure</strong></summary>
 
 <!-- claim:BASE3-FIG-071-CLAIM figure-table:BASE3-FIG-071 -->
 
@@ -4424,7 +4426,7 @@ Figure 71 位於 §3.2.5.1，在本流程中是「hierarchy」檢查點。先由
 ### §3.3
 
 <details markdown="1">
-<summary><strong>Figure 73: Empty Queue Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 73: Empty Queue Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-073-CLAIM figure-table:BASE3-FIG-073 -->
 
@@ -4504,7 +4506,7 @@ Figure 73 位於 §3.3.1.4，在本流程中是「queue」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 74: Full Queue Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 74: Full Queue Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-074-CLAIM figure-table:BASE3-FIG-074 -->
 
@@ -4588,7 +4590,7 @@ Figure 74 位於 §3.3.1.4，在本流程中是「queue」檢查點。先由主�
 ### §3.4
 
 <details markdown="1">
-<summary><strong>Figure 80: Round Robin Arbitration</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 80: Round Robin Arbitration</strong></summary>
 
 <!-- claim:BASE3-FIG-080-CLAIM figure-table:BASE3-FIG-080 -->
 
@@ -4668,7 +4670,7 @@ Figure 80 位於 §3.4.4，在本流程中是「queue」檢查點。先由主教
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 81: Weighted Round Robin with Urgent Priority Class Arbitration</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 81: Weighted Round Robin with Urgent Priority Class Arbitration</strong></summary>
 
 <!-- claim:BASE3-FIG-081-CLAIM figure-table:BASE3-FIG-081 -->
 
@@ -4752,7 +4754,7 @@ Figure 81 位於 §3.4.4.2，在本流程中是「queue」檢查點。先由主�
 ### §3.5
 
 <details markdown="1">
-<summary><strong>Figure 84: Admin Commands Permitted to Return a Status Code of Admin Command Media Not</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 84: Admin Commands Permitted to Return a Status Code of Admin Command Media Not</strong></summary>
 
 <!-- claim:BASE3-FIG-084-CLAIM figure-table:BASE3-FIG-084 -->
 
@@ -4841,7 +4843,7 @@ Figure 84 位於 §3.5.3，在本流程中是「status」檢查點。先由主�
 ### §3.6
 
 <details markdown="1">
-<summary><strong>Figure 85: Shutdown Processing Interactions</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 85: Shutdown Processing Interactions</strong></summary>
 
 <!-- claim:BASE3-FIG-085-CLAIM figure-table:BASE3-FIG-085 -->
 
@@ -4925,7 +4927,7 @@ Figure 85 位於 §3.6，在本流程中是「state」檢查點。先由主教�
 ### §3.8
 
 <details markdown="1">
-<summary><strong>Figure 86: Simple NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 86: Simple NVM Subsystem</strong></summary>
 
 <!-- claim:BASE3-FIG-086-CLAIM figure-table:BASE3-FIG-086 -->
 
@@ -5005,7 +5007,7 @@ Figure 86 位於 §3.8.2，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 87: Vertically-Organized NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 87: Vertically-Organized NVM Subsystem</strong></summary>
 
 <!-- claim:BASE3-FIG-087-CLAIM figure-table:BASE3-FIG-087 -->
 
@@ -5085,7 +5087,7 @@ Figure 87 位於 §3.8.2.2，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 88: Horizontally-Organized Dual NAND NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 88: Horizontally-Organized Dual NAND NVM Subsystem</strong></summary>
 
 <!-- claim:BASE3-FIG-088-CLAIM figure-table:BASE3-FIG-088 -->
 
@@ -5166,7 +5168,7 @@ Figure 88 位於 §3.8.2.3，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 89: Capacity Information Field Usage</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 89: Capacity Information Field Usage</strong></summary>
 
 <!-- claim:BASE3-FIG-089-CLAIM figure-table:BASE3-FIG-089 -->
 
@@ -5254,7 +5256,7 @@ Figure 89 位於 §3.8.3，在本流程中是「hierarchy」檢查點。先由�
 ### §3.9
 
 <details markdown="1">
-<summary><strong>Figure 90: Detecting Timeout Takes up to 2 * KATT</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 90: Detecting Timeout Takes up to 2 * KATT</strong></summary>
 
 <!-- claim:BASE3-FIG-090-CLAIM figure-table:BASE3-FIG-090 -->
 
@@ -5338,7 +5340,7 @@ Figure 90 位於 §3.9.4.1，在本流程中是「state」檢查點。先由主�
 ### §3.10
 
 <details markdown="1">
-<summary><strong>Figure 91: Example Privileged Action Admin Commands</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 91: Example Privileged Action Admin Commands</strong></summary>
 
 <!-- claim:BASE3-FIG-091-CLAIM figure-table:BASE3-FIG-091 -->
 
@@ -5420,3 +5422,220 @@ Figure 91 位於 §3.10，在本流程中是「relationship」檢查點。先由
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 20 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先分清 controller 類型、ID 與能力」的核心判讀規則是什麼？
+
+<!-- qa:base-ch3-identity-lead -->
+
+**答。**
+
+Controller type 回答『能做哪類工作』，Controller ID 回答『這是哪一個 controller』，support-requirement Figure 回答『在這個上下文中 command／log／feature 的支援強度』。Figures 23-32 應連續閱讀，但三種問題不能合併成一個布林值。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q02. 「先分清 controller 類型、ID 與能力」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch3-identity-rows -->
+
+**答。**
+
+- I/O controller — 可執行使用者資料 I/O — 仍需逐項查 optional capability
+- Administrative controller — 管理用途、無資料 I/O command — 不能因有 Admin Queue 就當成 I/O controller
+- support marker — 針對 row 與上下文描述強度 — 不能脫離 column／footnote 解讀
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q03. 「先分清 controller 類型、ID 與能力」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch3-identity-example -->
+
+**答。**
+
+說明性範例：偵測到一個 Administrative controller 時，軟體仍會建立 Admin SQ/CQ 並執行管理 command，但不應把 namespace data path 掛到它。若只用『存在 Admin Queue』判斷 controller type，I/O 與 Administrative controller 會被錯誤歸成同類。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q04. 「先分清 controller 類型、ID 與能力」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch3-identity-pitfall -->
+
+**答。**
+
+能力矩陣解析器要保留 row、column、footnote 與 controller type 四個維度。把 O、M 或條件註記抽成全域 capability，會在另一種 controller 或 command-set context 中得到錯誤結論。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q05. 「從 CAP 到 CSTS.RDY：初始化是一條有前置條件的狀態機」的核心判讀規則是什麼？
+
+<!-- qa:base-ch3-properties-init-lead -->
+
+**答。**
+
+Properties 不是彼此獨立的 register 清單。CAP 先限制 page size、queue 與 timeout 能力；AQA、ASQ、ACQ 建立 Admin queues；CC 選擇設定並以 EN 啟動；最後由 CSTS.RDY 宣告 controller 已能正常處理命令。Figures 33-46 與 Figure 57 應沿這條因果鏈閱讀。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139
+
+### Q06. 「從 CAP 到 CSTS.RDY：初始化是一條有前置條件的狀態機」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch3-properties-init-rows -->
+
+**答。**
+
+- CAP — 能力與界限 — 在寫設定前讀
+- AQA/ASQ/ACQ — Admin queue 大小與位址 — 需符合 page/alignment 能力
+- CC — host 選擇與 enable — 寫入值要與 CAP 相容
+- CSTS — controller 回報狀態 — RDY/CFS/SHST 不可互相替代
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139
+
+### Q07. 「從 CAP 到 CSTS.RDY：初始化是一條有前置條件的狀態機」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch3-properties-init-example -->
+
+**答。**
+
+說明性範例：host 選擇 4 KiB MPS，ASQ 與 ACQ base address 因而必須依該 page size 對齊。寫 CC.EN=1 後，host 以 CAP／CRTO 指定的時間界限等待 CSTS.RDY=1；若 CFS 先出現，流程應進入 error recovery，而不是繼續建立 I/O queues。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139
+
+### Q08. 「從 CAP 到 CSTS.RDY：初始化是一條有前置條件的狀態機」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch3-properties-init-pitfall -->
+
+**答。**
+
+初始化 log 至少保留每次 property access 的 offset、width、raw value 與 timestamp。只記『enable failed』無法分辨不相容設定、位址對齊、CFS 或單純尚未超過 ready timeout。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139
+
+### Q09. 「Ring buffer、doorbell 與 arbitration 要分三層理解」的核心判讀規則是什麼？
+
+<!-- qa:base-ch3-queue-arbitration-lead -->
+
+**答。**
+
+Figure 73/74 說明 queue 的 empty/full 判定，Figure 80/81 說明多個 SQ 競爭 controller 服務時的 arbitration。前者處理單一 ring 的 head/tail 狀態，後者處理多個 candidate SQ 的選擇；priority 屬於 SQ，不是每筆 command 自帶的獨立優先權。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1, 文件頁 88-91, PDF 頁 114-117; 來源：NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, 文件頁 101-105, PDF 頁 127-131; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q10. 「Ring buffer、doorbell 與 arbitration 要分三層理解」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch3-queue-arbitration-rows -->
+
+**答。**
+
+- empty — head == tail 且 phase／ownership 符合 empty 定義 — 沒有可取走 entry
+- full — 下一個 tail 會追上尚未釋放 head — host 不得覆寫 entry
+- Round Robin — 候選 SQ 輪流取得服務 — 不代表 command completion 依提交順序
+- Weighted RR + Urgent — priority class 與 weight 影響選擇 — 仍需依適用設定解讀
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1, 文件頁 88-91, PDF 頁 114-117; 來源：NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, 文件頁 101-105, PDF 頁 127-131; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q11. 「Ring buffer、doorbell 與 arbitration 要分三層理解」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch3-queue-arbitration-example -->
+
+**答。**
+
+說明性範例：深度 4 的 SQ 只有四個 slot，但 full/empty 判定還需要 ownership 規則；不能只用 tail-head 的無號差值。若 SQ 1 與 SQ 2 同時有 command，arbiter 先選 SQ 2 也不代表 SQ 2 的 command 一定先完成，因 command 執行時間仍可能不同。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1, 文件頁 88-91, PDF 頁 114-117; 來源：NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, 文件頁 101-105, PDF 頁 127-131; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q12. 「Ring buffer、doorbell 與 arbitration 要分三層理解」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch3-queue-arbitration-pitfall -->
+
+**答。**
+
+Debug 時分開記錄 software tail、doorbell value、controller-consumed head 與 completion SQHD。四個值混成一個『queue index』會遮蔽 lost doorbell、stale head、slot reuse 與 arbitration starvation 等不同根因。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1, 文件頁 88-91, PDF 頁 114-117; 來源：NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, 文件頁 101-105, PDF 頁 127-131; 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66
+
+### Q13. 「CMB、PMR、capacity 與 namespace 是不同資源視角」的核心判讀規則是什麼？
+
+<!-- qa:base-ch3-memory-capacity-lead -->
+
+**答。**
+
+CMB/PMR properties 描述 controller 暴露的 memory region 位置、能力與狀態；capacity Figures 86-89 描述 NVM subsystem 各層級可用或已配置容量。兩者都談 memory，卻不是同一種空間，也不能用同一個『剩餘容量』欄位合併。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155; 來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111
+
+### Q14. 「CMB、PMR、capacity 與 namespace 是不同資源視角」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch3-memory-capacity-rows -->
+
+**答。**
+
+- CMB — controller-provided working memory — 是否能放 SQ/CQ/list/data 由能力 bit 決定
+- PMR — 具有持久性語意的 region — enable、ready、error 與 address control 要一起看
+- capacity model — subsystem／group／set／namespace 的容量 — 不同層級欄位不可直接相減
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155; 來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111
+
+### Q15. 「CMB、PMR、capacity 與 namespace 是不同資源視角」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch3-memory-capacity-example -->
+
+**答。**
+
+說明性範例：CMB size 足以容納一個 SQ，不代表 controller 的 namespace 多出同樣容量；前者是 queue/data structure 的放置資源，後者才是 host 可格式化與存取的非揮發性容量。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155; 來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111
+
+### Q16. 「CMB、PMR、capacity 與 namespace 是不同資源視角」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch3-memory-capacity-pitfall -->
+
+**答。**
+
+Memory-map debug 圖至少用不同區塊標 host memory、CMB、PMR 與 namespace media。若 address 屬於 CMB/PMR，還要保留 BIR、BAR base、offset、enable 與 ready 狀態，不能只印最終 CPU virtual address。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80; 來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155; 來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111
+
+### Q17. 「Shutdown、reset、Keep Alive 與 firmware update 的 recovery 邊界」的核心判讀規則是什麼？
+
+<!-- qa:base-ch3-lifecycle-lead -->
+
+**答。**
+
+Lifecycle 事件的共同問題是『哪一層狀態仍有效』。Normal shutdown 由 CC.SHN/CSTS.SHST 協調，reset 分成 subsystem/controller/queue 層級，Keep Alive 監測 host-controller 存活，firmware activation 又可能要求特定 reset。相同的『暫時無法處理 command』症狀，不代表可以使用相同 recovery。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146; 來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151; 來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161; 來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164
+
+### Q18. 「Shutdown、reset、Keep Alive 與 firmware update 的 recovery 邊界」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-ch3-lifecycle-rows -->
+
+**答。**
+
+- normal shutdown — 保護性停止與狀態回報 — 看 SHN/SHST
+- controller reset — controller 層級狀態 — queue 是否保留要依 reset 類型
+- NVM subsystem reset — 更大 subsystem scope — 可能影響多個 controllers
+- Keep Alive timeout — liveness failure — 不能直接等同 media failure
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146; 來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151; 來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161; 來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164
+
+### Q19. 「Shutdown、reset、Keep Alive 與 firmware update 的 recovery 邊界」如何套用到具體數值或操作情境？
+
+<!-- qa:base-ch3-lifecycle-example -->
+
+**答。**
+
+說明性範例：host 要做 normal shutdown 時先停止提交新 I/O，設定 CC.SHN，再監看 CSTS.SHST。若等待期間發生 controller fatal status，後續 recovery 應按 reset scope 重建資源，而不是假設 normal shutdown 已完成。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146; 來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151; 來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161; 來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164
+
+### Q20. 「Shutdown、reset、Keep Alive 與 firmware update 的 recovery 邊界」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-ch3-lifecycle-pitfall -->
+
+**答。**
+
+Recovery trace 必須記錄 trigger、scope、開始/完成 timestamp、timeout source 與重建清單。只記『reset device』會讓 queue-level、controller-level 與 subsystem-level state loss 無法區分。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146; 來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151; 來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161; 來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164

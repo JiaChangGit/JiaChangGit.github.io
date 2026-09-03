@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-09-02-nvme-base-self-test-namespace-management-zh-tw %})
+
 
 # NVMe Base 2.4: Device Self-test and Namespace Management
 
@@ -47,7 +49,7 @@ Every abbreviation below is introduced before it is used in the slide narrative.
 |---|---|---|
 | `DST` | Device Self-test, a background operation using diagnostic segments to check a controller and optional namespace media. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 353-358, 614, PDF pp. 379-384, 640 |
 | `OACS.DSTS` | The Device Self-test Supported bit in Optional Admin Command Support, gating availability of the command. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 353-358, 614, PDF pp. 379-384, 640 |
-| `STC` | Self-test Code, the CDW10 nibble selecting short, extended, refresh, vendor-specific, or abort action. | NVME-BASE-2.4 Rev. 2.4, §5.2.6, printed pp. 199-200, PDF pp. 225-226 |
+| `STC` | Self-test Code is the Device Self-test CDW10 action nibble; STC in a result entry instead means Status Code and is gated by SCVLD. | NVME-BASE-2.4 Rev. 2.4, §5.2.6, printed pp. 199-200, PDF pp. 225-226 |
 | `DSTP` | Device Self-test Parameter, CDW15 with vendor-defined meaning only for vendor-specific STC Eh. | NVME-BASE-2.4 Rev. 2.4, §5.2.6, printed pp. 199-200, PDF pp. 225-226 |
 | `DSTO` | Device Self-test Options, the Identify Controller field reporting refresh and concurrency options. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 353-358, 614, PDF pp. 379-384, 640 |
 | `SDSO` | Single Device Self-test Operation, the bit selecting one subsystem-wide operation or one per controller. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 353-358, 614, PDF pp. 379-384, 640 |
@@ -69,7 +71,7 @@ Every abbreviation below is introduced before it is used in the slide narrative.
 | `CNS` | Controller or Namespace Structure, the Identify-command field selecting which data structure is returned. | NVME-BASE-2.4 Rev. 2.4, §8.1.17.1, printed pp. 661-662, PDF pp. 687-688 |
 | `DPTR` | Data Pointer, the SQE field identifying a command data buffer. | NVME-BASE-2.4 Rev. 2.4, §5.2.25, printed pp. 446-448, PDF pp. 472-474 |
 | `PRP` | Physical Region Page, a pointer format describing a host-addressable data buffer in memory-page units. | NVME-BASE-2.4 Rev. 2.4, §5.2.24, printed pp. 444-445, PDF pp. 470-471 |
-| `SEL` | Select, the Get Features field choosing current, default, saved, or supported-capabilities view. | NVME-BASE-2.4 Rev. 2.4, §5.2.25, printed pp. 446-448, PDF pp. 472-474 |
+| `SEL` | Select; the Namespace Management create/delete/restore selector, distinct from Get Features SEL. | NVME-BASE-2.4 Rev. 2.4, §5.2.25, printed pp. 446-448, PDF pp. 472-474 |
 | `CSI` | Command Set Identifier, selecting the I/O Command Set context for a command or log page. | NVME-BASE-2.4 Rev. 2.4, §5.2.25, printed pp. 446-448, PDF pp. 472-474 |
 | `SIOCS` | Specified I/O Command Set, the Base create-buffer region at bytes 0:511 containing fields for the selected I/O Command Set. | NVME-BASE-2.4 Rev. 2.4, §5.2.25, printed pp. 446-448, PDF pp. 472-474 |
 | `FLBAS` | Formatted LBA Size, selecting the LBA format used by a namespace and related metadata-placement control. | NVME-NVM-CS-1.3 Rev. 1.3, §4.1.6.4, printed pp. 111-113, PDF pp. 111-113 |
@@ -155,7 +157,7 @@ VALIDATE fail ──→ return to RAW evidence
 VALIDATE fail ──→ return to RAW evidence
 ```
 
-**Question answered:** Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List in the initial region. The host selects operation and command set through SEL/CSI, then fills size, capacity, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates.
+**Question answered:** Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List within the first 768 bytes. The host selects operation and command set through SEL/CSI, then fills NSZE, NCAP, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates.
 
 **Supporting Figures:** Figure 36, Figure 93, Figure 127, Figure 134, Figure 445, Figure 446, Figure 447, Figure 448
 
@@ -342,7 +344,7 @@ Record addressable and consumed
 
 ### Module 04: Create payload: the Base envelope contains 512 NVM-specific bytes
 
-**Explanation.** Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List in the initial region. The host selects operation and command set through SEL/CSI, then fills size, capacity, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates.
+**Explanation.** Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List within the first 768 bytes. The host selects operation and command set through SEL/CSI, then fills NSZE, NCAP, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates.
 
 ```text
 SEL=Create, CSI=00h
@@ -861,7 +863,7 @@ A complete trace retains OACS.NMS and limits, common Identify and granularity sn
 
 ## Figure index
 
-This report introduces all 39 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item. 19 Figures are outside the main section range but are included because the requested text directly references them.
+This report introduces all 39 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item. 19 Figures are outside the main section range but are included to explain cited dependencies and necessary prerequisites.
 
 - [§4.1](#section-4-1)
 
@@ -880,7 +882,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §4.1
 
 <details markdown="1">
-<summary><strong>Figure 111: Self-test Results Data Structure</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 111: Self-test Results Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-111-CLAIM figure-table:BASENSMGMT-FIG-111 -->
 
@@ -963,7 +965,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 134: Namespace Management - Host Specified Fields</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 134: Namespace Management - Host Specified Fields</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-134-CLAIM figure-table:BASENSMGMT-FIG-134 -->
 
@@ -1052,7 +1054,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §5.2
 
 <details markdown="1">
-<summary><strong>Figure 176: Device Self-test Namespace Test Action</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 176: Device Self-test Namespace Test Action</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-176-CLAIM figure-table:BASENSMGMT-FIG-176 -->
 
@@ -1134,7 +1136,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 177: Device Self-test - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 177: Device Self-test - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-177-CLAIM figure-table:BASENSMGMT-FIG-177 -->
 
@@ -1218,7 +1220,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 178: Device Self-test - Command Dword 15</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 178: Device Self-test - Command Dword 15</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-178-CLAIM figure-table:BASENSMGMT-FIG-178 -->
 
@@ -1298,7 +1300,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 179: Device Self-test - Command Processing</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 179: Device Self-test - Command Processing</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-179-CLAIM figure-table:BASENSMGMT-FIG-179 -->
 
@@ -1380,7 +1382,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-180-CLAIM figure-table:BASENSMGMT-FIG-180 -->
 
@@ -1461,7 +1463,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 218: Device Self-test Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 218: Device Self-test Log Page</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-218-CLAIM figure-table:BASENSMGMT-FIG-218 -->
 
@@ -1544,7 +1546,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 219: Self-test Result Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 219: Self-test Result Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-219-CLAIM figure-table:BASENSMGMT-FIG-219 -->
 
@@ -1629,7 +1631,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 442: Namespace Attachment - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 442: Namespace Attachment - Data Pointer</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-442-CLAIM figure-table:BASENSMGMT-FIG-442 -->
 
@@ -1711,7 +1713,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 443: Namespace Attachment - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 443: Namespace Attachment - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-443-CLAIM figure-table:BASENSMGMT-FIG-443 -->
 
@@ -1792,7 +1794,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 444: Namespace Attachment - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 444: Namespace Attachment - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-444-CLAIM figure-table:BASENSMGMT-FIG-444 -->
 
@@ -1875,7 +1877,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 445: Namespace Management - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 445: Namespace Management - Data Pointer</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-445-CLAIM figure-table:BASENSMGMT-FIG-445 -->
 
@@ -1956,7 +1958,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 446: Namespace Management - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 446: Namespace Management - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-446-CLAIM figure-table:BASENSMGMT-FIG-446 -->
 
@@ -2038,7 +2040,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 447: Namespace Management - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 447: Namespace Management - Command Dword 11</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-447-CLAIM figure-table:BASENSMGMT-FIG-447 -->
 
@@ -2119,7 +2121,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 448: Namespace Management - Data Structure for Create</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 448: Namespace Management - Data Structure for Create</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-448-CLAIM figure-table:BASENSMGMT-FIG-448 -->
 
@@ -2201,7 +2203,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 449: Namespace Management - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 449: Namespace Management - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-449-CLAIM figure-table:BASENSMGMT-FIG-449 -->
 
@@ -2284,7 +2286,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 450: Namespace Management - Completion Queue Entry Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 450: Namespace Management - Completion Queue Entry Dword 0</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-450-CLAIM figure-table:BASENSMGMT-FIG-450 -->
 
@@ -2369,7 +2371,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 ### §8.1
 
 <details markdown="1">
-<summary><strong>Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-700-CLAIM figure-table:BASENSMGMT-FIG-700 -->
 
@@ -2452,7 +2454,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-701-CLAIM figure-table:BASENSMGMT-FIG-701 -->
 
@@ -2541,7 +2543,7 @@ This is a structure or capability field table. Locate it using the structure bas
 ### Referenced Figure dependencies (outside the main section range)
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-036-CLAIM figure-table:BASENSMGMT-FIG-036 -->
 
@@ -2622,7 +2624,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-093-CLAIM figure-table:BASENSMGMT-FIG-093 -->
 
@@ -2705,7 +2707,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 123: Identify - Identify Namespace Data Structure, NVM Command Set</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 123: Identify - Identify Namespace Data Structure, NVM Command Set</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-123-CLAIM figure-table:BASENSMGMT-FIG-123 -->
 
@@ -2790,7 +2792,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 127: NVM Command Set I/O Command Set Specific Identify Namespace Data Structure</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 127: NVM Command Set I/O Command Set Specific Identify Namespace Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-127-CLAIM figure-table:BASENSMGMT-FIG-127 -->
 
@@ -2872,7 +2874,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 132: Namespace Granularity List</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 132: Namespace Granularity List</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-132-CLAIM figure-table:BASENSMGMT-FIG-132 -->
 
@@ -2955,7 +2957,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 133: Namespace Granularity Descriptor</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 133: Namespace Granularity Descriptor</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-133-CLAIM figure-table:BASENSMGMT-FIG-133 -->
 
@@ -3037,7 +3039,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 139: Controller List Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 139: Controller List Format</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-139-CLAIM figure-table:BASENSMGMT-FIG-139 -->
 
@@ -3119,7 +3121,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 155: Asynchronous Event Information - Notice</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 155: Asynchronous Event Information - Notice</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-155-CLAIM figure-table:BASENSMGMT-FIG-155 -->
 
@@ -3202,7 +3204,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 203: Get Log Page - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 203: Get Log Page - Data Pointer</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-203-CLAIM figure-table:BASENSMGMT-FIG-203 -->
 
@@ -3283,7 +3285,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 204: Get Log Page - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 204: Get Log Page - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-204-CLAIM figure-table:BASENSMGMT-FIG-204 -->
 
@@ -3366,7 +3368,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 205: Get Log Page - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 205: Get Log Page - Command Dword 11</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-205-CLAIM figure-table:BASENSMGMT-FIG-205 -->
 
@@ -3447,7 +3449,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 206: Get Log Page - Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 206: Get Log Page - Command Dword 12</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-206-CLAIM figure-table:BASENSMGMT-FIG-206 -->
 
@@ -3528,7 +3530,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 207: Get Log Page - Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 207: Get Log Page - Command Dword 13</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-207-CLAIM figure-table:BASENSMGMT-FIG-207 -->
 
@@ -3608,7 +3610,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 208: Get Log Page - Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 208: Get Log Page - Command Dword 14</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-208-CLAIM figure-table:BASENSMGMT-FIG-208 -->
 
@@ -3690,7 +3692,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-209-CLAIM figure-table:BASENSMGMT-FIG-209 -->
 
@@ -3773,7 +3775,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 304: Manufacturer Default Configuration Status Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 304: Manufacturer Default Configuration Status Log Page</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-304-CLAIM figure-table:BASENSMGMT-FIG-304 -->
 
@@ -3854,7 +3856,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify Controller Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify Controller Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-338-CLAIM figure-table:BASENSMGMT-FIG-338 -->
 
@@ -3939,7 +3941,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 346: Identify - I/O Command Set Independent Identify Namespace Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 346: Identify - I/O Command Set Independent Identify Namespace Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-346-CLAIM figure-table:BASENSMGMT-FIG-346 -->
 
@@ -4021,7 +4023,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 474: Asynchronous Event Configuration - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 474: Asynchronous Event Configuration - Command Dword 11</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-474-CLAIM figure-table:BASENSMGMT-FIG-474 -->
 
@@ -4104,3 +4106,351 @@ This is a command-construction field table. Build the common SQE, locate the spe
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+32 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Separate two lifecycles: diagnostic evidence and namespace provisioning”?
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-lead -->
+
+**Answer.**
+
+Device Self-test and Namespace Management both use Admin commands but mutate different objects. Self-test creates a background operation: its command CQE is only an acceptance point and LID 06h proves the outcome. Namespace Management creates or removes a namespace object: Create returns an NSID, but Attachment is still required to establish controller access. Separating the tracks explains why completion is not always the endpoint.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q02. Which concepts or conditions must be distinguished in “Separate two lifecycles: diagnostic evidence and namespace provisioning”?
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-rows -->
+
+**Answer.**
+
+- Self-test object — Background operation — CQE→current state→history result
+- Namespace object — Allocated capacity and format — Create CQE DW0→NSID
+- Access relationship — Namespace-to-controller attachment — Attach CQE→Active NSID list
+- Inventory evidence — Allocated/Active lists — Refresh Identify after AEN
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q03. How does “Separate two lifecycles: diagnostic evidence and namespace provisioning” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-example -->
+
+**Answer.**
+
+A Create completion returning NSID 7 proves that namespace 7 exists, but it is still unattached and cannot immediately receive I/O. Likewise, a successful Self-test start CQE proves only that an operation began, not that the test passed. Each CQE needs later evidence, but the evidence types differ.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q04. What misinterpretation is most likely in “Separate two lifecycles: diagnostic evidence and namespace provisioning”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-pitfall -->
+
+**Answer.**
+
+Do not summarize the flow as a successful Admin command. A trace labels the object changed, the boundary crossed by success, and the LID, Identify, or event evidence still outstanding.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q05. What is the governing interpretation for “Device Self-test: from capability gate to an LID 06h result”?
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-lead -->
+
+**Answer.**
+
+Use OACS.DSTS, EDSTT, and DSTO.SDSO to establish support, timing, and concurrency expectations before constructing the command from NSID and STC. After the CQE, poll DSTOS/DSTCS. At operation end, RDS1 is created before current status is cleared, preventing software from losing the final result during a transition window.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 353-358, 614, PDF pages 379-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-232, PDF pages 255-258; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76
+
+### Q06. Which concepts or conditions must be distinguished in “Device Self-test: from capability gate to an LID 06h result”?
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-rows -->
+
+**Answer.**
+
+- NSID=0 — Controller only — No namespace media
+- Active NSID — One namespace — Separate invalid/inactive status
+- NSID=FFFFFFFFh — Accessible attached set at start — The set is not tracked dynamically
+- STC=Fh — Abort current operation — Write result before clearing current
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 353-358, 614, PDF pages 379-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-232, PDF pages 255-258; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76
+
+### Q07. How does “Device Self-test: from capability gate to an LID 06h result” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-example -->
+
+**Answer.**
+
+For a complete LID 06h read, 564/4 is 141 dwords and NUMD is 141−1=140=008Ch. With RAE zero, LSP zero, and LID 06h, CDW10 is 008C0006h. If RDS1.DSTS is 17h, DSTC 1h means short and DSTR 7h is the condition that permits reading SEGN.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 353-358, 614, PDF pages 379-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-232, PDF pages 255-258; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76
+
+### Q08. What misinterpretation is most likely in “Device Self-test: from capability gate to an LID 06h result”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-pitfall -->
+
+**Answer.**
+
+A nonzero FLBA is not valid evidence. Decode DSTR, check FVLD and NSIDVLD, and only then apply the NVM Command Set meaning for FLBA bytes 23:16. Preserve the raw 28-byte entry.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 353-358, 614, PDF pages 379-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-232, PDF pages 255-258; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76
+
+### Q09. What is the governing interpretation for “Put three capacity values and two granularities into one byte model”?
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-lead -->
+
+**Answer.**
+
+NSZE, NCAP, and NUSE use logical blocks; NSG and NCG use bytes; and actual NVM consumption may be rounded to an allocation unit. Convert with the selected LBA size before comparing. NSZE≥NCAP≥NUSE is a capacity relationship, while NSG/NCG divisibility is a waste-minimization hint, not the same kind of gate.
+
+> Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13-14, PDF pages 13-14; Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13, PDF pages 13; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165
+
+### Q10. Which concepts or conditions must be distinguished in “Put three capacity values and two granularities into one byte model”?
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-rows -->
+
+**Answer.**
+
+- NSZE — Logical blocks — LBA 0 through NSZE−1
+- NCAP — Logical blocks — Maximum allocatable capacity
+- NUSE — Logical blocks — Tracked when THINP is one
+- NSG/NCG — Bytes — Preferred hint, not a sole abort gate
+
+> Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13-14, PDF pages 13-14; Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13, PDF pages 13; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165
+
+### Q11. How does “Put three capacity values and two granularities into one byte model” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-example -->
+
+**Answer.**
+
+With 4-KiB LBAs, NSG 1 MiB, and NCG 2 MiB, NSZE=NCAP=1024 represents 4 MiB, is divisible by both hints, and is fully provisioned. NSZE=NCAP=1000 represents 3,906.25 KiB and violates both hints. Allocation capacity may be wasted, but an otherwise valid create is not aborted solely for this reason.
+
+> Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13-14, PDF pages 13-14; Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13, PDF pages 13; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165
+
+### Q12. What misinterpretation is most likely in “Put three capacity values and two granularities into one byte model”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-pitfall -->
+
+**Answer.**
+
+A common error divides NSZE 1024 directly by NSG 1 MiB or treats a granularity violation as Invalid Field. The worksheet lists raw blocks, LBA bytes, converted bytes, remainder, and the controller allocation unit.
+
+> Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13-14, PDF pages 13-14; Source: NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, printed pages 13, PDF pages 13; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165; Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.8, printed pages 165, PDF pages 165
+
+### Q13. What is the governing interpretation for “Create payload: the Base envelope contains 512 NVM-specific bytes”?
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-lead -->
+
+**Answer.**
+
+Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List within the first 768 bytes. The host selects operation and command set through SEL/CSI, then fills NSZE, NCAP, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, printed pages 446-448, PDF pages 472-474; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, printed pages 111-113, PDF pages 111-113; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687
+
+### Q14. Which concepts or conditions must be distinguished in “Create payload: the Base envelope contains 512 NVM-specific bytes”?
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-rows -->
+
+**Answer.**
+
+- Base 0:511 — SIOCS — NVM-specific create data
+- Base 512:1023 — Reserved — Host clears to zero
+- Base 1024:4095 — Vendor Specific — Do not invent a meaning
+- NVM 512:767 — Placement Handle List — Validated only when FDP is enabled
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, printed pages 446-448, PDF pages 472-474; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, printed pages 111-113, PDF pages 111-113; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687
+
+### Q15. How does “Create payload: the Base envelope contains 512 NVM-specific bytes” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-example -->
+
+**Answer.**
+
+To create a 4-MiB namespace with 4096-byte LBAs, set NSZE and NCAP to 1024, so bytes 7:0 and 15:8 each contain 0000000000000400h. NVMSETID zero with ENDGID five lets the controller select an NVM Set inside Endurance Group five; NVMSETID seven with ENDGID zero is Invalid Field.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, printed pages 446-448, PDF pages 472-474; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, printed pages 111-113, PDF pages 111-113; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687
+
+### Q16. What misinterpretation is most likely in “Create payload: the Base envelope contains 512 NVM-specific bytes”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-pitfall -->
+
+**Answer.**
+
+Do not dump only Figure 134 values. Debug evidence also retains LBA-format capability, LBAFEE, Figure 127 masking limits, FDP enablement, the complete 4096-byte buffer, and a reserved-byte scan.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, printed pages 446-448, PDF pages 472-474; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, printed pages 111-113, PDF pages 111-113; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 661, PDF pages 687
+
+### Q17. What is the governing interpretation for “Namespace lifecycle: Create builds the object; Attach establishes access”?
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-lead -->
+
+**Answer.**
+
+Create, Attach, Detach, and Delete change two dimensions: whether the namespace is allocated and whether a controller is attached. After Create returns NSID in CQE DW0, the object is allocated but no controller is attached. A Controller List in Attach establishes access. Detach preserves capacity, while Delete makes the NSID unallocated.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q18. Which concepts or conditions must be distinguished in “Namespace lifecycle: Create builds the object; Attach establishes access”?
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-rows -->
+
+**Answer.**
+
+- Create — Object/capacity — Does not attach automatically
+- Attach — Access relationship — Controller List may contain multiple CNTLIDs
+- Detach — Controller-local active state — Namespace remains allocated
+- Delete — Subsystem inventory — NSID becomes unallocated
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q19. How does “Namespace lifecycle: Create builds the object; Attach establishes access” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-example -->
+
+**Answer.**
+
+Create returns NSID seven. A Controller List names controllers three and five through NUMCIDS and its entries. After Attach, NSID seven is active on both. Detaching only controller three leaves it inactive there and active on controller five, while the namespace remains allocated.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q20. What misinterpretation is most likely in “Namespace lifecycle: Create builds the object; Attach establishes access”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-pitfall -->
+
+**Answer.**
+
+Equal NSID values do not imply equal active state on every controller. Inventory and I/O traces carry controller ID, while attachment limits separately check Domain MAXDNA and per-controller MAXCNA.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q21. What is the governing interpretation for “Delete and Restore Default: empty inventory before crossing the configuration boundary”?
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-lead -->
+
+**Answer.**
+
+Delete All and Restore Default are different operations. Delete with NSID FFFFFFFFh succeeds even when no namespaces exist. Restore Default requires RDNCS, SEL 2h, and an empty subsystem inventory. Before successful completion, the controller applies defaults for the current active firmware image and sets DNCS to one.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446, 448, 662, PDF pages 472, 474, 688; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, printed pages 447-448, PDF pages 473-474; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689
+
+### Q22. Which concepts or conditions must be distinguished in “Delete and Restore Default: empty inventory before crossing the configuration boundary”?
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-rows -->
+
+**Answer.**
+
+- Delete one — NSID=target — Object is gone after success
+- Delete all — NSID=FFFFFFFFh — Succeeds with zero namespaces
+- Restore — SEL=2h, NSID ignored — Remaining namespace→Sequence Error
+- Post-condition — DNCS=1 — Refresh Identify for actual defaults
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446, 448, 662, PDF pages 472, 474, 688; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, printed pages 447-448, PDF pages 473-474; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689
+
+### Q23. How does “Delete and Restore Default: empty inventory before crossing the configuration boundary” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-example -->
+
+**Answer.**
+
+Detach NSID seven and delete it, then confirm that the Allocated Namespace ID list is empty. If RDNCS is one, issue SEL 2h with NSID zero. After the successful CQE, read DNCS one and re-enumerate default namespaces. DNCS is state evidence, not a complete description of the default layout.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446, 448, 662, PDF pages 472, 474, 688; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, printed pages 447-448, PDF pages 473-474; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689
+
+### Q24. What misinterpretation is most likely in “Delete and Restore Default: empty inventory before crossing the configuration boundary”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-pitfall -->
+
+**Answer.**
+
+A Delete All CQE does not prove Restore completion, and DNCS alone does not reveal default NSZE or format. Preserve operation selector, inventory snapshot, CQE, and post-operation Identify at each stage.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446, 448, 662, PDF pages 472, 474, 688; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, printed pages 447-448, PDF pages 473-474; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689
+
+### Q25. What is the governing interpretation for “Namespace events say inventory changed; Identify says what it became”?
+
+<!-- qa:base-self-test-namespace-management-namespace-events-lead -->
+
+**Answer.**
+
+Attached and Allocated Namespace Attribute Changed notices correspond to different inventories. Create normally changes the Allocated list, Attach/Detach changes the Active list, and Delete may change both. The event code is not the new list, so the host reissues Identify with the appropriate CNS. Delete reporting also distinguishes the processing controller from other controllers.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q26. Which concepts or conditions must be distinguished in “Namespace events say inventory changed; Identify says what it became”?
+
+<!-- qa:base-self-test-namespace-management-namespace-events-rows -->
+
+**Answer.**
+
+- CNS 02h — Active Namespace ID list — Attached notice
+- CNS 10h — Allocated Namespace ID list — Allocated notice
+- Create — Allocated change — New NSID is not yet active
+- Delete — Allocated and possibly Active — Processing-controller rule differs
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q27. How does “Namespace events say inventory changed; Identify says what it became” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-namespace-events-example -->
+
+**Answer.**
+
+Controller three processes Delete for attached NSID seven. Other notice-enabled controllers report according to §8.1.17.2, while requirements differ for the processing controller. Instead of counting events alone, the host retains before/after Active and Allocated lists for every controller.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q28. What misinterpretation is most likely in “Namespace events say inventory changed; Identify says what it became”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-namespace-events-pitfall -->
+
+**Answer.**
+
+A common mistake treats an AEN as an inventory delta. It triggers refresh; the authoritative data is the subsequent Identify result. Before/after differences may expose a missed event, but software cannot invent a notification that was not received.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17, printed pages 660, PDF pages 686; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, printed pages 662-663, PDF pages 688-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, printed pages 446-448, 662, PDF pages 472-474, 688
+
+### Q29. What is the governing interpretation for “End to end: place capacity, command, object, attachment, and evidence on one timeline”?
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-lead -->
+
+**Answer.**
+
+A namespace defect is rarely one field in isolation. The pre-create capability snapshot, 4096-byte payload, CQE DW0, Controller List, attachment limits, events, and post-Identify result must all join to one NSID and controller set. Debugging finds the first inconsistent boundary instead of guessing backward from a final I/O failure.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, printed pages 445, 448, PDF pages 471, 474; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, printed pages 444-448, 661-663, PDF pages 470-474, 687-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111
+
+### Q30. Which concepts or conditions must be distinguished in “End to end: place capacity, command, object, attachment, and evidence on one timeline”?
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-rows -->
+
+**Answer.**
+
+- Create Invalid Format — FLBAS/DPS/LBSTM/LBAFEE — Locate the format gate first
+- Insufficient Capacity — NSZE/NCAP, unallocated bytes, group IDs — Separate logical and consumed
+- Attach limit — MAXDNA/MAXCNA and prior counts — Separate Domain and controller
+- I/O inactive NSID — Attach CQE, Active list, controller ID — Create success is insufficient
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, printed pages 445, 448, PDF pages 471, 474; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, printed pages 444-448, 661-663, PDF pages 470-474, 687-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111
+
+### Q31. How does “End to end: place capacity, command, object, attachment, and evidence on one timeline” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-example -->
+
+**Answer.**
+
+Case: Create returns NSID seven but Attach returns 27h. Check controller five's MAXCNA and the Domain MAXDNA prior counts. If the per-controller limit is already reached, do not modify the create payload or retry I/O. Recovery selects another controller, detaches another namespace, or stops and reports the capacity policy.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, printed pages 445, 448, PDF pages 471, 474; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, printed pages 444-448, 661-663, PDF pages 470-474, 687-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111
+
+### Q32. What misinterpretation is most likely in “End to end: place capacity, command, object, attachment, and evidence on one timeline”, and how is it debugged?
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-pitfall -->
+
+**Answer.**
+
+Do not retain only a human-readable status. Preserve SCT/SC/DNR, raw SQE, buffer hash, returned NSID, Controller List, timestamp, and before/after inventories so the rejected gate remains recomputable.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, printed pages 445, 448, PDF pages 471, 474; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, printed pages 444-448, 661-663, PDF pages 470-474, 687-689; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, printed pages 444-445, PDF pages 470-471; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, printed pages 110, PDF pages 110; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, printed pages 110-111, PDF pages 110-111

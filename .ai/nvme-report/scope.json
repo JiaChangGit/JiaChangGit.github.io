@@ -31,7 +31,10 @@
       "title_zh_tw": "NVMe Base 2.4 第 1、2 章",
       "title_en": "NVMe Base 2.4 Chapters 1 and 2",
       "source_id": "NVME-BASE-2.4",
-      "sections": ["1", "2"],
+      "sections": [
+        "1",
+        "2"
+      ],
       "printed_pages": "1-37",
       "pdf_pages": "27-63"
     },
@@ -40,7 +43,9 @@
       "title_zh_tw": "NVMe Base 2.4 第 3 章",
       "title_en": "NVMe Base 2.4 Chapter 3",
       "source_id": "NVME-BASE-2.4",
-      "sections": ["3"],
+      "sections": [
+        "3"
+      ],
       "printed_pages": "38-138",
       "pdf_pages": "64-164"
     },
@@ -49,7 +54,9 @@
       "title_zh_tw": "NVMe Base 2.4 第 4 章",
       "title_en": "NVMe Base 2.4 Chapter 4",
       "source_id": "NVME-BASE-2.4",
-      "sections": ["4"],
+      "sections": [
+        "4"
+      ],
       "printed_pages": "139-175",
       "pdf_pages": "165-201"
     },
@@ -58,7 +65,12 @@
       "title_zh_tw": "NVMe over PCIe Transport 1.4 全文",
       "title_en": "NVMe over PCIe Transport 1.4, Complete",
       "source_id": "NVME-PCIE-TRANSPORT-1.4",
-      "sections": ["1", "2", "3", "Annex A"],
+      "sections": [
+        "1",
+        "2",
+        "3",
+        "Annex A"
+      ],
       "printed_pages": "1-48",
       "pdf_pages": "1-48"
     },
@@ -67,21 +79,48 @@
       "title_zh_tw": "NVMe Base 2.4 韌體更新與 Firmware Slot 驗證（LID 03h）",
       "title_en": "NVMe Base 2.4 Firmware Update and Firmware Slot Verification (LID 03h)",
       "source_id": "NVME-BASE-2.4",
-      "sections": ["3.11", "3.11.1", "5.2.9", "5.2.10", "5.2.13", "5.2.13.1.4"],
+      "sections": [
+        "3.11",
+        "3.11.1",
+        "5.2.9",
+        "5.2.10",
+        "5.2.13",
+        "5.2.13.1.4"
+      ],
       "printed_pages": "135-138, 202-206, 212-216, 225-226",
       "pdf_pages": "161-164, 228-232, 238-242, 251-252",
       "included_figure_ids": [
-        "BASEFWLOG-FIG-093", "BASEFWLOG-FIG-155",
-        "BASEFWLOG-FIG-187", "BASEFWLOG-FIG-188", "BASEFWLOG-FIG-189",
-        "BASEFWLOG-FIG-190", "BASEFWLOG-FIG-191", "BASEFWLOG-FIG-192",
-        "BASEFWLOG-FIG-193", "BASEFWLOG-FIG-203", "BASEFWLOG-FIG-204",
-        "BASEFWLOG-FIG-205", "BASEFWLOG-FIG-206", "BASEFWLOG-FIG-207",
-        "BASEFWLOG-FIG-208", "BASEFWLOG-FIG-209", "BASEFWLOG-FIG-215",
-        "BASEFWLOG-FIG-337", "BASEFWLOG-FIG-338", "BASEFWLOG-FIG-347",
-        "BASEFWLOG-FIG-348", "BASEFWLOG-FIG-474"
+        "BASEFWLOG-FIG-093",
+        "BASEFWLOG-FIG-155",
+        "BASEFWLOG-FIG-187",
+        "BASEFWLOG-FIG-188",
+        "BASEFWLOG-FIG-189",
+        "BASEFWLOG-FIG-190",
+        "BASEFWLOG-FIG-191",
+        "BASEFWLOG-FIG-192",
+        "BASEFWLOG-FIG-193",
+        "BASEFWLOG-FIG-203",
+        "BASEFWLOG-FIG-204",
+        "BASEFWLOG-FIG-205",
+        "BASEFWLOG-FIG-206",
+        "BASEFWLOG-FIG-207",
+        "BASEFWLOG-FIG-208",
+        "BASEFWLOG-FIG-209",
+        "BASEFWLOG-FIG-215",
+        "BASEFWLOG-FIG-337",
+        "BASEFWLOG-FIG-338",
+        "BASEFWLOG-FIG-347",
+        "BASEFWLOG-FIG-348",
+        "BASEFWLOG-FIG-474"
       ],
       "dependency_figures": [
-        "93", "155", "337", "338", "347", "348", "474"
+        "93",
+        "155",
+        "337",
+        "338",
+        "347",
+        "348",
+        "474"
       ]
     },
     {
@@ -102,17 +141,41 @@
       "printed_pages": "209-212, 456-473 (selected FIDs only), 666-671 (before §8.1.19.6)",
       "pdf_pages": "235-238, 482-499 (selected FIDs only), 692-697 (before §8.1.19.6)",
       "included_figure_ids": [
-        "BASEPOWER-FIG-093", "BASEPOWER-FIG-197", "BASEPOWER-FIG-198",
-        "BASEPOWER-FIG-199", "BASEPOWER-FIG-200", "BASEPOWER-FIG-201",
-        "BASEPOWER-FIG-202", "BASEPOWER-FIG-213", "BASEPOWER-FIG-338",
-        "BASEPOWER-FIG-340", "BASEPOWER-FIG-463", "BASEPOWER-FIG-464",
-        "BASEPOWER-FIG-465", "BASEPOWER-FIG-466", "BASEPOWER-FIG-468",
-        "BASEPOWER-FIG-470", "BASEPOWER-FIG-474", "BASEPOWER-FIG-475",
-        "BASEPOWER-FIG-476", "BASEPOWER-FIG-477", "BASEPOWER-FIG-478",
-        "BASEPOWER-FIG-482", "BASEPOWER-FIG-483", "BASEPOWER-FIG-738",
-        "BASEPOWER-FIG-739", "BASEPOWER-FIG-740", "BASEPOWER-FIG-741"
+        "BASEPOWER-FIG-093",
+        "BASEPOWER-FIG-197",
+        "BASEPOWER-FIG-198",
+        "BASEPOWER-FIG-199",
+        "BASEPOWER-FIG-200",
+        "BASEPOWER-FIG-201",
+        "BASEPOWER-FIG-202",
+        "BASEPOWER-FIG-213",
+        "BASEPOWER-FIG-338",
+        "BASEPOWER-FIG-340",
+        "BASEPOWER-FIG-463",
+        "BASEPOWER-FIG-464",
+        "BASEPOWER-FIG-465",
+        "BASEPOWER-FIG-466",
+        "BASEPOWER-FIG-468",
+        "BASEPOWER-FIG-470",
+        "BASEPOWER-FIG-474",
+        "BASEPOWER-FIG-475",
+        "BASEPOWER-FIG-476",
+        "BASEPOWER-FIG-477",
+        "BASEPOWER-FIG-478",
+        "BASEPOWER-FIG-482",
+        "BASEPOWER-FIG-483",
+        "BASEPOWER-FIG-738",
+        "BASEPOWER-FIG-739",
+        "BASEPOWER-FIG-740",
+        "BASEPOWER-FIG-741"
       ],
-      "dependency_figures": ["93", "213", "338", "340", "474"]
+      "dependency_figures": [
+        "93",
+        "213",
+        "338",
+        "340",
+        "474"
+      ]
     },
     {
       "id": "base-self-test-hmb-emulation",
@@ -132,22 +195,61 @@
       "printed_pages": "Base 199-201, 229-232, 515-519, 614-616, 733, 744; NVM Command Set 76",
       "pdf_pages": "Base 225-227, 255-258, 541-545, 640-642, 759, 770; NVM Command Set 76",
       "included_figure_ids": [
-        "BASEDIAGMEM-FIG-036", "BASEDIAGMEM-FIG-093", "BASEDIAGMEM-FIG-094",
-        "BASEDIAGMEM-FIG-111", "BASEDIAGMEM-FIG-176", "BASEDIAGMEM-FIG-177",
-        "BASEDIAGMEM-FIG-178", "BASEDIAGMEM-FIG-179", "BASEDIAGMEM-FIG-180",
-        "BASEDIAGMEM-FIG-197", "BASEDIAGMEM-FIG-198", "BASEDIAGMEM-FIG-200",
-        "BASEDIAGMEM-FIG-203", "BASEDIAGMEM-FIG-204", "BASEDIAGMEM-FIG-205",
-        "BASEDIAGMEM-FIG-206", "BASEDIAGMEM-FIG-207", "BASEDIAGMEM-FIG-208",
-        "BASEDIAGMEM-FIG-209", "BASEDIAGMEM-FIG-218", "BASEDIAGMEM-FIG-219",
-        "BASEDIAGMEM-FIG-338", "BASEDIAGMEM-FIG-463", "BASEDIAGMEM-FIG-464",
-        "BASEDIAGMEM-FIG-466", "BASEDIAGMEM-FIG-545", "BASEDIAGMEM-FIG-546",
-        "BASEDIAGMEM-FIG-547", "BASEDIAGMEM-FIG-548", "BASEDIAGMEM-FIG-549",
-        "BASEDIAGMEM-FIG-550", "BASEDIAGMEM-FIG-551", "BASEDIAGMEM-FIG-552",
-        "BASEDIAGMEM-FIG-553", "BASEDIAGMEM-FIG-700", "BASEDIAGMEM-FIG-701"
+        "BASEDIAGMEM-FIG-036",
+        "BASEDIAGMEM-FIG-093",
+        "BASEDIAGMEM-FIG-094",
+        "BASEDIAGMEM-FIG-111",
+        "BASEDIAGMEM-FIG-176",
+        "BASEDIAGMEM-FIG-177",
+        "BASEDIAGMEM-FIG-178",
+        "BASEDIAGMEM-FIG-179",
+        "BASEDIAGMEM-FIG-180",
+        "BASEDIAGMEM-FIG-197",
+        "BASEDIAGMEM-FIG-198",
+        "BASEDIAGMEM-FIG-200",
+        "BASEDIAGMEM-FIG-203",
+        "BASEDIAGMEM-FIG-204",
+        "BASEDIAGMEM-FIG-205",
+        "BASEDIAGMEM-FIG-206",
+        "BASEDIAGMEM-FIG-207",
+        "BASEDIAGMEM-FIG-208",
+        "BASEDIAGMEM-FIG-209",
+        "BASEDIAGMEM-FIG-218",
+        "BASEDIAGMEM-FIG-219",
+        "BASEDIAGMEM-FIG-338",
+        "BASEDIAGMEM-FIG-463",
+        "BASEDIAGMEM-FIG-464",
+        "BASEDIAGMEM-FIG-466",
+        "BASEDIAGMEM-FIG-545",
+        "BASEDIAGMEM-FIG-546",
+        "BASEDIAGMEM-FIG-547",
+        "BASEDIAGMEM-FIG-548",
+        "BASEDIAGMEM-FIG-549",
+        "BASEDIAGMEM-FIG-550",
+        "BASEDIAGMEM-FIG-551",
+        "BASEDIAGMEM-FIG-552",
+        "BASEDIAGMEM-FIG-553",
+        "BASEDIAGMEM-FIG-700",
+        "BASEDIAGMEM-FIG-701"
       ],
       "dependency_figures": [
-        "36", "93", "94", "197", "198", "200", "203", "204", "205",
-        "206", "207", "208", "209", "338", "463", "464", "466"
+        "36",
+        "93",
+        "94",
+        "197",
+        "198",
+        "200",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "338",
+        "463",
+        "464",
+        "466"
       ]
     },
     {
@@ -170,36 +272,236 @@
       "printed_pages": "Base 199-201, 229-232, 444-448, 614-616, 660-663 before §8.1.17.3; NVM Command Set 13-14, 76, 110-113, 165",
       "pdf_pages": "Base 225-227, 255-258, 470-474, 640-642, 686-689 before §8.1.17.3; NVM Command Set 13-14, 76, 110-113, 165",
       "included_figure_ids": [
-        "BASENSMGMT-FIG-036", "BASENSMGMT-FIG-093", "BASENSMGMT-FIG-111",
-        "BASENSMGMT-FIG-123", "BASENSMGMT-FIG-127", "BASENSMGMT-FIG-132",
-        "BASENSMGMT-FIG-133", "BASENSMGMT-FIG-134", "BASENSMGMT-FIG-139",
-        "BASENSMGMT-FIG-155", "BASENSMGMT-FIG-176", "BASENSMGMT-FIG-177",
-        "BASENSMGMT-FIG-178", "BASENSMGMT-FIG-179", "BASENSMGMT-FIG-180",
-        "BASENSMGMT-FIG-203", "BASENSMGMT-FIG-204", "BASENSMGMT-FIG-205",
-        "BASENSMGMT-FIG-206", "BASENSMGMT-FIG-207", "BASENSMGMT-FIG-208",
-        "BASENSMGMT-FIG-209", "BASENSMGMT-FIG-218", "BASENSMGMT-FIG-219",
-        "BASENSMGMT-FIG-304", "BASENSMGMT-FIG-338", "BASENSMGMT-FIG-346",
-        "BASENSMGMT-FIG-442", "BASENSMGMT-FIG-443", "BASENSMGMT-FIG-444",
-        "BASENSMGMT-FIG-445", "BASENSMGMT-FIG-446", "BASENSMGMT-FIG-447",
-        "BASENSMGMT-FIG-448", "BASENSMGMT-FIG-449", "BASENSMGMT-FIG-450",
-        "BASENSMGMT-FIG-474", "BASENSMGMT-FIG-700", "BASENSMGMT-FIG-701"
+        "BASENSMGMT-FIG-036",
+        "BASENSMGMT-FIG-093",
+        "BASENSMGMT-FIG-111",
+        "BASENSMGMT-FIG-123",
+        "BASENSMGMT-FIG-127",
+        "BASENSMGMT-FIG-132",
+        "BASENSMGMT-FIG-133",
+        "BASENSMGMT-FIG-134",
+        "BASENSMGMT-FIG-139",
+        "BASENSMGMT-FIG-155",
+        "BASENSMGMT-FIG-176",
+        "BASENSMGMT-FIG-177",
+        "BASENSMGMT-FIG-178",
+        "BASENSMGMT-FIG-179",
+        "BASENSMGMT-FIG-180",
+        "BASENSMGMT-FIG-203",
+        "BASENSMGMT-FIG-204",
+        "BASENSMGMT-FIG-205",
+        "BASENSMGMT-FIG-206",
+        "BASENSMGMT-FIG-207",
+        "BASENSMGMT-FIG-208",
+        "BASENSMGMT-FIG-209",
+        "BASENSMGMT-FIG-218",
+        "BASENSMGMT-FIG-219",
+        "BASENSMGMT-FIG-304",
+        "BASENSMGMT-FIG-338",
+        "BASENSMGMT-FIG-346",
+        "BASENSMGMT-FIG-442",
+        "BASENSMGMT-FIG-443",
+        "BASENSMGMT-FIG-444",
+        "BASENSMGMT-FIG-445",
+        "BASENSMGMT-FIG-446",
+        "BASENSMGMT-FIG-447",
+        "BASENSMGMT-FIG-448",
+        "BASENSMGMT-FIG-449",
+        "BASENSMGMT-FIG-450",
+        "BASENSMGMT-FIG-474",
+        "BASENSMGMT-FIG-700",
+        "BASENSMGMT-FIG-701"
       ],
       "dependency_figures": [
-        "Base 36", "Base 93", "Base 139", "Base 155", "Base 203-209",
-        "Base 304", "Base 338", "Base 346", "Base 474",
-        "NVM Command Set 123", "NVM Command Set 127", "NVM Command Set 132-133"
+        "Base 36",
+        "Base 93",
+        "Base 139",
+        "Base 155",
+        "Base 203-209",
+        "Base 304",
+        "Base 338",
+        "Base 346",
+        "Base 474",
+        "NVM Command Set 123",
+        "NVM Command Set 127",
+        "NVM Command Set 132-133"
+      ]
+    },
+    {
+      "id": "base-boot-telemetry-sanitize",
+      "title_zh_tw": "Boot Partitions、Telemetry 與 Sanitize",
+      "title_en": "Boot Partitions, Telemetry, and Sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "8.1.3",
+        "5.2.13.1.21",
+        "5.2.30.1.39",
+        "8.1.30",
+        "5.2.13.1.8",
+        "5.2.13.1.9",
+        "8.1.27",
+        "5.2.13.1.38",
+        "5.2.26",
+        "5.2.30.1.16",
+        "NVME-NVM-CS-1.3 4.1.7",
+        "NVME-NVM-CS-1.3 5.12"
+      ],
+      "excluded_sections": [
+        "8.1.27.6"
+      ],
+      "pdf_pages": "Base 95-96, 204-216, 228-244, 258-263, 309-310, 339-345, 366-408, 474-479, 483-504, 539-540, 612-620, 716-727, 737-763 (selected sections and dependency slices); NVM 21-22, 113, 173-175",
+      "printed_pages": "See each source-located claim and Figure entry",
+      "included_figure_ids": [
+        "BASEBTS-BASE-FIG-036",
+        "BASEBTS-BASE-FIG-049",
+        "BASEBTS-BASE-FIG-050",
+        "BASEBTS-BASE-FIG-051",
+        "BASEBTS-BASE-FIG-144",
+        "BASEBTS-BASE-FIG-145",
+        "BASEBTS-BASE-FIG-146",
+        "BASEBTS-BASE-FIG-151",
+        "BASEBTS-BASE-FIG-152",
+        "BASEBTS-BASE-FIG-155",
+        "BASEBTS-BASE-FIG-156",
+        "BASEBTS-BASE-FIG-187",
+        "BASEBTS-BASE-FIG-188",
+        "BASEBTS-BASE-FIG-189",
+        "BASEBTS-BASE-FIG-190",
+        "BASEBTS-BASE-FIG-191",
+        "BASEBTS-BASE-FIG-192",
+        "BASEBTS-BASE-FIG-193",
+        "BASEBTS-BASE-FIG-198",
+        "BASEBTS-BASE-FIG-199",
+        "BASEBTS-BASE-FIG-201",
+        "BASEBTS-BASE-FIG-203",
+        "BASEBTS-BASE-FIG-204",
+        "BASEBTS-BASE-FIG-205",
+        "BASEBTS-BASE-FIG-206",
+        "BASEBTS-BASE-FIG-207",
+        "BASEBTS-BASE-FIG-208",
+        "BASEBTS-BASE-FIG-209",
+        "BASEBTS-BASE-FIG-210",
+        "BASEBTS-BASE-FIG-211",
+        "BASEBTS-BASE-FIG-220",
+        "BASEBTS-BASE-FIG-221",
+        "BASEBTS-BASE-FIG-222",
+        "BASEBTS-BASE-FIG-223",
+        "BASEBTS-BASE-FIG-279",
+        "BASEBTS-BASE-FIG-280",
+        "BASEBTS-BASE-FIG-311",
+        "BASEBTS-BASE-FIG-312",
+        "BASEBTS-BASE-FIG-338",
+        "BASEBTS-BASE-FIG-451",
+        "BASEBTS-BASE-FIG-452",
+        "BASEBTS-BASE-FIG-453",
+        "BASEBTS-BASE-FIG-454",
+        "BASEBTS-BASE-FIG-464",
+        "BASEBTS-BASE-FIG-465",
+        "BASEBTS-BASE-FIG-466",
+        "BASEBTS-BASE-FIG-474",
+        "BASEBTS-BASE-FIG-491",
+        "BASEBTS-BASE-FIG-492",
+        "BASEBTS-BASE-FIG-542",
+        "BASEBTS-BASE-FIG-679",
+        "BASEBTS-BASE-FIG-680",
+        "BASEBTS-BASE-FIG-681",
+        "BASEBTS-BASE-FIG-682",
+        "BASEBTS-BASE-FIG-683",
+        "BASEBTS-BASE-FIG-684",
+        "BASEBTS-BASE-FIG-756",
+        "BASEBTS-BASE-FIG-757",
+        "BASEBTS-BASE-FIG-758",
+        "BASEBTS-BASE-FIG-760",
+        "BASEBTS-BASE-FIG-761",
+        "BASEBTS-BASE-FIG-762",
+        "BASEBTS-BASE-FIG-765",
+        "BASEBTS-BASE-FIG-766",
+        "BASEBTS-BASE-FIG-770",
+        "BASEBTS-BASE-FIG-771",
+        "BASEBTS-BASE-FIG-772",
+        "BASEBTS-BASE-FIG-773",
+        "BASEBTS-BASE-FIG-774",
+        "BASEBTS-BASE-FIG-775",
+        "BASEBTS-BASE-FIG-776",
+        "BASEBTS-BASE-FIG-777",
+        "BASEBTS-BASE-FIG-778",
+        "BASEBTS-BASE-FIG-779",
+        "BASEBTS-BASE-FIG-780",
+        "BASEBTS-BASE-FIG-781",
+        "BASEBTS-NVMCS-FIG-011",
+        "BASEBTS-NVMCS-FIG-012",
+        "BASEBTS-NVMCS-FIG-200",
+        "BASEBTS-NVMCS-FIG-201"
+      ],
+      "approval_basis": "User confirmed prior teaching scope and requested creating/publishing this report on 2026-09-03",
+      "dependency_figures": [
+        "NVME-BASE-2.4 Figure 36",
+        "NVME-BASE-2.4 Figure 49",
+        "NVME-BASE-2.4 Figure 50",
+        "NVME-BASE-2.4 Figure 51",
+        "NVME-BASE-2.4 Figure 144",
+        "NVME-BASE-2.4 Figure 145",
+        "NVME-BASE-2.4 Figure 146",
+        "NVME-BASE-2.4 Figure 151",
+        "NVME-BASE-2.4 Figure 152",
+        "NVME-BASE-2.4 Figure 155",
+        "NVME-BASE-2.4 Figure 156",
+        "NVME-BASE-2.4 Figure 187",
+        "NVME-BASE-2.4 Figure 188",
+        "NVME-BASE-2.4 Figure 189",
+        "NVME-BASE-2.4 Figure 190",
+        "NVME-BASE-2.4 Figure 191",
+        "NVME-BASE-2.4 Figure 192",
+        "NVME-BASE-2.4 Figure 193",
+        "NVME-BASE-2.4 Figure 198",
+        "NVME-BASE-2.4 Figure 199",
+        "NVME-BASE-2.4 Figure 201",
+        "NVME-BASE-2.4 Figure 203",
+        "NVME-BASE-2.4 Figure 204",
+        "NVME-BASE-2.4 Figure 205",
+        "NVME-BASE-2.4 Figure 206",
+        "NVME-BASE-2.4 Figure 207",
+        "NVME-BASE-2.4 Figure 208",
+        "NVME-BASE-2.4 Figure 209",
+        "NVME-BASE-2.4 Figure 210",
+        "NVME-BASE-2.4 Figure 211",
+        "NVME-BASE-2.4 Figure 311",
+        "NVME-BASE-2.4 Figure 338",
+        "NVME-BASE-2.4 Figure 454",
+        "NVME-BASE-2.4 Figure 464",
+        "NVME-BASE-2.4 Figure 465",
+        "NVME-BASE-2.4 Figure 466",
+        "NVME-BASE-2.4 Figure 474",
+        "NVME-BASE-2.4 Figure 491",
+        "NVME-BASE-2.4 Figure 756",
+        "NVME-BASE-2.4 Figure 757",
+        "NVME-BASE-2.4 Figure 758",
+        "NVME-BASE-2.4 Figure 760",
+        "NVME-BASE-2.4 Figure 761",
+        "NVME-BASE-2.4 Figure 762",
+        "NVME-BASE-2.4 Figure 765",
+        "NVME-BASE-2.4 Figure 766",
+        "NVME-NVM-CS-1.3 Figure 11",
+        "NVME-NVM-CS-1.3 Figure 12"
       ]
     }
   ],
   "interpretation_sources": [
     {
       "source_id": "NVME-BASE-2.4",
-      "sections": ["1.4.1", "1.4.2"],
+      "sections": [
+        "1.4.1",
+        "1.4.2"
+      ],
       "purpose": "規範性 keyword 與數值表示法"
     },
     {
       "source_id": "NVME-PCIE-TRANSPORT-1.4",
-      "sections": ["1.2", "1.3", "1.5"],
+      "sections": [
+        "1.2",
+        "1.3",
+        "1.5"
+      ],
       "purpose": "規格優先序、conventions exception 與外部參考"
     }
   ],
@@ -208,91 +510,185 @@
       "id": "BASE12-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["1", "2"],
+      "sections": [
+        "1",
+        "2"
+      ],
       "note": "保留通用與 memory-based/PCIe 內容"
     },
     {
       "id": "BASE12-FABRIC-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["1.5 Fabrics-only definitions", "2.2"],
-      "figures": ["4", "8", "9", "10"],
+      "sections": [
+        "1.5 Fabrics-only definitions",
+        "2.2"
+      ],
+      "figures": [
+        "4",
+        "8",
+        "9",
+        "10"
+      ],
       "note": "排除 Fabrics 定義、message-based model 與 capsule"
     },
     {
       "id": "BASE3-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["3"],
+      "sections": [
+        "3"
+      ],
       "note": "保留通用與 memory-based/PCIe 控制器架構"
     },
     {
       "id": "BASE3-FABRIC-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["3.1.2", "3.1.3.3", "3.3.2", "3.5.2", "3.6.2", "3.6.3.3", "3.7.1.3"],
-      "figures": ["29", "35", "72", "75", "76", "77", "78", "79", "82", "83"],
+      "sections": [
+        "3.1.2",
+        "3.1.3.3",
+        "3.3.2",
+        "3.5.2",
+        "3.6.2",
+        "3.6.3.3",
+        "3.7.1.3"
+      ],
+      "figures": [
+        "29",
+        "35",
+        "72",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "82",
+        "83"
+      ],
       "note": "排除 message-based、Discovery 與 exported NVM subsystem 專屬內容"
     },
     {
       "id": "BASE4-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["4"],
+      "sections": [
+        "4"
+      ],
       "note": "保留通用與 PCIe 可用的 command、completion、PRP、SGL 與 identifier"
     },
     {
       "id": "BASE4-FABRIC-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["4.1.2", "4.2.2", "4.7", "4.3.2 Fabrics-only SGL subtypes"],
-      "figures": ["95", "96", "100", "106", "123", "124", "141"],
+      "sections": [
+        "4.1.2",
+        "4.2.2",
+        "4.7",
+        "4.3.2 Fabrics-only SGL subtypes"
+      ],
+      "figures": [
+        "95",
+        "96",
+        "100",
+        "106",
+        "123",
+        "124",
+        "141"
+      ],
       "note": "排除 Fabrics SQE/CQE/status、Keyed/Transport SGL 與 NQN"
     },
     {
       "id": "PCIE14-INCLUDE",
       "source_id": "NVME-PCIE-TRANSPORT-1.4",
       "status": "INCLUDE",
-      "sections": ["1", "2", "3", "Annex A"],
+      "sections": [
+        "1",
+        "2",
+        "3",
+        "Annex A"
+      ],
       "note": "全文納入；Figure 1 僅解釋 Base 與 PCIe Transport 的關係"
     },
     {
       "id": "BASE-FWLOG-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["3.11", "3.11.1", "5.2.9", "5.2.10", "5.2.13", "5.2.13.1.4"],
+      "sections": [
+        "3.11",
+        "3.11.1",
+        "5.2.9",
+        "5.2.10",
+        "5.2.13",
+        "5.2.13.1.4"
+      ],
       "note": "只納入 firmware update 與 LID 03h Firmware Slot Information；§5.2.13 只取建構 LID 03h Get Log Page command 所需的共通欄位，Figure 209 只保留 LID 03h row"
     },
     {
       "id": "BASE-FWLOG-DEPENDENCY-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["referenced dependencies outside the requested main sections"],
-      "figures": ["93", "155", "337", "338", "347", "348", "474"],
+      "sections": [
+        "referenced dependencies outside the requested main sections"
+      ],
+      "figures": [
+        "93",
+        "155",
+        "337",
+        "338",
+        "347",
+        "348",
+        "474"
+      ],
       "note": "理解 firmware update 與 LID 03h 所需的最小 dependency slice；只取被主流程使用的欄位與關係，不擴張成 Identify、UUID List 或其他章節的獨立教學"
     },
     {
       "id": "BASE-FWLOG-PCIE-RESET-PREREQUISITE",
       "source_id": "NVME-PCIE-TRANSPORT-1.4",
       "status": "PREREQUISITE_ONLY",
-      "sections": ["3.3"],
+      "sections": [
+        "3.3"
+      ],
       "note": "只用於辨識 Conventional Reset 與 Function Level Reset 是 PCIe transport-specific Controller Level Reset 方法"
     },
     {
       "id": "BASE-FWLOG-OTHER-LIDS-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["5.2.13.1 except 5.2.13.1.4", "5.2.13.2-5.2.13.4"],
+      "sections": [
+        "5.2.13.1 except 5.2.13.1.4",
+        "5.2.13.2-5.2.13.4"
+      ],
       "note": "本報告只教 LID 03h；其餘 log page、Telemetry、Persistent Event Log 與其他 Get Log Page 延伸行為不發佈"
     },
     {
       "id": "BASE-FWLOG-FABRIC-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["5.2.13.1.14.2.16", "5.2.13.3"],
+      "sections": [
+        "5.2.13.1.14.2.16",
+        "5.2.13.3"
+      ],
       "figures": [
-        "257", "313", "314", "315", "316", "317", "318", "319", "320", "321",
-        "322", "323", "324", "325", "326", "327", "328", "329", "330"
+        "257",
+        "313",
+        "314",
+        "315",
+        "316",
+        "317",
+        "318",
+        "319",
+        "320",
+        "321",
+        "322",
+        "323",
+        "324",
+        "325",
+        "326",
+        "327",
+        "328",
+        "329",
+        "330"
       ],
       "note": "排除 Exported NVM Subsystem Change Event，以及 message-based/Fabrics 與 Discovery 專用 log page 內容"
     },
@@ -316,60 +712,114 @@
       "id": "BASE-POWER-DEPENDENCY-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["referenced dependencies outside the requested main sections"],
-      "figures": ["93", "213", "338", "340", "474"],
+      "sections": [
+        "referenced dependencies outside the requested main sections"
+      ],
+      "figures": [
+        "93",
+        "213",
+        "338",
+        "340",
+        "474"
+      ],
       "note": "只取建立 power/thermal mental model 與 debug observation loop 所需的 SQE、SMART/Health、Identify Controller、Power State Descriptor 與 AEC 欄位"
     },
     {
       "id": "BASE-POWER-IIELL-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["5.2.30.1.2.1", "8.1.19.7"],
-      "figures": ["469"],
+      "sections": [
+        "5.2.30.1.2.1",
+        "8.1.19.7"
+      ],
+      "figures": [
+        "469"
+      ],
       "note": "依使用者指示排除 Idle I/O Exit Latency Limit；Figure 468 只保留 WH 與 PS，不教 IIELL"
     },
     {
       "id": "BASE-POWER-LIMIT-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["8.1.19.6"],
-      "figures": ["742", "743", "744"],
+      "sections": [
+        "8.1.19.6"
+      ],
+      "figures": [
+        "742",
+        "743",
+        "744"
+      ],
       "note": "依使用者指示排除 Power Limit"
     },
     {
       "id": "BASE-POWER-OTHER-FIDS-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["5.2.30.1 except FID 02h, 04h, 0Ch, 10h, and 11h"],
+      "sections": [
+        "5.2.30.1 except FID 02h, 04h, 0Ch, 10h, and 11h"
+      ],
       "note": "Set Features 只教五個核准的 Feature Identifier；其他 FID 不發佈"
     },
     {
       "id": "BASE-POWER-FABRIC-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["5.2.30.3", "Figure 474 Discovery-only fields"],
+      "sections": [
+        "5.2.30.3",
+        "Figure 474 Discovery-only fields"
+      ],
       "note": "排除 message-based Set Features 與 Discovery/Fabrics 專屬事件欄位"
     },
     {
       "id": "BASE-DIAGMEM-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["5.2.6", "5.2.13.1.7", "5.2.30.2.3", "8.1.8", "8.1.29", "8.2.3", "8.2.4"],
+      "sections": [
+        "5.2.6",
+        "5.2.13.1.7",
+        "5.2.30.2.3",
+        "8.1.8",
+        "8.1.29",
+        "8.2.3",
+        "8.2.4"
+      ],
       "note": "以 Device Self-test lifecycle、HMB ownership lifecycle、doorbell-emulation stride 與 standard vendor-command boundary safety 組織主教學"
     },
     {
       "id": "NVMCS-DIAGMEM-INCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "INCLUDE",
-      "sections": ["4.1.4.3"],
+      "sections": [
+        "4.1.4.3"
+      ],
       "note": "只納入 LID 06h Self-test Result 的 NVM Command Set specific FLBA 定義"
     },
     {
       "id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["referenced dependencies outside the requested main sections"],
-      "figures": ["36", "93", "94", "197", "198", "200", "203", "204", "205", "206", "207", "208", "209", "338", "463", "464", "466"],
+      "sections": [
+        "referenced dependencies outside the requested main sections"
+      ],
+      "figures": [
+        "36",
+        "93",
+        "94",
+        "197",
+        "198",
+        "200",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "338",
+        "463",
+        "464",
+        "466"
+      ],
       "note": "只取 command construction、Get/Set Features、Get Log Page、capability gates 與 length／stride calculation 所需欄位，不擴張成完整章節"
     },
     {
@@ -389,52 +839,210 @@
       "id": "BASE-DIAGMEM-FABRIC-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["5.2.30.3", "message-based controller material", "Discovery-only Identify fields"],
+      "sections": [
+        "5.2.30.3",
+        "message-based controller material",
+        "Discovery-only Identify fields"
+      ],
       "note": "排除所有 Fabrics、Discovery 與 message-based transport 內容"
     },
     {
       "id": "BASE-NSMGMT-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["5.2.6", "5.2.13.1.7 (LID 06h only)", "5.2.24", "5.2.25", "8.1.8", "8.1.17", "8.1.17.1", "8.1.17.2"],
+      "sections": [
+        "5.2.6",
+        "5.2.13.1.7 (LID 06h only)",
+        "5.2.24",
+        "5.2.25",
+        "8.1.8",
+        "8.1.17",
+        "8.1.17.1",
+        "8.1.17.2"
+      ],
       "note": "以 Device Self-test evidence lifecycle 與 namespace create／attach／detach／delete／restore lifecycle 組織主教學"
     },
     {
       "id": "NVMCS-NSMGMT-INCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "INCLUDE",
-      "sections": ["2.1.1", "4.1.4.3", "4.1.6", "5.8"],
+      "sections": [
+        "2.1.1",
+        "4.1.4.3",
+        "4.1.6",
+        "5.8"
+      ],
       "note": "納入 namespace capacity mental model、LID 06h FLBA、NVM create payload、data protection／FDP validation 與 granularity hints"
     },
     {
       "id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "INCLUDE",
-      "sections": ["referenced dependencies outside the requested main sections"],
-      "figures": ["36", "93", "139", "155", "203", "204", "205", "206", "207", "208", "209", "304", "338", "346", "474"],
+      "sections": [
+        "referenced dependencies outside the requested main sections"
+      ],
+      "figures": [
+        "36",
+        "93",
+        "139",
+        "155",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "304",
+        "338",
+        "346",
+        "474"
+      ],
       "note": "只取 CSS、common SQE、Controller List、LID 06h Get Log Page、namespace event、DNCS、NMS／attachment limits、ANAGRPID 與 event-enable bits 所需欄位"
     },
     {
       "id": "NVMCS-NSMGMT-DEPENDENCY-INCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "INCLUDE",
-      "sections": ["referenced dependencies outside the requested main sections"],
-      "figures": ["123", "127", "132", "133"],
+      "sections": [
+        "referenced dependencies outside the requested main sections"
+      ],
+      "figures": [
+        "123",
+        "127",
+        "132",
+        "133"
+      ],
       "note": "只取 §2.1.1／§4.1.6／§5.8 直接引用的 Identify Namespace、masking 與 granularity 欄位，不擴張成完整 Identify 章節"
     },
     {
       "id": "BASE-NSMGMT-EXPLICIT-EXCLUDE",
       "source_id": "NVME-BASE-2.4",
       "status": "EXCLUDE",
-      "sections": ["8.1.17.3", "5.2.13.1 except LID 06h", "all Fabrics, Exported NVM Subsystem, Underlying Namespace, Management Endpoint, and message-based material"],
+      "sections": [
+        "8.1.17.3",
+        "5.2.13.1 except LID 06h",
+        "all Fabrics, Exported NVM Subsystem, Underlying Namespace, Management Endpoint, and message-based material"
+      ],
       "note": "依使用者指示排除 §8.1.17.3；共用章節中只保留 PCIe／memory-based 與一般 controller 適用內容"
     },
     {
       "id": "NVMCS13-EXCLUDE",
       "source_id": "NVME-NVM-CS-1.3",
       "status": "EXCLUDE",
-      "sections": ["all except approved report slices in 2.1.1, 4.1.4.3, 4.1.6, and 5.8"],
+      "sections": [
+        "all except approved report slices in 2.1.1, 4.1.4.3, 4.1.6, and 5.8"
+      ],
       "note": "只發佈第七、八份報告明確核准的 NVM Command Set 1.3 範圍"
+    },
+    {
+      "id": "BASE-BTS-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "8.1.3",
+        "5.2.13.1.21",
+        "5.2.30.1.39",
+        "8.1.30",
+        "5.2.13.1.8",
+        "5.2.13.1.9",
+        "8.1.27",
+        "5.2.13.1.38",
+        "5.2.26",
+        "5.2.30.1.16"
+      ],
+      "note": "User-approved Boot/Telemetry/Sanitize scope; 8.1.27 excludes 8.1.27.6 but retains 8.1.27.4.6 and namespace behavior; common dependencies needed by narrative claims included."
+    },
+    {
+      "id": "NVMCS-BTS-INCLUDE",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": [
+        "4.1.7",
+        "5.12"
+      ],
+      "note": "User-approved NVM Sanitize command and operations, including 5.12.1."
+    },
+    {
+      "id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "referenced dependencies outside the requested main sections"
+      ],
+      "figures": [
+        "36",
+        "49",
+        "50",
+        "51",
+        "144",
+        "145",
+        "146",
+        "151",
+        "152",
+        "155",
+        "156",
+        "187",
+        "188",
+        "189",
+        "190",
+        "191",
+        "192",
+        "193",
+        "198",
+        "199",
+        "201",
+        "203",
+        "204",
+        "205",
+        "206",
+        "207",
+        "208",
+        "209",
+        "210",
+        "211",
+        "311",
+        "338",
+        "454",
+        "464",
+        "465",
+        "466",
+        "474",
+        "491",
+        "756",
+        "757",
+        "758",
+        "760",
+        "761",
+        "762",
+        "765",
+        "766"
+      ],
+      "note": "Teach relevant fields/relationships; preserve suspected reference defects."
+    },
+    {
+      "id": "NVMCS-BTS-DEPENDENCY-INCLUDE",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": [
+        "2.1.5",
+        "3.3.3.2.1",
+        "4.1.4.1"
+      ],
+      "figures": [
+        "11",
+        "12"
+      ],
+      "note": "PI checking and post-sanitize read behavior needed by 5.12."
+    },
+    {
+      "id": "BASE-BTS-EXPORT-EXCLUDE",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": [
+        "8.1.27.6"
+      ],
+      "note": "Explicit user exclusion; no independent teaching of this section."
     }
   ],
   "approval_note": "使用者於 2026-09-02 核准新增第八份四版本報告：Base 2.4 §8.1.8、§5.2.6、§5.2.13.1.7（僅 LID 06h）、§8.1.17（排除 §8.1.17.3）、§5.2.24、§5.2.25，以及 NVM Command Set 1.3 §4.1.4.3、§2.1.1、§4.1.6、§5.8；所有 Fabrics／Discovery／message-based 內容排除。既有七份報告範圍維持不變。"

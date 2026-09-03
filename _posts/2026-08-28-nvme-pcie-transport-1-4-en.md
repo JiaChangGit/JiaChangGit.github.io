@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-08-28-nvme-pcie-transport-1-4-zh-tw %})
+
 
 # NVMe over PCIe Transport 1.4: Complete Transport Binding
 
@@ -591,7 +593,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §1.2
 
 <details markdown="1">
-<summary><strong>Figure 1: NVMe Family of Specifications</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 1: NVMe Family of Specifications</strong></summary>
 
 <!-- claim:PCIE14-FIG-001-CLAIM figure-table:PCIE14-FIG-001 -->
 
@@ -675,7 +677,7 @@ This Figure explains a specific relationship or example. Identify each component
 ### §2
 
 <details markdown="1">
-<summary><strong>Figure 2: Example of Transport Protocol Layers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 2: Example of Transport Protocol Layers</strong></summary>
 
 <!-- claim:PCIE14-FIG-002-CLAIM figure-table:PCIE14-FIG-002 -->
 
@@ -759,7 +761,7 @@ This Figure explains a specific relationship or example. Identify each component
 ### §3.1
 
 <details markdown="1">
-<summary><strong>Figure 3: PCI Express Registers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 3: PCI Express Registers</strong></summary>
 
 <!-- claim:PCIE14-FIG-003-CLAIM figure-table:PCIE14-FIG-003 -->
 
@@ -844,7 +846,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 4: PCI Express Specific Controller Property Definitions</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 4: PCI Express Specific Controller Property Definitions</strong></summary>
 
 <!-- claim:PCIE14-FIG-004-CLAIM figure-table:PCIE14-FIG-004 -->
 
@@ -929,7 +931,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 5: Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL - Submission Queue y Tail</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 5: Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL - Submission Queue y Tail</strong></summary>
 
 <!-- claim:PCIE14-FIG-005-CLAIM figure-table:PCIE14-FIG-005 -->
 
@@ -1011,7 +1013,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 6: Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 6: Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</strong></summary>
 
 <!-- claim:PCIE14-FIG-006-CLAIM figure-table:PCIE14-FIG-006 -->
 
@@ -1098,7 +1100,7 @@ This is a register or property field table. Locate the base offset, verify acces
 ### §3.2
 
 <details markdown="1">
-<summary><strong>Figure 7: Create I/O Completion Queue - Command Dword 11</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 7: Create I/O Completion Queue - Command Dword 11</strong></summary>
 
 <!-- claim:PCIE14-FIG-007-CLAIM figure-table:PCIE14-FIG-007 -->
 
@@ -1187,7 +1189,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 ### §3.4
 
 <details markdown="1">
-<summary><strong>Figure 8: Command Processing</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 8: Command Processing</strong></summary>
 
 <!-- claim:PCIE14-FIG-008-CLAIM figure-table:PCIE14-FIG-008 -->
 
@@ -1271,7 +1273,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 ### §3.5
 
 <details markdown="1">
-<summary><strong>Figure 9: Pin Based, Single MSI, and Multiple MSI Behavior</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 9: Pin Based, Single MSI, and Multiple MSI Behavior</strong></summary>
 
 <!-- claim:PCIE14-FIG-009-CLAIM figure-table:PCIE14-FIG-009 -->
 
@@ -1355,7 +1357,7 @@ This is an interrupt-delivery or capability Figure. Separate vector source, enab
 ### §3.8
 
 <details markdown="1">
-<summary><strong>Figure 10: PCI Express Type 0/1 Common Configuration Space</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 10: PCI Express Type 0/1 Common Configuration Space</strong></summary>
 
 <!-- claim:PCIE14-FIG-010-CLAIM figure-table:PCIE14-FIG-010 -->
 
@@ -1435,7 +1437,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 11: Offset 00h: ID - Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 11: Offset 00h: ID - Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-011-CLAIM figure-table:PCIE14-FIG-011 -->
 
@@ -1517,7 +1519,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 12: Offset 04h: CMD - Command</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 12: Offset 04h: CMD - Command</strong></summary>
 
 <!-- claim:PCIE14-FIG-012-CLAIM figure-table:PCIE14-FIG-012 -->
 
@@ -1602,7 +1604,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 13: Offset 06h: STS - Device Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 13: Offset 06h: STS - Device Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-013-CLAIM figure-table:PCIE14-FIG-013 -->
 
@@ -1687,7 +1689,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 14: Offset 08h: RID - Revision ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 14: Offset 08h: RID - Revision ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-014-CLAIM figure-table:PCIE14-FIG-014 -->
 
@@ -1768,7 +1770,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 15: Offset 09h: CC - Class Code</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 15: Offset 09h: CC - Class Code</strong></summary>
 
 <!-- claim:PCIE14-FIG-015-CLAIM figure-table:PCIE14-FIG-015 -->
 
@@ -1851,7 +1853,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 16: Offset 0Ch: CLS - Cache Line Size</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 16: Offset 0Ch: CLS - Cache Line Size</strong></summary>
 
 <!-- claim:PCIE14-FIG-016-CLAIM figure-table:PCIE14-FIG-016 -->
 
@@ -1931,7 +1933,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 17: Offset 0Dh: MLT - Master Latency Timer</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 17: Offset 0Dh: MLT - Master Latency Timer</strong></summary>
 
 <!-- claim:PCIE14-FIG-017-CLAIM figure-table:PCIE14-FIG-017 -->
 
@@ -2011,7 +2013,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 18: Offset 0Eh: HTYPE - Header Type</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 18: Offset 0Eh: HTYPE - Header Type</strong></summary>
 
 <!-- claim:PCIE14-FIG-018-CLAIM figure-table:PCIE14-FIG-018 -->
 
@@ -2093,7 +2095,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 19: Offset 0Fh: BIST - Built-In Self Test (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 19: Offset 0Fh: BIST - Built-In Self Test (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-019-CLAIM figure-table:PCIE14-FIG-019 -->
 
@@ -2177,7 +2179,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 20: Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 20: Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits</strong></summary>
 
 <!-- claim:PCIE14-FIG-020-CLAIM figure-table:PCIE14-FIG-020 -->
 
@@ -2262,7 +2264,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 21: Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 21: Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits</strong></summary>
 
 <!-- claim:PCIE14-FIG-021-CLAIM figure-table:PCIE14-FIG-021 -->
 
@@ -2344,7 +2346,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 22: Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 22: Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</strong></summary>
 
 <!-- claim:PCIE14-FIG-022-CLAIM figure-table:PCIE14-FIG-022 -->
 
@@ -2426,7 +2428,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 23: Offset 28h: CCPTR - CardBus CIS Pointer</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 23: Offset 28h: CCPTR - CardBus CIS Pointer</strong></summary>
 
 <!-- claim:PCIE14-FIG-023-CLAIM figure-table:PCIE14-FIG-023 -->
 
@@ -2507,7 +2509,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 24: Offset 2Ch: SS - Subsystem Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 24: Offset 2Ch: SS - Subsystem Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-024-CLAIM figure-table:PCIE14-FIG-024 -->
 
@@ -2590,7 +2592,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 25: Offset 30h: EROM - Expansion ROM (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 25: Offset 30h: EROM - Expansion ROM (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-025-CLAIM figure-table:PCIE14-FIG-025 -->
 
@@ -2672,7 +2674,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 26: Offset 34h: CAP - Capabilities Pointer</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 26: Offset 34h: CAP - Capabilities Pointer</strong></summary>
 
 <!-- claim:PCIE14-FIG-026-CLAIM figure-table:PCIE14-FIG-026 -->
 
@@ -2753,7 +2755,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 27: Offset 3Ch: INTR - Interrupt Information</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 27: Offset 3Ch: INTR - Interrupt Information</strong></summary>
 
 <!-- claim:PCIE14-FIG-027-CLAIM figure-table:PCIE14-FIG-027 -->
 
@@ -2836,7 +2838,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 28: Offset 3Eh: MGNT - Minimum Grant</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 28: Offset 3Eh: MGNT - Minimum Grant</strong></summary>
 
 <!-- claim:PCIE14-FIG-028-CLAIM figure-table:PCIE14-FIG-028 -->
 
@@ -2917,7 +2919,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 29: Offset 3Fh: MLAT - Maximum Latency</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 29: Offset 3Fh: MLAT - Maximum Latency</strong></summary>
 
 <!-- claim:PCIE14-FIG-029-CLAIM figure-table:PCIE14-FIG-029 -->
 
@@ -2999,7 +3001,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 30: PCI Power Management Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 30: PCI Power Management Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-030-CLAIM figure-table:PCIE14-FIG-030 -->
 
@@ -3083,7 +3085,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 31: Offset PMCAP: PID - PCI Power Management Capability ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 31: Offset PMCAP: PID - PCI Power Management Capability ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-031-CLAIM figure-table:PCIE14-FIG-031 -->
 
@@ -3167,7 +3169,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 32: Offset PMCAP + 2h: PC - PCI Power Management Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 32: Offset PMCAP + 2h: PC - PCI Power Management Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-032-CLAIM figure-table:PCIE14-FIG-032 -->
 
@@ -3252,7 +3254,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 33: Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 33: Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-033-CLAIM figure-table:PCIE14-FIG-033 -->
 
@@ -3337,7 +3339,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 34: Message Signaled Interrupt Capability (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 34: Message Signaled Interrupt Capability (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-034-CLAIM figure-table:PCIE14-FIG-034 -->
 
@@ -3422,7 +3424,7 @@ This is an interrupt-delivery or capability Figure. Separate vector source, enab
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 35: Offset MSICAP: MID - Message Signaled Interrupt Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 35: Offset MSICAP: MID - Message Signaled Interrupt Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-035-CLAIM figure-table:PCIE14-FIG-035 -->
 
@@ -3507,7 +3509,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 36: Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-036-CLAIM figure-table:PCIE14-FIG-036 -->
 
@@ -3592,7 +3594,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 37: Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 37: Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</strong></summary>
 
 <!-- claim:PCIE14-FIG-037-CLAIM figure-table:PCIE14-FIG-037 -->
 
@@ -3676,7 +3678,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 38: Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 38: Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</strong></summary>
 
 <!-- claim:PCIE14-FIG-038-CLAIM figure-table:PCIE14-FIG-038 -->
 
@@ -3760,7 +3762,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 39: Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 39: Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</strong></summary>
 
 <!-- claim:PCIE14-FIG-039-CLAIM figure-table:PCIE14-FIG-039 -->
 
@@ -3845,7 +3847,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 40: Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 40: Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-040-CLAIM figure-table:PCIE14-FIG-040 -->
 
@@ -3928,7 +3930,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 41: Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 41: Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-041-CLAIM figure-table:PCIE14-FIG-041 -->
 
@@ -4012,7 +4014,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 42: MSI-X Capability (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 42: MSI-X Capability (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-042-CLAIM figure-table:PCIE14-FIG-042 -->
 
@@ -4097,7 +4099,7 @@ This is an interrupt-delivery or capability Figure. Separate vector source, enab
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 43: Offset MSIXCAP: MXID - MSI-X Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 43: Offset MSIXCAP: MXID - MSI-X Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-043-CLAIM figure-table:PCIE14-FIG-043 -->
 
@@ -4182,7 +4184,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 44: Offset MSIXCAP + 2h: MXC - MSI-X Message Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 44: Offset MSIXCAP + 2h: MXC - MSI-X Message Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-044-CLAIM figure-table:PCIE14-FIG-044 -->
 
@@ -4267,7 +4269,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 45: Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 45: Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</strong></summary>
 
 <!-- claim:PCIE14-FIG-045-CLAIM figure-table:PCIE14-FIG-045 -->
 
@@ -4352,7 +4354,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 46: Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 46: Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</strong></summary>
 
 <!-- claim:PCIE14-FIG-046-CLAIM figure-table:PCIE14-FIG-046 -->
 
@@ -4437,7 +4439,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 47: PCI Express Capability</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 47: PCI Express Capability</strong></summary>
 
 <!-- claim:PCIE14-FIG-047-CLAIM figure-table:PCIE14-FIG-047 -->
 
@@ -4522,7 +4524,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 48: Offset PXCAP: PXID - PCI Express Capability ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 48: Offset PXCAP: PXID - PCI Express Capability ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-048-CLAIM figure-table:PCIE14-FIG-048 -->
 
@@ -4606,7 +4608,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 49: Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 49: Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-049-CLAIM figure-table:PCIE14-FIG-049 -->
 
@@ -4691,7 +4693,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 50: Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 50: Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-050-CLAIM figure-table:PCIE14-FIG-050 -->
 
@@ -4776,7 +4778,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 51: Offset PXCAP + 8h: PXDC - PCI Express Device Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 51: Offset PXCAP + 8h: PXDC - PCI Express Device Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-051-CLAIM figure-table:PCIE14-FIG-051 -->
 
@@ -4861,7 +4863,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 52: Offset PXCAP + Ah: PXDS - PCI Express Device Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 52: Offset PXCAP + Ah: PXDS - PCI Express Device Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-052-CLAIM figure-table:PCIE14-FIG-052 -->
 
@@ -4946,7 +4948,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 53: Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 53: Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-053-CLAIM figure-table:PCIE14-FIG-053 -->
 
@@ -5031,7 +5033,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 54: Offset PXCAP + 10h: PXLC - PCI Express Link Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 54: Offset PXCAP + 10h: PXLC - PCI Express Link Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-054-CLAIM figure-table:PCIE14-FIG-054 -->
 
@@ -5116,7 +5118,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 55: Offset PXCAP + 12h: PXLS - PCI Express Link Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 55: Offset PXCAP + 12h: PXLS - PCI Express Link Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-055-CLAIM figure-table:PCIE14-FIG-055 -->
 
@@ -5201,7 +5203,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 56: Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 56: Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</strong></summary>
 
 <!-- claim:PCIE14-FIG-056-CLAIM figure-table:PCIE14-FIG-056 -->
 
@@ -5286,7 +5288,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 57: Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 57: Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</strong></summary>
 
 <!-- claim:PCIE14-FIG-057-CLAIM figure-table:PCIE14-FIG-057 -->
 
@@ -5371,7 +5373,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 58: Advanced Error Reporting Capability (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 58: Advanced Error Reporting Capability (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-058-CLAIM figure-table:PCIE14-FIG-058 -->
 
@@ -5456,7 +5458,7 @@ This is a status or error classification. Identify the containing structure and 
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 59: Offset AERCAP: AERID - AER Capability ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 59: Offset AERCAP: AERID - AER Capability ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-059-CLAIM figure-table:PCIE14-FIG-059 -->
 
@@ -5541,7 +5543,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 60: Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 60: Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-060-CLAIM figure-table:PCIE14-FIG-060 -->
 
@@ -5626,7 +5628,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 61: Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 61: Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-061-CLAIM figure-table:PCIE14-FIG-061 -->
 
@@ -5711,7 +5713,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 62: Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 62: Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-062-CLAIM figure-table:PCIE14-FIG-062 -->
 
@@ -5796,7 +5798,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 63: Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 63: Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-063-CLAIM figure-table:PCIE14-FIG-063 -->
 
@@ -5881,7 +5883,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 64: Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 64: Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-064-CLAIM figure-table:PCIE14-FIG-064 -->
 
@@ -5966,7 +5968,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 65: Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 65: Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-065-CLAIM figure-table:PCIE14-FIG-065 -->
 
@@ -6051,7 +6053,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 66: Offset AERCAP + 1Ch: AERHL - AER Header Log Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 66: Offset AERCAP + 1Ch: AERHL - AER Header Log Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-066-CLAIM figure-table:PCIE14-FIG-066 -->
 
@@ -6136,7 +6138,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 67: Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 67: Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-067-CLAIM figure-table:PCIE14-FIG-067 -->
 
@@ -6221,7 +6223,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 68: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 68: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-068-CLAIM figure-table:PCIE14-FIG-068 -->
 
@@ -6306,7 +6308,7 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 69: NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 69: NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure</strong></summary>
 
 <!-- claim:PCIE14-FIG-069-CLAIM figure-table:PCIE14-FIG-069 -->
 
@@ -6390,7 +6392,7 @@ This is a structure or capability field table. Locate it using the structure bas
 ### §3.9
 
 <details markdown="1">
-<summary><strong>Figure 70: Get Log Page - Log Page Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 70: Get Log Page - Log Page Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-070-CLAIM figure-table:PCIE14-FIG-070 -->
 
@@ -6471,7 +6473,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 71: Size of Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 71: Size of Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
 
 <!-- claim:PCIE14-FIG-071-CLAIM figure-table:PCIE14-FIG-071 -->
 
@@ -6551,7 +6553,7 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 72: Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 72: Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-072-CLAIM figure-table:PCIE14-FIG-072 -->
 
@@ -6636,7 +6638,7 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 73: Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 73: Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-073-CLAIM figure-table:PCIE14-FIG-073 -->
 
@@ -6718,7 +6720,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 74: Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 74: Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
 
 <!-- claim:PCIE14-FIG-074-CLAIM figure-table:PCIE14-FIG-074 -->
 
@@ -6798,7 +6800,7 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 75: EOM Header</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 75: EOM Header</strong></summary>
 
 <!-- claim:PCIE14-FIG-075-CLAIM figure-table:PCIE14-FIG-075 -->
 
@@ -6878,7 +6880,7 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 76: EOM Lane Descriptor</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 76: EOM Lane Descriptor</strong></summary>
 
 <!-- claim:PCIE14-FIG-076-CLAIM figure-table:PCIE14-FIG-076 -->
 
@@ -6963,7 +6965,7 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 77: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 77: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-077-CLAIM figure-table:PCIE14-FIG-077 -->
 
@@ -7045,3 +7047,262 @@ This is a measurement-data Figure. Confirm support, request selectors, and retur
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+24 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Base defines NVMe; the PCIe Transport defines how it is realized on PCIe”?
+
+<!-- qa:pcie-transport-1.4-layers-lead -->
+
+**Answer.**
+
+Figure 1 shows document applicability and Figure 2 separates protocol responsibility. Engineering analysis separates command semantics from the way host memory, MMIO, configuration space, and interrupts carry the operation. The Transport does not rewrite Base when the two conflict.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, printed pages 6, PDF pages 6; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, printed pages 6-7, PDF pages 6-7; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, printed pages 8, PDF pages 8
+
+### Q02. Which concepts or conditions must be distinguished in “Base defines NVMe; the PCIe Transport defines how it is realized on PCIe”?
+
+<!-- qa:pcie-transport-1.4-layers-rows -->
+
+**Answer.**
+
+- Base — Common command and completion semantics — Highest-precedence NVMe definition
+- PCIe Transport — Address, register, doorbell, and interrupt binding — Adds PCIe-specific requirements
+- PCI-SIG specifications — Native PCIe capability and transaction semantics — This report covers only NVMe-specific statements present in the supplied source
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, printed pages 6, PDF pages 6; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, printed pages 6-7, PDF pages 6-7; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, printed pages 8, PDF pages 8
+
+### Q03. How does “Base defines NVMe; the PCIe Transport defines how it is realized on PCIe” apply to a concrete calculation or operational scenario?
+
+<!-- qa:pcie-transport-1.4-layers-example -->
+
+**Answer.**
+
+Informative example: Base defines Firmware Commit CA/FS and status codes. The PCIe Transport adds where the SQE resides in host memory, where the doorbell resides in BAR0/1 memory space, and how a completion can trigger MSI-X.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, printed pages 6, PDF pages 6; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, printed pages 6-7, PDF pages 6-7; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, printed pages 8, PDF pages 8
+
+### Q04. What misinterpretation is most likely in “Base defines NVMe; the PCIe Transport defines how it is realized on PCIe”, and how is it debugged?
+
+<!-- qa:pcie-transport-1.4-layers-pitfall -->
+
+**Answer.**
+
+Label the owning specification beside every field in a design document. A defect report that merges command status, PCIe AER, and device-register access into one 'NVMe error' usually chooses the wrong recovery layer as well.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, printed pages 6, PDF pages 6; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, printed pages 6-7, PDF pages 6-7; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, printed pages 8, PDF pages 8
+
+### Q05. What is the governing interpretation for “From BAR to doorbell offset: preserve units at every step”?
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-lead -->
+
+**Answer.**
+
+NVMe controller registers reside in the memory space designated by BAR0/BAR1. Doorbells begin at 1000h; SQ-tail and CQ-head registers for queue y are spaced using CAP.DSTRD. Figures 3-6 form one address derivation rather than four independent register tables.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, printed pages 9-10, PDF pages 9-10; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, printed pages 10-11, PDF pages 10-11
+
+### Q06. Which concepts or conditions must be distinguished in “From BAR to doorbell offset: preserve units at every step”?
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-rows -->
+
+**Answer.**
+
+- SQ y tail — 1000h + (2y) x (4 << DSTRD) — Host publishes a new SQ tail
+- CQ y head — 1000h + (2y+1) x (4 << DSTRD) — Host publishes a consumed CQ head
+- Doorbell value — Queue pointer — Does not contain the SQE or CQE body
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, printed pages 9-10, PDF pages 9-10; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, printed pages 10-11, PDF pages 10-11
+
+### Q07. How does “From BAR to doorbell offset: preserve units at every step” apply to a concrete calculation or operational scenario?
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-example -->
+
+**Answer.**
+
+Informative example: with DSTRD=1, stride=4<<1=8 bytes. SQ-tail offset for queue 3 is 1000h+(6x8)=1030h; CQ-head offset is 1000h+(7x8)=1038h. They differ by one stride. Treating DSTRD itself as a byte count makes every nonzero-DSTRD doorbell address wrong.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, printed pages 9-10, PDF pages 9-10; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, printed pages 10-11, PDF pages 10-11
+
+### Q08. What misinterpretation is most likely in “From BAR to doorbell offset: preserve units at every step”, and how is it debugged?
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-pitfall -->
+
+**Answer.**
+
+A doorbell trace retains BAR base, DSTRD, queue ID, formula intermediates, final physical address, written pointer, and access width. Logging only the final virtual address cannot distinguish BAR mapping, stride, or queue-index defects.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, printed pages 9-10, PDF pages 9-10; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, printed pages 10-11, PDF pages 10-11
+
+### Q09. What is the governing interpretation for “The eight Figure 8 command-processing steps are ownership handoffs”?
+
+<!-- qa:pcie-transport-1.4-command-lead -->
+
+**Answer.**
+
+SQE creation, doorbell write, controller fetch, CQE posting, interrupt delivery, and CQ-head update are not names for one event; they are successive ownership handoffs between host and controller. Their order governs both memory ordering and resource reuse.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, printed pages 12-13, PDF pages 12-13; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11
+
+### Q10. Which concepts or conditions must be distinguished in “The eight Figure 8 command-processing steps are ownership handoffs”?
+
+<!-- qa:pcie-transport-1.4-command-rows -->
+
+**Answer.**
+
+- SQ-slot reuse — Controller has consumed the SQE — Completion SQHD assists tracking
+- Command-buffer reuse — Command completed and data is visible — Check command and data direction
+- CQ-slot release — Host completely consumed the CQE — Then write the CQ-head doorbell
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, printed pages 12-13, PDF pages 12-13; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11
+
+### Q11. How does “The eight Figure 8 command-processing steps are ownership handoffs” apply to a concrete calculation or operational scenario?
+
+<!-- qa:pcie-transport-1.4-command-example -->
+
+**Answer.**
+
+Informative example: if the host rings the doorbell before writing the final SQE dword, the controller may fetch a partial command. In the other direction, updating CQ head before fully reading the CQE can let the controller reuse that CQ slot. Both are ownership-ordering failures, not opcode failures.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, printed pages 12-13, PDF pages 12-13; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11
+
+### Q12. What misinterpretation is most likely in “The eight Figure 8 command-processing steps are ownership handoffs”, and how is it debugged?
+
+<!-- qa:pcie-transport-1.4-command-pitfall -->
+
+**Answer.**
+
+A timeline records CPU core, SQ tail, doorbell MMIO, SQHD, CQ phase, interrupt vector, and CQ head. Events from separate logs are aligned by CID/SQID and timestamp to isolate lost interrupts, stale phase, or memory-ordering defects.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, printed pages 12-13, PDF pages 12-13; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11
+
+### Q13. What is the governing interpretation for “Interrupt-mode comparison: vector count, masking, and latency are separate dimensions”?
+
+<!-- qa:pcie-transport-1.4-interrupts-lead -->
+
+**Answer.**
+
+Pin-based, single-message MSI, multiple-message MSI, and MSI-X differ in more than performance. They provide different vector counts, masking locations, and capability structures; interrupt coalescing separately controls when multiple completions produce a notification. Figure 9 and Figures 34-46 belong with queue-to-vector mapping.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, printed pages 13-16, PDF pages 13-16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q14. Which concepts or conditions must be distinguished in “Interrupt-mode comparison: vector count, masking, and latency are separate dimensions”?
+
+<!-- qa:pcie-transport-1.4-interrupts-rows -->
+
+**Answer.**
+
+- Pin-based — Legacy shared signaling — Sharing and masking differ
+- Single MSI — One message/vector — Multiple CQs may share a service path
+- Multiple MSI — A set of contiguous messages — Constrained by MME/MMC capability
+- MSI-X — Table-based vectors with independent masks — Preferred by the specification
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, printed pages 13-16, PDF pages 13-16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q15. How does “Interrupt-mode comparison: vector count, masking, and latency are separate dimensions” apply to a concrete calculation or operational scenario?
+
+<!-- qa:pcie-transport-1.4-interrupts-example -->
+
+**Answer.**
+
+Informative example: CQ 1 and CQ 2 share vector 5. When vector 5 arrives, the handler cannot inspect only CQ 1; it services every relevant CQ mapped to the vector. Raising the coalescing threshold can reduce interrupt rate while increasing CQE wait time.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, printed pages 13-16, PDF pages 13-16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q16. What misinterpretation is most likely in “Interrupt-mode comparison: vector count, masking, and latency are separate dimensions”, and how is it debugged?
+
+<!-- qa:pcie-transport-1.4-interrupts-pitfall -->
+
+**Answer.**
+
+Interrupt debugging separates capability enable, CQ IV, MSI/MSI-X mask, pending state, controller CQE, and host handler. 'ISR did not run' cannot distinguish no generation, failed PCIe delivery, a masked vector, or a handler that skipped a CQ.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, printed pages 13-16, PDF pages 13-16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q17. What is the governing interpretation for “Configuration space is a capability map; AER is a transport-error map”?
+
+<!-- qa:pcie-transport-1.4-config-error-lead -->
+
+**Answer.**
+
+Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Locate the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, printed pages 16-35, PDF pages 16-35; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, printed pages 16, PDF pages 16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, printed pages 16, PDF pages 16
+
+### Q18. Which concepts or conditions must be distinguished in “Configuration space is a capability map; AER is a transport-error map”?
+
+<!-- qa:pcie-transport-1.4-config-error-rows -->
+
+**Answer.**
+
+- NVMe CQE status — Command execution result — Decode in NVMe command context
+- PCIe Device Status — PCIe Function status summary — Located in PCIe capability
+- AER — Correctable/uncorrectable transport errors — Read status, mask, severity, and header together
+- Power state — Slot limit and device power control — Never choose an NVMe state above the slot power limit
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, printed pages 16-35, PDF pages 16-35; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, printed pages 16, PDF pages 16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, printed pages 16, PDF pages 16
+
+### Q19. How does “Configuration space is a capability map; AER is a transport-error map” apply to a concrete calculation or operational scenario?
+
+<!-- qa:pcie-transport-1.4-config-error-example -->
+
+**Answer.**
+
+Informative example: when an AERUCES bit is set, first check its mask to determine reporting, then its severity for handling, and finally the header log for transaction context. The bit cannot be translated directly into an NVMe SC.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, printed pages 16-35, PDF pages 16-35; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, printed pages 16, PDF pages 16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, printed pages 16, PDF pages 16
+
+### Q20. What misinterpretation is most likely in “Configuration space is a capability map; AER is a transport-error map”, and how is it debugged?
+
+<!-- qa:pcie-transport-1.4-config-error-pitfall -->
+
+**Answer.**
+
+A configuration dump retains the capability base as well as register values. The same relative offset under a different capability base denotes a different field. Capture the complete AER set before clearing any RW1C status.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, printed pages 16-35, PDF pages 16-35; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, printed pages 16, PDF pages 16; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, printed pages 16, PDF pages 16
+
+### Q21. What is the governing interpretation for “EOM parser: size first, header second, lane descriptors third”?
+
+<!-- qa:pcie-transport-1.4-eom-lead -->
+
+**Answer.**
+
+The Physical Interface Receiver Eye Opening Measurement log page is variable length. The host confirms support and required size before parsing specific parameters/identifiers, the header, lane descriptors, and measurement data. Figures 70-77 form a parser pipeline rather than independent field translations.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, printed pages 39-46, PDF pages 39-46; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q22. Which concepts or conditions must be distinguished in “EOM parser: size first, header second, lane descriptors third”?
+
+<!-- qa:pcie-transport-1.4-eom-rows -->
+
+**Answer.**
+
+- Specific parameter — Selects measurement action and quality/state — Establish request context first
+- Specific identifier — Selects lane/test context — Prevents mixing different measurements
+- Header — Global length and layout — Base for every later offset
+- Lane descriptor — Per-lane boundaries and status — Walk only within returned buffer
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, printed pages 39-46, PDF pages 39-46; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q23. How does “EOM parser: size first, header second, lane descriptors third” apply to a concrete calculation or operational scenario?
+
+<!-- qa:pcie-transport-1.4-eom-example -->
+
+**Answer.**
+
+Informative example: the header claims eight lane descriptors while the returned buffer can contain only six complete descriptors. The parser reports a truncated structure and stops; it must not read beyond the buffer because the platform was expected to have eight lanes.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, printed pages 39-46, PDF pages 39-46; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48
+
+### Q24. What misinterpretation is most likely in “EOM parser: size first, header second, lane descriptors third”, and how is it debugged?
+
+<!-- qa:pcie-transport-1.4-eom-pitfall -->
+
+**Answer.**
+
+Retain request parameter, identifier, returned byte count, header-declared size, lane number, and measurement status. A final eye plot alone cannot reproduce selector, length, or lane-mapping defects.
+
+> Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, printed pages 39-46, PDF pages 39-46; Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, printed pages 47-48, PDF pages 47-48

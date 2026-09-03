@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-08-31-nvme-base-firmware-log-admin-zh-tw %})
+
 
 # NVMe Base 2.4: Firmware Update and LID 03h Verification
 
@@ -505,7 +507,7 @@ VALIDATE fail ──→ return to RAW evidence
 Figures are traceable evidence for the workflow, not the article outline. Dependency entries expose only the required slice; Figure 209 is limited to the LID 03h row.
 
 <details markdown="1">
-<summary><strong>Figure 187: Firmware Commit – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 187: Firmware Commit – Command Dword 10</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-187-CLAIM figure-table:BASEFWLOG-FIG-187 -->
 
@@ -587,7 +589,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 188: Firmware Commit – Completion Queue Entry Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 188: Firmware Commit – Completion Queue Entry Dword 0</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-188-CLAIM figure-table:BASEFWLOG-FIG-188 -->
 
@@ -669,7 +671,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 189: Firmware Commit – Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 189: Firmware Commit – Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-189-CLAIM figure-table:BASEFWLOG-FIG-189 -->
 
@@ -753,7 +755,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 190: Firmware Image Download – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 190: Firmware Image Download – Data Pointer</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-190-CLAIM figure-table:BASEFWLOG-FIG-190 -->
 
@@ -833,7 +835,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 191: Firmware Image Download – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 191: Firmware Image Download – Command Dword 10</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-191-CLAIM figure-table:BASEFWLOG-FIG-191 -->
 
@@ -914,7 +916,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 192: Firmware Image Download – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 192: Firmware Image Download – Command Dword 11</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-192-CLAIM figure-table:BASEFWLOG-FIG-192 -->
 
@@ -995,7 +997,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 193: Firmware Image Download – Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 193: Firmware Image Download – Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-193-CLAIM figure-table:BASEFWLOG-FIG-193 -->
 
@@ -1075,7 +1077,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 203: Get Log Page – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 203: Get Log Page – Data Pointer</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-203-CLAIM figure-table:BASEFWLOG-FIG-203 -->
 
@@ -1155,7 +1157,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 204: Get Log Page – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 204: Get Log Page – Command Dword 10</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-204-CLAIM figure-table:BASEFWLOG-FIG-204 -->
 
@@ -1238,7 +1240,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 205: Get Log Page – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 205: Get Log Page – Command Dword 11</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-205-CLAIM figure-table:BASEFWLOG-FIG-205 -->
 
@@ -1319,7 +1321,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 206: Get Log Page – Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 206: Get Log Page – Command Dword 12</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-206-CLAIM figure-table:BASEFWLOG-FIG-206 -->
 
@@ -1400,7 +1402,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 207: Get Log Page – Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 207: Get Log Page – Command Dword 13</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-207-CLAIM figure-table:BASEFWLOG-FIG-207 -->
 
@@ -1480,7 +1482,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 208: Get Log Page – Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 208: Get Log Page – Command Dword 14</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-208-CLAIM figure-table:BASEFWLOG-FIG-208 -->
 
@@ -1562,7 +1564,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 209: Get Log Page – Log Page Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 209: Get Log Page – Log Page Identifiers</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-209-CLAIM figure-table:BASEFWLOG-FIG-209 -->
 
@@ -1647,7 +1649,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 215: Firmware Slot Information Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 215: Firmware Slot Information Log Page</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-215-CLAIM figure-table:BASEFWLOG-FIG-215 -->
 
@@ -1732,7 +1734,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-093-CLAIM figure-table:BASEFWLOG-FIG-093 -->
 
@@ -1815,7 +1817,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 155: Asynchronous Event Information – Notice</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 155: Asynchronous Event Information – Notice</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-155-CLAIM figure-table:BASEFWLOG-FIG-155 -->
 
@@ -1898,7 +1900,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 337: Command Set Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 337: Command Set Identifiers</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-337-CLAIM figure-table:BASEFWLOG-FIG-337 -->
 
@@ -1978,7 +1980,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify – Identify Controller Data Structure, I/O Command Set Independent</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify – Identify Controller Data Structure, I/O Command Set Independent</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-338-CLAIM figure-table:BASEFWLOG-FIG-338 -->
 
@@ -2063,7 +2065,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 347: UUID List</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 347: UUID List</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-347-CLAIM figure-table:BASEFWLOG-FIG-347 -->
 
@@ -2147,7 +2149,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 348: UUID List Entry</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 348: UUID List Entry</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-348-CLAIM figure-table:BASEFWLOG-FIG-348 -->
 
@@ -2229,7 +2231,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-474-CLAIM figure-table:BASEFWLOG-FIG-474 -->
 
@@ -2307,3 +2309,179 @@ This is a command-construction field table. Build the common SQE, locate the spe
 > Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, printed pages 466-468, PDF pages 492-494
 
 </details>
+
+## Self-questions and worked answers
+
+16 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Read capabilities before choosing a firmware-update plan”?
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-lead -->
+
+**Answer.**
+
+Firmware update is not a fixed command recipe. FRMW controls slots and activation capability, FWUG controls download granularity and alignment, MTFA and MPTFAWR bound waiting time, and MDS/DID define which controllers share the result.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 354, PDF pages 380; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 359, PDF pages 385; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 357, PDF pages 383; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 364, PDF pages 390; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 346, 364, PDF pages 372, 390
+
+### Q02. Which concepts or conditions must be distinguished in “Read capabilities before choosing a firmware-update plan”?
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-rows -->
+
+**Answer.**
+
+- FRMW — Available slots, slot-1 read-only state, activation capability — Read before selecting FS and CA
+- FWUG — Download-portion granularity and alignment — Convert to bytes before splitting the image
+- MTFA / MPTFAWR — Timing bounds for activation interruption — Do not hard-code timeout
+- MDS / DID — Domain that shares firmware slots — A PCI Function is not the complete scope
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 354, PDF pages 380; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 359, PDF pages 385; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 357, PDF pages 383; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 364, PDF pages 390; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 346, 364, PDF pages 372, 390
+
+### Q03. How does “Read capabilities before choosing a firmware-update plan” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-example -->
+
+**Answer.**
+
+If FWUG decodes to 4 KiB, a 12 KiB image can be split into three 4 KiB portions; the final transfer is not an arbitrary short tail. The plan must also establish that slot 2 is legal and writable and select a timeout for the activation path.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 354, PDF pages 380; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 359, PDF pages 385; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 357, PDF pages 383; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 364, PDF pages 390; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 346, 364, PDF pages 372, 390
+
+### Q04. What misinterpretation is most likely in “Read capabilities before choosing a firmware-update plan”, and how is it debugged?
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-pitfall -->
+
+**Answer.**
+
+A command trace without the capability snapshot cannot explain why the same firmware image behaves differently on another controller revision.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 354, PDF pages 380; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 359, PDF pages 385; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 357, PDF pages 383; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 364, PDF pages 390; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 346, 364, PDF pages 372, 390
+
+### Q05. What is the governing interpretation for “Download is byte-range geometry, not a direct file upload”?
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-lead -->
+
+**Answer.**
+
+Each Firmware Image Download uses DPTR for the host buffer, zero-based NUMD for transfer dwords, and OFST for the image-relative dword offset. The host must prove buffer validity, length, offset, FWUG compliance, and absence of gaps or overlaps.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.10, printed pages 205-206, PDF pages 231-232; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, printed pages 140-142, 205-206, PDF pages 166-168, 231-232
+
+### Q06. Which concepts or conditions must be distinguished in “Download is byte-range geometry, not a direct file upload”?
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-rows -->
+
+**Answer.**
+
+- DPTR — Host buffer for this transfer — A valid address does not prove a valid length
+- NUMD — Zero-based dword count for this transfer — 4096 bytes → 1024 dwords → 03FFh
+- OFST — Dword offset from the image start — The second 4 KiB portion starts at 1024 dwords
+- FWUG — Portion alignment and granularity gate — Validate the image and each portion separately
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.10, printed pages 205-206, PDF pages 231-232; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, printed pages 140-142, 205-206, PDF pages 166-168, 231-232
+
+### Q07. How does “Download is byte-range geometry, not a direct file upload” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-example -->
+
+**Answer.**
+
+For a 12 KiB image in 4 KiB chunks: portion 0 uses NUMD=03FFh and OFST=00000000h; portion 1 uses NUMD=03FFh and OFST=00000400h; portion 2 uses NUMD=03FFh and OFST=00000800h. Commit follows only after all three completions succeed.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.10, printed pages 205-206, PDF pages 231-232; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, printed pages 140-142, 205-206, PDF pages 166-168, 231-232
+
+### Q08. What misinterpretation is most likely in “Download is byte-range geometry, not a direct file upload”, and how is it debugged?
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-pitfall -->
+
+**Answer.**
+
+Common errors include treating OFST as a byte offset, treating NUMD as an actual dword count, or reusing a buffer before its CQE proves success.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.10, printed pages 205-206, PDF pages 231-232; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, printed pages 140-142, 205-206, PDF pages 166-168, 231-232
+
+### Q09. What is the governing interpretation for “Commit converts downloaded portions into slot state and activation policy”?
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-lead -->
+
+**Answer.**
+
+Commit Action (CA) is not a success flag; it selects replacement, activation, and reset boundary. Firmware Slot (FS) selects the target slot, while CQE status determines whether software verifies, performs a specific reset, waits, or stops.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 202-203, PDF pages 228-229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 203, PDF pages 229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204, PDF pages 230; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204-205, PDF pages 230-231
+
+### Q10. Which concepts or conditions must be distinguished in “Commit converts downloaded portions into slot state and activation policy”?
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-rows -->
+
+**Answer.**
+
+- CA — Replacement and activation behavior — Do not log only a decimal value
+- FS — Target firmware slot — Zero may let the controller choose; follow the definition
+- SCT / SC — Success, reset scope, or failure cause — 0Bh, 10h, and 11h imply different reset scopes
+- MUD — Evidence of overlapping update sequences — It may be meaningful even when the command aborts
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 202-203, PDF pages 228-229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 203, PDF pages 229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204, PDF pages 230; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204-205, PDF pages 230-231
+
+### Q11. How does “Commit converts downloaded portions into slot state and activation policy” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-example -->
+
+**Answer.**
+
+If completion reports Firmware Activation Requires Controller Level Reset, Commit may have succeeded while the image is not yet current. Software records the status, performs the specified reset, and then verifies Identify.FR and LID 03h.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 202-203, PDF pages 228-229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 203, PDF pages 229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204, PDF pages 230; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204-205, PDF pages 230-231
+
+### Q12. What misinterpretation is most likely in “Commit converts downloaded portions into slot state and activation policy”, and how is it debugged?
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-pitfall -->
+
+**Answer.**
+
+Treating every activation-required status as 'retry Commit' can modify the slot again and create MUD. Select the recovery branch from SCT/SC first.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 202-203, PDF pages 228-229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 203, PDF pages 229; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204, PDF pages 230; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, printed pages 204-205, PDF pages 230-231
+
+### Q13. What is the governing interpretation for “LID 03h verification is more than reading one revision string”?
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-lead -->
+
+**Answer.**
+
+Get Log Page first builds a 512-byte transfer from common command fields and selects Firmware Slot Information with LID=03h. AFI separates CAFS from NAFS, FRS1-FRS7 report slot revisions, and Identify.FR plus domain scope provide the final cross-check.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, printed pages 140-142, 212-215, PDF pages 166-168, 238-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-215, PDF pages 239-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 215-216, PDF pages 241-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 340, PDF pages 366
+
+### Q14. Which concepts or conditions must be distinguished in “LID 03h verification is more than reading one revision string”?
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-rows -->
+
+**Answer.**
+
+- CAFS — Currently executing slot — It is not next-reset intent
+- NAFS — Slot scheduled after the next reset — Zero means none scheduled
+- FRSx — Eight-byte revision for slot x — All-zero bytes are not an ASCII string
+- Identify.FR — Independent observation of current revision — Cross-check against the FRSx selected by CAFS
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, printed pages 140-142, 212-215, PDF pages 166-168, 238-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-215, PDF pages 239-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 215-216, PDF pages 241-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 340, PDF pages 366
+
+### Q15. How does “LID 03h verification is more than reading one revision string” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-example -->
+
+**Answer.**
+
+With AFI=22h, CAFS=2 and NAFS=2: slot 2 is current and remains scheduled after reset. CAFS=1 with NAFS=2 means activation has not crossed the reset boundary. This is an informative decode and remains subject to the bit definitions in Figure 215.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, printed pages 140-142, 212-215, PDF pages 166-168, 238-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-215, PDF pages 239-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 215-216, PDF pages 241-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 340, PDF pages 366
+
+### Q16. What misinterpretation is most likely in “LID 03h verification is more than reading one revision string”, and how is it debugged?
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-pitfall -->
+
+**Answer.**
+
+Comparing FRS2 without CAFS does not prove slot 2 is executing; reading CAFS without Identify.FR does not exclude a parser-offset or stale-buffer defect.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, printed pages 140-142, 212-215, PDF pages 166-168, 238-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-215, PDF pages 239-241; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 215-216, PDF pages 241-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, printed pages 226, PDF pages 252; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, printed pages 340, PDF pages 366

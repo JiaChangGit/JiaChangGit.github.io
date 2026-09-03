@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-08-28-nvme-base-ch3-zh-tw %})
+
 
 # NVMe Base 2.4 Chapter 3: Controllers, Queues, Initialization, and Resets
 
@@ -517,7 +519,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §3.1
 
 <details markdown="1">
-<summary><strong>Figure 23: Controller Types</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 23: Controller Types</strong></summary>
 
 <!-- claim:BASE3-FIG-023-CLAIM figure-table:BASE3-FIG-023 -->
 
@@ -597,7 +599,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 24: NVM Subsystem with Three I/O Controllers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 24: NVM Subsystem with Three I/O Controllers</strong></summary>
 
 <!-- claim:BASE3-FIG-024-CLAIM figure-table:BASE3-FIG-024 -->
 
@@ -679,7 +681,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 25: NVM Subsystem with One Administrative and Two I/O Controllers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 25: NVM Subsystem with One Administrative and Two I/O Controllers</strong></summary>
 
 <!-- claim:BASE3-FIG-025-CLAIM figure-table:BASE3-FIG-025 -->
 
@@ -761,7 +763,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 26: NVM Subsystem with One Administrative Controller</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 26: NVM Subsystem with One Administrative Controller</strong></summary>
 
 <!-- claim:BASE3-FIG-026-CLAIM figure-table:BASE3-FIG-026 -->
 
@@ -843,7 +845,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 27: Controller IDs FFF0h to FFFFh</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 27: Controller IDs FFF0h to FFFFh</strong></summary>
 
 <!-- claim:BASE3-FIG-027-CLAIM figure-table:BASE3-FIG-027 -->
 
@@ -924,7 +926,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 28: Admin Command Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 28: Admin Command Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-028-CLAIM figure-table:BASE3-FIG-028 -->
 
@@ -1007,7 +1009,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 30: Common I/O Command Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 30: Common I/O Command Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-030-CLAIM figure-table:BASE3-FIG-030 -->
 
@@ -1088,7 +1090,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 31: Log Page Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 31: Log Page Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-031-CLAIM figure-table:BASE3-FIG-031 -->
 
@@ -1173,7 +1175,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 32: Feature Support Requirements</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 32: Feature Support Requirements</strong></summary>
 
 <!-- claim:BASE3-FIG-032-CLAIM figure-table:BASE3-FIG-032 -->
 
@@ -1258,7 +1260,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 33: Property Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 33: Property Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-033-CLAIM figure-table:BASE3-FIG-033 -->
 
@@ -1343,7 +1345,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 34: Memory-Based Property Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 34: Memory-Based Property Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-034-CLAIM figure-table:BASE3-FIG-034 -->
 
@@ -1424,7 +1426,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
 
 <!-- claim:BASE3-FIG-036-CLAIM figure-table:BASE3-FIG-036 -->
 
@@ -1509,7 +1511,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 37: Specification Version Descriptor</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 37: Specification Version Descriptor</strong></summary>
 
 <!-- claim:BASE3-FIG-037-CLAIM figure-table:BASE3-FIG-037 -->
 
@@ -1591,7 +1593,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 38: NVM Express Base Specification Version Property Reset Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 38: NVM Express Base Specification Version Property Reset Values</strong></summary>
 
 <!-- claim:BASE3-FIG-038-CLAIM figure-table:BASE3-FIG-038 -->
 
@@ -1673,7 +1675,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 39: Offset Ch: INTMS - Interrupt Mask Set</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 39: Offset Ch: INTMS - Interrupt Mask Set</strong></summary>
 
 <!-- claim:BASE3-FIG-039-CLAIM figure-table:BASE3-FIG-039 -->
 
@@ -1757,7 +1759,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 40: Offset 10h: INTMC - Interrupt Mask Clear</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 40: Offset 10h: INTMC - Interrupt Mask Clear</strong></summary>
 
 <!-- claim:BASE3-FIG-040-CLAIM figure-table:BASE3-FIG-040 -->
 
@@ -1840,7 +1842,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 41: Offset 14h: CC - Controller Configuration</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 41: Offset 14h: CC - Controller Configuration</strong></summary>
 
 <!-- claim:BASE3-FIG-041-CLAIM figure-table:BASE3-FIG-041 -->
 
@@ -1925,7 +1927,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 42: Offset 1Ch: CSTS - Controller Status</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 42: Offset 1Ch: CSTS - Controller Status</strong></summary>
 
 <!-- claim:BASE3-FIG-042-CLAIM figure-table:BASE3-FIG-042 -->
 
@@ -2010,7 +2012,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 43: Offset 20h: NSSR - NVM Subsystem Reset</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 43: Offset 20h: NSSR - NVM Subsystem Reset</strong></summary>
 
 <!-- claim:BASE3-FIG-043-CLAIM figure-table:BASE3-FIG-043 -->
 
@@ -2092,7 +2094,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 44: Offset 24h: AQA - Admin Queue Attributes</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 44: Offset 24h: AQA - Admin Queue Attributes</strong></summary>
 
 <!-- claim:BASE3-FIG-044-CLAIM figure-table:BASE3-FIG-044 -->
 
@@ -2174,7 +2176,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 45: Offset 28h: ASQ - Admin Submission Queue Base Address</strong></summary>
 
 <!-- claim:BASE3-FIG-045-CLAIM figure-table:BASE3-FIG-045 -->
 
@@ -2257,7 +2259,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 46: Offset 30h: ACQ - Admin Completion Queue Base Address</strong></summary>
 
 <!-- claim:BASE3-FIG-046-CLAIM figure-table:BASE3-FIG-046 -->
 
@@ -2340,7 +2342,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 47: Offset 38h: CMBLOC - Controller Memory Buffer Location</strong></summary>
 
 <!-- claim:BASE3-FIG-047-CLAIM figure-table:BASE3-FIG-047 -->
 
@@ -2425,7 +2427,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 48: Offset 3Ch: CMBSZ - Controller Memory Buffer Size</strong></summary>
 
 <!-- claim:BASE3-FIG-048-CLAIM figure-table:BASE3-FIG-048 -->
 
@@ -2510,7 +2512,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 49: Offset 40h: BPINFO - Boot Partition Information</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 49: Offset 40h: BPINFO - Boot Partition Information</strong></summary>
 
 <!-- claim:BASE3-FIG-049-CLAIM figure-table:BASE3-FIG-049 -->
 
@@ -2595,7 +2597,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 50: Offset 44h: BPRSEL - Boot Partition Read Select</strong></summary>
 
 <!-- claim:BASE3-FIG-050-CLAIM figure-table:BASE3-FIG-050 -->
 
@@ -2678,7 +2680,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 51: Offset 48h: BPMBL - Boot Partition Memory Buffer Location</strong></summary>
 
 <!-- claim:BASE3-FIG-051-CLAIM figure-table:BASE3-FIG-051 -->
 
@@ -2759,7 +2761,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 52: Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</strong></summary>
 
 <!-- claim:BASE3-FIG-052-CLAIM figure-table:BASE3-FIG-052 -->
 
@@ -2844,7 +2846,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 53: Offset 58h: CMBSTS - Controller Memory Buffer Status</strong></summary>
 
 <!-- claim:BASE3-FIG-053-CLAIM figure-table:BASE3-FIG-053 -->
 
@@ -2929,7 +2931,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 54: Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</strong></summary>
 
 <!-- claim:BASE3-FIG-054-CLAIM figure-table:BASE3-FIG-054 -->
 
@@ -3014,7 +3016,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 55: Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</strong></summary>
 
 <!-- claim:BASE3-FIG-055-CLAIM figure-table:BASE3-FIG-055 -->
 
@@ -3099,7 +3101,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 56: Offset 64h: NSSD - NVM Subsystem Shutdown</strong></summary>
 
 <!-- claim:BASE3-FIG-056-CLAIM figure-table:BASE3-FIG-056 -->
 
@@ -3182,7 +3184,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 57: Offset 68h: CRTO - Controller Ready Timeouts</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 57: Offset 68h: CRTO - Controller Ready Timeouts</strong></summary>
 
 <!-- claim:BASE3-FIG-057-CLAIM figure-table:BASE3-FIG-057 -->
 
@@ -3267,7 +3269,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 58: Offset E00h: PMRCAP - Persistent Memory Region Capabilities</strong></summary>
 
 <!-- claim:BASE3-FIG-058-CLAIM figure-table:BASE3-FIG-058 -->
 
@@ -3352,7 +3354,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 59: Offset E04h: PMRCTL - Persistent Memory Region Control</strong></summary>
 
 <!-- claim:BASE3-FIG-059-CLAIM figure-table:BASE3-FIG-059 -->
 
@@ -3434,7 +3436,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 60: Offset E08h: PMRSTS - Persistent Memory Region Status</strong></summary>
 
 <!-- claim:BASE3-FIG-060-CLAIM figure-table:BASE3-FIG-060 -->
 
@@ -3519,7 +3521,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 61: Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</strong></summary>
 
 <!-- claim:BASE3-FIG-061-CLAIM figure-table:BASE3-FIG-061 -->
 
@@ -3603,7 +3605,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 62: Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</strong></summary>
 
 <!-- claim:BASE3-FIG-062-CLAIM figure-table:BASE3-FIG-062 -->
 
@@ -3688,7 +3690,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 63: Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</strong></summary>
 
 <!-- claim:BASE3-FIG-063-CLAIM figure-table:BASE3-FIG-063 -->
 
@@ -3771,7 +3773,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 64: Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</strong></summary>
 
 <!-- claim:BASE3-FIG-064-CLAIM figure-table:BASE3-FIG-064 -->
 
@@ -3856,7 +3858,7 @@ This is a register or property field table. Locate the base offset, verify acces
 ### §3.2
 
 <details markdown="1">
-<summary><strong>Figure 65: NSID Types and Relationship to Namespace</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 65: NSID Types and Relationship to Namespace</strong></summary>
 
 <!-- claim:BASE3-FIG-065-CLAIM figure-table:BASE3-FIG-065 -->
 
@@ -3937,7 +3939,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 66: NSID Types</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 66: NSID Types</strong></summary>
 
 <!-- claim:BASE3-FIG-066-CLAIM figure-table:BASE3-FIG-066 -->
 
@@ -4017,7 +4019,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 67: NVM Sets and Associated Namespaces</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 67: NVM Sets and Associated Namespaces</strong></summary>
 
 <!-- claim:BASE3-FIG-067-CLAIM figure-table:BASE3-FIG-067 -->
 
@@ -4098,7 +4100,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 68: NVM Set Aware Admin Commands</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 68: NVM Set Aware Admin Commands</strong></summary>
 
 <!-- claim:BASE3-FIG-068-CLAIM figure-table:BASE3-FIG-068 -->
 
@@ -4179,7 +4181,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 69: NVM Sets and Associated Namespaces</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 69: NVM Sets and Associated Namespaces</strong></summary>
 
 <!-- claim:BASE3-FIG-069-CLAIM figure-table:BASE3-FIG-069 -->
 
@@ -4260,7 +4262,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 70: Flexible Data Placement Logical View of Non-Volatile Storage</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 70: Flexible Data Placement Logical View of Non-Volatile Storage</strong></summary>
 
 <!-- claim:BASE3-FIG-070-CLAIM figure-table:BASE3-FIG-070 -->
 
@@ -4340,7 +4342,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 71: Example 1 Domain Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 71: Example 1 Domain Structure</strong></summary>
 
 <!-- claim:BASE3-FIG-071-CLAIM figure-table:BASE3-FIG-071 -->
 
@@ -4424,7 +4426,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §3.3
 
 <details markdown="1">
-<summary><strong>Figure 73: Empty Queue Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 73: Empty Queue Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-073-CLAIM figure-table:BASE3-FIG-073 -->
 
@@ -4504,7 +4506,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 74: Full Queue Definition</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 74: Full Queue Definition</strong></summary>
 
 <!-- claim:BASE3-FIG-074-CLAIM figure-table:BASE3-FIG-074 -->
 
@@ -4588,7 +4590,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 ### §3.4
 
 <details markdown="1">
-<summary><strong>Figure 80: Round Robin Arbitration</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 80: Round Robin Arbitration</strong></summary>
 
 <!-- claim:BASE3-FIG-080-CLAIM figure-table:BASE3-FIG-080 -->
 
@@ -4668,7 +4670,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 81: Weighted Round Robin with Urgent Priority Class Arbitration</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 81: Weighted Round Robin with Urgent Priority Class Arbitration</strong></summary>
 
 <!-- claim:BASE3-FIG-081-CLAIM figure-table:BASE3-FIG-081 -->
 
@@ -4752,7 +4754,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 ### §3.5
 
 <details markdown="1">
-<summary><strong>Figure 84: Admin Commands Permitted to Return a Status Code of Admin Command Media Not</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 84: Admin Commands Permitted to Return a Status Code of Admin Command Media Not</strong></summary>
 
 <!-- claim:BASE3-FIG-084-CLAIM figure-table:BASE3-FIG-084 -->
 
@@ -4841,7 +4843,7 @@ This is a status or error classification. Identify the containing structure and 
 ### §3.6
 
 <details markdown="1">
-<summary><strong>Figure 85: Shutdown Processing Interactions</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 85: Shutdown Processing Interactions</strong></summary>
 
 <!-- claim:BASE3-FIG-085-CLAIM figure-table:BASE3-FIG-085 -->
 
@@ -4925,7 +4927,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 ### §3.8
 
 <details markdown="1">
-<summary><strong>Figure 86: Simple NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 86: Simple NVM Subsystem</strong></summary>
 
 <!-- claim:BASE3-FIG-086-CLAIM figure-table:BASE3-FIG-086 -->
 
@@ -5005,7 +5007,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 87: Vertically-Organized NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 87: Vertically-Organized NVM Subsystem</strong></summary>
 
 <!-- claim:BASE3-FIG-087-CLAIM figure-table:BASE3-FIG-087 -->
 
@@ -5085,7 +5087,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 88: Horizontally-Organized Dual NAND NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 88: Horizontally-Organized Dual NAND NVM Subsystem</strong></summary>
 
 <!-- claim:BASE3-FIG-088-CLAIM figure-table:BASE3-FIG-088 -->
 
@@ -5166,7 +5168,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 89: Capacity Information Field Usage</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 89: Capacity Information Field Usage</strong></summary>
 
 <!-- claim:BASE3-FIG-089-CLAIM figure-table:BASE3-FIG-089 -->
 
@@ -5254,7 +5256,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §3.9
 
 <details markdown="1">
-<summary><strong>Figure 90: Detecting Timeout Takes up to 2 * KATT</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 90: Detecting Timeout Takes up to 2 * KATT</strong></summary>
 
 <!-- claim:BASE3-FIG-090-CLAIM figure-table:BASE3-FIG-090 -->
 
@@ -5338,7 +5340,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 ### §3.10
 
 <details markdown="1">
-<summary><strong>Figure 91: Example Privileged Action Admin Commands</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 91: Example Privileged Action Admin Commands</strong></summary>
 
 <!-- claim:BASE3-FIG-091-CLAIM figure-table:BASE3-FIG-091 -->
 
@@ -5420,3 +5422,220 @@ This Figure explains a specific relationship or example. Identify each component
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+20 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Separate controller type, identity, and capability first”?
+
+<!-- qa:base-ch3-identity-lead -->
+
+**Answer.**
+
+Controller type answers what work a controller can perform, Controller ID answers which controller it is, and support-requirement Figures answer the required support level of a command, log, or feature in a particular context. Figures 23-32 belong in one reading sequence, but the three questions cannot be collapsed into one Boolean.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.1, printed pages 38, PDF pages 64; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, printed pages 39-43, PDF pages 65-69; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q02. Which concepts or conditions must be distinguished in “Separate controller type, identity, and capability first”?
+
+<!-- qa:base-ch3-identity-rows -->
+
+**Answer.**
+
+- I/O controller — Can execute user-data I/O — Optional capabilities still require individual checks
+- Administrative controller — Management purpose without data I/O commands — An Admin Queue does not make it an I/O controller
+- Support marker — Expresses support strength for a row and context — Never decode it without its column and footnote
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.1, printed pages 38, PDF pages 64; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, printed pages 39-43, PDF pages 65-69; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q03. How does “Separate controller type, identity, and capability first” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch3-identity-example -->
+
+**Answer.**
+
+Informative example: after detecting an Administrative controller, software still creates the Admin SQ/CQ and performs management commands, but it must not attach a namespace data path to that controller. Classifying by the mere presence of an Admin Queue incorrectly merges I/O and Administrative controllers.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.1, printed pages 38, PDF pages 64; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, printed pages 39-43, PDF pages 65-69; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q04. What misinterpretation is most likely in “Separate controller type, identity, and capability first”, and how is it debugged?
+
+<!-- qa:base-ch3-identity-pitfall -->
+
+**Answer.**
+
+A capability-matrix parser must preserve row, column, footnote, and controller type. Promoting an O, M, or conditional note into a global capability creates incorrect results in another controller or command-set context.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.1, printed pages 38, PDF pages 64; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, printed pages 39-43, PDF pages 65-69; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q05. What is the governing interpretation for “From CAP to CSTS.RDY: initialization is a state machine with preconditions”?
+
+<!-- qa:base-ch3-properties-init-lead -->
+
+**Answer.**
+
+Properties are not an independent register list. CAP constrains page-size, queue, and timeout capabilities; AQA, ASQ, and ACQ establish Admin queues; CC selects settings and enables the controller; CSTS.RDY finally declares readiness for normal command processing. Figures 33-46 and Figure 57 should be read along this causal chain.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, printed pages 105-113, PDF pages 131-139
+
+### Q06. Which concepts or conditions must be distinguished in “From CAP to CSTS.RDY: initialization is a state machine with preconditions”?
+
+<!-- qa:base-ch3-properties-init-rows -->
+
+**Answer.**
+
+- CAP — Capabilities and limits — Read before writing configuration
+- AQA/ASQ/ACQ — Admin-queue sizes and addresses — Must match page and alignment capabilities
+- CC — Host selections and enable — Written values must be compatible with CAP
+- CSTS — Controller-reported state — RDY, CFS, and SHST are not interchangeable
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, printed pages 105-113, PDF pages 131-139
+
+### Q07. How does “From CAP to CSTS.RDY: initialization is a state machine with preconditions” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch3-properties-init-example -->
+
+**Answer.**
+
+Informative example: the host selects a 4 KiB MPS, so ASQ and ACQ base addresses must obey that page-size alignment. After writing CC.EN=1, the host waits for CSTS.RDY=1 within the CAP/CRTO time bound. If CFS appears first, the flow enters error recovery rather than creating I/O queues.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, printed pages 105-113, PDF pages 131-139
+
+### Q08. What misinterpretation is most likely in “From CAP to CSTS.RDY: initialization is a state machine with preconditions”, and how is it debugged?
+
+<!-- qa:base-ch3-properties-init-pitfall -->
+
+**Answer.**
+
+Initialization logs should retain offset, width, raw value, and timestamp for each property access. A single 'enable failed' message cannot distinguish incompatible settings, address alignment, CFS, or a ready transition still within its timeout.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, printed pages 105-113, PDF pages 131-139
+
+### Q09. What is the governing interpretation for “Separate ring-buffer state, doorbells, and arbitration”?
+
+<!-- qa:base-ch3-queue-arbitration-lead -->
+
+**Answer.**
+
+Figures 73 and 74 define empty/full state for a queue, while Figures 80 and 81 define arbitration among SQs competing for controller service. The first problem concerns head/tail state within one ring; the second selects among candidate SQs. Priority belongs to the SQ, not to each command as an independent priority.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.3.1, printed pages 88-91, PDF pages 114-117; Source: NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, printed pages 101-105, PDF pages 127-131; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q10. Which concepts or conditions must be distinguished in “Separate ring-buffer state, doorbells, and arbitration”?
+
+<!-- qa:base-ch3-queue-arbitration-rows -->
+
+**Answer.**
+
+- Empty — Head equals tail under the empty ownership definition — No entry can be fetched
+- Full — The next tail would reach an unreleased head — The host must not overwrite an entry
+- Round Robin — Candidate SQs take turns receiving service — Completion order is not submission order
+- Weighted RR + Urgent — Priority class and weight influence selection — Interpret only under the applicable configuration
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.3.1, printed pages 88-91, PDF pages 114-117; Source: NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, printed pages 101-105, PDF pages 127-131; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q11. How does “Separate ring-buffer state, doorbells, and arbitration” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch3-queue-arbitration-example -->
+
+**Answer.**
+
+Informative example: an SQ of depth four has four slots, but full/empty detection still needs the ownership rule; an unsigned tail-minus-head value alone is insufficient. If SQ 1 and SQ 2 both contain commands, selecting SQ 2 first does not guarantee its command completes first because execution times may differ.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.3.1, printed pages 88-91, PDF pages 114-117; Source: NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, printed pages 101-105, PDF pages 127-131; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q12. What misinterpretation is most likely in “Separate ring-buffer state, doorbells, and arbitration”, and how is it debugged?
+
+<!-- qa:base-ch3-queue-arbitration-pitfall -->
+
+**Answer.**
+
+During debugging, record the software tail, doorbell value, controller-consumed head, and completion SQHD separately. Combining them into one 'queue index' hides distinct root causes such as a lost doorbell, stale head, premature slot reuse, or arbitration starvation.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.3.1, printed pages 88-91, PDF pages 114-117; Source: NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, printed pages 101-105, PDF pages 127-131; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66
+
+### Q13. What is the governing interpretation for “CMB, PMR, capacity, and namespaces are different resource views”?
+
+<!-- qa:base-ch3-memory-capacity-lead -->
+
+**Answer.**
+
+CMB and PMR properties describe the location, capability, and state of controller-exposed memory regions; capacity Figures 86-89 describe available or allocated capacity at NVM-subsystem levels. Both concern memory, but they are different spaces and cannot be merged into one free-capacity value.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.8, printed pages 125-129, PDF pages 151-155; Source: NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, printed pages 80-85, PDF pages 106-111
+
+### Q14. Which concepts or conditions must be distinguished in “CMB, PMR, capacity, and namespaces are different resource views”?
+
+<!-- qa:base-ch3-memory-capacity-rows -->
+
+**Answer.**
+
+- CMB — Controller-provided working memory — Capability bits decide whether SQs, CQs, lists, or data may reside there
+- PMR — A region with persistence semantics — Enable, ready, error, and address control must be read together
+- Capacity model — Capacity of subsystem/group/set/namespace levels — Fields from different levels must not be subtracted directly
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.8, printed pages 125-129, PDF pages 151-155; Source: NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, printed pages 80-85, PDF pages 106-111
+
+### Q15. How does “CMB, PMR, capacity, and namespaces are different resource views” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch3-memory-capacity-example -->
+
+**Answer.**
+
+Informative example: enough CMB space for an SQ does not add the same amount of namespace capacity. The former is placement space for queues or data structures; the latter is formatted non-volatile capacity accessible to the host.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.8, printed pages 125-129, PDF pages 151-155; Source: NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, printed pages 80-85, PDF pages 106-111
+
+### Q16. What misinterpretation is most likely in “CMB, PMR, capacity, and namespaces are different resource views”, and how is it debugged?
+
+<!-- qa:base-ch3-memory-capacity-pitfall -->
+
+**Answer.**
+
+A memory-map debug diagram should separate host memory, CMB, PMR, and namespace media. For a CMB or PMR address, retain BIR, BAR base, offset, enable state, and ready state rather than logging only the final CPU virtual address.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4, printed pages 52-54, PDF pages 78-80; Source: NVME-BASE-2.4, Rev. 2.4, §3.8, printed pages 125-129, PDF pages 151-155; Source: NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, printed pages 80-85, PDF pages 106-111
+
+### Q17. What is the governing interpretation for “Recovery boundaries across shutdown, reset, Keep Alive, and firmware update”?
+
+<!-- qa:base-ch3-lifecycle-lead -->
+
+**Answer.**
+
+The common lifecycle question is which layer of state remains valid. Normal shutdown coordinates through CC.SHN and CSTS.SHST; resets exist at subsystem, controller, and queue levels; Keep Alive monitors host-controller liveness; firmware activation may require a particular reset. The same temporary inability to process commands does not imply the same recovery.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, printed pages 113-120, PDF pages 139-146; Source: NVME-BASE-2.4, Rev. 2.4, §3.7, printed pages 120-125, PDF pages 146-151; Source: NVME-BASE-2.4, Rev. 2.4, §3.9, printed pages 129-135, PDF pages 155-161; Source: NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, printed pages 135-138, PDF pages 161-164
+
+### Q18. Which concepts or conditions must be distinguished in “Recovery boundaries across shutdown, reset, Keep Alive, and firmware update”?
+
+<!-- qa:base-ch3-lifecycle-rows -->
+
+**Answer.**
+
+- Normal shutdown — Protected stop with progress reporting — Observe SHN/SHST
+- Controller reset — Controller-scope state — Queue preservation depends on reset type
+- NVM subsystem reset — Wider subsystem scope — May affect multiple controllers
+- Keep Alive timeout — Liveness failure — Must not be equated with media failure
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, printed pages 113-120, PDF pages 139-146; Source: NVME-BASE-2.4, Rev. 2.4, §3.7, printed pages 120-125, PDF pages 146-151; Source: NVME-BASE-2.4, Rev. 2.4, §3.9, printed pages 129-135, PDF pages 155-161; Source: NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, printed pages 135-138, PDF pages 161-164
+
+### Q19. How does “Recovery boundaries across shutdown, reset, Keep Alive, and firmware update” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch3-lifecycle-example -->
+
+**Answer.**
+
+Informative example: for a normal shutdown, the host stops submitting new I/O, sets CC.SHN, and observes CSTS.SHST. If controller fatal status appears while waiting, subsequent recovery follows reset scope and rebuilds resources rather than assuming normal shutdown completed.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, printed pages 113-120, PDF pages 139-146; Source: NVME-BASE-2.4, Rev. 2.4, §3.7, printed pages 120-125, PDF pages 146-151; Source: NVME-BASE-2.4, Rev. 2.4, §3.9, printed pages 129-135, PDF pages 155-161; Source: NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, printed pages 135-138, PDF pages 161-164
+
+### Q20. What misinterpretation is most likely in “Recovery boundaries across shutdown, reset, Keep Alive, and firmware update”, and how is it debugged?
+
+<!-- qa:base-ch3-lifecycle-pitfall -->
+
+**Answer.**
+
+A recovery trace must record trigger, scope, start/completion timestamps, timeout source, and rebuild list. A single 'reset device' message makes queue-level, controller-level, and subsystem-level state loss indistinguishable.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, printed pages 113-120, PDF pages 139-146; Source: NVME-BASE-2.4, Rev. 2.4, §3.7, printed pages 120-125, PDF pages 146-151; Source: NVME-BASE-2.4, Rev. 2.4, §3.9, printed pages 129-135, PDF pages 155-161; Source: NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, printed pages 135-138, PDF pages 161-164

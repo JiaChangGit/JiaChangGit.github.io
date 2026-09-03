@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-08-31-nvme-base-firmware-log-admin-en %})
+
 
 # NVMe Base 2.4：Firmware Update 與 LID 03h 驗證
 
@@ -505,7 +507,7 @@ VALIDATE fail ──→ return to RAW evidence
 Figure 是主流程的可追溯證據，不是文章骨架。dependency entries 只取理解所需切片；Figure 209 只保留 LID 03h row。
 
 <details markdown="1">
-<summary><strong>Figure 187: Firmware Commit – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 187: Firmware Commit – Command Dword 10</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-187-CLAIM figure-table:BASEFWLOG-FIG-187 -->
 
@@ -587,7 +589,7 @@ Figure 187 位於 §5.2.9，在本流程中是「command」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 188: Firmware Commit – Completion Queue Entry Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 188: Firmware Commit – Completion Queue Entry Dword 0</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-188-CLAIM figure-table:BASEFWLOG-FIG-188 -->
 
@@ -669,7 +671,7 @@ Figure 188 位於 §5.2.9.1，在本流程中是「queue」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 189: Firmware Commit – Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 189: Firmware Commit – Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-189-CLAIM figure-table:BASEFWLOG-FIG-189 -->
 
@@ -753,7 +755,7 @@ Figure 189 位於 §5.2.9.1，在本流程中是「layout」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 190: Firmware Image Download – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 190: Firmware Image Download – Data Pointer</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-190-CLAIM figure-table:BASEFWLOG-FIG-190 -->
 
@@ -833,7 +835,7 @@ Figure 190 位於 §5.2.10，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 191: Firmware Image Download – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 191: Firmware Image Download – Command Dword 10</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-191-CLAIM figure-table:BASEFWLOG-FIG-191 -->
 
@@ -914,7 +916,7 @@ Figure 191 位於 §5.2.10，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 192: Firmware Image Download – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 192: Firmware Image Download – Command Dword 11</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-192-CLAIM figure-table:BASEFWLOG-FIG-192 -->
 
@@ -995,7 +997,7 @@ Figure 192 位於 §5.2.10，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 193: Firmware Image Download – Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 193: Firmware Image Download – Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-193-CLAIM figure-table:BASEFWLOG-FIG-193 -->
 
@@ -1075,7 +1077,7 @@ Figure 193 位於 §5.2.10，在本流程中是「layout」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 203: Get Log Page – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 203: Get Log Page – Data Pointer</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-203-CLAIM figure-table:BASEFWLOG-FIG-203 -->
 
@@ -1155,7 +1157,7 @@ Figure 203 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 204: Get Log Page – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 204: Get Log Page – Command Dword 10</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-204-CLAIM figure-table:BASEFWLOG-FIG-204 -->
 
@@ -1238,7 +1240,7 @@ Figure 204 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 205: Get Log Page – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 205: Get Log Page – Command Dword 11</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-205-CLAIM figure-table:BASEFWLOG-FIG-205 -->
 
@@ -1319,7 +1321,7 @@ Figure 205 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 206: Get Log Page – Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 206: Get Log Page – Command Dword 12</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-206-CLAIM figure-table:BASEFWLOG-FIG-206 -->
 
@@ -1400,7 +1402,7 @@ Figure 206 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 207: Get Log Page – Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 207: Get Log Page – Command Dword 13</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-207-CLAIM figure-table:BASEFWLOG-FIG-207 -->
 
@@ -1480,7 +1482,7 @@ Figure 207 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 208: Get Log Page – Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 208: Get Log Page – Command Dword 14</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-208-CLAIM figure-table:BASEFWLOG-FIG-208 -->
 
@@ -1562,7 +1564,7 @@ Figure 208 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 209: Get Log Page – Log Page Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 209: Get Log Page – Log Page Identifiers</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-209-CLAIM figure-table:BASEFWLOG-FIG-209 -->
 
@@ -1647,7 +1649,7 @@ Figure 209 位於 §5.2.13，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 215: Firmware Slot Information Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 215: Firmware Slot Information Log Page</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-215-CLAIM figure-table:BASEFWLOG-FIG-215 -->
 
@@ -1732,7 +1734,7 @@ Figure 215 位於 §5.2.13.1.4，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-093-CLAIM figure-table:BASEFWLOG-FIG-093 -->
 
@@ -1815,7 +1817,7 @@ Figure 93 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 155: Asynchronous Event Information – Notice</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 155: Asynchronous Event Information – Notice</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-155-CLAIM figure-table:BASEFWLOG-FIG-155 -->
 
@@ -1898,7 +1900,7 @@ Figure 155 位於 §5.2.2.1，在本流程中是「layout」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 337: Command Set Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 337: Command Set Identifiers</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-337-CLAIM figure-table:BASEFWLOG-FIG-337 -->
 
@@ -1978,7 +1980,7 @@ Figure 337 位於 §5.2.14.1，在本流程中是「identifier」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify – Identify Controller Data Structure, I/O Command Set Independent</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify – Identify Controller Data Structure, I/O Command Set Independent</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-338-CLAIM figure-table:BASEFWLOG-FIG-338 -->
 
@@ -2063,7 +2065,7 @@ Figure 338 位於 §5.2.14.2.1，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 347: UUID List</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 347: UUID List</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-347-CLAIM figure-table:BASEFWLOG-FIG-347 -->
 
@@ -2147,7 +2149,7 @@ Figure 347 位於 §5.2.14.2.14，在本流程中是「identifier」檢查點。
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 348: UUID List Entry</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 348: UUID List Entry</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-348-CLAIM figure-table:BASEFWLOG-FIG-348 -->
 
@@ -2229,7 +2231,7 @@ Figure 348 位於 §5.2.14.2.14，在本流程中是「identifier」檢查點。
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
 
 <!-- claim:BASEFWLOG-FIG-474-CLAIM figure-table:BASEFWLOG-FIG-474 -->
 
@@ -2307,3 +2309,179 @@ Figure 474 位於 §5.2.30.1.6，在本流程中是「command」檢查點。先�
 > 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494
 
 </details>
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 16 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先讀能力，再決定 firmware update 計畫」的核心判讀規則是什麼？
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-lead -->
+
+**答。**
+
+Firmware update 不是固定 command recipe。FRMW 決定 slot 與 activation 能力，FWUG 決定 download chunk 的 granularity／alignment，MTFA 與 MPTFAWR 決定 host 能等待多久，MDS／DID 則決定結果影響哪一組 controllers。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 354, PDF 頁 380; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 359, PDF 頁 385; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 357, PDF 頁 383; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 364, PDF 頁 390; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 346, 364, PDF 頁 372, 390
+
+### Q02. 「先讀能力，再決定 firmware update 計畫」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-rows -->
+
+**答。**
+
+- FRMW — 可用 slots、slot 1 read-only、activation 能力 — 選 FS 與 CA 前先讀
+- FWUG — download portion 的粒度與對齊 — 先換成 bytes，再切 image
+- MTFA／MPTFAWR — 可能暫停與立即 activation 的時間界線 — timeout 不可寫死
+- MDS／DID — firmware slots 的共享 domain — 不可只用 PCI Function 當 scope
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 354, PDF 頁 380; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 359, PDF 頁 385; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 357, PDF 頁 383; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 364, PDF 頁 390; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 346, 364, PDF 頁 372, 390
+
+### Q03. 「先讀能力，再決定 firmware update 計畫」如何套用到具體數值或操作情境？
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-example -->
+
+**答。**
+
+若 FWUG 解碼為 4 KiB，12 KiB image 可切成三個 4 KiB portions；最後一筆不是任意長度的尾包。計畫還要先確認 slot 2 合法且不是 read-only，並依 activation path 選擇 timeout。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 354, PDF 頁 380; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 359, PDF 頁 385; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 357, PDF 頁 383; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 364, PDF 頁 390; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 346, 364, PDF 頁 372, 390
+
+### Q04. 「先讀能力，再決定 firmware update 計畫」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-admin-fw-logs-fw-capability-plan-pitfall -->
+
+**答。**
+
+只保存 command trace、不保存 capability snapshot，會讓相同 firmware image 在不同 controller revision 上出現不同結果時無法重現。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 354, PDF 頁 380; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 359, PDF 頁 385; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 357, PDF 頁 383; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 364, PDF 頁 390; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 346, 364, PDF 頁 372, 390
+
+### Q05. 「Download 是 byte range 幾何，不是把檔案直接丟給 controller」的核心判讀規則是什麼？
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-lead -->
+
+**答。**
+
+每筆 Firmware Image Download 都用 DPTR 指向 host buffer，再用 0's-based NUMD 表示 transfer dwords、用 OFST 表示 image-relative dword offset。host 必須同時證明 buffer、length、offset、FWUG 與前後 portions 沒有 gap／overlap。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, 文件頁 205-206, PDF 頁 231-232; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, 文件頁 140-142, 205-206, PDF 頁 166-168, 231-232
+
+### Q06. 「Download 是 byte range 幾何，不是把檔案直接丟給 controller」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-rows -->
+
+**答。**
+
+- DPTR — 本筆 transfer 的 host buffer — 地址有效不代表 length 正確
+- NUMD — 本筆 dword 數的 0's-based encoding — 4096 bytes → 1024 dwords → 03FFh
+- OFST — image 起點的 dword offset — 第二個 4 KiB portion 為 1024 dwords
+- FWUG — portion alignment／granularity gate — 全 image 與每筆 portion 分開檢查
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, 文件頁 205-206, PDF 頁 231-232; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, 文件頁 140-142, 205-206, PDF 頁 166-168, 231-232
+
+### Q07. 「Download 是 byte range 幾何，不是把檔案直接丟給 controller」如何套用到具體數值或操作情境？
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-example -->
+
+**答。**
+
+12 KiB image、4 KiB chunks：portion 0 使用 NUMD=03FFh、OFST=00000000h；portion 1 使用 NUMD=03FFh、OFST=00000400h；portion 2 使用 NUMD=03FFh、OFST=00000800h。三筆 completion 都成功後才可 Commit。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, 文件頁 205-206, PDF 頁 231-232; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, 文件頁 140-142, 205-206, PDF 頁 166-168, 231-232
+
+### Q08. 「Download 是 byte range 幾何，不是把檔案直接丟給 controller」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-admin-fw-logs-fw-download-geometry-pitfall -->
+
+**答。**
+
+最常見錯誤是把 OFST 當 byte offset、把 NUMD 當實際 dword count，或在 CQE 尚未確認 success 前重用 buffer。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, 文件頁 205-206, PDF 頁 231-232; 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.10, 文件頁 140-142, 205-206, PDF 頁 166-168, 231-232
+
+### Q09. 「Commit 把 downloaded portions 轉成 slot state 與 activation policy」的核心判讀規則是什麼？
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-lead -->
+
+**答。**
+
+Commit Action（CA）不是成功／失敗旗標；它同時決定 replace、activate 與 reset boundary。Firmware Slot（FS）選擇目標 slot，CQE status 決定下一步是驗證、執行特定 reset、等待，還是停止。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 202-203, PDF 頁 228-229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 203, PDF 頁 229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204, PDF 頁 230; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204-205, PDF 頁 230-231
+
+### Q10. 「Commit 把 downloaded portions 轉成 slot state 與 activation policy」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-rows -->
+
+**答。**
+
+- CA — replace 與 activation 行為 — 不可只記十進位值
+- FS — 目標 firmware slot — 0 可能代表 controller 選 slot，依定義判讀
+- SCT／SC — 成功、reset scope 或失敗原因 — 0Bh、10h、11h 的 reset scope 不同
+- MUD — 重疊 update sequence 證據 — 即使 abort 也可能有效
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 202-203, PDF 頁 228-229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 203, PDF 頁 229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204, PDF 頁 230; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204-205, PDF 頁 230-231
+
+### Q11. 「Commit 把 downloaded portions 轉成 slot state 與 activation policy」如何套用到具體數值或操作情境？
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-example -->
+
+**答。**
+
+若 completion 回報 Firmware Activation Requires Controller Level Reset，Commit 本身可已成功，但 image 尚未成為 current active firmware。software 應記錄 status、執行正確 reset，再以 Identify.FR 與 LID 03h 驗證。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 202-203, PDF 頁 228-229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 203, PDF 頁 229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204, PDF 頁 230; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204-205, PDF 頁 230-231
+
+### Q12. 「Commit 把 downloaded portions 轉成 slot state 與 activation policy」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-admin-fw-logs-fw-commit-state-pitfall -->
+
+**答。**
+
+把所有 activation-required status 都當成『重試 Commit』會重複修改 slot，甚至製造 MUD。先依 SCT／SC 選 recovery branch。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 202-203, PDF 頁 228-229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 203, PDF 頁 229; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204, PDF 頁 230; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 文件頁 204-205, PDF 頁 230-231
+
+### Q13. 「LID 03h 驗證不是只讀一個版本字串」的核心判讀規則是什麼？
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-lead -->
+
+**答。**
+
+Get Log Page 先用 common command 欄位建立 512-byte transfer，再以 LID=03h 選 Firmware Slot Information。AFI 同時拆成 CAFS 與 NAFS，FRS1-FRS7 表示各 slots 的 revision；最後還要用 Identify.FR 與 domain scope 交叉確認。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, 文件頁 140-142, 212-215, PDF 頁 166-168, 238-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-215, PDF 頁 239-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 215-216, PDF 頁 241-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 340, PDF 頁 366
+
+### Q14. 「LID 03h 驗證不是只讀一個版本字串」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-rows -->
+
+**答。**
+
+- CAFS — 目前執行中的 slot — 它不是 next-reset intent
+- NAFS — 下一個 reset 後預定 active slot — 0 表示未排定
+- FRSx — slot x 的 8-byte revision — 全 0h 不是 ASCII 字串
+- Identify.FR — 目前 active revision 的獨立觀察 — 與 CAFS 對應 FRSx 交叉確認
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, 文件頁 140-142, 212-215, PDF 頁 166-168, 238-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-215, PDF 頁 239-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 215-216, PDF 頁 241-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 340, PDF 頁 366
+
+### Q15. 「LID 03h 驗證不是只讀一個版本字串」如何套用到具體數值或操作情境？
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-example -->
+
+**答。**
+
+AFI=22h 時，CAFS=2、NAFS=2；表示 slot 2 現在 active，且 reset 後仍預定 slot 2。若 CAFS=1、NAFS=2，代表 activation 尚未跨過 reset boundary。此解碼是說明性範例，仍須以 Figure 215 的 bit 定義核對。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, 文件頁 140-142, 212-215, PDF 頁 166-168, 238-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-215, PDF 頁 239-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 215-216, PDF 頁 241-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 340, PDF 頁 366
+
+### Q16. 「LID 03h 驗證不是只讀一個版本字串」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-admin-fw-logs-fw-lid03-proof-pitfall -->
+
+**答。**
+
+只比對 FRS2 字串而不讀 CAFS，無法證明 slot 2 正在執行；只讀 CAFS 而不比對 Identify.FR，也無法排除 parser offset 或 stale buffer 問題。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 5.2.13, 文件頁 140-142, 212-215, PDF 頁 166-168, 238-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-215, PDF 頁 239-241; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 215-216, PDF 頁 241-242; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.4, 文件頁 226, PDF 頁 252; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, 文件頁 340, PDF 頁 366

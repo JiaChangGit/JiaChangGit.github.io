@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-09-02-nvme-base-power-thermal-features-en %})
+
 
 # NVMe Base 2.4：Power／Thermal Features 與 Power Management
 
@@ -710,7 +712,7 @@ FID 11h 的 NOPPME=1 允許 controller-initiated background operation 暫時把 
 ### §5.2
 
 <details markdown="1">
-<summary><strong>Figure 197: Get Features – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 197: Get Features – Data Pointer</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-197-CLAIM figure-table:BASEPOWER-FIG-197 -->
 
@@ -792,7 +794,7 @@ Figure 197 位於 §5.2.12，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 198: Get Features – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 198: Get Features – Command Dword 10</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-198-CLAIM figure-table:BASEPOWER-FIG-198 -->
 
@@ -873,7 +875,7 @@ Figure 198 位於 §5.2.12，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 199: Get Features – Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 199: Get Features – Command Dword 14</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-199-CLAIM figure-table:BASEPOWER-FIG-199 -->
 
@@ -953,7 +955,7 @@ Figure 199 位於 §5.2.12，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 200: Feature Identifiers for Get Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 200: Feature Identifiers for Get Features</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-200-CLAIM figure-table:BASEPOWER-FIG-200 -->
 
@@ -1037,7 +1039,7 @@ Figure 200 位於 §5.2.12，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 201: Get Features – Select Supported Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 201: Get Features – Select Supported Capabilities</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-201-CLAIM figure-table:BASEPOWER-FIG-201 -->
 
@@ -1119,7 +1121,7 @@ Figure 201 位於 §5.2.12.2，在本流程中是「relationship」檢查點。�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 202: Get Features – Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 202: Get Features – Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-202-CLAIM figure-table:BASEPOWER-FIG-202 -->
 
@@ -1199,7 +1201,7 @@ Figure 202 位於 §5.2.12.2，在本流程中是「layout」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 463: Set Features – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 463: Set Features – Data Pointer</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-463-CLAIM figure-table:BASEPOWER-FIG-463 -->
 
@@ -1281,7 +1283,7 @@ Figure 463 位於 §5.2.30，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 464: Set Features – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 464: Set Features – Command Dword 10</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-464-CLAIM figure-table:BASEPOWER-FIG-464 -->
 
@@ -1362,7 +1364,7 @@ Figure 464 位於 §5.2.30，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 465: Set Features – Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 465: Set Features – Command Dword 14</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-465-CLAIM figure-table:BASEPOWER-FIG-465 -->
 
@@ -1442,7 +1444,7 @@ Figure 465 位於 §5.2.30，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 466: Feature Identifiers for Set Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 466: Feature Identifiers for Set Features</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-466-CLAIM figure-table:BASEPOWER-FIG-466 -->
 
@@ -1526,7 +1528,7 @@ Figure 466 位於 §5.2.30，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 468: Power Management – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 468: Power Management – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-468-CLAIM figure-table:BASEPOWER-FIG-468 -->
 
@@ -1607,7 +1609,7 @@ Figure 468 位於 §5.2.30.1.2，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 470: Temperature Threshold – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 470: Temperature Threshold – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-470-CLAIM figure-table:BASEPOWER-FIG-470 -->
 
@@ -1690,7 +1692,7 @@ Figure 470 位於 §5.2.30.1.3.1，在本流程中是「command」檢查點。�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 475: Autonomous Power State Transition – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 475: Autonomous Power State Transition – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-475-CLAIM figure-table:BASEPOWER-FIG-475 -->
 
@@ -1770,7 +1772,7 @@ Figure 475 位於 §5.2.30.1.7，在本流程中是「command」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 476: Autonomous Power State Transition Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 476: Autonomous Power State Transition Data Structure</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-476-CLAIM figure-table:BASEPOWER-FIG-476 -->
 
@@ -1851,7 +1853,7 @@ Figure 476 位於 §5.2.30.1.7，在本流程中是「state」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 477: Autonomous Power State Transition Entry</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 477: Autonomous Power State Transition Entry</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-477-CLAIM figure-table:BASEPOWER-FIG-477 -->
 
@@ -1932,7 +1934,7 @@ Figure 477 位於 §5.2.30.1.7，在本流程中是「state」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 478: APST and NOPPME Interaction</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 478: APST and NOPPME Interaction</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-478-CLAIM figure-table:BASEPOWER-FIG-478 -->
 
@@ -2016,7 +2018,7 @@ Figure 478 位於 §5.2.30.1.7，在本流程中是「relationship」檢查點�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 482: Host Controlled Thermal Management – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 482: Host Controlled Thermal Management – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-482-CLAIM figure-table:BASEPOWER-FIG-482 -->
 
@@ -2097,7 +2099,7 @@ Figure 482 位於 §5.2.30.1.10，在本流程中是「command」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 483: Non-Operational Power State Configuration – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 483: Non-Operational Power State Configuration – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-483-CLAIM figure-table:BASEPOWER-FIG-483 -->
 
@@ -2181,7 +2183,7 @@ Figure 483 位於 §5.2.30.1.11，在本流程中是「command」檢查點。先
 ### §8.1
 
 <details markdown="1">
-<summary><strong>Figure 738: Power Management Overview</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 738: Power Management Overview</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-738-CLAIM figure-table:BASEPOWER-FIG-738 -->
 
@@ -2263,7 +2265,7 @@ Figure 738 位於 §8.1.19，在本流程中是「relationship」檢查點。先
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 739: Power State Characteristics</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 739: Power State Characteristics</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-739-CLAIM figure-table:BASEPOWER-FIG-739 -->
 
@@ -2347,7 +2349,7 @@ Figure 739 位於 §8.1.19，在本流程中是「state」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 740: Workload Hints</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 740: Workload Hints</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-740-CLAIM figure-table:BASEPOWER-FIG-740 -->
 
@@ -2429,7 +2431,7 @@ Figure 740 位於 §8.1.19.3，在本流程中是「relationship」檢查點。�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 741: Host Controlled Thermal Management</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 741: Host Controlled Thermal Management</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-741-CLAIM figure-table:BASEPOWER-FIG-741 -->
 
@@ -2516,7 +2518,7 @@ Figure 741 位於 §8.1.19.5，在本流程中是「relationship」檢查點。�
 ### 引用相依 Figure（位於主章節範圍外）
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-093-CLAIM figure-table:BASEPOWER-FIG-093 -->
 
@@ -2601,7 +2603,7 @@ Figure 93 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 213: SMART / Health Information Log</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 213: SMART / Health Information Log</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-213-CLAIM figure-table:BASEPOWER-FIG-213 -->
 
@@ -2684,7 +2686,7 @@ Figure 213 位於 §5.2.13.1.3，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify Controller Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify Controller Data Structure</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-338-CLAIM figure-table:BASEPOWER-FIG-338 -->
 
@@ -2769,7 +2771,7 @@ Figure 338 位於 §5.2.14.2.1，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 340: Power State Descriptor Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 340: Power State Descriptor Data Structure</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-340-CLAIM figure-table:BASEPOWER-FIG-340 -->
 
@@ -2854,7 +2856,7 @@ Figure 340 位於 §5.2.14.2.2，在本流程中是「state」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-474-CLAIM figure-table:BASEPOWER-FIG-474 -->
 
@@ -2937,3 +2939,265 @@ Figure 474 位於 §5.2.30.1.6，在本流程中是「command」檢查點。先�
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 24 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先 Get、再 Set、最後重新觀測」的核心判讀規則是什麼？
+
+<!-- qa:base-power-features-feature-read-set-loop-lead -->
+
+**答。**
+
+Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, 文件頁 211-212, PDF 頁 237-238; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457, PDF 頁 483; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 459, PDF 頁 485
+
+### Q02. 「先 Get、再 Set、最後重新觀測」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-power-features-feature-read-set-loop-rows -->
+
+**答。**
+
+- SEL=000b — current value — 確認此刻 controller policy
+- SEL=001b — default value — 建立 rollback baseline
+- SEL=010b — saved value — 不等於一定曾經 save
+- SEL=011b — CHANG／NSSPEC／SVBL — 寫入前的 capability gate
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, 文件頁 211-212, PDF 頁 237-238; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457, PDF 頁 483; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 459, PDF 頁 485
+
+### Q03. 「先 Get、再 Set、最後重新觀測」如何套用到具體數值或操作情境？
+
+<!-- qa:base-power-features-feature-read-set-loop-example -->
+
+**答。**
+
+讀 FID 02h current 時 CDW10=00000002h；讀 supported capabilities 時 SEL=3，所以 CDW10=(3×100h)+02h=00000302h。若 CHANG=0，流程在 Set 前停止；若 CHANG=1，再依 NPSS 與 PSD 組合 CDW11。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, 文件頁 211-212, PDF 頁 237-238; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457, PDF 頁 483; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 459, PDF 頁 485
+
+### Q04. 「先 Get、再 Set、最後重新觀測」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-power-features-feature-read-set-loop-pitfall -->
+
+**答。**
+
+不要只印『Get succeeded』。保留原始 CDW10／CDW14、CQE.DW0、SCT／SC／DNR，以及 current/default/saved/capability 哪一個 view；否則同一個 32-bit 回傳值會被錯解成不同語意。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, 文件頁 211-212, PDF 頁 237-238; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457, PDF 頁 483; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 459, PDF 頁 485
+
+### Q05. 「Power state 是 power、latency 與 performance 的多維 operating point」的核心判讀規則是什麼？
+
+<!-- qa:base-power-features-power-state-mental-model-lead -->
+
+**答。**
+
+只看 state number 無法判斷是否適合 workload。每一個 PSD 要一起讀 MP、NOPS、ENLAT／EXLAT、IDLP／ACTP 與 relative performance。PS 數字增加通常降低 maximum power，但不代表所有 latency 或 throughput 一定以固定比例變差。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695
+
+### Q06. 「Power state 是 power、latency 與 performance 的多維 operating point」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-power-features-power-state-mental-model-rows -->
+
+**答。**
+
+- MP — sustained maximum power — 不是瞬間 sample
+- IDLP／ACTP — idle typical／active average — 測量條件不同
+- ENLAT／EXLAT — 進入／離開 maximum latency — 跨 state 必須相加
+- RRT/RRL/RWT/RWL — relative throughput／latency — 只在同類 characteristic 比較
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695
+
+### Q07. 「Power state 是 power、latency 與 performance 的多維 operating point」如何套用到具體數值或操作情境？
+
+<!-- qa:base-power-features-power-state-mental-model-example -->
+
+**答。**
+
+說明性計算：目前 PS1.EXLAT=100 µs，目標 PS3.ENLAT=2500 µs，直接 transition budget=2600 µs。若 controller 路徑是 PS1→PS2→PS3，還要加入 PS1.EXLAT+PS2.ENLAT 與 PS2.EXLAT+PS3.ENLAT 的每一段，不可仍用 2600 µs。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695
+
+### Q08. 「Power state 是 power、latency 與 performance 的多維 operating point」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-power-features-power-state-mental-model-pitfall -->
+
+**答。**
+
+FID 02h Set 成功只證明 controller 接受 PS。Debug 還要保存 NPSS、完整目標 PSD、設定前 state、WH、CQE timestamp、第一筆 I/O latency；non-operational state 又要檢查 I/O 是否先 drain。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695
+
+### Q09. 「APST 是由 idle timer 驅動的 state machine」的核心判讀規則是什麼？
+
+<!-- qa:base-power-features-apst-state-machine-lead -->
+
+**答。**
+
+APST 的 256-byte buffer 不是 performance table，而是 32 個『idle 多久後進哪個 non-operational state』的 rules。APSTE 決定 timer rules 是否生效；每個 ITPT=0 entry 不參與；I/O 到達又會讓 controller 回到最近 operational state。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483
+
+### Q10. 「APST 是由 idle timer 驅動的 state machine」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-power-features-apst-state-machine-rows -->
+
+**答。**
+
+- APSTE=0 — 只允許 host-directed entry — table 可存在但 timer 不驅動
+- APSTE=1 — host 或 timer entry — ITPT 必須連續滿足
+- NOPPME=0 — background work 不得超過 non-op limits — 可能延後 controller work
+- NOPPME=1 — background work 可暫時提高 power — 上限仍受最後 operational state 限制
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483
+
+### Q11. 「APST 是由 idle timer 驅動的 state machine」如何套用到具體數值或操作情境？
+
+<!-- qa:base-power-features-apst-state-machine-example -->
+
+**答。**
+
+entry 要在 idle 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 07D00000h；ITPS=3，放入 bits7:3 得 18h，所以低 dword=07D00018h。其餘 reserved bits 與 entry 高 dword 保持 0，32 entries 合計 256 bytes。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483
+
+### Q12. 「APST 是由 idle timer 驅動的 state machine」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-power-features-apst-state-machine-pitfall -->
+
+**答。**
+
+常見錯誤包括把 ITPT 當 microseconds、把 ITPS 填 operational state、沒有把未使用 entries 清零，或讓 256-byte PRP buffer 跨越不允許的 page boundary。trace 應保留整個 buffer 的 hash 與逐 entry decode。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483
+
+### Q13. 「Temperature Threshold 把 sensor、event 與 clear point 連成一條線」的核心判讀規則是什麼？
+
+<!-- qa:base-power-features-temperature-event-loop-lead -->
+
+**答。**
+
+FID 04h 不只是一個溫度數字。TMPSEL 決定讀哪個 sensor，THSEL 決定 over 或 under，TMPTH 決定觸發點，TMPTHH 決定離開 event 的 clear point；SMART/Health.TTC 與 AEC enable 則把 controller 狀態送回 host。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, 文件頁 462-463, PDF 頁 488-489; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, 文件頁 463-464, PDF 頁 489-490; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q14. 「Temperature Threshold 把 sensor、event 與 clear point 連成一條線」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-power-features-temperature-event-loop-rows -->
+
+**答。**
+
+- TMPSEL — Composite 或 sensor 1-8 — Get 不使用 all-sensors selector
+- THSEL — over／under — 比較方向相反
+- TMPTH — 觸發 Kelvin — log raw K 及轉換後 °C
+- TMPTHH — clear hysteresis Kelvin — 不是第二個觸發 threshold
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, 文件頁 462-463, PDF 頁 488-489; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, 文件頁 463-464, PDF 頁 489-490; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q15. 「Temperature Threshold 把 sensor、event 與 clear point 連成一條線」如何套用到具體數值或操作情境？
+
+<!-- qa:base-power-features-temperature-event-loop-example -->
+
+**答。**
+
+Composite over threshold=343 K（約 70 °C）、hysteresis=5 K：TMPSEL=0、THSEL=0、TMPTH=0157h、TMPTHH=5，所以 CDW11=(5<<22)+0157h=01400157h。event 於 ≥343 K 觸發，降到 338 K（約 65 °C）才結束。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, 文件頁 462-463, PDF 頁 488-489; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, 文件頁 463-464, PDF 頁 489-490; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q16. 「Temperature Threshold 把 sensor、event 與 clear point 連成一條線」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-power-features-temperature-event-loop-pitfall -->
+
+**答。**
+
+若 AEN 沒出現，不要立刻判定 threshold 沒作用。依序檢查 AEC.TTHRY／SHCW enable、TTC bit、實際 sensor raw Kelvin、threshold type、hysteresis clear point 與 outstanding Asynchronous Event Request。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, 文件頁 462-463, PDF 頁 488-489; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, 文件頁 463-464, PDF 頁 489-490; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q17. 「HCTM 用兩個 threshold 區分輕度與重度 thermal response」的核心判讀規則是什麼？
+
+<!-- qa:base-power-features-hctm-control-loop-lead -->
+
+**答。**
+
+HCTM 的目的不是指定固定 clock 或固定 power state，而是讓 host 提供 TMT1／TMT2 兩個 temperature boundaries。controller 在 TMT1 優先降低 performance impact，在 TMT2 則必須更積極控制 temperature；實際 hysteresis 與內部動作屬 vendor implementation。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q18. 「HCTM 用兩個 threshold 區分輕度與重度 thermal response」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-power-features-hctm-control-loop-rows -->
+
+**答。**
+
+- TMT1 — 較輕度控制起點 — 目標是 minimize impact
+- TMT2 — 較強控制起點 — 溫控優先於 impact
+- MNTMT／MXTMT — 合法設定範圍 — 先做 host-side validation
+- SMART counters — transition count／time — 證明 control loop 真的動作
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q19. 「HCTM 用兩個 threshold 區分輕度與重度 thermal response」如何套用到具體數值或操作情境？
+
+<!-- qa:base-power-features-hctm-control-loop-example -->
+
+**答。**
+
+若 MNTMT=273 K、MXTMT=373 K，選 TMT1=343 K、TMT2=353 K 合法，CDW11=(0157h<<16)+0161h=01570161h。FID 10h 可 save；若 capability.SVBL=1 且 policy 要保存，CDW10.SV=1、FID=10h，所以 CDW10=80000010h。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q20. 「HCTM 用兩個 threshold 區分輕度與重度 thermal response」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-power-features-hctm-control-loop-pitfall -->
+
+**答。**
+
+TMT1=TMT2、TMT1>TMT2、超出 MNTMT／MXTMT 或把 Celsius 直接寫入 Kelvin 欄位，都應在 host 端先攔截。實機驗證要記錄 ambient、airflow、workload、sensor sampling cadence 與 host latency，否則 performance impact 無法比較。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251
+
+### Q21. 「把 policy、state、event 與量測串成可重現的 Debug 證據」的核心判讀規則是什麼？
+
+<!-- qa:base-power-features-end-to-end-debug-lead -->
+
+**答。**
+
+Power／thermal 問題通常不是一個 bit 錯，而是 capability、policy、transition、background work、thermal event 與 host workload 沒有放在同一條 timeline。FID 11h 的 NOPPME、APST、manual PS、HCTM 與 RTD3 又分別控制不同層次，不能互相替代。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238
+
+### Q22. 「把 policy、state、event 與量測串成可重現的 Debug 證據」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-power-features-end-to-end-debug-rows -->
+
+**答。**
+
+- Policy plane — FID02/04/0C/10/11 raw values — 證明 host 要求什麼
+- State plane — PSD、APST timer、I/O return — 證明 controller 在哪個 state
+- Thermal plane — sensor、TTC、HCTM counters — 證明溫控何時介入
+- Outcome plane — CQE、latency、power／temperature trace — 證明影響與 recovery
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238
+
+### Q23. 「把 policy、state、event 與量測串成可重現的 Debug 證據」如何套用到具體數值或操作情境？
+
+<!-- qa:base-power-features-end-to-end-debug-example -->
+
+**答。**
+
+案例：APSTE=1、idle 2 s 後進 PS3，NOPPME=0。3 s 時 controller background work 未提高 power；4 s 的第一筆 read 先觸發回 operational state，latency spike 應與 PS3.EXLAT 對照。若同時溫度跨 TMT1，還要以 HCTM counter 與 sensor timeline 分辨 exit latency 與 thermal throttling。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238
+
+### Q24. 「把 policy、state、event 與量測串成可重現的 Debug 證據」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-power-features-end-to-end-debug-pitfall -->
+
+**答。**
+
+不要用單一結果倒推原因。先問 Set 是否成功、Get 是否讀到預期值、APST timer 是否連續滿足、NOPPME 是否允許 background power、temperature 是否跨 TMT1/TMT2，最後才判斷 controller bug。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238

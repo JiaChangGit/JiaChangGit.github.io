@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 八份報告、三十二個版本、來源定位與離線 HTML 契約。"""
+"""驗證 NVMe 九份報告、三十六個版本、來源定位與離線 HTML 契約。"""
 
 from __future__ import annotations
 
@@ -257,12 +257,12 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 32 or formats.count("html") != 16 or formats.count("markdown") != 16:
-        errors.append("輸出契約必須固定為十六份 HTML 與十六份 Markdown")
+    if len(artifacts) != 36 or formats.count("html") != 18 or formats.count("markdown") != 18:
+        errors.append("輸出契約必須固定為十八份 HTML 與十八份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 8 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的八份報告")
+    if len(report_ids) != 9 or artifact_report_ids != report_ids:
+        errors.append("輸出契約必須完整對應 scope.json 的九份報告")
     artifact_ids = [item.get("id") for item in artifacts]
     if len(artifact_ids) != len(set(artifact_ids)):
         errors.append("artifact ID 不得重複")
@@ -283,6 +283,12 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
 
 def validate_publish() -> list[str]:
+    try:
+        from scripts.build_nvme_reports import REPORT_MODULES
+        from scripts.nvme_report_questions import validate_questions
+    except ModuleNotFoundError:
+        from build_nvme_reports import REPORT_MODULES
+        from nvme_report_questions import validate_questions
     errors = validate_setup(None)
     scope = load_json("scope.json")
     contract = load_json("output-contract.json")
@@ -370,6 +376,11 @@ def validate_publish() -> list[str]:
             continue
         text = path.read_text(encoding="utf-8")
         artifact_texts[artifact["id"]] = text
+        for error in validate_questions(
+            artifact['report_id'], REPORT_MODULES[artifact['report_id']], claims,
+            text, 'en' if artifact.get('language') == 'en' else 'zh', artifact['format'],
+        ):
+            errors.append(f"{artifact['path']}：{error}")
         ids = claim_ids(text)
         artifact_claims[artifact["id"]] = ids
         artifact_claim_sequences[artifact["id"]] = claim_id_sequence(text)

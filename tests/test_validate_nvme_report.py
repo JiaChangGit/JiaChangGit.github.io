@@ -22,6 +22,50 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_answered_question_banks_detect_missing_answer_and_bad_order(self):
+        from scripts.build_nvme_reports import REPORT_MODULES
+        from scripts.nvme_report_questions import question_bank, validate_questions
+        claims = json.loads((ROOT / '.ai/nvme-report/claims.json').read_text())['claims']
+        contract = json.loads((ROOT / '.ai/nvme-report/output-contract.json').read_text())
+        for artifact in contract['artifacts']:
+            rid = artifact['report_id']
+            text = (ROOT / artifact['path']).read_text()
+            lang = 'en' if artifact['language'] == 'en' else 'zh'
+            bank = question_bank(rid, REPORT_MODULES[rid])
+            with self.subTest(artifact=artifact['id']):
+                self.assertGreaterEqual(len(bank), 16)
+                self.assertFalse(validate_questions(rid, REPORT_MODULES[rid], claims, text, lang, artifact['format']))
+        rid = 'base-boot-telemetry-sanitize'
+        text = (ROOT / '_posts/2026-09-03-nvme-boot-telemetry-sanitize-en.md').read_text()
+        bank = question_bank(rid, REPORT_MODULES[rid])
+        broken = text.rsplit(bank[0]['answer']['en'], 1)
+        self.assertEqual(len(broken), 2)
+        self.assertTrue(validate_questions(rid, REPORT_MODULES[rid], claims, ''.join(broken), 'en', 'markdown'))
+        wrong_id = text.replace('<!-- qa:' + bank[0]['id'] + ' -->', '<!-- qa:wrong-source -->')
+        self.assertTrue(validate_questions(rid, REPORT_MODULES[rid], claims, wrong_id, 'en', 'markdown'))
+
+    def test_boot_telemetry_sanitize_scope_and_source_identity(self):
+        from scripts.nvme_bts_terms import definition
+        from scripts.nvme_teaching_content import term_definition
+        scope = json.loads((ROOT / '.ai/nvme-report/scope.json').read_text())
+        register = json.loads((ROOT / '.ai/nvme-report/figure-table-register.json').read_text())
+        figures = [f for f in register['entries'] if f['report_id'] == 'base-boot-telemetry-sanitize']
+        self.assertEqual(len(figures), 80)
+        self.assertEqual(sum(f.get('role') != 'referenced_dependency' for f in figures), 32)
+        self.assertEqual({f['id'] for f in figures if f['number'] == '201'}, {'BASEBTS-BASE-FIG-201', 'BASEBTS-NVMCS-FIG-201'})
+        claims = json.loads((ROOT / '.ai/nvme-report/claims.json').read_text())['claims']
+        by_id = {c['id']:c for c in claims}
+        self.assertEqual(by_id['BASEBTS-BASE-FIG-201-CLAIM']['source_id'], 'NVME-BASE-2.4')
+        self.assertEqual(by_id['BASEBTS-NVMCS-FIG-201-CLAIM']['source_id'], 'NVME-NVM-CS-1.3')
+        self.assertIn('8.1.27.4.6', by_id['BASEBTS-SAN-VERIFY-STATE']['section'])
+        self.assertTrue(any(e['status'] == 'EXCLUDE' and '8.1.27.6' in str(e) for e in scope['entries']))
+        self.assertIn('Storage Tag Check', definition('STC', 'base-boot-telemetry-sanitize', 'en', term_definition))
+        self.assertIn('Self-test Code', definition('STC', 'base-self-test-hmb-emulation', 'en', term_definition))
+        text = (ROOT / 'DOCS/nvme-spec-report/base-boot-telemetry-sanitize/tutorial-zh-tw.html').read_text()
+        ids = re.findall(r'(?<![-\w])id="([^"]+)"', text)
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertIn('29:10', text)
+
     def test_generators_parse_and_import(self):
         for path in (BUILD_SCRIPT, EVIDENCE_SCRIPT):
             source = path.read_text(encoding="utf-8")
@@ -63,15 +107,15 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_eight_reports_and_thirty_two_requested_artifacts(self):
+    def test_contract_has_nine_reports_and_thirty_six_requested_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 32)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 16)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 16)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 8)
+        self.assertEqual(len(artifacts), 36)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 18)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 18)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 9)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -83,6 +127,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 "basepower-bilingual",
                 "basediagmem-bilingual",
                 "basensmgmt-bilingual",
+                "basebts-bilingual",
             },
         )
 
@@ -403,7 +448,7 @@ class NvmeReportContractTest(unittest.TestCase):
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         html_artifacts = [item for item in contract["artifacts"] if item["format"] == "html"]
-        self.assertEqual(len(html_artifacts), 16)
+        self.assertEqual(len(html_artifacts), 18)
         for artifact in html_artifacts:
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             with self.subTest(artifact=artifact["id"]):
@@ -473,6 +518,8 @@ class NvmeReportContractTest(unittest.TestCase):
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         expected_images = {
+            "basebts-zh-md": "posts/2026/dogMC_title.jpg",
+            "basebts-en-md": "posts/2026/cat_title.jpg",
             "base12-zh-md": "posts/2026/dogMC_title.jpg",
             "base12-en-md": "posts/2026/cat_title.jpg",
             "base3-zh-md": "posts/2026/dogMC_title.jpg",
@@ -645,6 +692,9 @@ class NvmeReportContractTest(unittest.TestCase):
                 visible = text
                 self.assertIn("glossary", text.lower())
                 self.assertIn("Debug", text)
+            if artifact["report_id"] == "base-boot-telemetry-sanitize":
+                # New report: coverage is checked directly, without a historical length baseline.
+                continue
             self.assertGreaterEqual(
                 len(visible),
                 baseline[artifact["id"]] * 2,

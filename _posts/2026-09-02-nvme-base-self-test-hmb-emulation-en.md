@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-09-02-nvme-base-self-test-hmb-emulation-zh-tw %})
+
 
 # NVMe Base 2.4: Device Self-test, HMB, Doorbell Emulation, and Vendor Commands
 
@@ -47,7 +49,7 @@ Every abbreviation below is introduced before it is used in the slide narrative.
 |---|---|---|
 | `DST` | Device Self-test, a background operation using diagnostic segments to check a controller and optional namespace media. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 352-358, 614, PDF pp. 378-384, 640 |
 | `OACS.DSTS` | The Device Self-test Supported bit in Optional Admin Command Support, gating availability of the command. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 352-358, 614, PDF pp. 378-384, 640 |
-| `STC` | Self-test Code, the CDW10 nibble selecting short, extended, refresh, vendor-specific, or abort action. | NVME-BASE-2.4 Rev. 2.4, §5.2.6, printed pp. 199-200, PDF pp. 225-226 |
+| `STC` | Self-test Code is the Device Self-test CDW10 action nibble; STC in a result entry instead means Status Code and is gated by SCVLD. | NVME-BASE-2.4 Rev. 2.4, §5.2.6, printed pp. 199-200, PDF pp. 225-226 |
 | `DSTP` | Device Self-test Parameter, CDW15 with vendor-defined meaning only for vendor-specific STC Eh. | NVME-BASE-2.4 Rev. 2.4, §5.2.6, printed pp. 199-200, PDF pp. 225-226 |
 | `DSTO` | Device Self-test Options, the Identify Controller field reporting refresh and concurrency options. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 352-358, 614, PDF pp. 378-384, 640 |
 | `SDSO` | Single Device Self-test Operation, the bit selecting one subsystem-wide operation or one per controller. | NVME-BASE-2.4 Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pp. 352-358, 614, PDF pp. 378-384, 640 |
@@ -767,7 +769,7 @@ All three tracks debug from the first broken boundary: self-test compares comman
 
 ## Figure index
 
-This report introduces all 36 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item. 17 Figures are outside the main section range but are included because the requested text directly references them.
+This report introduces all 36 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item. 17 Figures are outside the main section range but are included to explain cited dependencies and necessary prerequisites.
 
 - [§4.1](#section-4-1)
 
@@ -786,7 +788,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §4.1
 
 <details markdown="1">
-<summary><strong>Figure 111: Self-test Results Data Structure</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 111: Self-test Results Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-111-CLAIM figure-table:BASEDIAGMEM-FIG-111 -->
 
@@ -873,7 +875,7 @@ This is a structure or capability field table. Locate it using the structure bas
 ### §5.2
 
 <details markdown="1">
-<summary><strong>Figure 176: Device Self-test Namespace Test Action</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 176: Device Self-test Namespace Test Action</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-176-CLAIM figure-table:BASEDIAGMEM-FIG-176 -->
 
@@ -955,7 +957,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 177: Device Self-test - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 177: Device Self-test - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-177-CLAIM figure-table:BASEDIAGMEM-FIG-177 -->
 
@@ -1039,7 +1041,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 178: Device Self-test - Command Dword 15</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 178: Device Self-test - Command Dword 15</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-178-CLAIM figure-table:BASEDIAGMEM-FIG-178 -->
 
@@ -1119,7 +1121,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 179: Device Self-test - Command Processing</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 179: Device Self-test - Command Processing</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-179-CLAIM figure-table:BASEDIAGMEM-FIG-179 -->
 
@@ -1202,7 +1204,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-180-CLAIM figure-table:BASEDIAGMEM-FIG-180 -->
 
@@ -1283,7 +1285,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 218: Device Self-test Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 218: Device Self-test Log Page</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-218-CLAIM figure-table:BASEDIAGMEM-FIG-218 -->
 
@@ -1367,7 +1369,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 219: Self-test Result Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 219: Self-test Result Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-219-CLAIM figure-table:BASEDIAGMEM-FIG-219 -->
 
@@ -1452,7 +1454,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 545: Host Memory Buffer - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 545: Host Memory Buffer - Command Dword 11</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-545-CLAIM figure-table:BASEDIAGMEM-FIG-545 -->
 
@@ -1535,7 +1537,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 546: Host Memory Buffer - Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 546: Host Memory Buffer - Command Dword 12</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-546-CLAIM figure-table:BASEDIAGMEM-FIG-546 -->
 
@@ -1616,7 +1618,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 547: Host Memory Buffer - Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 547: Host Memory Buffer - Command Dword 13</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-547-CLAIM figure-table:BASEDIAGMEM-FIG-547 -->
 
@@ -1697,7 +1699,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 548: Host Memory Buffer - Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 548: Host Memory Buffer - Command Dword 14</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-548-CLAIM figure-table:BASEDIAGMEM-FIG-548 -->
 
@@ -1777,7 +1779,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 549: Host Memory Buffer - Command Dword 15</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 549: Host Memory Buffer - Command Dword 15</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-549-CLAIM figure-table:BASEDIAGMEM-FIG-549 -->
 
@@ -1857,7 +1859,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 550: Host Memory Buffer - Host Memory Descriptor List</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 550: Host Memory Buffer - Host Memory Descriptor List</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-550-CLAIM figure-table:BASEDIAGMEM-FIG-550 -->
 
@@ -1938,7 +1940,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 551: Host Memory Buffer - Host Memory Buffer Descriptor Entry</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 551: Host Memory Buffer - Host Memory Buffer Descriptor Entry</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-551-CLAIM figure-table:BASEDIAGMEM-FIG-551 -->
 
@@ -2020,7 +2022,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 552: Host Memory Buffer - Completion Queue Entry Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 552: Host Memory Buffer - Completion Queue Entry Dword 0</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-552-CLAIM figure-table:BASEDIAGMEM-FIG-552 -->
 
@@ -2102,7 +2104,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 553: Host Memory Buffer - Attributes Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 553: Host Memory Buffer - Attributes Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-553-CLAIM figure-table:BASEDIAGMEM-FIG-553 -->
 
@@ -2190,7 +2192,7 @@ This is a structure or capability field table. Locate it using the structure bas
 ### §8.1
 
 <details markdown="1">
-<summary><strong>Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-700-CLAIM figure-table:BASEDIAGMEM-FIG-700 -->
 
@@ -2273,7 +2275,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-701-CLAIM figure-table:BASEDIAGMEM-FIG-701 -->
 
@@ -2362,7 +2364,7 @@ This is a structure or capability field table. Locate it using the structure bas
 ### Referenced Figure dependencies (outside the main section range)
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-036-CLAIM figure-table:BASEDIAGMEM-FIG-036 -->
 
@@ -2443,7 +2445,7 @@ This is a register or property field table. Locate the base offset, verify acces
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-093-CLAIM figure-table:BASEDIAGMEM-FIG-093 -->
 
@@ -2527,7 +2529,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 94: Common Command Format - Vendor Specific Commands (Optional)</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-094-CLAIM figure-table:BASEDIAGMEM-FIG-094 -->
 
@@ -2611,7 +2613,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 197: Get Features - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 197: Get Features - Data Pointer</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-197-CLAIM figure-table:BASEDIAGMEM-FIG-197 -->
 
@@ -2693,7 +2695,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 198: Get Features - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 198: Get Features - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-198-CLAIM figure-table:BASEDIAGMEM-FIG-198 -->
 
@@ -2774,7 +2776,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 200: Feature Identifiers for Get Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 200: Feature Identifiers for Get Features</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-200-CLAIM figure-table:BASEDIAGMEM-FIG-200 -->
 
@@ -2856,7 +2858,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 203: Get Log Page - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 203: Get Log Page - Data Pointer</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-203-CLAIM figure-table:BASEDIAGMEM-FIG-203 -->
 
@@ -2936,7 +2938,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 204: Get Log Page - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 204: Get Log Page - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-204-CLAIM figure-table:BASEDIAGMEM-FIG-204 -->
 
@@ -3019,7 +3021,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 205: Get Log Page - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 205: Get Log Page - Command Dword 11</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-205-CLAIM figure-table:BASEDIAGMEM-FIG-205 -->
 
@@ -3100,7 +3102,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 206: Get Log Page - Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 206: Get Log Page - Command Dword 12</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-206-CLAIM figure-table:BASEDIAGMEM-FIG-206 -->
 
@@ -3181,7 +3183,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 207: Get Log Page - Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 207: Get Log Page - Command Dword 13</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-207-CLAIM figure-table:BASEDIAGMEM-FIG-207 -->
 
@@ -3261,7 +3263,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 208: Get Log Page - Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 208: Get Log Page - Command Dword 14</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-208-CLAIM figure-table:BASEDIAGMEM-FIG-208 -->
 
@@ -3343,7 +3345,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-209-CLAIM figure-table:BASEDIAGMEM-FIG-209 -->
 
@@ -3427,7 +3429,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify Controller Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify Controller Data Structure</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-338-CLAIM figure-table:BASEDIAGMEM-FIG-338 -->
 
@@ -3512,7 +3514,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 463: Set Features - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 463: Set Features - Data Pointer</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-463-CLAIM figure-table:BASEDIAGMEM-FIG-463 -->
 
@@ -3594,7 +3596,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 464: Set Features - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 464: Set Features - Command Dword 10</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-464-CLAIM figure-table:BASEDIAGMEM-FIG-464 -->
 
@@ -3675,7 +3677,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 466: Feature Identifiers for Set Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 466: Feature Identifiers for Set Features</strong></summary>
 
 <!-- claim:BASEDIAGMEM-FIG-466-CLAIM figure-table:BASEDIAGMEM-FIG-466 -->
 
@@ -3760,3 +3762,308 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+28 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Start with three boundaries: operation, memory ownership, and encoded address”?
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-lead -->
+
+**Answer.**
+
+These sections do not describe one feature. Device Self-test manages a background diagnostic operation, HMB manages ownership transfer of host memory, and DSTRD plus the vendor-command format turn encoded values into safe memory accesses. The shared method is to locate a capability gate, identify the state or ownership transition, and then collect observable evidence.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759
+
+### Q02. Which concepts or conditions must be distinguished in “Start with three boundaries: operation, memory ownership, and encoded address”?
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-rows -->
+
+**Answer.**
+
+- Self-test — Operation lifecycle — CQE + LID 06h
+- HMB — Exclusive-ownership lifecycle — Get FID 0Dh + disable CQE
+- Doorbell emulation — Encoded byte stride — MMIO address/write trace
+- Vendor command — Buffer-length contract — VSCF/SNVSCF + NDT/NDM
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759
+
+### Q03. How does “Start with three boundaries: operation, memory ownership, and encoded address” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-example -->
+
+**Answer.**
+
+The same Successful Completion means only that a self-test operation started, but for HMB disable it returns ownership to the host. Equal status codes do not imply equal completion boundaries.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759
+
+### Q04. What misinterpretation is most likely in “Start with three boundaries: operation, memory ownership, and encoded address”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-three-boundaries-pitfall -->
+
+**Answer.**
+
+Do not reduce every topic to command success or failure. Record which transition succeeded, who currently owns memory, and which log or Get Features result is still required to prove the later outcome.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759
+
+### Q05. What is the governing interpretation for “Device Self-test: gate capability before submitting a background operation”?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-lead -->
+
+**Answer.**
+
+Self-test is not a synchronous diagnostic RPC. The host first uses OACS.DSTS, DSTO.SDSO, and EDSTT to establish support, concurrency scope, and timing, then constructs the command from NSID and STC. When the Admin CQE returns, the background operation has only entered the lifecycle observed through LID 06h.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 352-358, 614, PDF pages 378-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 200, PDF pages 226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227
+
+### Q06. Which concepts or conditions must be distinguished in “Device Self-test: gate capability before submitting a background operation”?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-rows -->
+
+**Answer.**
+
+- NSID=0 — Controller only — No namespace media
+- Active NSID — One namespace — Invalid and inactive status differ
+- NSID=FFFFFFFFh — All attached/accessible namespaces — Set is captured at start
+- STC=Fh — Abort current operation — Success does not prove one existed
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 352-358, 614, PDF pages 378-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 200, PDF pages 226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227
+
+### Q07. How does “Device Self-test: gate capability before submitting a background operation” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-example -->
+
+**Answer.**
+
+To start a short test for namespace 5, use NSID 00000005h and STC 1h, so CDW10 is 00000001h and CDW15 is zero. Immediately issuing extended STC 2h should produce command-specific status 1Dh rather than a second operation.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 352-358, 614, PDF pages 378-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 200, PDF pages 226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227
+
+### Q08. What misinterpretation is most likely in “Device Self-test: gate capability before submitting a background operation”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-command-state-machine-pitfall -->
+
+**Answer.**
+
+The common failure is treating the CQE timestamp as test completion or checking only controller-local state when SDSO is one. Retain controller ID, NSID, STC, CDW15, CQE status, and the first subsequent LID 06h.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, printed pages 352-358, 614, PDF pages 378-384, 640; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199, PDF pages 225; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 199-200, PDF pages 225-226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 200, PDF pages 226; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, printed pages 201, PDF pages 227
+
+### Q09. What is the governing interpretation for “LID 06h: decode current operation separately from twenty history entries”?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-lead -->
+
+**Answer.**
+
+DSTOS/DSTCS in the header answer what is running now, while RDS1 through RDS20 answer how earlier operations ended. Each result then separates operation code, result reason, segment, validity bitmap, and diagnostic payload. The NVM Command Set gives FLBA an LBA meaning only when FVLD is one.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-216, PDF pages 239-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231, PDF pages 257; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, printed pages 229-232, 614-616, PDF pages 255-258, 640-642
+
+### Q10. Which concepts or conditions must be distinguished in “LID 06h: decode current operation separately from twenty history entries”?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-rows -->
+
+**Answer.**
+
+- DSTOS/DSTCS — Current state/progress — Ignore percentage when DSTOS=0
+- DSTR=7h + SEGN — Known first failed segment — Ignore SEGN for other DSTR
+- FVLD + FLBA — One failing LBA — Not a list of every failed LBA
+- POH + STCT/STC — Failure context — Validity bits still apply
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-216, PDF pages 239-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231, PDF pages 257; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, printed pages 229-232, 614-616, PDF pages 255-258, 640-642
+
+### Q11. How does “LID 06h: decode current operation separately from twenty history entries” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-example -->
+
+**Answer.**
+
+The complete log is 564 bytes or 141 dwords, so NUMD is 140 or 008Ch. With LSP 0 and RAE 0, CDW10 is 008C0006h. If RDS1.DSTS is 17h, high nibble 1h means short test and low nibble 7h means a known failed segment; only then read SEGN.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-216, PDF pages 239-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231, PDF pages 257; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, printed pages 229-232, 614-616, PDF pages 255-258, 640-642
+
+### Q12. What misinterpretation is most likely in “LID 06h: decode current operation separately from twenty history entries”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-selftest-observe-debug-pitfall -->
+
+**Answer.**
+
+A parser must not declare media failure because FLBA is nonzero. Check DSTR, then FVLD and NSIDVLD, and only then decode bytes 23:16 under the NVM Command Set. Preserve the raw 28-byte result so a validity-decoding defect does not destroy evidence.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, printed pages 213-216, PDF pages 239-242; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 229-230, PDF pages 255-256; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231, PDF pages 257; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, printed pages 231-232, PDF pages 257-258; Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, printed pages 76, PDF pages 76; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 8.1.8, printed pages 229-232, 614-616, PDF pages 255-258, 640-642
+
+### Q13. What is the governing interpretation for “HMB: enable/disable completion is an ownership fence”?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-lead -->
+
+**Answer.**
+
+HMB is not merely controller cache. It is an ownership protocol: the host allocates pages and a descriptor list, stops writing after successful enable, the controller initializes and uses them, and the host disables HMB before reclaiming memory. Modification rights return only when the CQE is posted.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, printed pages 357, 362, 744, PDF pages 383, 388, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 515-516, PDF pages 541-542; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q14. Which concepts or conditions must be distinguished in “HMB: enable/disable completion is an ownership fence”?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-rows -->
+
+**Answer.**
+
+- Before enable — Host owns and initializes descriptors — Validate alignment/count
+- After enable CQE — Controller exclusive use — Host shall not write
+- Disable in flight — Controller may still retrieve data — Host still waits
+- After disable CQE — Host may modify/reclaim — Record fence timestamp
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, printed pages 357, 362, 744, PDF pages 383, 388, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 515-516, PDF pages 541-542; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q15. How does “HMB: enable/disable completion is an ownership fence” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-example -->
+
+**Answer.**
+
+If a driver removes DMA mappings after issuing EHM zero but before its CQE, the controller may still retrieve required data; that is a use-after-unmap. The correct fence is disable completion, not the SQ-tail doorbell write.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, printed pages 357, 362, 744, PDF pages 383, 388, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 515-516, PDF pages 541-542; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q16. What misinterpretation is most likely in “HMB: enable/disable completion is an ownership fence”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-ownership-lifecycle-pitfall -->
+
+**Answer.**
+
+Treating enable completion as shared host/controller access creates a data race. Track write protection and DMA ownership for HMDL and every range, and release them only after disable completion.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, printed pages 357, 362, 744, PDF pages 383, 388, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 8.2.4, printed pages 515-516, 744, PDF pages 541-542, 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 515-516, PDF pages 541-542; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q17. What is the governing interpretation for “HMB commands and descriptors: reconcile every size, count, and address with one page model”?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-lead -->
+
+**Answer.**
+
+HSIZE, BSIZE, and BADD use CC.MPS pages, while HMPRE, HMMIN, and HMMINDS use 4-KiB units. The unit systems are not interchangeable. HMDL is 16-byte aligned with fixed 16-byte entries, and HMDLEC is an entry count—not zero based and not a byte length.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, printed pages 456-459, 516-518, PDF pages 482-485, 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 517-518, PDF pages 543-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-518, PDF pages 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, printed pages 209-212, 518-519, PDF pages 235-238, 544-545
+
+### Q18. Which concepts or conditions must be distinguished in “HMB commands and descriptors: reconcile every size, count, and address with one page model”?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-rows -->
+
+**Answer.**
+
+- HMPRE/HMMIN — 4-KiB units — Capability request
+- HSIZE/BSIZE — CC.MPS units — Configured memory
+- HMDL address — 16-byte aligned — CDW13 low + CDW14 high
+- BADD — CC.MPS aligned — BSIZE=0 entry ignored
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, printed pages 456-459, 516-518, PDF pages 482-485, 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 517-518, PDF pages 543-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-518, PDF pages 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, printed pages 209-212, 518-519, PDF pages 235-238, 544-545
+
+### Q19. How does “HMB commands and descriptors: reconcile every size, count, and address with one page model” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-example -->
+
+**Answer.**
+
+With CC.MPS zero and HSIZE 64, HMB is 256 KiB. HMDL 00000012_34567000h and HMDLEC 2 produce CDW13 34567000h, CDW14 00000012h, and CDW15 2. Two BSIZE-32 ranges are 128 KiB each, totaling 256 KiB.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, printed pages 456-459, 516-518, PDF pages 482-485, 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 517-518, PDF pages 543-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-518, PDF pages 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, printed pages 209-212, 518-519, PDF pages 235-238, 544-545
+
+### Q20. What misinterpretation is most likely in “HMB commands and descriptors: reconcile every size, count, and address with one page model”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-command-math-pitfall -->
+
+**Answer.**
+
+A common error copies HMPRE directly into HSIZE while CC.MPS is 8 KiB, or sets HMDLEC two while mapping one 16-byte entry. Log capability units, CC.MPS, every BADD/BSIZE, page sum, and command dwords together.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, printed pages 456-459, 516-518, PDF pages 482-485, 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 517-518, PDF pages 543-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-518, PDF pages 542-544; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, printed pages 209-212, 518-519, PDF pages 235-238, 544-545
+
+### Q21. What is the governing interpretation for “HMB across non-operational state, RTD3, and reset: three different boundaries”?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-lead -->
+
+**Answer.**
+
+HMNARE is access policy, HMNAR is current state, and MR says whether exactly the same prior contents are returned after reset or RTD3. They are not interchangeable. Controller Level Reset loses the assignment, RTD3 calls for release beforehand, and non-operational restriction only limits access in selected states.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-519, PDF pages 542-545; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q22. Which concepts or conditions must be distinguished in “HMB across non-operational state, RTD3, and reset: three different boundaries”?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-rows -->
+
+**Answer.**
+
+- HMNARE — Configured policy — Requires CTRATT.HMBR
+- HMNAR — Current restriction state — May be zero in operational state
+- MR=1 — Return identical old HMB — Same size/address/list/content
+- MR=0 — New undefined contents — Controller initializes again
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-519, PDF pages 542-545; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q23. How does “HMB across non-operational state, RTD3, and reset: three different boundaries” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-example -->
+
+**Answer.**
+
+If the allocator returns the same pages after resume but moves HMDL to a new address, MR cannot be one because the descriptor-list address must also match exactly. Enable it as a new MR-zero allocation.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-519, PDF pages 542-545; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q24. What misinterpretation is most likely in “HMB across non-operational state, RTD3, and reset: three different boundaries”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-hmb-reset-power-pitfall -->
+
+**Answer.**
+
+Do not hash only data pages. MR validation compares HSIZE, HMDL address, HMDLEC, every descriptor, and all HMB contents. NOPPME is also not an HMNARE control; the specification explicitly separates them.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, printed pages 516-519, PDF pages 542-545; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.4, printed pages 744, PDF pages 770
+
+### Q25. What is the governing interpretation for “DSTRD and NDT/NDM: decode to byte boundaries before memory access”?
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-lead -->
+
+**Answer.**
+
+Software emulators and vendor-command passthrough both handle untrusted encoded values. DSTRD becomes bytes through 2^(2+x); NDT/NDM are already actual dword counts and are multiplied by four without adding one. The formulas differ, but both prove address and length before MMIO or DMA.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.3, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, printed pages 199-201, 515-519, 733, 744, PDF pages 225-227, 541-545, 759, 770
+
+### Q26. Which concepts or conditions must be distinguished in “DSTRD and NDT/NDM: decode to byte boundaries before memory access”?
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-rows -->
+
+**Answer.**
+
+- DSTRD — 2^(2+x) bytes — 0→4 B; 4→64 B
+- NDT — Value×4 data bytes — Not zero based
+- NDM — Value×4 metadata bytes — Independent buffer bound
+- VSCF/SNVSCF — Format gate — Admin and I/O are separate
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.3, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, printed pages 199-201, 515-519, 733, 744, PDF pages 225-227, 541-545, 759, 770
+
+### Q27. How does “DSTRD and NDT/NDM: decode to byte boundaries before memory access” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-example -->
+
+**Answer.**
+
+An emulator with DSTRD 4 gets a 64-byte stride and can place doorbells on discrete cachelines. Vendor-command NDT 0100h is 256 dwords or 1024 bytes—not 1028 bytes. Retain both raw encoding and decoded bytes for each.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.3, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, printed pages 199-201, 515-519, 733, 744, PDF pages 225-227, 541-545, 759, 770
+
+### Q28. What misinterpretation is most likely in “DSTRD and NDT/NDM: decode to byte boundaries before memory access”, and how is it debugged?
+
+<!-- qa:base-self-test-hmb-emulation-encoded-boundary-safety-pitfall -->
+
+**Answer.**
+
+A helper that treats every NVMe length as zero based adds four bytes to NDT/NDM. Multiplying DSTRD directly by four also fails for nonzero values. Bind each field's formula to its owning Figure.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, printed pages 56, 744, PDF pages 82, 770; Source: NVME-BASE-2.4, Rev. 2.4, §8.2.3, printed pages 744, PDF pages 770; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, printed pages 356, 374, 733, PDF pages 382, 400, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, printed pages 143, 733, PDF pages 169, 759; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.30.2.3, 8.1.29, 8.2.3, printed pages 199-201, 515-519, 733, 744, PDF pages 225-227, 541-545, 759, 770

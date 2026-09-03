@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-09-02-nvme-base-power-thermal-features-zh-tw %})
+
 
 # NVMe Base 2.4: Power/Thermal Features and Power Management
 
@@ -693,7 +695,7 @@ Successful configuration is not the end of verification. Observe SMART/Health Co
 
 ## Figure index
 
-This report introduces all 27 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item. 5 Figures are outside the main section range but are included because the requested text directly references them.
+This report introduces all 27 in-scope Figures. Use the section links below for the 100-minute presentation path; every Figure remains available as an appendix item. 5 Figures are outside the main section range but are included to explain cited dependencies and necessary prerequisites.
 
 - [§5.2](#section-5-2)
 
@@ -710,7 +712,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §5.2
 
 <details markdown="1">
-<summary><strong>Figure 197: Get Features – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 197: Get Features – Data Pointer</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-197-CLAIM figure-table:BASEPOWER-FIG-197 -->
 
@@ -792,7 +794,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 198: Get Features – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 198: Get Features – Command Dword 10</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-198-CLAIM figure-table:BASEPOWER-FIG-198 -->
 
@@ -873,7 +875,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 199: Get Features – Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 199: Get Features – Command Dword 14</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-199-CLAIM figure-table:BASEPOWER-FIG-199 -->
 
@@ -953,7 +955,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 200: Feature Identifiers for Get Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 200: Feature Identifiers for Get Features</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-200-CLAIM figure-table:BASEPOWER-FIG-200 -->
 
@@ -1037,7 +1039,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 201: Get Features – Select Supported Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 201: Get Features – Select Supported Capabilities</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-201-CLAIM figure-table:BASEPOWER-FIG-201 -->
 
@@ -1119,7 +1121,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 202: Get Features – Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 202: Get Features – Command Specific Status Values</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-202-CLAIM figure-table:BASEPOWER-FIG-202 -->
 
@@ -1199,7 +1201,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 463: Set Features – Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 463: Set Features – Data Pointer</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-463-CLAIM figure-table:BASEPOWER-FIG-463 -->
 
@@ -1281,7 +1283,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 464: Set Features – Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 464: Set Features – Command Dword 10</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-464-CLAIM figure-table:BASEPOWER-FIG-464 -->
 
@@ -1362,7 +1364,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 465: Set Features – Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 465: Set Features – Command Dword 14</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-465-CLAIM figure-table:BASEPOWER-FIG-465 -->
 
@@ -1442,7 +1444,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 466: Feature Identifiers for Set Features</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 466: Feature Identifiers for Set Features</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-466-CLAIM figure-table:BASEPOWER-FIG-466 -->
 
@@ -1526,7 +1528,7 @@ This is an identifier-format Figure. Record width and encoding, then identify as
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 468: Power Management – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 468: Power Management – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-468-CLAIM figure-table:BASEPOWER-FIG-468 -->
 
@@ -1607,7 +1609,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 470: Temperature Threshold – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 470: Temperature Threshold – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-470-CLAIM figure-table:BASEPOWER-FIG-470 -->
 
@@ -1690,7 +1692,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 475: Autonomous Power State Transition – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 475: Autonomous Power State Transition – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-475-CLAIM figure-table:BASEPOWER-FIG-475 -->
 
@@ -1770,7 +1772,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 476: Autonomous Power State Transition Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 476: Autonomous Power State Transition Data Structure</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-476-CLAIM figure-table:BASEPOWER-FIG-476 -->
 
@@ -1851,7 +1853,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 477: Autonomous Power State Transition Entry</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 477: Autonomous Power State Transition Entry</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-477-CLAIM figure-table:BASEPOWER-FIG-477 -->
 
@@ -1932,7 +1934,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 478: APST and NOPPME Interaction</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 478: APST and NOPPME Interaction</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-478-CLAIM figure-table:BASEPOWER-FIG-478 -->
 
@@ -2016,7 +2018,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 482: Host Controlled Thermal Management – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 482: Host Controlled Thermal Management – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-482-CLAIM figure-table:BASEPOWER-FIG-482 -->
 
@@ -2097,7 +2099,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 483: Non-Operational Power State Configuration – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 483: Non-Operational Power State Configuration – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-483-CLAIM figure-table:BASEPOWER-FIG-483 -->
 
@@ -2181,7 +2183,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 ### §8.1
 
 <details markdown="1">
-<summary><strong>Figure 738: Power Management Overview</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 738: Power Management Overview</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-738-CLAIM figure-table:BASEPOWER-FIG-738 -->
 
@@ -2263,7 +2265,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 739: Power State Characteristics</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 739: Power State Characteristics</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-739-CLAIM figure-table:BASEPOWER-FIG-739 -->
 
@@ -2347,7 +2349,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 740: Workload Hints</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 740: Workload Hints</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-740-CLAIM figure-table:BASEPOWER-FIG-740 -->
 
@@ -2429,7 +2431,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 741: Host Controlled Thermal Management</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 741: Host Controlled Thermal Management</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-741-CLAIM figure-table:BASEPOWER-FIG-741 -->
 
@@ -2516,7 +2518,7 @@ This Figure explains a specific relationship or example. Identify each component
 ### Referenced Figure dependencies (outside the main section range)
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-093-CLAIM figure-table:BASEPOWER-FIG-093 -->
 
@@ -2601,7 +2603,7 @@ This is a command-construction field table. Build the common SQE, locate the spe
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 213: SMART / Health Information Log</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 213: SMART / Health Information Log</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-213-CLAIM figure-table:BASEPOWER-FIG-213 -->
 
@@ -2684,7 +2686,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify Controller Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify Controller Data Structure</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-338-CLAIM figure-table:BASEPOWER-FIG-338 -->
 
@@ -2769,7 +2771,7 @@ This is a structure or capability field table. Locate it using the structure bas
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 340: Power State Descriptor Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 340: Power State Descriptor Data Structure</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-340-CLAIM figure-table:BASEPOWER-FIG-340 -->
 
@@ -2854,7 +2856,7 @@ This is a state or timing Figure. Follow each arrow while recording trigger, obs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 474: Asynchronous Event Configuration – Command Dword 11</strong></summary>
 
 <!-- claim:BASEPOWER-FIG-474-CLAIM figure-table:BASEPOWER-FIG-474 -->
 
@@ -2937,3 +2939,265 @@ This is a command-construction field table. Build the common SQE, locate the spe
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+24 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Get first, Set second, then observe again”?
+
+<!-- qa:base-power-features-feature-read-set-loop-lead -->
+
+**Answer.**
+
+A Feature is not a simple register. The host first reads capability with SEL=011b, then retrieves current/default/saved views, confirms scope and persistence, and only then writes. Set completion proves command outcome; a follow-up Get and runtime telemetry prove that software observes the new policy.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209, PDF pages 235; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209-210, PDF pages 235-236; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, printed pages 211-212, PDF pages 237-238; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 457, PDF pages 483; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 459, PDF pages 485
+
+### Q02. Which concepts or conditions must be distinguished in “Get first, Set second, then observe again”?
+
+<!-- qa:base-power-features-feature-read-set-loop-rows -->
+
+**Answer.**
+
+- SEL=000b — Current value — Observe current controller policy
+- SEL=001b — Default value — Establish a rollback baseline
+- SEL=010b — Saved value — Does not prove a value was saved
+- SEL=011b — CHANG/NSSPEC/SVBL — Capability gate before writing
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209, PDF pages 235; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209-210, PDF pages 235-236; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, printed pages 211-212, PDF pages 237-238; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 457, PDF pages 483; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 459, PDF pages 485
+
+### Q03. How does “Get first, Set second, then observe again” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-power-features-feature-read-set-loop-example -->
+
+**Answer.**
+
+For FID 02h current, CDW10=00000002h. For supported capabilities, SEL=3 so CDW10=(3×100h)+02h=00000302h. If CHANG=0, stop before Set; if CHANG=1, construct CDW11 from NPSS and the PSDs.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209, PDF pages 235; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209-210, PDF pages 235-236; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, printed pages 211-212, PDF pages 237-238; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 457, PDF pages 483; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 459, PDF pages 485
+
+### Q04. What misinterpretation is most likely in “Get first, Set second, then observe again”, and how is it debugged?
+
+<!-- qa:base-power-features-feature-read-set-loop-pitfall -->
+
+**Answer.**
+
+Do not log only 'Get succeeded.' Retain raw CDW10/CDW14, CQE.DW0, SCT/SC/DNR, and the selected current/default/saved/capability view; otherwise the same 32-bit result can be decoded with the wrong semantics.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209, PDF pages 235; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, printed pages 209-210, PDF pages 235-236; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, printed pages 211-212, PDF pages 237-238; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 457, PDF pages 483; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 459, PDF pages 485
+
+### Q05. What is the governing interpretation for “A power state is a multidimensional power, latency, and performance operating point”?
+
+<!-- qa:base-power-features-power-state-mental-model-lead -->
+
+**Answer.**
+
+A state number alone cannot establish workload suitability. Read MP, NOPS, ENLAT/EXLAT, IDLP/ACTP, and relative performance together in each PSD. Increasing PS numbers reduce maximum power monotonically, but latency and throughput do not necessarily change by a fixed ratio.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-667, PDF pages 692-693; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-668, PDF pages 692-694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, printed pages 668-669, PDF pages 694-695; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 667-668, PDF pages 693-694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, printed pages 460-461, PDF pages 486-487; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, printed pages 669, PDF pages 695
+
+### Q06. Which concepts or conditions must be distinguished in “A power state is a multidimensional power, latency, and performance operating point”?
+
+<!-- qa:base-power-features-power-state-mental-model-rows -->
+
+**Answer.**
+
+- MP — Sustained maximum power — Not an instantaneous sample
+- IDLP/ACTP — Idle typical / active average — Different measurement conditions
+- ENLAT/EXLAT — Maximum entry/exit latency — Sum across transitions
+- RRT/RRL/RWT/RWL — Relative throughput/latency — Compare only like characteristics
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-667, PDF pages 692-693; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-668, PDF pages 692-694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, printed pages 668-669, PDF pages 694-695; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 667-668, PDF pages 693-694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, printed pages 460-461, PDF pages 486-487; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, printed pages 669, PDF pages 695
+
+### Q07. How does “A power state is a multidimensional power, latency, and performance operating point” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-power-features-power-state-mental-model-example -->
+
+**Answer.**
+
+Informative calculation: current PS1.EXLAT=100 µs and target PS3.ENLAT=2500 µs produce a direct-transition budget of 2600 µs. If the path is PS1→PS2→PS3, sum PS1.EXLAT+PS2.ENLAT and PS2.EXLAT+PS3.ENLAT instead of reusing 2600 µs.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-667, PDF pages 692-693; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-668, PDF pages 692-694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, printed pages 668-669, PDF pages 694-695; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 667-668, PDF pages 693-694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, printed pages 460-461, PDF pages 486-487; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, printed pages 669, PDF pages 695
+
+### Q08. What misinterpretation is most likely in “A power state is a multidimensional power, latency, and performance operating point”, and how is it debugged?
+
+<!-- qa:base-power-features-power-state-mental-model-pitfall -->
+
+**Answer.**
+
+A successful FID 02h Set proves only that the controller accepted PS. Debug evidence also needs NPSS, the complete target PSD, previous state, WH, CQE timestamp, and first-I/O latency; entry into a non-operational state additionally requires checking whether I/O was drained.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-667, PDF pages 692-693; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 666-668, PDF pages 692-694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, printed pages 668-669, PDF pages 694-695; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 667-668, PDF pages 693-694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, printed pages 460-461, PDF pages 486-487; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, printed pages 669, PDF pages 695
+
+### Q09. What is the governing interpretation for “APST is a state machine driven by idle timers”?
+
+<!-- qa:base-power-features-apst-state-machine-lead -->
+
+**Answer.**
+
+The 256-byte APST buffer is not a performance table. It contains 32 rules stating which non-operational state to enter after a given idle duration. APSTE enables timer rules, entries with ITPT=0 are inactive, and arriving I/O returns the controller to its most recent operational state.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 468-469, PDF pages 494-495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 456-457, PDF pages 482-483
+
+### Q10. Which concepts or conditions must be distinguished in “APST is a state machine driven by idle timers”?
+
+<!-- qa:base-power-features-apst-state-machine-rows -->
+
+**Answer.**
+
+- APSTE=0 — Host-directed entry only — The table may exist but timers do not drive entry
+- APSTE=1 — Host- or timer-directed entry — ITPT must be met continuously
+- NOPPME=0 — Background work stays within non-op limits — Controller work may be deferred
+- NOPPME=1 — Background work may raise power temporarily — Still capped by the last operational state
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 468-469, PDF pages 494-495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 456-457, PDF pages 482-483
+
+### Q11. How does “APST is a state machine driven by idle timers” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-power-features-apst-state-machine-example -->
+
+**Answer.**
+
+To enter PS3 after 2000 ms idle: ITPT=2000=07D0h, shifted into bits31:8 gives 07D00000h; ITPS=3 in bits7:3 gives 18h, so the low dword is 07D00018h. Reserved bits and the entry high dword remain zero; 32 entries total 256 bytes.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 468-469, PDF pages 494-495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 456-457, PDF pages 482-483
+
+### Q12. What misinterpretation is most likely in “APST is a state machine driven by idle timers”, and how is it debugged?
+
+<!-- qa:base-power-features-apst-state-machine-pitfall -->
+
+**Answer.**
+
+Common errors include treating ITPT as microseconds, selecting an operational ITPS, leaving unused entries nonzero, or placing the 256-byte PRP buffer across an unsupported page boundary. Retain a hash of the full buffer and a per-entry decode.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 468-469, PDF pages 494-495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19, printed pages 668, PDF pages 694; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, printed pages 456-457, PDF pages 482-483
+
+### Q13. What is the governing interpretation for “Temperature Threshold connects sensor, event, and clear point”?
+
+<!-- qa:base-power-features-temperature-event-loop-lead -->
+
+**Answer.**
+
+FID 04h is more than a temperature number. TMPSEL selects a sensor, THSEL selects over or under, TMPTH sets the trigger point, TMPTHH sets the event clear point, and SMART/Health.TTC plus AEC enable return controller state to the host.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, printed pages 462-463, PDF pages 488-489; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, printed pages 463-464, PDF pages 489-490; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q14. Which concepts or conditions must be distinguished in “Temperature Threshold connects sensor, event, and clear point”?
+
+<!-- qa:base-power-features-temperature-event-loop-rows -->
+
+**Answer.**
+
+- TMPSEL — Composite or sensor 1-8 — Get does not use all-sensors selection
+- THSEL — Over/under — Comparison direction is reversed
+- TMPTH — Trigger Kelvin — Log raw K and converted °C
+- TMPTHH — Clear hysteresis in Kelvin — Not a second trigger threshold
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, printed pages 462-463, PDF pages 488-489; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, printed pages 463-464, PDF pages 489-490; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q15. How does “Temperature Threshold connects sensor, event, and clear point” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-power-features-temperature-event-loop-example -->
+
+**Answer.**
+
+For a Composite over threshold of 343 K (about 70 °C) and 5 K hysteresis: TMPSEL=0, THSEL=0, TMPTH=0157h, and TMPTHH=5, giving CDW11=(5<<22)+0157h=01400157h. The event triggers at ≥343 K and ends only after falling to 338 K (about 65 °C).
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, printed pages 462-463, PDF pages 488-489; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, printed pages 463-464, PDF pages 489-490; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q16. What misinterpretation is most likely in “Temperature Threshold connects sensor, event, and clear point”, and how is it debugged?
+
+<!-- qa:base-power-features-temperature-event-loop-pitfall -->
+
+**Answer.**
+
+If no AEN appears, do not immediately conclude that the threshold failed. Check AEC.TTHRY/SHCW enables, TTC, raw sensor Kelvin, threshold type, hysteresis clear point, and an outstanding Asynchronous Event Request in order.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, printed pages 462-463, PDF pages 488-489; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, printed pages 463-464, PDF pages 489-490; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q17. What is the governing interpretation for “HCTM uses two thresholds for lighter and stronger thermal response”?
+
+<!-- qa:base-power-features-hctm-control-loop-lead -->
+
+**Answer.**
+
+HCTM does not select a fixed clock or power state. It gives the controller two temperature boundaries, TMT1/TMT2. At TMT1 the controller minimizes performance impact; at TMT2 it applies stronger thermal control. Actual hysteresis and internal actions are vendor implementation details.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, printed pages 471-472, PDF pages 497-498; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, printed pages 472, 670-671, PDF pages 498, 696-697; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q18. Which concepts or conditions must be distinguished in “HCTM uses two thresholds for lighter and stronger thermal response”?
+
+<!-- qa:base-power-features-hctm-control-loop-rows -->
+
+**Answer.**
+
+- TMT1 — Lighter-control boundary — Objective is to minimize impact
+- TMT2 — Stronger-control boundary — Thermal control takes priority
+- MNTMT/MXTMT — Legal configuration range — Validate on the host first
+- SMART counters — Transition count/time — Evidence that the control loop acted
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, printed pages 471-472, PDF pages 497-498; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, printed pages 472, 670-671, PDF pages 498, 696-697; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q19. How does “HCTM uses two thresholds for lighter and stronger thermal response” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-power-features-hctm-control-loop-example -->
+
+**Answer.**
+
+If MNTMT=273 K and MXTMT=373 K, TMT1=343 K and TMT2=353 K are legal, and CDW11=(0157h<<16)+0161h=01570161h. FID 10h is saveable; if SVBL=1 and policy requires persistence, CDW10.SV=1 with FID=10h gives CDW10=80000010h.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, printed pages 471-472, PDF pages 497-498; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, printed pages 472, 670-671, PDF pages 498, 696-697; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q20. What misinterpretation is most likely in “HCTM uses two thresholds for lighter and stronger thermal response”, and how is it debugged?
+
+<!-- qa:base-power-features-hctm-control-loop-pitfall -->
+
+**Answer.**
+
+Reject TMT1=TMT2, TMT1>TMT2, out-of-range values, or Celsius written directly into Kelvin fields on the host. Hardware validation records ambient, airflow, workload, sensor cadence, and host latency so performance impact remains comparable.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, printed pages 471-472, PDF pages 497-498; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, printed pages 472, 670-671, PDF pages 498, 696-697; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251
+
+### Q21. What is the governing interpretation for “Connect policy, state, events, and measurements into reproducible debug evidence”?
+
+<!-- qa:base-power-features-end-to-end-debug-lead -->
+
+**Answer.**
+
+Power/thermal defects rarely reduce to one wrong bit. Capability, policy, transition, background work, thermal events, and host workload must share one timeline. FID 11h NOPPME, APST, manual PS, HCTM, and RTD3 control different layers and do not replace one another.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, printed pages 472-473, PDF pages 498-499; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, printed pages 669-670, PDF pages 695-696; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, printed pages 212, PDF pages 238
+
+### Q22. Which concepts or conditions must be distinguished in “Connect policy, state, events, and measurements into reproducible debug evidence”?
+
+<!-- qa:base-power-features-end-to-end-debug-rows -->
+
+**Answer.**
+
+- Policy plane — Raw FID02/04/0C/10/11 values — Proves what the host requested
+- State plane — PSD, APST timer, I/O return — Proves controller-state context
+- Thermal plane — Sensors, TTC, HCTM counters — Proves when thermal control acted
+- Outcome plane — CQE, latency, power/temperature trace — Proves impact and recovery
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, printed pages 472-473, PDF pages 498-499; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, printed pages 669-670, PDF pages 695-696; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, printed pages 212, PDF pages 238
+
+### Q23. How does “Connect policy, state, events, and measurements into reproducible debug evidence” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-power-features-end-to-end-debug-example -->
+
+**Answer.**
+
+Case: APSTE=1 enters PS3 after 2 s idle and NOPPME=0. At 3 s, controller background work cannot raise power. The first read at 4 s returns to an operational state, and its latency spike is compared with PS3.EXLAT. If temperature also crosses TMT1, HCTM counters and the sensor timeline separate exit latency from thermal throttling.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, printed pages 472-473, PDF pages 498-499; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, printed pages 669-670, PDF pages 695-696; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, printed pages 212, PDF pages 238
+
+### Q24. What misinterpretation is most likely in “Connect policy, state, events, and measurements into reproducible debug evidence”, and how is it debugged?
+
+<!-- qa:base-power-features-end-to-end-debug-pitfall -->
+
+**Answer.**
+
+Do not infer cause from one outcome. Establish Set success, follow-up Get value, continuous APST idle time, NOPPME background-power permission, and TMT1/TMT2 crossings before classifying a controller defect.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, printed pages 469, PDF pages 495; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, printed pages 472-473, PDF pages 498-499; Source: NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, printed pages 669-670, PDF pages 695-696; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, printed pages 220-225, PDF pages 246-251; Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, printed pages 212, PDF pages 238

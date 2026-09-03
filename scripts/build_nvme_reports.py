@@ -10,6 +10,19 @@ import re
 from pathlib import Path
 
 try:
+    from scripts.nvme_boot_telemetry_sanitize import install as install_bts
+    from scripts.nvme_bts_figures import guide_for as bts_figure_guide
+    from scripts.nvme_report_questions import render_questions
+    from scripts.nvme_bts_terms import definition as report_term_definition
+    from scripts.nvme_bts_visuals import state_svg as bts_state_svg, module_svg as bts_module_svg, state_table as bts_state_table, TRANSITIONS as BTS_TRANSITIONS
+except ModuleNotFoundError:
+    from nvme_boot_telemetry_sanitize import install as install_bts
+    from nvme_bts_figures import guide_for as bts_figure_guide
+    from nvme_report_questions import render_questions
+    from nvme_bts_terms import definition as report_term_definition
+    from nvme_bts_visuals import state_svg as bts_state_svg, module_svg as bts_module_svg, state_table as bts_state_table, TRANSITIONS as BTS_TRANSITIONS
+
+try:
     from scripts.nvme_teaching_content import (
         REPORT_GLOSSARIES,
         REPORT_MODULES,
@@ -198,6 +211,7 @@ details.figure-card[open] > summary { border-bottom: 1px solid var(--line); marg
 .visual-card[data-visual-kind="sequence"] { border-top-color: var(--command); }
 .visual-card[data-visual-kind="decode"] { border-top-color: var(--decision); }
 .visual-card[data-visual-kind="state"] { border-top-color: var(--failure); }
+.visual-card[data-visual-kind="state"] { grid-column: 1 / -1; }
 .visual-card h3 { margin-top: 0; }
 .visual-card p:last-child { margin-bottom: 0; }
 .visual-board { border: 1px solid var(--line); border-radius: .8rem; background: var(--surface-2); padding: .65rem; margin: .9rem 0; }
@@ -214,6 +228,7 @@ details.figure-card[open] > summary { border-bottom: 1px solid var(--line); marg
 .v-arrow { fill: var(--diagram-line); stroke: none; }
 .v-arrow-failure { fill: var(--failure); stroke: none; }
 .v-label-bg { fill: var(--surface-2); stroke: none; opacity: .96; }
+.v-text { fill: var(--text); font-size: 16px; }
 .v-label { fill: var(--text); font-size: 14px; font-weight: 700; }
 .v-small { fill: var(--muted); font-size: 11.5px; }
 .v-role { fill: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .08em; }
@@ -642,6 +657,10 @@ REPORTS = {
 }
 
 POST_IMAGES = {
+    "base-boot-telemetry-sanitize": {
+        "zh": "posts/2026/dogMC_title.jpg",
+        "en": "posts/2026/cat_title.jpg",
+    },
     "base-ch1-2": {
         "zh": "posts/2026/dogMC_title.jpg",
         "en": "posts/2026/cat_title.jpg",
@@ -856,6 +875,9 @@ CORE_TITLES = {
     "PCIE14-HOST": ("host implementation checklist", "Host implementation checklist"),
 }
 
+install_bts(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES)
+
+
 def artifact_ids(report_id: str) -> list[str]:
     key = {
         "base-ch1-2": "base12",
@@ -865,6 +887,7 @@ def artifact_ids(report_id: str) -> list[str]:
         "base-power-features": "basepower",
         "base-self-test-hmb-emulation": "basediagmem",
         "base-self-test-namespace-management": "basensmgmt",
+        "base-boot-telemetry-sanitize": "basebts",
         "pcie-transport-1.4": "pcie14",
     }[report_id]
     return [
@@ -892,6 +915,16 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
 
 def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     """Return a source-specific, non-verbatim guide for one Figure."""
+
+    if figure.get("report_id") == "base-boot-telemetry-sanitize":
+        return {
+            "purpose": bts_figure_guide(figure, language),
+            "reading": "Decode the source-specific fields below." if language == "en" else "依下列來源欄位逐項解碼。",
+            "example": "Apply the worked example in the linked teaching module." if language == "en" else "套用相應教學單元的具體案例。",
+            "caveat": "Preserve target, state, and applicability; the original cross-reference is retained when suspected to be misplaced." if language == "en" else "保留 target、state 與適用條件；疑似錯置的原引用仍保留供核對。",
+            "item_text": ", ".join(figure["key_items"]),
+            "keyword_text": ", ".join(figure["source_keywords"]) or "none",
+        }
 
     title = figure["title"]
     lower_title = title.lower()
@@ -1510,7 +1543,7 @@ def make_claim(report_id: str, report: dict, item: dict) -> dict:
 
 
 def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
-    figure_id = f"{report['prefix']}-FIG-{int(figure['number']):03d}"
+    figure_id = figure["id"]
     zh_parts = figure_explanation(figure, "zh")
     en_parts = figure_explanation(figure, "en")
     result = {
@@ -1575,6 +1608,7 @@ def tutorial_check(report_id: str, claim_id: str) -> str:
         "base-power-features": "先分辨這一層是在描述 capability、host policy、controller state，還是觀測證據。",
         "base-self-test-hmb-emulation": "先判斷目前處理的是 background operation、host-memory ownership，或 encoded memory boundary。",
         "base-self-test-namespace-management": "先判斷目前處理的是 diagnostic operation、namespace object state，或 controller access relationship。",
+        "base-boot-telemetry-sanitize": "先確認 Boot、Telemetry 或 Sanitize 的 target/state，再核對能力、命令與回傳證據。",
         "pcie-transport-1.4": "先找 Base 的通用規則，再疊加 PCIe Transport 的專屬限制。",
     }[report_id]
 
@@ -1607,6 +1641,8 @@ def anchor(value: str) -> str:
 
 
 def module_flow_svg(module: dict, language: str) -> str:
+    if module["id"] in {"boot-read", "boot-protection", "telemetry-layout", "telemetry-capture", "sanitize-scope", "sanitize-command", "sanitize-state", "sanitize-read"}:
+        return bts_module_svg(module, language) + (bts_state_table() if module["id"] == "sanitize-state" else "")
     nodes = module["nodes"][language]
     width = 820
     row_height = 82
@@ -1729,6 +1765,12 @@ def visual_role_class(role: str) -> str:
 
 
 def module_visual_kind(module_id: str) -> str:
+    if module_id in {"boot-read", "boot-protection", "telemetry-capture"}:
+        return "sequence"
+    if module_id in {"telemetry-layout", "sanitize-command"}:
+        return "decode"
+    if module_id in {"sanitize-state", "sanitize-read"}:
+        return "state"
     if module_id in {
         "queues", "queue-arbitration", "command", "interrupts",
         "feature-read-set-loop", "end-to-end-debug", "namespace-end-to-end-debug", "namespace-events",
@@ -1752,7 +1794,11 @@ def module_visual_kind(module_id: str) -> str:
 
 
 def module_visual_svg(module: dict, language: str) -> str:
+    if module["id"] in {"boot-read", "boot-protection", "telemetry-layout", "telemetry-capture", "sanitize-scope", "sanitize-command", "sanitize-state", "sanitize-read"}:
+        return bts_module_svg(module, language) + (bts_state_table() if module["id"] == "sanitize-state" else "")
     """Return a relationship-specific view with routed connectors and semantic roles."""
+    if module["id"] == "sanitize-state":
+        return bts_state_svg() + bts_state_table()
     nodes = list(module["nodes"][language])[:6]
     kind = module_visual_kind(module["id"])
     title = module["title"][language]
@@ -1976,12 +2022,14 @@ def generic_toc_html(report_id: str, tutorial: bool) -> str:
         '<details class="ipad-toc" open><summary>章節導覽｜iPad 點按收合、Desktop 鍵盤可操作</summary><div class="toc-grid">'
         '<a href="#scope">範圍與語意</a>' + quick + '<a href="#visual-atlas">Visual Atlas</a>'
         '<a href="#glossary">縮寫 Glossary</a>' + module_links + '<a href="#claims">Spec 重點</a>'
-        '<a href="#figure-index">Figure 索引</a><a href="#sources">來源與限制</a>'
+        '<a href="#figure-index">Figure 索引</a><a href="#sources">來源與限制</a><a href="#self-questions">自問自答</a>'
         '</div></details>'
     )
 
 
 def figure_teaching_svg(figure: dict, guide: dict, language: str) -> str:
+    if figure["id"] == "BASEBTS-BASE-FIG-772":
+        return bts_state_svg() + bts_state_table()
     terms = [item[0] for item in guide["terms"]][:4]
     while len(terms) < 4:
         terms.append(("evidence" if language == "en" else "驗證證據") if len(terms) == 3 else guide["kind"])
@@ -2104,7 +2152,7 @@ def glossary_html(report_id: str, claims: list[dict], tutorial: bool) -> str:
             "<tr><td><span class=\"term\">"
             + html.escape(term)
             + "</span></td><td>"
-            + html.escape(TERM_LIBRARY[term]["zh"])
+            + html.escape(report_term_definition(term, report_id, "zh", term_definition))
             + "</td><td><small>"
             + html.escape(compact_citation(item, "zh"))
             + "</small></td></tr>"
@@ -2270,9 +2318,9 @@ def figure_card_html(figure: dict, item: dict, tutorial: bool) -> str:
     base = figure_explanation(figure, "zh")
     guide = expanded_figure_guide(figure, "zh")
     parts = [
-        f'<details class="figure-card" name="figures-{anchor(figure_group(figure))}" id="figure-{figure["number"]}" '
+        f'<details class="figure-card" name="figures-{anchor(figure_group(figure))}" id="figure-{figure["id"]}" '
         f'data-figure-table-id="{figure["id"]}">',
-        f'<summary>Figure {figure["number"]}: {html.escape(figure["title"])}</summary>',
+        f'<summary>{figure["source_id"]} — Figure {figure["number"]}: {html.escape(figure["title"])}</summary>',
         f'<p class="figure-meta">§{html.escape(figure["section"])} ｜ '
         f'文件頁 {html.escape(figure["printed_pages"])} ｜ PDF 頁 {html.escape(figure["pdf_pages"])} ｜ '
         f'教學類型：{html.escape(guide["kind"])}</p>',
@@ -2432,7 +2480,7 @@ def render_html(
         '<nav class="topbar" id="top" aria-label="章節導覽"><div class="topbar-inner">'
         '<a href="#scope">範圍</a> ｜ ' + quick_nav + '<a href="#glossary">縮寫</a> ｜ '
         '<a href="#visual-atlas">圖解</a> ｜ <a href="#learning-path">Mental Model</a> ｜ <a href="#claims">Spec 重點</a> ｜ '
-        '<a href="#figure-index">Figure 教學</a> ｜ <a href="#sources">來源</a></div></nav>',
+        '<a href="#figure-index">Figure 教學</a> ｜ <a href="#sources">來源</a> ｜ <a href="#self-questions">自問自答</a></div></nav>',
         '<main id="content">',
         '<header class="hero"><p class="eyebrow">NVME ENGINEERING NOTES · '
         + html.escape(label)
@@ -2455,7 +2503,7 @@ def render_html(
         figure_policy,
         f"<p><strong>完整度：</strong>本檔介紹 {len(figures)} 張納入範圍的 Figure。"
         + (
-            f"其中 {dependency_count} 張位於主章節範圍外，但因正文直接引用而納入相依教學。"
+            f"其中 {dependency_count} 張位於主章節範圍外，為理解正文引用及必要前置條件而納入相依教學。"
             if dependency_count
             else ""
         )
@@ -2537,11 +2585,11 @@ def render_html(
         ]
     )
     figure_claims = {
-        int(item["figure"]): item for item in claims if item["figure"] is not None
+        (item["source_id"], str(item["figure"])): item for item in claims if item["figure"] is not None
     }
     active_group = ""
     for figure in figures:
-        item = figure_claims[int(figure["number"])]
+        item = figure_claims[(figure["source_id"], str(figure["number"]))]
         group = figure_group(figure)
         if group != active_group:
             if active_group:
@@ -2595,7 +2643,7 @@ def glossary_markdown(report_id: str, claims: list[dict], language: str) -> list
     for term, claim_id in REPORT_GLOSSARIES[report_id]:
         item = by_id[claim_id]
         out.append(
-            f"| `{term}` | {TERM_LIBRARY[term][language]} | {compact_citation(item, language)} |"
+            f"| `{term}` | {report_term_definition(term, report_id, language, term_definition)} | {compact_citation(item, language)} |"
         )
     out.extend([""])
     return out
@@ -2659,6 +2707,10 @@ def modules_markdown(report_id: str, claims: list[dict], language: str) -> list[
 
 
 def module_visual_text(module: dict, language: str) -> list[str]:
+    if module["id"] == "sanitize-state":
+        return [" | ".join(row) for row in BTS_TRANSITIONS]
+    if module["id"].startswith(("boot-", "telemetry-", "sanitize-")):
+        return [f"{i+1}. {node}" for i, node in enumerate(module["nodes"][language])]
     nodes = [svg_label(value, 34) for value in module["nodes"][language]][:6]
     kind = module_visual_kind(module["id"])
     if kind == "architecture":
@@ -2731,7 +2783,7 @@ def figure_card_markdown(
     citation = item["citation_en"] if english else item["citation_zh_tw"]
     out = [
         '<details markdown="1">',
-        f"<summary><strong>Figure {figure['number']}: {html.escape(figure['title'])}</strong></summary>",
+        f"<summary><strong>{figure['source_id']} — Figure {figure['number']}: {html.escape(figure['title'])}</strong></summary>",
         "",
         f"<!-- claim:{item['id']} figure-table:{figure['id']} -->",
         "",
@@ -2829,8 +2881,9 @@ def frontmatter(
     lang = "en" if language == "en" else "zh-Hant-TW"
     image = POST_IMAGES[report_id][language]
     report_date = REPORTS[report_id].get("date", "2026-08-28")
+    permalink = f"permalink: /nvme/boot-telemetry-sanitize-{'en' if language == 'en' else 'zh-tw'}/\n" if report_id == "base-boot-telemetry-sanitize" else ""
     return f"""---
-layout: post
+{permalink}layout: post
 read_time: true
 show_date: true
 title: "{title}"
@@ -2977,7 +3030,7 @@ def render_markdown(
                 "section links below for the 100-minute presentation path; every Figure "
                 "remains available as an appendix item."
                 + (
-                    f" {dependency_count} Figures are outside the main section range but are included because the requested text directly references them."
+                    f" {dependency_count} Figures are outside the main section range but are included to explain cited dependencies and necessary prerequisites."
                     if dependency_count
                     else ""
                 )
@@ -3023,11 +3076,11 @@ def render_markdown(
         ]
     )
     figure_claims = {
-        int(item["figure"]): item for item in claims if item["figure"] is not None
+        (item["source_id"], str(item["figure"])): item for item in claims if item["figure"] is not None
     }
     active_group = ""
     for figure in figures:
-        item = figure_claims[int(figure["number"])]
+        item = figure_claims[(figure["source_id"], str(figure["number"]))]
         group = figure_group(figure)
         if group != active_group:
             active_group = group
@@ -3176,7 +3229,7 @@ def firmware_figure_appendix_html(
     claims: list[dict], figures: list[dict], tutorial: bool = False
 ) -> list[str]:
     figure_claims = {
-        int(item["figure"]): item for item in claims if item["figure"] is not None
+        (item["source_id"], str(item["figure"])): item for item in claims if item["figure"] is not None
     }
     out = [
         '<section id="appendix"><h2>Appendix A — Supporting Figure／Field Reference</h2>',
@@ -3184,7 +3237,7 @@ def firmware_figure_appendix_html(
         "<code>referenced_dependency</code> 只摘取理解所需欄位；Figure 209 只發布 LID 03h row。</p>",
     ]
     for figure in figures:
-        item = figure_claims[int(figure["number"])]
+        item = figure_claims[(figure["source_id"], str(figure["number"]))]
         out.append(figure_card_html(figure, item, tutorial=tutorial))
     out.append("</section>")
     return out
@@ -3767,7 +3820,7 @@ def firmware_figure_appendix_markdown(
 ) -> list[str]:
     english = language == "en"
     figure_claims = {
-        int(item["figure"]): item for item in claims if item["figure"] is not None
+        (item["source_id"], str(item["figure"])): item for item in claims if item["figure"] is not None
     }
     out = [
         "## Appendix A — Supporting Figure / Field Reference",
@@ -3780,7 +3833,7 @@ def firmware_figure_appendix_markdown(
         "",
     ]
     for figure in figures:
-        item = figure_claims[int(figure["number"])]
+        item = figure_claims[(figure["source_id"], str(figure["number"]))]
         out.extend(figure_card_markdown(figure, item, language))
     return out
 
@@ -4231,6 +4284,19 @@ def main() -> int:
                 ),
             }
         for artifact_id, content in output_text.items():
+            artifact = artifacts[artifact_id]
+            questions = render_questions(report_id, REPORT_MODULES[report_id], report_claims,
+                                         "en" if artifact["language"] == "en" else "zh", artifact["format"])
+            if artifact["format"] == "html":
+                content = content.replace("</main>", questions + "\n</main>")
+            else:
+                sibling = artifacts[ids[2] if artifact["language"] == "en" else ids[3]]
+                sibling_post = Path(sibling["path"]).stem
+                label = "繁體中文" if artifact["language"] == "en" else "English"
+                switch = f"\n[{label}]({{% post_url {sibling_post} %}})\n"
+                end = content.index("---", 4) + 3
+                content = content[:end] + switch + content[end:]
+                content += "\n" + questions
             path = ROOT / artifacts[artifact_id]["path"]
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")

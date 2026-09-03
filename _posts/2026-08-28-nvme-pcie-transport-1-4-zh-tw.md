@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-08-28-nvme-pcie-transport-1-4-en %})
+
 
 # NVMe over PCIe Transport 1.4：完整傳輸綁定
 
@@ -355,7 +357,7 @@ host service 所有相關 CQ
 | AER | correctable/uncorrectable transport errors | status、mask、severity、header 一起看 |
 | power state | slot limit 與 device power 控制 | 不得選超過 slot power limit 的 NVMe state |
 
-**說明性範例。** 說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 決定 correctable/uncorrectable handling，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。
+**說明性範例。** 說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 判斷錯誤嚴重程度及其處置，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。
 
 **常見誤解／Debug。** configuration dump 要保留 capability base，而不只保存 register value。相同 offset 若相對於不同 capability base 會指到不同欄位；AER snapshot 也應在清除 RW1C status 前一次保存完整集合。
 
@@ -591,7 +593,7 @@ Annex A 是 informative host checklist：提交時先寫 SQE 再 doorbell；完�
 ### §1.2
 
 <details markdown="1">
-<summary><strong>Figure 1: NVMe Family of Specifications</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 1: NVMe Family of Specifications</strong></summary>
 
 <!-- claim:PCIE14-FIG-001-CLAIM figure-table:PCIE14-FIG-001 -->
 
@@ -675,7 +677,7 @@ Figure 1 位於 §1.2，在本流程中是「relationship」檢查點。先由�
 ### §2
 
 <details markdown="1">
-<summary><strong>Figure 2: Example of Transport Protocol Layers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 2: Example of Transport Protocol Layers</strong></summary>
 
 <!-- claim:PCIE14-FIG-002-CLAIM figure-table:PCIE14-FIG-002 -->
 
@@ -759,7 +761,7 @@ Figure 2 位於 §2，在本流程中是「relationship」檢查點。先由主�
 ### §3.1
 
 <details markdown="1">
-<summary><strong>Figure 3: PCI Express Registers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 3: PCI Express Registers</strong></summary>
 
 <!-- claim:PCIE14-FIG-003-CLAIM figure-table:PCIE14-FIG-003 -->
 
@@ -844,7 +846,7 @@ Figure 3 位於 §3.1，在本流程中是「layout」檢查點。先由主教�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 4: PCI Express Specific Controller Property Definitions</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 4: PCI Express Specific Controller Property Definitions</strong></summary>
 
 <!-- claim:PCIE14-FIG-004-CLAIM figure-table:PCIE14-FIG-004 -->
 
@@ -929,7 +931,7 @@ Figure 4 位於 §3.1，在本流程中是「relationship」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 5: Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL - Submission Queue y Tail</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 5: Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL - Submission Queue y Tail</strong></summary>
 
 <!-- claim:PCIE14-FIG-005-CLAIM figure-table:PCIE14-FIG-005 -->
 
@@ -1011,7 +1013,7 @@ Figure 5 位於 §3.1.2.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 6: Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 6: Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</strong></summary>
 
 <!-- claim:PCIE14-FIG-006-CLAIM figure-table:PCIE14-FIG-006 -->
 
@@ -1098,7 +1100,7 @@ Figure 6 位於 §3.1.2.1，在本流程中是「register」檢查點。先由�
 ### §3.2
 
 <details markdown="1">
-<summary><strong>Figure 7: Create I/O Completion Queue - Command Dword 11</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 7: Create I/O Completion Queue - Command Dword 11</strong></summary>
 
 <!-- claim:PCIE14-FIG-007-CLAIM figure-table:PCIE14-FIG-007 -->
 
@@ -1187,7 +1189,7 @@ Figure 7 位於 §3.2，在本流程中是「command」檢查點。先由主教�
 ### §3.4
 
 <details markdown="1">
-<summary><strong>Figure 8: Command Processing</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 8: Command Processing</strong></summary>
 
 <!-- claim:PCIE14-FIG-008-CLAIM figure-table:PCIE14-FIG-008 -->
 
@@ -1271,7 +1273,7 @@ Figure 8 位於 §3.4.1，在本流程中是「queue」檢查點。先由主教�
 ### §3.5
 
 <details markdown="1">
-<summary><strong>Figure 9: Pin Based, Single MSI, and Multiple MSI Behavior</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 9: Pin Based, Single MSI, and Multiple MSI Behavior</strong></summary>
 
 <!-- claim:PCIE14-FIG-009-CLAIM figure-table:PCIE14-FIG-009 -->
 
@@ -1355,7 +1357,7 @@ Figure 9 位於 §3.5.1，在本流程中是「interrupt」檢查點。先由主
 ### §3.8
 
 <details markdown="1">
-<summary><strong>Figure 10: PCI Express Type 0/1 Common Configuration Space</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 10: PCI Express Type 0/1 Common Configuration Space</strong></summary>
 
 <!-- claim:PCIE14-FIG-010-CLAIM figure-table:PCIE14-FIG-010 -->
 
@@ -1435,7 +1437,7 @@ Figure 10 位於 §3.8，在本流程中是「layout」檢查點。先由主教�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 11: Offset 00h: ID - Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 11: Offset 00h: ID - Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-011-CLAIM figure-table:PCIE14-FIG-011 -->
 
@@ -1517,7 +1519,7 @@ Figure 11 位於 §3.8.1.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 12: Offset 04h: CMD - Command</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 12: Offset 04h: CMD - Command</strong></summary>
 
 <!-- claim:PCIE14-FIG-012-CLAIM figure-table:PCIE14-FIG-012 -->
 
@@ -1602,7 +1604,7 @@ Figure 12 位於 §3.8.1.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 13: Offset 06h: STS - Device Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 13: Offset 06h: STS - Device Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-013-CLAIM figure-table:PCIE14-FIG-013 -->
 
@@ -1687,7 +1689,7 @@ Figure 13 位於 §3.8.1.3，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 14: Offset 08h: RID - Revision ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 14: Offset 08h: RID - Revision ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-014-CLAIM figure-table:PCIE14-FIG-014 -->
 
@@ -1768,7 +1770,7 @@ Figure 14 位於 §3.8.1.4，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 15: Offset 09h: CC - Class Code</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 15: Offset 09h: CC - Class Code</strong></summary>
 
 <!-- claim:PCIE14-FIG-015-CLAIM figure-table:PCIE14-FIG-015 -->
 
@@ -1851,7 +1853,7 @@ Figure 15 位於 §3.8.1.5，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 16: Offset 0Ch: CLS - Cache Line Size</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 16: Offset 0Ch: CLS - Cache Line Size</strong></summary>
 
 <!-- claim:PCIE14-FIG-016-CLAIM figure-table:PCIE14-FIG-016 -->
 
@@ -1931,7 +1933,7 @@ Figure 16 位於 §3.8.1.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 17: Offset 0Dh: MLT - Master Latency Timer</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 17: Offset 0Dh: MLT - Master Latency Timer</strong></summary>
 
 <!-- claim:PCIE14-FIG-017-CLAIM figure-table:PCIE14-FIG-017 -->
 
@@ -2011,7 +2013,7 @@ Figure 17 位於 §3.8.1.7，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 18: Offset 0Eh: HTYPE - Header Type</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 18: Offset 0Eh: HTYPE - Header Type</strong></summary>
 
 <!-- claim:PCIE14-FIG-018-CLAIM figure-table:PCIE14-FIG-018 -->
 
@@ -2093,7 +2095,7 @@ Figure 18 位於 §3.8.1.8，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 19: Offset 0Fh: BIST - Built-In Self Test (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 19: Offset 0Fh: BIST - Built-In Self Test (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-019-CLAIM figure-table:PCIE14-FIG-019 -->
 
@@ -2177,7 +2179,7 @@ Figure 19 位於 §3.8.1.9，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 20: Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 20: Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits</strong></summary>
 
 <!-- claim:PCIE14-FIG-020-CLAIM figure-table:PCIE14-FIG-020 -->
 
@@ -2262,7 +2264,7 @@ Figure 20 位於 §3.8.1.10，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 21: Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 21: Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits</strong></summary>
 
 <!-- claim:PCIE14-FIG-021-CLAIM figure-table:PCIE14-FIG-021 -->
 
@@ -2344,7 +2346,7 @@ Figure 21 位於 §3.8.1.11，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 22: Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 22: Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</strong></summary>
 
 <!-- claim:PCIE14-FIG-022-CLAIM figure-table:PCIE14-FIG-022 -->
 
@@ -2426,7 +2428,7 @@ Figure 22 位於 §3.8.1.12，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 23: Offset 28h: CCPTR - CardBus CIS Pointer</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 23: Offset 28h: CCPTR - CardBus CIS Pointer</strong></summary>
 
 <!-- claim:PCIE14-FIG-023-CLAIM figure-table:PCIE14-FIG-023 -->
 
@@ -2507,7 +2509,7 @@ Figure 23 位於 §3.8.1.16，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 24: Offset 2Ch: SS - Subsystem Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 24: Offset 2Ch: SS - Subsystem Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-024-CLAIM figure-table:PCIE14-FIG-024 -->
 
@@ -2590,7 +2592,7 @@ Figure 24 位於 §3.8.1.17，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 25: Offset 30h: EROM - Expansion ROM (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 25: Offset 30h: EROM - Expansion ROM (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-025-CLAIM figure-table:PCIE14-FIG-025 -->
 
@@ -2672,7 +2674,7 @@ Figure 25 位於 §3.8.1.18，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 26: Offset 34h: CAP - Capabilities Pointer</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 26: Offset 34h: CAP - Capabilities Pointer</strong></summary>
 
 <!-- claim:PCIE14-FIG-026-CLAIM figure-table:PCIE14-FIG-026 -->
 
@@ -2753,7 +2755,7 @@ Figure 26 位於 §3.8.1.19，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 27: Offset 3Ch: INTR - Interrupt Information</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 27: Offset 3Ch: INTR - Interrupt Information</strong></summary>
 
 <!-- claim:PCIE14-FIG-027-CLAIM figure-table:PCIE14-FIG-027 -->
 
@@ -2836,7 +2838,7 @@ Figure 27 位於 §3.8.1.20，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 28: Offset 3Eh: MGNT - Minimum Grant</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 28: Offset 3Eh: MGNT - Minimum Grant</strong></summary>
 
 <!-- claim:PCIE14-FIG-028-CLAIM figure-table:PCIE14-FIG-028 -->
 
@@ -2917,7 +2919,7 @@ Figure 28 位於 §3.8.1.21，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 29: Offset 3Fh: MLAT - Maximum Latency</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 29: Offset 3Fh: MLAT - Maximum Latency</strong></summary>
 
 <!-- claim:PCIE14-FIG-029-CLAIM figure-table:PCIE14-FIG-029 -->
 
@@ -2999,7 +3001,7 @@ Figure 29 位於 §3.8.1.22，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 30: PCI Power Management Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 30: PCI Power Management Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-030-CLAIM figure-table:PCIE14-FIG-030 -->
 
@@ -3083,7 +3085,7 @@ Figure 30 位於 §3.8.1.22，在本流程中是「relationship」檢查點。�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 31: Offset PMCAP: PID - PCI Power Management Capability ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 31: Offset PMCAP: PID - PCI Power Management Capability ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-031-CLAIM figure-table:PCIE14-FIG-031 -->
 
@@ -3167,7 +3169,7 @@ Figure 31 位於 §3.8.2.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 32: Offset PMCAP + 2h: PC - PCI Power Management Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 32: Offset PMCAP + 2h: PC - PCI Power Management Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-032-CLAIM figure-table:PCIE14-FIG-032 -->
 
@@ -3252,7 +3254,7 @@ Figure 32 位於 §3.8.2.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 33: Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 33: Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-033-CLAIM figure-table:PCIE14-FIG-033 -->
 
@@ -3337,7 +3339,7 @@ Figure 33 位於 §3.8.2.3，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 34: Message Signaled Interrupt Capability (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 34: Message Signaled Interrupt Capability (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-034-CLAIM figure-table:PCIE14-FIG-034 -->
 
@@ -3422,7 +3424,7 @@ Figure 34 位於 §3.8.2.3，在本流程中是「interrupt」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 35: Offset MSICAP: MID - Message Signaled Interrupt Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 35: Offset MSICAP: MID - Message Signaled Interrupt Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-035-CLAIM figure-table:PCIE14-FIG-035 -->
 
@@ -3507,7 +3509,7 @@ Figure 35 位於 §3.8.3.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 36: Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-036-CLAIM figure-table:PCIE14-FIG-036 -->
 
@@ -3592,7 +3594,7 @@ Figure 36 位於 §3.8.3.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 37: Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 37: Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</strong></summary>
 
 <!-- claim:PCIE14-FIG-037-CLAIM figure-table:PCIE14-FIG-037 -->
 
@@ -3676,7 +3678,7 @@ Figure 37 位於 §3.8.3.3，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 38: Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 38: Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</strong></summary>
 
 <!-- claim:PCIE14-FIG-038-CLAIM figure-table:PCIE14-FIG-038 -->
 
@@ -3760,7 +3762,7 @@ Figure 38 位於 §3.8.3.4，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 39: Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 39: Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</strong></summary>
 
 <!-- claim:PCIE14-FIG-039-CLAIM figure-table:PCIE14-FIG-039 -->
 
@@ -3845,7 +3847,7 @@ Figure 39 位於 §3.8.3.5，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 40: Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 40: Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-040-CLAIM figure-table:PCIE14-FIG-040 -->
 
@@ -3928,7 +3930,7 @@ Figure 40 位於 §3.8.3.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 41: Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 41: Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-041-CLAIM figure-table:PCIE14-FIG-041 -->
 
@@ -4012,7 +4014,7 @@ Figure 41 位於 §3.8.3.7，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 42: MSI-X Capability (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 42: MSI-X Capability (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-042-CLAIM figure-table:PCIE14-FIG-042 -->
 
@@ -4097,7 +4099,7 @@ Figure 42 位於 §3.8.3.7，在本流程中是「interrupt」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 43: Offset MSIXCAP: MXID - MSI-X Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 43: Offset MSIXCAP: MXID - MSI-X Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-043-CLAIM figure-table:PCIE14-FIG-043 -->
 
@@ -4182,7 +4184,7 @@ Figure 43 位於 §3.8.4.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 44: Offset MSIXCAP + 2h: MXC - MSI-X Message Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 44: Offset MSIXCAP + 2h: MXC - MSI-X Message Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-044-CLAIM figure-table:PCIE14-FIG-044 -->
 
@@ -4267,7 +4269,7 @@ Figure 44 位於 §3.8.4.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 45: Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 45: Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</strong></summary>
 
 <!-- claim:PCIE14-FIG-045-CLAIM figure-table:PCIE14-FIG-045 -->
 
@@ -4352,7 +4354,7 @@ Figure 45 位於 §3.8.4.3，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 46: Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 46: Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</strong></summary>
 
 <!-- claim:PCIE14-FIG-046-CLAIM figure-table:PCIE14-FIG-046 -->
 
@@ -4437,7 +4439,7 @@ Figure 46 位於 §3.8.4.4，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 47: PCI Express Capability</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 47: PCI Express Capability</strong></summary>
 
 <!-- claim:PCIE14-FIG-047-CLAIM figure-table:PCIE14-FIG-047 -->
 
@@ -4522,7 +4524,7 @@ Figure 47 位於 §3.8.5，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 48: Offset PXCAP: PXID - PCI Express Capability ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 48: Offset PXCAP: PXID - PCI Express Capability ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-048-CLAIM figure-table:PCIE14-FIG-048 -->
 
@@ -4606,7 +4608,7 @@ Figure 48 位於 §3.8.5.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 49: Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 49: Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-049-CLAIM figure-table:PCIE14-FIG-049 -->
 
@@ -4691,7 +4693,7 @@ Figure 49 位於 §3.8.5.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 50: Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 50: Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-050-CLAIM figure-table:PCIE14-FIG-050 -->
 
@@ -4776,7 +4778,7 @@ Figure 50 位於 §3.8.5.3，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 51: Offset PXCAP + 8h: PXDC - PCI Express Device Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 51: Offset PXCAP + 8h: PXDC - PCI Express Device Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-051-CLAIM figure-table:PCIE14-FIG-051 -->
 
@@ -4861,7 +4863,7 @@ Figure 51 位於 §3.8.5.4，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 52: Offset PXCAP + Ah: PXDS - PCI Express Device Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 52: Offset PXCAP + Ah: PXDS - PCI Express Device Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-052-CLAIM figure-table:PCIE14-FIG-052 -->
 
@@ -4946,7 +4948,7 @@ Figure 52 位於 §3.8.5.5，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 53: Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 53: Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</strong></summary>
 
 <!-- claim:PCIE14-FIG-053-CLAIM figure-table:PCIE14-FIG-053 -->
 
@@ -5031,7 +5033,7 @@ Figure 53 位於 §3.8.5.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 54: Offset PXCAP + 10h: PXLC - PCI Express Link Control</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 54: Offset PXCAP + 10h: PXLC - PCI Express Link Control</strong></summary>
 
 <!-- claim:PCIE14-FIG-054-CLAIM figure-table:PCIE14-FIG-054 -->
 
@@ -5116,7 +5118,7 @@ Figure 54 位於 §3.8.5.7，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 55: Offset PXCAP + 12h: PXLS - PCI Express Link Status</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 55: Offset PXCAP + 12h: PXLS - PCI Express Link Status</strong></summary>
 
 <!-- claim:PCIE14-FIG-055-CLAIM figure-table:PCIE14-FIG-055 -->
 
@@ -5201,7 +5203,7 @@ Figure 55 位於 §3.8.5.8，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 56: Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 56: Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</strong></summary>
 
 <!-- claim:PCIE14-FIG-056-CLAIM figure-table:PCIE14-FIG-056 -->
 
@@ -5286,7 +5288,7 @@ Figure 56 位於 §3.8.5.9，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 57: Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 57: Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</strong></summary>
 
 <!-- claim:PCIE14-FIG-057-CLAIM figure-table:PCIE14-FIG-057 -->
 
@@ -5371,7 +5373,7 @@ Figure 57 位於 §3.8.5.10，在本流程中是「register」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 58: Advanced Error Reporting Capability (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 58: Advanced Error Reporting Capability (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-058-CLAIM figure-table:PCIE14-FIG-058 -->
 
@@ -5456,7 +5458,7 @@ Figure 58 位於 §3.8.5.10，在本流程中是「status」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 59: Offset AERCAP: AERID - AER Capability ID</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 59: Offset AERCAP: AERID - AER Capability ID</strong></summary>
 
 <!-- claim:PCIE14-FIG-059-CLAIM figure-table:PCIE14-FIG-059 -->
 
@@ -5541,7 +5543,7 @@ Figure 59 位於 §3.8.6.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 60: Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 60: Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-060-CLAIM figure-table:PCIE14-FIG-060 -->
 
@@ -5626,7 +5628,7 @@ Figure 60 位於 §3.8.6.2，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 61: Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 61: Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-061-CLAIM figure-table:PCIE14-FIG-061 -->
 
@@ -5711,7 +5713,7 @@ Figure 61 位於 §3.8.6.3，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 62: Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 62: Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-062-CLAIM figure-table:PCIE14-FIG-062 -->
 
@@ -5796,7 +5798,7 @@ Figure 62 位於 §3.8.6.4，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 63: Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 63: Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-063-CLAIM figure-table:PCIE14-FIG-063 -->
 
@@ -5881,7 +5883,7 @@ Figure 63 位於 §3.8.6.5，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 64: Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 64: Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-064-CLAIM figure-table:PCIE14-FIG-064 -->
 
@@ -5966,7 +5968,7 @@ Figure 64 位於 §3.8.6.6，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 65: Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 65: Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-065-CLAIM figure-table:PCIE14-FIG-065 -->
 
@@ -6051,7 +6053,7 @@ Figure 65 位於 §3.8.6.7，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 66: Offset AERCAP + 1Ch: AERHL - AER Header Log Register</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 66: Offset AERCAP + 1Ch: AERHL - AER Header Log Register</strong></summary>
 
 <!-- claim:PCIE14-FIG-066-CLAIM figure-table:PCIE14-FIG-066 -->
 
@@ -6136,7 +6138,7 @@ Figure 66 位於 §3.8.6.8，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 67: Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 67: Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</strong></summary>
 
 <!-- claim:PCIE14-FIG-067-CLAIM figure-table:PCIE14-FIG-067 -->
 
@@ -6221,7 +6223,7 @@ Figure 67 位於 §3.8.6.9，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 68: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 68: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-068-CLAIM figure-table:PCIE14-FIG-068 -->
 
@@ -6306,7 +6308,7 @@ Figure 68 位於 §3.8.9，在本流程中是「measurement」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 69: NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 69: NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure</strong></summary>
 
 <!-- claim:PCIE14-FIG-069-CLAIM figure-table:PCIE14-FIG-069 -->
 
@@ -6390,7 +6392,7 @@ Figure 69 位於 §3.8.10，在本流程中是「layout」檢查點。先由主�
 ### §3.9
 
 <details markdown="1">
-<summary><strong>Figure 70: Get Log Page - Log Page Identifiers</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 70: Get Log Page - Log Page Identifiers</strong></summary>
 
 <!-- claim:PCIE14-FIG-070-CLAIM figure-table:PCIE14-FIG-070 -->
 
@@ -6471,7 +6473,7 @@ Figure 70 位於 §3.9，在本流程中是「identifier」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 71: Size of Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 71: Size of Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
 
 <!-- claim:PCIE14-FIG-071-CLAIM figure-table:PCIE14-FIG-071 -->
 
@@ -6551,7 +6553,7 @@ Figure 71 位於 §3.9.1.1，在本流程中是「measurement」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 72: Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 72: Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-072-CLAIM figure-table:PCIE14-FIG-072 -->
 
@@ -6636,7 +6638,7 @@ Figure 72 位於 §3.9.1.1，在本流程中是「measurement」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 73: Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 73: Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-073-CLAIM figure-table:PCIE14-FIG-073 -->
 
@@ -6718,7 +6720,7 @@ Figure 73 位於 §3.9.1.1，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 74: Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 74: Physical Interface Receiver Eye Opening Measurement Log Page</strong></summary>
 
 <!-- claim:PCIE14-FIG-074-CLAIM figure-table:PCIE14-FIG-074 -->
 
@@ -6798,7 +6800,7 @@ Figure 74 位於 §3.9.1.1，在本流程中是「measurement」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 75: EOM Header</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 75: EOM Header</strong></summary>
 
 <!-- claim:PCIE14-FIG-075-CLAIM figure-table:PCIE14-FIG-075 -->
 
@@ -6878,7 +6880,7 @@ Figure 75 位於 §3.9.1.1，在本流程中是「measurement」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 76: EOM Lane Descriptor</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 76: EOM Lane Descriptor</strong></summary>
 
 <!-- claim:PCIE14-FIG-076-CLAIM figure-table:PCIE14-FIG-076 -->
 
@@ -6963,7 +6965,7 @@ Figure 76 位於 §3.9.1.1，在本流程中是「measurement」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 77: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
+<summary><strong>NVME-PCIE-TRANSPORT-1.4 — Figure 77: Example of an Eve Diagram in the Printable Eye Field</strong></summary>
 
 <!-- claim:PCIE14-FIG-077-CLAIM figure-table:PCIE14-FIG-077 -->
 
@@ -7045,3 +7047,262 @@ Figure 77 位於 §3.9.1.1，在本流程中是「measurement」檢查點。先�
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 24 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「Base 定義 NVMe，PCIe Transport 定義它如何落在 PCIe 上」的核心判讀規則是什麼？
+
+<!-- qa:pcie-transport-1.4-layers-lead -->
+
+**答。**
+
+Figure 1 說明文件適用關係，Figure 2 再把 protocol responsibility 分層。工程上應把『command 語意』與『如何透過 host memory、MMIO、configuration space、interrupt 傳送』分開查證；Transport 發現衝突時不能改寫 Base。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, 文件頁 6-7, PDF 頁 6-7; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, 文件頁 8, PDF 頁 8
+
+### Q02. 「Base 定義 NVMe，PCIe Transport 定義它如何落在 PCIe 上」中，哪些概念或條件必須分開比較？
+
+<!-- qa:pcie-transport-1.4-layers-rows -->
+
+**答。**
+
+- Base — command 與 completion 的共通語意 — 最高優先序的 NVMe 定義
+- PCIe Transport — address、register、doorbell、interrupt 綁定 — 補充 PCIe-specific 要求
+- PCI-SIG 規格 — 原生 PCIe capability/transaction 語意 — 本報告只引用來源明載的 NVMe-specific 部分
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, 文件頁 6-7, PDF 頁 6-7; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, 文件頁 8, PDF 頁 8
+
+### Q03. 「Base 定義 NVMe，PCIe Transport 定義它如何落在 PCIe 上」如何套用到具體數值或操作情境？
+
+<!-- qa:pcie-transport-1.4-layers-example -->
+
+**答。**
+
+說明性範例：Firmware Commit 的 CA/FS 與 status code 在 Base 解讀；SQE 放在 host memory、doorbell 位於 BAR0/1 memory space、completion 如何觸發 MSI-X，則由 PCIe Transport 補足。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, 文件頁 6-7, PDF 頁 6-7; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, 文件頁 8, PDF 頁 8
+
+### Q04. 「Base 定義 NVMe，PCIe Transport 定義它如何落在 PCIe 上」最容易出現什麼誤判？如何排查？
+
+<!-- qa:pcie-transport-1.4-layers-pitfall -->
+
+**答。**
+
+設計文件的每個欄位旁標 owner specification。若一個 bug report 把 command status、PCIe AER 與 device register access 混成『NVMe error』，recovery 層級通常也會選錯。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, 文件頁 6-7, PDF 頁 6-7; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, 文件頁 8, PDF 頁 8
+
+### Q05. 「從 BAR 到 doorbell offset：每一步都保留單位」的核心判讀規則是什麼？
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-lead -->
+
+**答。**
+
+NVMe controller registers 位於 BAR0/BAR1 指定的 memory space。Doorbell 從 1000h 起，queue y 的 SQ tail 與 CQ head 依 CAP.DSTRD 計算間距。Figures 3-6 要連成 address derivation，而不是四張獨立 register 表。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11
+
+### Q06. 「從 BAR 到 doorbell offset：每一步都保留單位」中，哪些概念或條件必須分開比較？
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-rows -->
+
+**答。**
+
+- SQ y tail — 1000h + (2y) × (4 << DSTRD) — host 公布新 SQ tail
+- CQ y head — 1000h + (2y+1) × (4 << DSTRD) — host 公布已消費 CQ head
+- doorbell value — queue pointer — 不含 SQE/CQE 本體
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11
+
+### Q07. 「從 BAR 到 doorbell offset：每一步都保留單位」如何套用到具體數值或操作情境？
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-example -->
+
+**答。**
+
+說明性範例：DSTRD=1，stride=4<<1=8 bytes。queue 3 的 SQ tail offset =1000h+(6×8)=1030h；CQ head offset =1000h+(7×8)=1038h。兩者只差一個 stride。若把 DSTRD 當成 byte count，所有非零 DSTRD 的 doorbell 位址都會錯。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11
+
+### Q08. 「從 BAR 到 doorbell offset：每一步都保留單位」最容易出現什麼誤判？如何排查？
+
+<!-- qa:pcie-transport-1.4-mmio-doorbell-pitfall -->
+
+**答。**
+
+doorbell trace 保存 BAR base、DSTRD、queue ID、公式中間值、final physical address、written pointer 與 access width。若 only log final virtual address，無法辨別 BAR mapping、stride 或 queue index 哪一步出錯。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11
+
+### Q09. 「Figure 8 的八步 command processing 是 ownership handoff」的核心判讀規則是什麼？
+
+<!-- qa:pcie-transport-1.4-command-lead -->
+
+**答。**
+
+SQE、doorbell、controller fetch、CQE、interrupt 與 CQ head 不是同一個事件的不同名稱，而是 host/controller 之間逐步移交 ownership。正確順序同時決定 memory ordering 與資源何時可重用。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, 文件頁 12-13, PDF 頁 12-13; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11
+
+### Q10. 「Figure 8 的八步 command processing 是 ownership handoff」中，哪些概念或條件必須分開比較？
+
+<!-- qa:pcie-transport-1.4-command-rows -->
+
+**答。**
+
+- SQ slot reuse — controller 已消費該 SQE — 由完成資訊的 SQHD 協助追蹤
+- command buffer reuse — command 已 completion 且資料可見 — 依 command/data direction 核對
+- CQ slot release — host 已完整消費 CQE — 之後才寫 CQ head doorbell
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, 文件頁 12-13, PDF 頁 12-13; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11
+
+### Q11. 「Figure 8 的八步 command processing 是 ownership handoff」如何套用到具體數值或操作情境？
+
+<!-- qa:pcie-transport-1.4-command-example -->
+
+**答。**
+
+說明性範例：host 先寫 doorbell、後補 SQE 的最後一個 dword，controller 可能 fetch 到半成品。另一個方向，host 在讀完 CQE 前先更新 CQ head，controller 可能重用該 CQ slot。兩者都是 ownership 順序錯誤，不是 command opcode 問題。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, 文件頁 12-13, PDF 頁 12-13; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11
+
+### Q12. 「Figure 8 的八步 command processing 是 ownership handoff」最容易出現什麼誤判？如何排查？
+
+<!-- qa:pcie-transport-1.4-command-pitfall -->
+
+**答。**
+
+時間軸同時記錄 CPU core、SQ tail、doorbell MMIO、SQHD、CQ phase、interrupt vector 與 CQ head。分散在不同 log 的事件需用 CID/SQID 與 timestamp 對齊，才能定位 lost interrupt、stale phase 或 memory-ordering 問題。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, 文件頁 12-13, PDF 頁 12-13; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11
+
+### Q13. 「Interrupt mode 比較：vector 數量、遮罩與 latency 是三個維度」的核心判讀規則是什麼？
+
+<!-- qa:pcie-transport-1.4-interrupts-lead -->
+
+**答。**
+
+pin-based、single-message MSI、multiple-message MSI 與 MSI-X 的差異不只效能。它們提供的 vector 數、masking 位置與 capability structure 不同；interrupt coalescing 另外決定多個 completion 何時合併通知。Figure 9 與 Figures 34-46 應配合 queue-to-vector mapping 閱讀。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q14. 「Interrupt mode 比較：vector 數量、遮罩與 latency 是三個維度」中，哪些概念或條件必須分開比較？
+
+<!-- qa:pcie-transport-1.4-interrupts-rows -->
+
+**答。**
+
+- pin-based — 傳統共享線路 — 共享與 masking 行為不同
+- single MSI — 單一 message/vector — 多個 CQ 可能共享服務路徑
+- multiple MSI — 一組連續 messages — 受 MME/MMC 等能力限制
+- MSI-X — table-based 多 vectors、獨立 mask — 規格建議優先使用
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q15. 「Interrupt mode 比較：vector 數量、遮罩與 latency 是三個維度」如何套用到具體數值或操作情境？
+
+<!-- qa:pcie-transport-1.4-interrupts-example -->
+
+**答。**
+
+說明性範例：CQ 1 與 CQ 2 共用 vector 5。收到 vector 5 時，handler 不能只檢查 CQ 1；它必須處理所有映射到該 vector 的相關 CQs。提高 coalescing threshold 可減少 interrupts，但可能增加 CQE 等待時間。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q16. 「Interrupt mode 比較：vector 數量、遮罩與 latency 是三個維度」最容易出現什麼誤判？如何排查？
+
+<!-- qa:pcie-transport-1.4-interrupts-pitfall -->
+
+**答。**
+
+Interrupt debug 分開檢查 capability enable、CQ IV、MSI/MSI-X mask、pending state、controller CQE 與 host handler。只有『沒有進 ISR』不足以判斷是 controller 沒送、PCIe 沒傳、vector 被 mask 或 handler 漏掃 CQ。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q17. 「Configuration space 是 capability map；AER 是 transport error map」的核心判讀規則是什麼？
+
+<!-- qa:pcie-transport-1.4-config-error-lead -->
+
+**答。**
+
+Figures 10-67 從 Type 0 header 走到 Power Management、MSI/MSI-X、PCIe capability 與 AER。閱讀順序應先找 capability pointer／extended capability，再以該 capability base 加 offset；AER status/mask/severity/header log 應視為一組，不可只截取單一 error bit。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, 文件頁 16, PDF 頁 16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16
+
+### Q18. 「Configuration space 是 capability map；AER 是 transport error map」中，哪些概念或條件必須分開比較？
+
+<!-- qa:pcie-transport-1.4-config-error-rows -->
+
+**答。**
+
+- NVMe CQE status — command 執行結果 — 由 NVMe command context 解
+- PCIe Device Status — PCIe Function 狀態摘要 — 位於 PCIe capability
+- AER — correctable/uncorrectable transport errors — status、mask、severity、header 一起看
+- power state — slot limit 與 device power 控制 — 不得選超過 slot power limit 的 NVMe state
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, 文件頁 16, PDF 頁 16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16
+
+### Q19. 「Configuration space 是 capability map；AER 是 transport error map」如何套用到具體數值或操作情境？
+
+<!-- qa:pcie-transport-1.4-config-error-example -->
+
+**答。**
+
+說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 判斷錯誤嚴重程度及其處置，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, 文件頁 16, PDF 頁 16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16
+
+### Q20. 「Configuration space 是 capability map；AER 是 transport error map」最容易出現什麼誤判？如何排查？
+
+<!-- qa:pcie-transport-1.4-config-error-pitfall -->
+
+**答。**
+
+configuration dump 要保留 capability base，而不只保存 register value。相同 offset 若相對於不同 capability base 會指到不同欄位；AER snapshot 也應在清除 RW1C status 前一次保存完整集合。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, 文件頁 16, PDF 頁 16; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16
+
+### Q21. 「EOM parser：先 size，再 header，再 lane descriptor」的核心判讀規則是什麼？
+
+<!-- qa:pcie-transport-1.4-eom-lead -->
+
+**答。**
+
+Physical Interface Receiver Eye Opening Measurement log page 是變長資料結構。host 先確認 support 與需要的大小，再讀 specific parameter/identifier、header、lane descriptor 與 measurement data。Figures 70-77 應形成 parser pipeline，而不是把每個欄位表獨立翻譯。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q22. 「EOM parser：先 size，再 header，再 lane descriptor」中，哪些概念或條件必須分開比較？
+
+<!-- qa:pcie-transport-1.4-eom-rows -->
+
+**答。**
+
+- specific parameter — 選量測動作與品質/狀態 — 先決定 request context
+- specific identifier — 選 lane/test context — 避免把不同量測混在一起
+- header — 全域長度與配置 — 所有後續 offset 的基準
+- lane descriptor — 每 lane 邊界/狀態 — 只在 buffer 內走訪
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q23. 「EOM parser：先 size，再 header，再 lane descriptor」如何套用到具體數值或操作情境？
+
+<!-- qa:pcie-transport-1.4-eom-example -->
+
+**答。**
+
+說明性範例：header 宣稱有 8 個 lane descriptors，但 buffer length 只能容納 6 個完整 descriptors。parser 應回報 truncated structure 並停止，不得根據平台預期 lane count 讀過 buffer 結尾。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48
+
+### Q24. 「EOM parser：先 size，再 header，再 lane descriptor」最容易出現什麼誤判？如何排查？
+
+<!-- qa:pcie-transport-1.4-eom-pitfall -->
+
+**答。**
+
+保存 request parameter、identifier、returned byte count、header-declared size、lane number 與 measurement status。只有最終 eye 圖不足以重現 selector、length 或 lane mapping 錯誤。
+
+> 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46; 來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48

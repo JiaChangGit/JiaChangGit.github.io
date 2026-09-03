@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[English]({% post_url 2026-09-02-nvme-base-self-test-namespace-management-en %})
+
 
 # NVMe Base 2.4：Device Self-test 與 Namespace Management
 
@@ -47,7 +49,7 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 |---|---|---|
 | `DST` | Device Self-test，用背景 diagnostic segments 檢查 controller 與可選 namespace media 的操作。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 353-358, 614，PDF 頁 379-384, 640 |
 | `OACS.DSTS` | Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 353-358, 614，PDF 頁 379-384, 640 |
-| `STC` | Self-test Code，Device Self-test CDW10 中選 short、extended、refresh、vendor-specific 或 abort 的 nibble。 | NVME-BASE-2.4 Rev. 2.4，§5.2.6，文件頁 199-200，PDF 頁 225-226 |
+| `STC` | Self-test Code 是 Device Self-test CDW10 的動作 nibble；result entry 的 STC 則是 Status Code，須依 SCVLD 判斷有效。 | NVME-BASE-2.4 Rev. 2.4，§5.2.6，文件頁 199-200，PDF 頁 225-226 |
 | `DSTP` | Device Self-test Parameter，只有 vendor-specific STC=Eh 時才有 vendor-defined 語意的 CDW15。 | NVME-BASE-2.4 Rev. 2.4，§5.2.6，文件頁 199-200，PDF 頁 225-226 |
 | `DSTO` | Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 353-358, 614，PDF 頁 379-384, 640 |
 | `SDSO` | Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。 | NVME-BASE-2.4 Rev. 2.4，§5.2.14.2.1, 8.1.8，文件頁 353-358, 614，PDF 頁 379-384, 640 |
@@ -69,7 +71,7 @@ shall 譯為「必須」，may 譯為「可／得」，should 譯為「宜／建
 | `CNS` | Controller or Namespace Structure，Identify command 中選擇要回傳哪一種資料結構的欄位。 | NVME-BASE-2.4 Rev. 2.4，§8.1.17.1，文件頁 661-662，PDF 頁 687-688 |
 | `DPTR` | Data Pointer，SQE 中指出 command data buffer 的欄位。 | NVME-BASE-2.4 Rev. 2.4，§5.2.25，文件頁 446-448，PDF 頁 472-474 |
 | `PRP` | Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。 | NVME-BASE-2.4 Rev. 2.4，§5.2.24，文件頁 444-445，PDF 頁 470-471 |
-| `SEL` | Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。 | NVME-BASE-2.4 Rev. 2.4，§5.2.25，文件頁 446-448，PDF 頁 472-474 |
+| `SEL` | Select；Namespace Management 的 create/delete/restore selector，與 Get Features 的 SEL 不同。 | NVME-BASE-2.4 Rev. 2.4，§5.2.25，文件頁 446-448，PDF 頁 472-474 |
 | `CSI` | Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。 | NVME-BASE-2.4 Rev. 2.4，§5.2.25，文件頁 446-448，PDF 頁 472-474 |
 | `SIOCS` | Specified I/O Command Set，Base create buffer bytes 0:511 中放置所選 I/O Command Set specific fields 的區域。 | NVME-BASE-2.4 Rev. 2.4，§5.2.25，文件頁 446-448，PDF 頁 472-474 |
 | `FLBAS` | Formatted LBA Size，選擇 namespace 使用的 LBA format，並包含 metadata placement 相關控制。 | NVME-NVM-CS-1.3 Rev. 1.3，§4.1.6.4，文件頁 111-113，PDF 頁 111-113 |
@@ -880,7 +882,7 @@ create 改變 Allocated Namespace ID list；attach／detach 改變 Active Namesp
 ### §4.1
 
 <details markdown="1">
-<summary><strong>Figure 111: Self-test Results Data Structure</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 111: Self-test Results Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-111-CLAIM figure-table:BASENSMGMT-FIG-111 -->
 
@@ -963,7 +965,7 @@ Figure 111 位於 §4.1.4.3，在本流程中是「layout」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 134: Namespace Management - Host Specified Fields</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 134: Namespace Management - Host Specified Fields</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-134-CLAIM figure-table:BASENSMGMT-FIG-134 -->
 
@@ -1052,7 +1054,7 @@ Figure 134 位於 §4.1.6.4，在本流程中是「hierarchy」檢查點。先�
 ### §5.2
 
 <details markdown="1">
-<summary><strong>Figure 176: Device Self-test Namespace Test Action</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 176: Device Self-test Namespace Test Action</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-176-CLAIM figure-table:BASENSMGMT-FIG-176 -->
 
@@ -1134,7 +1136,7 @@ Figure 176 位於 §5.2.6，在本流程中是「hierarchy」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 177: Device Self-test - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 177: Device Self-test - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-177-CLAIM figure-table:BASENSMGMT-FIG-177 -->
 
@@ -1218,7 +1220,7 @@ Figure 177 位於 §5.2.6，在本流程中是「command」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 178: Device Self-test - Command Dword 15</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 178: Device Self-test - Command Dword 15</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-178-CLAIM figure-table:BASENSMGMT-FIG-178 -->
 
@@ -1298,7 +1300,7 @@ Figure 178 位於 §5.2.6，在本流程中是「command」檢查點。先由主
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 179: Device Self-test - Command Processing</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 179: Device Self-test - Command Processing</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-179-CLAIM figure-table:BASENSMGMT-FIG-179 -->
 
@@ -1380,7 +1382,7 @@ Figure 179 位於 §5.2.6，在本流程中是「queue」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 180: Device Self-test - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-180-CLAIM figure-table:BASENSMGMT-FIG-180 -->
 
@@ -1461,7 +1463,7 @@ Figure 180 位於 §5.2.6，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 218: Device Self-test Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 218: Device Self-test Log Page</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-218-CLAIM figure-table:BASENSMGMT-FIG-218 -->
 
@@ -1544,7 +1546,7 @@ Figure 218 位於 §5.2.13.1.7，在本流程中是「relationship」檢查點�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 219: Self-test Result Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 219: Self-test Result Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-219-CLAIM figure-table:BASENSMGMT-FIG-219 -->
 
@@ -1629,7 +1631,7 @@ Figure 219 位於 §5.2.13.1.7，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 442: Namespace Attachment - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 442: Namespace Attachment - Data Pointer</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-442-CLAIM figure-table:BASENSMGMT-FIG-442 -->
 
@@ -1711,7 +1713,7 @@ Figure 442 位於 §5.2.24，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 443: Namespace Attachment - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 443: Namespace Attachment - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-443-CLAIM figure-table:BASENSMGMT-FIG-443 -->
 
@@ -1792,7 +1794,7 @@ Figure 443 位於 §5.2.24，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 444: Namespace Attachment - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 444: Namespace Attachment - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-444-CLAIM figure-table:BASENSMGMT-FIG-444 -->
 
@@ -1875,7 +1877,7 @@ Figure 444 位於 §5.2.24，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 445: Namespace Management - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 445: Namespace Management - Data Pointer</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-445-CLAIM figure-table:BASENSMGMT-FIG-445 -->
 
@@ -1956,7 +1958,7 @@ Figure 445 位於 §5.2.25，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 446: Namespace Management - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 446: Namespace Management - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-446-CLAIM figure-table:BASENSMGMT-FIG-446 -->
 
@@ -2038,7 +2040,7 @@ Figure 446 位於 §5.2.25，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 447: Namespace Management - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 447: Namespace Management - Command Dword 11</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-447-CLAIM figure-table:BASENSMGMT-FIG-447 -->
 
@@ -2119,7 +2121,7 @@ Figure 447 位於 §5.2.25，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 448: Namespace Management - Data Structure for Create</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 448: Namespace Management - Data Structure for Create</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-448-CLAIM figure-table:BASENSMGMT-FIG-448 -->
 
@@ -2201,7 +2203,7 @@ Figure 448 位於 §5.2.25，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 449: Namespace Management - Command Specific Status Values</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 449: Namespace Management - Command Specific Status Values</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-449-CLAIM figure-table:BASENSMGMT-FIG-449 -->
 
@@ -2284,7 +2286,7 @@ Figure 449 位於 §5.2.25，在本流程中是「hierarchy」檢查點。先由
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 450: Namespace Management - Completion Queue Entry Dword 0</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 450: Namespace Management - Completion Queue Entry Dword 0</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-450-CLAIM figure-table:BASENSMGMT-FIG-450 -->
 
@@ -2369,7 +2371,7 @@ Figure 450 位於 §5.2.25，在本流程中是「queue」檢查點。先由主�
 ### §8.1
 
 <details markdown="1">
-<summary><strong>Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 700: Example Device Self-test Operation (Informative)</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-700-CLAIM figure-table:BASENSMGMT-FIG-700 -->
 
@@ -2452,7 +2454,7 @@ Figure 700 位於 §8.1.8，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 701: Format NVM command Aborting a Device Self-Test Operation</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-701-CLAIM figure-table:BASENSMGMT-FIG-701 -->
 
@@ -2541,7 +2543,7 @@ Figure 701 位於 §8.1.8.1-8.1.8.2，在本流程中是「layout」檢查點。
 ### 引用相依 Figure（位於主章節範圍外）
 
 <details markdown="1">
-<summary><strong>Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 36: Offset 0h: CAP - Controller Capabilities</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-036-CLAIM figure-table:BASENSMGMT-FIG-036 -->
 
@@ -2622,7 +2624,7 @@ Figure 36 位於 §3.1.4.1，在本流程中是「register」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 93: Common Command Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 93: Common Command Format</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-093-CLAIM figure-table:BASENSMGMT-FIG-093 -->
 
@@ -2705,7 +2707,7 @@ Figure 93 位於 §4.1.1，在本流程中是「command」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 123: Identify - Identify Namespace Data Structure, NVM Command Set</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 123: Identify - Identify Namespace Data Structure, NVM Command Set</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-123-CLAIM figure-table:BASENSMGMT-FIG-123 -->
 
@@ -2790,7 +2792,7 @@ Figure 123 位於 §4.1.5.1，在本流程中是「hierarchy」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 127: NVM Command Set I/O Command Set Specific Identify Namespace Data Structure</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 127: NVM Command Set I/O Command Set Specific Identify Namespace Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-127-CLAIM figure-table:BASENSMGMT-FIG-127 -->
 
@@ -2872,7 +2874,7 @@ Figure 127 位於 §4.1.5.3，在本流程中是「hierarchy」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 132: Namespace Granularity List</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 132: Namespace Granularity List</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-132-CLAIM figure-table:BASENSMGMT-FIG-132 -->
 
@@ -2955,7 +2957,7 @@ Figure 132 位於 §4.1.5.8，在本流程中是「hierarchy」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 133: Namespace Granularity Descriptor</strong></summary>
+<summary><strong>NVME-NVM-CS-1.3 — Figure 133: Namespace Granularity Descriptor</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-133-CLAIM figure-table:BASENSMGMT-FIG-133 -->
 
@@ -3037,7 +3039,7 @@ Figure 133 位於 §4.1.5.8，在本流程中是「hierarchy」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 139: Controller List Format</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 139: Controller List Format</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-139-CLAIM figure-table:BASENSMGMT-FIG-139 -->
 
@@ -3119,7 +3121,7 @@ Figure 139 位於 §4.6.1，在本流程中是「layout」檢查點。先由主�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 155: Asynchronous Event Information - Notice</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 155: Asynchronous Event Information - Notice</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-155-CLAIM figure-table:BASENSMGMT-FIG-155 -->
 
@@ -3202,7 +3204,7 @@ Figure 155 位於 §5.2.2.1，在本流程中是「layout」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 203: Get Log Page - Data Pointer</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 203: Get Log Page - Data Pointer</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-203-CLAIM figure-table:BASENSMGMT-FIG-203 -->
 
@@ -3283,7 +3285,7 @@ Figure 203 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 204: Get Log Page - Command Dword 10</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 204: Get Log Page - Command Dword 10</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-204-CLAIM figure-table:BASENSMGMT-FIG-204 -->
 
@@ -3366,7 +3368,7 @@ Figure 204 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 205: Get Log Page - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 205: Get Log Page - Command Dword 11</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-205-CLAIM figure-table:BASENSMGMT-FIG-205 -->
 
@@ -3447,7 +3449,7 @@ Figure 205 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 206: Get Log Page - Command Dword 12</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 206: Get Log Page - Command Dword 12</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-206-CLAIM figure-table:BASENSMGMT-FIG-206 -->
 
@@ -3528,7 +3530,7 @@ Figure 206 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 207: Get Log Page - Command Dword 13</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 207: Get Log Page - Command Dword 13</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-207-CLAIM figure-table:BASENSMGMT-FIG-207 -->
 
@@ -3608,7 +3610,7 @@ Figure 207 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 208: Get Log Page - Command Dword 14</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 208: Get Log Page - Command Dword 14</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-208-CLAIM figure-table:BASENSMGMT-FIG-208 -->
 
@@ -3690,7 +3692,7 @@ Figure 208 位於 §5.2.13，在本流程中是「command」檢查點。先由�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 209: Get Log Page - Log Page Identifiers</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-209-CLAIM figure-table:BASENSMGMT-FIG-209 -->
 
@@ -3773,7 +3775,7 @@ Figure 209 位於 §5.2.13，在本流程中是「identifier」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 304: Manufacturer Default Configuration Status Log Page</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 304: Manufacturer Default Configuration Status Log Page</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-304-CLAIM figure-table:BASENSMGMT-FIG-304 -->
 
@@ -3854,7 +3856,7 @@ Figure 304 位於 §5.2.13.1.31，在本流程中是「relationship」檢查點�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 338: Identify Controller Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 338: Identify Controller Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-338-CLAIM figure-table:BASENSMGMT-FIG-338 -->
 
@@ -3939,7 +3941,7 @@ Figure 338 位於 §5.2.14.2.1，在本流程中是「layout」檢查點。先�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 346: Identify - I/O Command Set Independent Identify Namespace Data Structure</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 346: Identify - I/O Command Set Independent Identify Namespace Data Structure</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-346-CLAIM figure-table:BASENSMGMT-FIG-346 -->
 
@@ -4021,7 +4023,7 @@ Figure 346 位於 §5.2.14.2.3，在本流程中是「hierarchy」檢查點。�
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 474: Asynchronous Event Configuration - Command Dword 11</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 474: Asynchronous Event Configuration - Command Dword 11</strong></summary>
 
 <!-- claim:BASENSMGMT-FIG-474-CLAIM figure-table:BASENSMGMT-FIG-474 -->
 
@@ -4104,3 +4106,351 @@ Figure 474 位於 §5.2.30.1.6，在本流程中是「command」檢查點。先�
 ## 使用與限制
 
 製作 PPT 時以 claim ID 作為追溯鍵。來源 revision、Errata 集合或核准範圍改變時，必須重新核對受影響 claim。
+
+## 自問自答：規則、比較、案例與排錯
+
+以下 32 題均附答案，針對本報告範圍複習。每題保留對應教學單元的來源；數值案例與排錯建議屬說明性內容。
+
+### Q01. 「先分清兩條生命週期：diagnostic evidence 與 namespace provisioning」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-lead -->
+
+**答。**
+
+Device Self-test 與 Namespace Management 都使用 Admin command，但它們改變的物件完全不同。Self-test 建立一個背景 operation，command CQE 只是接受點，最後要靠 LID 06h 證明結果；Namespace Management 建立或移除 namespace object，Create CQE 回傳 NSID，但還要 Attach 才建立 controller access。先分開兩條線，才能理解 completion 為何不是終點。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q02. 「先分清兩條生命週期：diagnostic evidence 與 namespace provisioning」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-rows -->
+
+**答。**
+
+- Self-test object — background operation — CQE→current state→history result
+- Namespace object — allocated capacity + format — Create CQE.DW0→NSID
+- Access relationship — namespace↔controller attachment — Attach CQE→Active NSID list
+- Inventory evidence — Allocated／Active lists — AEN 後重新 Identify
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q03. 「先分清兩條生命週期：diagnostic evidence 與 namespace provisioning」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-example -->
+
+**答。**
+
+Create 成功回 NSID=7 只證明 namespace 7 已建立；它仍未 attached，不能立刻做 I/O。相反地，Self-test 啟動成功的 CQE 也只證明 operation 已開始，不能把它記成 test passed。兩種 CQE 都要再接下一個證據，但下一個證據不同。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q04. 「先分清兩條生命週期：diagnostic evidence 與 namespace provisioning」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-diagnostic-and-provisioning-pitfall -->
+
+**答。**
+
+不要用『Admin command 成功』概括整段流程。trace 必須標出 command 改變的 object、成功所跨越的 boundary，以及仍待取得的 LID、Identify 或 event evidence。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q05. 「Device Self-test：從 capability gate 到 LID 06h result」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-lead -->
+
+**答。**
+
+先用 OACS.DSTS、EDSTT 與 DSTO.SDSO 建立支援、時間與 concurrency 預期，再以 NSID 與 STC 建構 command。CQE 到達後輪詢 DSTOS／DSTCS；operation 結束時，先建立 RDS1，再把 current status 清零。這個先後順序讓 software 不會在短暫視窗遺失最後結果。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 353-358, 614, PDF 頁 379-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-232, PDF 頁 255-258; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76
+
+### Q06. 「Device Self-test：從 capability gate 到 LID 06h result」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-rows -->
+
+**答。**
+
+- NSID=0 — controller only — 不包含 namespace media
+- active NSID — 單一 namespace — invalid／inactive status 分開
+- NSID=FFFFFFFFh — 開始時可存取的 attached set — 集合不是動態追蹤
+- STC=Fh — abort current operation — 先寫 result 再清 current
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 353-358, 614, PDF 頁 379-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-232, PDF 頁 255-258; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76
+
+### Q07. 「Device Self-test：從 capability gate 到 LID 06h result」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-example -->
+
+**答。**
+
+讀完整 LID 06h：564÷4=141 dwords，NUMD=141−1=140=008Ch。RAE=0、LSP=0、LID=06h，因此 CDW10=008C0006h。若 RDS1.DSTS=17h，DSTC=1h 是 short、DSTR=7h 才允許讀 SEGN。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 353-358, 614, PDF 頁 379-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-232, PDF 頁 255-258; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76
+
+### Q08. 「Device Self-test：從 capability gate 到 LID 06h result」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-selftest-command-state-machine-pitfall -->
+
+**答。**
+
+FLBA 非零不是有效證據。先解 DSTR，再查 FVLD／NSIDVLD，最後才套 NVM Command Set bytes 23:16 的 FLBA 語意；同時保存 raw 28-byte entry。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 353-358, 614, PDF 頁 379-384, 640; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-232, PDF 頁 255-258; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76
+
+### Q09. 「先把三種容量與兩種 granularity 換到同一個 byte model」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-lead -->
+
+**答。**
+
+NSZE、NCAP、NUSE 的單位是 logical blocks；NSG、NCG 的單位是 bytes；controller 實際消耗的 NVM capacity 又可能按 allocation unit 向上取整。比較前必須先乘上選定 LBA size。NSZE≥NCAP≥NUSE 是合法性關係，NSG／NCG divisibility 則是減少浪費的 hint，不能混成同一種 gate。
+
+> 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13-14, PDF 頁 13-14; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13, PDF 頁 13; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165
+
+### Q10. 「先把三種容量與兩種 granularity 換到同一個 byte model」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-rows -->
+
+**答。**
+
+- NSZE — logical blocks — LBA 0..NSZE−1
+- NCAP — logical blocks — 最大可配置容量
+- NUSE — logical blocks — THINP=1 時需追蹤
+- NSG／NCG — bytes — preferred hint，不是單獨 abort gate
+
+> 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13-14, PDF 頁 13-14; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13, PDF 頁 13; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165
+
+### Q11. 「先把三種容量與兩種 granularity 換到同一個 byte model」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-example -->
+
+**答。**
+
+LBA=4 KiB、NSG=1 MiB、NCG=2 MiB。NSZE=NCAP=1024 代表 4 MiB，4 MiB 可整除兩個 hints，且為 fully provisioned。NSZE=NCAP=1000 代表 3,906.25 KiB，無法整除 hints；可能浪費 allocation capacity，但 otherwise-valid create 仍不能只因這點 abort。
+
+> 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13-14, PDF 頁 13-14; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13, PDF 頁 13; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165
+
+### Q12. 「先把三種容量與兩種 granularity 換到同一個 byte model」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-capacity-granularity-math-pitfall -->
+
+**答。**
+
+最常見錯誤是拿 NSZE=1024 直接除 NSG=1 MiB，或把 granularity violation 當 Invalid Field。工作紙要明列 raw blocks、LBA bytes、converted bytes、remainder 與 controller allocation unit。
+
+> 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13-14, PDF 頁 13-14; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13, PDF 頁 13; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165
+
+### Q13. 「Create payload：Base envelope 包住 NVM-specific 512 bytes」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-lead -->
+
+**答。**
+
+Base Figure 448 定義 4096-byte envelope，NVM Command Set Figure 134 只定義前 768 bytes 中的 NVM 欄位與 Placement Handle List。Host 先以 SEL／CSI 決定 operation 與 command set，再填 NSZE、NCAP、format、protection、sharing 與 group IDs。Reserved areas 要清零，Protection Information 與 FDP 又各有獨立 capability gate。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 文件頁 446-448, PDF 頁 472-474; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, 文件頁 111-113, PDF 頁 111-113; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687
+
+### Q14. 「Create payload：Base envelope 包住 NVM-specific 512 bytes」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-rows -->
+
+**答。**
+
+- Base 0:511 — SIOCS — NVM-specific create data
+- Base 512:1023 — Reserved — host 清 0
+- Base 1024:4095 — Vendor Specific — 沒有來源定義就不猜
+- NVM 512:767 — Placement Handle List — 只在 FDP enable 時驗證
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 文件頁 446-448, PDF 頁 472-474; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, 文件頁 111-113, PDF 頁 111-113; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687
+
+### Q15. 「Create payload：Base envelope 包住 NVM-specific 512 bytes」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-example -->
+
+**答。**
+
+建立 4 MiB namespace：LBA=4096 bytes、NSZE=NCAP=1024，因此 bytes 7:0 與 15:8 都寫 0000000000000400h。NVMSETID=0、ENDGID=5 表示由 Endurance Group 5 內選 NVM Set；反過來 NVMSETID=7、ENDGID=0 是 Invalid Field。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 文件頁 446-448, PDF 頁 472-474; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, 文件頁 111-113, PDF 頁 111-113; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687
+
+### Q16. 「Create payload：Base envelope 包住 NVM-specific 512 bytes」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-namespace-create-payload-pitfall -->
+
+**答。**
+
+不要只 dump Figure 134 的欄位值。Debug 還要保存 host 使用的 LBA format capability、LBAFEE、Figure 127 masking limits、FDP enable state、完整 4096-byte buffer 與 reserved-byte scan。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 文件頁 446-448, PDF 頁 472-474; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, 文件頁 111-113, PDF 頁 111-113; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687
+
+### Q17. 「Namespace lifecycle：Create 只建立 object，Attach 才建立 access」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-lead -->
+
+**答。**
+
+Create、Attach、Detach、Delete 分別改變兩個狀態維度：namespace 是否 allocated，以及某 controller 是否 attached。Create CQE.DW0 回 NSID 後，object 已 allocated 但所有 controller 都未 attached；Attach 的 Controller List 才建立 access。Detach 不刪容量，Delete 才使 NSID unallocated。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q18. 「Namespace lifecycle：Create 只建立 object，Attach 才建立 access」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-rows -->
+
+**答。**
+
+- Create — object／capacity — 不自動 attach
+- Attach — access relationship — Controller List 可含多個 CNTLID
+- Detach — controller-local active state — namespace 仍 allocated
+- Delete — subsystem inventory — NSID 變 unallocated
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q19. 「Namespace lifecycle：Create 只建立 object，Attach 才建立 access」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-example -->
+
+**答。**
+
+Create 回 NSID=7。Controller List 的 NUMCIDS 與 entries 指定 controllers 3、5；Attach 成功後 NSID 7 對 3、5 active。再只 detach controller 3，NSID 7 對 3 inactive、對 5 仍 active，namespace 本身仍 allocated。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q20. 「Namespace lifecycle：Create 只建立 object，Attach 才建立 access」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-namespace-lifecycle-pitfall -->
+
+**答。**
+
+NSID 數值相同不代表每個 controller 的 active state 相同。inventory 與 I/O trace 都要帶 controller ID；attach limit 還要分開核對 Domain MAXDNA 與 per-controller MAXCNA。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q21. 「Delete 與 Restore Default：先清空 inventory，再跨 configuration boundary」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-lead -->
+
+**答。**
+
+Delete all 與 Restore Default 是兩個不同 operation。NSID=FFFFFFFFh 的 Delete All 在零個 namespaces 時也成功；Restore Default 則要求 RDNCS capability、SEL=2h，以及 subsystem 中已不存在任何 namespace。成功前 controller 套用 current active firmware image defaults 並設 DNCS=1。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689
+
+### Q22. 「Delete 與 Restore Default：先清空 inventory，再跨 configuration boundary」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-rows -->
+
+**答。**
+
+- Delete one — NSID=target — 成功後 object 消失
+- Delete all — NSID=FFFFFFFFh — zero namespace 仍成功
+- Restore — SEL=2h、NSID ignored — 剩餘 namespace→Sequence Error
+- Post-condition — DNCS=1 — 仍要重新 Identify actual defaults
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689
+
+### Q23. 「Delete 與 Restore Default：先清空 inventory，再跨 configuration boundary」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-example -->
+
+**答。**
+
+先 detach NSID 7，再 Delete 7；讀 Allocated Namespace ID list 確認為空。若 RDNCS=1，送 SEL=2h、NSID=0。CQE success 後讀 DNCS=1，最後重新列舉 default namespaces；DNCS 是狀態證據，不是 default layout 的完整描述。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689
+
+### Q24. 「Delete 與 Restore Default：先清空 inventory，再跨 configuration boundary」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-delete-restore-state-pitfall -->
+
+**答。**
+
+不能用 Delete All CQE 直接推論 Restore 已完成，也不能只看 DNCS 猜 default NSZE／format。每一步都保存 operation selector、inventory snapshot、CQE 與 post-Identify。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689
+
+### Q25. 「Namespace event：通知只說 inventory 變了，Identify 才說變成什麼」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-namespace-events-lead -->
+
+**答。**
+
+Attached 與 Allocated Namespace Attribute Changed notices 對應不同 inventory。Create 通常改 Allocated list；Attach／Detach 改 Active list；Delete 可能同時改兩者。event code 不是新清單本身，因此 host 收到 AEN 後要依 CNS 重新 Identify。Delete reporting 還要分辨 processing controller 與其他 controllers。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q26. 「Namespace event：通知只說 inventory 變了，Identify 才說變成什麼」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-namespace-events-rows -->
+
+**答。**
+
+- CNS 02h — Active Namespace ID list — Attached notice
+- CNS 10h — Allocated Namespace ID list — Allocated notice
+- Create — Allocated change — 新 NSID 尚未 active
+- Delete — Allocated＋可能 Active — processing controller 規則不同
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q27. 「Namespace event：通知只說 inventory 變了，Identify 才說變成什麼」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-namespace-events-example -->
+
+**答。**
+
+Controller 3 處理 attached NSID 7 的 Delete。其他已啟用 notice 的 controllers 依 §8.1.17.2 回報；processing controller 的要求不同。host 不應只計算 event 數量，而要為每個 controller 保存 before/after Active 與 Allocated lists。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q28. 「Namespace event：通知只說 inventory 變了，Identify 才說變成什麼」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-namespace-events-pitfall -->
+
+**答。**
+
+常見誤解是把 AEN 當成 inventory delta。AEN 只觸發 refresh；真正 authoritative data 是後續 Identify result。若漏 event，也可由 before/after inventory 差異定位，但不能反向捏造未收到的通知。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686; 來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688
+
+### Q29. 「End-to-End：把 capacity、command、object、attachment 與 evidence 放在同一條 timeline」的核心判讀規則是什麼？
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-lead -->
+
+**答。**
+
+Namespace bug 很少只是一個欄位錯。create 前的 capability snapshot、4096-byte payload、CQE.DW0、Controller List、attach limits、events 與 post-Identify 必須能串回同一個 NSID 與 controller set。Debug 不從最後的 I/O failure 猜原因，而是找第一個不一致 boundary。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 文件頁 445, 448, PDF 頁 471, 474; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, 文件頁 444-448, 661-663, PDF 頁 470-474, 687-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111
+
+### Q30. 「End-to-End：把 capacity、command、object、attachment 與 evidence 放在同一條 timeline」中，哪些概念或條件必須分開比較？
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-rows -->
+
+**答。**
+
+- Create Invalid Format — FLBAS／DPS／LBSTM／LBAFEE — 先找 format gate
+- Insufficient Capacity — NSZE／NCAP、unallocated bytes、group IDs — 分 logical 與 consumed
+- Attach limit — MAXDNA／MAXCNA＋before counts — Domain 與 controller 分開
+- I/O inactive NSID — Attach CQE、Active list、controller ID — Create success 不夠
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 文件頁 445, 448, PDF 頁 471, 474; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, 文件頁 444-448, 661-663, PDF 頁 470-474, 687-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111
+
+### Q31. 「End-to-End：把 capacity、command、object、attachment 與 evidence 放在同一條 timeline」如何套用到具體數值或操作情境？
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-example -->
+
+**答。**
+
+案例：Create 回 NSID 7，Attach 卻回 27h。先查 controller 5 的 MAXCNA 與 Domain MAXDNA before-count；若 per-controller 已達上限，就不應修改 create payload或重送 I/O。正確 recovery 是選別的 controller、detach 其他 namespace，或停止並回報 capacity policy。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 文件頁 445, 448, PDF 頁 471, 474; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, 文件頁 444-448, 661-663, PDF 頁 470-474, 687-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111
+
+### Q32. 「End-to-End：把 capacity、command、object、attachment 與 evidence 放在同一條 timeline」最容易出現什麼誤判？如何排查？
+
+<!-- qa:base-self-test-namespace-management-namespace-end-to-end-debug-pitfall -->
+
+**答。**
+
+不要只記 human-readable status。保存 SCT／SC／DNR、raw SQE、buffer hash、returned NSID、controller list、timestamp 與 before/after inventories，才能重算是哪一個 gate 拒絕。
+
+> 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 文件頁 445, 448, PDF 頁 471, 474; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 8.1.17.1, 文件頁 444-448, 661-663, PDF 頁 470-474, 687-689; 來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110; 來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111

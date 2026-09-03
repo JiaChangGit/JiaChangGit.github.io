@@ -4,7 +4,7 @@
 翻譯、審查或驗證本報告的人員；不取代 NVM Express 原始規格，也不涵蓋尚未提供的
 PCI Express Base Specification 或 controller vendor 行為。
 
-查證日期：2026-08-31。
+查證日期：2026-09-03。
 
 ## 採用來源
 
@@ -16,7 +16,7 @@ PCI Express Base Specification 或 controller vendor 行為。
 
 目前沒有其他適用的 Errata、Engineering Change Notice (ECN)、Technical Proposal 或
 controller vendor 文件。若之後新增，必須先更新來源登記、範圍與所有受影響 claim，
-再更新五份報告的 20 個輸出。
+再更新九份報告中受影響的輸出（共 36 個交付檔）。
 
 ## 規範性用語
 

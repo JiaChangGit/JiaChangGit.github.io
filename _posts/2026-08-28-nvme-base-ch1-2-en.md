@@ -13,6 +13,8 @@ author: Jia-Chang
 github: JiaChangGit/JiaChangGit.github.io/tree/main/DOCS/nvme-spec-report
 toc: yes
 ---
+[繁體中文]({% post_url 2026-08-28-nvme-base-ch1-2-zh-tw %})
+
 
 # NVMe Base 2.4 Chapters 1-2: Specification Language, PCIe Queues, and Storage Model
 
@@ -399,7 +401,7 @@ The source uses Figure numbers for diagrams and field-layout tables. No source a
 ### §1.1
 
 <details markdown="1">
-<summary><strong>Figure 1: NVMe Family of Specifications</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 1: NVMe Family of Specifications</strong></summary>
 
 <!-- claim:BASE12-FIG-001-CLAIM figure-table:BASE12-FIG-001 -->
 
@@ -483,7 +485,7 @@ This Figure explains a specific relationship or example. Identify each component
 ### §1.4
 
 <details markdown="1">
-<summary><strong>Figure 2: Decimal and Binary Units</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 2: Decimal and Binary Units</strong></summary>
 
 <!-- claim:BASE12-FIG-002-CLAIM figure-table:BASE12-FIG-002 -->
 
@@ -563,7 +565,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 3: Byte, Word, and Dword Relationships</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 3: Byte, Word, and Dword Relationships</strong></summary>
 
 <!-- claim:BASE12-FIG-003-CLAIM figure-table:BASE12-FIG-003 -->
 
@@ -647,7 +649,7 @@ This Figure explains a specific relationship or example. Identify each component
 ### §2
 
 <details markdown="1">
-<summary><strong>Figure 5: Types of NVMe Command Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 5: Types of NVMe Command Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-005-CLAIM figure-table:BASE12-FIG-005 -->
 
@@ -732,7 +734,7 @@ This Figure explains a specific relationship or example. Identify each component
 ### §2.1
 
 <details markdown="1">
-<summary><strong>Figure 6: Queue Pair Example, 1:1 Mapping</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 6: Queue Pair Example, 1:1 Mapping</strong></summary>
 
 <!-- claim:BASE12-FIG-006-CLAIM figure-table:BASE12-FIG-006 -->
 
@@ -813,7 +815,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 7: Queue Pair Example, n:1 Mapping</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 7: Queue Pair Example, n:1 Mapping</strong></summary>
 
 <!-- claim:BASE12-FIG-007-CLAIM figure-table:BASE12-FIG-007 -->
 
@@ -897,7 +899,7 @@ This is a queue or command-flow Figure. Label host and controller ownership firs
 ### §2.3
 
 <details markdown="1">
-<summary><strong>Figure 11: Simple NVM Storage Hierarchy with NVM Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 11: Simple NVM Storage Hierarchy with NVM Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-011-CLAIM figure-table:BASE12-FIG-011 -->
 
@@ -978,7 +980,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 12: Simple NVM Storage Hierarchy with One Reclaim Group</strong></summary>
 
 <!-- claim:BASE12-FIG-012-CLAIM figure-table:BASE12-FIG-012 -->
 
@@ -1059,7 +1061,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 13: Simple NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
 
 <!-- claim:BASE12-FIG-013-CLAIM figure-table:BASE12-FIG-013 -->
 
@@ -1140,7 +1142,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 14: Complex NVM Storage Hierarchy with NVM Sets</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 14: Complex NVM Storage Hierarchy with NVM Sets</strong></summary>
 
 <!-- claim:BASE12-FIG-014-CLAIM figure-table:BASE12-FIG-014 -->
 
@@ -1221,7 +1223,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 15: Complex NVM Storage Hierarchy with Multiple Reclaim Groups</strong></summary>
 
 <!-- claim:BASE12-FIG-015-CLAIM figure-table:BASE12-FIG-015 -->
 
@@ -1302,7 +1304,7 @@ This Figure explains a specific relationship or example. Identify each component
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 16: Single-Namespace NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 16: Single-Namespace NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-016-CLAIM figure-table:BASE12-FIG-016 -->
 
@@ -1383,7 +1385,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 17: Two-Namespace NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 17: Two-Namespace NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-017-CLAIM figure-table:BASE12-FIG-017 -->
 
@@ -1464,7 +1466,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 18: Complex NVM Subsystem</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 18: Complex NVM Subsystem</strong></summary>
 
 <!-- claim:BASE12-FIG-018-CLAIM figure-table:BASE12-FIG-018 -->
 
@@ -1548,7 +1550,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 ### §2.4
 
 <details markdown="1">
-<summary><strong>Figure 19: NVM Express Controller with Two Namespaces</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 19: NVM Express Controller with Two Namespaces</strong></summary>
 
 <!-- claim:BASE12-FIG-019-CLAIM figure-table:BASE12-FIG-019 -->
 
@@ -1629,7 +1631,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 20: NVM Subsystem with Two Controllers and One Port</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 20: NVM Subsystem with Two Controllers and One Port</strong></summary>
 
 <!-- claim:BASE12-FIG-020-CLAIM figure-table:BASE12-FIG-020 -->
 
@@ -1710,7 +1712,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 21: NVM Subsystem with Two Controllers and Two Ports</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 21: NVM Subsystem with Two Controllers and Two Ports</strong></summary>
 
 <!-- claim:BASE12-FIG-021-CLAIM figure-table:BASE12-FIG-021 -->
 
@@ -1791,7 +1793,7 @@ This is an object or capacity relationship Figure. Separate containment, accessi
 </details>
 
 <details markdown="1">
-<summary><strong>Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</strong></summary>
+<summary><strong>NVME-BASE-2.4 — Figure 22: PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</strong></summary>
 
 <!-- claim:BASE12-FIG-022-CLAIM figure-table:BASE12-FIG-022 -->
 
@@ -1874,3 +1876,176 @@ This Figure explains a specific relationship or example. Identify each component
 ## Use and limitations
 
 Use the claim IDs as stable PPT traceability keys. Re-check affected claims if the source revision, errata set, or approved scope changes.
+
+## Self-questions and worked answers
+
+16 answered questions revisit this report's scope. Each answer retains the same source links as the teaching module; calculations and debugging examples are informative.
+
+### Q01. What is the governing interpretation for “Find the owning specification: do not read document applicability as a protocol stack”?
+
+<!-- qa:base-ch1-2-family-lead -->
+
+**Answer.**
+
+When a command, register, or data format appears, the first question is not merely where it is located, but which specification owns the definition. Base supplies the common protocol, the Transport adds the PCIe binding, and an I/O Command Set defines namespace data operations. The boxes in Figure 1 show applicability, not mandatory packet traversal through a stack.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, printed pages 1, PDF pages 27; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.2, printed pages 33, PDF pages 59
+
+### Q02. Which concepts or conditions must be distinguished in “Find the owning specification: do not read document applicability as a protocol stack”?
+
+<!-- qa:base-ch1-2-family-rows -->
+
+**Answer.**
+
+- Base — Common commands, queues, status, and structures — Do not assume it owns every PCIe-register detail
+- PCIe Transport — BARs, MMIO, doorbells, interrupts, and PCIe-specific behavior — It does not override Base in a conflict
+- I/O Command Set — Specific namespace I/O commands and extensions — It does not redefine the transport
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, printed pages 1, PDF pages 27; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.2, printed pages 33, PDF pages 59
+
+### Q03. How does “Find the owning specification: do not read document applicability as a protocol stack” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch1-2-family-example -->
+
+**Answer.**
+
+To implement Firmware Image Download, read Base for command fields and completion status, then use the PCIe Transport for Admin-command data-pointer and memory-access constraints. The Admin command can be understood without an I/O Command Set, while the PCIe Transport alone does not provide complete command semantics.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, printed pages 1, PDF pages 27; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.2, printed pages 33, PDF pages 59
+
+### Q04. What misinterpretation is most likely in “Find the owning specification: do not read document applicability as a protocol stack”, and how is it debugged?
+
+<!-- qa:base-ch1-2-family-pitfall -->
+
+**Answer.**
+
+A common mistake is to infer a call stack from vertical placement in Figure 1. Label each statement as an owner definition, extension, or binding, then cite the source that actually owns the normative requirement.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.1.1, printed pages 1, PDF pages 27; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.2, printed pages 33, PDF pages 59
+
+### Q05. What is the governing interpretation for “Decode the number before interpreting the field”?
+
+<!-- qa:base-ch1-2-numbers-lead -->
+
+**Answer.**
+
+An NVMe number carries radix, unit, width, endian convention, and sometimes zero-based encoding. Equal-looking field values can represent different quantities when any one of these attributes differs. Figures 2 and 3 are the common foundation for later register, SQE, CQE, and log-page calculations.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, printed pages 3-5, PDF pages 29-31; Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, printed pages 5, PDF pages 31
+
+### Q06. Which concepts or conditions must be distinguished in “Decode the number before interpreting the field”?
+
+<!-- qa:base-ch1-2-numbers-rows -->
+
+**Answer.**
+
+- 1000 — Decimal 1000 — No b/h suffix means decimal
+- 1000b — Binary value 8 — b is a radix marker, not a bit unit
+- 1000h — Hexadecimal value 4096 — Common for offsets and register values
+- NUMD=0 — One actual dword — Add one only when the field is explicitly zero-based
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, printed pages 3-5, PDF pages 29-31; Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, printed pages 5, PDF pages 31
+
+### Q07. How does “Decode the number before interpreting the field” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch1-2-numbers-example -->
+
+**Answer.**
+
+Informative example: a 512-byte transfer contains 512 / 4 = 128 dwords. If NUMD is zero-based, the encoded value is 128 - 1 = 127 = 007Fh. Treating 007Fh as a byte count under-allocates the buffer; forgetting the subtraction requests 129 dwords.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, printed pages 3-5, PDF pages 29-31; Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, printed pages 5, PDF pages 31
+
+### Q08. What misinterpretation is most likely in “Decode the number before interpreting the field”, and how is it debugged?
+
+<!-- qa:base-ch1-2-numbers-pitfall -->
+
+**Answer.**
+
+During debugging, record five items together: raw value, bit range, radix, unit, and encoding rule. A decimal result without the original hexadecimal value is usually insufficient to isolate off-by-one, byte-swap, or unit defects.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §1.4.2, printed pages 3-5, PDF pages 29-31; Source: NVME-BASE-2.4, Rev. 2.4, §1.4.3, printed pages 5, PDF pages 31
+
+### Q09. What is the governing interpretation for “Queue pairs are the traffic rules for every command flow”?
+
+<!-- qa:base-ch1-2-queues-lead -->
+
+**Answer.**
+
+The host does not write a command directly into the controller. It builds an SQE in memory and publishes a new SQ tail; the controller fetches and executes the command, then places a CQE into a CQ. The 1:1 and n:1 distinction in Figures 6 and 7 concerns whether multiple SQs share one CQ, not whether commands share one SQE.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.1, printed pages 21-23, PDF pages 47-49; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61
+
+### Q10. Which concepts or conditions must be distinguished in “Queue pairs are the traffic rules for every command flow”?
+
+<!-- qa:base-ch1-2-queues-rows -->
+
+**Answer.**
+
+- Admin queue pair — One Admin SQ to one Admin CQ — Initialization and management path
+- I/O 1:1 — One I/O SQ to one I/O CQ — Simple tracking and clear isolation
+- I/O n:1 — Multiple I/O SQs share one I/O CQ — Merged completion path; SQID/CID still recover the command
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.1, printed pages 21-23, PDF pages 47-49; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61
+
+### Q11. How does “Queue pairs are the traffic rules for every command flow” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch1-2-queues-example -->
+
+**Answer.**
+
+Informative example: SQ 3 and SQ 4 share CQ 2. Both commands may use CID 5 and remain distinguishable because the identity key is (SQID, CID): (3,5) and (4,5). An outstanding-command map keyed only by CID can associate a completion with the wrong command.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.1, printed pages 21-23, PDF pages 47-49; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61
+
+### Q12. What misinterpretation is most likely in “Queue pairs are the traffic rules for every command flow”, and how is it debugged?
+
+<!-- qa:base-ch1-2-queues-pitfall -->
+
+**Answer.**
+
+A queue defect is easier to isolate by separating three ownership questions: who writes the entry, who advances the pointer, and who may reuse the slot. Treating a doorbell write as command completion, or reusing resources before CQE consumption, are classic lifecycle errors.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.1, printed pages 21-23, PDF pages 47-49; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61
+
+### Q13. What is the governing interpretation for “Build the storage and path mental model upward from a namespace”?
+
+<!-- qa:base-ch1-2-objects-lead -->
+
+**Answer.**
+
+A namespace is the formatted capacity actually accessed by the host, while capacity management, endurance, reclamation, and paths live at different levels. Figures 11-18 describe containment using NVM Sets or Reclaim Groups; Figures 19-22 instead show controllers, ports, paths, and PCIe Functions. The two groups answer different questions and must not be collapsed into a falsely one-to-one tree.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, printed pages 26-33, PDF pages 52-59; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, printed pages 35-37, PDF pages 61-63; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.2, printed pages 37, PDF pages 63
+
+### Q14. Which concepts or conditions must be distinguished in “Build the storage and path mental model upward from a namespace”?
+
+<!-- qa:base-ch1-2-objects-rows -->
+
+**Answer.**
+
+- Multi-path I/O — One host and one namespace with two or more independent paths — Focus: path redundancy
+- Namespace sharing — Two or more hosts access one shared namespace — Focus: host ownership and coordination
+- SR-IOV — One PCIe device exposes PFs/VFs — A PCIe Function need not be an independent subsystem
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, printed pages 26-33, PDF pages 52-59; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, printed pages 35-37, PDF pages 61-63; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.2, printed pages 37, PDF pages 63
+
+### Q15. How does “Build the storage and path mental model upward from a namespace” apply to a concrete calculation or operational scenario?
+
+<!-- qa:base-ch1-2-objects-example -->
+
+**Answer.**
+
+Informative example: host A accesses namespace X through controllers 1 and 2, creating multi-path I/O. When host B also accesses the same namespace X through controller 2, namespace sharing is present as well. NSIDs may differ between controllers, so cross-controller comparison begins with namespace identity rather than raw NSID equality.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, printed pages 26-33, PDF pages 52-59; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, printed pages 35-37, PDF pages 61-63; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.2, printed pages 37, PDF pages 63
+
+### Q16. What misinterpretation is most likely in “Build the storage and path mental model upward from a namespace”, and how is it debugged?
+
+<!-- qa:base-ch1-2-objects-pitfall -->
+
+**Answer.**
+
+On a debug diagram, label object identity, owner, and scope separately. A controller seeing an NSID proves an access relationship; it does not prove ownership of the underlying media or equal NSID values on another controller.
+
+> Source: NVME-BASE-2.4, Rev. 2.4, §2.3.1, printed pages 26-33, PDF pages 52-59; Source: NVME-BASE-2.4, Rev. 2.4, §2.3.3, printed pages 33-35, PDF pages 59-61; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.1, printed pages 35-37, PDF pages 61-63; Source: NVME-BASE-2.4, Rev. 2.4, §2.4.2, printed pages 37, PDF pages 63

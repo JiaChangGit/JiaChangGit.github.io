@@ -1,15 +1,15 @@
 # NVMe 報告控制資料
 
-此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 32 個輸出的契約。
+此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 36 個輸出的契約。
 它不保存 PDF 原文。一般重建只讀取此目錄中的追蹤資料，不需要 PDF，也不會把規格原文
 帶進 GitHub Pages。
 
 ## 唯一資料來源與重建流程
 
-- `scope.json`：八份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
+- `scope.json`：九份報告與排除範圍的唯一資料來源；未列入 `INCLUDE` 的內容一律不發佈。
 - `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。報告若在 `scope.json` 宣告 `included_figure_ids`，該 allowlist 是實際發布集合；清冊中其他舊證據列只供追溯，不得出現在輸出。
 - `claims.json`：由產生器重建；不手動維護。
-- `output-contract.json`：32 個輸出路徑與格式要求。
+- `output-contract.json`：36 個輸出路徑與格式要求。
 
 一般內容更新後，依序執行：
 
@@ -40,8 +40,8 @@ python3 -B scripts/build_nvme_reports.py
 
 ## 執行階段
 
-1. `setup`：驗證來源登記、八份報告、32 個輸出路徑與規則骨架。
-2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、32 個輸出存在且通過檢查。
+1. `setup`：驗證來源登記、九份報告、36 個輸出路徑與規則骨架。
+2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、36 個輸出存在且通過檢查。
 3. `auto`：`scope.json` 的 `production_status` 為 `ready_for_publish` 時執行
    `publish`，否則執行 `setup`。
 
@@ -116,3 +116,9 @@ stylesheet、外部字型與外部資源仍禁止。所有報告共用 Request�
 驗證器還會核對 claim 的完整正文與順序，而不只檢查隱藏標記；中英文 Markdown 必須
 具有相同 claim 集合與排列。輸出不得出現 Fabrics、message-based transport、Discovery
 controller、capsule 或 NQN 等本輪排除主題，也不得留下「待補」式佔位文字。
+
+
+第九份 Boot／Telemetry／Sanitize 的內容、圖表、名詞與狀態圖分別維護於
+`scripts/nvme_boot_telemetry_sanitize.py` 與 `scripts/nvme_bts_*.py`。全系列問答
+由 `scripts/nvme_report_questions.py` 產生並驗證。完整範圍、雙語修正、來源查核及
+重建步驟見 [2026-09-03 查核記錄](../../docs/nvme-bilingual-review-2026-09-03.md)。

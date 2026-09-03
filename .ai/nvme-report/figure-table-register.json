@@ -12823,6 +12823,3597 @@
         "reserved"
       ],
       "evidence_digest": "c850eeedd5a4fe45d32d7037b0d3a2e6ccecbe88b89a4b14455215ca6e6b6aec"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-036",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "36",
+      "title": "Offset 0h: CAP - Controller Capabilities",
+      "section": "3.1.4.1",
+      "printed_pages": "55-58",
+      "pdf_pages": "81-84",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "先查 BPS 再使用 Boot properties；支援 Boot 不代表已啟用 controller。",
+        "en": "Check BPS before using Boot properties; Boot support does not imply an enabled controller."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "CAP.BPS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "b1da77fa30b5b79458876be45ff95cd3597f4e867ada3611ef4f53f997f4f9c8",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-049",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "49",
+      "title": "Offset 40h: BPINFO - Boot Partition Information",
+      "section": "3.1.4.13",
+      "printed_pages": "69",
+      "pdf_pages": "95",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "ABPID 指 active partition，BPSZ 使用 128 KiB，BRS 依 00b/01b/10b/11b 區分未請求、傳輸中、成功與錯誤。",
+        "en": "ABPID identifies the active partition, BPSZ uses 128 KiB units, and BRS distinguishes no request/in progress/success/error with 00b/01b/10b/11b."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "ABPID",
+        "BPSZ",
+        "BRS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "2edec50161537e3b57429a9202f4ccd7039d616476a770f545dd60976ffe2b38",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-050",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "50",
+      "title": "Offset 44h: BPRSEL - Boot Partition Read Select",
+      "section": "3.1.4.14",
+      "printed_pages": "69-70",
+      "pdf_pages": "95-96",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "BPRSEL bit 31 是 BPID，[30:10] 是以 4 KiB 計的 BPROF，[9:0] 是以 4 KiB 計的 BPRSZ；写入會觸發讀取。",
+        "en": "BPRSEL bit 31 is BPID, [30:10] is BPROF in 4 KiB units, and [9:0] is BPRSZ in 4 KiB units; writing initiates a read."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "BPID",
+        "BPRSZ",
+        "BPROF"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "152e899a15d360be2ca5825d6c32a3abf0bc967bc5a1350e4616bd2c2d23ef29",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-051",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "51",
+      "title": "Offset 48h: BPMBL - Boot Partition Memory Buffer Location",
+      "section": "3.1.4.15",
+      "printed_pages": "70",
+      "pdf_pages": "96",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "BPMBL[63:12] 提供 Boot Memory Buffer 基底位址，低 12 bits 保留；先確認 host buffer 的連續性與對齊。",
+        "en": "BPMBL[63:12] provides the Boot Memory Buffer base address; the low 12 bits are reserved. Establish a contiguous, aligned host buffer first."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "BMBBA"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "0eee6e2b6c6428365e61f45f905c6a16d714a70f177433d233a0792a7239b8ec",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-144",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "144",
+      "title": "NVM Subsystem Sanitize Operations and Format NVM Command - Admin",
+      "section": "5.1.1",
+      "printed_pages": "178-179",
+      "pdf_pages": "204-205",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.5; 5.1.1-5.1.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "比較 Sanitize 欄的命令白名單及各命令限制；Boot log 可讀，Telemetry 07h/08h 未被列入。只使用通用與 memory-based 命令列。",
+        "en": "Read the Sanitize column's command allowlist and per-command restrictions. Boot is readable; Telemetry 07h/08h is not listed. Only common and memory-based command rows are used."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Get Log Page",
+        "Boot Partition",
+        "Sanitize Status"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "b61e4d13b0488c93ebb5c3ffae4367d03f9f27c730fbfb8bdbb5686fd2d3b4e5",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-145",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "145",
+      "title": "Namespace Sanitize Operations - Admin Command Restrictions, All Controllers",
+      "section": "5.1.2",
+      "printed_pages": "179-180",
+      "pdf_pages": "205-206",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.5; 5.1.1-5.1.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這張表約束所有 controllers：例如拒絕刪除正被 sanitize 的 namespace，並限制 firmware update；先套用 target 關係再判斷 status。",
+        "en": "This table applies to all controllers: for example, deletion of a namespace being sanitized and firmware updates are restricted. Establish the target relationship before choosing a status."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Set Features",
+        "Namespace Management",
+        "Firmware Commit"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "ecb7256bc7b95db3536ff0bf422aad3ea27a96a82df7c849a17356fe002652c7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-146",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "146",
+      "title": "Namespace Sanitize Operations - Admin Command Restrictions if Sanitizing",
+      "section": "5.1.2",
+      "printed_pages": "180-181",
+      "pdf_pages": "206-207",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.5; 5.1.1-5.1.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這張表補充有 attached sanitizing namespace 的 controllers；不能把所有 controller 與只有 attached controller 的限制混為一談。",
+        "en": "This table adds restrictions for controllers with an attached namespace being sanitized. Do not conflate all-controller restrictions with attached-controller restrictions."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Attached Namespace",
+        "Admin command restrictions"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "fc59a1628a6b9333dc58f1d47ee5131c46d0bb0a14f87533b0fd988919334ccc",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-151",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "151",
+      "title": "Asynchronous Event Request - Completion Queue Entry Dword 0",
+      "section": "5.2.2.1",
+      "printed_pages": "184-185",
+      "pdf_pages": "210-211",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.1; 8.1.27.4"
+      ],
+      "dependency_focus": {
+        "zh_tw": "CQE DW0[23:16] 是 LID、[15:8] 是 AEI、[2:0] 是 AET；Sanitize 用 LID 81h/AET 110b，Telemetry 使用 Notice 類型。",
+        "en": "CQE DW0[23:16] is LID, [15:8] AEI, and [2:0] AET. Sanitize uses LID 81h/AET 110b; Telemetry uses the Notice type."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "AEI",
+        "AET"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "a805d80fd7947cd640b6e04355bd1564630eda51fb2c0f51b6353f17dc04917e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-152",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "152",
+      "title": "Asynchronous Event Request - Completion Queue Entry Dword 1",
+      "section": "5.2.2.1",
+      "printed_pages": "185",
+      "pdf_pages": "211",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.1; 8.1.27.4"
+      ],
+      "dependency_focus": {
+        "zh_tw": "AER DW1 是 event-specific parameter；Sanitize 以 0h 指 subsystem，以 NSID 指 namespace，不能把它讀成進度。",
+        "en": "AER DW1 is the event-specific parameter. Sanitize uses zero for a subsystem and NSID for a namespace; it is not progress."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "EVNTSP"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "010948da30003b204799d76f2d1d6dcc741477add4a9d14b136ffbc40af77818",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-155",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "155",
+      "title": "Asynchronous Event Information - Notice",
+      "section": "5.2.2.1",
+      "printed_pages": "186-189",
+      "pdf_pages": "212-215",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.30; 5.2.30.1.6"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 Telemetry Log Changed Notice：用事件定位 08h，再讀 log；事件不包含診斷 payload。",
+        "en": "Use the Telemetry Log Changed Notice slice: locate 08h from the event and read the log; the event does not contain the diagnostic payload."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Telemetry Log Changed"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "8d5a5f1377eb0f8512c45a62a91a589aa6b2766414cb2e15985bb4a1f92cb678",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-156",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "156",
+      "title": "Asynchronous Event Information - I/O Command Specific Status",
+      "section": "5.2.2.1",
+      "printed_pages": "189-190",
+      "pdf_pages": "215-216",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.1; 8.1.27.4"
+      ],
+      "dependency_focus": {
+        "zh_tw": "01h/02h/03h 三種 Sanitize AEI 必須與 SOS/SANS 一起看；Entered Media Verification 不是 operation 全部完成。",
+        "en": "Read Sanitize AEI 01h/02h/03h with SOS/SANS. Entered Media Verification is not completion of the entire operation."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Sanitize Operation Completed",
+        "Unexpected Deallocation",
+        "Entered Media Verification"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "1139cbcc6137e1dd32c5bc47ba23fda1ae91f9d14c405b133a323c521a48942a",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-187",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "187",
+      "title": "Firmware Commit - Command Dword 10",
+      "section": "5.2.9",
+      "printed_pages": "203",
+      "pdf_pages": "229",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Boot 更新只取 BPID 與 CA=110b/111b：前者替換 partition 內容，後者更新 active ID；兩個動作分開。",
+        "en": "For Boot, use BPID and CA=110b/111b: the former replaces partition contents and the latter changes the active ID. They are separate actions."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "BPID",
+        "CA"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ccb68cd244d086ec8db43b3f1b2418563920bf17f83d06352685cf68208aca6b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-188",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "188",
+      "title": "Firmware Commit - Completion Queue Entry Dword 0",
+      "section": "5.2.9.1",
+      "printed_pages": "204",
+      "pdf_pages": "230",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "MUD 是重疊更新偵測的 completion 證據；仍需遵守單一 image sequence 的 controller/endpoint 邊界。",
+        "en": "MUD supplies completion evidence for overlapping updates; the single-controller/endpoint image-sequence boundary still applies."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "MUD"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "9ccb6351df4b47a9ced33415f4eeba5736b3115ce5e03ac9abfeb1a16aafaa02",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-189",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "189",
+      "title": "Firmware Commit - Command Specific Status Values",
+      "section": "5.2.9.1",
+      "printed_pages": "204-205",
+      "pdf_pages": "230-231",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Boot Partition Write Prohibited 指向保護狀態；Invalid Firmware Image 指向 image/sequence 驗證。分辨 status 後才選重試步驟。",
+        "en": "Boot Partition Write Prohibited points to protection state; Invalid Firmware Image points to image/sequence validation. Classify status before choosing a retry step."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Boot Partition Write Prohibited",
+        "Invalid Firmware Image"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "95d4fa850cd33851599300b9de450a12649676db2da1d355f71c5bca06bc8e30",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-190",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "190",
+      "title": "Firmware Image Download - Data Pointer",
+      "section": "5.2.10",
+      "printed_pages": "205",
+      "pdf_pages": "231",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Download 的 DPTR 指向此次 image portion 的 host buffer；資料指標不代表目標 Boot Partition 位址。",
+        "en": "Download DPTR identifies the host buffer for this image portion, not the destination Boot Partition address."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "3df24d8a193e22d1e1af089ba1f961d779a54c5e2b8790f9d7fe9fc100202e92",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-191",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "191",
+      "title": "Firmware Image Download - Command Dword 10",
+      "section": "5.2.10",
+      "printed_pages": "205",
+      "pdf_pages": "231",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "NUMD 是此次 portion 的 zero-based dword count：512 bytes 編為 127，並須另外符合 Download 的 alignment/granularity 規則。",
+        "en": "NUMD is the portion's zero-based dword count: 512 bytes encodes as 127, with Download alignment/granularity requirements checked separately."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "NUMD"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "3df24d8a193e22d1e1af089ba1f961d779a54c5e2b8790f9d7fe9fc100202e92",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-192",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "192",
+      "title": "Firmware Image Download - Command Dword 11",
+      "section": "5.2.10",
+      "printed_pages": "206",
+      "pdf_pages": "232",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "OFST 用 dword 表示 image offset；Boot image 需從開頭依序傳送，不能借用一般 firmware portion 的其他排序假設。",
+        "en": "OFST is an image offset in dwords. Boot images are sent in order from the beginning; do not borrow other ordering assumptions for ordinary firmware portions."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "OFST"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4489bdf024ce4e70c811fb704f370a154ac6d85ce426dee8734d833dc335e547",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-193",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "193",
+      "title": "Firmware Image Download - Command Specific Status Values",
+      "section": "5.2.10",
+      "printed_pages": "206",
+      "pdf_pages": "232",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Overlapping Range 是 download portion 重疊的 status；保留每段 offset 與 length 才能重建錯誤區間。",
+        "en": "Overlapping Range reports overlapping download portions; preserve each offset and length to reconstruct the offending range."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Overlapping Range"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4489bdf024ce4e70c811fb704f370a154ac6d85ce426dee8734d833dc335e547",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-198",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features - Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.39"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Get Features 以 FID 指定 feature，SEL 指定 current/default/saved/capabilities；FID 85h、17h 的值與 capability 不可混讀。",
+        "en": "Get Features uses FID for the feature and SEL for current/default/saved/capabilities. Do not confuse values for FID 85h/17h with their capabilities."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "FID",
+        "SEL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "1380340d28d58291a9ba4b387a47eb3481c606d62731ca9ec27687f1b6f85dd4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-199",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "199",
+      "title": "Get Features - Command Dword 14",
+      "section": "5.2.12",
+      "printed_pages": "210",
+      "pdf_pages": "236",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.39"
+      ],
+      "dependency_focus": {
+        "zh_tw": "CDW14 的 UUID Index 是共用 feature 介面的一部分；本報告的標準 FID 不需自創 vendor UUID 對應。",
+        "en": "The CDW14 UUID Index belongs to the common Feature interface; these standard FIDs do not call for invented vendor-UUID mappings."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "UUID Index"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "81f3b7449eb5f72380c749585f96c7e6a71baf7be47138f7f703f4c171dd4557",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-201",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.39"
+      ],
+      "dependency_focus": {
+        "zh_tw": "SEL=011b 回傳的 bits 2/1/0 分別是 changeable/namespace-specific/saveable；不是 BP0WPS 或 NODRM 的當前值。",
+        "en": "For SEL=011b, bits 2/1/0 report changeable/namespace-specific/saveable, not current BP0WPS or NODRM values."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "fe7483f9e4405684c84f544ad37ae3c3702515b37c2fef8b78b2e50ac63232ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-203",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page - Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8-5.2.13.1.9"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Get Log Page 的 data pointer 指向接收 buffer；buffer 必須容納 encoded NUMD 所要求的資料。",
+        "en": "Get Log Page's data pointer identifies a receive buffer large enough for the encoded NUMD request."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-204",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page - Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8"
+      ],
+      "dependency_focus": {
+        "zh_tw": "CDW10[7:0]=LID，[14:8]=LSP，[15]=RAE，[31:16]=NUMDL；LID 決定 LSP 是 Boot BPID 或 Telemetry capture controls。",
+        "en": "CDW10[7:0]=LID, [14:8]=LSP, [15]=RAE, and [31:16]=NUMDL. LID determines whether LSP means Boot BPID or Telemetry capture controls."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-205",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page - Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8-5.2.13.1.9"
+      ],
+      "dependency_focus": {
+        "zh_tw": "NUMDU 與 NUMDL 組成 zero-based dword count；LSI 是另一個 log-specific selector，不是 LSP。",
+        "en": "NUMDU and NUMDL form the zero-based dword count; LSI is a separate log-specific selector, not LSP."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-206",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page - Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8-5.2.13.1.9"
+      ],
+      "dependency_focus": {
+        "zh_tw": "LPO 低 32 bits 位於 CDW12；Telemetry byte offset 必須以 512-byte blocks 對齊。",
+        "en": "The low 32 bits of LPO occupy CDW12; Telemetry byte offsets must align to 512-byte blocks."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LPOL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-207",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page - Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8-5.2.13.1.9"
+      ],
+      "dependency_focus": {
+        "zh_tw": "LPO 高 32 bits 位於 CDW13；不可先截斷為 32-bit 再計算大型 log 的 offset。",
+        "en": "The high 32 bits of LPO occupy CDW13; do not truncate a large-log offset to 32 bits before computing it."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LPOU"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-208",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page - Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8-5.2.13.1.9"
+      ],
+      "dependency_focus": {
+        "zh_tw": "CDW14 的 CSI/OT/UUID Index 是共用解碼上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。",
+        "en": "CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "CSI",
+        "OT",
+        "UUID Index"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "8cb0acdbd8a5752d0805867233e556d419934da159c0da658d66e5cd0f26bc0f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-209",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page - Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-216",
+      "pdf_pages": "241-242",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.30; 5.2.13.1.8-5.2.13.1.9"
+      ],
+      "dependency_focus": {
+        "zh_tw": "僅取 07h、08h、15h、81h 四列；每列把 log ID 與其章節相連，不延伸其他 log 的教學。",
+        "en": "Use only the 07h, 08h, 15h, and 81h rows, connecting each ID to its section without extending into other logs."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LID 07h",
+        "LID 08h",
+        "LID 15h",
+        "LID 81h"
+      ],
+      "source_keywords": [
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-210",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "210",
+      "title": "Supported Log Pages Log Page",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217",
+      "pdf_pages": "243",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Supported Log Pages 依 LID 提供 descriptor；07h descriptor 是 MCDAS 的查詢入口。",
+        "en": "Supported Log Pages provides a descriptor per LID; the 07h descriptor is the lookup point for MCDAS."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Supported Log Pages",
+        "LID Support and Effects"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "8402e78afe2007eaacf90da7e7710de8d5f17d0d62fcf854f1eae1096b7acea9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-211",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "211",
+      "title": "LID Supported and Effects Data Structure",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217-218",
+      "pdf_pages": "243-244",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.13.1.8"
+      ],
+      "dependency_focus": {
+        "zh_tw": "先查 LSUPP 再解該 LID 的 specific parameter；MCDAS 的 bit 0 是此 parameter 的內容，不是 CTHID。",
+        "en": "Check LSUPP before decoding that LID's specific parameter. MCDAS bit 0 belongs to this parameter, not to CTHID."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LSUPP",
+        "LID Specific Parameter"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "884149517c986e5c11e53b88a5a273bd5f3527c293a0161cfed7c40584b221eb",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-220",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "220",
+      "title": "Telemetry Host-Initiated Log Specific Parameter Field",
+      "section": "5.2.13.1.8",
+      "printed_pages": "232-233",
+      "pdf_pages": "258-259",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "CTHID",
+        "MCDA"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "e4c093a33e410460231b0d4c7394a492437e1305929085284233198b58249465",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-221",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "221",
+      "title": "Telemetry Host-Initiated Log Page",
+      "section": "5.2.13.1.8",
+      "printed_pages": "234-235",
+      "pdf_pages": "260-261",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "THDA1LB",
+        "THDA2LB",
+        "THDA3LB",
+        "THDA4LB",
+        "THS",
+        "THDGN",
+        "TCDA",
+        "TCDGN",
+        "RID"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "26cb22b7af01e5d6bbce3fc4b90945d28563becb76d8fc05689db0bc4f442d70",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-222",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "222",
+      "title": "Telemetry Host-Initiated Log Page - LID Specific Parameter Field",
+      "section": "5.2.13.1.8",
+      "printed_pages": "235",
+      "pdf_pages": "261",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "MCDAS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "516b0e82c9a3e66f752de8a0eec76e2ae89ca4b1d52046616cd7345ebafe412d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-223",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "223",
+      "title": "Telemetry Controller-Initiated Log Page",
+      "section": "5.2.13.1.9",
+      "printed_pages": "236-237",
+      "pdf_pages": "262-263",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "TCDA1LB",
+        "TCDA2LB",
+        "TCDA3LB",
+        "TCDA4LB",
+        "TCS",
+        "TCDA",
+        "TCDGN",
+        "RID"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "898bab4bfb85c27bfa93e48565bce2d96ac303d070fb20988ab57ce3882b8e1e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-279",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "279",
+      "title": "Boot Partition Log Specific Parameter Field",
+      "section": "5.2.13.1.21",
+      "printed_pages": "283",
+      "pdf_pages": "309",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "BPID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "6ab3e92712368d5970bf8c525b42adb3e5077d79461aed6f64c08ac4d9e214b3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-280",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "280",
+      "title": "Boot Partition Log Page",
+      "section": "5.2.13.1.21",
+      "printed_pages": "284",
+      "pdf_pages": "310",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "LID",
+        "BPINFO",
+        "ABPID",
+        "BPSZ",
+        "BPD"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "d4c98c7c4784b40587ec5c86973c50651d69f26b278dd3e4d472c614131ee71d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-311",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "311",
+      "title": "Reservation Notification Log Page",
+      "section": "5.2.13.1.37",
+      "printed_pages": "313",
+      "pdf_pages": "339",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.1; 8.1.27.4.2"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這是 Reservation Notification 的通知資料結構，回報通知計數與類型等；不含 SPROG。8.1.27.4.2 的引用疑似錯置，進度應對照 Figure 312。",
+        "en": "This Reservation Notification structure reports notification counts/types and does not contain SPROG. The reference in 8.1.27.4.2 appears misplaced; use Figure 312 for progress."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Reservation Notification",
+        "Log Page Count",
+        "Notification Type"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "71f129a1d5b569b904f9ed461447e0d48b8f3cd0adbbb2aec23fc0930cd281ec",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-312",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "312",
+      "title": "Sanitize Status Log Page",
+      "section": "5.2.13.1.38",
+      "printed_pages": "314-319",
+      "pdf_pages": "340-345",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "SPROG",
+        "SSTAT",
+        "SCDW10",
+        "ETO",
+        "ETPVDS",
+        "SSI",
+        "MNSOIP",
+        "STNSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "94cf84d7cb0ffc0866ff8ade34dfcc02ae1ab4c1f6d7d11ee909281c28fbd6f0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-338",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify - Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "340-382",
+      "pdf_pages": "366-408",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.16; 8.1.27.2-8.1.27.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。",
+        "en": "Decode only this report's fields: BPCAP byte 102, LPA byte 261, SANICAP bytes 328–331, and MDS in CTRATT. Check methods, VERS/NVERS, SPRRS, NDI, and NODMMAS separately."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "BPCAP",
+        "LPA",
+        "SANICAP",
+        "CTRATT"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-451",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "451",
+      "title": "Sanitize - Command Dword 10",
+      "section": "5.2.26",
+      "printed_pages": "450-451",
+      "pdf_pages": "476-477",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "SANACT",
+        "AUSE",
+        "OWPASS",
+        "OIPBP",
+        "NDAS",
+        "EMVS",
+        "PREQ"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "59e5d44fb461f5ff31ce9b4b2fed238502917192351ecf83a72e6513878825fc",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-452",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "452",
+      "title": "Sanitize - Command Dword 11",
+      "section": "5.2.26",
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "OVRPAT"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "d7235f608ec0e4a3c797b66bff99138a1abac4b5f1ef5e97a7b12674d6ac449b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-453",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "453",
+      "title": "Sanitize - Command Specific Status Values",
+      "section": "5.2.26",
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Firmware Activation Requires Reset",
+        "PMR Enabled",
+        "Controller Suspended"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "d7235f608ec0e4a3c797b66bff99138a1abac4b5f1ef5e97a7b12674d6ac449b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-454",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "454",
+      "title": "Sanitize Namespace - Command Dword 10",
+      "section": "5.2.27",
+      "printed_pages": "453",
+      "pdf_pages": "479",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.27.1; 5.2.27"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Namespace CDW10 只有 Exit Failure/Crypto Erase/Exit Verification；PREQ 在 bit 4，EMVS 在 bit 10，無 NDAS 或 Overwrite 參數。",
+        "en": "Namespace CDW10 offers Exit Failure/Crypto Erase/Exit Verification, with PREQ at bit 4 and EMVS at bit 10, and no NDAS or Overwrite parameters."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "SANACT",
+        "AUSE",
+        "PREQ",
+        "EMVS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "46c14c5a8f8569e681fa3de77123b14d3777e656c94b0d83ea2465204aabd7cf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-464",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features - Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.39"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Set Features 的 FID 決定 CDW11 解法；SV 是保存要求，不能因設定成功就推論 power cycle 後仍保留。",
+        "en": "Set Features FID selects the CDW11 interpretation. SV requests saving; successful setting alone does not prove persistence through power cycles."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "FID",
+        "SV"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "366ab9cd84b05dd2743ebe946dff5cf57bf06e0c817fa99e7504a738b9032c9e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-465",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "465",
+      "title": "Set Features - Command Dword 14",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.39"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Set 的 UUID Index 使用條件與 feature identity 一起判斷；本題標準 FIDs 不擴成 vendor feature protocol。",
+        "en": "Interpret the Set UUID Index with feature identity; these standard FIDs do not expand into a vendor-feature protocol."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "UUID Index"
+      ],
+      "source_keywords": [
+        "shall",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "366ab9cd84b05dd2743ebe946dff5cf57bf06e0c817fa99e7504a738b9032c9e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-466",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Set Features - Feature Identifiers",
+      "section": "5.2.30",
+      "printed_pages": "457-459",
+      "pdf_pages": "483-485",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.2.30.1.16; 8.1.27.2-8.1.27.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只看 Boot protection、Sanitize Config、AEC、Host Behavior Support 的 feature rows 與 scope；FID 17h 是 subsystem policy。",
+        "en": "Use only rows/scopes for Boot protection, Sanitize Config, AEC, and Host Behavior Support. FID 17h is subsystem policy."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "FID 85h",
+        "FID 17h",
+        "FID 0Bh",
+        "FID 16h"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "63fd6ea122a83192f4ac50be6063d40f41d308d87550239c7a7bc82e899dd617",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-474",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "474",
+      "title": "Asynchronous Event Configuration - Command Dword 11",
+      "section": "5.2.30.1.6",
+      "printed_pages": "466-468",
+      "pdf_pages": "492-494",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.30; 5.2.30.1.6"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取 bit 10 TLN：TCDA 從 0h 變 1h 且 TLN enabled 時發送 Telemetry Log Changed；此表在 5.2.30.1.6。",
+        "en": "Use TLN bit 10: when TCDA changes from 0h to 1h with TLN enabled, Telemetry Log Changed is reported. This table belongs to 5.2.30.1.6."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "TLN"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "optional",
+        "reserved"
+      ],
+      "evidence_digest": "723ed76572e27f182ec05f128c095940d1666c4a1785ba635eb7e7dadfdc9b53",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-491",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "491",
+      "title": "Host Behavior Support - Data Structure",
+      "section": "5.2.30.1.15",
+      "printed_pages": "476-477",
+      "pdf_pages": "502-503",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.30; 5.2.30.1.15"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Host Behavior Support byte 1 的 ETDAS=1 表示 host 支援 Area 4；仍需 controller 的 DA4S。",
+        "en": "ETDAS=1 at Host Behavior Support byte 1 declares host Area 4 support; controller DA4S is still required."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "ETDAS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "834560f3be831aa2959c911d4e68547061799d40b446bb29f4cc06b8fd8adfdf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-492",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "492",
+      "title": "Sanitize Config - Command Dword 11",
+      "section": "5.2.30.1.16",
+      "printed_pages": "477-478",
+      "pdf_pages": "503-504",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "NODRM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "f1665f186e401cb9b1c38cb28cf54081a441389a4f235eb913de5ed950e2220f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-542",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "542",
+      "title": "Boot Partition Write Protection Config - Command Dword 11",
+      "section": "5.2.30.1.39",
+      "printed_pages": "513-514",
+      "pdf_pages": "539-540",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "BP0WPS",
+        "BP1WPS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "b9200392df7406dd892ae957396fbb1311917ead729952535b51aa8dd79f6410",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-679",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "679",
+      "title": "Boot Partition Overview",
+      "section": "8.1.3.1",
+      "printed_pages": "587",
+      "pdf_pages": "613",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Boot Partition 0",
+        "Boot Partition 1",
+        "Host Memory Buffer"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "aa8a8aa9e655d6b6b805f0bd99bef49542068ad0bc8b8d082c5fa162957ad004",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-680",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "680",
+      "title": "Set Features Boot Partition Write Protection State Machine Model",
+      "section": "8.1.3.3.1",
+      "printed_pages": "589",
+      "pdf_pages": "615",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Write Unlocked",
+        "Write Locked",
+        "Write Locked Until Power Cycle"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c022109f923280a8760227459e41a2dddd8e93c8738d51695e29931a3bbe66f3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-681",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "681",
+      "title": "Set Features Boot Partition Write Protection State Definitions",
+      "section": "8.1.3.3.1",
+      "printed_pages": "590",
+      "pdf_pages": "616",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Power Cycles",
+        "Controller Level Resets"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "007709bb46109ac4b4445a0898261658a995e5f5bef786eb9e07939c7f110144",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-682",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "682",
+      "title": "RPMB Boot Partition Write Protection State Machine Model",
+      "section": "8.1.3.3.2",
+      "printed_pages": "591",
+      "pdf_pages": "617",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "RPMB Disabled",
+        "RPMB Enabled",
+        "Write Locked",
+        "Write Unlocked"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c5460a91cbcaf7710c3e785732d9d39b1d62973a1696e11c134fb3bcb4e8fec0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-683",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "683",
+      "title": "RPMB Boot Partition Write Protection State Definitions",
+      "section": "8.1.3.3.2",
+      "printed_pages": "591",
+      "pdf_pages": "617",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "RPMB Protection Enabled",
+        "Persistence"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c5460a91cbcaf7710c3e785732d9d39b1d62973a1696e11c134fb3bcb4e8fec0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-684",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "684",
+      "title": "Boot Partition Write Protection State Machine Model",
+      "section": "8.1.3.3.3",
+      "printed_pages": "593",
+      "pdf_pages": "619",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Set Features Owner",
+        "RPMB Owner",
+        "Enable Gate"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6d33bd8635de9a69dbe3f0c0553c0e7a3770de1a86e51c5333ee2222fd525f41",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-756",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "756",
+      "title": "RPMB Device Configuration Block Data Structure",
+      "section": "8.1.24",
+      "printed_pages": "691-692",
+      "pdf_pages": "717-718",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Device Configuration Block 分開保存啟用保護與每個 partition 的鎖定控制；啟用後拒絕關閉 RPMB Boot 保護的寫入。",
+        "en": "The Device Configuration Block separates protection enablement from each partition's lock control; once enabled, writes attempting to disable RPMB Boot protection are rejected."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Boot Partition Write Protection Enable",
+        "Boot Partition Write Protection"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "0660c6a3bf8e72b489800a4d896c2822376f037d73678e4064db733a5e425d67",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-757",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "757",
+      "title": "RPMB Request and Response Message Types",
+      "section": "8.1.24",
+      "printed_pages": "692-693",
+      "pdf_pages": "718-719",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只追蹤 Boot 所需的 authenticated configuration read/write message types；message type 必須與預期 response 配對。",
+        "en": "Track authenticated configuration read/write message types needed for Boot and pair each request with its expected response."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Authenticated Device Configuration Block Read",
+        "Authenticated Device Configuration Block Write"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "e7371842f58a06ee4a76e3ccbb2eb162d78038087cb6e5c84bd704e6fa64aabb",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-758",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "758",
+      "title": "RPMB Operation Result",
+      "section": "8.1.24",
+      "printed_pages": "693",
+      "pdf_pages": "719",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Operation Result 區分成功、認證與 counter 等失敗；傳输命令完成不等於 RPMB 寫入已成功。",
+        "en": "Operation Result distinguishes success, authentication, counter, and other failures; transport-command completion does not itself prove successful RPMB writing."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Result",
+        "Authentication Failure",
+        "Counter Failure"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "94075968bb1b93b96017c584cdd08f9f6bc0a3f216cfbbd5a47da0554c66c009",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-760",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "760",
+      "title": "RPMB Data Frame",
+      "section": "8.1.24",
+      "printed_pages": "694",
+      "pdf_pages": "720",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Frame 的 message type、counter、nonce、result 與 authentication 是驗證回應的不同證據；不能只看資料 payload。",
+        "en": "Message type, counter, nonce, result, and authentication provide different response-validation evidence in the frame; payload alone is insufficient."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Message Type",
+        "Result",
+        "Write Counter",
+        "Nonce",
+        "Authentication"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "optional"
+      ],
+      "evidence_digest": "239c53b21c245d1efd99032628ce9957300fb3a06fd0f11e9b3dbbb6b1953a1e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-761",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "761",
+      "title": "RPMB - Authentication Key Data Flow",
+      "section": "8.1.24.2.1",
+      "printed_pages": "695-696",
+      "pdf_pages": "721-722",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Authentication key 的設定是 authenticated configuration 流程的前置背景；需核對 programming result，不把送出 key 當成成功。",
+        "en": "Authentication-key programming is prerequisite context for authenticated configuration; verify its result rather than equating key submission with success."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Authentication Key",
+        "Program Result"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "b8175cdca108ea8973f8467bf9697cb5c9b655e0132d7e5706931eaaa446c98d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-762",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "762",
+      "title": "RPMB - Read Write Counter Value Flow",
+      "section": "8.1.24.2.2",
+      "printed_pages": "696",
+      "pdf_pages": "722",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "先取得並驗證 write counter，配合 nonce/authentication 確認回應，再構造受保護的 configuration write。",
+        "en": "Obtain and validate the write counter, use nonce/authentication to verify the response, then construct the protected configuration write."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Write Counter",
+        "Nonce",
+        "Authenticated Response"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "5291f745dd16635c04325ea4e0c6ea5555802f61c1ee4fdcaeec4db1149b84ba",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-765",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "765",
+      "title": "RPMB - Authenticated Device Configuration Block Write Flow",
+      "section": "8.1.24.3",
+      "printed_pages": "700",
+      "pdf_pages": "726",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Authenticated configuration write 後需核對 result；此流程變更 Boot 保護狀態，不是 Firmware Commit 寫入 image 的流程。",
+        "en": "Verify the result after an authenticated configuration write. This changes Boot protection state, not image contents as Firmware Commit does."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Configuration Write",
+        "Counter",
+        "Result Read"
+      ],
+      "source_keywords": [
+        "should"
+      ],
+      "evidence_digest": "43fad30e4f357a2030b2196e0579de95a7df343bb6a323ba28d9aa3957ccbe88",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-766",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "766",
+      "title": "RPMB - Authenticated Device Configuration Block Read Flow",
+      "section": "8.1.24.4",
+      "printed_pages": "701",
+      "pdf_pages": "727",
+      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "8.1.3.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "Authenticated configuration read 取得可驗證的保護設定，用以確認哪一套機制目前控制 partition。",
+        "en": "Authenticated configuration read retrieves verifiable protection settings used to establish which mechanism currently controls the partition."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Configuration Read",
+        "Nonce",
+        "Authentication"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "62f68894483ddba1af29bab6e03d7e636854eb1474313b1ff4fe75a282cf1a8f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-770",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "770",
+      "title": "Sanitization Operation Scope Based on Sanitize Operation",
+      "section": "8.1.27",
+      "printed_pages": "711-712",
+      "pdf_pages": "737-738",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Subsystem Target",
+        "Namespace Target",
+        "User Data",
+        "Boot Partition",
+        "CMB",
+        "PMR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "optional"
+      ],
+      "evidence_digest": "1dd365f408669ec3e50ac3e85f1d2b8cfedc5a6e8cc1be9b39f1b1e28af87e3e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-771",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "771",
+      "title": "Sanitize Operations - Overwrite Mechanism",
+      "section": "8.1.27.3",
+      "printed_pages": "717",
+      "pdf_pages": "743",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "OIPBP",
+        "OWPASS",
+        "OVRPAT",
+        "PI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "9694ffe56adeec8a030d26244107ea2be69da128e871f0cc0d2e56cc1590eca6",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-772",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "772",
+      "title": "Sanitize Operation State Machine",
+      "section": "8.1.27.4",
+      "printed_pages": "720",
+      "pdf_pages": "746",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Idle",
+        "Restricted Processing",
+        "Restricted Failure",
+        "Unrestricted Processing",
+        "Unrestricted Failure",
+        "Media Verification",
+        "Post-Verification Deallocation"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "49c6fdd5ee8b3e911ef3da4bf5462cfe2e0fe2cf4af9a7dfc5afcde014575b7b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-773",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "773",
+      "title": "Idle State Transition Conditions",
+      "section": "8.1.27.4.1",
+      "printed_pages": "721",
+      "pdf_pages": "747",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "A1",
+        "AUSE=0",
+        "B1",
+        "AUSE=1"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "078824fbcffa291c3472e292f649ce5882f235b8fd2fecf8c86d57f2494b66a7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-774",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "774",
+      "title": "Restricted Processing State Transition Conditions",
+      "section": "8.1.27.4.2",
+      "printed_pages": "722",
+      "pdf_pages": "748",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "C1",
+        "D1",
+        "F1",
+        "EMVS",
+        "MVCNCLD"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "e2fef69836574378bcaa5a8d9e6a40590b5d582daceda95b26feff6b2bea091e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-775",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "775",
+      "title": "Restricted Failure State Transition Conditions",
+      "section": "8.1.27.4.3",
+      "printed_pages": "724",
+      "pdf_pages": "750",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "A2",
+        "Restricted Retry"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "bd6fd83a4e40a12b1c077dd4a00c33c5a487f8cd27cb2c231f6f747f09a6bb23",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-776",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "776",
+      "title": "Unrestricted Processing State Transition Conditions",
+      "section": "8.1.27.4.4",
+      "printed_pages": "725",
+      "pdf_pages": "751",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "C2",
+        "D2",
+        "F2",
+        "EMVS",
+        "MVCNCLD"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "1dda8182d4c9bdde032360e8ae0bdd0bcb0857867dd4e6a2fb6fe711e43df673",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-777",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "777",
+      "title": "Unrestricted Failure State Transition Conditions",
+      "section": "8.1.27.4.5",
+      "printed_pages": "727",
+      "pdf_pages": "753",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "A3",
+        "B2",
+        "E",
+        "Exit Failure Mode"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "25e89ce0a72950afef7b93b7416ced8bb3e64887ff8d14d15d146ab44fd6e491",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-778",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "778",
+      "title": "Media Verification State Transition Conditions",
+      "section": "8.1.27.4.6",
+      "printed_pages": "728",
+      "pdf_pages": "754",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "G",
+        "Exit Media Verification",
+        "Reset",
+        "MVCNCLD"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "1aa96b431a9a2f69cac81e9183ec2be1f868907fbf5c878db3de43fc4031e1a5",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-779",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "779",
+      "title": "Post-Verification Deallocation state Transition Conditions",
+      "section": "8.1.27.4.7",
+      "printed_pages": "729",
+      "pdf_pages": "755",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "H",
+        "I1",
+        "I2",
+        "FAILS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "040c862c298d0f776a63d2aefdf3f107346e48a2c9c8e33ab12174ad4e536873",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-780",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "780",
+      "title": "Telemetry Log Example - All Data Areas Populated",
+      "section": "8.1.30",
+      "printed_pages": "736",
+      "pdf_pages": "762",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Last Block 65",
+        "Last Block 1000",
+        "Last Block 30000"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "719cf43cbb8c8b5302bd40df2137bc97b157129b3e74088d21a7c510c40d9b13",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-BASE-FIG-781",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "781",
+      "title": "Telemetry Log Example - Data Area 2 Populated",
+      "section": "8.1.30",
+      "printed_pages": "737",
+      "pdf_pages": "763",
+      "scope_entry_id": "BASE-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Last Block 0",
+        "Last Block 1000",
+        "Equal Endpoints"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "2db5ca5f1147d7cd61c8b3696a7a755d5ffded8aaaca068d7e1716a26e9bec8f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-NVMCS-FIG-011",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "11",
+      "title": "Protection Information Field Definition",
+      "section": "2.1.5",
+      "printed_pages": "21-22",
+      "pdf_pages": "21-22",
+      "scope_entry_id": "NVMCS-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.12.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "PRACT 處理 PI 傳遞，PRCHK 的三個 bits 分別要求 Guard/Application/Reference Tag checking；Media Verification 明確要求 PRCHK=000b。",
+        "en": "PRACT governs PI handling; the three PRCHK bits request Guard/Application/Reference Tag checking. Media Verification explicitly requires PRCHK=000b."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "PRACT",
+        "PRCHK",
+        "GRDCHK",
+        "ATCHK",
+        "RTCHK"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "optional"
+      ],
+      "evidence_digest": "b814484d87f99af81df296c3cdced34fd3ea99fc889269e9d0e5c2b1dbd6c73e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-NVMCS-FIG-012",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "12",
+      "title": "Storage Tag Check Definition",
+      "section": "2.1.5",
+      "printed_pages": "22",
+      "pdf_pages": "22",
+      "scope_entry_id": "NVMCS-BTS-DEPENDENCY-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "5.12.1"
+      ],
+      "dependency_focus": {
+        "zh_tw": "此處 STC 是 Storage Tag Check，不是另一報告的 Self-test Code；驗證 Read 要求 STC=0。",
+        "en": "Here STC is Storage Tag Check, not Self-test Code from another report; verification Reads require STC=0."
+      },
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "STC",
+        "Storage Tag"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may",
+        "optional"
+      ],
+      "evidence_digest": "61825df80900b57c97d176890fb1d7e3fefe65e814e303d33a13d606efb1738d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-NVMCS-FIG-200",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "200",
+      "title": "Sanitize Operations - Admin Commands Allowed",
+      "section": "5.12",
+      "printed_pages": "173",
+      "pdf_pages": "173",
+      "scope_entry_id": "NVMCS-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Get Log Page",
+        "Error Information",
+        "LBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "5844913261bac5524e90dc22b2a1a0279f8e6d7a5307f7fef9d04677321a0e27",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "BASEBTS-NVMCS-FIG-201",
+      "report_id": "base-boot-telemetry-sanitize",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "201",
+      "title": "Sanitize Operation Types - User Data Values",
+      "section": "5.12",
+      "printed_pages": "174",
+      "pdf_pages": "174",
+      "scope_entry_id": "NVMCS-BTS-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "scope_reduced": false,
+      "role": "in_scope",
+      "referenced_from": [],
+      "dependency_focus": null,
+      "required_artifact_ids": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "introduced_in": [
+        "basebts-tutorial-html",
+        "basebts-detailed-html",
+        "basebts-zh-md",
+        "basebts-en-md"
+      ],
+      "key_items": [
+        "Block Erase",
+        "Crypto Erase",
+        "Overwrite"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "7492c9f5b19333a23cbfca7c21376445d33d15c84c854daf1da578a454063640",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
     }
   ]
 }

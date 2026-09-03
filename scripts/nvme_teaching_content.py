@@ -170,7 +170,7 @@ TERM_LIBRARY: dict[str, dict[str, str]] = {
     "RTD3R": b("Runtime D3 Resume Latency，controller 從 PCIe D3cold 使用情境恢復的預期時間。", "Runtime D3 Resume Latency, the expected time for resuming from a PCIe D3cold use case."),
     "DST": b("Device Self-test，用背景 diagnostic segments 檢查 controller 與可選 namespace media 的操作。", "Device Self-test, a background operation using diagnostic segments to check a controller and optional namespace media."),
     "OACS.DSTS": b("Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。", "The Device Self-test Supported bit in Optional Admin Command Support, gating availability of the command."),
-    "STC": b("Self-test Code，Device Self-test CDW10 中選 short、extended、refresh、vendor-specific 或 abort 的 nibble。", "Self-test Code, the CDW10 nibble selecting short, extended, refresh, vendor-specific, or abort action."),
+    "STC": b("Self-test Code 是 Device Self-test CDW10 的動作 nibble；result entry 的 STC 則是 Status Code，須依 SCVLD 判斷有效。", "Self-test Code is the Device Self-test CDW10 action nibble; STC in a result entry instead means Status Code and is gated by SCVLD."),
     "DSTP": b("Device Self-test Parameter，只有 vendor-specific STC=Eh 時才有 vendor-defined 語意的 CDW15。", "Device Self-test Parameter, CDW15 with vendor-defined meaning only for vendor-specific STC Eh."),
     "DSTO": b("Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。", "Device Self-test Options, the Identify Controller field reporting refresh and concurrency options."),
     "SDSO": b("Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。", "Single Device Self-test Operation, the bit selecting one subsystem-wide operation or one per controller."),
@@ -743,7 +743,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["AER", "Correctable/uncorrectable transport errors", "Read status, mask, severity, and header together"],
                 ["Power state", "Slot limit and device power control", "Never choose an NVMe state above the slot power limit"],
             ]),
-            "example": b("說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 決定 correctable/uncorrectable handling，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。", "Informative example: when an AERUCES bit is set, first check its mask to determine reporting, then its severity for handling, and finally the header log for transaction context. The bit cannot be translated directly into an NVMe SC."),
+            "example": b("說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 判斷錯誤嚴重程度及其處置，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。", "Informative example: when an AERUCES bit is set, first check its mask to determine reporting, then its severity for handling, and finally the header log for transaction context. The bit cannot be translated directly into an NVMe SC."),
             "pitfall": b("configuration dump 要保留 capability base，而不只保存 register value。相同 offset 若相對於不同 capability base 會指到不同欄位；AER snapshot 也應在清除 RW1C status 前一次保存完整集合。", "A configuration dump retains the capability base as well as register values. The same relative offset under a different capability base denotes a different field. Capture the complete AER set before clearing any RW1C status."),
             "sources": ["PCIE14-CONFIG", "PCIE14-ERROR", "PCIE14-POWER"],
             "figures": list(range(10, 68)),
@@ -1200,7 +1200,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
         {
             "id": "namespace-create-payload",
             "title": b("Create payload：Base envelope 包住 NVM-specific 512 bytes", "Create payload: the Base envelope contains 512 NVM-specific bytes"),
-            "lead": b("Base Figure 448 定義 4096-byte envelope，NVM Command Set Figure 134 只定義前 768 bytes 中的 NVM 欄位與 Placement Handle List。Host 先以 SEL／CSI 決定 operation 與 command set，再填 NSZE、NCAP、format、protection、sharing 與 group IDs。Reserved areas 要清零，Protection Information 與 FDP 又各有獨立 capability gate。", "Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List in the initial region. The host selects operation and command set through SEL/CSI, then fills size, capacity, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates."),
+            "lead": b("Base Figure 448 定義 4096-byte envelope，NVM Command Set Figure 134 只定義前 768 bytes 中的 NVM 欄位與 Placement Handle List。Host 先以 SEL／CSI 決定 operation 與 command set，再填 NSZE、NCAP、format、protection、sharing 與 group IDs。Reserved areas 要清零，Protection Information 與 FDP 又各有獨立 capability gate。", "Base Figure 448 defines a 4096-byte envelope, while NVM Command Set Figure 134 defines NVM fields and the Placement Handle List within the first 768 bytes. The host selects operation and command set through SEL/CSI, then fills NSZE, NCAP, format, protection, sharing, and group identifiers. Reserved regions are zeroed, while Protection Information and FDP have separate capability gates."),
             "nodes": b(["SEL=Create、CSI=00h", "配置 4096-byte zeroed buffer", "填 NSZE／NCAP／FLBAS", "填 DPS／NMIC／group IDs", "驗證 LBSTM／NPHNDLS", "DPTR＋SQE snapshot"], ["SEL=Create, CSI=00h", "Allocate zeroed 4096-byte buffer", "Fill NSZE/NCAP/FLBAS", "Fill DPS/NMIC/group IDs", "Validate LBSTM/NPHNDLS", "DPTR + SQE snapshot"]),
             "rows": b([
                 ["Base 0:511", "SIOCS", "NVM-specific create data"],
@@ -1400,6 +1400,12 @@ KIND_TEXT = {
 
 
 def expanded_figure_guide(figure: dict, language: str) -> dict:
+    if figure.get("report_id") == "base-boot-telemetry-sanitize":
+        try:
+            from scripts.nvme_bts_figures import expanded_guide
+        except ModuleNotFoundError:
+            from nvme_bts_figures import expanded_guide
+        return expanded_guide(figure, language, term_definition)
     kind = figure_kind(figure["title"])
     items = list(figure.get("key_items", []))
     shown = items[:6]

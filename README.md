@@ -1,3 +1,7 @@
+## NVMe reports / 規格教學
+
+[9 份報告與中英文問答索引](docs/nvme-bilingual-review-2026-09-03.md) · [Boot／Telemetry／Sanitize 中文](https://jiachanggit.github.io/nvme/boot-telemetry-sanitize-zh-tw/) · [English](https://jiachanggit.github.io/nvme/boot-telemetry-sanitize-en/)
+
 demo site now [mirrored](https://weathered-bread-8229.on.fleek.co/) in [IPFS](https://github.com/ipfs/ipfs#quick-summary)!
 
 # Jekyll theme: Adam Blog 2.0
