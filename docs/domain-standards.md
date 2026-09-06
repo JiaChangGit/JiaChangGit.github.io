@@ -4,7 +4,7 @@
 翻譯、審查或驗證本報告的人員；不取代 NVM Express 原始規格，也不涵蓋尚未提供的
 PCI Express Base Specification 或 controller vendor 行為。
 
-查證日期：2026-09-03。
+來源查證日期：2026-09-03；教學及公開規則更新：2026-09-06。
 
 ## 採用來源
 
@@ -16,7 +16,7 @@ PCI Express Base Specification 或 controller vendor 行為。
 
 目前沒有其他適用的 Errata、Engineering Change Notice (ECN)、Technical Proposal 或
 controller vendor 文件。若之後新增，必須先更新來源登記、範圍與所有受影響 claim，
-再更新九份報告中受影響的輸出（共 36 個交付檔）。
+再更新 10 份報告中受影響的輸出（每篇 3 版，共 30 個交付檔）。
 
 ## 規範性用語
 
@@ -32,7 +32,7 @@ byte／word／dword relationships。`NVME-PCIE-TRANSPORT-1.4` §1.3（文件／P
 | `obsolete` | 已廢止 | 舊版曾定義、目前版本已移除的功能 |
 | `optional` | 選用 | 規格不要求支援；一旦實作，仍須依規格定義實作 |
 | `R` / `reserved` | 保留 | 依欄位語境處理，不等同一般未使用值 |
-| `shall` | 必須 | 強制要求；詳細中文版保留「必須（shall）」 |
+| `shall` | 必須 | 強制要求；需釐清強度時保留「必須（shall）」 |
 | `should` | 宜、建議 | 有強烈偏好的建議，但仍保留選擇彈性 |
 
 若原文沒有使用上述 keyword，不得只因句意強烈就自行提升為 `shall`。`must`、
@@ -57,7 +57,7 @@ Transport 1.4 明載的 NVMe-specific requirement；不得補寫 PCIe 6.2 條文
 
 ## 引用格式
 
-每個結論至少包含：
+每個結論就近顯示短來源；下列完整定位可放在可收合的來源區塊，claim ID 只放 HTML 註解：
 
 ```text
 來源：<SOURCE-ID>, Rev. <revision>, §<section>,
@@ -70,7 +70,7 @@ Base 2.4 的正文第 1 頁位於 PDF 第 27 頁；正文範圍可用 `PDF 頁 =
 
 正文引用到範圍外 Figure 時，若理解主題需要該 Figure，應以相依教學項目登記並只介紹
 被引用的欄位與關係；這不會把 Figure 所在章節整段納入範圍。Fabrics／Discovery 專用
-Figure 的排除優先於相依引用規則。
+Figure 也可作必要背景，但必須另外登記 `PREREQUISITE_ONLY`、來源與具體教學必要性，不能因此將整張圖或整章全文納入。
 
 ## 公開與重繪邊界
 
@@ -78,3 +78,7 @@ Figure 的排除優先於相依引用規則。
 - 公開內容使用自行撰寫摘要、短必要術語、精確定位與自行重繪圖。
 - 不複製完整規格表格或原圖；重繪圖應只保留理解所需的關係，並列來源 claim。
 - 無法確定散布權或規格沒有定義的內容，標成待確認，不自行補完。
+
+## 必要背景與公開內容
+
+使用者已允許教學需要的範圍外內容，包括原先明確排除的 Fabrics、Discovery 與 NQN 等主題。依 `scope.json` 的背景政策新增最小必要項目，列出本篇所需關係、具體必要性與來源；既有排除圖清單不會自動轉為納入。`DO_NOT_PUBLISH` 仍不公開。開發流程、內部追蹤及驗證紀錄只存於註解或內部文件，來源定位則保留供讀者查閱。

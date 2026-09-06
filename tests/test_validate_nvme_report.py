@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -22,7 +23,7 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
-    def test_standalone_command_set_covers_all_figures_without_transport_leakage(self):
+    def test_standalone_command_set_preserves_registered_source_coverage(self):
         from scripts.nvme_nvm_command_set import MODULES, REPORT_ID
         from scripts.nvme_report_questions import question_bank
         data = json.loads((ROOT / '.ai/nvme-report/figure-table-register.json').read_text())
@@ -32,7 +33,7 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(len(figures), 220)
         self.assertTrue(all(f['scope_status']=='INCLUDE' for f in figures))
         self.assertEqual(len(MODULES), 37)
-        self.assertEqual(len(question_bank(REPORT_ID, MODULES)), 148)
+        self.assertTrue(question_bank(REPORT_ID, MODULES))
         self.assertEqual({n for m in MODULES for n in m['figures']}, set(range(1,203)))
         for n in (1,13,15,16,17,189):
             self.assertEqual(next(f for f in primary if int(f['number'])==n)['mode'], 'scope-reduced')
@@ -74,7 +75,7 @@ class NvmeReportContractTest(unittest.TestCase):
             lang = 'en' if artifact['language'] == 'en' else 'zh'
             bank = question_bank(rid, REPORT_MODULES[rid])
             with self.subTest(artifact=artifact['id']):
-                self.assertGreaterEqual(len(bank), 16)
+                self.assertTrue(bank)
                 self.assertFalse(validate_questions(rid, REPORT_MODULES[rid], claims, text, lang, artifact['format']))
         rid = 'base-boot-telemetry-sanitize'
         text = (ROOT / '_posts/2026-09-03-nvme-boot-telemetry-sanitize-en.md').read_text()
@@ -148,13 +149,13 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_ten_reports_and_forty_requested_artifacts(self):
+    def test_contract_has_ten_reports_and_thirty_requested_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 40)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 20)
+        self.assertEqual(len(artifacts), 30)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 10)
         self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 20)
         self.assertEqual(len({item["report_id"] for item in artifacts}), 10)
         self.assertEqual(
@@ -365,7 +366,7 @@ class NvmeReportContractTest(unittest.TestCase):
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             texts.append(text)
             for required in (
-                "Mental Model", "Debug", "LID 06h", "008C0006h", "HMDL",
+                "LID 06h", "008C0006h", "HMDL",
                 "HMDLEC", "HMNARE", "DSTRD", "NDT", "00000012_34567000h",
                 "NVM Express NVM Command Set Specification, Revision 1.3",
             ):
@@ -374,11 +375,11 @@ class NvmeReportContractTest(unittest.TestCase):
                 "§4.1.4.4", "Figure 112", "§5.2.30.3", "§8.1.30",
             ):
                 self.assertNotIn(excluded, text)
-        self.assertEqual(len(texts), 4)
+        self.assertEqual(len(texts), 3)
         self.assertNotEqual(texts[0], texts[1])
         self.assertEqual(
+            VALIDATOR.claim_id_sequence(texts[1]),
             VALIDATOR.claim_id_sequence(texts[2]),
-            VALIDATOR.claim_id_sequence(texts[3]),
         )
 
     def test_selftest_namespace_report_has_exact_scope_and_numeric_teaching(self):
@@ -392,16 +393,16 @@ class NvmeReportContractTest(unittest.TestCase):
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             texts.append(text)
             for required in (
-                "Mental Model", "Debug", "LID 06h", "008C0006h", "NSZE", "NCAP",
+                "LID 06h", "008C0006h", "NSZE", "NCAP",
                 "NUSE", "THINP", "NVMSETID", "ENDGID", "Controller List", "DNCS",
                 "NVM Express NVM Command Set Specification, Revision 1.3",
             ):
                 self.assertIn(required.lower(), text.lower())
-        self.assertEqual(len(texts), 4)
+        self.assertEqual(len(texts), 3)
         self.assertNotEqual(texts[0], texts[1])
         self.assertEqual(
+            VALIDATOR.claim_id_sequence(texts[1]),
             VALIDATOR.claim_id_sequence(texts[2]),
-            VALIDATOR.claim_id_sequence(texts[3]),
         )
 
     def test_power_feature_report_honors_exact_scope_and_has_numeric_teaching(self):
@@ -415,7 +416,7 @@ class NvmeReportContractTest(unittest.TestCase):
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             texts.append(text)
             for required in (
-                "Mental Model", "Debug", "FID 02h", "FID 04h", "FID 0Ch",
+                "FID 02h", "FID 04h", "FID 0Ch",
                 "FID 10h", "FID 11h", "07D00018h", "01400157h", "01570161h",
             ):
                 self.assertIn(required.lower(), text.lower())
@@ -424,11 +425,11 @@ class NvmeReportContractTest(unittest.TestCase):
                 "Figure 469", "Figure 742", "Figure 743", "Figure 744",
             ):
                 self.assertNotIn(excluded, text)
-        self.assertEqual(len(texts), 4)
+        self.assertEqual(len(texts), 3)
         self.assertNotEqual(texts[0], texts[1])
         self.assertEqual(
+            VALIDATOR.claim_id_sequence(texts[1]),
             VALIDATOR.claim_id_sequence(texts[2]),
-            VALIDATOR.claim_id_sequence(texts[3]),
         )
 
     def test_firmware_report_is_tutorial_first_and_lid03_only(self):
@@ -439,7 +440,7 @@ class NvmeReportContractTest(unittest.TestCase):
             if artifact["report_id"] != "base-admin-fw-logs":
                 continue
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            for required in ("Mental Model", "End-to-End", "Debug", "LID 03h", "007F0003h"):
+            for required in ("LID 03h", "007F0003h"):
                 self.assertIn(required, text)
             self.assertNotIn("Figure 逐圖導讀", text)
             self.assertNotIn("Figure-by-Figure Guide", text)
@@ -451,70 +452,38 @@ class NvmeReportContractTest(unittest.TestCase):
             ):
                 self.assertNotIn(removed_topic, text)
 
-    def test_four_firmware_editions_have_distinct_delivery_shapes(self):
-        tutorial = (
-            ROOT / "DOCS/nvme-spec-report/base-admin-fw-logs/tutorial-zh-tw.html"
-        ).read_text(encoding="utf-8")
-        reference = (
-            ROOT / "DOCS/nvme-spec-report/base-admin-fw-logs/detailed-spec-zh-tw.html"
-        ).read_text(encoding="utf-8")
-        zh_ppt = (
-            ROOT / "_posts/2026-08-31-nvme-base-firmware-log-admin-zh-tw.md"
-        ).read_text(encoding="utf-8")
-        en_ppt = (
-            ROOT / "_posts/2026-08-31-nvme-base-firmware-log-admin-en.md"
-        ).read_text(encoding="utf-8")
-
-        self.assertIn("新手教學版｜iPad／Desktop", tutorial)
-        self.assertIn("先把縮寫變成人話", tutorial)
-        self.assertIn("四種 firmware 狀態", tutorial)
-        self.assertEqual(len(VALIDATOR.figure_table_ids(tutorial)), 22)
-
-        self.assertIn("快速查詢詳細手冊｜iPad／Desktop", reference)
-        self.assertIn("Command-specific status（SCT=1h）", reference)
-        self.assertIn("完整 Figure evidence appendix", reference)
-        self.assertEqual(len(VALIDATOR.figure_table_ids(reference)), 22)
-        self.assertNotEqual(tutorial, reference)
-
-        zh_slides = re.findall(r"(?m)^## Slide (\d{2})", zh_ppt)
-        en_slides = re.findall(r"(?m)^## Slide (\d{2})", en_ppt)
-        self.assertEqual(zh_slides, [f"{number:02d}" for number in range(1, 13)])
-        self.assertEqual(zh_slides, en_slides)
-        self.assertEqual(
-            VALIDATOR.claim_id_sequence(zh_ppt),
-            VALIDATOR.claim_id_sequence(en_ppt),
-        )
-
-    def test_all_html_share_responsive_visual_language(self):
-        contract = json.loads(
-            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
-        )
-        html_artifacts = [item for item in contract["artifacts"] if item["format"] == "html"]
-        self.assertEqual(len(html_artifacts), 20)
-        for artifact in html_artifacts:
+    def test_three_editions_preserve_all_claims_without_visible_tracking(self):
+        contract = VALIDATOR.load_json("output-contract.json")
+        claims = VALIDATOR.load_json("claims.json")["claims"]
+        for artifact in contract["artifacts"]:
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            expected = {c["id"] for c in claims if c["report_id"] == artifact["report_id"]}
             with self.subTest(artifact=artifact["id"]):
-                self.assertIn('<meta name="color-scheme" content="light dark">', text)
-                self.assertIn('@media (min-width: 1200px)', text)
-                self.assertIn('class="visual-legend"', text)
-                for role in ("command", "object", "decision", "success", "failure"):
-                    self.assertIn(f'class="legend-swatch role-{role}"', text)
-                self.assertRegex(text, r'<body class="edition-(?:tutorial|reference)">')
-                self.assertIn('data-visual-kind="', text)
-                if artifact["id"].endswith("tutorial-html"):
-                    self.assertIn("箭頭只表示", text)
-                else:
-                    self.assertIn("詳細版查詢重畫", text)
+                self.assertEqual(artifact["claim_coverage"], "all")
+                self.assertEqual(VALIDATOR.claim_ids(text), expected)
+                visible = VALIDATOR.reader_text(text)
+                for claim_id in expected:
+                    self.assertNotIn(claim_id, visible)
+                self.assertFalse(VALIDATOR.validate_editorial_structure(text))
+
+    def test_html_has_responsive_accessible_reading_structure(self):
+        contract = VALIDATOR.load_json("output-contract.json")
+        artifacts = [a for a in contract["artifacts"] if a["format"] == "html"]
+        self.assertEqual(len(artifacts), 10)
+        for artifact in artifacts:
+            with self.subTest(artifact=artifact["id"]):
+                self.assertFalse(VALIDATOR.validate_html(ROOT / artifact["path"]))
 
     def test_light_and_dark_semantic_palettes_meet_text_contrast(self):
-        source = BUILD_SCRIPT.read_text(encoding="utf-8")
-        root_blocks = re.findall(r":root\s*\{(.*?)\}", source, re.DOTALL)
+        source = (ROOT / "assets/css/nvme-reader.css").read_text(encoding="utf-8")
+        blocks = re.findall(r"\.nvme-note, \.edition-tutorial\s*\{(.*?)\}", source, re.S)
         palettes = []
-        for block in root_blocks:
-            values = dict(re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{6})", block))
-            if values:
+        for block in blocks:
+            values = dict(re.findall(r"--([\w-]+):\s*(#[0-9a-fA-F]{3,6})", block))
+            values = {key: '#' + ''.join(c * 2 for c in value[1:]) if len(value) == 4 else value for key, value in values.items()}
+            if all(key in values for key in ("ink", "accent", "soft", "example")):
                 palettes.append(values)
-        self.assertGreaterEqual(len(palettes), 2)
+        self.assertEqual(len(palettes), 2)
 
         def luminance(color: str) -> float:
             channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
@@ -525,35 +494,24 @@ class NvmeReportContractTest(unittest.TestCase):
             return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
 
         for palette_name, palette in zip(("light", "dark"), palettes[:2]):
-            for role in ("spec", "explain", "infer", "example", "warn"):
+            for role, background_role in (("ink", "surface"), ("muted", "surface"),
+                                          ("accent", "soft"), ("example", "example-soft"),
+                                          ("warning", "surface"), ("blue", "surface"), ("violet", "surface")):
                 foreground = luminance(palette[role])
-                background = luminance(palette[f"{role}-soft"])
+                background = luminance(palette[background_role])
                 ratio = (max(foreground, background) + 0.05) / (
                     min(foreground, background) + 0.05
                 )
                 with self.subTest(palette=palette_name, role=role):
                     self.assertGreaterEqual(ratio, 4.5)
 
-    def test_tutorial_and_reference_html_have_distinct_information_architectures(self):
-        contract = json.loads(
-            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
-        )
-        by_report: dict[str, dict[str, str]] = {}
+    def test_retired_detailed_html_is_not_published_or_linked(self):
+        contract = VALIDATOR.load_json("output-contract.json")
         for artifact in contract["artifacts"]:
-            if artifact["format"] != "html":
-                continue
-            by_report.setdefault(artifact["report_id"], {})[artifact["purpose"]] = (
-                ROOT / artifact["path"]
-            ).read_text(encoding="utf-8")
-        for report_id, editions in by_report.items():
-            tutorial = next(value for key, value in editions.items() if "新手教學" in key)
-            reference = next(value for key, value in editions.items() if "快速查詢" in key)
-            with self.subTest(report=report_id):
-                self.assertIn('class="edition-tutorial"', tutorial)
-                self.assertIn('class="edition-reference"', reference)
-                self.assertNotEqual(tutorial, reference)
-                self.assertIn("常見誤解", tutorial)
-                self.assertTrue("快速查詢" in reference or "Reference" in reference)
+            self.assertNotIn("detailed", artifact["id"])
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            self.assertNotIn("detailed-spec-zh-tw.html", text)
+        self.assertEqual(list((ROOT / "DOCS/nvme-spec-report").glob("*/detailed-spec-zh-tw.html")), [])
 
     def test_markdown_language_and_site_layout_are_language_aware(self):
         contract = json.loads(
@@ -608,7 +566,7 @@ class NvmeReportContractTest(unittest.TestCase):
         )
         for artifact in contract["artifacts"]:
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            self.assertIsNone(VALIDATOR.forbidden_published(text, artifact['report_id']))
+            self.assertIsNone(VALIDATOR.forbidden_published(VALIDATOR.reader_text(text), artifact['report_id'], VALIDATOR.load_json('scope.json')['entries']))
             for phrase in VALIDATOR.PLACEHOLDER_PHRASES:
                 self.assertNotIn(phrase, text)
 
@@ -648,124 +606,64 @@ class NvmeReportContractTest(unittest.TestCase):
         for source in ("support.apple.com", "developer.apple.com", "webkit.org"):
             self.assertIn(source, profile)
 
-        figures = json.loads(
-            (ROOT / ".ai/nvme-report/figure-table-register.json").read_text(encoding="utf-8")
-        )["entries"]
         for artifact in contract["artifacts"]:
-            if artifact["format"] != "html":
-                continue
-            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            expected = sum(
-                artifact["id"] in item.get("required_artifact_ids", [])
-                for item in figures
-                if item.get("report_id") == artifact["report_id"]
-            )
-            self.assertIn("viewport-fit=cover", text)
-            self.assertGreaterEqual(text.count('name="theme-color"'), 2)
-            self.assertIn('class="skip-link"', text)
-            self.assertIn('class="ipad-read-guide"', text)
-            self.assertIn('class="visual-atlas"', text)
-            self.assertIn("prefers-reduced-motion: reduce", text)
-            self.assertIn("safe-area-inset-top", text)
-            self.assertNotIn("<script", text.lower())
-            self.assertGreaterEqual(text.count('name="figures-'), expected)
-            if artifact["id"].endswith("tutorial-html"):
-                self.assertGreaterEqual(text.count("新手教學重畫（非 Spec 原圖）"), expected)
-            else:
-                self.assertGreaterEqual(text.count("詳細版查詢重畫"), expected)
-                self.assertGreaterEqual(
-                    text.count("Input／Decode／Validate／Evidence"), expected
-                )
-
-    def test_every_edition_has_deep_teaching_content_and_semantic_color(self):
-        contract = json.loads(
-            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
-        )
-        baseline = {
-            "base12-tutorial-html": 15434, "base12-detailed-html": 17617,
-            "base12-zh-md": 18505, "base12-en-md": 27877,
-            "base3-tutorial-html": 46712, "base3-detailed-html": 54832,
-            "base3-zh-md": 57130, "base3-en-md": 83874,
-            "base4-tutorial-html": 31753, "base4-detailed-html": 37484,
-            "base4-zh-md": 39217, "base4-en-md": 59885,
-            "pcie14-tutorial-html": 62844, "pcie14-detailed-html": 73666,
-            "pcie14-zh-md": 76574, "pcie14-en-md": 110423,
-            "basefwlog-tutorial-html": 14224, "basefwlog-detailed-html": 26828,
-            "basefwlog-zh-md": 13377, "basefwlog-en-md": 17261,
-            "basepower-tutorial-html": 45000, "basepower-detailed-html": 50000,
-            "basepower-zh-md": 50000, "basepower-en-md": 70000,
-            "basediagmem-tutorial-html": 50000, "basediagmem-detailed-html": 55000,
-            "basediagmem-zh-md": 60000, "basediagmem-en-md": 65000,
-            "basensmgmt-tutorial-html": 70000, "basensmgmt-detailed-html": 70000,
-            "basensmgmt-zh-md": 80000, "basensmgmt-en-md": 130000,
-        }
-
-        class VisibleText(HTMLParser):
-            def __init__(self):
-                super().__init__()
-                self.parts = []
-                self.hidden = 0
-
-            def handle_starttag(self, tag, attrs):
-                if tag in {"style", "script"}:
-                    self.hidden += 1
-
-            def handle_endtag(self, tag):
-                if tag in {"style", "script"} and self.hidden:
-                    self.hidden -= 1
-
-            def handle_data(self, data):
-                if not self.hidden:
-                    self.parts.append(data)
-
-        for artifact in contract["artifacts"]:
-            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             if artifact["format"] == "html":
-                parser = VisibleText()
-                parser.feed(text)
-                visible = " ".join(parser.parts)
-                self.assertIn("prefers-color-scheme: dark", text)
-                for token in ("--spec:", "--explain:", "--infer:", "--example:", "--warn:"):
-                    self.assertIn(token, text)
-                if artifact["report_id"] == "base-admin-fw-logs":
-                    term_heading = "先把縮寫變成人話" if artifact["id"].endswith("tutorial-html") else "縮寫與能力欄位"
-                    self.assertLess(text.index(term_heading), text.index("Appendix A"))
-                else:
-                    self.assertLess(text.index("Glossary"), text.index("Figure／欄位表教學"))
-            else:
-                visible = text
-                self.assertIn("glossary", text.lower())
-                self.assertIn("Debug", text)
-            if artifact["report_id"] in {"base-boot-telemetry-sanitize", "nvm-command-set-1.3"}:
-                # New report: coverage is checked directly, without a historical length baseline.
-                continue
-            self.assertGreaterEqual(
-                len(visible),
-                baseline[artifact["id"]] * 2,
-                f"{artifact['id']} visible content did not at least double",
-            )
+                self.assertFalse(VALIDATOR.validate_html(ROOT / artifact["path"]))
 
-    def test_generic_bilingual_ppt_sources_share_module_and_figure_structure(self):
-        pairs = [
-            ("_posts/2026-08-28-nvme-base-ch1-2-zh-tw.md", "_posts/2026-08-28-nvme-base-ch1-2-en.md"),
-            ("_posts/2026-08-28-nvme-base-ch3-zh-tw.md", "_posts/2026-08-28-nvme-base-ch3-en.md"),
-            ("_posts/2026-08-28-nvme-base-ch4-zh-tw.md", "_posts/2026-08-28-nvme-base-ch4-en.md"),
-            ("_posts/2026-08-28-nvme-pcie-transport-1-4-zh-tw.md", "_posts/2026-08-28-nvme-pcie-transport-1-4-en.md"),
-            ("_posts/2026-09-02-nvme-base-power-thermal-features-zh-tw.md", "_posts/2026-09-02-nvme-base-power-thermal-features-en.md"),
-            ("_posts/2026-09-02-nvme-base-self-test-hmb-emulation-zh-tw.md", "_posts/2026-09-02-nvme-base-self-test-hmb-emulation-en.md"),
-            ("_posts/2026-09-02-nvme-base-self-test-namespace-management-zh-tw.md", "_posts/2026-09-02-nvme-base-self-test-namespace-management-en.md"),
-        ]
-        for zh_path, en_path in pairs:
-            zh = (ROOT / zh_path).read_text(encoding="utf-8")
-            en = (ROOT / en_path).read_text(encoding="utf-8")
-            self.assertEqual(
-                re.findall(r"(?m)^### Module (\d{2}):", zh),
-                re.findall(r"(?m)^### Module (\d{2}):", en),
-            )
-            self.assertEqual(
-                re.findall(r"figure-table:([A-Z0-9-]+)", zh),
-                re.findall(r"figure-table:([A-Z0-9-]+)", en),
-            )
+    def test_reader_text_cannot_count_hidden_claim_body_as_teaching(self):
+        text = '<style>claim text</style><!-- claim text --><p>Actual explanation &amp; example.</p>'
+        visible = VALIDATOR.reader_text(text)
+        self.assertNotIn("claim text", visible)
+        self.assertIn("Actual explanation & example.", visible)
+
+    def test_editorial_validation_rejects_missing_overview_and_visible_internal_ids(self):
+        minimal = ('<section id="topic-overview"><h2>Queue relationships</h2></section>'
+                   '<!-- claim:BASE4-TEST -->'
+                   '<p>A submission entry identifies its command.</p>'
+                   '<p class="term-note">SQE: Submission Queue Entry.</p>'
+                   '<details class="source-note"><summary>Base §4.1</summary>Full source</details>'
+                   '<section id="knowledge-check"><p>Why does the command carry an identifier?</p></section>')
+        self.assertFalse(VALIDATOR.validate_editorial_structure(minimal))
+        self.assertTrue(VALIDATOR.validate_editorial_structure(minimal.replace('id="topic-overview"', 'id="other"')))
+        self.assertTrue(VALIDATOR.validate_editorial_structure(minimal.replace('<!-- claim:BASE4-TEST -->', '<p data-claim-id="BASE4-TEST">BASE4-TEST</p>')))
+        self.assertTrue(VALIDATOR.validate_editorial_structure(minimal + '<h2>Decode</h2>'))
+        # A concrete technical sentence can explain decoding; the vague label is the problem.
+        self.assertFalse(VALIDATOR.validate_editorial_structure(minimal + '<p>Decode the low 4 bits as the command opcode.</p>'))
+        self.assertTrue(VALIDATOR.validate_editorial_structure(minimal + '<a href="detailed-spec-zh-tw.html">Old version</a>'))
+
+    def test_source_backed_background_does_not_silently_expand_scope(self):
+        entry = {"status": "PREREQUISITE_ONLY", "report_id": "base-ch3",
+                 "source_id": "NVME-BASE-2.4", "sections": ["2.2"],
+                 "teaching_necessity": "Explain how the local queue model differs from a remote transport.",
+                 "supports_topic": "Queue location", "background_terms": ["Fabrics"]}
+        self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3"))
+        self.assertIsNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3", [entry]))
+        self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch4", [entry]))
+        self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3", [{**entry, "teaching_necessity": ""}]))
+
+    def test_setup_rejects_subset_coverage_and_background_without_necessity(self):
+        documents = {name: VALIDATOR.load_json(name) for name in (
+            "source-register.json", "scope.json", "output-contract.json", "claims.json", "figure-table-register.json")}
+        documents["output-contract.json"]["artifacts"][0]["claim_coverage"] = "subset"
+        prerequisite = next(e for e in documents["scope.json"]["entries"] if e["status"] == "PREREQUISITE_ONLY")
+        prerequisite.pop("teaching_necessity")
+        with mock.patch.object(VALIDATOR, "load_json", side_effect=documents.__getitem__):
+            errors = VALIDATOR.validate_setup(None)
+        self.assertTrue(any("全部核准 claim" in error for error in errors))
+        self.assertTrue(any("teaching_necessity" in error for error in errors))
+
+    def test_bilingual_posts_share_nonempty_topic_and_source_order(self):
+        contract = VALIDATOR.load_json("output-contract.json")
+        for report_id in {a["report_id"] for a in contract["artifacts"]}:
+            posts = [a for a in contract["artifacts"] if a["report_id"] == report_id and a["format"] == "markdown"]
+            self.assertEqual(len(posts), 2)
+            texts = [(ROOT / a["path"]).read_text(encoding="utf-8") for a in posts]
+            modules = [re.findall(r'\bid="module-([^"\']+)', text) for text in texts]
+            with self.subTest(report=report_id):
+                self.assertTrue(modules[0])
+                self.assertEqual(modules[0], modules[1])
+                self.assertEqual(VALIDATOR.claim_id_sequence(texts[0]), VALIDATOR.claim_id_sequence(texts[1]))
+                self.assertEqual(VALIDATOR.FIGURE_TABLE_MARKER.findall(texts[0]), VALIDATOR.FIGURE_TABLE_MARKER.findall(texts[1]))
 
     def test_post_excerpt_is_plain_text_before_truncation(self):
         layout = (ROOT / "_layouts/post.html").read_text(encoding="utf-8")

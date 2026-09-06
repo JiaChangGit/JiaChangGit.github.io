@@ -1,72 +1,47 @@
 # NVMe 報告文字與圖表風格
 
-本文件定義每份報告四個版本共同的寫法。目標是工程內訓講義，不使用 AI 自稱或宣傳式文字。
+依使用者 2026-09-06 對齊結果，適用中文教學 HTML、中文 post、英文 post 共 3 版。
 
-## 中文
+## 敘事與讀者
 
-- 使用台灣繁體中文；第一次出現的關鍵詞補英文，例如「提交佇列（Submission Queue, SQ）」。
-- 先寫結論或適用條件，再說原因、流程與例子。
-- 主詞要明確區分 host、controller、NVM subsystem、namespace 與 PCIe Function。
-- `shall`、`may`、`should` 不得互換；詳細版保留英文 keyword。
-- 避免「讓我們」「其實很簡單」「輕鬆理解」「值得注意的是」等無資訊量開場。
-- 不使用「身為 AI」「我認為」「以下為您整理」等工具口吻。
+HTML 面向學過 OS 與 Computer Organization、聽過 SSD 基本概念的大學畢業生。從用途與整體運作逐步深入欄位、條件、資料結構與必要例外；同一份教材可以從新手讀到進階，不另製詳細版。
 
-## English
+中英文 post 用於向主管報告。每版開頭說清楚主題、重要性與主軸，搭配合適的總覽圖或表。正文依理解順序展開關鍵機制及代表性例子。每篇均獨立可讀；兩種語言的主軸、claim、圖表、例子、限制與問題順序一致，譯文可自然改寫。
 
-- Use the same claim IDs, scope, ordering, figures, tables, examples, and caveats as the Chinese Markdown.
-- Preserve NVMe normative keywords verbatim. Do not strengthen `may` or `should` into `shall`.
-- Translate the verified claim, not the Chinese sentence structure.
-- Prefer direct technical prose with an explicit subject and condition.
+3 版涵蓋該篇全部已核准 claim，但同一概念完整解釋一次，後文直接應用或連回。同一概念的多筆來源可共用解釋。不要按 section／Figure 順序堆疊，也不以字數、圖數或問題數代表深度。
 
-## iPad／Desktop Responsive HTML
+## 用語與就近說明
 
-- 裝置、Safari baseline、觸控與 accessibility 的硬性條件見 `ipad-html-profile.md`。
-- 使用短段落、窄表格、`nav`、`main`、`section`、`figure`、`figcaption`、`details` 等語意標籤。
-- 允許單一內嵌 CSS；不使用 JavaScript、外部 stylesheet、外部字型或外部資源。CSS 必須同時支援 iPad／desktop、`prefers-color-scheme` Light／Dark Mode 與列印。
-- 每個用途只維護一份 responsive HTML：同一檔在 11 吋 iPad portrait／landscape 採單欄閱讀，viewport 達 1200px 的 desktop 才放寬至約 1180px 並使用兩欄 Visual Atlas。不得為裝置另製內容副本。
-- iPad 正文寬度維持約 760～900px；desktop 可放寬視覺索引，但自然段落維持最多約 80 字元寬。table 外層可獨立水平捲動，不得讓整頁 overflow。
-- 建立固定視覺語意：SPEC=藍、解釋=青綠、推論=紫、範例=綠、注意／錯誤=橘紅；同時保留文字標籤，不能只靠顏色傳達資訊。
-- 每張 Figure 以 `details` 收合，並提供依章節分組的 Figure 索引與返回連結，避免長頁面迷航。
-- 每張表格以四欄內為原則。欄位過多時拆成「欄位定義」「條件」「例子」多張表。
-- Unicode 圖示只用於固定語意：`[必須]`、`[允許]`、`[建議]`、`[注意]`，不作裝飾。
-- inline SVG 必須有 `title`／`desc` 或等效替代文字，並在圖說列出來源 claim。
-- 圖示依問題選型：Architecture 說明元件位置、Sequence 說明 actor 交握、State Machine 說明狀態轉移、Decision Flow 說明 failure branch、Bit-field／Memory Layout 說明 offset 與位元。不可用同一種直線流程圖代替全部關係。
-- 每個 learning module 至少同時提供「主流程視圖」與「驗證／失敗視圖」；每張 Figure card 要有一張簡化教學視圖，以及 Input／Decode／Validate／Evidence 工作紙。
-- Visual Atlas 在 iPad 採垂直單欄，避免卡片只露出一半；desktop 才排成雙欄。所有重要內容保留為可搜尋文字。
-- Requirement 顏色另行區分：`shall`／`shall not`=紅、`should`=黃、`may`=藍灰、`reserved`=灰；每一種仍顯示文字 badge。
+- 台灣繁體中文，明確區分 host、controller、NVM subsystem、namespace 與 PCIe Function。
+- 名詞與縮寫在首次出現的段落正下方補全名、中文及本段用途；圖裡首次出現者就在圖下解釋。術語總表不能代替就近說明。
+- 避免自創名詞；必要的教學簡稱或比喻須在該段下方定義，不能冒充規格術語。
+- 阿拉伯數字、bit／byte 範圍、十六進位編碼、公式與單位維持原樣，不翻譯數字。
+- 保留 shall、should、may 的強度，不能將選用能力改成必須支援。
+- 英文自然表達已核對的技術含義，不照抄中文句型。不用 AI 自稱、宣傳語、空泛開場或密集裝飾圖示。
 
-### 固定圖形與色彩語法
+## 視覺表達
 
-所有報告使用同一組「角色」而非每頁自行選色：藍色圓角矩形是 Request／Input，青綠色圓角矩形是 Object／State，紫色 gate 是 Rule／Decision，綠色雙框是 Valid／Evidence，橘色虛線框是 Warning／Failure。每個節點仍須印出角色文字；黑灰實線只表示正常資料流，橘色虛線只表示 failure／recovery，不能單靠顏色辨識。
+參考使用者提供的 `nvme-ch3-tutorial.html` 與 `NVMe資料結構教學-SQE-CQE-PRP.html`：清楚層級、充分留白、易讀單欄正文、電腦目錄、適合 iPad 的閱讀寬度；以藍與青綠為主，其他顏色少量區分條件或例外，保持明暗色系的文字對比。
 
-- Architecture／Dependency：採上到下的 parent → bus → children 佈局；connector 先畫、node 後畫，線不得穿越文字或其他 node。
-- Sequence／Ownership：actor header 與 lifeline 分離，訊息箭頭位於 lane 之間，訊息標籤有不透明背景。
-- State／Failure：狀態沿時間軸排列，正常轉移用灰色實線，failure／timeout loop 用橘色虛線且與正常路徑分開。
-- Decode／Memory Layout：保持 bit／byte 比例、offset 與 reserved gap；reserved 必須同時有 `R`／`Reserved` 文字和虛線外框。
-- 流程圖只回答先後順序；比較用 table；具體數值以 example box 呈現。不可用同一種直線節點圖假裝 Architecture、State 與 Decode。
+| 要理解的內容 | 合適工具 | 必須交代 |
+|---|---|---|
+| 元件、層次、範圍 | 關係圖 | 實際元件及關係 |
+| 命令與資料移動 | 流程／sequence 圖 | actor、方向、先後與條件 |
+| 狀態改變 | 狀態圖 | 狀態名稱與轉換條件 |
+| 欄位配置與編碼 | 欄位圖／短表格 | bit／byte 範圍、offset、保留區與用途 |
+| 相似機制差異 | 比較表 | 比較維度、條件與結果 |
+| 數值影響結果 | 說明性範例 | 已知值、推算步驟、結論 |
 
-### 四種交付用途
+圖下用一句話點出應看懂的關係。圖、表、正文各補足不同資訊，不把同一句話換 3 種形式重複。簡單概念可只用文字；不強制每節全套圖表，不強制每張來源 Figure 重畫或配工作紙。不用抽象 Locate／Decode 節點；若需解碼，就寫清楚哪個值代表什麼。
 
-- 新手 HTML：從縮寫、Mental Model、完整流程、具體例子、常見誤解到 Debug；Spec Figure 以「怎麼讀」為主。
-- 詳細 HTML：以機制索引、normative keyword、欄位 boundary、Input／Decode／Validate／Evidence 與症狀索引為主，不重複教學故事。
-- 中文／英文 Markdown：是 PPT 腳本；兩版 slide 順序、claim ID、Figure、例子與 caveat 完全一致，只改語言。
-- 四種版本共同保留可追溯來源、正確專有名詞、規範性強度與非 AI 口吻；不得為追求版面而刪除必要 dependency slice。
+SVG 需有 title／desc，線不穿過文字。顏色不能是唯一區分方式，但不必在每個節點重複印出製圖角色。比較表原則最多 4 欄，必要寬表在自己的捲動容器顯示，不讓整頁溢出。圖表放在支援概念的位置。
 
-## Figure／Table 作為支援證據
+## 來源與內部資訊
 
-主教學先依「問題、Mental Model、流程、欄位、範例、錯誤與 Debug」組織。Figure／Table
-放在首次支援該概念的位置，或集中於 Detailed Reference／Appendix；不得以 Figure 順序取代
-教學故事線。每筆 Figure／Table reference 仍須說明用途、讀法、適用的 normative keyword、
-限制及來源 section／頁碼。
+每個技術結論可追溯至 claim 與來源。正文附近顯示短來源，完整文件、revision、section、適用 Figure／Table、文件頁及 PDF 頁可置於 details。不虛構圖表編號。
 
-七份報告都參考 Claude Code 工程文件的資訊設計：Hero／scope、Mental
-Model、PART 層級、固定語意標記、bit-field、sequence、decision flow、章末統整與 Appendix。
-離線 HTML 以內嵌 CSS、語意 HTML、`details`、anchor、四欄內 table 與 inline SVG 呈現；
-仍不使用 JavaScript，不模擬搜尋、scrollspy 或 theme button。
+claim ID、追蹤號、開發歷程、驗證紀錄及產生流程只放 HTML 註解或內部文件。必要背景可包含原先排除內容，但須有來源、具體教學必要性，深度以理解本篇為限。不另設 Debug、症狀索引或模擬實作問題，規格必要條件與例外放在相關機制下。
 
-## 100 分鐘報告的暫定節奏
+## 結尾鞏固
 
-七份主題共用 100 分鐘時，預設保留 5 分鐘說明範圍與版本、10 分鐘建立 Base 與 PCIe
-Transport 的關係、70 分鐘講七份核准主題與重點 Figure、10 分鐘整合範例、5 分鐘總結。
-Markdown 與詳細 HTML 保留全部納入 Figure 作為附錄查閱；口頭報告依 Figure 索引挑選
-主線，不以逐張朗讀取代說明。
+以少量問題檢查不同概念、差異或推理能力，附有說明的答案及來源。不設固定題數下限；不能只換名詞重問，也不能直接複製正文段落作答。中英文考察相同概念、條件與順序。不要考內部 claim ID、圖表編號、開發流程或工具操作。

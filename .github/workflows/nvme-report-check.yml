@@ -9,6 +9,9 @@ on:
       - "scripts/validate_nvme_report.py"
       - "scripts/extract_nvme_source_text.py"
       - "scripts/build_nvme_reports.py"
+      - "scripts/nvme_*.py"
+      - "assets/css/nvme-reader.css"
+      - "_includes/head.html"
       - "scripts/update_nvme_figure_evidence.py"
       - "requirements-nvme-report.txt"
       - "tests/test_validate_nvme_report.py"
@@ -23,6 +26,9 @@ on:
       - "scripts/validate_nvme_report.py"
       - "scripts/extract_nvme_source_text.py"
       - "scripts/build_nvme_reports.py"
+      - "scripts/nvme_*.py"
+      - "assets/css/nvme-reader.css"
+      - "_includes/head.html"
       - "scripts/update_nvme_figure_evidence.py"
       - "requirements-nvme-report.txt"
       - "tests/test_validate_nvme_report.py"
@@ -49,4 +55,4 @@ jobs:
           python3 -B scripts/validate_nvme_report.py --phase auto
 
       - name: Run validator tests
-        run: python3 -B -m unittest discover -s tests -p 'test_validate_nvme_report.py' -v
+        run: python3 -B -m unittest discover -s tests -v

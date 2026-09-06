@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "approval_status": "approved",
   "production_status": "ready_for_publish",
   "default_status": "EXCLUDE",
@@ -13,18 +13,11 @@
   ],
   "status_meanings": {
     "INCLUDE": "完整納入報告與未來 PPT",
-    "PREREQUISITE_ONLY": "只提供理解主題所需的最小背景",
-    "EXCLUDE": "不寫入報告，也不放入 PPT",
+    "PREREQUISITE_ONLY": "只提供理解當前主題所需的最小背景，包含原先明確排除主題；須記錄來源與具體必要性",
+    "EXCLUDE": "不作本篇主教學；若為必要背景，另登記有來源與必要性說明的 PREREQUISITE_ONLY 項目",
     "DO_NOT_PUBLISH": "可供私下分析，但不得出現在公開輸出或 PPT",
     "OPEN": "尚待使用者決定；publish 階段禁止存在"
   },
-  "global_exclusions": [
-    "NVMe over Fabrics",
-    "message-based controller model",
-    "Fabrics command and response capsules",
-    "Discovery controller and Discovery service",
-    "NVM subsystem export, association, NQN and other Fabrics-only concepts"
-  ],
   "reports": [
     {
       "id": "base-ch1-2",
@@ -922,7 +915,10 @@
       "sections": [
         "3.3"
       ],
-      "note": "只用於辨識 Conventional Reset 與 Function Level Reset 是 PCIe transport-specific Controller Level Reset 方法"
+      "note": "只用於辨識 Conventional Reset 與 Function Level Reset 是 PCIe transport-specific Controller Level Reset 方法",
+      "report_id": "base-admin-fw-logs",
+      "teaching_necessity": "只用於辨識 Conventional Reset 與 Function Level Reset 是 PCIe transport-specific Controller Level Reset 方法",
+      "supports_topic": "Firmware activation and controller reset"
     },
     {
       "id": "BASE-FWLOG-OTHER-LIDS-EXCLUDE",
@@ -1374,5 +1370,28 @@
       "note": "Minimal common SQE/CQE, PRP/SGL, Identify, host-enabled Copy descriptors, Sanitize status/command, Track Send, and Streams parameter teaching. Excluded transport concepts remain excluded."
     }
   ],
-  "approval_note": "使用者於 2026-09-02 核准新增第八份四版本報告：Base 2.4 §8.1.8、§5.2.6、§5.2.13.1.7（僅 LID 06h）、§8.1.17（排除 §8.1.17.3）、§5.2.24、§5.2.25，以及 NVM Command Set 1.3 §4.1.4.3、§2.1.1、§4.1.6、§5.8；所有 Fabrics／Discovery／message-based 內容排除。既有七份報告範圍維持不變。"
+  "approval_note": "2026-09-06 使用者確認原先明確排除主題亦可作本篇必要背景。各篇原主範圍及 Figure 清冊仍維持；擴充時另登記 PREREQUISITE_ONLY、來源、具體教學必要性及支援主題，不自動納入全部排除內容。每篇 3 版，驗證後直接提交及更新 GitHub Pages。",
+  "background_policy": {
+    "approved_date": "2026-09-06",
+    "formerly_excluded_topics_allowed": true,
+    "requires_source": true,
+    "requires_teaching_necessity": true,
+    "required_fields": [
+      "report_id",
+      "source_id",
+      "sections",
+      "teaching_necessity",
+      "supports_topic"
+    ],
+    "figure_allowlists_automatically_expanded": false,
+    "do_not_publish_remains_excluded": true,
+    "formerly_excluded_term_field": "background_terms (list explicit terms needed by the report-specific background)"
+  },
+  "main_scope_exclusions": [
+    "NVMe over Fabrics",
+    "message-based controller model",
+    "Fabrics command and response capsules",
+    "Discovery controller and Discovery service",
+    "NVM subsystem export, association, NQN and other Fabrics-only concepts"
+  ]
 }

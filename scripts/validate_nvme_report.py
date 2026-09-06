@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 十份報告、四十個版本、來源定位與離線 HTML 契約。"""
+"""驗證 NVMe 10 份報告、30 個交付檔、教學完整性、來源定位與離線 HTML。"""
 
 from __future__ import annotations
 
@@ -49,11 +49,20 @@ SOURCE_KEYWORDS = {
 }
 
 
-def forbidden_published(text: str, report_id: str):
+def forbidden_published(text: str, report_id: str, background_entries=()):
     # NVM 1.3 §5.4 explicitly defines a memory-based template. The standalone
     # full-command-set scope includes it; its NQN field remains excluded.
     if report_id == 'nvm-command-set-1.3':
         text = re.sub(r'\bExported\s+NVM\s+Subsystem\b', '', text, flags=re.I)
+    # Formerly excluded terminology is allowed when a source-backed, report-specific
+    # prerequisite names the teaching need. This does not expand Figure allowlists.
+    for entry in background_entries:
+        if (entry.get("status") == "PREREQUISITE_ONLY"
+                and entry.get("report_id") == report_id
+                and all(entry.get(key) for key in ("source_id", "sections", "teaching_necessity", "supports_topic"))):
+            for term in entry.get("background_terms", []):
+                if term:
+                    text = re.sub(re.escape(term), "", text, flags=re.I)
     return FORBIDDEN_PUBLISHED.search(text)
 
 
@@ -150,56 +159,95 @@ def validate_html(path: Path, max_columns: int = 4) -> list[str]:
     if parser.style_count != 1:
         errors.append(f"HTML 必須使用一個內嵌 <style>，目前為 {parser.style_count} 個")
     for required_css in (
-        "prefers-color-scheme: dark",
-        "--spec:",
-        "--explain:",
-        "--infer:",
-        "--example:",
-        "--warn:",
-        "--diagram-line:",
-        "--command:",
-        "--object:",
-        "--decision:",
-        "--success:",
-        "--failure:",
-        ".table-wrap",
-        "-webkit-text-size-adjust: 100%",
-        "safe-area-inset-top",
-        "min-height: 44px",
-        "prefers-reduced-motion: reduce",
-        ":focus-visible",
-        "@media (min-width: 1200px)",
+        "prefers-color-scheme", ".table-wrap", "-webkit-text-size-adjust",
+        "safe-area-inset-top", "min-height: 44px", "prefers-reduced-motion",
+        ":focus-visible", "@media", "print",
     ):
         if required_css not in text:
-            errors.append(f"內嵌 CSS 缺少資訊設計 token：{required_css}")
+            errors.append(f"內嵌 CSS 缺少閱讀相容性規則：{required_css}")
     if parser.max_table_columns > max_columns:
         errors.append(
             f"表格最多偵測到 {parser.max_table_columns} 欄；iPad 契約建議不超過 {max_columns} 欄"
         )
-    for required_html in (
-        'class="skip-link"',
-        'class="ipad-read-guide"',
-        'class="visual-atlas"',
-        'class="visual-legend"',
-        'class="legend-swatch role-command"',
-        'class="legend-swatch role-object"',
-        'class="legend-swatch role-decision"',
-        'class="legend-swatch role-success"',
-        'class="legend-swatch role-failure"',
-        "<summary",
-        "<figure",
-        "<figcaption",
-    ):
+    for required_html in ('class="skip-link"', '<nav', '<main', '<summary'):
         if required_html not in text:
-            errors.append(f"缺少 iPad 原生閱讀結構：{required_html}")
-    if not re.search(r'<body class="edition-(?:tutorial|reference)">', text):
-        errors.append("HTML 必須標示 tutorial 或 reference edition")
-    if 'data-visual-kind="' not in text:
-        errors.append("HTML 圖解缺少 data-visual-kind，無法辨識圖形用途")
+            errors.append(f"缺少離線閱讀結構：{required_html}")
+    if not re.search(r'<body\b[^>]*class=["\'][^"\']*\bedition-tutorial\b', text):
+        errors.append("每篇只能發布一份 edition-tutorial 中文 HTML")
     svg_blocks = re.findall(r"<svg\b.*?</svg>", text, re.IGNORECASE | re.DOTALL)
     for index, block in enumerate(svg_blocks, 1):
         if "<title" not in block or "<desc" not in block:
             errors.append(f"第 {index} 個 inline SVG 缺少 title／desc")
+    return errors
+
+
+class ReaderTextParser(HTMLParser):
+    """Extract reader-facing text, excluding metadata, CSS and HTML comments."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts = []
+        self.hidden_depth = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in {"head", "style", "script"}:
+            self.hidden_depth += 1
+
+    def handle_endtag(self, tag):
+        if tag in {"head", "style", "script"} and self.hidden_depth:
+            self.hidden_depth -= 1
+
+    def handle_data(self, data):
+        if not self.hidden_depth:
+            self.parts.append(data)
+
+
+def reader_text(text: str) -> str:
+    text = re.sub(r"\A---\n.*?\n---\n", "", text, flags=re.S)
+    parser = ReaderTextParser()
+    parser.feed(text)
+    return " ".join(parser.parts)
+
+
+def normalized_text(text: str) -> str:
+    return re.sub(r"\s+", " ", html_lib.unescape(text)).strip()
+
+
+def validate_editorial_structure(text: str) -> list[str]:
+    """Check reading landmarks and hidden internal bookkeeping, not fixed layouts."""
+    errors = []
+    overview = re.search(r'\bid=["\']topic-overview["\']', text)
+    closing = re.search(r'\bid=["\']knowledge-check["\']', text)
+    first_claim = CLAIM_MARKER.search(text)
+    if not overview:
+        errors.append("缺少開頭主題與主軸總覽 topic-overview")
+    elif first_claim and overview.start() > first_claim.start():
+        errors.append("主題總覽必須位於技術 claim 之前")
+    if not closing:
+        errors.append("缺少結尾知識鞏固 knowledge-check")
+    elif overview and closing.start() <= overview.start():
+        errors.append("知識鞏固必須位於主題總覽之後")
+    if not re.search(r'class=["\'][^"\']*\bterm-note\b', text):
+        errors.append("缺少就近名詞與縮寫說明 term-note")
+    if not re.search(r'class=["\'][^"\']*\bsource-note\b', text):
+        errors.append("缺少就近來源 source-note")
+    visible = reader_text(text)
+    if re.search(r'\bDebug\b', visible, re.I):
+        errors.append("公開正文仍有 Debug 模板文字")
+    labels = re.findall(r'<(?:h[1-6]|summary|text|th)\b[^>]*>(.*?)</(?:h[1-6]|summary|text|th)>', text, re.S)
+    if any(re.fullmatch(r'(?:Locate|Decode)', reader_text(label).strip(), re.I) for label in labels):
+        errors.append("圖表或標題仍有無具體對象的 Locate／Decode 標籤")
+    for phrase in ("Input／Decode／Validate／Evidence", "claim ledger", "required_artifact_ids", "evidence_digest", "來源核對紀錄", "產生流程", "開發紀錄"):
+        if phrase in visible:
+            errors.append(f"公開正文含內部製作資訊：{phrase}")
+    for internal_id in claim_ids(text) | figure_table_ids(text):
+        if internal_id in visible:
+            errors.append(f"內部追蹤 ID 不得顯示於正文：{internal_id}")
+    for label in re.findall(r'<(?:h[1-6]|summary)\b[^>]*>(.*?)</(?:h[1-6]|summary)>', text, re.S):
+        if re.search(r'Figure 逐圖導讀|Figure-by-Figure|欄位解碼工作紙|詳細版|快速查詢詳細', reader_text(label)):
+            errors.append("公開導覽仍指向已取消的模板或詳細版")
+    if re.search(r'(?:href|src)=["\'][^"\']*detailed-spec', text):
+        errors.append("公開輸出仍連到已取消的詳細版 HTML")
     return errors
 
 
@@ -266,12 +314,24 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 40 or formats.count("html") != 20 or formats.count("markdown") != 20:
-        errors.append("輸出契約必須固定為二十份 HTML 與二十份 Markdown")
+    if len(artifacts) != 30 or formats.count("html") != 10 or formats.count("markdown") != 20:
+        errors.append("輸出契約必須固定為 10 份 HTML 與 20 份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
     if len(report_ids) != 10 or artifact_report_ids != report_ids:
         errors.append("輸出契約必須完整對應 scope.json 的十份報告")
+    for report_id in report_ids:
+        editions = [item for item in artifacts if item.get("report_id") == report_id]
+        if {(item.get("format"), item.get("language")) for item in editions} != {
+                ("html", "zh-Hant-TW"), ("markdown", "zh-Hant-TW"), ("markdown", "en")}:
+            errors.append(f"{report_id} 必須恰有中文 HTML 及中英文 post")
+        if any(item.get("claim_coverage") != "all" for item in editions):
+            errors.append(f"{report_id} 的 3 版都必須涵蓋全部核准 claim")
+    for entry in scope.get("entries", []):
+        if entry.get("status") == "PREREQUISITE_ONLY":
+            for field in ("report_id", "sections", "teaching_necessity", "supports_topic"):
+                if not entry.get(field):
+                    errors.append(f"必要背景 {entry.get('id')} 缺少 {field}")
     artifact_ids = [item.get("id") for item in artifacts]
     if len(artifact_ids) != len(set(artifact_ids)):
         errors.append("artifact ID 不得重複")
@@ -385,6 +445,8 @@ def validate_publish() -> list[str]:
             continue
         text = path.read_text(encoding="utf-8")
         artifact_texts[artifact["id"]] = text
+        for error in validate_editorial_structure(text):
+            errors.append(f"{artifact['path']}：{error}")
         for error in validate_questions(
             artifact['report_id'], REPORT_MODULES[artifact['report_id']], claims,
             text, 'en' if artifact.get('language') == 'en' else 'zh', artifact['format'],
@@ -406,22 +468,21 @@ def validate_publish() -> list[str]:
                 errors.append(f"{artifact['path']} 缺少 claim：{', '.join(missing)}")
         citation_field = "citation_en" if artifact.get("language") == "en" else "citation_zh_tw"
         body_field = "en" if artifact.get("language") == "en" else "zh_tw"
-        searchable_text = (
-            html_lib.unescape(text) if artifact["format"] == "html" else text
-        )
+        searchable_text = reader_text(text)
+        normalized_visible = normalized_text(searchable_text)
         for claim_id in sorted(ids & all_claims):
             citation = claims_by_id[claim_id].get(citation_field, "")
-            if not citation or citation not in text:
+            if not citation or normalized_text(citation) not in normalized_visible:
                 errors.append(
                     f"{artifact['path']} 的 {claim_id} 缺少完整 {citation_field} 來源定位"
                 )
             expected_body = claims_by_id[claim_id].get(body_field, "")
-            body_count = searchable_text.count(expected_body) if expected_body else 0
+            body_count = normalized_visible.count(normalized_text(expected_body)) if expected_body else 0
             if body_count != 1:
                 errors.append(
                     f"{artifact['path']} 的 {claim_id} 正文應完整出現一次，目前 {body_count} 次"
                 )
-        forbidden = forbidden_published(searchable_text, artifact['report_id'])
+        forbidden = forbidden_published(searchable_text, artifact['report_id'], scope.get('entries', []))
         if forbidden:
             errors.append(
                 f"{artifact['path']} 出現排除範圍詞彙：{forbidden.group(0)}"
@@ -429,41 +490,18 @@ def validate_publish() -> list[str]:
         for phrase in PLACEHOLDER_PHRASES:
             if phrase in searchable_text:
                 errors.append(f"{artifact['path']} 仍含共用 placeholder：{phrase}")
-        if artifact.get("report_id") == "base-admin-fw-logs":
-            for required in ("Mental Model", "End-to-End", "Debug", "LID 03h", "007F0003h"):
-                if required not in searchable_text:
-                    errors.append(f"{artifact['path']} 缺少 firmware 教學結構：{required}")
-            for forbidden_heading in ("Figure 逐圖導讀", "Figure-by-Figure Guide"):
-                if forbidden_heading in searchable_text:
-                    errors.append(
-                        f"{artifact['path']} 不得以 {forbidden_heading} 作為教學骨架"
-                    )
-
-        if artifact.get("report_id") == "base-self-test-hmb-emulation":
-            for required in ("Mental Model", "008C0006h", "HMDL", "DSTRD", "NDT"):
-                if required not in searchable_text:
-                    errors.append(f"{artifact['path']} 缺少 self-test/HMB 教學結構：{required}")
-
-        if artifact.get("report_id") == "base-self-test-namespace-management":
-            for required in (
-                "Mental Model", "008C0006h", "NSZE", "NUSE", "NVMSETID",
-                "Controller List", "DNCS", "Debug",
-            ):
-                if required not in searchable_text:
-                    errors.append(
-                        f"{artifact['path']} 缺少 self-test/namespace 教學結構：{required}"
-                    )
-
         expected_figures = [
             item
             for item in included_figures_by_report.get(artifact.get("report_id", ""), [])
             if artifact["id"] in item.get("required_artifact_ids", [])
         ]
         figure_markers = figure_table_ids(text)
-        if len(figure_markers) != len(expected_figures):
+        expected_figure_ids = {item["id"] for item in expected_figures}
+        if figure_markers != expected_figure_ids:
             errors.append(
-                f"{artifact['path']} Figure 標記數 {len(figure_markers)}，"
-                f"應為 {len(expected_figures)}"
+                f"{artifact['path']} Figure 來源標記不一致："
+                f"missing={sorted(expected_figure_ids - figure_markers)}, "
+                f"extra={sorted(figure_markers - expected_figure_ids)}"
             )
         source_markers = contract.get("source_markers", {})
         for source_id in artifact.get("required_source_ids", []):
@@ -476,20 +514,6 @@ def validate_publish() -> list[str]:
         if artifact["format"] == "html":
             for message in validate_html(path, max_columns):
                 errors.append(f"{artifact['path']}：{message}")
-            if expected_figures and text.count("<details") < len(expected_figures):
-                errors.append(f"{artifact['path']} 每張 Figure 應使用 details 提供 iPad 摺疊導覽")
-            if expected_figures and text.count('name="figures-') < len(expected_figures):
-                errors.append(f"{artifact['path']} 每張 Figure 應使用原生 details name accordion")
-            if artifact["id"].endswith("tutorial-html"):
-                if expected_figures and text.count("新手教學重畫（非 Spec 原圖）") < len(expected_figures):
-                    errors.append(f"{artifact['path']} 每張 Figure 應有新手讀圖教學")
-            else:
-                if expected_figures and text.count("詳細版查詢重畫") < len(expected_figures):
-                    errors.append(f"{artifact['path']} 每張 Figure 應有詳細查詢重畫")
-                if expected_figures and text.count("Input／Decode／Validate／Evidence") < len(expected_figures):
-                    errors.append(f"{artifact['path']} 每張 Figure 應有欄位解碼索引")
-            if expected_figures and 'id="figure-index"' not in text:
-                errors.append(f"{artifact['path']} 缺少 Figure 索引")
         else:
             if not text.startswith("---\n"):
                 errors.append(f"{artifact['path']} 缺少 Jekyll front matter")
@@ -504,8 +528,6 @@ def validate_publish() -> list[str]:
                 errors.append(
                     f"{artifact['path']} front matter lang 應為 {expected_lang}"
                 )
-            if expected_figures and text.count('<details markdown="1">') < len(expected_figures):
-                errors.append(f"{artifact['path']} 每張 Figure 應至少有一個 Markdown details")
 
     parity_groups: dict[str, list[tuple[set[str], list[str]]]] = {}
     for artifact in contract.get("artifacts", []):
@@ -521,6 +543,19 @@ def validate_publish() -> list[str]:
             errors.append(f"parity group {group} 的 claim ID 集合不一致")
         if len(sequences) > 1 and any(item != sequences[0] for item in sequences[1:]):
             errors.append(f"parity group {group} 的 claim 順序不一致")
+
+    for group in parity_groups:
+        editions = [a for a in contract["artifacts"] if a.get("parity_group") == group]
+        if len(editions) != 2:
+            errors.append(f"parity group {group} 必須有中英文 2 版")
+            continue
+        texts = [artifact_texts.get(a["id"], "") for a in editions]
+        modules = [re.findall(r'\bid=["\']module-([^"\']+)', text) for text in texts]
+        figure_order = [FIGURE_TABLE_MARKER.findall(text) for text in texts]
+        if not all(modules) or modules[0] != modules[1]:
+            errors.append(f"parity group {group} 的教學主題缺少或順序不一致")
+        if figure_order[0] != figure_order[1]:
+            errors.append(f"parity group {group} 的來源圖表順序不一致")
 
     required_figure_fields = {
         "id",
@@ -626,7 +661,7 @@ def validate_publish() -> list[str]:
         ):
             errors.append(f"Figure/Table {item['id']} 的來源欄位索引格式錯誤")
         if any(
-            FORBIDDEN_PUBLISHED.search(value)
+            forbidden_published(value, item.get("report_id", ""), scope.get("entries", []))
             for value in item.get("key_items", [])
             if isinstance(value, str)
         ):

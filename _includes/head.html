@@ -66,6 +66,9 @@
   <link rel="stylesheet" href="{{ relativebase }}assets/fonts/font-awesome/css/font-awesome.min.css">
   <!-- Styles -->
   <link rel="stylesheet" href="{{ relativebase }}assets/css/main.css">
+  {% if page.nvme_notes %}
+  <link rel="stylesheet" href="{{ relativebase }}assets/css/nvme-reader.css">
+  {% endif %}
   {% include favicon.html %}
   {% if page.layout == 'post' %}
   <link rel="stylesheet" href="{{ relativebase }}assets/css/highlighter/{{ site.highlight_theme }}.css">
