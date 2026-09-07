@@ -12,17 +12,24 @@ def question_bank(report_id, modules):
     return BANK[report_id]
 
 
-def render_questions(report_id, modules, claims, language, fmt):
+def render_questions(report_id, modules, claims, language, fmt, paragraph_start=0):
     bank = question_bank(report_id, modules)
     by_id = {c['id']: c for c in claims}
     key = 'citation_en' if language == 'en' else 'citation_zh_tw'
     heading = 'Check your understanding' if language == 'en' else '學完後想一想'
     label = 'Sources' if language == 'en' else '來源'
     lines = [f'<section id="knowledge-check"><h2 id="review-questions">{heading}</h2>']
+    paragraph_no = paragraph_start
     for index, q in enumerate(bank, 1):
+        paragraph_no += 1
+        answer = html.escape(q['answer'][language])
+        answer_paragraph = (
+            f'<p class="reader-paragraph review-answer">'
+            f'<span class="paragraph-number" aria-hidden="true">{paragraph_no:02d}.</span>{answer}</p>'
+        )
         lines.extend([f'<!-- qa:{q["id"]} -->',
             f'<details class="review-question" id="qa-{q["id"]}"><summary>{index}. {html.escape(q["question"][language])}</summary>',
-            f'<div data-qa-answer="{q["id"]}"><p>{html.escape(q["answer"][language])}</p></div>',
+            f'<div data-qa-answer="{q["id"]}">{answer_paragraph}</div>',
             f'<details class="source-note"><summary>{label}</summary>'])
         lines.extend('<p>' + html.escape(by_id[s][key]) + '</p>' for s in q['sources'])
         lines.append('</details></details>')

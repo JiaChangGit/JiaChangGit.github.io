@@ -12,6 +12,17 @@
     --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
     --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
 }
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
 .nvme-note *, .edition-tutorial * { box-sizing: border-box; }
 .edition-tutorial { margin: 0; background: var(--paper); }
 .reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
@@ -29,6 +40,9 @@
 .nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
 .nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
 .nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
+.nvme-note .review-answer { margin-bottom: 12px; }
 .nvme-note .opening { font-size: 19px; line-height: 1.85; }
 .nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
 .nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
@@ -40,6 +54,8 @@
 .nvme-note .term-note > div { margin: 5px 0; }
 .nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
 .nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
 .nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
 .nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
 .nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
@@ -80,7 +96,11 @@
   .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
   .edition-tutorial main { width: 100%; padding-inline: 36px; }
 }
-@media (max-width: 600px) { .nvme-note .topic-map { grid-template-columns: 1fr; } .edition-tutorial main { padding-inline: 18px; } }
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+}
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {
   .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }

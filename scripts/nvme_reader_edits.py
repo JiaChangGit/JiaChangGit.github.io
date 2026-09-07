@@ -58,7 +58,7 @@ def apply(reports, modules, headings):
     reports[r]['title_zh'] = 'NVM Command Set 1.3：邏輯區塊、I/O 命令與資料保護'
     reports[r]['title_en'] = 'NVM Command Set 1.3: Logical blocks, I/O commands, and data protection'
     module(r,'nvmcs-foundation',title=b('Logical block、格式與單位','Logical blocks, formats, and units'),
-           lead=b('Host 透過 logical block address 存取 namespace。先確定一個 block 的 data 與 metadata 大小，才能計算 buffer、理解命令範圍，並選擇適用的資料保護方式。','The host addresses namespace storage through logical block addresses. Establish data and metadata sizes before calculating buffers, interpreting command ranges, and choosing data protection.'))
+           lead=b('Host 透過 logical block address 存取 namespace。先確定一個 block 的 data 與 metadata 大小，才能計算 buffer、理解命令範圍，並選擇適用的資料保護方式。讀 Format Index 時把 index 與 offset 分開：index 選格式，offset 才是從起點算出的位移。','The host addresses namespace storage through logical block addresses. Establish data and metadata sizes before calculating buffers, interpreting command ranges, and choosing data protection. When reading a Format Index, keep index and offset separate: an index selects a format, while an offset is measured from a start.'))
     module(r,'nvmcs-crc',lead=b('同樣稱為 CRC 的計算，可能使用不同 polynomial、初值、reflection 與 final XOR。這些參數加上位元儲存順序，才共同決定 Guard 的結果。','CRC computations can use different polynomials, initial values, reflection, and final XOR. Those parameters and the stored bit order together determine the Guard result.'))
     module(r,'nvmcs-export-state',lead=b('Configuration state 描述資源配置，執行中 state 描述當下的 Feature 與 controller 狀態。後者先有固定 64-byte header，再接可變長度的內容。','Configuration state describes resource setup, while runtime state describes current Features and controller state. The latter begins with a fixed 64-byte header followed by variable-length contents.'),
            example=b('NVMECSS=16 代表 NVMECS 有 16×4=64 bytes。加上固定 64-byte header，整個結構是 128 bytes；內層 VER 再指定這段 state 的格式版本。','NVMECSS=16 gives 16×4=64 bytes of NVMECS. Adding the fixed 64-byte header yields a 128-byte structure; the nested VER identifies that state format version.'))
@@ -83,6 +83,14 @@ def apply(reports, modules, headings):
     for rid, rows in titles.items():
         for mid, zh, en in rows:
             module(rid,mid,title=b(zh,en))
+
+    # Add compact contrasts where English field vocabulary is easy to confuse.
+    module('base-ch1-2', 'numbers',
+           lead=b('讀任何 raw value 前先確認單位與編碼。zero-based count=3 可能代表 4 個單位；index 選清單項目，offset 則表示離起點的距離，兩者不能互換。','Before reading any raw value, establish its unit and encoding. A zero-based count of 3 may represent 4 units; an index selects a list item, while an offset measures distance from a start. They are not interchangeable.'))
+    module('base-ch4', 'prp',
+           example=b('若 PRP1 的 page offset 是 512 bytes，第一頁只承載從 512 bytes 開始的資料；跨過 page boundary 後，下一段位置由下一個 page pointer 指定，不是把同一個實體位址繼續加上去。','If PRP1 has a 512-byte page offset, the first page carries data beginning at byte 512. After the page boundary, the next location comes from the next page pointer; the same physical address is not simply extended.'))
+    module('base-admin-fw-logs', 'fw-download-geometry',
+           lead=b('Firmware Download 的 NUMD 是 zero-based 長度，OFST 是從 image 起點計算的 dword offset。用 index-offset 對比來讀：index 選哪個項目，offset 表示離起點多遠；兩個數值都不能脫離欄位定義換算。','Firmware Download uses NUMD as a zero-based length and OFST as a dword offset from the image start. Use the index-offset contrast: an index selects an item, while an offset measures distance from the start; neither value can be converted without its field definition.'))
 
     # Replace implementation-failure exercises with conceptual, worked examples.
     module('base-ch4','sgl',example=b('一筆 12 KiB 的資料傳輸，可以由 2 個 Data Block descriptors 描述 8 KiB 與 4 KiB。若 descriptor 類型是 Segment，它的 length 則描述下一段 descriptor list 的大小，並非使用者資料的大小。','A 12 KiB data transfer can use two Data Block descriptors of 8 KiB and 4 KiB. A Segment descriptor instead uses length for the next descriptor list, rather than user-data length.'))

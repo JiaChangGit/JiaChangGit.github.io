@@ -38,7 +38,11 @@ class Reading:
         self.figures, self.modules = figures, modules
         self.lang, self.tutorial, self.api = language, tutorial, api
         self.by_id = {c["id"]: c for c in claims}
-        self.used_claims, self.used_figures, self.terms_seen = set(), set(), set()
+        self.used_claims, self.used_figures = set(), set()
+        # A definition may reappear once when a hidden field section needs it,
+        # but a long note must never keep explaining the same term.
+        self.term_note_counts = {}
+        self.paragraph_no = 0
         self.term_sources = dict(api.REPORT_GLOSSARIES[report_id])
         if report_id == 'nvm-command-set-1.3':
             from scripts.nvme_nvmcs_figures import TERMS
@@ -64,10 +68,16 @@ class Reading:
         grouped = {}
         for term in sorted(candidates, key=lambda t: (-len(t), t)):
             pattern = r'(?<![A-Za-z0-9])' + re.escape(term) + (r'(?=\d|\b)' if term == 'CDW' else r'(?![A-Za-z0-9])')
-            if term in self.terms_seen or not re.search(pattern, value, re.I if term in {'Host', 'logical block', 'metadata', 'Dword', 'token bucket'} else 0):
+            term_key = term.casefold()
+            case_insensitive = {
+                'Host', 'logical block', 'metadata', 'Dword', 'token bucket',
+                'index', 'offset', 'index-offset', 'zero-based', 'word',
+                'page offset', 'bit range', 'raw value',
+            }
+            if self.term_note_counts.get(term_key, 0) >= 2 or not re.search(pattern, value, re.I if term in case_insensitive else 0):
                 continue
             definition = candidates[term]
-            self.terms_seen.add(term)
+            self.term_note_counts[term_key] = self.term_note_counts.get(term_key, 0) + 1
             grouped.setdefault(definition, []).append(term)
         for definition, terms in grouped.items():
             notes.append(f'<div><dt>{esc(" / ".join(terms))}</dt><dd>{esc(definition)}</dd></div>')
@@ -78,7 +88,10 @@ class Reading:
     def paragraph(self, value, extra=(), css=""):
         if not value:
             return ""
-        return f'<p{(" class=" + chr(34) + css + chr(34)) if css else ""}>{esc(value)}</p>' + self.terms(value, extra)
+        self.paragraph_no += 1
+        classes = 'reader-paragraph' + (f' {css}' if css else '')
+        number = f'<span class="paragraph-number" aria-hidden="true">{self.paragraph_no:02d}.</span>'
+        return f'<p class="{classes}">{number}{esc(value)}</p>' + self.terms(value, extra)
 
     def source(self, claims):
         if not claims:
@@ -157,7 +170,7 @@ class Reading:
         out.append('<h2 id="main-ideas">' + pair(self.lang, '這篇的主軸', 'The main ideas') + '</h2>')
         out.append('<div class="topic-map">')
         for index, (title, explanation) in enumerate(context['axes'][self.lang], 1):
-            out.append(f'<article><span class="axis-number">{index:02d}</span><h3>{esc(title)}</h3><p>{esc(explanation)}</p></article>')
+            out.append(f'<article><span class="axis-number">{index:02d}</span><h3>{esc(title)}</h3>{self.paragraph(explanation, css="axis-description")}</article>')
         out.append('</div>')
         out.append(self.terms(' '.join(' '.join(row) for row in context['axes'][self.lang])))
         for paragraph in context['background'][self.lang]:
@@ -168,7 +181,6 @@ class Reading:
             if module['id'] == 'nvmcs-rate-graph':
                 self.definitions['SC'] = pair(self.lang, 'Scope；此處是儲存媒體存取描述子的作用範圍，與 CQE 的 Status Code 不同。', 'Scope: the scope of a storage-medium access descriptor, distinct from CQE Status Code.')
                 self.definitions['SI'] = pair(self.lang, 'Scope Identifier；指定 SC 所選範圍中的實體。', 'Scope Identifier: identifies the entity in the scope selected by SC.')
-                self.terms_seen.discard('SC')
             sources = [self.by_id[s] for s in module['sources']]
             fresh = [c for c in sources if c['id'] not in self.used_claims]
             out.append(f'<section class="lesson" id="module-{module["id"]}"><h2 id="heading-{module["id"]}"><span class="section-number">{index:02d}</span> {esc(module["title"][self.lang])}</h2>')
@@ -180,12 +192,10 @@ class Reading:
                 out.append(illustration)
                 out.append(self.terms(re.sub('<[^>]+>', ' ', illustration)))
             if not self.tutorial and fresh:
-                visible_terms = self.terms_seen.copy()
                 out.append('<details class="technical-note"><summary>' + pair(self.lang, '機制與適用條件', 'Mechanism and applicable conditions') + '</summary>')
             out.extend(self.claim(c) for c in fresh)
             if not self.tutorial and fresh:
                 out.append('</details>')
-                self.terms_seen = visible_terms
             rows = module['rows'][self.lang]
             headers = pair(self.lang, ['項目', '作用或差異', '適用條件'], ['Item', 'Role or distinction', 'Conditions'])
             if rows:
@@ -195,11 +205,9 @@ class Reading:
                 out.append('<aside class="worked-example"><h3>' + pair(self.lang, '例子', 'Example') + '</h3>' + self.paragraph(example) + '</aside>')
             # Normative exceptions live in the claim; simulated debugging is omitted.
             if groups[module['id']]:
-                visible_terms = self.terms_seen.copy()
                 out.append('<details class="technical-note"><summary>' + pair(self.lang, '進一步理解欄位與資料結構', 'Fields and data structures in more depth') + '</summary>')
                 out.extend(self.figure(f) for f in groups[module['id']])
                 out.append('</details>')
-                self.terms_seen = visible_terms
             out.append('</section>')
         remaining_claims = [c for c in self.claims if c['figure'] is None and c['id'] not in self.used_claims]
         if remaining_claims or remainder:
@@ -207,7 +215,7 @@ class Reading:
             out.extend(self.claim(c) for c in remaining_claims)
             out.extend(self.figure(f) for f in remainder)
             out.append('</section>')
-        out.append(self.api.render_questions(self.id, self.modules, self.claims, self.lang, 'html'))
+        out.append(self.api.render_questions(self.id, self.modules, self.claims, self.lang, 'html', self.paragraph_no))
         return '\n'.join(out)
 
 

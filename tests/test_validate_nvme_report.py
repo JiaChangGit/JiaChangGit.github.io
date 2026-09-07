@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from collections import Counter
 from unittest import mock
 from html.parser import HTMLParser
 from pathlib import Path
@@ -23,6 +24,30 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_reader_terms_are_bounded_and_paragraphs_are_numbered(self):
+        contract = json.loads(
+            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
+        )
+        for artifact in contract["artifacts"]:
+            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
+            labels = []
+            for raw in re.findall(r"<dt>(.*?)</dt>", text, flags=re.S):
+                label = re.sub(r"<[^>]+>", "", raw)
+                labels.append(re.sub(r"\s+", " ", label).strip().casefold())
+            self.assertTrue(labels, artifact["id"])
+            self.assertTrue(
+                all(count <= 2 for count in Counter(labels).values()),
+                artifact["id"],
+            )
+            numbers = [
+                int(value)
+                for value in re.findall(
+                    r'class="paragraph-number"[^>]*>(\d+)\.</span>', text
+                )
+            ]
+            self.assertTrue(numbers, artifact["id"])
+            self.assertEqual(numbers, list(range(1, len(numbers) + 1)), artifact["id"])
+
     def test_standalone_command_set_preserves_registered_source_coverage(self):
         from scripts.nvme_nvm_command_set import MODULES, REPORT_ID
         from scripts.nvme_report_questions import question_bank
