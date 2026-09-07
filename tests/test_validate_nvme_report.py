@@ -40,13 +40,30 @@ class NvmeReportContractTest(unittest.TestCase):
                 artifact["id"],
             )
             numbers = [
-                int(value)
+                tuple(int(part) for part in value.split("."))
                 for value in re.findall(
-                    r'class="paragraph-number"[^>]*>(\d+)\.</span>', text
+                    r'class="paragraph-number"[^>]*>(\d+\.\d+)\.</span>', text
                 )
             ]
             self.assertTrue(numbers, artifact["id"])
-            self.assertEqual(numbers, list(range(1, len(numbers) + 1)), artifact["id"])
+            by_section = {}
+            section_order = []
+            for section, paragraph in numbers:
+                if section not in by_section:
+                    by_section[section] = []
+                    section_order.append(section)
+                by_section[section].append(paragraph)
+            self.assertEqual(
+                section_order,
+                sorted(section_order),
+                artifact["id"],
+            )
+            for section, paragraphs in by_section.items():
+                self.assertEqual(
+                    paragraphs,
+                    list(range(1, len(paragraphs) + 1)),
+                    f"{artifact['id']} section {section:02d}",
+                )
 
     def test_standalone_command_set_preserves_registered_source_coverage(self):
         from scripts.nvme_nvm_command_set import MODULES, REPORT_ID

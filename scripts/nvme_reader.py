@@ -42,7 +42,8 @@ class Reading:
         # A definition may reappear once when a hidden field section needs it,
         # but a long note must never keep explaining the same term.
         self.term_note_counts = {}
-        self.paragraph_no = 0
+        self.section_no = 0
+        self.section_paragraph_no = 0
         self.term_sources = dict(api.REPORT_GLOSSARIES[report_id])
         if report_id == 'nvm-command-set-1.3':
             from scripts.nvme_nvmcs_figures import TERMS
@@ -85,12 +86,16 @@ class Reading:
             return ""
         return '<dl class="term-note" aria-label="' + pair(self.lang, "本段名詞", "Terms in this passage") + '">' + "".join(notes) + '</dl>'
 
+    def begin_section(self, number):
+        self.section_no = int(number)
+        self.section_paragraph_no = 0
+
     def paragraph(self, value, extra=(), css=""):
         if not value:
             return ""
-        self.paragraph_no += 1
+        self.section_paragraph_no += 1
         classes = 'reader-paragraph' + (f' {css}' if css else '')
-        number = f'<span class="paragraph-number" aria-hidden="true">{self.paragraph_no:02d}.</span>'
+        number = f'<span class="paragraph-number" aria-label="{self.section_no:02d}.{self.section_paragraph_no:02d}">{self.section_no:02d}.{self.section_paragraph_no:02d}.</span>'
         return f'<p class="{classes}">{number}{esc(value)}</p>' + self.terms(value, extra)
 
     def source(self, claims):
@@ -165,6 +170,7 @@ class Reading:
         from scripts.nvme_reader_context import REPORT_CONTEXT
         from scripts.nvme_reader_visuals import module_illustration
         context = REPORT_CONTEXT[self.id]
+        self.begin_section(0)
         out = ['<section id="topic-overview" class="topic-overview">']
         out.append(self.paragraph(context['intro'][self.lang], css='opening'))
         out.append('<h2 id="main-ideas">' + pair(self.lang, '這篇的主軸', 'The main ideas') + '</h2>')
@@ -178,6 +184,7 @@ class Reading:
         out.append('</section>')
         groups, remainder = self.assigned_figures()
         for index, module in enumerate(self.modules, 1):
+            self.begin_section(index)
             if module['id'] == 'nvmcs-rate-graph':
                 self.definitions['SC'] = pair(self.lang, 'Scope；此處是儲存媒體存取描述子的作用範圍，與 CQE 的 Status Code 不同。', 'Scope: the scope of a storage-medium access descriptor, distinct from CQE Status Code.')
                 self.definitions['SI'] = pair(self.lang, 'Scope Identifier；指定 SC 所選範圍中的實體。', 'Scope Identifier: identifies the entity in the scope selected by SC.')
@@ -210,12 +217,16 @@ class Reading:
                 out.append('</details>')
             out.append('</section>')
         remaining_claims = [c for c in self.claims if c['figure'] is None and c['id'] not in self.used_claims]
+        has_additional = bool(remaining_claims or remainder)
         if remaining_claims or remainder:
+            self.begin_section(len(self.modules) + 1)
             out.append('<section id="additional-details"><h2 id="further-mechanisms">' + pair(self.lang, '補充機制與資料格式', 'Additional mechanisms and data formats') + '</h2>')
             out.extend(self.claim(c) for c in remaining_claims)
             out.extend(self.figure(f) for f in remainder)
             out.append('</section>')
-        out.append(self.api.render_questions(self.id, self.modules, self.claims, self.lang, 'html', self.paragraph_no))
+        question_section = len(self.modules) + (2 if has_additional else 1)
+        self.begin_section(question_section)
+        out.append(self.api.render_questions(self.id, self.modules, self.claims, self.lang, 'html', question_section))
         return '\n'.join(out)
 
 
