@@ -23,6 +23,8 @@
 .reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
 .reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
 .reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
 .reader-nav nav { display: grid; gap: 3px; }
 .reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
 .reader-nav a:hover { background: var(--soft); color: var(--accent); }
@@ -104,11 +106,11 @@
 <article><span class="axis-number">02</span><h3>命令與通知</h3><p>區分佇列資料、Doorbell 與 interrupt 的作用。</p></article>
 <article><span class="axis-number">03</span><h3>平台行為</h3><p>理解 reset、電源、錯誤回報與鏈路量測各自的適用範圍。</p></article>
 </div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來定位裝置 memory space 的 register。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl>
 <p>Base 規格定義 NVMe 的共同命令與佇列模型；PCIe Transport 補上本機 PCIe 的連接方式。讀取記憶體中的 queue entry，與存取裝置的 MMIO register，是不同種類的存取。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div></dl>
 </section>
 <section class="lesson" id="module-layers"><h2 id="heading-layers"><span class="section-number">01</span> NVMe 如何使用 PCIe</h2>
-<p>Figure 1 說明文件適用關係，Figure 2 再把 protocol responsibility 分層。工程上應把『command 語意』與『如何透過 host memory、MMIO、configuration space、interrupt 傳送』分開查證；Transport 發現衝突時不能改寫 Base。</p>
+<p>Figure 1 說明文件適用關係，Figure 2 再把 protocol responsibility 分層。工程上應把『command 語意』與『如何透過 host memory、MMIO、configuration space、interrupt 傳送』分開查證；Transport 發現衝突時不能改寫 Base。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
 <!-- claim:PCIE14-SCOPE -->
 <p>PCIe Transport 補充 Base Specification，定義 PCIe 專屬資料結構、延伸、要求與行為；通用 NVMe 行為仍由 Base 定義。規格衝突時 Base 的優先序高於 Transport。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §1.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6</p></details>
 <!-- claim:PCIE14-CONVENTION -->
@@ -163,7 +165,7 @@
 <details class="field-note" id="figure-PCIE14-FIG-006"><summary>PCIe Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</summary>
 <!-- claim:PCIE14-FIG-006-CLAIM -->
 <p>Figure 6〈Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head〉：呈現〈Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head〉中的 queue 或 command 關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CQyHDBL</dt><dd>Completion Queue y Head Doorbell，host 用來公布 CQ y 已消費 head 的 MMIO register。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, 文件頁 10-11, PDF 頁 10-11</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CC.PI</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.PI 進一步指定其中的 PI 子欄位。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>CC.PI</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.PI 進一步指定其中的 PI 子欄位。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl>
 </details>
 </details>
 </section>
@@ -176,12 +178,12 @@
 <!-- claim:PCIE14-QUEUE -->
 <p>PCIe 支援多個 Submission Queues 共用一個 Completion Queue。建立 CQ 時若啟用 interrupt，Interrupt Vector 必須（shall）初始化成對應 MSI-X 或 multiple-message MSI vector。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>SQ slot reuse</td><td>controller 已消費該 SQE</td><td>由完成資訊的 SQHD 協助追蹤</td></tr><tr><td>command buffer reuse</td><td>command 已 completion 且資料可見</td><td>依 command/data direction 核對</td></tr><tr><td>CQ slot release</td><td>host 已完整消費 CQE</td><td>之後才寫 CQ head doorbell</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>說明性範例：host 先寫 doorbell、後補 SQE 的最後一個 dword，controller 可能 fetch 到半成品。另一個方向，host 在讀完 CQE 前先更新 CQ head，controller 可能重用該 CQ slot。兩者都是 ownership 順序錯誤，不是 command opcode 問題。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>說明性範例：host 先寫 doorbell、後補 SQE 的最後一個 dword，controller 可能 fetch 到半成品。另一個方向，host 在讀完 CQE 前先更新 CQ head，controller 可能重用該 CQ slot。兩者都是 ownership 順序錯誤，不是 command opcode 問題。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:PCIE14-FIG-007 -->
 <details class="field-note" id="figure-PCIE14-FIG-007"><summary>PCIe Figure 7 · Create I/O Completion Queue - Command Dword 11</summary>
 <!-- claim:PCIE14-FIG-007-CLAIM -->
-<p>Figure 7〈Create I/O Completion Queue - Command Dword 11〉：定義 Create I/O Completion Queue 在 CDW11 的 command-specific 欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, 文件頁 11, PDF 頁 11</p></details>
+<p>Figure 7〈Create I/O Completion Queue - Command Dword 11〉：定義 Create I/O Completion Queue 在 CDW11 的 command-specific 欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, 文件頁 11, PDF 頁 11</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>MSIXCAP.MXC.TS</dt><dd>MSI-X Capability，MSI-X capability 結構的基底位置。 此處的 MSIXCAP.MXC.TS 進一步指定其中的 MXC.TS 子欄位。</dd></div><div><dt>MSICAP.MC.MME</dt><dd>MSI Capability，MSI capability 結構的基底位置。 此處的 MSICAP.MC.MME 進一步指定其中的 MC.MME 子欄位。</dd></div><div><dt>MSIXCAP</dt><dd>MSI-X Capability，MSI-X capability 結構的基底位置。</dd></div><div><dt>MSICAP</dt><dd>MSI Capability，MSI capability 結構的基底位置。</dd></div><div><dt>IV</dt><dd>Interrupt Vector，Completion Queue 指定的 interrupt vector 編號。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-008 -->
@@ -216,43 +218,43 @@
 <!-- figure-table:PCIE14-FIG-035 -->
 <details class="field-note" id="figure-PCIE14-FIG-035"><summary>PCIe Figure 35 · Offset MSICAP: MID - Message Signaled Interrupt Identifiers</summary>
 <!-- claim:PCIE14-FIG-035-CLAIM -->
-<p>Figure 35〈Offset MSICAP: MID - Message Signaled Interrupt Identifiers〉：定義 offset MSICAP 的 MID（Message Signaled Interrupt Identifiers），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, 文件頁 23, PDF 頁 23</p></details>
+<p>Figure 35〈Offset MSICAP: MID - Message Signaled Interrupt Identifiers〉：定義 offset MSICAP 的 MID（Message Signaled Interrupt Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, 文件頁 23, PDF 頁 23</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-036 -->
 <details class="field-note" id="figure-PCIE14-FIG-036"><summary>PCIe Figure 36 · Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</summary>
 <!-- claim:PCIE14-FIG-036-CLAIM -->
-<p>Figure 36〈Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control〉：定義 offset MSICAP + 2h 的 MC（Message Signaled Interrupt Message Control），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, 文件頁 23, PDF 頁 23</p></details>
+<p>Figure 36〈Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control〉：定義 offset MSICAP + 2h 的 MC（Message Signaled Interrupt Message Control），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, 文件頁 23, PDF 頁 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-037 -->
 <details class="field-note" id="figure-PCIE14-FIG-037"><summary>PCIe Figure 37 · Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</summary>
 <!-- claim:PCIE14-FIG-037-CLAIM -->
-<p>Figure 37〈Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address〉：定義 offset MSICAP + 4h 的 MA（Message Signaled Interrupt Message Address），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, 文件頁 23, PDF 頁 23</p></details>
+<p>Figure 37〈Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address〉：定義 offset MSICAP + 4h 的 MA（Message Signaled Interrupt Message Address），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, 文件頁 23, PDF 頁 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-038 -->
 <details class="field-note" id="figure-PCIE14-FIG-038"><summary>PCIe Figure 38 · Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</summary>
 <!-- claim:PCIE14-FIG-038-CLAIM -->
-<p>Figure 38〈Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address〉：定義 offset MSICAP + 8h 的 MUA（Message Signaled Interrupt Upper Address），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, 文件頁 23, PDF 頁 23</p></details>
+<p>Figure 38〈Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address〉：定義 offset MSICAP + 8h 的 MUA（Message Signaled Interrupt Upper Address），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, 文件頁 23, PDF 頁 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-039 -->
 <details class="field-note" id="figure-PCIE14-FIG-039"><summary>PCIe Figure 39 · Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</summary>
 <!-- claim:PCIE14-FIG-039-CLAIM -->
-<p>Figure 39〈Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data〉：定義 offset MSICAP + Ch 的 MD（Message Signaled Interrupt Message Data），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, 文件頁 23, PDF 頁 23</p></details>
+<p>Figure 39〈Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data〉：定義 offset MSICAP + Ch 的 MD（Message Signaled Interrupt Message Data），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, 文件頁 23, PDF 頁 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-040 -->
 <details class="field-note" id="figure-PCIE14-FIG-040"><summary>PCIe Figure 40 · Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</summary>
 <!-- claim:PCIE14-FIG-040-CLAIM -->
-<p>Figure 40〈Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)〉：定義 offset MSICAP + 10h 的 MMASK（Message Signaled Interrupt Mask Bits (Optional)），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, 文件頁 24, PDF 頁 24</p></details>
+<p>Figure 40〈Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)〉：定義 offset MSICAP + 10h 的 MMASK（Message Signaled Interrupt Mask Bits (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, 文件頁 24, PDF 頁 24</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-041 -->
 <details class="field-note" id="figure-PCIE14-FIG-041"><summary>PCIe Figure 41 · Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</summary>
 <!-- claim:PCIE14-FIG-041-CLAIM -->
-<p>Figure 41〈Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)〉：定義 offset MSICAP + 14h 的 MPEND（Message Signaled Interrupt Pending Bits (Optional)），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, 文件頁 24, PDF 頁 24</p></details>
+<p>Figure 41〈Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)〉：定義 offset MSICAP + 14h 的 MPEND（Message Signaled Interrupt Pending Bits (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, 文件頁 24, PDF 頁 24</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-042 -->
@@ -264,25 +266,25 @@
 <!-- figure-table:PCIE14-FIG-043 -->
 <details class="field-note" id="figure-PCIE14-FIG-043"><summary>PCIe Figure 43 · Offset MSIXCAP: MXID - MSI-X Identifiers</summary>
 <!-- claim:PCIE14-FIG-043-CLAIM -->
-<p>Figure 43〈Offset MSIXCAP: MXID - MSI-X Identifiers〉：定義 offset MSIXCAP 的 MXID（MSI-X Identifiers），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, 文件頁 24, PDF 頁 24</p></details>
+<p>Figure 43〈Offset MSIXCAP: MXID - MSI-X Identifiers〉：定義 offset MSIXCAP 的 MXID（MSI-X Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, 文件頁 24, PDF 頁 24</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-044 -->
 <details class="field-note" id="figure-PCIE14-FIG-044"><summary>PCIe Figure 44 · Offset MSIXCAP + 2h: MXC - MSI-X Message Control</summary>
 <!-- claim:PCIE14-FIG-044-CLAIM -->
-<p>Figure 44〈Offset MSIXCAP + 2h: MXC - MSI-X Message Control〉：定義 offset MSIXCAP + 2h 的 MXC（MSI-X Message Control），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, 文件頁 24-25, PDF 頁 24-25</p></details>
+<p>Figure 44〈Offset MSIXCAP + 2h: MXC - MSI-X Message Control〉：定義 offset MSIXCAP + 2h 的 MXC（MSI-X Message Control），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, 文件頁 24-25, PDF 頁 24-25</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-045 -->
 <details class="field-note" id="figure-PCIE14-FIG-045"><summary>PCIe Figure 45 · Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</summary>
 <!-- claim:PCIE14-FIG-045-CLAIM -->
-<p>Figure 45〈Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR〉：定義 offset MSIXCAP + 4h 的 MTAB（MSI-X Table Offset / Table BIR），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25</p></details>
+<p>Figure 45〈Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR〉：定義 offset MSIXCAP + 4h 的 MTAB（MSI-X Table Offset / Table BIR），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-046 -->
 <details class="field-note" id="figure-PCIE14-FIG-046"><summary>PCIe Figure 46 · Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</summary>
 <!-- claim:PCIE14-FIG-046-CLAIM -->
-<p>Figure 46〈Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR〉：定義 offset MSIXCAP + 8h 的 MPBA（MSI-X PBA Offset / PBA BIR），並指出軟體在該位置必須分別解碼的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PBA</dt><dd>Pending Bit Array，MSI-X 中記錄尚待處理 vector 的 bit array。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25</p></details>
+<p>Figure 46〈Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR〉：定義 offset MSIXCAP + 8h 的 MPBA（MSI-X PBA Offset / PBA BIR），並指出軟體在該位置必須分別依欄位換算的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PBA</dt><dd>Pending Bit Array，MSI-X 中記錄尚待處理 vector 的 bit array。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>PBAO</dt><dd>Page Base Address and Offset，第一個 PRP entry 中同時包含 page base 與 page 內 offset 的配置。</dd></div></dl>
 </details>
 </details>
@@ -296,7 +298,7 @@
 <!-- claim:PCIE14-POWER -->
 <p>host 絕不可（shall never）選擇功耗高於 PCIe slot power limit 的 NVMe power state；違反時 power behavior 未定義。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>NVMe CQE status</td><td>command 執行結果</td><td>由 NVMe command context 解</td></tr><tr><td>PCIe Device Status</td><td>PCIe Function 狀態摘要</td><td>位於 PCIe capability</td></tr><tr><td>AER</td><td>correctable/uncorrectable transport errors</td><td>status、mask、severity、header 一起看</td></tr><tr><td>power state</td><td>slot limit 與 device power 控制</td><td>不得選超過 slot power limit 的 NVMe state</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 判斷錯誤嚴重程度及其處置，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SC</dt><dd>Status Code，在 SCT 上下文中表示具體完成結果的 code。</dd></div></dl></aside>
+<aside class="worked-example"><h3>例子</h3><p>說明性範例：AERUCES 某 bit 被設為 1，先查對應 mask 判斷是否會回報，再查 severity 判斷錯誤嚴重程度及其處置，最後用 header log 取得 transaction context。不能把該 bit 直接翻成某個 NVMe SC。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:PCIE14-FIG-010 -->
 <details class="field-note" id="figure-PCIE14-FIG-010"><summary>PCIe Figure 10 · PCI Express Type 0/1 Common Configuration Space</summary>
@@ -307,55 +309,55 @@
 <!-- figure-table:PCIE14-FIG-011 -->
 <details class="field-note" id="figure-PCIE14-FIG-011"><summary>PCIe Figure 11 · Offset 00h: ID - Identifiers</summary>
 <!-- claim:PCIE14-FIG-011-CLAIM -->
-<p>Figure 11〈Offset 00h: ID - Identifiers〉：定義 offset 00h 的 ID（Identifiers），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17</p></details>
+<p>Figure 11〈Offset 00h: ID - Identifiers〉：定義 offset 00h 的 ID（Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>DID</dt><dd>Domain Identifier，辨識 NVM subsystem 內 domain 的 identifier。</dd></div><div><dt>VID</dt><dd>Vendor ID，由 PCI-SIG 配置、辨識 vendor 的 identifier。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-012 -->
 <details class="field-note" id="figure-PCIE14-FIG-012"><summary>PCIe Figure 12 · Offset 04h: CMD - Command</summary>
 <!-- claim:PCIE14-FIG-012-CLAIM -->
-<p>Figure 12〈Offset 04h: CMD - Command〉：定義 offset 04h 的 CMD（Command），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, 文件頁 17, PDF 頁 17</p></details>
+<p>Figure 12〈Offset 04h: CMD - Command〉：定義 offset 04h 的 CMD（Command），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, 文件頁 17, PDF 頁 17</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-013 -->
 <details class="field-note" id="figure-PCIE14-FIG-013"><summary>PCIe Figure 13 · Offset 06h: STS - Device Status</summary>
 <!-- claim:PCIE14-FIG-013-CLAIM -->
-<p>Figure 13〈Offset 06h: STS - Device Status〉：定義 offset 06h 的 STS（Device Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, 文件頁 18, PDF 頁 18</p></details>
+<p>Figure 13〈Offset 06h: STS - Device Status〉：定義 offset 06h 的 STS（Device Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, 文件頁 18, PDF 頁 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-014 -->
 <details class="field-note" id="figure-PCIE14-FIG-014"><summary>PCIe Figure 14 · Offset 08h: RID - Revision ID</summary>
 <!-- claim:PCIE14-FIG-014-CLAIM -->
-<p>Figure 14〈Offset 08h: RID - Revision ID〉：定義 offset 08h 的 RID（Revision ID），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, 文件頁 18, PDF 頁 18</p></details>
+<p>Figure 14〈Offset 08h: RID - Revision ID〉：定義 offset 08h 的 RID（Revision ID），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, 文件頁 18, PDF 頁 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-015 -->
 <details class="field-note" id="figure-PCIE14-FIG-015"><summary>PCIe Figure 15 · Offset 09h: CC - Class Code</summary>
 <!-- claim:PCIE14-FIG-015-CLAIM -->
-<p>Figure 15〈Offset 09h: CC - Class Code〉：定義 offset 09h 的 CC（Class Code），並指出軟體在該位置必須分別解碼的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, 文件頁 18, PDF 頁 18</p></details>
-
+<p>Figure 15〈Offset 09h: CC - Class Code〉：定義 offset 09h 的 CC（Class Code），並指出軟體在該位置必須分別依欄位換算的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, 文件頁 18, PDF 頁 18</p></details>
+<dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-016 -->
 <details class="field-note" id="figure-PCIE14-FIG-016"><summary>PCIe Figure 16 · Offset 0Ch: CLS - Cache Line Size</summary>
 <!-- claim:PCIE14-FIG-016-CLAIM -->
-<p>Figure 16〈Offset 0Ch: CLS - Cache Line Size〉：定義 offset 0Ch 的 CLS（Cache Line Size），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, 文件頁 18, PDF 頁 18</p></details>
+<p>Figure 16〈Offset 0Ch: CLS - Cache Line Size〉：定義 offset 0Ch 的 CLS（Cache Line Size），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, 文件頁 18, PDF 頁 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-017 -->
 <details class="field-note" id="figure-PCIE14-FIG-017"><summary>PCIe Figure 17 · Offset 0Dh: MLT - Master Latency Timer</summary>
 <!-- claim:PCIE14-FIG-017-CLAIM -->
-<p>Figure 17〈Offset 0Dh: MLT - Master Latency Timer〉：定義 offset 0Dh 的 MLT（Master Latency Timer），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, 文件頁 18, PDF 頁 18</p></details>
+<p>Figure 17〈Offset 0Dh: MLT - Master Latency Timer〉：定義 offset 0Dh 的 MLT（Master Latency Timer），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, 文件頁 18, PDF 頁 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-018 -->
 <details class="field-note" id="figure-PCIE14-FIG-018"><summary>PCIe Figure 18 · Offset 0Eh: HTYPE - Header Type</summary>
 <!-- claim:PCIE14-FIG-018-CLAIM -->
-<p>Figure 18〈Offset 0Eh: HTYPE - Header Type〉：定義 offset 0Eh 的 HTYPE（Header Type），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, 文件頁 19, PDF 頁 19</p></details>
+<p>Figure 18〈Offset 0Eh: HTYPE - Header Type〉：定義 offset 0Eh 的 HTYPE（Header Type），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, 文件頁 19, PDF 頁 19</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-019 -->
 <details class="field-note" id="figure-PCIE14-FIG-019"><summary>PCIe Figure 19 · Offset 0Fh: BIST - Built-In Self Test (Optional)</summary>
 <!-- claim:PCIE14-FIG-019-CLAIM -->
-<p>Figure 19〈Offset 0Fh: BIST - Built-In Self Test (Optional)〉：定義 offset 0Fh 的 BIST（Built-In Self Test (Optional)），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, 文件頁 19, PDF 頁 19</p></details>
+<p>Figure 19〈Offset 0Fh: BIST - Built-In Self Test (Optional)〉：定義 offset 0Fh 的 BIST（Built-In Self Test (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, 文件頁 19, PDF 頁 19</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-020 -->
@@ -373,49 +375,49 @@
 <!-- figure-table:PCIE14-FIG-022 -->
 <details class="field-note" id="figure-PCIE14-FIG-022"><summary>PCIe Figure 22 · Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</summary>
 <!-- claim:PCIE14-FIG-022-CLAIM -->
-<p>Figure 22〈Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific〉：定義 offset 18h 的 BAR2（Index/Data Pair Register Base Address or Vendor Specific），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.12</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, 文件頁 20, PDF 頁 20</p></details>
+<p>Figure 22〈Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific〉：定義 offset 18h 的 BAR2（Index/Data Pair Register Base Address or Vendor Specific），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.12</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, 文件頁 20, PDF 頁 20</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-023 -->
 <details class="field-note" id="figure-PCIE14-FIG-023"><summary>PCIe Figure 23 · Offset 28h: CCPTR - CardBus CIS Pointer</summary>
 <!-- claim:PCIE14-FIG-023-CLAIM -->
-<p>Figure 23〈Offset 28h: CCPTR - CardBus CIS Pointer〉：定義 offset 28h 的 CCPTR（CardBus CIS Pointer），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.16</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, 文件頁 20, PDF 頁 20</p></details>
+<p>Figure 23〈Offset 28h: CCPTR - CardBus CIS Pointer〉：定義 offset 28h 的 CCPTR（CardBus CIS Pointer），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.16</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, 文件頁 20, PDF 頁 20</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-024 -->
 <details class="field-note" id="figure-PCIE14-FIG-024"><summary>PCIe Figure 24 · Offset 2Ch: SS - Subsystem Identifiers</summary>
 <!-- claim:PCIE14-FIG-024-CLAIM -->
-<p>Figure 24〈Offset 2Ch: SS - Subsystem Identifiers〉：定義 offset 2Ch 的 SS（Subsystem Identifiers），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.17</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, 文件頁 20, PDF 頁 20</p></details>
+<p>Figure 24〈Offset 2Ch: SS - Subsystem Identifiers〉：定義 offset 2Ch 的 SS（Subsystem Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.17</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, 文件頁 20, PDF 頁 20</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>SSVID</dt><dd>Subsystem Vendor ID，辨識 subsystem vendor 的 PCI identifier。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-025 -->
 <details class="field-note" id="figure-PCIE14-FIG-025"><summary>PCIe Figure 25 · Offset 30h: EROM - Expansion ROM (Optional)</summary>
 <!-- claim:PCIE14-FIG-025-CLAIM -->
-<p>Figure 25〈Offset 30h: EROM - Expansion ROM (Optional)〉：定義 offset 30h 的 EROM（Expansion ROM (Optional)），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.18</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, 文件頁 20, PDF 頁 20</p></details>
+<p>Figure 25〈Offset 30h: EROM - Expansion ROM (Optional)〉：定義 offset 30h 的 EROM（Expansion ROM (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.18</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, 文件頁 20, PDF 頁 20</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-026 -->
 <details class="field-note" id="figure-PCIE14-FIG-026"><summary>PCIe Figure 26 · Offset 34h: CAP - Capabilities Pointer</summary>
 <!-- claim:PCIE14-FIG-026-CLAIM -->
-<p>Figure 26〈Offset 34h: CAP - Capabilities Pointer〉：定義 offset 34h 的 CAP（Capabilities Pointer），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.19</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, 文件頁 21, PDF 頁 21</p></details>
+<p>Figure 26〈Offset 34h: CAP - Capabilities Pointer〉：定義 offset 34h 的 CAP（Capabilities Pointer），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.19</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, 文件頁 21, PDF 頁 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-027 -->
 <details class="field-note" id="figure-PCIE14-FIG-027"><summary>PCIe Figure 27 · Offset 3Ch: INTR - Interrupt Information</summary>
 <!-- claim:PCIE14-FIG-027-CLAIM -->
-<p>Figure 27〈Offset 3Ch: INTR - Interrupt Information〉：定義 offset 3Ch 的 INTR（Interrupt Information），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.20</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, 文件頁 21, PDF 頁 21</p></details>
+<p>Figure 27〈Offset 3Ch: INTR - Interrupt Information〉：定義 offset 3Ch 的 INTR（Interrupt Information），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.20</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, 文件頁 21, PDF 頁 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-028 -->
 <details class="field-note" id="figure-PCIE14-FIG-028"><summary>PCIe Figure 28 · Offset 3Eh: MGNT - Minimum Grant</summary>
 <!-- claim:PCIE14-FIG-028-CLAIM -->
-<p>Figure 28〈Offset 3Eh: MGNT - Minimum Grant〉：定義 offset 3Eh 的 MGNT（Minimum Grant），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.21</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, 文件頁 21, PDF 頁 21</p></details>
+<p>Figure 28〈Offset 3Eh: MGNT - Minimum Grant〉：定義 offset 3Eh 的 MGNT（Minimum Grant），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.21</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, 文件頁 21, PDF 頁 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-029 -->
 <details class="field-note" id="figure-PCIE14-FIG-029"><summary>PCIe Figure 29 · Offset 3Fh: MLAT - Maximum Latency</summary>
 <!-- claim:PCIE14-FIG-029-CLAIM -->
-<p>Figure 29〈Offset 3Fh: MLAT - Maximum Latency〉：定義 offset 3Fh 的 MLAT（Maximum Latency），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.22</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, 文件頁 21, PDF 頁 21</p></details>
+<p>Figure 29〈Offset 3Fh: MLAT - Maximum Latency〉：定義 offset 3Fh 的 MLAT（Maximum Latency），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.22</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, 文件頁 21, PDF 頁 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-030 -->
@@ -427,19 +429,19 @@
 <!-- figure-table:PCIE14-FIG-031 -->
 <details class="field-note" id="figure-PCIE14-FIG-031"><summary>PCIe Figure 31 · Offset PMCAP: PID - PCI Power Management Capability ID</summary>
 <!-- claim:PCIE14-FIG-031-CLAIM -->
-<p>Figure 31〈Offset PMCAP: PID - PCI Power Management Capability ID〉：定義 offset PMCAP 的 PID（PCI Power Management Capability ID），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, 文件頁 21, PDF 頁 21</p></details>
+<p>Figure 31〈Offset PMCAP: PID - PCI Power Management Capability ID〉：定義 offset PMCAP 的 PID（PCI Power Management Capability ID），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, 文件頁 21, PDF 頁 21</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-032 -->
 <details class="field-note" id="figure-PCIE14-FIG-032"><summary>PCIe Figure 32 · Offset PMCAP + 2h: PC - PCI Power Management Capabilities</summary>
 <!-- claim:PCIE14-FIG-032-CLAIM -->
-<p>Figure 32〈Offset PMCAP + 2h: PC - PCI Power Management Capabilities〉：定義 offset PMCAP + 2h 的 PC（PCI Power Management Capabilities），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, 文件頁 22, PDF 頁 22</p></details>
+<p>Figure 32〈Offset PMCAP + 2h: PC - PCI Power Management Capabilities〉：定義 offset PMCAP + 2h 的 PC（PCI Power Management Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, 文件頁 22, PDF 頁 22</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-033 -->
 <details class="field-note" id="figure-PCIE14-FIG-033"><summary>PCIe Figure 33 · Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</summary>
 <!-- claim:PCIE14-FIG-033-CLAIM -->
-<p>Figure 33〈Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status〉：定義 offset PMCAP + 4h 的 PMCS（PCI Power Management Control and Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, 文件頁 22, PDF 頁 22</p></details>
+<p>Figure 33〈Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status〉：定義 offset PMCAP + 4h 的 PMCS（PCI Power Management Control and Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, 文件頁 22, PDF 頁 22</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>PS</dt><dd>Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-047 -->
@@ -451,61 +453,61 @@
 <!-- figure-table:PCIE14-FIG-048 -->
 <details class="field-note" id="figure-PCIE14-FIG-048"><summary>PCIe Figure 48 · Offset PXCAP: PXID - PCI Express Capability ID</summary>
 <!-- claim:PCIE14-FIG-048-CLAIM -->
-<p>Figure 48〈Offset PXCAP: PXID - PCI Express Capability ID〉：定義 offset PXCAP 的 PXID（PCI Express Capability ID），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, 文件頁 26, PDF 頁 26</p></details>
+<p>Figure 48〈Offset PXCAP: PXID - PCI Express Capability ID〉：定義 offset PXCAP 的 PXID（PCI Express Capability ID），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, 文件頁 26, PDF 頁 26</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-049 -->
 <details class="field-note" id="figure-PCIE14-FIG-049"><summary>PCIe Figure 49 · Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</summary>
 <!-- claim:PCIE14-FIG-049-CLAIM -->
-<p>Figure 49〈Offset PXCAP + 2h: PXCAP - PCI Express Capabilities〉：定義 offset PXCAP + 2h 的 PXCAP（PCI Express Capabilities），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, 文件頁 26, PDF 頁 26</p></details>
+<p>Figure 49〈Offset PXCAP + 2h: PXCAP - PCI Express Capabilities〉：定義 offset PXCAP + 2h 的 PXCAP（PCI Express Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, 文件頁 26, PDF 頁 26</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-050 -->
 <details class="field-note" id="figure-PCIE14-FIG-050"><summary>PCIe Figure 50 · Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</summary>
 <!-- claim:PCIE14-FIG-050-CLAIM -->
-<p>Figure 50〈Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities〉：定義 offset PXCAP + 4h 的 PXDCAP（PCI Express Device Capabilities），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, 文件頁 26-27, PDF 頁 26-27</p></details>
+<p>Figure 50〈Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities〉：定義 offset PXCAP + 4h 的 PXDCAP（PCI Express Device Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, 文件頁 26-27, PDF 頁 26-27</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-051 -->
 <details class="field-note" id="figure-PCIE14-FIG-051"><summary>PCIe Figure 51 · Offset PXCAP + 8h: PXDC - PCI Express Device Control</summary>
 <!-- claim:PCIE14-FIG-051-CLAIM -->
-<p>Figure 51〈Offset PXCAP + 8h: PXDC - PCI Express Device Control〉：定義 offset PXCAP + 8h 的 PXDC（PCI Express Device Control），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, 文件頁 27-28, PDF 頁 27-28</p></details>
+<p>Figure 51〈Offset PXCAP + 8h: PXDC - PCI Express Device Control〉：定義 offset PXCAP + 8h 的 PXDC（PCI Express Device Control），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, 文件頁 27-28, PDF 頁 27-28</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>MRRS</dt><dd>Max Read Request Size，PCIe Function 可發出之 read request 的最大大小設定。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-052 -->
 <details class="field-note" id="figure-PCIE14-FIG-052"><summary>PCIe Figure 52 · Offset PXCAP + Ah: PXDS - PCI Express Device Status</summary>
 <!-- claim:PCIE14-FIG-052-CLAIM -->
-<p>Figure 52〈Offset PXCAP + Ah: PXDS - PCI Express Device Status〉：定義 offset PXCAP + Ah 的 PXDS（PCI Express Device Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, 文件頁 28, PDF 頁 28</p></details>
+<p>Figure 52〈Offset PXCAP + Ah: PXDS - PCI Express Device Status〉：定義 offset PXCAP + Ah 的 PXDS（PCI Express Device Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, 文件頁 28, PDF 頁 28</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-053 -->
 <details class="field-note" id="figure-PCIE14-FIG-053"><summary>PCIe Figure 53 · Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</summary>
 <!-- claim:PCIE14-FIG-053-CLAIM -->
-<p>Figure 53〈Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities〉：定義 offset PXCAP + Ch 的 PXLCAP（PCI Express Link Capabilities），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, 文件頁 28-29, PDF 頁 28-29</p></details>
+<p>Figure 53〈Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities〉：定義 offset PXCAP + Ch 的 PXLCAP（PCI Express Link Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, 文件頁 28-29, PDF 頁 28-29</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-054 -->
 <details class="field-note" id="figure-PCIE14-FIG-054"><summary>PCIe Figure 54 · Offset PXCAP + 10h: PXLC - PCI Express Link Control</summary>
 <!-- claim:PCIE14-FIG-054-CLAIM -->
-<p>Figure 54〈Offset PXCAP + 10h: PXLC - PCI Express Link Control〉：定義 offset PXCAP + 10h 的 PXLC（PCI Express Link Control），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, 文件頁 29, PDF 頁 29</p></details>
+<p>Figure 54〈Offset PXCAP + 10h: PXLC - PCI Express Link Control〉：定義 offset PXCAP + 10h 的 PXLC（PCI Express Link Control），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, 文件頁 29, PDF 頁 29</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-055 -->
 <details class="field-note" id="figure-PCIE14-FIG-055"><summary>PCIe Figure 55 · Offset PXCAP + 12h: PXLS - PCI Express Link Status</summary>
 <!-- claim:PCIE14-FIG-055-CLAIM -->
-<p>Figure 55〈Offset PXCAP + 12h: PXLS - PCI Express Link Status〉：定義 offset PXCAP + 12h 的 PXLS（PCI Express Link Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, 文件頁 29, PDF 頁 29</p></details>
+<p>Figure 55〈Offset PXCAP + 12h: PXLS - PCI Express Link Status〉：定義 offset PXCAP + 12h 的 PXLS（PCI Express Link Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, 文件頁 29, PDF 頁 29</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-056 -->
 <details class="field-note" id="figure-PCIE14-FIG-056"><summary>PCIe Figure 56 · Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</summary>
 <!-- claim:PCIE14-FIG-056-CLAIM -->
-<p>Figure 56〈Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2〉：定義 offset PXCAP + 24h 的 PXDCAP2（PCI Express Device Capabilities 2），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, 文件頁 30, PDF 頁 30</p></details>
+<p>Figure 56〈Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2〉：定義 offset PXCAP + 24h 的 PXDCAP2（PCI Express Device Capabilities 2），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, 文件頁 30, PDF 頁 30</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-057 -->
 <details class="field-note" id="figure-PCIE14-FIG-057"><summary>PCIe Figure 57 · Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</summary>
 <!-- claim:PCIE14-FIG-057-CLAIM -->
-<p>Figure 57〈Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2〉：定義 offset PXCAP + 28h 的 PXDC2（PCI Express Device Control 2），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, 文件頁 30-31, PDF 頁 30-31</p></details>
+<p>Figure 57〈Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2〉：定義 offset PXCAP + 28h 的 PXDC2（PCI Express Device Control 2），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, 文件頁 30-31, PDF 頁 30-31</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-058 -->
@@ -517,55 +519,55 @@
 <!-- figure-table:PCIE14-FIG-059 -->
 <details class="field-note" id="figure-PCIE14-FIG-059"><summary>PCIe Figure 59 · Offset AERCAP: AERID - AER Capability ID</summary>
 <!-- claim:PCIE14-FIG-059-CLAIM -->
-<p>Figure 59〈Offset AERCAP: AERID - AER Capability ID〉：定義 offset AERCAP 的 AERID（AER Capability ID），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, 文件頁 31, PDF 頁 31</p></details>
+<p>Figure 59〈Offset AERCAP: AERID - AER Capability ID〉：定義 offset AERCAP 的 AERID（AER Capability ID），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, 文件頁 31, PDF 頁 31</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-060 -->
 <details class="field-note" id="figure-PCIE14-FIG-060"><summary>PCIe Figure 60 · Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</summary>
 <!-- claim:PCIE14-FIG-060-CLAIM -->
-<p>Figure 60〈Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register〉：定義 offset AERCAP + 4 的 AERUCES（AER Uncorrectable Error Status Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, 文件頁 31-32, PDF 頁 31-32</p></details>
+<p>Figure 60〈Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register〉：定義 offset AERCAP + 4 的 AERUCES（AER Uncorrectable Error Status Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, 文件頁 31-32, PDF 頁 31-32</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-061 -->
 <details class="field-note" id="figure-PCIE14-FIG-061"><summary>PCIe Figure 61 · Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</summary>
 <!-- claim:PCIE14-FIG-061-CLAIM -->
-<p>Figure 61〈Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register〉：定義 offset AERCAP + 8 的 AERUCEM（AER Uncorrectable Error Mask Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, 文件頁 32, PDF 頁 32</p></details>
+<p>Figure 61〈Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register〉：定義 offset AERCAP + 8 的 AERUCEM（AER Uncorrectable Error Mask Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, 文件頁 32, PDF 頁 32</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-062 -->
 <details class="field-note" id="figure-PCIE14-FIG-062"><summary>PCIe Figure 62 · Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</summary>
 <!-- claim:PCIE14-FIG-062-CLAIM -->
-<p>Figure 62〈Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register〉：定義 offset AERCAP + Ch 的 AERUCESEV（AER Uncorrectable Error Severity Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, 文件頁 32-33, PDF 頁 32-33</p></details>
+<p>Figure 62〈Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register〉：定義 offset AERCAP + Ch 的 AERUCESEV（AER Uncorrectable Error Severity Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, 文件頁 32-33, PDF 頁 32-33</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-063 -->
 <details class="field-note" id="figure-PCIE14-FIG-063"><summary>PCIe Figure 63 · Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</summary>
 <!-- claim:PCIE14-FIG-063-CLAIM -->
-<p>Figure 63〈Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register〉：定義 offset AERCAP + 10h 的 AERCES（AER Correctable Error Status Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, 文件頁 33, PDF 頁 33</p></details>
+<p>Figure 63〈Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register〉：定義 offset AERCAP + 10h 的 AERCES（AER Correctable Error Status Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, 文件頁 33, PDF 頁 33</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-064 -->
 <details class="field-note" id="figure-PCIE14-FIG-064"><summary>PCIe Figure 64 · Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</summary>
 <!-- claim:PCIE14-FIG-064-CLAIM -->
-<p>Figure 64〈Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register〉：定義 offset AERCAP + 14h 的 AERCEM（AER Correctable Error Mask Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, 文件頁 33, PDF 頁 33</p></details>
+<p>Figure 64〈Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register〉：定義 offset AERCAP + 14h 的 AERCEM（AER Correctable Error Mask Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, 文件頁 33, PDF 頁 33</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-065 -->
 <details class="field-note" id="figure-PCIE14-FIG-065"><summary>PCIe Figure 65 · Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</summary>
 <!-- claim:PCIE14-FIG-065-CLAIM -->
-<p>Figure 65〈Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register〉：定義 offset AERCAP + 18h 的 AERCC（AER Capabilities and Control Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, 文件頁 34, PDF 頁 34</p></details>
+<p>Figure 65〈Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register〉：定義 offset AERCAP + 18h 的 AERCC（AER Capabilities and Control Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, 文件頁 34, PDF 頁 34</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-066 -->
 <details class="field-note" id="figure-PCIE14-FIG-066"><summary>PCIe Figure 66 · Offset AERCAP + 1Ch: AERHL - AER Header Log Register</summary>
 <!-- claim:PCIE14-FIG-066-CLAIM -->
-<p>Figure 66〈Offset AERCAP + 1Ch: AERHL - AER Header Log Register〉：定義 offset AERCAP + 1Ch 的 AERHL（AER Header Log Register），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, 文件頁 34, PDF 頁 34</p></details>
+<p>Figure 66〈Offset AERCAP + 1Ch: AERHL - AER Header Log Register〉：定義 offset AERCAP + 1Ch 的 AERHL（AER Header Log Register），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, 文件頁 34, PDF 頁 34</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-067 -->
 <details class="field-note" id="figure-PCIE14-FIG-067"><summary>PCIe Figure 67 · Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</summary>
 <!-- claim:PCIE14-FIG-067-CLAIM -->
-<p>Figure 67〈Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)〉：定義 offset AERCAP + 38h 的 AERTLP（AER TLP Prefix Log Register (Optional)），並指出軟體在該位置必須分別解碼的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，PCIe transaction layer 傳送的 packet。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, 文件頁 35, PDF 頁 35</p></details>
+<p>Figure 67〈Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)〉：定義 offset AERCAP + 38h 的 AERTLP（AER TLP Prefix Log Register (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，PCIe transaction layer 傳送的 packet。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, 文件頁 35, PDF 頁 35</p></details>
 
 </details>
 </details>
@@ -581,7 +583,7 @@
 <details class="field-note" id="figure-PCIE14-FIG-070"><summary>PCIe Figure 70 · Get Log Page - Log Page Identifiers</summary>
 <!-- claim:PCIE14-FIG-070-CLAIM -->
 <p>Figure 70〈Get Log Page - Log Page Identifiers〉：定義〈Get Log Page - Log Page Identifiers〉的識別碼組成或數值空間。</p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, 文件頁 39, PDF 頁 39</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-071 -->
 <details class="field-note" id="figure-PCIE14-FIG-071"><summary>PCIe Figure 71 · Size of Physical Interface Receiver Eye Opening Measurement Log Page</summary>

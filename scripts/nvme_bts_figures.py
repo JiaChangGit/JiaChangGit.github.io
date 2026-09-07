@@ -1,4 +1,4 @@
-"""Specific teaching slices, not source-table reproductions."""
+"""Specific teaching 部分內容s, not source-table reproductions."""
 
 def f(keys, zh, en, claim):
     return dict(key_items=keys.split(","), zh=zh, en=en, claim=claim)
@@ -14,7 +14,7 @@ BASE_FIGURES = {
     146: f("Attached Namespace,Admin command restrictions", "這張表補充有 attached sanitizing namespace 的 controllers；不能把所有 controller 與只有 attached controller 的限制混為一談。", "This table adds restrictions for controllers with an attached namespace being sanitized. Do not conflate all-controller restrictions with attached-controller restrictions.", "SAN-RESTRICT"),
     151: f("LID,AEI,AET", "CQE DW0[23:16] 是 LID、[15:8] 是 AEI、[2:0] 是 AET；Sanitize 用 LID 81h/AET 110b，Telemetry 使用 Notice 類型。", "CQE DW0[23:16] is LID, [15:8] AEI, and [2:0] AET. Sanitize uses LID 81h/AET 110b; Telemetry uses the Notice type.", "SAN-EVENT"),
     152: f("EVNTSP", "AER DW1 是 event-specific parameter；Sanitize 以 0h 指 subsystem，以 NSID 指 namespace，不能把它讀成進度。", "AER DW1 is the event-specific parameter. Sanitize uses zero for a subsystem and NSID for a namespace; it is not progress.", "SAN-EVENT"),
-    155: f("Telemetry Log Changed", "只取 Telemetry Log Changed Notice：用事件定位 08h，再讀 log；事件不包含診斷 payload。", "Use the Telemetry Log Changed Notice slice: locate 08h from the event and read the log; the event does not contain the diagnostic payload.", "TEL-EVENT"),
+    155: f("Telemetry Log Changed", "只取 Telemetry Log Changed Notice：用事件找出 08h，再讀 log；事件不包含診斷 payload。", "Use the Telemetry Log Changed Notice 部分內容: find 08h from the event and read the log; the event does not contain the diagnostic payload.", "TEL-EVENT"),
     156: f("Sanitize Operation Completed,Unexpected Deallocation,Entered Media Verification", "01h/02h/03h 三種 Sanitize AEI 必須與 SOS/SANS 一起看；Entered Media Verification 不是 operation 全部完成。", "Read Sanitize AEI 01h/02h/03h with SOS/SANS. Entered Media Verification is not completion of the entire operation.", "SAN-EVENT"),
     187: f("BPID,CA", "Boot 更新只取 BPID 與 CA=110b/111b：前者替換 partition 內容，後者更新 active ID；兩個動作分開。", "For Boot, use BPID and CA=110b/111b: the former replaces partition contents and the latter changes the active ID. They are separate actions.", "BOOT-UPDATE"),
     188: f("MUD", "MUD 是重疊更新偵測的 completion 證據；仍需遵守單一 image sequence 的 controller/endpoint 邊界。", "MUD supplies completion evidence for overlapping updates; the single-controller/endpoint image-sequence boundary still applies.", "BOOT-SEQUENCE"),
@@ -31,7 +31,7 @@ BASE_FIGURES = {
     205: f("NUMDU,LSI", "NUMDU 與 NUMDL 組成 zero-based dword count；LSI 是另一個 log-specific selector，不是 LSP。", "NUMDU and NUMDL form the zero-based dword count; LSI is a separate log-specific selector, not LSP.", "TEL-ALIGN"),
     206: f("LPOL", "LPO 低 32 bits 位於 CDW12；Telemetry byte offset 必須以 512-byte blocks 對齊。", "The low 32 bits of LPO occupy CDW12; Telemetry byte offsets must align to 512-byte blocks.", "TEL-ALIGN"),
     207: f("LPOU", "LPO 高 32 bits 位於 CDW13；不可先截斷為 32-bit 再計算大型 log 的 offset。", "The high 32 bits of LPO occupy CDW13; do not truncate a large-log offset to 32 bits before computing it.", "TEL-ALIGN"),
-    208: f("CSI,OT,UUID Index", "CDW14 的 CSI/OT/UUID Index 是共用解碼上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。", "CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.", "TEL-ALIGN"),
+    208: f("CSI,OT,UUID Index", "CDW14 的 CSI/OT/UUID Index 是共用依欄位換算上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。", "CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.", "TEL-ALIGN"),
     209: f("LID 07h,LID 08h,LID 15h,LID 81h", "僅取 07h、08h、15h、81h 四列；每列把 log ID 與其章節相連，不延伸其他 log 的教學。", "Use only the 07h, 08h, 15h, and 81h rows, connecting each ID to its section without extending into other logs.", "TEL-MODEL"),
     210: f("Supported Log Pages,LID Support and Effects", "Supported Log Pages 依 LID 提供 descriptor；07h descriptor 是 MCDAS 的查詢入口。", "Supported Log Pages provides a descriptor per LID; the 07h descriptor is the lookup point for MCDAS.", "TEL-CREATE"),
     211: f("LSUPP,LID Specific Parameter", "先查 LSUPP 再解該 LID 的 specific parameter；MCDAS 的 bit 0 是此 parameter 的內容，不是 CTHID。", "Check LSUPP before decoding that LID's specific parameter. MCDAS bit 0 belongs to this parameter, not to CTHID.", "TEL-CREATE"),
@@ -43,7 +43,7 @@ BASE_FIGURES = {
     280: f("LID,BPINFO,ABPID,BPSZ,BPD", "Header bytes 0–15；BPINFO 在 bytes 4–7，ABPID 是 bit 31，BPSZ 是 bits 14:0。BPD 從 byte 16 起，長度為 BPSZ×128 KiB。", "Header bytes are 0–15; BPINFO occupies 4–7 with ABPID at bit 31 and BPSZ at bits 14:0. BPD begins at byte 16 and is BPSZ×128 KiB long.", "BOOT-LOG"),
     311: f("Reservation Notification,Log Page Count,Notification Type", "這是 Reservation Notification 的通知資料結構，回報通知計數與類型等；不含 SPROG。8.1.27.4.2 的引用疑似錯置，進度應對照 Figure 312。", "This Reservation Notification structure reports notification counts/types and does not contain SPROG. The reference in 8.1.27.4.2 appears misplaced; use Figure 312 for progress.", "SOURCE-XREF"),
     312: f("SPROG,SSTAT,SCDW10,ETO,ETPVDS,SSI,MNSOIP,STNSID", "512-byte log：SPROG[1:0]、SSTAT[3:2]、SCDW10[7:4]、時間估計[35:8]、SSI[36]、MNSOIP[43:40]、STNSID[47:44]。先用 NSID 決定 target，再一起讀 SOS/SANS/FAILS 與進度。", "The 512-byte log has SPROG[1:0], SSTAT[3:2], SCDW10[7:4], estimates[35:8], SSI[36], MNSOIP[43:40], and STNSID[47:44]. Select the target with NSID, then interpret SOS/SANS/FAILS and progress together.", "SAN-STATUS"),
-    338: f("BPCAP,LPA,SANICAP,CTRATT", "只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。", "Decode only this report's fields: BPCAP byte 102, LPA byte 261, SANICAP bytes 328–331, and MDS in CTRATT. Check methods, VERS/NVERS, SPRRS, NDI, and NODMMAS separately.", "SAN-NDAS"),
+    338: f("BPCAP,LPA,SANICAP,CTRATT", "只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。", "Read the fields only this report's fields: BPCAP byte 102, LPA byte 261, SANICAP bytes 328–331, and MDS in CTRATT. Check methods, VERS/NVERS, SPRRS, NDI, and NODMMAS separately.", "SAN-NDAS"),
     451: f("SANACT,AUSE,OWPASS,OIPBP,NDAS,EMVS,PREQ", "由 SANACT 決定操作，再依方法解讀其餘 bits；OWPASS=0 是 16，EMVS 不能搭配 Overwrite/NDAS=1。PREQ bit 11 與 namespace 命令不同。", "Select the action with SANACT before decoding method-dependent bits. OWPASS=0 means 16, and EMVS cannot combine with Overwrite/NDAS=1. PREQ bit 11 differs from the namespace command.", "SAN-COMMAND"),
     452: f("OVRPAT", "CDW11 的 32-bit OVRPAT 僅在 Overwrite 適用；搭配 OIPBP 與 pass 奇偶才可推導每一輪寫入 pattern。", "The 32-bit OVRPAT in CDW11 applies only to Overwrite. Combine it with OIPBP and pass parity to derive each pass's pattern.", "SAN-OVERWRITE"),
     453: f("Firmware Activation Requires Reset,PMR Enabled,Controller Suspended", "這些是啟動命令的 command-specific failure；與稍後背景作業的 Sanitize Failed/SOS 分開記錄。", "These are command-specific failures of the initiating command. Record them separately from later background-operation Sanitize Failed/SOS results.", "SAN-PREFLIGHT"),
@@ -108,7 +108,7 @@ def expanded_guide(figure, language, fallback):
     claim_id = 'BASEBTS-' + data['claim']
     module = next(m for m in MODULES if claim_id in m['sources'])
     english = language == 'en'
-    # The figure's field slice, supporting mechanism, and worked scenario are
+    # The figure's field 部分內容, supporting mechanism, and worked scenario are
     # separate; field names alone cannot choose a generic state-machine lesson.
     kind = 'state' if int(figure['number']) in range(680, 685) or int(figure['number']) in range(772, 780) else 'layout'
     context = data[language]

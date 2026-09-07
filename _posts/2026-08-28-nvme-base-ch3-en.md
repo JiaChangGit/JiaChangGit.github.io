@@ -27,7 +27,7 @@ nvme_notes: true
 <article><span class="axis-number">03</span><h3>Resources and lifecycle</h3><p>Distinguish capacity, controller memory, and the scope of state changes.</p></article>
 </div>
 
-<p>Submission queues hold commands from the host, and completion queues hold results from the controller. The host establishes these shared mechanisms before using commands such as reads and writes.</p>
+<p>Submission queues hold commands from the host, and completion queues hold results from the controller. The host establishes these shared mechanisms before using commands such as reads and writes.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>Host</dt><dd>The system running the operating system and issuing NVMe commands.</dd></div></dl>
 </section>
 <section class="lesson" id="module-identity"><h2 id="heading-identity"><span class="section-number">01</span> Controller types, identifiers, and capabilities</h2>
 <p>Controller type answers what work a controller can perform, Controller ID answers which controller it is, and support-requirement Figures answer the required support level of a command, log, or feature in a particular context. Figures 23-32 belong in one reading sequence, but the three questions cannot be collapsed into one Boolean.</p>
@@ -39,7 +39,7 @@ nvme_notes: true
 <!-- claim:BASE3-ORDER -->
 <p>Except for fused operations, fetched commands and completions have no general ordering guarantee. Enforcing any required order is the host's responsibility.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.3</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.3, printed pages 40, PDF pages 66</p></details>
 </details>
-<div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Role or distinction</th><th scope="col">Conditions</th></tr></thead><tbody><tr><td>I/O controller</td><td>Can execute user-data I/O</td><td>Optional capabilities still require individual checks</td></tr><tr><td>Administrative controller</td><td>Management purpose without data I/O commands</td><td>An Admin Queue does not make it an I/O controller</td></tr><tr><td>Support marker</td><td>Expresses support strength for a row and context</td><td>Never decode it without its column and footnote</td></tr></tbody></table></div><dl class="term-note" aria-label="Terms in this passage"><div><dt>Administrative controller</dt><dd>Administrative controller, a management-oriented controller type that does not execute user-data I/O commands.</dd></div><div><dt>I/O controller</dt><dd>I/O controller, a controller type capable of executing user-data I/O commands.</dd></div><div><dt>Admin</dt><dd>Administrative, the control path used to create, configure, query, or manage controllers and queues.</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Role or distinction</th><th scope="col">Conditions</th></tr></thead><tbody><tr><td>I/O controller</td><td>Can execute user-data I/O</td><td>Optional capabilities still require individual checks</td></tr><tr><td>Administrative controller</td><td>Management purpose without data I/O commands</td><td>An Admin Queue does not make it an I/O controller</td></tr><tr><td>Support marker</td><td>Expresses support strength for a row and context</td><td>Never interpret the fields it without its column and footnote</td></tr></tbody></table></div><dl class="term-note" aria-label="Terms in this passage"><div><dt>Administrative controller</dt><dd>Administrative controller, a management-oriented controller type that does not execute user-data I/O commands.</dd></div><div><dt>I/O controller</dt><dd>I/O controller, a controller type capable of executing user-data I/O commands.</dd></div><div><dt>Admin</dt><dd>Administrative, the control path used to create, configure, query, or manage controllers and queues.</dd></div></dl>
 <aside class="worked-example"><h3>Example</h3><p>Informative example: after detecting an Administrative controller, software still creates the Admin SQ/CQ and performs management commands, but it must not attach a namespace data path to that controller. Classifying by the mere presence of an Admin Queue incorrectly merges I/O and Administrative controllers.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>namespace</dt><dd>Namespace, a formatted quantity of non-volatile memory accessed by a host through a controller.</dd></div><div><dt>CQ</dt><dd>Completion Queue, the queue into which a controller posts command completions.</dd></div><div><dt>SQ</dt><dd>Submission Queue, the queue into which the host places commands.</dd></div></dl></aside>
 <details class="technical-note"><summary>Fields and data structures in more depth</summary>
 <!-- figure-table:BASE3-FIG-023 -->
@@ -124,7 +124,7 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-036 -->
 <details class="field-note" id="figure-BASE3-FIG-036"><summary>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</summary>
 <!-- claim:BASE3-FIG-036-CLAIM -->
-<p>Figure 36, "Offset 0h: CAP - Controller Capabilities": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.1</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, printed pages 55-58, PDF pages 81-84</p></details>
+<p>Figure 36, "Offset 0h: CAP - Controller Capabilities": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.1</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, printed pages 55-58, PDF pages 81-84</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-037 -->
@@ -142,37 +142,37 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-041 -->
 <details class="field-note" id="figure-BASE3-FIG-041"><summary>Base Figure 41 · Offset 14h: CC - Controller Configuration</summary>
 <!-- claim:BASE3-FIG-041-CLAIM -->
-<p>Figure 41, "Offset 14h: CC - Controller Configuration": Defines CC (Controller Configuration) at offset 14h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.5</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, printed pages 60-63, PDF pages 86-89</p></details>
+<p>Figure 41, "Offset 14h: CC - Controller Configuration": Defines CC (Controller Configuration) at offset 14h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.5</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, printed pages 60-63, PDF pages 86-89</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>SHN</dt><dd>Shutdown Notification, the CC field through which the host declares a shutdown type.</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-042 -->
 <details class="field-note" id="figure-BASE3-FIG-042"><summary>Base Figure 42 · Offset 1Ch: CSTS - Controller Status</summary>
 <!-- claim:BASE3-FIG-042-CLAIM -->
-<p>Figure 42, "Offset 1Ch: CSTS - Controller Status": Defines CSTS (Controller Status) at offset 1Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.5</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, printed pages 63-65, PDF pages 89-91</p></details>
+<p>Figure 42, "Offset 1Ch: CSTS - Controller Status": Defines CSTS (Controller Status) at offset 1Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.5</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, printed pages 63-65, PDF pages 89-91</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-044 -->
 <details class="field-note" id="figure-BASE3-FIG-044"><summary>Base Figure 44 · Offset 24h: AQA - Admin Queue Attributes</summary>
 <!-- claim:BASE3-FIG-044-CLAIM -->
-<p>Figure 44, "Offset 24h: AQA - Admin Queue Attributes": Defines AQA (Admin Queue Attributes) at offset 24h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.6</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, printed pages 66, PDF pages 92</p></details>
+<p>Figure 44, "Offset 24h: AQA - Admin Queue Attributes": Defines AQA (Admin Queue Attributes) at offset 24h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.6</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, printed pages 66, PDF pages 92</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-045 -->
 <details class="field-note" id="figure-BASE3-FIG-045"><summary>Base Figure 45 · Offset 28h: ASQ - Admin Submission Queue Base Address</summary>
 <!-- claim:BASE3-FIG-045-CLAIM -->
-<p>Figure 45, "Offset 28h: ASQ - Admin Submission Queue Base Address": Defines ASQ (Admin Submission Queue Base Address) at offset 28h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.6</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, printed pages 66, PDF pages 92</p></details>
+<p>Figure 45, "Offset 28h: ASQ - Admin Submission Queue Base Address": Defines ASQ (Admin Submission Queue Base Address) at offset 28h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.6</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, printed pages 66, PDF pages 92</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>CC.MPS</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller. Here CC.MPS selects its MPS member field.</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-046 -->
 <details class="field-note" id="figure-BASE3-FIG-046"><summary>Base Figure 46 · Offset 30h: ACQ - Admin Completion Queue Base Address</summary>
 <!-- claim:BASE3-FIG-046-CLAIM -->
-<p>Figure 46, "Offset 30h: ACQ - Admin Completion Queue Base Address": Defines ACQ (Admin Completion Queue Base Address) at offset 30h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.9</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, printed pages 67, PDF pages 93</p></details>
+<p>Figure 46, "Offset 30h: ACQ - Admin Completion Queue Base Address": Defines ACQ (Admin Completion Queue Base Address) at offset 30h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.9</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, printed pages 67, PDF pages 93</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-057 -->
 <details class="field-note" id="figure-BASE3-FIG-057"><summary>Base Figure 57 · Offset 68h: CRTO - Controller Ready Timeouts</summary>
 <!-- claim:BASE3-FIG-057-CLAIM -->
-<p>Figure 57, "Offset 68h: CRTO - Controller Ready Timeouts": Defines CRTO (Controller Ready Timeouts) at offset 68h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.21</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, printed pages 73, PDF pages 99</p></details>
+<p>Figure 57, "Offset 68h: CRTO - Controller Ready Timeouts": Defines CRTO (Controller Ready Timeouts) at offset 68h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.21</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, printed pages 73, PDF pages 99</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>CAP.CRMS.CRIMS</dt><dd>Controller Capabilities, the controller property at offset 00h that reports queue, page-size, timeout, and other capabilities. Here CAP.CRMS.CRIMS selects its CRMS.CRIMS member field.</dd></div><div><dt>CC.CRIME</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller. Here CC.CRIME selects its CRIME member field.</dd></div><div><dt>CC.EN</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller. Here CC.EN selects its EN member field.</dd></div></dl>
 </details>
 </details>
@@ -228,79 +228,79 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-047 -->
 <details class="field-note" id="figure-BASE3-FIG-047"><summary>Base Figure 47 · Offset 38h: CMBLOC - Controller Memory Buffer Location</summary>
 <!-- claim:BASE3-FIG-047-CLAIM -->
-<p>Figure 47, "Offset 38h: CMBLOC - Controller Memory Buffer Location": Defines CMBLOC (Controller Memory Buffer Location) at offset 38h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.9</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, printed pages 67-68, PDF pages 93-94</p></details>
-<dl class="term-note" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register, a PCI-configuration-space register locating a device memory space.</dd></div><div><dt>BIR</dt><dd>BAR Indicator Register, a selector identifying the PCIe BAR that contains a memory structure.</dd></div></dl>
+<p>Figure 47, "Offset 38h: CMBLOC - Controller Memory Buffer Location": Defines CMBLOC (Controller Memory Buffer Location) at offset 38h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.9</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, printed pages 67-68, PDF pages 93-94</p></details>
+<dl class="term-note" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register, a PCI-configuration-space register finding a device memory space.</dd></div><div><dt>BIR</dt><dd>BAR Indicator Register, a selector identifying the PCIe BAR that contains a memory structure.</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-048 -->
 <details class="field-note" id="figure-BASE3-FIG-048"><summary>Base Figure 48 · Offset 3Ch: CMBSZ - Controller Memory Buffer Size</summary>
 <!-- claim:BASE3-FIG-048-CLAIM -->
-<p>Figure 48, "Offset 3Ch: CMBSZ - Controller Memory Buffer Size": Defines CMBSZ (Controller Memory Buffer Size) at offset 3Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.11</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, printed pages 68-69, PDF pages 94-95</p></details>
+<p>Figure 48, "Offset 3Ch: CMBSZ - Controller Memory Buffer Size": Defines CMBSZ (Controller Memory Buffer Size) at offset 3Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.11</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, printed pages 68-69, PDF pages 94-95</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-052 -->
 <details class="field-note" id="figure-BASE3-FIG-052"><summary>Base Figure 52 · Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</summary>
 <!-- claim:BASE3-FIG-052-CLAIM -->
-<p>Figure 52, "Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control": Defines CMBMSC (Controller Memory Buffer Memory Space Control) at offset 50h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.14</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, printed pages 70-71, PDF pages 96-97</p></details>
+<p>Figure 52, "Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control": Defines CMBMSC (Controller Memory Buffer Memory Space Control) at offset 50h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.14</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, printed pages 70-71, PDF pages 96-97</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-053 -->
 <details class="field-note" id="figure-BASE3-FIG-053"><summary>Base Figure 53 · Offset 58h: CMBSTS - Controller Memory Buffer Status</summary>
 <!-- claim:BASE3-FIG-053-CLAIM -->
-<p>Figure 53, "Offset 58h: CMBSTS - Controller Memory Buffer Status": Defines CMBSTS (Controller Memory Buffer Status) at offset 58h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.16</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, printed pages 71, PDF pages 97</p></details>
+<p>Figure 53, "Offset 58h: CMBSTS - Controller Memory Buffer Status": Defines CMBSTS (Controller Memory Buffer Status) at offset 58h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.16</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, printed pages 71, PDF pages 97</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-054 -->
 <details class="field-note" id="figure-BASE3-FIG-054"><summary>Base Figure 54 · Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</summary>
 <!-- claim:BASE3-FIG-054-CLAIM -->
-<p>Figure 54, "Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size": Defines CMBEBS (Controller Memory Buffer Elasticity Buffer Size) at offset 5Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.16</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, printed pages 71, PDF pages 97</p></details>
+<p>Figure 54, "Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size": Defines CMBEBS (Controller Memory Buffer Elasticity Buffer Size) at offset 5Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.16</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, printed pages 71, PDF pages 97</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-055 -->
 <details class="field-note" id="figure-BASE3-FIG-055"><summary>Base Figure 55 · Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</summary>
 <!-- claim:BASE3-FIG-055-CLAIM -->
-<p>Figure 55, "Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput": Defines CMBSWTP (Controller Memory Buffer Sustained Write Throughput) at offset 60h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.19</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, printed pages 72, PDF pages 98</p></details>
+<p>Figure 55, "Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput": Defines CMBSWTP (Controller Memory Buffer Sustained Write Throughput) at offset 60h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.19</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, printed pages 72, PDF pages 98</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet, a packet carried by the PCIe transaction layer.</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-058 -->
 <details class="field-note" id="figure-BASE3-FIG-058"><summary>Base Figure 58 · Offset E00h: PMRCAP - Persistent Memory Region Capabilities</summary>
 <!-- claim:BASE3-FIG-058-CLAIM -->
-<p>Figure 58, "Offset E00h: PMRCAP - Persistent Memory Region Capabilities": Defines PMRCAP (Persistent Memory Region Capabilities) at offset E00h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.21</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, printed pages 73-74, PDF pages 99-100</p></details>
+<p>Figure 58, "Offset E00h: PMRCAP - Persistent Memory Region Capabilities": Defines PMRCAP (Persistent Memory Region Capabilities) at offset E00h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.21</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, printed pages 73-74, PDF pages 99-100</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-059 -->
 <details class="field-note" id="figure-BASE3-FIG-059"><summary>Base Figure 59 · Offset E04h: PMRCTL - Persistent Memory Region Control</summary>
 <!-- claim:BASE3-FIG-059-CLAIM -->
-<p>Figure 59, "Offset E04h: PMRCTL - Persistent Memory Region Control": Defines PMRCTL (Persistent Memory Region Control) at offset E04h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.22</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, printed pages 74, PDF pages 100</p></details>
+<p>Figure 59, "Offset E04h: PMRCTL - Persistent Memory Region Control": Defines PMRCTL (Persistent Memory Region Control) at offset E04h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.22</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, printed pages 74, PDF pages 100</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-060 -->
 <details class="field-note" id="figure-BASE3-FIG-060"><summary>Base Figure 60 · Offset E08h: PMRSTS - Persistent Memory Region Status</summary>
 <!-- claim:BASE3-FIG-060-CLAIM -->
-<p>Figure 60, "Offset E08h: PMRSTS - Persistent Memory Region Status": Defines PMRSTS (Persistent Memory Region Status) at offset E08h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.23</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, printed pages 75, PDF pages 101</p></details>
+<p>Figure 60, "Offset E08h: PMRSTS - Persistent Memory Region Status": Defines PMRSTS (Persistent Memory Region Status) at offset E08h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.23</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, printed pages 75, PDF pages 101</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-061 -->
 <details class="field-note" id="figure-BASE3-FIG-061"><summary>Base Figure 61 · Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</summary>
 <!-- claim:BASE3-FIG-061-CLAIM -->
-<p>Figure 61, "Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size": Defines PMREBS (Persistent Memory Region Elasticity Buffer Size) at offset E0Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.24</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, printed pages 76, PDF pages 102</p></details>
+<p>Figure 61, "Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size": Defines PMREBS (Persistent Memory Region Elasticity Buffer Size) at offset E0Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.24</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, printed pages 76, PDF pages 102</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-062 -->
 <details class="field-note" id="figure-BASE3-FIG-062"><summary>Base Figure 62 · Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</summary>
 <!-- claim:BASE3-FIG-062-CLAIM -->
-<p>Figure 62, "Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput": Defines PMRSWTP (Persistent Memory Region Sustained Write Throughput) at offset E10h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.24</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, printed pages 76, PDF pages 102</p></details>
+<p>Figure 62, "Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput": Defines PMRSWTP (Persistent Memory Region Sustained Write Throughput) at offset E10h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.24</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, printed pages 76, PDF pages 102</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-063 -->
 <details class="field-note" id="figure-BASE3-FIG-063"><summary>Base Figure 63 · Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</summary>
 <!-- claim:BASE3-FIG-063-CLAIM -->
-<p>Figure 63, "Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower": Defines PMRMSCL (Persistent Memory Region Memory Space Control Lower) at offset E14h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.26</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, printed pages 77, PDF pages 103</p></details>
+<p>Figure 63, "Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower": Defines PMRMSCL (Persistent Memory Region Memory Space Control Lower) at offset E14h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.26</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, printed pages 77, PDF pages 103</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-064 -->
 <details class="field-note" id="figure-BASE3-FIG-064"><summary>Base Figure 64 · Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</summary>
 <!-- claim:BASE3-FIG-064-CLAIM -->
-<p>Figure 64, "Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper": Defines PMRMSCU (Persistent Memory Region Memory Space Control Upper) at offset E18h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.26</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, printed pages 77, PDF pages 103</p></details>
+<p>Figure 64, "Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper": Defines PMRMSCU (Persistent Memory Region Memory Space Control Upper) at offset E18h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.26</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, printed pages 77, PDF pages 103</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-086 -->
@@ -347,13 +347,13 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-043 -->
 <details class="field-note" id="figure-BASE3-FIG-043"><summary>Base Figure 43 · Offset 20h: NSSR - NVM Subsystem Reset</summary>
 <!-- claim:BASE3-FIG-043-CLAIM -->
-<p>Figure 43, "Offset 20h: NSSR - NVM Subsystem Reset": Defines NSSR (NVM Subsystem Reset) at offset 20h and identifies the fields that software must decode at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>NSSR</dt><dd>NVM Subsystem Reset, the property used to initiate an NVM subsystem reset.</dd></div></dl><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.6</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, printed pages 66, PDF pages 92</p></details>
+<p>Figure 43, "Offset 20h: NSSR - NVM Subsystem Reset": Defines NSSR (NVM Subsystem Reset) at offset 20h and identifies the fields that software must read the fields at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>NSSR</dt><dd>NVM Subsystem Reset, the property used to initiate an NVM subsystem reset.</dd></div></dl><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.6</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, printed pages 66, PDF pages 92</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-056 -->
 <details class="field-note" id="figure-BASE3-FIG-056"><summary>Base Figure 56 · Offset 64h: NSSD - NVM Subsystem Shutdown</summary>
 <!-- claim:BASE3-FIG-056-CLAIM -->
-<p>Figure 56, "Offset 64h: NSSD - NVM Subsystem Shutdown": Defines NSSD (NVM Subsystem Shutdown) at offset 64h and identifies the fields that software must decode at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown, the property controlling the wider-scope subsystem shutdown.</dd></div></dl><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.19</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, printed pages 72, PDF pages 98</p></details>
+<p>Figure 56, "Offset 64h: NSSD - NVM Subsystem Shutdown": Defines NSSD (NVM Subsystem Shutdown) at offset 64h and identifies the fields that software must read the fields at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown, the property controlling the wider-scope subsystem shutdown.</dd></div></dl><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.19</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, printed pages 72, PDF pages 98</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>CAP.CPS</dt><dd>Controller Capabilities, the controller property at offset 00h that reports queue, page-size, timeout, and other capabilities. Here CAP.CPS selects its CPS member field.</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-084 -->
@@ -390,31 +390,31 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-039 -->
 <details class="field-note" id="figure-BASE3-FIG-039"><summary>Base Figure 39 · Offset Ch: INTMS - Interrupt Mask Set</summary>
 <!-- claim:BASE3-FIG-039-CLAIM -->
-<p>Figure 39, "Offset Ch: INTMS - Interrupt Mask Set": Defines INTMS (Interrupt Mask Set) at offset Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.2</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, printed pages 59, PDF pages 85</p></details>
+<p>Figure 39, "Offset Ch: INTMS - Interrupt Mask Set": Defines INTMS (Interrupt Mask Set) at offset Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.2</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, printed pages 59, PDF pages 85</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>MSI</dt><dd>Message Signaled Interrupt, a PCI mechanism that delivers an interrupt through a memory-write message.</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-040 -->
 <details class="field-note" id="figure-BASE3-FIG-040"><summary>Base Figure 40 · Offset 10h: INTMC - Interrupt Mask Clear</summary>
 <!-- claim:BASE3-FIG-040-CLAIM -->
-<p>Figure 40, "Offset 10h: INTMC - Interrupt Mask Clear": Defines INTMC (Interrupt Mask Clear) at offset 10h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.2</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, printed pages 59, PDF pages 85</p></details>
+<p>Figure 40, "Offset 10h: INTMC - Interrupt Mask Clear": Defines INTMC (Interrupt Mask Clear) at offset 10h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.2</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, printed pages 59, PDF pages 85</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-049 -->
 <details class="field-note" id="figure-BASE3-FIG-049"><summary>Base Figure 49 · Offset 40h: BPINFO - Boot Partition Information</summary>
 <!-- claim:BASE3-FIG-049-CLAIM -->
-<p>Figure 49, "Offset 40h: BPINFO - Boot Partition Information": Defines BPINFO (Boot Partition Information) at offset 40h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.12</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, printed pages 69, PDF pages 95</p></details>
+<p>Figure 49, "Offset 40h: BPINFO - Boot Partition Information": Defines BPINFO (Boot Partition Information) at offset 40h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.12</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, printed pages 69, PDF pages 95</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-050 -->
 <details class="field-note" id="figure-BASE3-FIG-050"><summary>Base Figure 50 · Offset 44h: BPRSEL - Boot Partition Read Select</summary>
 <!-- claim:BASE3-FIG-050-CLAIM -->
-<p>Figure 50, "Offset 44h: BPRSEL - Boot Partition Read Select": Defines BPRSEL (Boot Partition Read Select) at offset 44h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.12</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, printed pages 69-70, PDF pages 95-96</p></details>
+<p>Figure 50, "Offset 44h: BPRSEL - Boot Partition Read Select": Defines BPRSEL (Boot Partition Read Select) at offset 44h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.12</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, printed pages 69-70, PDF pages 95-96</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-051 -->
 <details class="field-note" id="figure-BASE3-FIG-051"><summary>Base Figure 51 · Offset 48h: BPMBL - Boot Partition Memory Buffer Location</summary>
 <!-- claim:BASE3-FIG-051-CLAIM -->
-<p>Figure 51, "Offset 48h: BPMBL - Boot Partition Memory Buffer Location": Defines BPMBL (Boot Partition Memory Buffer Location) at offset 48h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.14</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, printed pages 70, PDF pages 96</p></details>
+<p>Figure 51, "Offset 48h: BPMBL - Boot Partition Memory Buffer Location": Defines BPMBL (Boot Partition Memory Buffer Location) at offset 48h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: Base 2.4 §3.1.4.14</summary><p>Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, printed pages 70, PDF pages 96</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-065 -->

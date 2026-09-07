@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
-<title>NVM Command Set 1.3：完整獨立教學與工程查詢</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+<title>NVM Command Set 1.3：邏輯區塊、I/O 命令與資料保護</title><style>/* Shared visual language for the standalone course and NVMe posts. */
 .nvme-note, .edition-tutorial {
   --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
   --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
@@ -23,6 +23,8 @@
 .reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
 .reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
 .reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
 .reader-nav nav { display: grid; gap: 3px; }
 .reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
 .reader-nav a:hover { background: var(--soft); color: var(--accent); }
@@ -95,9 +97,9 @@
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
 <div class="reader-shell"><aside class="reader-nav"><details><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-nvmcs-foundation">01 Logical block、格式與單位</a><a href="#module-nvmcs-capacity">02 Namespace 容量與配置狀態</a><a href="#module-nvmcs-identify">03 Identify：同一 namespace 的多份資料結構</a><a href="#module-nvmcs-format-list">04 LBAF、ELBAF 與唯一屬性格式</a><a href="#module-nvmcs-format">05 Format、Host Behavior 與延伸 LBA</a><a href="#module-nvmcs-namespace-create">06 建立 namespace：格式、mask 與 granularity</a><a href="#module-nvmcs-metadata">07 Metadata 傳輸與 PI 的位置</a><a href="#module-nvmcs-support-status">08 能力探索、Opcode 與狀態</a><a href="#module-nvmcs-read-write">09 Read／Write 的資料與完成條件</a><a href="#module-nvmcs-order-fused">10 命令順序與 Compare-and-Write</a><a href="#module-nvmcs-atomic">11 正常、斷電與多段原子性</a><a href="#module-nvmcs-compare-verify">12 Compare 與 Verify 解決不同問題</a><a href="#module-nvmcs-copy">13 Copy：描述來源、連續目的與部分失敗</a><a href="#module-nvmcs-copy-pi">14 Copy 的 PI 格式相容與轉換</a><a href="#module-nvmcs-dsm">15 Dataset Management 與三種 processing limits</a><a href="#module-nvmcs-dealloc">16 Deallocated／unwritten 讀取規則</a><a href="#module-nvmcs-zero-uncorrectable">17 Write Uncorrectable、Write Zeroes 與整體清零</a><a href="#module-nvmcs-pi-formats">18 16／32／64b Guard 與 Qualified PI</a><a href="#module-nvmcs-crc">19 CRC 參數、位元順序與已知向量</a><a href="#module-nvmcs-tag-layout">20 Storage／Reference Tag 的 Dword 封裝</a><a href="#module-nvmcs-pi-checking">21 PRACT 與 PRCHK／STC 的組合</a><a href="#module-nvmcs-basic-features">22 基本 Features 的作用域與例外</a><a href="#module-nvmcs-log-events">23 AER、SMART 與錯誤記錄的 NVM 補充</a><a href="#module-nvmcs-lba-status">24 LBA Status：通知、掃描與修復流程</a><a href="#module-nvmcs-sanitize">25 Sanitize 與 Media Verification 的 NVM 規則</a><a href="#module-nvmcs-alignment">26 對齊、granularity 與效能提示</a><a href="#module-nvmcs-performance-feature">27 Performance Characteristics 的屬性模型</a><a href="#module-nvmcs-rate-config">28 Rate Limiting 的設定欄位</a><a href="#module-nvmcs-rate-modes">29 Hard／Soft 與 token-bucket 算例</a><a href="#module-nvmcs-rate-graph">30 Rate Limiting log 是能力圖</a><a href="#module-nvmcs-fdp">31 FDP：placement、RUH 與可觀測數據</a><a href="#module-nvmcs-streams">32 Streams 的 NVM 單位與優先順序</a><a href="#module-nvmcs-ana-reservations">33 ANA 與 Reservations 的 NVM 行為</a><a href="#module-nvmcs-key-per-io">34 Key Per I/O 的 NVM 對齊約束</a><a href="#module-nvmcs-migration-queue">35 LBA Migration Queue 與變更追蹤</a><a href="#module-nvmcs-export-template">36 Memory-based 資源匯出範本</a><a href="#module-nvmcs-export-state">37 匯出狀態的長度與一致性</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
-<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVM Command Set 1.3：完整獨立教學與工程查詢</h1></header>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVM Command Set 1.3：邏輯區塊、I/O 命令與資料保護</h1></header>
 <section id="topic-overview" class="topic-overview">
-<p class="opening">NVM Command Set 說明主機如何以 logical block 為單位讀寫與管理儲存空間。理解它的關鍵，是把資料格式、命令行為、資料完整性與資源管理連起來：同一筆命令，會因 namespace 格式、支援能力與設定不同而有不同的適用條件。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<p class="opening">NVM Command Set 說明主機如何以 logical block 為單位讀寫與管理儲存空間。理解它的關鍵，是把資料格式、命令行為、資料完整性與資源管理連起來：同一筆命令，會因 namespace 格式、支援能力與設定不同而有不同的適用條件。</p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
 <article><span class="axis-number">01</span><h3>儲存空間與格式</h3><p>先理解 namespace 的容量、LBA 格式，以及資料與 metadata 的關係。</p></article>
@@ -105,20 +107,20 @@
 <article><span class="axis-number">03</span><h3>資料完整性與順序</h3><p>理解原子性、命令相依、Protection Information，以及資料檢查的範圍。</p></article>
 <article><span class="axis-number">04</span><h3>能力與資源管理</h3><p>以 Identify、Features 和 log 理解格式選擇、效能限制及進階資源功能。</p></article>
 </div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>LBA</dt><dd>Logical Block Address；以所選格式的 block 為單位。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>LBA</dt><dd>Logical Block Address；以所選格式的 block 為單位。</dd></div></dl>
 <p>主機透過提交佇列送出命令，控制器透過完成佇列回報結果。Base 規格定義這套共同機制；本篇聚焦命令如何作用於 namespace 內的 logical blocks。</p>
 </section>
 <section class="lesson" id="module-nvmcs-foundation"><h2 id="heading-nvmcs-foundation"><span class="section-number">01</span> Logical block、格式與單位</h2>
-<p>Host 透過 logical block address 存取 namespace。先確定一個 block 的 data 與 metadata 大小，才能計算 buffer、理解命令範圍，並選擇適用的資料保護方式。</p>
+<p>Host 透過 logical block address 存取 namespace。先確定一個 block 的 data 與 metadata 大小，才能計算 buffer、理解命令範圍，並選擇適用的資料保護方式。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
 <!-- claim:NVMCS13-FOUNDATION -->
-<p>NVM Command Set 補充 Base 的 logical-block 語意；logical block data size 不含 metadata，logical block size 則包含。NVM 的 CSI 是 00h，命令、Feature、log 與 Identify 的相同數字分屬不同識別空間。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>分別選 Feature、log page、I/O command set 與 Identify 回傳資料結構；數值不能跨識別空間混用。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §1.1-1.6; 4.1.3.9; 4.1.4.8; 4.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §1.1-1.6; 4.1.3.9; 4.1.4.8; 4.1.5, 文件頁 9-12,73-75,79-83, PDF 頁 9-12,73-75,79-83</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBADS</td><td>data bytes = 2^LBADS</td><td>另加 MS 才是 logical block size</td></tr><tr><td>Format Index</td><td>同時選 LBAF 與 ELBAF</td><td>不能只看資料大小</td></tr><tr><td>Specification family</td><td>通用機制由 Base 定義</td><td>相依欄位另以 Base 來源標示</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>LBADS</dt><dd>LBA Data Size 的 exponent；資料 bytes=2^LBADS，0表示目前不可用。</dd></div><div><dt>MS</dt><dd>每個 logical block 的 metadata bytes；與 PI size 比較以判斷 PRACT 的傳輸效果。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>LBADS=0Ch、MS=16 時，資料為 4096 bytes，含 metadata 的 logical block 是 4112 bytes。FID 28h 與 LID 28h 雖相同，前者設定限制，後者回報能力圖。</p><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>分別選 Feature、log page、I/O command set 與 Identify 回傳資料結構；數值不能跨識別空間混用。</dd></div><div><dt>LID</dt><dd>分別選 Feature、log page、I/O command set 與 Identify 回傳資料結構；數值不能跨識別空間混用。</dd></div></dl></aside>
+<p>NVM Command Set 補充 Base 的 logical-block 語意；logical block data size 不含 metadata，logical block size 則包含。NVM 的 CSI 是 00h，命令、Feature、log 與 Identify 的相同數字分屬不同識別空間。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §1.1-1.6; 4.1.3.9; 4.1.4.8; 4.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §1.1-1.6; 4.1.3.9; 4.1.4.8; 4.1.5, 文件頁 9-12,73-75,79-83, PDF 頁 9-12,73-75,79-83</p></details>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBADS</td><td>data bytes = 2^LBADS</td><td>另加 MS 才是 logical block size</td></tr><tr><td>Format Index</td><td>同時選 LBAF 與 ELBAF</td><td>不能只看資料大小</td></tr><tr><td>Specification family</td><td>通用機制由 Base 定義</td><td>相依欄位另以 Base 來源標示</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Format Index</dt><dd>格式索引；用來選取一組 LBAF／ELBAF 格式資訊的編號。</dd></div><div><dt>ELBAF</dt><dd>Extended LBA Format；與相同 index 的 LBAF 配對，補充 PI 格式與 Storage Tag 大小。</dd></div><div><dt>LBADS</dt><dd>LBA Data Size 的 exponent；資料 bytes=2^LBADS，0表示目前不可用。</dd></div><div><dt>LBAF</dt><dd>LBA Format；描述一種 logical block 格式，包括資料及 metadata 大小。</dd></div><div><dt>MS</dt><dd>Metadata Size；每個 logical block 的 metadata bytes 數。</dd></div></dl>
+<aside class="worked-example"><h3>例子</h3><p>LBADS=0Ch、MS=16 時，資料為 4096 bytes，含 metadata 的 logical block 是 4112 bytes。FID 28h 與 LID 28h 雖相同，前者設定限制，後者回報能力圖。</p><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-001 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-001"><summary>NVM Figure 1 · NVMe Family of Specifications</summary>
 <!-- claim:NVMCS13-NVM-FIG-001-CLAIM -->
-<p>Figure 1〈NVMe Family of Specifications〉：依功能層分開閱讀：Base 給共同機制，PCIe 給本機 transport，NVM 給 logical-block 命令語意；這是保留範圍的家族關係重畫。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §1.1, Figure 1, 文件頁 9, PDF 頁 9</p></details>
+<p>Figure 1〈NVMe Family of Specifications〉：依功能層分開閱讀：Base 給共同機制，PCIe 給本機 transport，NVM 給 logical-block 命令語意。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §1.1, Figure 1, 文件頁 9, PDF 頁 9</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-002 -->
@@ -147,10 +149,10 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-identify"><h2 id="heading-nvmcs-identify"><span class="section-number">03</span> Identify：同一 namespace 的多份資料結構</h2>
-<p>每次查詢都寫出 CNS、CSI、NSID、Format Index 的角色。不同查詢回零有不同含義，不能一律解讀為不存在或不支援。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace 識別碼；SNSID 選 Copy 來源，ENSID 選匯出 namespace，合法值受個別命令約束。</dd></div><div><dt>CNS</dt><dd>分別選 Feature、log page、I/O command set 與 Identify 回傳資料結構；數值不能跨識別空間混用。</dd></div></dl>
+<p>每次查詢都寫出 CNS、CSI、NSID、Format Index 的角色。不同查詢回零有不同含義，不能一律解讀為不存在或不支援。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier；識別命令作用的 namespace。</dd></div><div><dt>CNS</dt><dd>Controller or Namespace Structure；Identify 命令用來選擇回傳資料結構的欄位。</dd></div></dl>
 <!-- claim:NVMCS13-IDENTIFY -->
 <p>NVM CSI=00h。完整 namespace 資訊需結合 CNS 08h 的 command-set-independent 結構、CNS 00h 的 NVM 結構與 CNS 05h／CSI 00h 的 NVM 延伸結構；CNS 01h 與 06h 則提供 controller 資訊。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5, 文件頁 83-110, PDF 頁 83-110</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CNS 00h / 05h</td><td>namespace 的 NVM 基本／延伸欄位</td><td>FLBAS 決定目前 FIDX；MC／DPC 是能力</td></tr><tr><td>CNS 01h / 06h</td><td>AWUN 等通用位置與 NVM 專屬限制</td><td>06h 的 VSL／WZSL 等需結合 variant bits</td></tr><tr><td>CNS 11h / 1Bh</td><td>allocated namespace 資訊</td><td>不等同 active namespace 查詢</td></tr><tr><td>CNS 09h / 0Ah</td><td>以 FIDX 查能力</td><td>Common=No 欄位清零</td></tr><tr><td>CNS 16h</td><td>namespace granularity list</td><td>GDM 決定 descriptor 如何對應 format</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FLBAS</dt><dd>Formatted LBA Size，選擇 namespace 使用的 LBA format，並包含 metadata placement 相關控制。</dd></div><div><dt>AWUN</dt><dd>Atomic Write Unit Normal；controller 正常原子寫入大小的 0-based 欄位。</dd></div><div><dt>WZSL</dt><dd>Verify／Write Zeroes／Write Uncorrectable 大小限制；非零值使用 exponent 與 minimum page size。</dd></div><div><dt>VSL</dt><dd>Verify／Write Zeroes／Write Uncorrectable 大小限制；非零值使用 exponent 與 minimum page size。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CNS 00h / 05h</td><td>namespace 的 NVM 基本／延伸欄位</td><td>FLBAS 決定目前 FIDX；MC／DPC 是能力</td></tr><tr><td>CNS 01h / 06h</td><td>AWUN 等通用位置與 NVM 專屬限制</td><td>06h 的 VSL／WZSL 等需結合 variant bits</td></tr><tr><td>CNS 11h / 1Bh</td><td>allocated namespace 資訊</td><td>不等同 active namespace 查詢</td></tr><tr><td>CNS 09h / 0Ah</td><td>以 FIDX 查能力</td><td>Common=No 欄位清零</td></tr><tr><td>CNS 16h</td><td>namespace granularity list</td><td>GDM 決定 descriptor 如何對應 format</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FLBAS</dt><dd>Formatted LBA Size，選擇 namespace 使用的 LBA format，並包含 metadata placement 相關控制。</dd></div><div><dt>AWUN</dt><dd>Atomic Write Unit Normal；controller 正常原子寫入大小的 0-based 欄位。</dd></div><div><dt>WZSL</dt><dd>Write Zeroes Size Limit；Write Zeroes 的大小限制，需結合 variant 能力判讀。</dd></div><div><dt>VSL</dt><dd>Verify Size Limit；Verify 的大小限制，需結合 variant 能力判讀。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>NSID=7 的目前格式需讀 FLBAS 再取同 index 的 LBAF 與 ELBAF。查尚未建立的 FIDX=3 能力，使用 09h／0Ah、CSI=0、NSID=0、FIDX=3，另結合 CNS08h 的共同能力。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-122 -->
@@ -162,14 +164,14 @@
 <!-- figure-table:NVMCS13-NVM-FIG-126 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-126"><summary>NVM Figure 126 · Identify – Identify Controller data structure, NVM Command Set Specific Fields</summary>
 <!-- claim:NVMCS13-NVM-FIG-126-CLAIM -->
-<p>Figure 126〈Identify – Identify Controller data structure, NVM Command Set Specific Fields〉：controller atomicity 值供適用 namespaces 使用；namespace capability 可覆寫，AWUPF 不大於 AWUN，ACWU 專供 fused Compare-and-Write。</p><dl class="term-note" aria-label="本段名詞"><div><dt>AWUPF</dt><dd>Atomic Write Unit Power Fail；失敗條件原子大小的0-based欄位。</dd></div><div><dt>ACWU</dt><dd>Namespace normal／power-fail／compare-and-write 或 controller compare-and-write 原子大小；0-based。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.2, Figure 126, 文件頁 94-96, PDF 頁 94-96</p></details>
+<p>Figure 126〈Identify – Identify Controller data structure, NVM Command Set Specific Fields〉：controller atomicity 值供適用 namespaces 使用；namespace capability 可覆寫，AWUPF 不大於 AWUN，ACWU 專供 fused Compare-and-Write。</p><dl class="term-note" aria-label="本段名詞"><div><dt>AWUPF</dt><dd>Atomic Write Unit Power Fail；失敗條件原子大小的0-based欄位。</dd></div><div><dt>ACWU</dt><dd>Atomic Compare and Write Unit；controller 的 fused compare-and-write 大小限制。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.2, Figure 126, 文件頁 94-96, PDF 頁 94-96</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-129 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-129"><summary>NVM Figure 129 · I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set</summary>
 <!-- claim:NVMCS13-NVM-FIG-129-CLAIM -->
 <p>Figure 129〈I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set〉：本表實際延伸到文件頁106，不能只讀有 caption 的103頁。Size limits 要結合 ONCS variants；SLMC 是 0-based，VER 為 command-set 版本。</p><dl class="term-note" aria-label="本段名詞"><div><dt>ONCS</dt><dd>Optional NVM Commands Supported；包含能力及 variant，需結合 NVM Identify 的 limits。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.4, Figure 129, 文件頁 103-106, PDF 頁 103-106</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>DMRSL</dt><dd>DSM 單一 range／全命令 blocks 的 processing limit；與 DMRL 的 range 數限制分開。</dd></div><div><dt>WZDSL</dt><dd>Write Zeroes with Deallocate 的專用大小限制；不可直接沿用 WZSL。</dd></div><div><dt>DMRL</dt><dd>Dataset Management Ranges Limit，實際 range 數上限。</dd></div><div><dt>DMSL</dt><dd>DSM 單一 range／全命令 blocks 的 processing limit；與 DMRL 的 range 數限制分開。</dd></div><div><dt>WUSL</dt><dd>Verify／Write Zeroes／Write Uncorrectable 大小限制；非零值使用 exponent 與 minimum page size。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>DMRSL</dt><dd>Dataset Management Range Size Limit；單一 range 的 logical block 處理數量限制。</dd></div><div><dt>WZDSL</dt><dd>Write Zeroes with Deallocate 的專用大小限制；不可直接沿用 WZSL。</dd></div><div><dt>DMRL</dt><dd>Dataset Management Ranges Limit，實際 range 數上限。</dd></div><div><dt>DMSL</dt><dd>Dataset Management Size Limit；整筆命令的 logical block 處理數量限制。</dd></div><div><dt>WUSL</dt><dd>Write Uncorrectable Size Limit；Write Uncorrectable 的大小限制，需結合 variant 能力判讀。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-130 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-130"><summary>NVM Figure 130 · NVM Command Set Specification Version Descriptor Field Values</summary>
@@ -180,13 +182,13 @@
 <!-- figure-table:NVMCS13-NVM-FIG-131 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-131"><summary>NVM Figure 131 · Command Dword 11 - CNS Specific Identifiers</summary>
 <!-- claim:NVMCS13-NVM-FIG-131-CLAIM -->
-<p>Figure 131〈Command Dword 11 - CNS Specific Identifiers〉：CNS09h／0Ah 的 CDW11 low16 是 Format Index，不能同時當成某個 namespace ID；CSI 另選 command set。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.5, Figure 131, 文件頁 107, PDF 頁 107</p></details>
+<p>Figure 131〈Command Dword 11 - CNS Specific Identifiers〉：CNS09h／0Ah 的 CDW11 low16 是 Format Index，不能同時當成某個 namespace ID；CSI 另選 command set。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.5, Figure 131, 文件頁 107, PDF 頁 107</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-BASE-FIG-338 -->
 <details class="field-note" id="figure-NVMCS13-BASE-FIG-338"><summary>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</summary>
 <!-- claim:NVMCS13-BASE-FIG-338-CLAIM -->
-<p>Figure 338〈Identify – Identify Controller Data Structure, I/O Command Set Independent〉：NVM 需要 Base Identify 的 ONCS variants、CTRATT.ELBAS／MEM、MDTS 與 SANICAP 等能力；本 slice 不展開其餘跨頁欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MDTS</dt><dd>Maximum Data Transfer Size；以 minimum page size 為基準的 exponent；零有特定無限制語意。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details>
+<p>Figure 338〈Identify – Identify Controller Data Structure, I/O Command Set Independent〉：NVM 需要 Base Identify 的 ONCS variants、CTRATT.ELBAS／MEM、MDTS 與 SANICAP 等能力。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MDTS</dt><dd>Maximum Data Transfer Size；以 minimum page size 為基準的 exponent；零有特定無限制語意。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-BASE-FIG-346 -->
@@ -198,11 +200,11 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-format-list"><h2 id="heading-nvmcs-format-list"><span class="section-number">04</span> LBAF、ELBAF 與唯一屬性格式</h2>
-<p>基本 entry 給資料／metadata 大小與相對效能，extended entry 給 PI 格式與 Storage Tag 分配。Unique-attribute entries 要個別查詢，不能沿用共同能力。</p>
+<p>基本 entry 給資料／metadata 大小與相對效能，extended entry 給 PI 格式與 Storage Tag 分配。Unique-attribute entries 要個別查詢，不能沿用共同能力。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl>
 <!-- claim:NVMCS13-FORMAT-LIST -->
 <p>LBAF 與 ELBAF 以同一 Format Index 配對；總 format 數為 raw NLBAF+1+NULBAF。NLBAF 是 0-based、NULBAF 是實際數量。有效 index 還要檢查 LBADS：值 0 表示該支援格式目前不可用。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NULBAF</dt><dd>Unique Attribute LBA Formats 的實際數量；可以為0。</dd></div><div><dt>NLBAF</dt><dd>共同屬性 LBA formats 數的 0-based 欄位。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.1; 4.1.5.3; 5.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.1; 4.1.5.3; 5.6, 文件頁 85-94,96-102,160-162, PDF 頁 85-94,96-102,160-162</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBAF</td><td>LBADS、MS、RP</td><td>RP 是指定 workload 的相對級別</td></tr><tr><td>ELBAF</td><td>PIF、QPIF、STS</td><td>QPIF 只在 qualified type 下適用</td></tr><tr><td>FLBAS</td><td>FIDXU 與 FIDXL 組成 index</td><td>MTELBA 是另一個 metadata bit</td></tr><tr><td>NULBAF</td><td>追加在共同格式之後</td><td>09h／0Ah 能讀各自能力</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>QPIF</dt><dd>Protection Information Format selector；PIF 選一般格式，QPIF 提供 Qualified PI 的格式能力。</dd></div><div><dt>PIF</dt><dd>Protection Information Format selector；PIF 選一般格式，QPIF 提供 Qualified PI 的格式能力。</dd></div><div><dt>STS</dt><dd>Storage Tag Size；固定 Storage/Reference Space 中的高位 bit 數。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>raw NLBAF=3、NULBAF=2：有 4 個共同格式及 2 個唯一屬性格式，共 6 個，合法 index 為 0..5。Figure 192 圖示採概念数量，不能直接代入未解碼的 raw NLBAF。</p></aside>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBAF</td><td>LBADS、MS、RP</td><td>RP 是指定 workload 的相對級別</td></tr><tr><td>ELBAF</td><td>PIF、QPIF、STS</td><td>QPIF 只在 qualified type 下適用</td></tr><tr><td>FLBAS</td><td>FIDXU 與 FIDXL 組成 index</td><td>MTELBA 是另一個 metadata bit</td></tr><tr><td>NULBAF</td><td>追加在共同格式之後</td><td>09h／0Ah 能讀各自能力</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>QPIF</dt><dd>Qualified Protection Information Format；指定 qualified PI 的格式。</dd></div><div><dt>PIF</dt><dd>Protection Information Format；選擇 PI 格式；qualified 格式再使用 QPIF。</dd></div><div><dt>STS</dt><dd>Storage Tag Size；固定 Storage/Reference Space 中的高位 bit 數。</dd></div></dl>
+<aside class="worked-example"><h3>例子</h3><p>raw NLBAF=3、NULBAF=2：有 4 個共同格式及 2 個唯一屬性格式，共 6 個，合法 index 為 0..5。Figure 192 圖示採概念數量，不能直接代入未依欄位換算的 raw NLBAF。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-124 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-124"><summary>NVM Figure 124 · Namespace Alignment and Granularity Attributes</summary>
@@ -247,12 +249,12 @@
 <!-- claim:NVMCS13-FORMAT -->
 <p>Format NVM 選取已支援的 Format Index、PI type 與 metadata 傳輸方式。延伸 PI 及超過 legacy 16 個 entries 的 LBA formats 需檢查 controller ELBAS 與 host LBAFEE；沒有 host 啟用不可直接使用。</p><dl class="term-note" aria-label="本段名詞"><div><dt>LBAFEE</dt><dd>Host 的 LBA Format Extension Enable 宣告。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.2; 4.1.3.7</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.2; 4.1.3.7, 文件頁 62-63,68-69, PDF 頁 62-63,68-69</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>PI / PIL</td><td>PI=0 關閉，1/2/3 選 protection type</td><td>本版 PIL 必須 0，PI 位於末端</td></tr><tr><td>MSET</td><td>1：extended LBA；0：separate metadata</td><td>MS=0 時忽略</td></tr><tr><td>LBAFEE</td><td>FID 16h byte 2，合法值 0／1</td><td>配合 ELBAS 決定延伸格式</td></tr><tr><td>STS</td><td>Format 不提供自由改成非零 STS 的方法</td><td>新配置可由 namespace create 建立</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PIL</dt><dd>Protection Information Location；用來判斷 PI 在 metadata 前端或後端，需遵守所選 Guard 格式限制。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>要使用 64b Guard、MS=16 的格式，先確認 ELBAS、LBAFEE=1、對應 LBAF／ELBAF 及 PI capability。不能只設定 Format 的 PI=1 就宣告 64b Guard。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>要使用 64b Guard、MS=16 的格式，先確認 ELBAS、LBAFEE=1、對應 LBAF／ELBAF 及 PI capability。不能只設定 Format 的 PI=1 就宣告 64b Guard。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Guard</dt><dd>PI 的檢查值欄位；所選格式決定檢查值的寬度與計算方法。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-091 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-091"><summary>NVM Figure 91 · Format NVM – Command Dword 10 – NVM Command Set Specific Fields</summary>
 <!-- claim:NVMCS13-NVM-FIG-091-CLAIM -->
-<p>Figure 91〈Format NVM – Command Dword 10 – NVM Command Set Specific Fields〉：PI 選 protection type，MSET 選 metadata transfer；本版 PIL=0。Guard width 另由 LBAF／ELBAF 決定。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.2, Figure 91, 文件頁 63, PDF 頁 63</p></details>
+<p>Figure 91〈Format NVM – Command Dword 10 – NVM Command Set Specific Fields〉：PI 選 protection type，MSET 選 metadata transfer；本版 PIL=0。Guard width 另由 LBAF／ELBAF 決定。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.2, Figure 91, 文件頁 63, PDF 頁 63</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-101 -->
@@ -291,7 +293,7 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-metadata"><h2 id="heading-nvmcs-metadata"><span class="section-number">07</span> Metadata 傳輸與 PI 的位置</h2>
-<p>Metadata 不一定全是 PI。先標示 data、非 PI metadata 與 PI 三個區域，再計算 host buffer 大小與 CRC coverage。</p>
+<p>Metadata 不一定全是 PI。先標示 data、非 PI metadata 與 PI 三個區域，再計算 host buffer 大小與 CRC coverage。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CRC</dt><dd>Cyclic Redundancy Check，循環冗餘檢查；由資料位元計算檢查值，以偵測資料變化。</dd></div></dl>
 <figure><div class="diagram-scroll"><svg viewBox="0 0 760 260" role="img"><title>資料與 Metadata 放在哪裡</title><desc>同一批 logical blocks 的資料與 metadata 必須對應；可以交錯傳輸，也可以分開傳輸。</desc><rect x="20" y="30" width="240" height="65" rx="6" class="v-object"/><text x="140.0" y="68.5" text-anchor="middle" font-size="17">Data 0</text><rect x="260" y="30" width="120" height="65" rx="6" class="v-decision"/><text x="320.0" y="68.5" text-anchor="middle" font-size="17">MD 0</text><rect x="390" y="30" width="230" height="65" rx="6" class="v-object"/><text x="505.0" y="68.5" text-anchor="middle" font-size="17">Data 1</text><rect x="620" y="30" width="120" height="65" rx="6" class="v-decision"/><text x="680.0" y="68.5" text-anchor="middle" font-size="17">MD 1</text><rect x="20" y="155" width="350" height="65" rx="6" class="v-command"/><text x="195.0" y="193.5" text-anchor="middle" font-size="17">DPTR: Data 0, Data 1</text><rect x="390" y="155" width="350" height="65" rx="6" class="v-decision"/><text x="565.0" y="193.5" text-anchor="middle" font-size="17">MPTR: MD 0, MD 1</text></svg></div><figcaption>同一批 logical blocks 的資料與 metadata 必須對應；可以交錯傳輸，也可以分開傳輸。</figcaption></figure>
 <dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>命令 data pointer；Read 是目的、Write 是來源、Copy／DSM 指向 descriptors。</dd></div><div><dt>MPTR</dt><dd>Separate metadata 的指標；metadata placement 由 namespace format 與命令欄位決定。</dd></div></dl>
 <!-- claim:NVMCS13-METADATA -->
@@ -316,14 +318,14 @@
 <section class="lesson" id="module-nvmcs-support-status"><h2 id="heading-nvmcs-support-status"><span class="section-number">08</span> 能力探索、Opcode 與狀態</h2>
 <p>從 controller 類型開始建立命令、Feature、log 的能力矩陣。資料指標指向的可能是使用者資料，也可能只是控制 descriptor。</p>
 <!-- claim:NVMCS13-SUPPORT-STATUS -->
-<p>NVM I/O controller 必須支援 Read 與 Write；其他列出的 NVM 命令依各能力條件判斷。Opcode 低兩 bits 表示資料傳輸方向，狀態值必須連同 SCT 解讀，不能只用 SC 數值查錯誤。</p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div><div><dt>SCT</dt><dd>Status Code Type 與 Status Code；兩欄共同識別錯誤，單看 SC 可能誤判。</dd></div><div><dt>SC</dt><dd>Status Code Type 與 Status Code；兩欄共同識別錯誤，單看 SC 可能誤判。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.2; 3.1; 3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.2; 3.1; 3.3, 文件頁 22-27, PDF 頁 22-27</p></details>
+<p>NVM I/O controller 必須支援 Read 與 Write；其他列出的 NVM 命令依各能力條件判斷。Opcode 低兩 bits 表示資料傳輸方向，狀態值必須連同 SCT 解讀，不能只用 SC 數值查錯誤。</p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.2; 3.1; 3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.2; 3.1; 3.3, 文件頁 22-27, PDF 頁 22-27</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Read 02h / Write 01h</td><td>必要 I/O 命令</td><td>Administrative controller 不處理 I/O</td></tr><tr><td>Get LBA Status 86h</td><td>選用 Admin 命令</td><td>I/O controller 適用能力</td></tr><tr><td>SC 80h</td><td>依 SCT 區分 LBA Out of Range 等</td><td>同時記錄 opcode、NSID、SCT、SC、DNR</td></tr><tr><td>FID / LID</td><td>05h、0Ah 為必要 NVM Features</td><td>功能支援不等於要求寫入 Persistent Event Log</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>DNR</dt><dd>Do Not Retry，CQE status 中提示以相同 command 重試預期不會成功的 bit。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>Copy opcode=19h 的低 bits 是 01b，因 host 傳入 source descriptors；並不表示需要把整份待複製資料從 host 再傳一次。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-013 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-013"><summary>NVM Figure 13 · NVM Command Set Admin Command Support</summary>
 <!-- claim:NVMCS13-NVM-FIG-013-CLAIM -->
-<p>Figure 13〈NVM Command Set Admin Command Support〉：Get LBA Status 86h 對 I/O controller 是 optional、對 Administrative controller 禁止；本工作表只保留這兩欄。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.2.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.2.1, Figure 13, 文件頁 23, PDF 頁 23</p></details>
+<p>Figure 13〈NVM Command Set Admin Command Support〉：Get LBA Status 86h 對 I/O controller 是 optional、對 Administrative controller 禁止。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.2.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.2.1, Figure 13, 文件頁 23, PDF 頁 23</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-014 -->
@@ -353,7 +355,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-018 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-018"><summary>NVM Figure 18 · Status Code – Generic Command Status Values</summary>
 <!-- claim:NVMCS13-NVM-FIG-018-CLAIM -->
-<p>Figure 18〈Status Code – Generic Command Status Values〉：Generic status 80h 是 LBA Out of Range，81h 是 Capacity Exceeded；解碼前保留 SCT，並分別核對 NSZE 與 NCAP／NUSE。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.1.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.1.2, Figure 18, 文件頁 25, PDF 頁 25</p></details>
+<p>Figure 18〈Status Code – Generic Command Status Values〉：Generic status 80h 是 LBA Out of Range，81h 是 Capacity Exceeded；依欄位換算前保留 SCT，並分別核對 NSZE 與 NCAP／NUSE。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.1.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.1.2, Figure 18, 文件頁 25, PDF 頁 25</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-019 -->
@@ -403,8 +405,8 @@
 <section class="lesson" id="module-nvmcs-read-write"><h2 id="heading-nvmcs-read-write"><span class="section-number">09</span> Read／Write 的資料與完成條件</h2>
 <p>把範圍、buffer、PI 與完成狀態分成四項檢查，才能分辨資料位址錯誤、格式不符與真正的媒體失敗。</p>
 <!-- claim:NVMCS13-READ-WRITE -->
-<p>Read／Write 以 SLBA 與 0-based NLB 指定連續範圍。Read 的 DPTR 是目的 buffer，Write 的 DPTR 是來源 buffer；FUA=1 要求使用 nonvolatile media，並沒有隱含其他命令的順序。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SLBA</dt><dd>範圍起始 LBA；SDLBA 選 Copy 目的，DSLBA 是 Get LBA Status descriptor 的起點。</dd></div><div><dt>FUA</dt><dd>Force Unit Access；要求 nonvolatile-media 語意，不自動建立其他命令的順序。</dd></div><div><dt>NLB</dt><dd>Number of Logical Blocks；本報告命令／status descriptors 的該欄為 0-based。DSM 的 LLB 另為1-based。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.4; 3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.4; 3.3.6, 文件頁 48-51,53-56, PDF 頁 48-51,53-56</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CDW10 / CDW11</td><td>SLBA 低／高 32 bits</td><td>NLB=0 仍有一個 block</td></tr><tr><td>CDW12</td><td>LR、FUA、PRINFO、STC、CETYPE、NLB</td><td>Read 的 DTYPE 區是 reserved</td></tr><tr><td>CDW13</td><td>CETYPE 決定 DSM 或 CEV 解讀</td><td>Write 另含 DTYPE／DSPEC</td></tr><tr><td>MPTR</td><td>單獨傳 metadata 時使用</td><td>不可把一部分 metadata 分到兩種機制</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CETYPE</dt><dd>Command Extension Type／Value；Type 先決定 Value 的用途，不能固定當作 DSM hints。</dd></div><div><dt>PRINFO</dt><dd>PRACT 與 PRCHK 的組合欄位；Copy 的 R／W 版本分別控制讀端／寫端。</dd></div><div><dt>DSPEC</dt><dd>Directive Type／Specific 欄位；Directive 類型決定 Specific 的內容與 placement 效果。</dd></div><div><dt>DTYPE</dt><dd>Directive Type／Specific 欄位；Directive 類型決定 Specific 的內容與 placement 效果。</dd></div><div><dt>CEV</dt><dd>Command Extension Type／Value；Type 先決定 Value 的用途，不能固定當作 DSM hints。</dd></div><div><dt>STC</dt><dd>Storage Tag Check；獨立於三位元 PRCHK，STS=0 時忽略。</dd></div><div><dt>LR</dt><dd>Limited Retry；指定受 Error Recovery policy 約束的重試行為。</dd></div></dl>
+<p>Read／Write 以 SLBA 與 0-based NLB 指定連續範圍。Read 的 DPTR 是目的 buffer，Write 的 DPTR 是來源 buffer；FUA=1 要求使用 nonvolatile media，並沒有隱含其他命令的順序。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SLBA</dt><dd>Starting LBA；指定命令範圍的起點。</dd></div><div><dt>FUA</dt><dd>Force Unit Access；要求 nonvolatile-media 語意，不自動建立其他命令的順序。</dd></div><div><dt>NLB</dt><dd>Number of Logical Blocks；本報告命令／status descriptors 的該欄為 0-based。DSM 的 LLB 另為1-based。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.4; 3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.4; 3.3.6, 文件頁 48-51,53-56, PDF 頁 48-51,53-56</p></details>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CDW10 / CDW11</td><td>SLBA 低／高 32 bits</td><td>NLB=0 仍有一個 block</td></tr><tr><td>CDW12</td><td>LR、FUA、PRINFO、STC、CETYPE、NLB</td><td>Read 的 DTYPE 區是 reserved</td></tr><tr><td>CDW13</td><td>CETYPE 決定 DSM 或 CEV 解讀</td><td>Write 另含 DTYPE／DSPEC</td></tr><tr><td>MPTR</td><td>單獨傳 metadata 時使用</td><td>不可把一部分 metadata 分到兩種機制</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CETYPE</dt><dd>Command Extension Type；選擇命令延伸欄位 CEV 的用途。</dd></div><div><dt>PRINFO</dt><dd>Protection Information；命令內的 PRACT 與 PRCHK 組合欄位。</dd></div><div><dt>DSPEC</dt><dd>Directive Specific；內容由 Directive 類型決定。</dd></div><div><dt>DTYPE</dt><dd>Directive Type；指定命令使用哪一類 Directive。</dd></div><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div><div><dt>CEV</dt><dd>Command Extension Value；內容依 CETYPE 的選擇解讀。</dd></div><div><dt>DSM</dt><dd>Dataset Management；由 host 提供資料範圍的使用與配置提示。</dd></div><div><dt>STC</dt><dd>Storage Tag Check；獨立於三位元 PRCHK，STS=0 時忽略。</dd></div><div><dt>LR</dt><dd>Limited Retry；指定受 Error Recovery policy 約束的重試行為。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>SLBA=100、NLB=7、LBADS=12 且無 metadata：讀取 100..107，共 32768 bytes。FUA Read 先使對應資料持久化，再取自媒體；仍需 host 保證相依 Write 的排序。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-050 -->
@@ -416,14 +418,14 @@
 <!-- figure-table:NVMCS13-NVM-FIG-051 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-051"><summary>NVM Figure 51 · Read – Data Pointer</summary>
 <!-- claim:NVMCS13-NVM-FIG-051-CLAIM -->
-<p>Figure 51〈Read – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list，兩者不可共用 payload parser。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.4, Figure 51, 文件頁 49, PDF 頁 49</p></details>
+<p>Figure 51〈Read – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list；兩者的回傳資料格式不同。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.4, Figure 51, 文件頁 49, PDF 頁 49</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-052 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-052"><summary>NVM Figure 52 · Read – Command Dword 2 and Dword 3</summary>
 <!-- claim:NVMCS13-NVM-FIG-052-CLAIM -->
-<p>Figure 52〈Read – Command Dword 2 and Dword 3〉：CDW2／3 的 upper tags 要和 CDW14 lower tags 合併，再依 PI 格式與 STS 拆成 expected storage／reference；unused bits 依格式忽略。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.4, Figure 52, 文件頁 49, PDF 頁 49</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>EILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>ELBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>ELBTL</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div><div><dt>ELBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
+<p>Figure 52〈Read – Command Dword 2 and Dword 3〉：CDW2／3 的 upper tags 要和 CDW14 lower tags 合併，再依 PI 格式與 STS 拆成 expected storage／reference；unused bits 依格式忽略。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.4, Figure 52, 文件頁 49, PDF 頁 49</p></details>
+<dl class="term-note" aria-label="本段名詞"><div><dt>EILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>ELBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>ELBTL / ELBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-053 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-053"><summary>NVM Figure 53 · Read – Command Dword 10 and Command Dword 11</summary>
@@ -483,7 +485,7 @@
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-069"><summary>NVM Figure 69 · Write – Command Dword 2 and Dword 3</summary>
 <!-- claim:NVMCS13-NVM-FIG-069-CLAIM -->
 <p>Figure 69〈Write – Command Dword 2 and Dword 3〉：Upper／lower tag 欄位組成寫入端的 Storage 與初始 Reference Tag；Copy 的這組 command fields 屬於 destination，source expectations 在 descriptors。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 69, 文件頁 54, PDF 頁 54</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>LBTL</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div><div><dt>LBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>LBTL / LBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-070 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-070"><summary>NVM Figure 70 · Write – Command Dword 10 and Command Dword 11</summary>
@@ -548,7 +550,7 @@
 <!-- figure-table:NVMCS13-BASE-FIG-116 -->
 <details class="field-note" id="figure-NVMCS13-BASE-FIG-116"><summary>Base Figure 116 · Generic SGL Descriptor Format</summary>
 <!-- claim:NVMCS13-BASE-FIG-116-CLAIM -->
-<p>Figure 116〈Generic SGL Descriptor Format〉：本機 SGL descriptor 用 address、length 與 type 描述 buffer；保留 generic layout，不展開其他 transport 的 descriptor types。</p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, 文件頁 161, PDF 頁 187</p></details>
+<p>Figure 116〈Generic SGL Descriptor Format〉：本機 SGL descriptor 用 address、length 與 type 描述 buffer。</p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, 文件頁 161, PDF 頁 187</p></details>
 
 </details>
 </details>
@@ -557,7 +559,7 @@
 <p>先說明何時要排序，再判斷是否需要條件式更新。Fused 保護同一 LBA range 的比對與更新，原子大小仍須另外檢查。</p>
 <!-- claim:NVMCS13-ORDER-FUSED -->
 <p>一般命令不因同在一個 SQ 就取得 LBA 相依順序；host 必須建立必要順序。Fused Compare-and-Write 先比對，成功才寫入；Compare 失敗則 Write 以 Failed Fused Command 類別中止。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.2-2.1.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.2-2.1.3, 文件頁 14-15, PDF 頁 14-15</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Ordinary I/O</td><td>同 LBA 的 Read／Write 完成先後無保證</td><td>host 以完成相依控制</td></tr><tr><td>Fused pair</td><td>Compare 與 Write 的 range 相同</td><td>範圍不符 should 拒絕</td></tr><tr><td>ACWU / NACWU</td><td>限制 fused atomic update 大小</td><td>還要遵守 atomic boundaries</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NACWU</dt><dd>Namespace normal／power-fail／compare-and-write 或 controller compare-and-write 原子大小；0-based。</dd></div><div><dt>ACWU</dt><dd>Namespace normal／power-fail／compare-and-write 或 controller compare-and-write 原子大小；0-based。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Ordinary I/O</td><td>同 LBA 的 Read／Write 完成先後無保證</td><td>host 以完成相依控制</td></tr><tr><td>Fused pair</td><td>Compare 與 Write 的 range 相同</td><td>範圍不符 should 拒絕</td></tr><tr><td>ACWU / NACWU</td><td>限制 fused atomic update 大小</td><td>還要遵守 atomic boundaries</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NACWU</dt><dd>Namespace Atomic Compare and Write Unit；namespace 的 fused compare-and-write 大小限制。</dd></div><div><dt>ACWU</dt><dd>Atomic Compare and Write Unit；controller 的 fused compare-and-write 大小限制。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>Host 想「目前值等於 A 才更新 B」時，獨立 Compare 成功後再送 Write 中間仍可能插入別人的寫入；符合大小與邊界的 fused pair 才提供此操作所需的條件式原子更新。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-003 -->
@@ -569,22 +571,22 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-atomic"><h2 id="heading-nvmcs-atomic"><span class="section-number">11</span> 正常、斷電與多段原子性</h2>
-<p>把大小、起始對齊、NSABP 與 MAM 一起讀。Atomicity 與資料已進入 nonvolatile media 是不同檢查項目，FUA／Flush 也不建立其他命令的排序。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MAM</dt><dd>Multiple Atomicity Mode；跨 boundary 的命令分成各自原子的 subranges。</dd></div></dl>
+<p>把大小、起始對齊、NSABP 與 MAM 一起讀。Atomicity 與資料已進入 nonvolatile media 是不同檢查項目，FUA／Flush 也不建立其他命令的排序。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSABP</dt><dd>Namespace Atomic Boundary Parameters；表示 namespace 的原子寫入參數是否適用。</dd></div><div><dt>MAM</dt><dd>Multiple Atomicity Mode；跨 boundary 的命令分成各自原子的 subranges。</dd></div></dl>
 <!-- claim:NVMCS13-ATOMIC -->
-<p>AWUN／NAWUN 與 AWUPF／NAWUPF 分別描述正常及失敗條件原子性。Single Atomicity Mode 跨 boundary 不保證整筆原子；Multiple Atomicity Mode 在每個 boundary 切成各自原子的 subranges，並不承諾整筆一起成功。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NAWUPF</dt><dd>Namespace normal／power-fail／compare-and-write 或 controller compare-and-write 原子大小；0-based。</dd></div><div><dt>AWUPF</dt><dd>Atomic Write Unit Power Fail；失敗條件原子大小的0-based欄位。</dd></div><div><dt>NAWUN</dt><dd>Namespace normal／power-fail／compare-and-write 或 controller compare-and-write 原子大小；0-based。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.4; 4.1.3.4; 5.9</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.4; 4.1.3.4; 5.9, 文件頁 15-21,66-67,165, PDF 頁 15-21,66-67,165</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>AWUN / AWUPF</td><td>大小採 0-based 編碼</td><td>AWUPF 不大於 AWUN</td></tr><tr><td>NABO / NABSN / NABSPF</td><td>邊界在 offset + k × size</td><td>需依各欄位解碼與未回報規則</td></tr><tr><td>MAM</td><td>每個 atomic subrange 獨立保證</td><td>fused 仍用 Single 模式</td></tr><tr><td>FID 0Ah.DN</td><td>DN=1 可不遵守 normal atomicity</td><td>仍須遵守 power-fail 保證</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NABSPF</dt><dd>Normal／power-fail atomic boundary size；0 值與 NSABP 支援要依欄位定義判讀。</dd></div><div><dt>NABSN</dt><dd>Normal／power-fail atomic boundary size；0 值與 NSABP 支援要依欄位定義判讀。</dd></div><div><dt>NABO</dt><dd>Namespace Atomic Boundary Offset；決定第一個 boundary 的位置。</dd></div><div><dt>DN</dt><dd>Write Atomicity Normal 的 Disable Normal；不免除 power-fail atomicity。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>假設解碼後 boundary size=8 blocks、offset=0，從 LBA 4 寫 12 blocks 跨成 [4..7] 與 [8..15]。MAM 下各段原子，不能將兩段當作一個 transaction。原始 AWUN=7h 才代表 8 blocks。</p></aside>
+<p>AWUN／NAWUN 與 AWUPF／NAWUPF 分別描述正常及失敗條件原子性。Single Atomicity Mode 跨 boundary 不保證整筆原子；Multiple Atomicity Mode 在每個 boundary 切成各自原子的 subranges，並不承諾整筆一起成功。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NAWUPF</dt><dd>Namespace Atomic Write Unit Power Fail；namespace 失敗條件的原子寫入大小；依適用與零值規則判讀。</dd></div><div><dt>AWUPF</dt><dd>Atomic Write Unit Power Fail；失敗條件原子大小的0-based欄位。</dd></div><div><dt>NAWUN</dt><dd>Namespace Atomic Write Unit Normal；namespace 正常情況原子寫入大小；依適用與零值規則判讀。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.4; 4.1.3.4; 5.9</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.4; 4.1.3.4; 5.9, 文件頁 15-21,66-67,165, PDF 頁 15-21,66-67,165</p></details>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>AWUN / AWUPF</td><td>大小採 0-based 編碼</td><td>AWUPF 不大於 AWUN</td></tr><tr><td>NABO / NABSN / NABSPF</td><td>邊界在 offset + k × size</td><td>需依各欄位換算與未回報規則</td></tr><tr><td>MAM</td><td>每個 atomic subrange 獨立保證</td><td>fused 仍用 Single 模式</td></tr><tr><td>FID 0Ah.DN</td><td>DN=1 可不遵守 normal atomicity</td><td>仍須遵守 power-fail 保證</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NABSPF</dt><dd>Namespace Atomic Boundary Size Power Fail；失敗條件的原子邊界大小。</dd></div><div><dt>NABSN</dt><dd>Namespace Atomic Boundary Size Normal；正常情況的原子邊界大小。</dd></div><div><dt>NABO</dt><dd>Namespace Atomic Boundary Offset；決定第一個 boundary 的位置。</dd></div><div><dt>DN</dt><dd>Write Atomicity Normal 的 Disable Normal；不免除 power-fail atomicity。</dd></div></dl>
+<aside class="worked-example"><h3>例子</h3><p>假設依欄位換算後 boundary size=8 blocks、offset=0，從 LBA 4 寫 12 blocks 跨成 [4..7] 與 [8..15]。MAM 下各段原子，不能將兩段當作一個 transaction。原始 AWUN=7h 才代表 8 blocks。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-004 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-004"><summary>NVM Figure 4 · Atomicity Parameters for Single Atomicity Mode</summary>
 <!-- claim:NVMCS13-NVM-FIG-004-CLAIM -->
-<p>Figure 4〈Atomicity Parameters for Single Atomicity Mode〉：先用 NSABP 選 controller 或 namespace 值，再解碼 0-based 大小及 namespace 的零值繼承規則；不可把每個 raw 0 都解釋成一個 block。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.4, Figure 4, 文件頁 15-16, PDF 頁 15-16</p></details>
+<p>Figure 4〈Atomicity Parameters for Single Atomicity Mode〉：先用 NSABP 選 controller 或 namespace 值，再依欄位換算 0-based 大小及 namespace 的零值繼承規則；不可把每個 raw 0 都解釋成一個 block。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.4, Figure 4, 文件頁 15-16, PDF 頁 15-16</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-005 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-005"><summary>NVM Figure 5 · AWUN/NAWUN Example Results</summary>
 <!-- claim:NVMCS13-NVM-FIG-005-CLAIM -->
-<p>Figure 5〈AWUN/NAWUN Example Results〉：本圖討論正常運作下重疊寫入的可觀測結果；將 write size 與解碼後 AWUN 比較，再看讀取是否落在相同 atomic unit。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.4, Figure 5, 文件頁 17, PDF 頁 17</p></details>
+<p>Figure 5〈AWUN/NAWUN Example Results〉：本圖討論正常運作下重疊寫入的可觀測結果；將 write size 與依欄位換算後 AWUN 比較，再看讀取是否落在相同 atomic unit。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.4, Figure 5, 文件頁 17, PDF 頁 17</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-006 -->
@@ -641,8 +643,8 @@
 <!-- figure-table:NVMCS13-NVM-FIG-025 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-025"><summary>NVM Figure 25 · Compare – Command Dword 2 and Dword 3</summary>
 <!-- claim:NVMCS13-NVM-FIG-025-CLAIM -->
-<p>Figure 25〈Compare – Command Dword 2 and Dword 3〉：CDW2／3 的 upper tags 要和 CDW14 lower tags 合併，再依 PI 格式與 STS 拆成 expected storage／reference；unused bits 依格式忽略。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.1, Figure 25, 文件頁 28, PDF 頁 28</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>EILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>ELBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>ELBTL</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div><div><dt>ELBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
+<p>Figure 25〈Compare – Command Dword 2 and Dword 3〉：CDW2／3 的 upper tags 要和 CDW14 lower tags 合併，再依 PI 格式與 STS 拆成 expected storage／reference；unused bits 依格式忽略。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.1, Figure 25, 文件頁 28, PDF 頁 28</p></details>
+<dl class="term-note" aria-label="本段名詞"><div><dt>EILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>ELBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>ELBTL / ELBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-026 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-026"><summary>NVM Figure 26 · Compare – Command Dword 10 and Command Dword 11</summary>
@@ -727,21 +729,21 @@
 <section class="lesson" id="module-nvmcs-copy"><h2 id="heading-nvmcs-copy"><span class="section-number">13</span> Copy：描述來源、連續目的與部分失敗</h2>
 <p>先計算展開後的目的區間，再檢查格式、長度限制、重疊與 atomicity。Copy 可少用 host 資料傳輸，但不是無條件的 transaction。</p>
 <!-- claim:NVMCS13-COPY -->
-<p>Copy 把一個或多個 source ranges 依 descriptor 順序接成單一連續目的範圍。Format 0h/1h 來源與目的在同一 namespace；2h/3h 帶 SNSID，需 controller 支援與 host 啟用。失敗 CQE DW0 是最低未成功 source index，後面的 ranges 仍可能已複製。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SNSID</dt><dd>Namespace 識別碼；SNSID 選 Copy 來源，ENSID 選匯出 namespace，合法值受個別命令約束。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, 文件頁 30-44, PDF 頁 30-44</p></details>
+<p>Copy 把一個或多個 source ranges 依 descriptor 順序接成單一連續目的範圍。Format 0h/1h 來源與目的在同一 namespace；2h/3h 帶 SNSID，需 controller 支援與 host 啟用。失敗 CQE DW0 是最低未成功 source index，後面的 ranges 仍可能已複製。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SNSID</dt><dd>Source Namespace Identifier；指定 Copy 的來源 namespace。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, 文件頁 30-44, PDF 頁 30-44</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>NR / NLB</td><td>source count 與各範圍 block count 都是 0-based</td><td>檢查 MSRC、MSSRL、MCL</td></tr><tr><td>FCO</td><td>2h/3h 可要求 fast copy only</td><td>Fast Copy Not Possible 再看 DNR</td></tr><tr><td>Overlap</td><td>2h/3h 禁止同 namespace source 與 destination 重疊</td><td>0h/1h 重疊結果需依原子條件另讀</td></tr><tr><td>NVMCSA</td><td>1.3 將目的寫入視為單一 write command</td><td>仍受 MAM、大小及 boundary 限制</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FCO</dt><dd>Fast Copy Only；要求適用來源以 fast copy 方法執行。</dd></div><div><dt>NR</dt><dd>Range count 的 0-based 欄位；實際 descriptors 數為 NR+1。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>兩個 source descriptors 的 NLB 都是 3，SDLBA=100：第一段寫 100..103、第二段寫 104..107，共 8 blocks。若 DW0=1，不能據此保證第二段或更後面完全未修改。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SDLBA</dt><dd>範圍起始 LBA；SDLBA 選 Copy 目的，DSLBA 是 Get LBA Status descriptor 的起點。</dd></div></dl></aside>
+<aside class="worked-example"><h3>例子</h3><p>兩個 source descriptors 的 NLB 都是 3，SDLBA=100：第一段寫 100..103、第二段寫 104..107，共 8 blocks。若 DW0=1，不能據此保證第二段或更後面完全未修改。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SDLBA</dt><dd>Starting Destination LBA；指定 Copy 連續目的範圍的起點。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-032 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-032"><summary>NVM Figure 32 · Copy – Data Pointer</summary>
 <!-- claim:NVMCS13-NVM-FIG-032-CLAIM -->
-<p>Figure 32〈Copy – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與解碼後 range count 計算。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, Figure 32, 文件頁 30, PDF 頁 30</p></details>
+<p>Figure 32〈Copy – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與依欄位換算後 range count 計算。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, Figure 32, 文件頁 30, PDF 頁 30</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-033 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-033"><summary>NVM Figure 33 · Copy – Command Dword 2 and Dword 3</summary>
 <!-- claim:NVMCS13-NVM-FIG-033-CLAIM -->
-<p>Figure 33〈Copy – Command Dword 2 and Dword 3〉：Upper／lower tag 欄位組成寫入端的 Storage 與初始 Reference Tag；Copy 的這組 command fields 屬於 destination，source expectations 在 descriptors。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, Figure 33, 文件頁 30, PDF 頁 30</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>LBTL</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div><div><dt>LBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
+<p>Figure 33〈Copy – Command Dword 2 and Dword 3〉：Upper／lower tag 欄位組成寫入端的 Storage 與初始 Reference Tag；Copy 的這組 command fields 屬於 destination，source expectations 在 descriptors。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, Figure 33, 文件頁 30, PDF 頁 30</p></details>
+<dl class="term-note" aria-label="本段名詞"><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>LBTL / LBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-034 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-034"><summary>NVM Figure 34 · Copy – Command Dword 10 and Command Dword 11</summary>
@@ -753,7 +755,7 @@
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-035"><summary>NVM Figure 35 · Copy – Command Dword 12</summary>
 <!-- claim:NVMCS13-NVM-FIG-035-CLAIM -->
 <p>Figure 35〈Copy – Command Dword 12〉：Copy 在同一 CDW12 分開讀端／寫端 PI、descriptor format 與 0-based range count。STCRS 的正確能力定義在 Figure 127；本圖指 Figure 115 的文字引用錯置。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, Figure 35, 文件頁 30-31, PDF 頁 30-31</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>PRINFOR</dt><dd>PRACT 與 PRCHK 的組合欄位；Copy 的 R／W 版本分別控制讀端／寫端。</dd></div><div><dt>PRINFOW</dt><dd>PRACT 與 PRCHK 的組合欄位；Copy 的 R／W 版本分別控制讀端／寫端。</dd></div><div><dt>DESFMT</dt><dd>Copy Source Range Entry 格式 selector；同時影響 descriptor 大小、來源 NSID 與 PI tag layout。</dd></div><div><dt>STCR</dt><dd>Copy 讀端／寫端的 Storage Tag Check；依兩側 STS 與 PI 處理分支判斷有效性。</dd></div><div><dt>STCW</dt><dd>Copy 讀端／寫端的 Storage Tag Check；依兩側 STS 與 PI 處理分支判斷有效性。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>PRINFOR</dt><dd>Protection Information Read；Copy 讀取端的 PI 處理與檢查欄位。</dd></div><div><dt>PRINFOW</dt><dd>Protection Information Write；Copy 寫入端的 PI 處理與檢查欄位。</dd></div><div><dt>DESFMT</dt><dd>Copy Source Range Entry 格式 selector；同時影響 descriptor 大小、來源 NSID 與 PI tag layout。</dd></div><div><dt>STCR</dt><dd>Storage Tag Check Read；要求 Copy 讀取端的 Storage Tag 檢查。</dd></div><div><dt>STCW</dt><dd>Storage Tag Check Write；要求 Copy 寫入端的 Storage Tag 檢查。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-036 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-036"><summary>NVM Figure 36 · Copy – Command Dword 13</summary>
@@ -789,7 +791,7 @@
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-041"><summary>NVM Figure 41 · Copy – Source Range Entries Copy Descriptor Format 1h and Format 3h</summary>
 <!-- claim:NVMCS13-NVM-FIG-041-CLAIM -->
 <p>Figure 41〈Copy – Source Range Entries Copy Descriptor Format 1h and Format 3h〉：1h/3h 每個 source entry 40 bytes，以較大的 tags 支援 16-byte PI；3h 帶 SNSID／FCO，不能用 32-byte stride 解析。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2, Figure 41, 文件頁 35-36, PDF 頁 35-36</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>ELBTL</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div><div><dt>ELBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>ELBTL / ELBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-042 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-042"><summary>NVM Figure 42 · Source LBA and Destination LBA Relationship Example</summary>
@@ -812,7 +814,7 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-copy-pi"><h2 id="heading-nvmcs-copy-pi"><span class="section-number">14</span> Copy 的 PI 格式相容與轉換</h2>
-<p>以來源與目的是否有 PI 建立四種情況，再決定 PRINFOR.PRACT 與 PRINFOW.PRACT。每個 source 都必須符合選定模式。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PRINFOR</dt><dd>PRACT 與 PRCHK 的組合欄位；Copy 的 R／W 版本分別控制讀端／寫端。</dd></div><div><dt>PRINFOW</dt><dd>PRACT 與 PRCHK 的組合欄位；Copy 的 R／W 版本分別控制讀端／寫端。</dd></div></dl>
+<p>以來源與目的是否有 PI 建立四種情況，再決定 PRINFOR.PRACT 與 PRINFOW.PRACT。每個 source 都必須符合選定模式。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PRINFOR</dt><dd>Protection Information Read；Copy 讀取端的 PI 處理與檢查欄位。</dd></div><div><dt>PRINFOW</dt><dd>Protection Information Write；Copy 寫入端的 PI 處理與檢查欄位。</dd></div></dl>
 <!-- claim:NVMCS13-COPY-PI -->
 <p>Copy 的 matching formats 要比對資料大小、metadata 大小、DPS、PIFA、有效 LBSTM、PIF／QPIF 與 STS。Corresponding PI formats 只容許有 PI 的一方 metadata 全為 PI，另一方完全沒有 metadata；不能拿 Copy 任意轉換資料格式。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.2.3-3.3.2.4; 5.3.2.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.2.3-3.3.2.4; 5.3.2.5, 文件頁 40-43,146-150, PDF 頁 40-43,146-150</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>PI → PI, 0/0</td><td>matching formats：pass-through</td><td>保護檢查仍由 checking bits 控制</td></tr><tr><td>PI → PI, 1/1</td><td>matching formats：replace</td><td>讀端檢查，寫端產生 PI</td></tr><tr><td>No PI → PI</td><td>corresponding formats 且 write PRACT=1：insert</td><td>目的 metadata 不得包含其他用途</td></tr><tr><td>PI → No PI</td><td>corresponding formats 且 read PRACT=1：strip</td><td>來源 metadata 只能是 PI</td></tr></tbody></table></div>
@@ -859,20 +861,20 @@
 <section class="lesson" id="module-nvmcs-dsm"><h2 id="heading-nvmcs-dsm"><span class="section-number">15</span> Dataset Management 與三種 processing limits</h2>
 <p>先計算每個 block 是否同時通過三種 limit，再套用 NVMDSMSV。範圍與 hints 的合法性、處理義務以及實際媒體動作分開判斷。</p>
 <!-- claim:NVMCS13-DSM -->
-<p>Dataset Management 是 advisory：處理 attributes 不等於一定執行 deallocate。NR 是 0-based，16-byte descriptor 的 LLB 是 1-based；DMRL、DMRSL、DMSL 分別約束 range 數、單一 range 長度與總長度。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DMRSL</dt><dd>DSM 單一 range／全命令 blocks 的 processing limit；與 DMRL 的 range 數限制分開。</dd></div><div><dt>DMRL</dt><dd>Dataset Management Ranges Limit，實際 range 數上限。</dd></div><div><dt>DMSL</dt><dd>DSM 單一 range／全命令 blocks 的 processing limit；與 DMRL 的 range 數限制分開。</dd></div><div><dt>LLB</dt><dd>DSM 的 Length in Logical Blocks；1-based，與 Read／Write 的 NLB 編碼不同。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, 文件頁 44-48, PDF 頁 44-48</p></details>
+<p>Dataset Management 是 advisory：處理 attributes 不等於一定執行 deallocate。NR 是 0-based，16-byte descriptor 的 LLB 是 1-based；DMRL、DMRSL、DMSL 分別約束 range 數、單一 range 長度與總長度。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DMRSL</dt><dd>Dataset Management Range Size Limit；單一 range 的 logical block 處理數量限制。</dd></div><div><dt>DMRL</dt><dd>Dataset Management Ranges Limit，實際 range 數上限。</dd></div><div><dt>DMSL</dt><dd>Dataset Management Size Limit；整筆命令的 logical block 處理數量限制。</dd></div><div><dt>LLB</dt><dd>DSM 的 Length in Logical Blocks；1-based，與 Read／Write 的 NLB 編碼不同。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, 文件頁 44-48, PDF 頁 44-48</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>AD / IDW / IDR</td><td>deallocate／整體寫入／整體讀取 hints</td><td>可組合使用</td></tr><tr><td>Limits nonzero, variant=0</td><td>超過任一 limit 回 Command Size Limit Exceeded</td><td>全部符合則須處理 attributes</td></tr><tr><td>Limits nonzero, variant=1</td><td>宜處理符合 limits 的部分</td><td>不以此原因回 Size Limit Exceeded</td></tr><tr><td>All limits=0</td><td>variant=1：不回報 limits；variant=0：不支援</td><td>三欄需全零或全非零</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>例子</h3><p>DMRL=2、DMSL=1048，range 0 有 1024 blocks、range 1 有 512，且 DMRSL 不限制：variant=1 時前段與後段前 24 blocks 符合 limits。這不等於保證 1048 blocks 都已釋放。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-044 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-044"><summary>NVM Figure 44 · Dataset Management – Data Pointer</summary>
 <!-- claim:NVMCS13-NVM-FIG-044-CLAIM -->
-<p>Figure 44〈Dataset Management – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與解碼後 range count 計算。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 44, 文件頁 44, PDF 頁 44</p></details>
+<p>Figure 44〈Dataset Management – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與依欄位換算後 range count 計算。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 44, 文件頁 44, PDF 頁 44</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-045 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-045"><summary>NVM Figure 45 · Dataset Management – Command Dword 10</summary>
 <!-- claim:NVMCS13-NVM-FIG-045-CLAIM -->
-<p>Figure 45〈Dataset Management – Command Dword 10〉：CDW10 low8 的 NR 是 0-based，最大 FFh 表示 256 個 ranges；這與 DMRL 的 1-based limit 不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 45, 文件頁 44, PDF 頁 44</p></details>
+<p>Figure 45〈Dataset Management – Command Dword 10〉：CDW10 low8 的 NR 是 0-based，最大 FFh 表示 256 個 ranges；這與 DMRL 的 1-based limit 不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 45, 文件頁 44, PDF 頁 44</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-046 -->
@@ -884,7 +886,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-047 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-047"><summary>NVM Figure 47 · Dataset Management – Range Definition</summary>
 <!-- claim:NVMCS13-NVM-FIG-047-CLAIM -->
-<p>Figure 47〈Dataset Management – Range Definition〉：每筆 16 bytes：CATTR、1-based LLB、64-bit SLBA；256 筆需要 4096 bytes。不要沿用 NLB 的加一解碼。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 47, 文件頁 45, PDF 頁 45</p></details>
+<p>Figure 47〈Dataset Management – Range Definition〉：每筆 16 bytes：CATTR、1-based LLB、64-bit SLBA；256 筆需要 4096 bytes。不要沿用 NLB 的加一依欄位換算。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 47, 文件頁 45, PDF 頁 45</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-048 -->
@@ -902,7 +904,7 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-dealloc"><h2 id="heading-nvmcs-dealloc"><span class="section-number">16</span> Deallocated／unwritten 讀取規則</h2>
-<p>先判斷是否允許成功讀取，再解釋成功回傳的 bytes。Allocation status、DRB 與 PI 有各自的條件。</p>
+<p>先判斷是否允許成功讀取，再解釋成功回傳的 bytes。Allocation status、DRB 與 PI 有各自的條件。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DRB</dt><dd>Deallocated Read Behavior；指定 deallocated logical block 的資料回傳規則。</dd></div></dl>
 <!-- claim:NVMCS13-DEALLOC -->
 <p>支援且啟用 DULBE 時，Copy、Read、Verify、Compare 存取 deallocated／unwritten blocks 會失敗。未啟用時，DRB=001b 回零、010b 回 FFh、000b 可選其一；同 block 在下一次寫入前的回值須保持 deterministic。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DULBE</dt><dd>Deallocated or Unwritten Logical Block Error Enable，需 namespace DAE 支援。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3.2.1; 4.1.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3.2.1; 4.1.3.3, 文件頁 47-48,66, PDF 頁 47-48,66</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>DAE / DULBE</td><td>DAE 是 capability，DULBE 是啟用</td><td>DULBE 預設 0</td></tr><tr><td>DRB=000b</td><td>不是任意舊資料</td><td>依 §3.3.3.2.1 為零或 FFh</td></tr><tr><td>PI after deallocation</td><td>tag bytes 回 FFh；Guard 為 FFh 或 CRC</td><td>配合 DLFEAT.GDS</td></tr></tbody></table></div>
@@ -912,13 +914,13 @@
 <p>這兩個命令沒有 host user-data payload，但會改變 namespace 語意。先辨識範圍模式，再分配 PI 與 size-limit 檢查。</p>
 <!-- claim:NVMCS13-ZERO-UNCORRECTABLE -->
 <p>Write Uncorrectable 將範圍標為無法修復的讀取錯誤；Write Zeroes 使成功的後續讀取資料及非 PI metadata 回零。NSZ=1 的整個 namespace 清零需 NSZS、DEAC=1 與零值 deallocation read behavior，且 host 應檢查 CQE.LBACZ。</p><dl class="term-note" aria-label="本段名詞"><div><dt>LBACZ</dt><dd>LBAs Cleared to Zero；成功 NSZ 命令的範圍確認 bit。</dd></div><div><dt>DEAC</dt><dd>Write Zeroes 的 deallocate 選擇；與 namespace 支援、NSZ、回讀規則一起判讀。</dd></div><div><dt>NSZ</dt><dd>Namespace Zeroes；要求全 namespace 清零，需額外 capability 與 DEAC 條件。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.7-3.3.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.7-3.3.8, 文件頁 56-61, PDF 頁 56-61</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Write Uncorrectable</td><td>標記 block 後，讀取可能報 Unrecovered Read Error</td><td>WUSL 與 NVMWUSV 需成對看</td></tr><tr><td>Write Zeroes PI</td><td>PRCHK=000b、STC=0</td><td>PRACT=1 宜用於產生有效 PI</td></tr><tr><td>WZSL / WZDSL</td><td>依 DEAC 選適用 limit</td><td>NSZ=1 不受這兩欄限制</td></tr><tr><td>LBACZ</td><td>成功 NSZ 命令回 1 才表示全 namespace</td><td>回 0 是指定 range</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PRCHK</dt><dd>Protection Information Check；Guard、Application、Reference 的檢查 bits。</dd></div><div><dt>WZDSL</dt><dd>Write Zeroes with Deallocate 的專用大小限制；不可直接沿用 WZSL。</dd></div><div><dt>WUSL</dt><dd>Verify／Write Zeroes／Write Uncorrectable 大小限制；非零值使用 exponent 與 minimum page size。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Write Uncorrectable</td><td>標記 block 後，讀取可能報 Unrecovered Read Error</td><td>WUSL 與 NVMWUSV 需成對看</td></tr><tr><td>Write Zeroes PI</td><td>PRCHK=000b、STC=0</td><td>PRACT=1 宜用於產生有效 PI</td></tr><tr><td>WZSL / WZDSL</td><td>依 DEAC 選適用 limit</td><td>NSZ=1 不受這兩欄限制</td></tr><tr><td>LBACZ</td><td>成功 NSZ 命令回 1 才表示全 namespace</td><td>回 0 是指定 range</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PRCHK</dt><dd>Protection Information Check；Guard、Application、Reference 的檢查 bits。</dd></div><div><dt>WZDSL</dt><dd>Write Zeroes with Deallocate 的專用大小限制；不可直接沿用 WZSL。</dd></div><div><dt>WUSL</dt><dd>Write Uncorrectable Size Limit；Write Uncorrectable 的大小限制，需結合 variant 能力判讀。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>Host 送 NSZ=1 後得到 Successful Completion 與 LBACZ=0，必須判為僅 range 被清零；舊 controller 可能忽略不支援的 NSZ。不能將 command success 自動升格為整個 namespace 清零。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-077 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-077"><summary>NVM Figure 77 · Write Uncorrectable – Command Dword 10 and Command Dword 11</summary>
 <!-- claim:NVMCS13-NVM-FIG-077-CLAIM -->
-<p>Figure 77〈Write Uncorrectable – Command Dword 10 and Command Dword 11〉：64-bit SLBA 的低 32 bits 在 CDW10、高 32 bits 在 CDW11；先完成 range-specific 模式檢查，才把它作為位址使用。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.7</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.7, Figure 77, 文件頁 56, PDF 頁 56</p></details>
+<p>Figure 77〈Write Uncorrectable – Command Dword 10 and Command Dword 11〉：64-bit SLBA 的低 32 bits 在 CDW10、高 32 bits 在 CDW11；先完成 range-specific 模式檢查，才把它作為位址使用。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.7</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.7, Figure 77, 文件頁 56, PDF 頁 56</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-078 -->
@@ -943,7 +945,7 @@
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-081"><summary>NVM Figure 81 · Write Zeroes – Command Dword 2 and Dword 3</summary>
 <!-- claim:NVMCS13-NVM-FIG-081-CLAIM -->
 <p>Figure 81〈Write Zeroes – Command Dword 2 and Dword 3〉：Upper／lower tag 欄位組成寫入端的 Storage 與初始 Reference Tag；Copy 的這組 command fields 屬於 destination，source expectations 在 descriptors。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.8, Figure 81, 文件頁 59, PDF 頁 59</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>LBTL</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div><div><dt>LBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>LBTL / LBTU</dt><dd>Logical Block Tags／expected tags 的上／下部分；依 Guard 格式、STS 與 Dword 位置組合。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-082 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-082"><summary>NVM Figure 82 · Write Zeroes – Command Dword 10 and Command Dword 11</summary>
@@ -1045,7 +1047,7 @@
 <!-- claim:NVMCS13-CRC -->
 <p>32b Guard 使用 CRC-32C；64b Guard 使用 NVM Express 64b CRC，polynomial AD93D23594C93659h、全一 Init／XorOut、RefIn／RefOut=true。不能只用「CRC64」名稱選任意 polynomial。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.3.1.1-5.3.1.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.3.1.1-5.3.1.3, 文件頁 131-137, PDF 頁 131-137</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CRC-16</td><td>SBC-4 定義的 Guard CRC</td><td>NVM 不支援 DIX 的 optional IP checksum</td></tr><tr><td>CRC-32C</td><td>polynomial 1EDC6F41h</td><td>4 KiB zero vector → 98F94189h</td></tr><tr><td>CRC-64/NVME</td><td>反射式 register 算例 123456789 → AE8B14860A799888h</td><td>4 KiB zero vector → 6482D367EB22B64Eh</td></tr><tr><td>Coverage</td><td>data + PI 前的 metadata</td><td>排除 PI 本身</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>CRC-64 的 4 KiB 全 FFh 向量結果為 C0DDBA7302ECA3ACh。若 zero vector 正確而 incrementing-byte vector 不符，要檢查 byte／bit 順序，不能只改 polynomial 硬湊。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>CRC-64/NVME 對 4 KiB 全 FFh 資料計算得到 C0DDBA7302ECA3ACh；全 0 資料得到 6482D367EB22B64Eh。兩個資料集長度相同，CRC 仍不同，因為檢查值取決於資料內容。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-158 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-158"><summary>NVM Figure 158 · 32b CRC Test Cases for 4 KiB Logical Block with no Metadata</summary>
@@ -1089,7 +1091,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-166 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-166"><summary>NVM Figure 166 · LBST, ELBST, ILBRT, and EILBRT fields Format in Command Dwords</summary>
 <!-- claim:NVMCS13-NVM-FIG-166-CLAIM -->
-<p>Figure 166〈LBST, ELBST, ILBRT, and EILBRT fields Format in Command Dwords〉：用最多 80-bit 的抽象 space 連接三個 Dwords；依 PI format 先去掉 unused bits，再切 storage／reference。</p><dl class="term-note" aria-label="本段名詞"><div><dt>EILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>ELBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div><div><dt>ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.3.1.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.3.1.4, Figure 166, 文件頁 138, PDF 頁 138</p></details>
+<p>Figure 166〈LBST, ELBST, ILBRT, and EILBRT fields Format in Command Dwords〉：用最多 80-bit 的抽象 space 連接三個 Dwords；依 PI format 先去掉 unused bits，再切 storage／reference。</p><dl class="term-note" aria-label="本段名詞"><div><dt>EILBRT / ILBRT</dt><dd>Initial Logical Block Reference Tag／expected 初值；Type 1／2 依 block 遞增並在欄位寬度處回捲。</dd></div><div><dt>ELBST / LBST</dt><dd>Logical Block Storage Tag／Expected Logical Block Storage Tag；寬度由 STS 決定。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.3.1.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.3.1.4, Figure 166, 文件頁 138, PDF 頁 138</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-167 -->
@@ -1140,14 +1142,14 @@
 <p>先檢查 namespace 是否啟用 PI，再依命令方向及 metadata 大小選處理分支。Checking bits 與可能的特殊停用值放在最後判斷。</p>
 <!-- claim:NVMCS13-PI-CHECKING -->
 <p>PRACT 決定 PI 的傳遞、插入、移除或取代；PRCHK 的 Guard／Application／Reference bits 與獨立 STC 決定檢查要求。PRACT=1 且 MS&gt;PI size 時，Read 仍傳回全部 metadata，不能一律解讀為刪除 PI。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.5; 5.3.2-5.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.5; 5.3.2-5.3.3, 文件頁 21-22,141-152, PDF 頁 21-22,141-152</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Write, PRACT=1</td><td>MS=PI 時插入；MS&gt;PI 時取代 PI</td><td>此生成分支忽略 PRCHK／STC</td></tr><tr><td>Read, PRACT=1</td><td>先做要求的檢查；MS=PI 才移除</td><td>MS&gt;PI 仍回 metadata 與 PI</td></tr><tr><td>Type 1 / Type 2</td><td>Reference 每個 block 遞增</td><td>Type1 初值須等於對應 SLBA 低 bits</td></tr><tr><td>Type 3</td><td>不宜比對 computed reference</td><td>若因 RTCHK 拒絕，使用 Invalid Protection Information</td></tr><tr><td>Disable sentinels</td><td>Type 1／2：Application Tag=FFFFh 時停用所有 PI checks；Type 3 另要求 Reference Tag（若有）也全一</td><td>不受 PRCHK／STC 設定影響</td></tr><tr><td>Masks</td><td>mask bit=0 不比較</td><td>Storage mask 另受 STMLA 約束</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>RTCHK</dt><dd>PRCHK 的 Guard／Application／Reference 檢查選擇；另須套用 PI 特殊停用值規則。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Write, PRACT=1</td><td>MS=PI 時插入；MS&gt;PI 時取代 PI</td><td>此生成分支忽略 PRCHK／STC</td></tr><tr><td>Read, PRACT=1</td><td>先做要求的檢查；MS=PI 才移除</td><td>MS&gt;PI 仍回 metadata 與 PI</td></tr><tr><td>Type 1 / Type 2</td><td>Reference 每個 block 遞增</td><td>Type1 初值須等於對應 SLBA 低 bits</td></tr><tr><td>Type 3</td><td>不宜比對 computed reference</td><td>若因 RTCHK 拒絕，使用 Invalid Protection Information</td></tr><tr><td>Disable sentinels</td><td>Type 1／2：Application Tag=FFFFh 時停用所有 PI checks；Type 3 另要求 Reference Tag（若有）也全一</td><td>不受 PRCHK／STC 設定影響</td></tr><tr><td>Masks</td><td>mask bit=0 不比較</td><td>Storage mask 另受 STMLA 約束</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>RTCHK</dt><dd>Reference Tag Check；要求 Reference Tag 檢查。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>16b Guard、MS=16、Read PRACT=1：host 仍接收 16 bytes metadata；若 MS=8，則 host 只接收 data。相同 PRACT 在不同 MS 下造成不同 buffer 大小。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-011 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-011"><summary>NVM Figure 11 · Protection Information Field Definition</summary>
 <!-- claim:NVMCS13-NVM-FIG-011-CLAIM -->
 <p>Figure 11〈Protection Information Field Definition〉：PRACT 是 action，PRCHK 是三種檢查的 bit mask。PRACT=1 時先比較 MS 與 PI size，才能知道資料是否 strip／insert 或維持 metadata 大小。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.5, Figure 11, 文件頁 21-22, PDF 頁 21-22</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>GRDCHK</dt><dd>PRCHK 的 Guard／Application／Reference 檢查選擇；另須套用 PI 特殊停用值規則。</dd></div><div><dt>ATCHK</dt><dd>PRCHK 的 Guard／Application／Reference 檢查選擇；另須套用 PI 特殊停用值規則。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>GRDCHK</dt><dd>Guard Check；要求 Guard 檢查。</dd></div><div><dt>ATCHK</dt><dd>Application Tag Check；要求 Application Tag 檢查。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-012 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-012"><summary>NVM Figure 12 · Storage Tag Check Definition</summary>
@@ -1176,7 +1178,7 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-basic-features"><h2 id="heading-nvmcs-basic-features"><span class="section-number">22</span> 基本 Features 的作用域與例外</h2>
-<p>讀 Feature 時先辨識 scope、unit 與可儲存條件。Get、Set、Supported Capabilities 回覆也不能套用同一 payload 解碼。</p>
+<p>讀 Feature 時先辨識 scope、unit 與可儲存條件。Get、Set、Supported Capabilities 回覆也不能套用同一 payload 依欄位換算。</p>
 <!-- claim:NVMCS13-BASIC-FEATURES -->
 <p>FID 03h 描述 namespace LBA ranges，05h 控制 namespace error recovery，0Ah 控制 controller normal atomicity。Power Management 的 NVM 補充以 NPWG 大小的 Read 作為 Idle I/O Exit Latency Limit 的參考命令。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.1-4.1.3.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.1-4.1.3.4, 文件頁 64-67, PDF 頁 64-67</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>FID 03h</td><td>4096-byte contiguous buffer；最多 64 個 64-byte entries</td><td>NUM 是 0-based；新 Set 取代前一次</td></tr><tr><td>FID 05h.TLER</td><td>100 ms 單位，從 error recovery 開始計時</td><td>0 代表不設 timeout；適用 LR 命令</td></tr><tr><td>FID 03h attributes</td><td>Hide／Overwriteable 是 host 使用提示</td><td>不是安全隔離或資料保護機制</td></tr><tr><td>FID 02h extension</td><td>idle exit 參考 NPWG-sized Read</td><td>其他命令可超過該 latency limit</td></tr></tbody></table></div>
@@ -1197,7 +1199,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-094 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-094"><summary>NVM Figure 94 · LBA Range Type – Command Dword 11</summary>
 <!-- claim:NVMCS13-NVM-FIG-094-CLAIM -->
-<p>Figure 94〈LBA Range Type – Command Dword 11〉：NUM low6 是 0-based：Set 時指定有效 entries，Get 時從 CQE DW0 讀實際回傳 entries；兩者都不是 byte count。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.2, Figure 94, 文件頁 65, PDF 頁 65</p></details>
+<p>Figure 94〈LBA Range Type – Command Dword 11〉：NUM low6 是 0-based：Set 時指定有效 entries，Get 時從 CQE DW0 讀實際回傳 entries；兩者都不是 byte count。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.2, Figure 94, 文件頁 65, PDF 頁 65</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-095 -->
@@ -1227,11 +1229,11 @@
 </details>
 </section>
 <section class="lesson" id="module-nvmcs-log-events"><h2 id="heading-nvmcs-log-events"><span class="section-number">23</span> AER、SMART 與錯誤記錄的 NVM 補充</h2>
-<p>用事件找調查方向，再用正確 scope 的 log 與 command set 定義解碼。統計數據也要依命令分類，不能只按 opcode 名稱猜。</p>
+<p>用事件找調查方向，再用正確 scope 的 log 與 command set 定義依欄位換算。統計數據也要依命令分類，不能只按 opcode 名稱猜。</p>
 <!-- claim:NVMCS13-LOG-EVENTS -->
-<p>NUSE 的頻繁改變及 ANA 造成的 capacity 回報變動不產生 Namespace Attribute Changed 事件。Error Information 的 LBA 指最低發生錯誤的 LBA；Self-test FLBA 只在 valid bit 設定時有效，且可只代表多個失敗 blocks 中的一個。</p><dl class="term-note" aria-label="本段名詞"><div><dt>FLBA</dt><dd>Failing LBA，NVM Command Set 定義為造成 self-test failure 的其中一個 logical block address。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §1.4.2; 4.1.1; 4.1.3.5; 4.1.4.1-4.1.4.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §1.4.2; 4.1.1; 4.1.3.5; 4.1.4.1-4.1.4.4, 文件頁 10-11,62,67,75-77, PDF 頁 10-11,62,67,75-77</p></details>
+<p>NUSE 的頻繁改變及 ANA 造成的 capacity 回報變動不產生 Namespace Attribute Changed 事件。Error Information 的 LBA 指最低發生錯誤的 LBA；Self-test FLBA 只在 valid bit 設定時有效，且可只代表多個失敗 blocks 中的一個。</p><dl class="term-note" aria-label="本段名詞"><div><dt>FLBA</dt><dd>Failing LBA，NVM Command Set 定義為造成 self-test failure 的其中一個 logical block address。</dd></div><div><dt>ANA</dt><dd>Asymmetric Namespace Access；描述同一 namespace 經不同 controllers 存取時的路徑狀態。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §1.4.2; 4.1.1; 4.1.3.5; 4.1.4.1-4.1.4.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §1.4.2; 4.1.1; 4.1.3.5; 4.1.4.1-4.1.4.4, 文件頁 10-11,62,67,75-77, PDF 頁 10-11,62,67,75-77</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBASIN / RLCCN</td><td>FID0Bh bits 13／22</td><td>分別啟用 LBA Status／Rate Limiting notices</td></tr><tr><td>SMART units</td><td>先換算 512-byte units，再套 Base counter 編碼</td><td>不是每個 4 KiB block 加一個 Data Unit</td></tr><tr><td>Read categories</td><td>Data Units Read 含 Verify；Host Read 含 Copy</td><td>Compare、Read 為兩類共同項</td></tr><tr><td>Persistent Event 06h</td><td>create／single-delete 有 FLBAS、DPS</td><td>delete-all 時這兩欄 reserved</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>一個 Self-test FLBA=100、valid=1 的紀錄只能定位一個失敗 LBA，不能據此宣告其他 LBAs 全部正常。Error Information LBA=100 的「最低」語意也不能直接套到 FLBA。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>一個 Self-test FLBA=100、valid=1 的紀錄只能找出一個失敗 LBA，不能據此宣告其他 LBAs 全部正常。Error Information LBA=100 的「最低」語意也不能直接套到 FLBA。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-090 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-090"><summary>NVM Figure 90 · Asynchronous Event Information – Notice</summary>
@@ -1281,7 +1283,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-100 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-100"><summary>NVM Figure 100 · LBA Status Information Attributes – Command Dword 11</summary>
 <!-- claim:NVMCS13-NVM-FIG-100-CLAIM -->
-<p>Figure 100〈LBA Status Information Attributes – Command Dword 11〉：high16 LSIPI 是不可改的 poll interval，low16 LSIRI 是 report interval；兩者均為 100 ms 單位，Set 回傳最接近可支援值。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.6, Figure 100, 文件頁 68, PDF 頁 68</p></details>
+<p>Figure 100〈LBA Status Information Attributes – Command Dword 11〉：high16 LSIPI 是不可改的 poll interval，low16 LSIRI 是 report interval；兩者均為 100 ms 單位，Set 回傳最接近可支援值。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.6, Figure 100, 文件頁 68, PDF 頁 68</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-113 -->
@@ -1293,7 +1295,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-114 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-114"><summary>NVM Figure 114 · LBA Status Log Namespace Element</summary>
 <!-- claim:NVMCS13-NVM-FIG-114-CLAIM -->
-<p>Figure 114〈LBA Status Log Namespace Element〉：NEID 定位 namespace，RATYPE 建議後續 Get LBA Status 的 ATYPE；NLRD=FFFFFFFFh 表示無 range list 且宜檢查全 namespace。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.5, Figure 114, 文件頁 78, PDF 頁 78</p></details>
+<p>Figure 114〈LBA Status Log Namespace Element〉：NEID 找出 namespace，RATYPE 建議後續 Get LBA Status 的 ATYPE；NLRD=FFFFFFFFh 表示無 range list 且宜檢查全 namespace。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.5, Figure 114, 文件頁 78, PDF 頁 78</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-115 -->
@@ -1305,7 +1307,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-135 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-135"><summary>NVM Figure 135 · Get LBA Status – Data Pointer</summary>
 <!-- claim:NVMCS13-NVM-FIG-135-CLAIM -->
-<p>Figure 135〈Get LBA Status – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list，兩者不可共用 payload parser。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.2.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.2.1, Figure 135, 文件頁 114, PDF 頁 114</p></details>
+<p>Figure 135〈Get LBA Status – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list；兩者的回傳資料格式不同。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.2.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.2.1, Figure 135, 文件頁 114, PDF 頁 114</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-136 -->
@@ -1335,8 +1337,8 @@
 <!-- figure-table:NVMCS13-NVM-FIG-140 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-140"><summary>NVM Figure 140 · LBA Status Descriptor Entry</summary>
 <!-- claim:NVMCS13-NVM-FIG-140-CLAIM -->
-<p>Figure 140〈LBA Status Descriptor Entry〉：NLB 是 0-based；LBARS=010b 適用 ATYPE02h，表示至少一個 block 已配置，不表示每個 block 都獨立配置。</p><dl class="term-note" aria-label="本段名詞"><div><dt>LBARS</dt><dd>LBA Valid 與 LBA Range Status；先驗資料是否有效，再依 Action Type 解讀狀態。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.2.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.2.1, Figure 140, 文件頁 117-118, PDF 頁 117-118</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>DSLBA</dt><dd>範圍起始 LBA；SDLBA 選 Copy 目的，DSLBA 是 Get LBA Status descriptor 的起點。</dd></div></dl>
+<p>Figure 140〈LBA Status Descriptor Entry〉：NLB 是 0-based；LBARS=010b 適用 ATYPE02h，表示至少一個 block 已配置，不表示每個 block 都獨立配置。</p><dl class="term-note" aria-label="本段名詞"><div><dt>LBARS</dt><dd>LBA Range Status；描述 LBA range 的狀態。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.2.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.2.1, Figure 140, 文件頁 117-118, PDF 頁 117-118</p></details>
+<dl class="term-note" aria-label="本段名詞"><div><dt>DSLBA</dt><dd>Descriptor Starting LBA；指定 LBA Status descriptor 的範圍起點。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-142 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-142"><summary>NVM Figure 142 · Example LBA Status Log Namespace Element returned by LBA Status Information</summary>
@@ -1386,7 +1388,7 @@
 <!-- figure-table:NVMCS13-BASE-FIG-451 -->
 <details class="field-note" id="figure-NVMCS13-BASE-FIG-451"><summary>Base Figure 451 · Sanitize – Command Dword 10</summary>
 <!-- claim:NVMCS13-BASE-FIG-451-CLAIM -->
-<p>Figure 451〈Sanitize – Command Dword 10〉：Subsystem Sanitize 的 CDW10 分開方法及修飾 bits；本教學只把 NVM §4.1.7 的 Base 命令相依補齊。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450-451, PDF 頁 476-477</p></details>
+<p>Figure 451〈Sanitize – Command Dword 10〉：Subsystem Sanitize 的 CDW10 分開方法及修飾 bits；NVM §4.1.7 使用這個 Base 命令格式。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450-451, PDF 頁 476-477</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-BASE-FIG-452 -->
@@ -1402,7 +1404,7 @@
 <!-- claim:NVMCS13-ALIGNMENT -->
 <p>NPWG／NPWA、NPRG／NPRA 分別描述寫入與讀取的建議大小及對齊，NOWS／NORS 描述最佳大小。這些 performance hints 不取代 atomic boundaries、命令硬限制或格式規則。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.2.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.2.2, 文件頁 122-129, PDF 頁 122-129</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>NPWG / NPWA</td><td>長度與起點同時符合</td><td>先看 NSFEAT.OPTPERF</td></tr><tr><td>NPRG / NPRA / NORS</td><td>適用讀取最佳化</td><td>先看 OPTRPERF</td></tr><tr><td>NPDG / NPDGL</td><td>deallocate granularity 的不同欄位</td><td>用 OPTPERF 決定；Large 不一律加一</td></tr><tr><td>NOIOB / NABO</td><td>最佳 I/O boundary 與 atomic offset 不同</td><td>可分割 I/O 以符合多種條件</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>解碼後 NPWG=8、NPWA=8。寫 LBA 8..15 同時符合；寫 9..16 雖然也是 8 blocks，仍跨兩個 granularity units，可能需要讀取兩端舊資料。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>依欄位換算後 NPWG=8、NPWA=8。寫 LBA 8..15 同時符合；寫 9..16 雖然也是 8 blocks，仍跨兩個 granularity units，可能需要讀取兩端舊資料。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-145 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-145"><summary>NVM Figure 145 · An example namespace with four NOIOBs</summary>
@@ -1419,7 +1421,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-147 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-147"><summary>NVM Figure 147 · Example namespace broken down to illustrate potential NPWA and NPWG settings</summary>
 <!-- claim:NVMCS13-NVM-FIG-147-CLAIM -->
-<p>Figure 147〈Example namespace broken down to illustrate potential NPWA and NPWG settings〉：NPWA 指起點，NPWG 指長度 granularity；示意的 8 blocks 是解碼後大小，並非 raw field=8。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.2.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.2.2, Figure 147, 文件頁 125, PDF 頁 125</p></details>
+<p>Figure 147〈Example namespace broken down to illustrate potential NPWA and NPWG settings〉：NPWA 指起點，NPWG 指長度 granularity；示意的 8 blocks 是依欄位換算後大小，並非 raw field=8。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.2.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.2.2, Figure 147, 文件頁 125, PDF 頁 125</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-148 -->
@@ -1458,7 +1460,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-102 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-102"><summary>NVM Figure 102 · Performance Characteristics – Command Dword 11</summary>
 <!-- claim:NVMCS13-NVM-FIG-102-CLAIM -->
-<p>Figure 102〈Performance Characteristics – Command Dword 11〉：ATTRI low8 選擇標準、list 或 vendor attribute；bit8 RVSPA 刪除 saved vendor value，並非刪除整個 Feature。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.8, Figure 102, 文件頁 69, PDF 頁 69</p></details>
+<p>Figure 102〈Performance Characteristics – Command Dword 11〉：ATTRI low8 選擇標準、list 或 vendor attribute；bit8 RVSPA 刪除 saved vendor value，並非刪除整個 Feature。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.8, Figure 102, 文件頁 69, PDF 頁 69</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-103 -->
@@ -1484,21 +1486,21 @@
 <section class="lesson" id="module-nvmcs-rate-config"><h2 id="heading-nvmcs-rate-config"><span class="section-number">28</span> Rate Limiting 的設定欄位</h2>
 <p>先從 LID 28h 取得支援 target，再檢查 HLS／SLS 與 soft-controller 數量。把 host 請求限制和裝置可達能力分開記錄。</p>
 <!-- claim:NVMCS13-RATE-CONFIG -->
-<p>FID 28h 以 TGT／TID 選 target，1024-byte buffer 指定 enable、mode、bandwidth、IOPS 與 write/read ratios。TGT=0 指 controller，不能指定 Admin controller 或保留 ID。此 Feature 必須可 save。</p><dl class="term-note" aria-label="本段名詞"><div><dt>TGT</dt><dd>Rate Limiting Target／Target Identifier；先選作用域，再解讀 target ID。</dd></div><div><dt>TID</dt><dd>Rate Limiting Target／Target Identifier；先選作用域，再解讀 target ID。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.9; 4.1.5.4; 5.10</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.9; 4.1.5.4; 5.10, 文件頁 73-75,106,165-168, PDF 頁 73-75,106,165-168</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>TGT / TID</td><td>CDW11[23:16]／[15:0]</td><td>TGT=0 才是標準 controller target</td></tr><tr><td>RLC</td><td>RLE bit15；RLM=0 Hard、1 Soft</td><td>支援 Soft 必須也支援 Hard</td></tr><tr><td>BWSF</td><td>0/1/2 = 1/10/100 MiB/s；3/4/5 = 1/10/100 GiB/s</td><td>值乘 scale 才是 bandwidth</td></tr><tr><td>WRIOPSR / WRBWR</td><td>write 分子除 read 分母</td><td>兩者的各 ratio bytes 均需非零</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>WRIOPSR</dt><dd>Write-to-Read Bandwidth／IOPS Ratio；計算寫入對 total budget 的權重。</dd></div><div><dt>WRBWR</dt><dd>Write-to-Read Bandwidth／IOPS Ratio；計算寫入對 total budget 的權重。</dd></div><div><dt>BWSF</dt><dd>Bandwidth Scale Factor；需乘 bandwidth value，單位為 MiB/s 或 GiB/s。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>BWSF=1、TBWV=50 表示 500 MiB/s。WBWV 與 WIOPS 控制寫入部分，總量還會按 WRBWR／WRIOPSR 加權；不能把 total 限制只當 read limit。</p><dl class="term-note" aria-label="本段名詞"><div><dt>WIOPS</dt><dd>Total／Write Bandwidth Value 與 Total／Write IOPS limits；bandwidth 另乘 BWSF。</dd></div><div><dt>TBWV</dt><dd>Total／Write Bandwidth Value 與 Total／Write IOPS limits；bandwidth 另乘 BWSF。</dd></div><div><dt>WBWV</dt><dd>Total／Write Bandwidth Value 與 Total／Write IOPS limits；bandwidth 另乘 BWSF。</dd></div></dl></aside>
+<p>FID 28h 以 TGT／TID 選 target，1024-byte buffer 指定 enable、mode、bandwidth、IOPS 與 write/read ratios。TGT=0 指 controller，不能指定 Admin controller 或保留 ID。此 Feature 必須可 save。</p><dl class="term-note" aria-label="本段名詞"><div><dt>IOPS</dt><dd>Input/Output Operations Per Second；每秒 I/O 操作數，與每秒傳輸 bytes 的頻寬不同。</dd></div><div><dt>TGT</dt><dd>Target；選擇 Rate Limiting 設定的目標類型。</dd></div><div><dt>TID</dt><dd>Target Identifier；指定所選目標類型中的實體。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.9; 4.1.5.4; 5.10</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.9; 4.1.5.4; 5.10, 文件頁 73-75,106,165-168, PDF 頁 73-75,106,165-168</p></details>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>TGT / TID</td><td>CDW11[23:16]／[15:0]</td><td>TGT=0 才是標準 controller target</td></tr><tr><td>RLC</td><td>RLE bit15；RLM=0 Hard、1 Soft</td><td>支援 Soft 必須也支援 Hard</td></tr><tr><td>BWSF</td><td>0/1/2 = 1/10/100 MiB/s；3/4/5 = 1/10/100 GiB/s</td><td>值乘 scale 才是 bandwidth</td></tr><tr><td>WRIOPSR / WRBWR</td><td>write 分子除 read 分母</td><td>兩者的各 ratio bytes 均需非零</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>WRIOPSR</dt><dd>Write-to-Read IOPS Ratio；寫入相對於讀取的操作數權重。</dd></div><div><dt>WRBWR</dt><dd>Write-to-Read Bandwidth Ratio；寫入相對於讀取的頻寬權重。</dd></div><div><dt>BWSF</dt><dd>Bandwidth Scale Factor；需乘 bandwidth value，單位為 MiB/s 或 GiB/s。</dd></div></dl>
+<aside class="worked-example"><h3>例子</h3><p>BWSF=1、TBWV=50 表示 500 MiB/s。WBWV 與 WIOPS 控制寫入部分，總量還會按 WRBWR／WRIOPSR 加權；不能把 total 限制只當 read limit。</p><dl class="term-note" aria-label="本段名詞"><div><dt>WIOPS</dt><dd>Write IOPS；寫入操作速率設定值。</dd></div><div><dt>TBWV</dt><dd>Total Bandwidth Value；總頻寬設定值，需乘上 BWSF 指定的單位。</dd></div><div><dt>WBWV</dt><dd>Write Bandwidth Value；寫入頻寬設定值，需乘上 BWSF 指定的單位。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-106 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-106"><summary>NVM Figure 106 · Rate Limits – Command Dword 11</summary>
 <!-- claim:NVMCS13-NVM-FIG-106-CLAIM -->
-<p>Figure 106〈Rate Limits – Command Dword 11〉：先辨識 TGT 再解讀 TID；TGT=0 使用 controller ID，不能指定 Admin controller、無效 ID 或 FFFDh..FFFFh。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.9</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.9, Figure 106, 文件頁 73, PDF 頁 73</p></details>
+<p>Figure 106〈Rate Limits – Command Dword 11〉：先辨識 TGT 再解讀 TID；TGT=0 使用 controller ID，不能指定 Admin controller、無效 ID 或 FFFDh..FFFFh。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.9</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.9, Figure 106, 文件頁 73, PDF 頁 73</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-107 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-107"><summary>NVM Figure 107 · Rate Limiting – Data Buffer</summary>
 <!-- claim:NVMCS13-NVM-FIG-107-CLAIM -->
 <p>Figure 107〈Rate Limiting – Data Buffer〉：1024-byte 設定分出 enable/mode、兩種 bandwidth、兩種 IOPS 與兩個 write/read ratios；加權 total consumption 與 write-only consumption 分開計。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.3.9</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.9, Figure 107, 文件頁 74-75, PDF 頁 74-75</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>TIOPS</dt><dd>Total／Write Bandwidth Value 與 Total／Write IOPS limits；bandwidth 另乘 BWSF。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>TIOPS</dt><dd>Total IOPS；總 I/O 操作速率設定值。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-108 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-108"><summary>NVM Figure 108 · Bandwidth Scale Factors</summary>
@@ -1518,7 +1520,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-202 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-202"><summary>NVM Figure 202 · Example Token Bucket</summary>
 <!-- claim:NVMCS13-NVM-FIG-202-CLAIM -->
-<p>Figure 202〈Example Token Bucket〉：Token 不足讓命令等候；可處理部分但整筆完成才發布 CQE。此圖為 informative implementation example，不是唯一排程演算法。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §Appendix A</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §Appendix A, Figure 202, 文件頁 176, PDF 頁 176</p></details>
+<p>Figure 202〈Example Token Bucket〉：Token 不足讓命令等候；可處理部分但整筆完成才發布 CQE。此圖為 informative implementation example，不是唯一排程演算法。</p><dl class="term-note" aria-label="本段名詞"><div><dt>token bucket</dt><dd>權杖桶；以累積的額度限制操作速率，執行操作時扣除所需額度。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §Appendix A</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §Appendix A, Figure 202, 文件頁 176, PDF 頁 176</p></details>
 
 </details>
 </details>
@@ -1526,8 +1528,8 @@
 <section class="lesson" id="module-nvmcs-rate-graph"><h2 id="heading-nvmcs-rate-graph"><span class="section-number">30</span> Rate Limiting log 是能力圖</h2>
 <p>先做結構邊界檢查，再分析 bandwidth bottleneck。Port 的能力與共同 Endurance Group 的能力不同，不能把所有數字直接相加。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Endurance Group</dt><dd>Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。</dd></div></dl>
 <!-- claim:NVMCS13-RATE-GRAPH -->
-<p>LID 28h 以 log 起點為基準的 dword offsets 連接 port、controller 與 storage-medium access descriptors；descriptor 可共享，不能假設為固定順序陣列。分段讀取後應重讀 GC，改變時重收整份資料。</p><dl class="term-note" aria-label="本段名詞"><div><dt>GC</dt><dd>Rate Limiting log 的 32-bit Generation Count，用於分段讀取一致性。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.8; 5.10.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.8; 5.10.3, 文件頁 79-83,168-172, PDF 頁 79-83,168-172</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LPL / offsets</td><td>長度與指標皆有 dword 單位</td><td>byte offset = dword offset ×4</td></tr><tr><td>NP / NC / NST</td><td>都是 0-based counts</td><td>NNSMAD 是實際數量</td></tr><tr><td>SC / SI</td><td>subsystem／domain／EG／namespace 及其 ID</td><td>依 scope 解讀，避免共享節點重算</td></tr><tr><td>RLMA</td><td>最大 read/write bandwidth／IOPS</td><td>workload 需符合相關 size／queue-depth 條件</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NNSMAD</dt><dd>Non-Volatile Storage Medium Access Descriptors 數；實際數量，零表示此節點沒有下游 descriptors。</dd></div><div><dt>RLMA</dt><dd>Rate Limiting Maximum Access；所述 port、controller 或 storage access 的最大能力，不是目前流量。</dd></div><div><dt>LPL</dt><dd>Rate Limiting Log Page Length；單位是 dwords，讀取 bytes 前乘 4 並檢查邊界。</dd></div><div><dt>NC</dt><dd>Rate Limiting log 的 port／controller 數，皆採 0-based。</dd></div><div><dt>NP</dt><dd>Rate Limiting log 的 port／controller 數，皆採 0-based。</dd></div></dl>
+<p>LID 28h 以 log 起點為基準的 dword offsets 連接 port、controller 與 storage-medium access descriptors；descriptor 可共享，不能假設為固定順序陣列。分段讀取後應重讀 GC，改變時重收整份資料。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div><div><dt>GC</dt><dd>Rate Limiting log 的 32-bit Generation Count，用於分段讀取一致性。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.8; 5.10.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.8; 5.10.3, 文件頁 79-83,168-172, PDF 頁 79-83,168-172</p></details>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LPL / offsets</td><td>長度與指標皆有 dword 單位</td><td>byte offset = dword offset ×4</td></tr><tr><td>NP / NC / NST</td><td>都是 0-based counts</td><td>NNSMAD 是實際數量</td></tr><tr><td>SC / SI</td><td>subsystem／domain／EG／namespace 及其 ID</td><td>依 scope 解讀，避免共享節點重算</td></tr><tr><td>RLMA</td><td>最大 read/write bandwidth／IOPS</td><td>workload 需符合相關 size／queue-depth 條件</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NNSMAD</dt><dd>Non-Volatile Storage Medium Access Descriptors 數；實際數量，零表示此節點沒有下游 descriptors。</dd></div><div><dt>RLMA</dt><dd>Rate Limiting Maximum Access；所述 port、controller 或 storage access 的最大能力，不是目前流量。</dd></div><div><dt>LPL</dt><dd>Rate Limiting Log Page Length；單位是 dwords，讀取 bytes 前乘 4 並檢查邊界。</dd></div><div><dt>NC</dt><dd>Number of Controllers；Rate Limiting log 的 controller 數，採 0-based 編碼。</dd></div><div><dt>NP</dt><dd>Number of Ports；Rate Limiting log 的 port 數，採 0-based 編碼。</dd></div><div><dt>SC</dt><dd>Scope；此處是儲存媒體存取描述子的作用範圍，與 CQE 的 Status Code 不同。</dd></div><div><dt>SI</dt><dd>Scope Identifier；指定 SC 所選範圍中的實體。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>兩個 PCIe ports 都能使用一個 Endurance Group，若 EG 的 bandwidth 已被 controller 0 用滿，controller 1 不會因多一個 port 就多一份媒體頻寬。相同 EG 能力可由兩個 controller 指向同一 descriptor。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-117 -->
@@ -1551,7 +1553,7 @@
 <!-- figure-table:NVMCS13-NVM-FIG-120 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-120"><summary>NVM Figure 120 · Non-Volatile Storage Medium Access Descriptor</summary>
 <!-- claim:NVMCS13-NVM-FIG-120-CLAIM -->
-<p>Figure 120〈Non-Volatile Storage Medium Access Descriptor〉：先以 SC 選 scope 再解讀 SI 與巢狀 access list；本表 SI 說明仍提 NSET 且 byte 例子錯置，應以 SC 與表列 bytes7:4 定位。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.8, Figure 120, 文件頁 81-82, PDF 頁 81-82</p></details>
+<p>Figure 120〈Non-Volatile Storage Medium Access Descriptor〉：先以 SC 選 scope 再解讀 SI 與巢狀 access list；本表 SI 說明仍提 NSET 且 byte 例子錯置，應以 SC 與表列 bytes7:4 找出。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.8, Figure 120, 文件頁 81-82, PDF 頁 81-82</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-121 -->
@@ -1569,8 +1571,8 @@
 <!-- figure-table:NVMCS13-NVM-FIG-196 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-196"><summary>NVM Figure 196 · Rate Limiting Log Page Example</summary>
 <!-- claim:NVMCS13-NVM-FIG-196-CLAIM -->
-<p>Figure 196〈Rate Limiting Log Page Example〉：以 Figure195 重畫關係；來源示例把 dword offset299 寫成 byte1916，但299×4=1196，且其他範圍也不一致，必須做 bounds 檢查。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.10.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.10.3, Figure 196, 文件頁 169-170, PDF 頁 169-170</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl>
+<p>Figure 196〈Rate Limiting Log Page Example〉：描述子以相對於 log 起點的 dword offset 連接。例如 offset=299 對應 299×4=1196 bytes；共享的 descriptor 可由多條連接指向。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.10.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.10.3, Figure 196, 文件頁 169-170, PDF 頁 169-170</p></details>
+
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-197 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-197"><summary>NVM Figure 197 · Example Dual Port PCIe NVMe SSD</summary>
@@ -1590,7 +1592,7 @@
 <p>建立時決定 placement 關係，執行時看 handle status，事後再用 statistics／events 解釋媒體搬移。三種資料不能互相代替。</p>
 <!-- claim:NVMCS13-FDP -->
 <p>FDP namespace 的 placement handles 對應 Reclaim Unit Handles。共享 RUH 的 namespaces 必須使用相同 Format Index；host 指定的 handle list 不得重複 RUHID。RUH Status descriptors 先依 Placement Handle、再依 Reclaim Group Identifier 排序。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Group</dt><dd>Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。</dd></div><div><dt>Reclaim Unit</dt><dd>Reclaim Unit，controller 執行媒體回收時使用的較小管理粒度。</dd></div><div><dt>FDP</dt><dd>Flexible Data Placement，把資料放置提示與媒體回收管理連結的能力。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.2.1; 4.1.4.6-4.1.4.7; 4.1.6.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.2.1; 4.1.4.6-4.1.4.7; 4.1.6.3, 文件頁 26,79,110-113, PDF 頁 26,79,110-113</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>NPHNDLS</td><td>最多 128，且不超過 configuration 的 RUH 數</td><td>0 有 controller 選擇與共享規則</td></tr><tr><td>EARUTR / RUAMW</td><td>剩餘秒數估計／可寫 logical blocks</td><td>EARUTR=0 未回報；不是保證壽命</td></tr><tr><td>LID 22h</td><td>HBMW／MBMW 含 NVM 指定寫入類命令</td><td>含 Copy 寫入端、Zeroes、Uncorrectable</td></tr><tr><td>LID 23h event 0h</td><td>LBAV 控制 LBA 有效性</td><td>NLBAM=FFFFh 表示至少 FFFFh</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NPHNDLS</dt><dd>Number of Placement Handles，NVM create payload 中 Placement Handle List 的 entry count，最大 128。</dd></div><div><dt>LBAV</dt><dd>LBA Valid 與 LBA Range Status；先驗資料是否有效，再依 Action Type 解讀狀態。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>NPHNDLS</td><td>最多 128，且不超過 configuration 的 RUH 數</td><td>0 有 controller 選擇與共享規則</td></tr><tr><td>EARUTR / RUAMW</td><td>剩餘秒數估計／可寫 logical blocks</td><td>EARUTR=0 未回報；不是保證壽命</td></tr><tr><td>LID 22h</td><td>HBMW／MBMW 含 NVM 指定寫入類命令</td><td>含 Copy 寫入端、Zeroes、Uncorrectable</td></tr><tr><td>LID 23h event 0h</td><td>LBAV 控制 LBA 有效性</td><td>NLBAM=FFFFh 表示至少 FFFFh</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NPHNDLS</dt><dd>Number of Placement Handles，NVM create payload 中 Placement Handle List 的 entry count，最大 128。</dd></div><div><dt>LBAV</dt><dd>LBA Valid；指出回報的 LBA 是否有效。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>兩個 namespaces 共享 RUH 5，第一個使用 FIDX=2，第二個 create 指定 FIDX=3，即使資料大小同為 4 KiB，也不符合共享 RUH 的 Format Index 條件。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-021 -->
@@ -1610,9 +1612,9 @@
 <section class="lesson" id="module-nvmcs-streams"><h2 id="heading-nvmcs-streams"><span class="section-number">32</span> Streams 的 NVM 單位與優先順序</h2>
 <p>用兩層大小模型解釋 Stream Write Size 與較大的 stream granularity。它們可能和 namespace hints 成整數倍，但規格不保證每個 namespace 都如此。</p>
 <!-- claim:NVMCS13-STREAMS -->
-<p>NVM 的 Stream Write Size 以 logical blocks 表示；stream granularity length 是 SGS 乘解碼後 SWS blocks。使用 Streams 時，host 宜依 SGS／SWS 的建議處理 write／deallocate，再協調 namespace hints。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SWS</dt><dd>Stream Write Size；NVM command-set 單位為 logical blocks。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.2.2.3; 5.13</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.2.2.3; 5.13, 文件頁 128-129,175, PDF 頁 128-129,175</p></details>
+<p>NVM 的 Stream Write Size 以 logical blocks 表示；stream granularity length 是 SGS 乘依欄位換算後 SWS blocks。使用 Streams 時，host 宜依 SGS／SWS 的建議處理 write／deallocate，再協調 namespace hints。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SWS</dt><dd>Stream Write Size；NVM command-set 單位為 logical blocks。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.2.2.3; 5.13</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.2.2.3; 5.13, 文件頁 128-129,175, PDF 頁 128-129,175</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>SWS</td><td>建議寫入大小，以 blocks 計</td><td>宜為 NPWG 的倍數</td></tr><tr><td>SGS × SWS</td><td>stream granularity 的長度</td><td>適用 stream deallocate 對齊／長度</td></tr><tr><td>Priority</td><td>用 Streams 時優先 Streams attributes</td><td>未使用則用 namespace hints</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>解碼後 SWS=8 blocks、SGS=4，stream granularity 是 32 blocks。8-block Write 可符合 SWS，但一個完整 granularity-unit 的 deallocate 長度是 32 blocks。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>依欄位換算後 SWS=8 blocks、SGS=4，stream granularity 是 32 blocks。8-block Write 可符合 SWS，但一個完整 granularity-unit 的 deallocate 長度是 32 blocks。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-152 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-152"><summary>NVM Figure 152 · Two streams composed of SGS and SWS</summary>
@@ -1623,7 +1625,7 @@
 <!-- figure-table:NVMCS13-BASE-FIG-712 -->
 <details class="field-note" id="figure-NVMCS13-BASE-FIG-712"><summary>Base Figure 712 · Streams Directive – Return Parameters Data Structure</summary>
 <!-- claim:NVMCS13-BASE-FIG-712-CLAIM -->
-<p>Figure 712〈Streams Directive – Return Parameters Data Structure〉：只讀 Streams Return Parameters 的 SWS／SGS 相依 slice；NVM §5.13 將 SWS 的 command-set 單位定義為 logical blocks。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.1, Figure 712, 文件頁 624-625, PDF 頁 650-651</p></details>
+<p>Figure 712〈Streams Directive – Return Parameters Data Structure〉：Streams Return Parameters 的 SWS／SGS 描述寫入大小與配置粒度；NVM §5.13 將 SWS 的 command-set 單位定義為 logical blocks。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.1, Figure 712, 文件頁 624-625, PDF 頁 650-651</p></details>
 
 </details>
 </details>
@@ -1660,7 +1662,7 @@
 <p>這個 queue 保存變更範圍與序列標記，不保存完整新資料。Host 讀 entry 後仍需以適當 I/O 取得資料，並處理滿 queue 的停止邊界。</p>
 <!-- claim:NVMCS13-MIGRATION-QUEUE -->
 <p>Track Send 啟用 LBA Migration Queue 後，controller 可聚合邏輯 block 修改或 deallocation 記錄。Entry 只在所報命令效果生效後發布，可早於該命令 CQE；queue entry 與 I/O completion 是不同時間點。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.8; 5.7</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.8; 5.7, 文件頁 113-114,162-164, PDF 頁 113-114,162-164</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBACIR</td><td>00：range；01：整個 namespace；10：無 range</td><td>先判斷欄位是否有效</td></tr><tr><td>ESA</td><td>001 start／resume；010 stop；011 suspend；111 full</td><td>full 表示 logging 已停止</td></tr><tr><td>DLBA / CDQP</td><td>deallocated 標記／entry phase</td><td>DLBA=0 仍可能描述 deallocate 類修改</td></tr><tr><td>RALBAS</td><td>開始命令處理期間的變更可由 ATYPE02h 補齊</td><td>start／stop marker 不要求先於 Track Send CQE</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>LBACIR</dt><dd>LBA Change Indication Range；指定 range、整個 namespace 或無 range 的 entry 解讀。</dd></div><div><dt>CDQP</dt><dd>Controller Data Queue Phase 與 Deallocated LBA 標記；分別判別新 entry 與 deallocation 提示。</dd></div><div><dt>DLBA</dt><dd>Controller Data Queue Phase 與 Deallocated LBA 標記；分別判別新 entry 與 deallocation 提示。</dd></div><div><dt>ESA</dt><dd>Entry Sequence Attribute；LBA Migration Queue 的 start／stop／suspend／full 標記。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>LBACIR</td><td>00：range；01：整個 namespace；10：無 range</td><td>先判斷欄位是否有效</td></tr><tr><td>ESA</td><td>001 start／resume；010 stop；011 suspend；111 full</td><td>full 表示 logging 已停止</td></tr><tr><td>DLBA / CDQP</td><td>deallocated 標記／entry phase</td><td>DLBA=0 仍可能描述 deallocate 類修改</td></tr><tr><td>RALBAS</td><td>開始命令處理期間的變更可由 ATYPE02h 補齊</td><td>start／stop marker 不要求先於 Track Send CQE</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>LBACIR</dt><dd>LBA Change Indication Range；指定 range、整個 namespace 或無 range 的 entry 解讀。</dd></div><div><dt>CDQP</dt><dd>Controller Data Queue Phase；讓 host 判別 queue 位置的新 entry。</dd></div><div><dt>DLBA</dt><dd>Deallocated LBA；entry 中的 deallocation 標記。</dd></div><div><dt>ESA</dt><dd>Entry Sequence Attribute；LBA Migration Queue 的 start／stop／suspend／full 標記。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>三筆連續 Write 可合併成一個 range entry；所以 queue entry 數不等於寫入命令數。ESA=111b 後，host 不能假設後續每次修改仍持續記錄。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-194 -->
@@ -1672,7 +1674,7 @@
 <!-- figure-table:NVMCS13-BASE-FIG-561 -->
 <details class="field-note" id="figure-NVMCS13-BASE-FIG-561"><summary>Base Figure 561 · Track Send – Command Dword 10</summary>
 <!-- claim:NVMCS13-BASE-FIG-561-CLAIM -->
-<p>Figure 561〈Track Send – Command Dword 10〉：Track Send CDW10 先選 management operation，MOS 再依 operation 解讀；NVM 的本範圍使用 Log User Data Changes。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.32, Figure 561, 文件頁 523, PDF 頁 549</p></details>
+<p>Figure 561〈Track Send – Command Dword 10〉：Track Send CDW10 先選 management operation，MOS 再依 operation 解讀；Log User Data Changes 用來追蹤 NVM 資料變更。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.32, Figure 561, 文件頁 523, PDF 頁 549</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-BASE-FIG-562 -->
@@ -1693,14 +1695,14 @@
 <p>範本固定的相容性介面與 underlying 裝置能力是兩層。先確認 namespace 格式相容，再設定不超過 underlying 能力的限制；沒有被範本開放的能力不能自行宣告。</p>
 <!-- claim:NVMCS13-EXPORT-TEMPLATE -->
 <p>Reference Exported NVM Subsystem Template 是選用的 memory-based 範本，限定一個 controller（ID 0h）及一個 namespace（ID 1h）。建立時必須設 TR=1；configuration state 只能以一筆命令設定一次，重複設定回 Command Sequence Error。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4.1-5.4.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4.1-5.4.1.1, 文件頁 152-159, PDF 頁 152-159</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Identity and version</td><td>CAP.CSS=1、VS=020300h；NVM VER=010200h</td><td>範本固定 Base 2.3／NVM 1.2，不隨本 PDF 版本自動升級</td></tr><tr><td>Controller limits</td><td>MDTS、RAB、NCQS、NSQS、MQES、AWUN／AWUPF 受 underlying 限制</td><td>NCQS／NSQS 是 0-based</td></tr><tr><td>Namespace compatibility</td><td>LBAF0 的 LBADS／MS 必須相同，MS=0；DPS／KPIOENS／CWP 必須為零</td><td>controller 負責 Format Index remapping</td></tr><tr><td>Observable defaults</td><td>Error entries 與 SMART 為零；firmware active slot=1</td><td>支援清單、Feature defaults 與 Identify exceptions 另有固定規則</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MDTS</dt><dd>Maximum Data Transfer Size；以 minimum page size 為基準的 exponent；零有特定無限制語意。</dd></div><div><dt>MQES</dt><dd>支援的 completion／submission queue 數與 queue entries；先解 0-based，再核對 underlying 上限。</dd></div><div><dt>NCQS</dt><dd>支援的 completion／submission queue 數與 queue entries；先解 0-based，再核對 underlying 上限。</dd></div><div><dt>NSQS</dt><dd>支援的 completion／submission queue 數與 queue entries；先解 0-based，再核對 underlying 上限。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Identity and version</td><td>CAP.CSS=1、VS=020300h；NVM VER=010200h</td><td>範本固定 Base 2.3／NVM 1.2，不隨本 PDF 版本自動升級</td></tr><tr><td>Controller limits</td><td>MDTS、RAB、NCQS、NSQS、MQES、AWUN／AWUPF 受 underlying 限制</td><td>NCQS／NSQS 是 0-based</td></tr><tr><td>Namespace compatibility</td><td>LBAF0 的 LBADS／MS 必須相同，MS=0；DPS／KPIOENS／CWP 必須為零</td><td>controller 負責 Format Index remapping</td></tr><tr><td>Observable defaults</td><td>Error entries 與 SMART 為零；firmware active slot=1</td><td>支援清單、Feature defaults 與 Identify exceptions 另有固定規則</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MDTS</dt><dd>Maximum Data Transfer Size；以 minimum page size 為基準的 exponent；零有特定無限制語意。</dd></div><div><dt>MQES</dt><dd>Maximum Queue Entries Supported；queue entry 數上限，採 0-based 編碼。</dd></div><div><dt>NCQS</dt><dd>Number of I/O Completion Queues Supported；支援的 I/O CQ 數，採 0-based 編碼。</dd></div><div><dt>NSQS</dt><dd>Number of I/O Submission Queues Supported；支援的 I/O SQ 數，採 0-based 編碼。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>Underlying NCQS=7 可支援 8 queues，範本設定 NCQS=3 表示最多 4 queues；不能把 raw 3 誤解成 3 queues。Namespace 的 NGUID 為零時，NUUID 必須提供有效 UUID。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NGUID</dt><dd>Namespace Globally Unique Identifier，namespace 的 128-bit 全域識別值。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:NVMCS13-NVM-FIG-183 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-183"><summary>NVM Figure 183 · Reference Exported Configuration State</summary>
 <!-- claim:NVMCS13-NVM-FIG-183-CLAIM -->
 <p>Figure 183〈Reference Exported Configuration State〉：先分固定 364-byte controller configuration 與 48-byte namespace configuration；總長 412 bytes，僅能單筆設定一次。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 183, 文件頁 153, PDF 頁 153</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>RENSCS</dt><dd>Reference Exported Controller／Namespace Configuration State；分別是 364／48 bytes。</dd></div><div><dt>RECCS</dt><dd>Reference Exported Controller／Namespace Configuration State；分別是 364／48 bytes。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>RENSCS / RECCS</dt><dd>Reference Exported Controller／Namespace Configuration State；分別是 364／48 bytes。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-184 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-184"><summary>NVM Figure 184 · Reference Controller Capabilities Register Values</summary>
@@ -1729,19 +1731,19 @@
 <!-- figure-table:NVMCS13-NVM-FIG-188 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-188"><summary>NVM Figure 188 · Reference Identify Controller or Namespace Data Structures</summary>
 <!-- claim:NVMCS13-NVM-FIG-188-CLAIM -->
-<p>Figure 188〈Reference Identify Controller or Namespace Data Structures〉：Identify 只開放列出的 exceptions：NCAP=NSZE、SQES=66h 為 64-byte SQE、CQES=44h 為 16-byte CQE；CNS06h 的 NVM VER 固定 1.2.0。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CQES</dt><dd>Submission／Completion Queue Entry Size；nibbles 以 2 的次方表示最小／最大 bytes。</dd></div><div><dt>SQES</dt><dd>Submission／Completion Queue Entry Size；nibbles 以 2 的次方表示最小／最大 bytes。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 188, 文件頁 156, PDF 頁 156</p></details>
+<p>Figure 188〈Reference Identify Controller or Namespace Data Structures〉：Identify 只開放列出的 exceptions：NCAP=NSZE、SQES=66h 為 64-byte SQE、CQES=44h 為 16-byte CQE；CNS06h 的 NVM VER 固定 1.2.0。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CQES</dt><dd>Completion Queue Entry Size；以 2 的次方表示 CQE 的最小與最大 bytes。</dd></div><div><dt>SQES</dt><dd>Submission Queue Entry Size；以 2 的次方表示 SQE 的最小與最大 bytes。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 188, 文件頁 156, PDF 頁 156</p></details>
 
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-189 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-189"><summary>NVM Figure 189 · Reference Exported Controller Configuration State</summary>
 <!-- claim:NVMCS13-NVM-FIG-189-CLAIM -->
-<p>Figure 189〈Reference Exported Controller Configuration State〉：本機欄位 slice：ECNTLID=0，限制值不得超過 underlying；NCQS／NSQS 先解 0-based。WZS／DSMS 需對應底層能力與所報 Commands Supported and Effects。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 189, 文件頁 157-158, PDF 頁 157-158</p></details>
+<p>Figure 189〈Reference Exported Controller Configuration State〉：ECNTLID=0，限制值不得超過 underlying；NCQS／NSQS 先解 0-based。WZS／DSMS 需對應底層能力與所報 Commands Supported and Effects。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 189, 文件頁 157-158, PDF 頁 157-158</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>ONCS</dt><dd>Optional NVM Commands Supported；包含能力及 variant，需結合 NVM Identify 的 limits。</dd></div></dl>
 </details>
 <!-- figure-table:NVMCS13-NVM-FIG-190 -->
 <details class="field-note" id="figure-NVMCS13-NVM-FIG-190"><summary>NVM Figure 190 · Reference Exported Controller Configuration State</summary>
 <!-- claim:NVMCS13-NVM-FIG-190-CLAIM -->
-<p>Figure 190〈Reference Exported Controller Configuration State〉：caption 雖寫 Controller，內容是 namespace：ENSID=1、MS=0、RP=0；LBADS 必須與 underlying 相同。NGUID=0 時 NUUID 必須有效。</p><dl class="term-note" aria-label="本段名詞"><div><dt>ENSID</dt><dd>Namespace 識別碼；SNSID 選 Copy 來源，ENSID 選匯出 namespace，合法值受個別命令約束。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 190, 文件頁 158-159, PDF 頁 158-159</p></details>
+<p>Figure 190〈Reference Exported Controller Configuration State〉：caption 雖寫 Controller，內容是 namespace：ENSID=1、MS=0、RP=0；LBADS 必須與 underlying 相同。NGUID=0 時 NUUID 必須有效。</p><dl class="term-note" aria-label="本段名詞"><div><dt>ENSID</dt><dd>Exported Namespace Identifier；指定匯出的 namespace。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.4, Figure 190, 文件頁 158-159, PDF 頁 158-159</p></details>
 
 </details>
 </details>

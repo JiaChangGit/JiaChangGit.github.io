@@ -33,6 +33,8 @@ COMMON = {
  'DRB': b('Deallocated Read Behavior；指定 deallocated logical block 的資料回傳規則。','Deallocated Read Behavior: selects the data-return behavior for deallocated logical blocks.'),
  'DSM': b('Dataset Management；由 host 提供資料範圍的使用與配置提示。','Dataset Management: host hints about use and allocation of data ranges.'),
  'token bucket': b('權杖桶；以累積的額度限制操作速率，執行操作時扣除所需額度。','A rate-control model that accumulates credits and consumes them when admitting work.'),
+ 'parser': b('資料解析器；依資料結構的長度、欄位與適用條件讀取輸入。','A data parser: software that reads input using a structure’s lengths, fields, and applicability rules.'),
+ 'portion': b('傳輸分段；一次 firmware download 所送的一段連續資料。','A contiguous portion sent in one firmware-download transfer.'),
 }
 
 NVM = {}

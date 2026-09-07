@@ -22,7 +22,7 @@ nvme_notes: true
 <p class="opening">NVMe over PCIe Transport explains how NVMe queues, properties, and notifications operate over PCIe. This note connects memory-mapped I/O, DMA, and interrupts to the transfer of an NVMe command.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express, the specification family for a host interface to a non-volatile-memory subsystem.</dd></div><div><dt>PCIe</dt><dd>PCI Express, the transport and device interconnect used by an NVMe memory-based controller.</dd></div><div><dt>I/O</dt><dd>Input/Output, the class of data operations performed on a namespace.</dd></div></dl>
 <h2 id="main-ideas">The main ideas</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>Interface locations</h3><p>Use BARs and configuration space to locate the NVMe interface and capabilities.</p></article>
+<article><span class="axis-number">01</span><h3>Interface locations</h3><p>Use BARs and configuration space to find the NVMe interface and capabilities.</p></article>
 <article><span class="axis-number">02</span><h3>Commands and notifications</h3><p>Distinguish queue data, doorbells, and interrupts.</p></article>
 <article><span class="axis-number">03</span><h3>Platform behavior</h3><p>Understand the scope of resets, power, error reporting, and link measurements.</p></article>
 </div>
@@ -30,7 +30,7 @@ nvme_notes: true
 <p>The Base specification defines the common NVMe command and queue model; PCIe Transport supplies the local PCIe binding. Accessing a queue entry in memory and accessing a device MMIO register are different kinds of access.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>MMIO</dt><dd>Memory-Mapped I/O, access to device registers through CPU memory operations.</dd></div></dl>
 </section>
 <section class="lesson" id="module-layers"><h2 id="heading-layers"><span class="section-number">01</span> How NVMe uses PCIe</h2>
-<p>Figure 1 shows document applicability and Figure 2 separates protocol responsibility. Engineering analysis separates command semantics from the way host memory, MMIO, configuration space, and interrupts carry the operation. The Transport does not rewrite Base when the two conflict.</p>
+<p>Figure 1 shows document applicability and Figure 2 separates protocol responsibility. Engineering analysis separates command semantics from the way host memory, MMIO, configuration space, and interrupts carry the operation. The Transport does not rewrite Base when the two conflict.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>Host</dt><dd>The system running the operating system and issuing NVMe commands.</dd></div></dl>
 <details class="technical-note"><summary>Mechanism and applicable conditions</summary>
 <!-- claim:PCIE14-SCOPE -->
 <p>The PCIe Transport supplements the Base Specification with PCIe-specific structures, extensions, requirements, and behavior; common NVMe behavior remains in Base. In a conflict, Base has higher precedence than a Transport Specification.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §1.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, printed pages 6, PDF pages 6</p></details>
@@ -89,7 +89,7 @@ nvme_notes: true
 <details class="field-note" id="figure-PCIE14-FIG-006"><summary>PCIe Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</summary>
 <!-- claim:PCIE14-FIG-006-CLAIM -->
 <p>Figure 6, "Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head": Shows the queue or command relationship expressed by Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>CQyHDBL</dt><dd>Completion Queue y Head Doorbell, the MMIO register through which the host publishes the consumed head of CQ y.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.1.2.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, printed pages 10-11, PDF pages 10-11</p></details>
-<dl class="term-note" aria-label="Terms in this passage"><div><dt>CC.PI</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller. Here CC.PI selects its PI member field.</dd></div><div><dt>CC</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller.</dd></div></dl>
+<dl class="term-note" aria-label="Terms in this passage"><div><dt>CC.PI</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller. Here CC.PI selects its PI member field.</dd></div><div><dt>CC</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller.</dd></div><div><dt>PI</dt><dd>Protection Information: Guard and tag fields used to check data and its associated information.</dd></div></dl>
 </details>
 </details>
 </section>
@@ -104,12 +104,12 @@ nvme_notes: true
 <p>PCIe permits multiple Submission Queues to share a Completion Queue. If interrupts are enabled when creating the CQ, Interrupt Vector shall be initialized to the corresponding MSI-X or multiple-message MSI vector.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, printed pages 11, PDF pages 11</p></details>
 </details>
 <div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Role or distinction</th><th scope="col">Conditions</th></tr></thead><tbody><tr><td>SQ-slot reuse</td><td>Controller has consumed the SQE</td><td>Completion SQHD assists tracking</td></tr><tr><td>Command-buffer reuse</td><td>Command completed and data is visible</td><td>Check command and data direction</td></tr><tr><td>CQ-slot release</td><td>Host completely consumed the CQE</td><td>Then write the CQ-head doorbell</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>Example</h3><p>Informative example: if the host rings the doorbell before writing the final SQE dword, the controller may fetch a partial command. In the other direction, updating CQ head before fully reading the CQE can let the controller reuse that CQ slot. Both are ownership-ordering failures, not opcode failures.</p></aside>
+<aside class="worked-example"><h3>Example</h3><p>Informative example: if the host rings the doorbell before writing the final SQE dword, the controller may fetch a partial command. In the other direction, updating CQ head before fully reading the CQE can let the controller reuse that CQ slot. Both are ownership-ordering failures, not opcode failures.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>Dword</dt><dd>Double word: 32 bits, or 4 bytes.</dd></div></dl></aside>
 <details class="technical-note"><summary>Fields and data structures in more depth</summary>
 <!-- figure-table:PCIE14-FIG-007 -->
 <details class="field-note" id="figure-PCIE14-FIG-007"><summary>PCIe Figure 7 · Create I/O Completion Queue - Command Dword 11</summary>
 <!-- claim:PCIE14-FIG-007-CLAIM -->
-<p>Figure 7, "Create I/O Completion Queue - Command Dword 11": Defines command-specific fields in CDW11 for Create I/O Completion Queue.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>Dword</dt><dd>Double word, four bytes or 32 bits; NVMe command fields are commonly identified by CDW number.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, printed pages 11, PDF pages 11</p></details>
+<p>Figure 7, "Create I/O Completion Queue - Command Dword 11": Defines command-specific fields in CDW11 for Create I/O Completion Queue.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>CDW</dt><dd>Command Dword: a 32-bit unit in a command, followed by its index.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, printed pages 11, PDF pages 11</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>MSIXCAP.MXC.TS</dt><dd>MSI-X Capability, the base of the MSI-X capability structure. Here MSIXCAP.MXC.TS selects its MXC.TS member field.</dd></div><div><dt>MSICAP.MC.MME</dt><dd>MSI Capability, the base of the MSI capability structure. Here MSICAP.MC.MME selects its MC.MME member field.</dd></div><div><dt>MSIXCAP</dt><dd>MSI-X Capability, the base of the MSI-X capability structure.</dd></div><div><dt>MSICAP</dt><dd>MSI Capability, the base of the MSI capability structure.</dd></div><div><dt>IV</dt><dd>Interrupt Vector, the vector number assigned to a Completion Queue.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-008 -->
@@ -146,43 +146,43 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-035 -->
 <details class="field-note" id="figure-PCIE14-FIG-035"><summary>PCIe Figure 35 · Offset MSICAP: MID - Message Signaled Interrupt Identifiers</summary>
 <!-- claim:PCIE14-FIG-035-CLAIM -->
-<p>Figure 35, "Offset MSICAP: MID - Message Signaled Interrupt Identifiers": Defines MID (Message Signaled Interrupt Identifiers) at offset MSICAP and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, printed pages 23, PDF pages 23</p></details>
+<p>Figure 35, "Offset MSICAP: MID - Message Signaled Interrupt Identifiers": Defines MID (Message Signaled Interrupt Identifiers) at offset MSICAP and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, printed pages 23, PDF pages 23</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, used with the SQ identifier to identify an outstanding command.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-036 -->
 <details class="field-note" id="figure-PCIE14-FIG-036"><summary>PCIe Figure 36 · Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</summary>
 <!-- claim:PCIE14-FIG-036-CLAIM -->
-<p>Figure 36, "Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control": Defines MC (Message Signaled Interrupt Message Control) at offset MSICAP + 2h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, printed pages 23, PDF pages 23</p></details>
+<p>Figure 36, "Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control": Defines MC (Message Signaled Interrupt Message Control) at offset MSICAP + 2h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, printed pages 23, PDF pages 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-037 -->
 <details class="field-note" id="figure-PCIE14-FIG-037"><summary>PCIe Figure 37 · Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</summary>
 <!-- claim:PCIE14-FIG-037-CLAIM -->
-<p>Figure 37, "Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address": Defines MA (Message Signaled Interrupt Message Address) at offset MSICAP + 4h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, printed pages 23, PDF pages 23</p></details>
+<p>Figure 37, "Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address": Defines MA (Message Signaled Interrupt Message Address) at offset MSICAP + 4h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, printed pages 23, PDF pages 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-038 -->
 <details class="field-note" id="figure-PCIE14-FIG-038"><summary>PCIe Figure 38 · Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</summary>
 <!-- claim:PCIE14-FIG-038-CLAIM -->
-<p>Figure 38, "Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address": Defines MUA (Message Signaled Interrupt Upper Address) at offset MSICAP + 8h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, printed pages 23, PDF pages 23</p></details>
+<p>Figure 38, "Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address": Defines MUA (Message Signaled Interrupt Upper Address) at offset MSICAP + 8h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, printed pages 23, PDF pages 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-039 -->
 <details class="field-note" id="figure-PCIE14-FIG-039"><summary>PCIe Figure 39 · Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</summary>
 <!-- claim:PCIE14-FIG-039-CLAIM -->
-<p>Figure 39, "Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data": Defines MD (Message Signaled Interrupt Message Data) at offset MSICAP + Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, printed pages 23, PDF pages 23</p></details>
+<p>Figure 39, "Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data": Defines MD (Message Signaled Interrupt Message Data) at offset MSICAP + Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, printed pages 23, PDF pages 23</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-040 -->
 <details class="field-note" id="figure-PCIE14-FIG-040"><summary>PCIe Figure 40 · Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</summary>
 <!-- claim:PCIE14-FIG-040-CLAIM -->
-<p>Figure 40, "Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)": Defines MMASK (Message Signaled Interrupt Mask Bits (Optional)) at offset MSICAP + 10h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, printed pages 24, PDF pages 24</p></details>
+<p>Figure 40, "Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)": Defines MMASK (Message Signaled Interrupt Mask Bits (Optional)) at offset MSICAP + 10h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, printed pages 24, PDF pages 24</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-041 -->
 <details class="field-note" id="figure-PCIE14-FIG-041"><summary>PCIe Figure 41 · Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</summary>
 <!-- claim:PCIE14-FIG-041-CLAIM -->
-<p>Figure 41, "Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)": Defines MPEND (Message Signaled Interrupt Pending Bits (Optional)) at offset MSICAP + 14h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, printed pages 24, PDF pages 24</p></details>
+<p>Figure 41, "Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)": Defines MPEND (Message Signaled Interrupt Pending Bits (Optional)) at offset MSICAP + 14h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.3.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, printed pages 24, PDF pages 24</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-042 -->
@@ -194,31 +194,31 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-043 -->
 <details class="field-note" id="figure-PCIE14-FIG-043"><summary>PCIe Figure 43 · Offset MSIXCAP: MXID - MSI-X Identifiers</summary>
 <!-- claim:PCIE14-FIG-043-CLAIM -->
-<p>Figure 43, "Offset MSIXCAP: MXID - MSI-X Identifiers": Defines MXID (MSI-X Identifiers) at offset MSIXCAP and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, printed pages 24, PDF pages 24</p></details>
+<p>Figure 43, "Offset MSIXCAP: MXID - MSI-X Identifiers": Defines MXID (MSI-X Identifiers) at offset MSIXCAP and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, printed pages 24, PDF pages 24</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-044 -->
 <details class="field-note" id="figure-PCIE14-FIG-044"><summary>PCIe Figure 44 · Offset MSIXCAP + 2h: MXC - MSI-X Message Control</summary>
 <!-- claim:PCIE14-FIG-044-CLAIM -->
-<p>Figure 44, "Offset MSIXCAP + 2h: MXC - MSI-X Message Control": Defines MXC (MSI-X Message Control) at offset MSIXCAP + 2h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, printed pages 24-25, PDF pages 24-25</p></details>
+<p>Figure 44, "Offset MSIXCAP + 2h: MXC - MSI-X Message Control": Defines MXC (MSI-X Message Control) at offset MSIXCAP + 2h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, printed pages 24-25, PDF pages 24-25</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-045 -->
 <details class="field-note" id="figure-PCIE14-FIG-045"><summary>PCIe Figure 45 · Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</summary>
 <!-- claim:PCIE14-FIG-045-CLAIM -->
-<p>Figure 45, "Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR": Defines MTAB (MSI-X Table Offset / Table BIR) at offset MSIXCAP + 4h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, printed pages 25, PDF pages 25</p></details>
-<dl class="term-note" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register, a PCI-configuration-space register locating a device memory space.</dd></div></dl>
+<p>Figure 45, "Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR": Defines MTAB (MSI-X Table Offset / Table BIR) at offset MSIXCAP + 4h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, printed pages 25, PDF pages 25</p></details>
+<dl class="term-note" aria-label="Terms in this passage"><div><dt>BAR</dt><dd>Base Address Register, a PCI-configuration-space register finding a device memory space.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-046 -->
 <details class="field-note" id="figure-PCIE14-FIG-046"><summary>PCIe Figure 46 · Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</summary>
 <!-- claim:PCIE14-FIG-046-CLAIM -->
-<p>Figure 46, "Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR": Defines MPBA (MSI-X PBA Offset / PBA BIR) at offset MSIXCAP + 8h and identifies the fields that software must decode at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>PBA</dt><dd>Pending Bit Array, the MSI-X bit array recording vectors that are pending service.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, printed pages 25, PDF pages 25</p></details>
+<p>Figure 46, "Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR": Defines MPBA (MSI-X PBA Offset / PBA BIR) at offset MSIXCAP + 8h and identifies the fields that software must read the fields at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>PBA</dt><dd>Pending Bit Array, the MSI-X bit array recording vectors that are pending service.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.4.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, printed pages 25, PDF pages 25</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>PBAO</dt><dd>Page Base Address and Offset, the first-PRP layout combining a page base address with an in-page offset.</dd></div></dl>
 </details>
 </details>
 </section>
 <section class="lesson" id="module-config-error"><h2 id="heading-config-error"><span class="section-number">05</span> Configuration space and PCIe error reporting</h2>
-<p>Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Locate the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>AER</dt><dd>Advanced Error Reporting, the PCIe capability for classifying, masking, and logging link or transaction errors.</dd></div></dl>
+<p>Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Find the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>AER</dt><dd>Advanced Error Reporting, the PCIe capability for classifying, masking, and logging link or transaction errors.</dd></div></dl>
 <details class="technical-note"><summary>Mechanism and applicable conditions</summary>
 <!-- claim:PCIE14-CONFIG -->
 <p>Section 3.8 defines additional NVMe-controller requirements for the PCI header, Power Management, MSI/MSI-X, PCIe capability, and AER. Original PCI/PCIe field semantics remain governed by PCI-SIG specifications.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1-3.8.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, printed pages 16-35, PDF pages 16-35</p></details>
@@ -227,8 +227,8 @@ nvme_notes: true
 <!-- claim:PCIE14-POWER -->
 <p>The host shall never select an NVMe power state whose consumption exceeds the PCIe slot power limit; violation results in undefined power behavior.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, printed pages 16, PDF pages 16</p></details>
 </details>
-<div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Role or distinction</th><th scope="col">Conditions</th></tr></thead><tbody><tr><td>NVMe CQE status</td><td>Command execution result</td><td>Decode in NVMe command context</td></tr><tr><td>PCIe Device Status</td><td>PCIe Function status summary</td><td>Located in PCIe capability</td></tr><tr><td>AER</td><td>Correctable/uncorrectable transport errors</td><td>Read status, mask, severity, and header together</td></tr><tr><td>Power state</td><td>Slot limit and device power control</td><td>Never choose an NVMe state above the slot power limit</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>Example</h3><p>Informative example: when an AERUCES bit is set, first check its mask to determine reporting, then its severity for handling, and finally the header log for transaction context. The bit cannot be translated directly into an NVMe SC.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>SC</dt><dd>Status Code, the specific completion result interpreted in the context of SCT.</dd></div></dl></aside>
+<div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Role or distinction</th><th scope="col">Conditions</th></tr></thead><tbody><tr><td>NVMe CQE status</td><td>Command execution result</td><td>Read the fields in NVMe command context</td></tr><tr><td>PCIe Device Status</td><td>PCIe Function status summary</td><td>Found in PCIe capability</td></tr><tr><td>AER</td><td>Correctable/uncorrectable transport errors</td><td>Read status, mask, severity, and header together</td></tr><tr><td>Power state</td><td>Slot limit and device power control</td><td>Never choose an NVMe state above the slot power limit</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>Example</h3><p>Informative example: when an AERUCES bit is set, first check its mask to determine reporting, then its severity for handling, and finally the header log for transaction context. The bit cannot be translated directly into an NVMe SC.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>SC</dt><dd>Status Code: identifies the completion result within the selected SCT category.</dd></div></dl></aside>
 <details class="technical-note"><summary>Fields and data structures in more depth</summary>
 <!-- figure-table:PCIE14-FIG-010 -->
 <details class="field-note" id="figure-PCIE14-FIG-010"><summary>PCIe Figure 10 · PCI Express Type 0/1 Common Configuration Space</summary>
@@ -239,55 +239,55 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-011 -->
 <details class="field-note" id="figure-PCIE14-FIG-011"><summary>PCIe Figure 11 · Offset 00h: ID - Identifiers</summary>
 <!-- claim:PCIE14-FIG-011-CLAIM -->
-<p>Figure 11, "Offset 00h: ID - Identifiers": Defines ID (Identifiers) at offset 00h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, printed pages 17, PDF pages 17</p></details>
+<p>Figure 11, "Offset 00h: ID - Identifiers": Defines ID (Identifiers) at offset 00h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, printed pages 17, PDF pages 17</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>DID</dt><dd>Domain Identifier, the identifier of a domain within an NVM subsystem.</dd></div><div><dt>VID</dt><dd>Vendor ID, a PCI-SIG-assigned identifier for a vendor.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-012 -->
 <details class="field-note" id="figure-PCIE14-FIG-012"><summary>PCIe Figure 12 · Offset 04h: CMD - Command</summary>
 <!-- claim:PCIE14-FIG-012-CLAIM -->
-<p>Figure 12, "Offset 04h: CMD - Command": Defines CMD (Command) at offset 04h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, printed pages 17, PDF pages 17</p></details>
+<p>Figure 12, "Offset 04h: CMD - Command": Defines CMD (Command) at offset 04h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, printed pages 17, PDF pages 17</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-013 -->
 <details class="field-note" id="figure-PCIE14-FIG-013"><summary>PCIe Figure 13 · Offset 06h: STS - Device Status</summary>
 <!-- claim:PCIE14-FIG-013-CLAIM -->
-<p>Figure 13, "Offset 06h: STS - Device Status": Defines STS (Device Status) at offset 06h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, printed pages 18, PDF pages 18</p></details>
+<p>Figure 13, "Offset 06h: STS - Device Status": Defines STS (Device Status) at offset 06h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, printed pages 18, PDF pages 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-014 -->
 <details class="field-note" id="figure-PCIE14-FIG-014"><summary>PCIe Figure 14 · Offset 08h: RID - Revision ID</summary>
 <!-- claim:PCIE14-FIG-014-CLAIM -->
-<p>Figure 14, "Offset 08h: RID - Revision ID": Defines RID (Revision ID) at offset 08h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, printed pages 18, PDF pages 18</p></details>
+<p>Figure 14, "Offset 08h: RID - Revision ID": Defines RID (Revision ID) at offset 08h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, printed pages 18, PDF pages 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-015 -->
 <details class="field-note" id="figure-PCIE14-FIG-015"><summary>PCIe Figure 15 · Offset 09h: CC - Class Code</summary>
 <!-- claim:PCIE14-FIG-015-CLAIM -->
-<p>Figure 15, "Offset 09h: CC - Class Code": Defines CC (Class Code) at offset 09h and identifies the fields that software must decode at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>CC</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, printed pages 18, PDF pages 18</p></details>
-
+<p>Figure 15, "Offset 09h: CC - Class Code": Defines CC (Class Code) at offset 09h and identifies the fields that software must read the fields at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>CC</dt><dd>Controller Configuration, the property through which the host selects settings and enables or disables a controller.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, printed pages 18, PDF pages 18</p></details>
+<dl class="term-note" aria-label="Terms in this passage"><div><dt>PI</dt><dd>Protection Information: Guard and tag fields used to check data and its associated information.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-016 -->
 <details class="field-note" id="figure-PCIE14-FIG-016"><summary>PCIe Figure 16 · Offset 0Ch: CLS - Cache Line Size</summary>
 <!-- claim:PCIE14-FIG-016-CLAIM -->
-<p>Figure 16, "Offset 0Ch: CLS - Cache Line Size": Defines CLS (Cache Line Size) at offset 0Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, printed pages 18, PDF pages 18</p></details>
+<p>Figure 16, "Offset 0Ch: CLS - Cache Line Size": Defines CLS (Cache Line Size) at offset 0Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, printed pages 18, PDF pages 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-017 -->
 <details class="field-note" id="figure-PCIE14-FIG-017"><summary>PCIe Figure 17 · Offset 0Dh: MLT - Master Latency Timer</summary>
 <!-- claim:PCIE14-FIG-017-CLAIM -->
-<p>Figure 17, "Offset 0Dh: MLT - Master Latency Timer": Defines MLT (Master Latency Timer) at offset 0Dh and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, printed pages 18, PDF pages 18</p></details>
+<p>Figure 17, "Offset 0Dh: MLT - Master Latency Timer": Defines MLT (Master Latency Timer) at offset 0Dh and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, printed pages 18, PDF pages 18</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-018 -->
 <details class="field-note" id="figure-PCIE14-FIG-018"><summary>PCIe Figure 18 · Offset 0Eh: HTYPE - Header Type</summary>
 <!-- claim:PCIE14-FIG-018-CLAIM -->
-<p>Figure 18, "Offset 0Eh: HTYPE - Header Type": Defines HTYPE (Header Type) at offset 0Eh and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.8</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, printed pages 19, PDF pages 19</p></details>
+<p>Figure 18, "Offset 0Eh: HTYPE - Header Type": Defines HTYPE (Header Type) at offset 0Eh and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.8</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, printed pages 19, PDF pages 19</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-019 -->
 <details class="field-note" id="figure-PCIE14-FIG-019"><summary>PCIe Figure 19 · Offset 0Fh: BIST - Built-In Self Test (Optional)</summary>
 <!-- claim:PCIE14-FIG-019-CLAIM -->
-<p>Figure 19, "Offset 0Fh: BIST - Built-In Self Test (Optional)": Defines BIST (Built-In Self Test (Optional)) at offset 0Fh and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, printed pages 19, PDF pages 19</p></details>
+<p>Figure 19, "Offset 0Fh: BIST - Built-In Self Test (Optional)": Defines BIST (Built-In Self Test (Optional)) at offset 0Fh and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, printed pages 19, PDF pages 19</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-020 -->
@@ -305,49 +305,49 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-022 -->
 <details class="field-note" id="figure-PCIE14-FIG-022"><summary>PCIe Figure 22 · Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</summary>
 <!-- claim:PCIE14-FIG-022-CLAIM -->
-<p>Figure 22, "Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific": Defines BAR2 (Index/Data Pair Register Base Address or Vendor Specific) at offset 18h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.12</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, printed pages 20, PDF pages 20</p></details>
+<p>Figure 22, "Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific": Defines BAR2 (Index/Data Pair Register Base Address or Vendor Specific) at offset 18h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.12</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, printed pages 20, PDF pages 20</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-023 -->
 <details class="field-note" id="figure-PCIE14-FIG-023"><summary>PCIe Figure 23 · Offset 28h: CCPTR - CardBus CIS Pointer</summary>
 <!-- claim:PCIE14-FIG-023-CLAIM -->
-<p>Figure 23, "Offset 28h: CCPTR - CardBus CIS Pointer": Defines CCPTR (CardBus CIS Pointer) at offset 28h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.16</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, printed pages 20, PDF pages 20</p></details>
+<p>Figure 23, "Offset 28h: CCPTR - CardBus CIS Pointer": Defines CCPTR (CardBus CIS Pointer) at offset 28h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.16</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, printed pages 20, PDF pages 20</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-024 -->
 <details class="field-note" id="figure-PCIE14-FIG-024"><summary>PCIe Figure 24 · Offset 2Ch: SS - Subsystem Identifiers</summary>
 <!-- claim:PCIE14-FIG-024-CLAIM -->
-<p>Figure 24, "Offset 2Ch: SS - Subsystem Identifiers": Defines SS (Subsystem Identifiers) at offset 2Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.17</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, printed pages 20, PDF pages 20</p></details>
+<p>Figure 24, "Offset 2Ch: SS - Subsystem Identifiers": Defines SS (Subsystem Identifiers) at offset 2Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.17</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, printed pages 20, PDF pages 20</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>SSVID</dt><dd>Subsystem Vendor ID, the PCI identifier for a subsystem vendor.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-025 -->
 <details class="field-note" id="figure-PCIE14-FIG-025"><summary>PCIe Figure 25 · Offset 30h: EROM - Expansion ROM (Optional)</summary>
 <!-- claim:PCIE14-FIG-025-CLAIM -->
-<p>Figure 25, "Offset 30h: EROM - Expansion ROM (Optional)": Defines EROM (Expansion ROM (Optional)) at offset 30h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.18</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, printed pages 20, PDF pages 20</p></details>
+<p>Figure 25, "Offset 30h: EROM - Expansion ROM (Optional)": Defines EROM (Expansion ROM (Optional)) at offset 30h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.18</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, printed pages 20, PDF pages 20</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-026 -->
 <details class="field-note" id="figure-PCIE14-FIG-026"><summary>PCIe Figure 26 · Offset 34h: CAP - Capabilities Pointer</summary>
 <!-- claim:PCIE14-FIG-026-CLAIM -->
-<p>Figure 26, "Offset 34h: CAP - Capabilities Pointer": Defines CAP (Capabilities Pointer) at offset 34h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.19</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, printed pages 21, PDF pages 21</p></details>
+<p>Figure 26, "Offset 34h: CAP - Capabilities Pointer": Defines CAP (Capabilities Pointer) at offset 34h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.19</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, printed pages 21, PDF pages 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-027 -->
 <details class="field-note" id="figure-PCIE14-FIG-027"><summary>PCIe Figure 27 · Offset 3Ch: INTR - Interrupt Information</summary>
 <!-- claim:PCIE14-FIG-027-CLAIM -->
-<p>Figure 27, "Offset 3Ch: INTR - Interrupt Information": Defines INTR (Interrupt Information) at offset 3Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.20</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, printed pages 21, PDF pages 21</p></details>
+<p>Figure 27, "Offset 3Ch: INTR - Interrupt Information": Defines INTR (Interrupt Information) at offset 3Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.20</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, printed pages 21, PDF pages 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-028 -->
 <details class="field-note" id="figure-PCIE14-FIG-028"><summary>PCIe Figure 28 · Offset 3Eh: MGNT - Minimum Grant</summary>
 <!-- claim:PCIE14-FIG-028-CLAIM -->
-<p>Figure 28, "Offset 3Eh: MGNT - Minimum Grant": Defines MGNT (Minimum Grant) at offset 3Eh and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.21</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, printed pages 21, PDF pages 21</p></details>
+<p>Figure 28, "Offset 3Eh: MGNT - Minimum Grant": Defines MGNT (Minimum Grant) at offset 3Eh and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.21</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, printed pages 21, PDF pages 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-029 -->
 <details class="field-note" id="figure-PCIE14-FIG-029"><summary>PCIe Figure 29 · Offset 3Fh: MLAT - Maximum Latency</summary>
 <!-- claim:PCIE14-FIG-029-CLAIM -->
-<p>Figure 29, "Offset 3Fh: MLAT - Maximum Latency": Defines MLAT (Maximum Latency) at offset 3Fh and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.22</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, printed pages 21, PDF pages 21</p></details>
+<p>Figure 29, "Offset 3Fh: MLAT - Maximum Latency": Defines MLAT (Maximum Latency) at offset 3Fh and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.1.22</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, printed pages 21, PDF pages 21</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-030 -->
@@ -359,19 +359,19 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-031 -->
 <details class="field-note" id="figure-PCIE14-FIG-031"><summary>PCIe Figure 31 · Offset PMCAP: PID - PCI Power Management Capability ID</summary>
 <!-- claim:PCIE14-FIG-031-CLAIM -->
-<p>Figure 31, "Offset PMCAP: PID - PCI Power Management Capability ID": Defines PID (PCI Power Management Capability ID) at offset PMCAP and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.2.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, printed pages 21, PDF pages 21</p></details>
+<p>Figure 31, "Offset PMCAP: PID - PCI Power Management Capability ID": Defines PID (PCI Power Management Capability ID) at offset PMCAP and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.2.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, printed pages 21, PDF pages 21</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>CID</dt><dd>Command Identifier, used with the SQ identifier to identify an outstanding command.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-032 -->
 <details class="field-note" id="figure-PCIE14-FIG-032"><summary>PCIe Figure 32 · Offset PMCAP + 2h: PC - PCI Power Management Capabilities</summary>
 <!-- claim:PCIE14-FIG-032-CLAIM -->
-<p>Figure 32, "Offset PMCAP + 2h: PC - PCI Power Management Capabilities": Defines PC (PCI Power Management Capabilities) at offset PMCAP + 2h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.2.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, printed pages 22, PDF pages 22</p></details>
+<p>Figure 32, "Offset PMCAP + 2h: PC - PCI Power Management Capabilities": Defines PC (PCI Power Management Capabilities) at offset PMCAP + 2h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.2.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, printed pages 22, PDF pages 22</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-033 -->
 <details class="field-note" id="figure-PCIE14-FIG-033"><summary>PCIe Figure 33 · Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</summary>
 <!-- claim:PCIE14-FIG-033-CLAIM -->
-<p>Figure 33, "Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status": Defines PMCS (PCI Power Management Control and Status) at offset PMCAP + 4h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.2.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, printed pages 22, PDF pages 22</p></details>
+<p>Figure 33, "Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status": Defines PMCS (PCI Power Management Control and Status) at offset PMCAP + 4h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.2.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, printed pages 22, PDF pages 22</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>PS</dt><dd>Power State, a controller power/performance operating point; PS0 has the highest maximum power.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-047 -->
@@ -383,61 +383,61 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-048 -->
 <details class="field-note" id="figure-PCIE14-FIG-048"><summary>PCIe Figure 48 · Offset PXCAP: PXID - PCI Express Capability ID</summary>
 <!-- claim:PCIE14-FIG-048-CLAIM -->
-<p>Figure 48, "Offset PXCAP: PXID - PCI Express Capability ID": Defines PXID (PCI Express Capability ID) at offset PXCAP and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, printed pages 26, PDF pages 26</p></details>
+<p>Figure 48, "Offset PXCAP: PXID - PCI Express Capability ID": Defines PXID (PCI Express Capability ID) at offset PXCAP and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, printed pages 26, PDF pages 26</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-049 -->
 <details class="field-note" id="figure-PCIE14-FIG-049"><summary>PCIe Figure 49 · Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</summary>
 <!-- claim:PCIE14-FIG-049-CLAIM -->
-<p>Figure 49, "Offset PXCAP + 2h: PXCAP - PCI Express Capabilities": Defines PXCAP (PCI Express Capabilities) at offset PXCAP + 2h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, printed pages 26, PDF pages 26</p></details>
+<p>Figure 49, "Offset PXCAP + 2h: PXCAP - PCI Express Capabilities": Defines PXCAP (PCI Express Capabilities) at offset PXCAP + 2h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, printed pages 26, PDF pages 26</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-050 -->
 <details class="field-note" id="figure-PCIE14-FIG-050"><summary>PCIe Figure 50 · Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</summary>
 <!-- claim:PCIE14-FIG-050-CLAIM -->
-<p>Figure 50, "Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities": Defines PXDCAP (PCI Express Device Capabilities) at offset PXCAP + 4h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, printed pages 26-27, PDF pages 26-27</p></details>
+<p>Figure 50, "Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities": Defines PXDCAP (PCI Express Device Capabilities) at offset PXCAP + 4h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, printed pages 26-27, PDF pages 26-27</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-051 -->
 <details class="field-note" id="figure-PCIE14-FIG-051"><summary>PCIe Figure 51 · Offset PXCAP + 8h: PXDC - PCI Express Device Control</summary>
 <!-- claim:PCIE14-FIG-051-CLAIM -->
-<p>Figure 51, "Offset PXCAP + 8h: PXDC - PCI Express Device Control": Defines PXDC (PCI Express Device Control) at offset PXCAP + 8h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, printed pages 27-28, PDF pages 27-28</p></details>
+<p>Figure 51, "Offset PXCAP + 8h: PXDC - PCI Express Device Control": Defines PXDC (PCI Express Device Control) at offset PXCAP + 8h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, printed pages 27-28, PDF pages 27-28</p></details>
 <dl class="term-note" aria-label="Terms in this passage"><div><dt>MRRS</dt><dd>Max Read Request Size, the setting limiting the size of read requests issued by a PCIe Function.</dd></div><div><dt>MPS</dt><dd>Memory Page Size, the controller memory-page-size setting; it affects queue addresses and PRP alignment.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-052 -->
 <details class="field-note" id="figure-PCIE14-FIG-052"><summary>PCIe Figure 52 · Offset PXCAP + Ah: PXDS - PCI Express Device Status</summary>
 <!-- claim:PCIE14-FIG-052-CLAIM -->
-<p>Figure 52, "Offset PXCAP + Ah: PXDS - PCI Express Device Status": Defines PXDS (PCI Express Device Status) at offset PXCAP + Ah and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, printed pages 28, PDF pages 28</p></details>
+<p>Figure 52, "Offset PXCAP + Ah: PXDS - PCI Express Device Status": Defines PXDS (PCI Express Device Status) at offset PXCAP + Ah and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, printed pages 28, PDF pages 28</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-053 -->
 <details class="field-note" id="figure-PCIE14-FIG-053"><summary>PCIe Figure 53 · Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</summary>
 <!-- claim:PCIE14-FIG-053-CLAIM -->
-<p>Figure 53, "Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities": Defines PXLCAP (PCI Express Link Capabilities) at offset PXCAP + Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, printed pages 28-29, PDF pages 28-29</p></details>
+<p>Figure 53, "Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities": Defines PXLCAP (PCI Express Link Capabilities) at offset PXCAP + Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, printed pages 28-29, PDF pages 28-29</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-054 -->
 <details class="field-note" id="figure-PCIE14-FIG-054"><summary>PCIe Figure 54 · Offset PXCAP + 10h: PXLC - PCI Express Link Control</summary>
 <!-- claim:PCIE14-FIG-054-CLAIM -->
-<p>Figure 54, "Offset PXCAP + 10h: PXLC - PCI Express Link Control": Defines PXLC (PCI Express Link Control) at offset PXCAP + 10h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, printed pages 29, PDF pages 29</p></details>
+<p>Figure 54, "Offset PXCAP + 10h: PXLC - PCI Express Link Control": Defines PXLC (PCI Express Link Control) at offset PXCAP + 10h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, printed pages 29, PDF pages 29</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-055 -->
 <details class="field-note" id="figure-PCIE14-FIG-055"><summary>PCIe Figure 55 · Offset PXCAP + 12h: PXLS - PCI Express Link Status</summary>
 <!-- claim:PCIE14-FIG-055-CLAIM -->
-<p>Figure 55, "Offset PXCAP + 12h: PXLS - PCI Express Link Status": Defines PXLS (PCI Express Link Status) at offset PXCAP + 12h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.8</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, printed pages 29, PDF pages 29</p></details>
+<p>Figure 55, "Offset PXCAP + 12h: PXLS - PCI Express Link Status": Defines PXLS (PCI Express Link Status) at offset PXCAP + 12h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.8</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, printed pages 29, PDF pages 29</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-056 -->
 <details class="field-note" id="figure-PCIE14-FIG-056"><summary>PCIe Figure 56 · Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</summary>
 <!-- claim:PCIE14-FIG-056-CLAIM -->
-<p>Figure 56, "Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2": Defines PXDCAP2 (PCI Express Device Capabilities 2) at offset PXCAP + 24h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, printed pages 30, PDF pages 30</p></details>
+<p>Figure 56, "Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2": Defines PXDCAP2 (PCI Express Device Capabilities 2) at offset PXCAP + 24h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, printed pages 30, PDF pages 30</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-057 -->
 <details class="field-note" id="figure-PCIE14-FIG-057"><summary>PCIe Figure 57 · Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</summary>
 <!-- claim:PCIE14-FIG-057-CLAIM -->
-<p>Figure 57, "Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2": Defines PXDC2 (PCI Express Device Control 2) at offset PXCAP + 28h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.10</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, printed pages 30-31, PDF pages 30-31</p></details>
+<p>Figure 57, "Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2": Defines PXDC2 (PCI Express Device Control 2) at offset PXCAP + 28h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.5.10</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, printed pages 30-31, PDF pages 30-31</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-058 -->
@@ -449,55 +449,55 @@ nvme_notes: true
 <!-- figure-table:PCIE14-FIG-059 -->
 <details class="field-note" id="figure-PCIE14-FIG-059"><summary>PCIe Figure 59 · Offset AERCAP: AERID - AER Capability ID</summary>
 <!-- claim:PCIE14-FIG-059-CLAIM -->
-<p>Figure 59, "Offset AERCAP: AERID - AER Capability ID": Defines AERID (AER Capability ID) at offset AERCAP and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, printed pages 31, PDF pages 31</p></details>
+<p>Figure 59, "Offset AERCAP: AERID - AER Capability ID": Defines AERID (AER Capability ID) at offset AERCAP and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.1</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, printed pages 31, PDF pages 31</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-060 -->
 <details class="field-note" id="figure-PCIE14-FIG-060"><summary>PCIe Figure 60 · Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</summary>
 <!-- claim:PCIE14-FIG-060-CLAIM -->
-<p>Figure 60, "Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register": Defines AERUCES (AER Uncorrectable Error Status Register) at offset AERCAP + 4 and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, printed pages 31-32, PDF pages 31-32</p></details>
+<p>Figure 60, "Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register": Defines AERUCES (AER Uncorrectable Error Status Register) at offset AERCAP + 4 and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.2</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, printed pages 31-32, PDF pages 31-32</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-061 -->
 <details class="field-note" id="figure-PCIE14-FIG-061"><summary>PCIe Figure 61 · Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</summary>
 <!-- claim:PCIE14-FIG-061-CLAIM -->
-<p>Figure 61, "Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register": Defines AERUCEM (AER Uncorrectable Error Mask Register) at offset AERCAP + 8 and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, printed pages 32, PDF pages 32</p></details>
+<p>Figure 61, "Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register": Defines AERUCEM (AER Uncorrectable Error Mask Register) at offset AERCAP + 8 and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.3</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, printed pages 32, PDF pages 32</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-062 -->
 <details class="field-note" id="figure-PCIE14-FIG-062"><summary>PCIe Figure 62 · Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</summary>
 <!-- claim:PCIE14-FIG-062-CLAIM -->
-<p>Figure 62, "Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register": Defines AERUCESEV (AER Uncorrectable Error Severity Register) at offset AERCAP + Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, printed pages 32-33, PDF pages 32-33</p></details>
+<p>Figure 62, "Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register": Defines AERUCESEV (AER Uncorrectable Error Severity Register) at offset AERCAP + Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.4</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, printed pages 32-33, PDF pages 32-33</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-063 -->
 <details class="field-note" id="figure-PCIE14-FIG-063"><summary>PCIe Figure 63 · Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</summary>
 <!-- claim:PCIE14-FIG-063-CLAIM -->
-<p>Figure 63, "Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register": Defines AERCES (AER Correctable Error Status Register) at offset AERCAP + 10h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, printed pages 33, PDF pages 33</p></details>
+<p>Figure 63, "Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register": Defines AERCES (AER Correctable Error Status Register) at offset AERCAP + 10h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.5</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, printed pages 33, PDF pages 33</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-064 -->
 <details class="field-note" id="figure-PCIE14-FIG-064"><summary>PCIe Figure 64 · Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</summary>
 <!-- claim:PCIE14-FIG-064-CLAIM -->
-<p>Figure 64, "Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register": Defines AERCEM (AER Correctable Error Mask Register) at offset AERCAP + 14h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, printed pages 33, PDF pages 33</p></details>
+<p>Figure 64, "Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register": Defines AERCEM (AER Correctable Error Mask Register) at offset AERCAP + 14h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.6</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, printed pages 33, PDF pages 33</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-065 -->
 <details class="field-note" id="figure-PCIE14-FIG-065"><summary>PCIe Figure 65 · Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</summary>
 <!-- claim:PCIE14-FIG-065-CLAIM -->
-<p>Figure 65, "Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register": Defines AERCC (AER Capabilities and Control Register) at offset AERCAP + 18h and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, printed pages 34, PDF pages 34</p></details>
+<p>Figure 65, "Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register": Defines AERCC (AER Capabilities and Control Register) at offset AERCAP + 18h and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.7</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, printed pages 34, PDF pages 34</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-066 -->
 <details class="field-note" id="figure-PCIE14-FIG-066"><summary>PCIe Figure 66 · Offset AERCAP + 1Ch: AERHL - AER Header Log Register</summary>
 <!-- claim:PCIE14-FIG-066-CLAIM -->
-<p>Figure 66, "Offset AERCAP + 1Ch: AERHL - AER Header Log Register": Defines AERHL (AER Header Log Register) at offset AERCAP + 1Ch and identifies the fields that software must decode at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.8</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, printed pages 34, PDF pages 34</p></details>
+<p>Figure 66, "Offset AERCAP + 1Ch: AERHL - AER Header Log Register": Defines AERHL (AER Header Log Register) at offset AERCAP + 1Ch and identifies the fields that software must read the fields at that location.</p><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.8</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, printed pages 34, PDF pages 34</p></details>
 
 </details>
 <!-- figure-table:PCIE14-FIG-067 -->
 <details class="field-note" id="figure-PCIE14-FIG-067"><summary>PCIe Figure 67 · Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</summary>
 <!-- claim:PCIE14-FIG-067-CLAIM -->
-<p>Figure 67, "Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)": Defines AERTLP (AER TLP Prefix Log Register (Optional)) at offset AERCAP + 38h and identifies the fields that software must decode at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet, a packet carried by the PCIe transaction layer.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, printed pages 35, PDF pages 35</p></details>
+<p>Figure 67, "Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)": Defines AERTLP (AER TLP Prefix Log Register (Optional)) at offset AERCAP + 38h and identifies the fields that software must read the fields at that location.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>TLP</dt><dd>Transaction Layer Packet, a packet carried by the PCIe transaction layer.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.8.6.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, printed pages 35, PDF pages 35</p></details>
 
 </details>
 </details>
@@ -509,13 +509,13 @@ nvme_notes: true
 <p>The Physical Interface Receiver Eye Opening Measurement log page reports measurements through a header, lane descriptors, and EOM data. The host checks support and size before parsing lanes and parameters.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>EOM</dt><dd>Eye Opening Measurement, the procedure and log data for measuring a PCIe receiver eye opening.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, printed pages 39-46, PDF pages 39-46</p></details>
 </details>
 <div class="table-wrap"><table><thead><tr><th scope="col">Item</th><th scope="col">Role or distinction</th><th scope="col">Conditions</th></tr></thead><tbody><tr><td>Specific parameter</td><td>Selects measurement action and quality/state</td><td>Establish request context first</td></tr><tr><td>Specific identifier</td><td>Selects lane/test context</td><td>Prevents mixing different measurements</td></tr><tr><td>Header</td><td>Global length and layout</td><td>Base for every later offset</td></tr><tr><td>Lane descriptor</td><td>Per-lane boundaries and status</td><td>Walk only within returned buffer</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>Example</h3><p>To compare two lanes, locate each measurement through its lane descriptor and compare using the same measurement format. The header lane count describes structure, not measurement quality.</p></aside>
+<aside class="worked-example"><h3>Example</h3><p>To compare two lanes, find each measurement through its lane descriptor and compare using the same measurement format. The header lane count describes structure, not measurement quality.</p></aside>
 <details class="technical-note"><summary>Fields and data structures in more depth</summary>
 <!-- figure-table:PCIE14-FIG-070 -->
 <details class="field-note" id="figure-PCIE14-FIG-070"><summary>PCIe Figure 70 · Get Log Page - Log Page Identifiers</summary>
 <!-- claim:PCIE14-FIG-070-CLAIM -->
 <p>Figure 70, "Get Log Page - Log Page Identifiers": Defines the identifier composition or namespace of values shown by Get Log Page - Log Page Identifiers.</p><dl class="term-note" aria-label="Terms in this passage"><div><dt>namespace</dt><dd>Namespace, a formatted quantity of non-volatile memory accessed by a host through a controller.</dd></div></dl><details class="source-note"><summary>Sources: PCIe Transport 1.4 §3.9</summary><p>Source: NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, printed pages 39, PDF pages 39</p></details>
-<dl class="term-note" aria-label="Terms in this passage"><div><dt>CSI</dt><dd>Command Set Identifier, selecting the I/O Command Set context for a command or log page.</dd></div></dl>
+<dl class="term-note" aria-label="Terms in this passage"><div><dt>CSI</dt><dd>I/O Command Set Identifier: selects an I/O command set; NVM uses 00h.</dd></div></dl>
 </details>
 <!-- figure-table:PCIE14-FIG-071 -->
 <details class="field-note" id="figure-PCIE14-FIG-071"><summary>PCIe Figure 71 · Size of Physical Interface Receiver Eye Opening Measurement Log Page</summary>

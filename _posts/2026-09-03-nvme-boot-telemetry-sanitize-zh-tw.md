@@ -31,14 +31,14 @@ nvme_notes: true
 <p>命令完成與背景作業完成可能是不同事件。Get Log Page 用來讀取回報資料；Get／Set Features 用來查詢及設定功能。後文會在使用處解釋相關識別碼與欄位。</p>
 </section>
 <section class="lesson" id="module-boot-read"><h2 id="heading-boot-read"><span class="section-number">01</span> Boot 的兩條讀取路徑</h2>
-<p>先問 controller 是否已建立 Admin command 環境，再選 property 或 LID 15h。兩條路徑讀同一類 Boot 內容，但回傳格式與狀態觀察點不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>LID</dt><dd>Log Page Identifier，Get Log Page command 用來選擇 log page 的欄位。</dd></div></dl>
+<p>先問 controller 是否已建立 Admin command 環境，再選 property 或 LID 15h。兩條路徑讀同一類 Boot 內容，但回傳格式與狀態觀察點不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl>
 <details class="technical-note"><summary>機制與適用條件</summary>
 <!-- claim:BASEBTS-BOOT-MODEL -->
-<p>Boot Partitions 是選用功能；支援時有兩個等大的 partition，ID 為 0h、1h。Host 可在未建立 queues、未啟用 controller 時透過 properties 讀取。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3, 文件頁 586, PDF 頁 612</p></details>
+<p>Boot Partitions 是選用功能；支援時有兩個等大的 partition，ID 為 0h、1h。Host 可在未建立 queues、未啟用 controller 時透過 properties 讀取。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3, 文件頁 586, PDF 頁 612</p></details>
 <!-- claim:BASEBTS-BOOT-READ -->
 <p>Host 先檢查 CAP.BPS、BPINFO 的 active ID/size，再配置連續 buffer 與 BPMBL，確認沒有讀取進行中後寫入 BPRSEL。BRS=01b 表示傳輸中，10b 表示成功，11b 表示錯誤；讀取中不得 reset、shutdown 或改動 transport-specific properties。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BRS</dt><dd>Boot Read Status；00b 未請求、01b 進行中、10b 成功、11b 錯誤。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, 文件頁 586-587, PDF 頁 612-613</p></details>
 <!-- claim:BASEBTS-BOOT-LOG -->
-<p>LID 15h 以 CDW10.LSP 的 BPID 選 partition，回傳 16-byte header 與其後的資料；BPSZ 以 128 KiB 計。此 log 讀取不改變 BPINFO、BPRSEL 或 BPMBL properties。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>BPSZ</dt><dd>Boot Partition Size；每單位 128 KiB。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, 文件頁 283-284, PDF 頁 309-310</p></details>
+<p>LID 15h 以 CDW10.LSP 的 BPID 選 partition，回傳 16-byte header 與其後的資料；BPSZ 以 128 KiB 計。此 log 讀取不改變 BPINFO、BPRSEL 或 BPMBL properties。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>BPSZ</dt><dd>Boot Partition Size；每單位 128 KiB。</dd></div><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, 文件頁 283-284, PDF 頁 309-310</p></details>
 </details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Properties</td><td>BRS 回報讀取狀態</td><td>不要求 CC.EN=1</td></tr><tr><td>LID 15h</td><td>16-byte header + data</td><td>由 Admin command CQE 判斷命令結果</td></tr><tr><td>BPID</td><td>選取讀取 partition</td><td>不等於 active ID</td></tr><tr><td>BPSZ</td><td>每單位 128 KiB</td><td>不是 bytes</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>BPSZ</dt><dd>Boot Partition Size；每單位 128 KiB。</dd></div><div><dt>BRS</dt><dd>Boot Read Status；00b 未請求、01b 進行中、10b 成功、11b 錯誤。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>BPSZ=2 的 LID 15h 包含 262144 bytes 的 Boot data，加上 16-byte header，共 262160 bytes。讀 BP1 並不把 BP1 設為 active；讀 log 也不會推進 property 的 BRS。</p></aside>
@@ -46,7 +46,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-279 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-279"><summary>Base Figure 279 · Boot Partition Log Specific Parameter Field</summary>
 <!-- claim:BASEBTS-BASE-FIG-279-CLAIM -->
-<p>Figure 279〈Boot Partition Log Specific Parameter Field〉：LID 15h 使用 CDW10 bit 8 選 BPID，其他 LSP bits 保留；同一 bit 在 07h 卻是 CTHID。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CTHID</dt><dd>Create Telemetry Host-Initiated Data；07h 的 capture 要求，後續分段讀同一快照要清為 0。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 279, 文件頁 283, PDF 頁 309</p></details>
+<p>Figure 279〈Boot Partition Log Specific Parameter Field〉：LID 15h 使用 CDW10 bit 8 選 BPID，其他 LSP bits 保留；同一 bit 在 07h 卻是 CTHID。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CTHID</dt><dd>Create Telemetry Host-Initiated Data；07h 的 capture 要求，後續分段讀同一快照要清為 0。</dd></div><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 279, 文件頁 283, PDF 頁 309</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-280 -->
@@ -58,7 +58,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-679 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-679"><summary>Base Figure 679 · Boot Partition Overview</summary>
 <!-- claim:BASEBTS-BASE-FIG-679-CLAIM -->
-<p>Figure 679〈Boot Partition Overview〉：把兩個等大的 Boot Partitions 與此次 host 讀取 buffer 分開；active ID 選擇啟動映像，不限制 host 只能讀 active partition。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, Figure 679, 文件頁 587, PDF 頁 613</p></details>
+<p>Figure 679〈Boot Partition Overview〉：把兩個等大的 Boot Partitions 與此次 host 讀取 buffer 分開；active ID 選擇啟動映像，不限制 host 只能讀 active partition。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, Figure 679, 文件頁 587, PDF 頁 613</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-036 -->
@@ -91,25 +91,25 @@ nvme_notes: true
 <p>把 image transfer、partition content、active selection、write protection 分開追蹤。成功下載尚未寫入 Boot Partition；寫入成功也未自動選成 active。</p>
 <details class="technical-note"><summary>機制與適用條件</summary>
 <!-- claim:BASEBTS-BOOT-UPDATE -->
-<p>Boot image 從開頭依序用 Firmware Image Download 傳送；將目標解鎖後，以 Firmware Commit CA=110b 寫入 BPID 指定的 partition。Host 可讀回驗證，再以 CA=111b 更新 active ID，最後重新上鎖。更新中斷可能留下新舊混合內容，因此宜先驗證再設為 active。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CA</dt><dd>Commit Action，Firmware Commit 中選擇 replace、activate 與 reset policy 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 587-588, PDF 頁 613-614</p></details>
+<p>Boot image 從開頭依序用 Firmware Image Download 傳送；將目標解鎖後，以 Firmware Commit CA=110b 寫入 BPID 指定的 partition。Host 可讀回驗證，再以 CA=111b 更新 active ID，最後重新上鎖。更新中斷可能留下新舊混合內容，因此宜先驗證再設為 active。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>CA</dt><dd>Commit Action，Firmware Commit 中選擇 replace、activate 與 reset policy 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 587-588, PDF 頁 613-614</p></details>
 <!-- claim:BASEBTS-BOOT-SEQUENCE -->
 <p>Host 不宜在寫入 Boot Partition 時同時讀取，也不宜重疊 firmware/boot image 更新序列。單一序列宜使用同一 controller 或 Management Endpoint；跨端點提交可能使 Commit 以 Invalid Firmware Image 結束。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 588, PDF 頁 614</p></details>
 <!-- claim:BASEBTS-BOOT-CAP -->
-<p>BPCAP 回報 Set Features 與 RPMB Boot 保護能力。只有 Set Features 機制或 RPMB 尚未啟用時由 FID 85h 控制；RPMB 保護啟用後由 RPMB 控制。同一時刻只有一套機制控制狀態，共享 partition 的所有 controllers 都須執行其保護。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BPCAP</dt><dd>Boot Partition Capabilities；辨識 Set Features 與 RPMB 保護機制的支援組合。</dd></div><div><dt>FID</dt><dd>Feature Identifier，Get／Set Features 用來選擇功能的 8-bit identifier。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3, 文件頁 588-589, PDF 頁 614-615</p></details>
+<p>BPCAP 回報 Set Features 與 RPMB Boot 保護能力。只有 Set Features 機制或 RPMB 尚未啟用時由 FID 85h 控制；RPMB 保護啟用後由 RPMB 控制。同一時刻只有一套機制控制狀態，共享 partition 的所有 controllers 都須執行其保護。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BPCAP</dt><dd>Boot Partition Capabilities；辨識 Set Features 與 RPMB 保護機制的支援組合。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3, 文件頁 588-589, PDF 頁 614-615</p></details>
 <!-- claim:BASEBTS-BOOT-FID -->
-<p>BP0WPS 位於 CDW11[2:0]，BP1WPS 位於 [5:3]。000b 僅用於 Set 的不改變請求；001b/010b/011b 分別為 unlocked/locked/locked until power cycle；100b 由 Get 回報 RPMB 控制，不能作為 Set 值。此 Feature 不可 save，power cycle 後預設 locked。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>BP1WPS</dt><dd>Boot Partition 1 Write Protection State；FID 85h 的 bits 5:3。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, 文件頁 513-514, PDF 頁 539-540</p></details>
+<p>BP0WPS 位於 CDW11[2:0]，BP1WPS 位於 [5:3]。000b 僅用於 Set 的不改變請求；001b/010b/011b 分別為 unlocked/locked/locked until power cycle；100b 由 Get 回報 RPMB 控制，不能作為 Set 值。此 Feature 不可 save，power cycle 後預設 locked。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>BP1WPS</dt><dd>Boot Partition 1 Write Protection State；FID 85h 的 bits 5:3。</dd></div><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, 文件頁 513-514, PDF 頁 539-540</p></details>
 <!-- claim:BASEBTS-BOOT-RESET -->
 <p>Set Features 的 unlocked 狀態跨 Controller Level Reset 保留，但 power cycle 後回到 locked；locked-until-power-cycle 也不能用一般 Set 解開。RPMB 保護啟用後，unlocked 遇 power cycle 或 Controller Level Reset 會回到 locked，且啟用本身不可撤回。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.1-8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1-8.1.3.3.3, 文件頁 589-594, PDF 頁 615-620</p></details>
 <!-- claim:BASEBTS-BOOT-REJECT -->
 <p>嘗試修改 locked-until-power-cycle 或 RPMB 控制中的狀態，FID 85h 以 Feature Not Changeable 拒絕。Multi-domain subsystem 中共享的 partition 不允許 locked-until-power-cycle。兩套機制並存時，只要任一 partition 在該狀態，就不得啟用 RPMB Boot 保護來繞過它。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39; 8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39; 8.1.3.3.3, 文件頁 513-514,593-594, PDF 頁 539-540,619-620</p></details>
 </details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>FID 85h unlocked</td><td>Controller reset 後保留</td><td>Power cycle 後 locked</td></tr><tr><td>FID 85h until power cycle</td><td>一般 Set 不可解鎖</td><td>共享 multi-domain partition 不可用</td></tr><tr><td>RPMB enabled/unlocked</td><td>Controller reset 即 relock</td><td>啟用保護不可撤回</td></tr><tr><td>兩套機制</td><td>同時只有一套控制</td><td>RPMB enable 是控制權轉移</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier，Get／Set Features 用來選擇功能的 8-bit identifier。</dd></div></dl>
-<aside class="worked-example"><h3>例子</h3><p>保留 BP0 不變、要求 BP1 unlocked 的 FID 85h CDW11 是 (001b &lt;&lt; 3) | 000b = 08h。讀回時 BP0 不會回傳 000b，而會回報它真正的狀態；RPMB 控制時則回報 100b。</p></aside>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>FID 85h unlocked</td><td>Controller reset 後保留</td><td>Power cycle 後 locked</td></tr><tr><td>FID 85h until power cycle</td><td>一般 Set 不可解鎖</td><td>共享 multi-domain partition 不可用</td></tr><tr><td>RPMB enabled/unlocked</td><td>Controller reset 即 relock</td><td>啟用保護不可撤回</td></tr><tr><td>兩套機制</td><td>同時只有一套控制</td><td>RPMB enable 是控制權轉移</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl>
+<aside class="worked-example"><h3>例子</h3><p>保留 BP0 不變、要求 BP1 unlocked 的 FID 85h CDW11 是 (001b &lt;&lt; 3) | 000b = 08h。讀回時 BP0 不會回傳 000b，而會回報它真正的狀態；RPMB 控制時則回報 100b。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:BASEBTS-BASE-FIG-542 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-542"><summary>Base Figure 542 · Boot Partition Write Protection Config - Command Dword 11</summary>
 <!-- claim:BASEBTS-BASE-FIG-542-CLAIM -->
-<p>Figure 542〈Boot Partition Write Protection Config - Command Dword 11〉：兩個 3-bit state 欄位獨立設定；000b 只表示 Set 不改變，Get 需回實際狀態，100b 只回報 RPMB 控制。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, Figure 542, 文件頁 513-514, PDF 頁 539-540</p></details>
+<p>Figure 542〈Boot Partition Write Protection Config - Command Dword 11〉：兩個 3-bit state 欄位獨立設定；000b 只表示 Set 不改變，Get 需回實際狀態，100b 只回報 RPMB 控制。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, Figure 542, 文件頁 513-514, PDF 頁 539-540</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>BP1WPS</dt><dd>Boot Partition 1 Write Protection State；FID 85h 的 bits 5:3。</dd></div></dl>
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-680 -->
@@ -169,14 +169,14 @@ nvme_notes: true
 </details>
 </section>
 <section class="lesson" id="module-telemetry-layout"><h2 id="heading-telemetry-layout"><span class="section-number">03</span> 從 Last Block 計算快照</h2>
-<p>Area 是從同一 block 1 起算的不同大小視圖。先解碼 header，再選擇適用且有資料的最後 area；不要把三個 Last Block 數字相加。</p>
+<p>Area 是從同一 block 1 起算的不同大小視圖。先依欄位換算 header，再選擇適用且有資料的最後 area；不要把三個 Last Block 數字相加。</p>
 <figure><div class="diagram-scroll"><svg viewBox="0 0 760 260" role="img"><title>Telemetry Data Areas 是累積範圍</title><desc>Header 位於 block 0。每個 Data Area 都從 block 1 開始，較大的 Area 包含較小 Area 的資料。</desc><rect x="20" y="20" width="155" height="210" rx="6" class="v-command"/><text x="97.5" y="118.5" text-anchor="middle" font-size="17">Header</text><text x="97.5" y="143.5" text-anchor="middle" font-size="17">Block 0</text><rect x="205" y="20" width="160" height="55" rx="6" class="v-object"/><text x="285.0" y="53.5" text-anchor="middle" font-size="17">Area 1</text><rect x="205" y="95" width="325" height="55" rx="6" class="v-decision"/><text x="367.5" y="128.5" text-anchor="middle" font-size="17">Area 2</text><rect x="205" y="170" width="535" height="55" rx="6" class="v-success"/><text x="472.5" y="203.5" text-anchor="middle" font-size="17">Area 3</text></svg></div><figcaption>Header 位於 block 0。每個 Data Area 都從 block 1 開始，較大的 Area 包含較小 Area 的資料。</figcaption></figure>
 
 <details class="technical-note"><summary>機制與適用條件</summary>
 <!-- claim:BASEBTS-TEL-MODEL -->
 <p>Telemetry 的 header 為 block 0，每個 block 是 512 bytes；所有 Data Areas 都從 block 1 起算。Area 2/3/4 是更大的累積集合，不是接在 Area 1 後的獨立區塊。Last Block 是包含在內的最後 block 編號；payload 格式與大小由廠商定義。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.13.1.8-5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.13.1.8-5.2.13.1.9, 文件頁 232-237,733-737, PDF 頁 258-263,759-763</p></details>
 <!-- claim:BASEBTS-TEL-DA4 -->
-<p>Controller 以 LPA.TS 宣告 Telemetry 支援，以 LPA.DA4S 宣告 Area 4；Host 以 FID 16h Host Behavior Support 的 ETDAS=1 宣告支援。DA4S 與 ETDAS 一起決定 Area 4 是否適用；建立 Area 4 時也須建立有資料的 Area 3。</p><dl class="term-note" aria-label="本段名詞"><div><dt>ETDAS</dt><dd>Extended Telemetry Data Area 4 Supported；Host Behavior Support 中由 host 宣告 Area 4 支援。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.30.1.15</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.30.1.15, 文件頁 476,733-734, PDF 頁 502,759-760</p></details>
+<p>Controller 以 LPA.TS 宣告 Telemetry 支援，以 LPA.DA4S 宣告 Area 4；Host 以 FID 16h Host Behavior Support 的 ETDAS=1 宣告支援。DA4S 與 ETDAS 一起決定 Area 4 是否適用；建立 Area 4 時也須建立有資料的 Area 3。</p><dl class="term-note" aria-label="本段名詞"><div><dt>ETDAS</dt><dd>Extended Telemetry Data Area 4 Supported；Host Behavior Support 中由 host 宣告 Area 4 支援。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.30.1.15</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.30.1.15, 文件頁 476,733-734, PDF 頁 502,759-760</p></details>
 <!-- claim:BASEBTS-TEL-ALIGN -->
 <p>讀取 LID 07h/08h 時，offset 與 transfer length 必須是 512 bytes 的倍數，否則回報 Invalid Field in Command。Controller 回傳被要求的 blocks，但超過適用最後 Data Area 邊界的資料不具規格定義的內容。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8-5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8-5.2.13.1.9, 文件頁 232-237, PDF 頁 258-263</p></details>
 </details>
@@ -186,7 +186,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-221 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-221"><summary>Base Figure 221 · Telemetry Host-Initiated Log Page</summary>
 <!-- claim:BASEBTS-BASE-FIG-221-CLAIM -->
-<p>Figure 221〈Telemetry Host-Initiated Log Page〉：07h 的 Last Blocks 在 bytes 8–19，THS 在 380、THDGN 在 381、TCDA/TCDGN 在 382/383；RID 在 384–511。先讀 header，再按累積 area 大小讀 payload。</p><dl class="term-note" aria-label="本段名詞"><div><dt>TCDGN</dt><dd>Telemetry Controller-Initiated Data Generation Number；8-bit generation，完成更新最後才遞增。</dd></div><div><dt>THDGN</dt><dd>Telemetry Host-Initiated Data Generation Number；用來比對分段讀取是否仍屬同一快照。</dd></div><div><dt>TCDA</dt><dd>Telemetry Controller-Initiated Data Available；2.4 中表示自上次 RAE=0 acknowledgement 後是否有更新。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, 文件頁 234-235, PDF 頁 260-261</p></details>
+<p>Figure 221〈Telemetry Host-Initiated Log Page〉：07h 的 Last Blocks 在 bytes 8–19，THS 在 380、THDGN 在 381、TCDA/TCDGN 在 382/383；RID 在 384–511。先讀 header，再按累積 area 大小讀 payload。</p><dl class="term-note" aria-label="本段名詞"><div><dt>TCDGN</dt><dd>Telemetry Controller-Initiated Data Generation Number；8-bit generation，完成更新最後才遞增。</dd></div><div><dt>THDGN</dt><dd>Telemetry Host-Initiated Data Generation Number；用來比對分段讀取是否仍屬同一快照。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>TCDA</dt><dd>Telemetry Controller-Initiated Data Available；2.4 中表示自上次 RAE=0 acknowledgement 後是否有更新。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, 文件頁 234-235, PDF 頁 260-261</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-223 -->
@@ -222,7 +222,7 @@ nvme_notes: true
 </details>
 </section>
 <section class="lesson" id="module-telemetry-capture"><h2 id="heading-telemetry-capture"><span class="section-number">04</span> 建立快照、分段讀取與確認完成</h2>
-<p>07h 的 create 與後續讀取分開；08h 的 capture 由 controller 決定。Host 對兩者都要驗證 generation，並分清事件 acknowledgement 與刪除 payload。</p>
+<p>07h 的 create 與後續讀取分開；08h 的 capture 由 controller 決定。Host 對兩者都要驗證 generation，並分清事件 acknowledgement 與刪除 payload。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
 <figure><figcaption><strong>讓分段讀取對應同一份資料</strong></figcaption><ol class="flow-steps"><li>讀取 header，記下 generation number。</li><li>依資料範圍分段讀取，沿用同一份快照。</li><li>再次讀取 header，比較 generation number。</li><li>兩次 generation 相符後，才把分段內容視為同一份資料。</li></ol><figcaption>Generation number 用來辨識資料版本；建立新快照與讀取既有快照是不同動作。</figcaption></figure>
 
 <details class="technical-note"><summary>機制與適用條件</summary>
@@ -255,7 +255,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-151 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-151"><summary>Base Figure 151 · Asynchronous Event Request - Completion Queue Entry Dword 0</summary>
 <!-- claim:BASEBTS-BASE-FIG-151-CLAIM -->
-<p>Figure 151〈Asynchronous Event Request - Completion Queue Entry Dword 0〉：CQE DW0[23:16] 是 LID、[15:8] 是 AEI、[2:0] 是 AET；Sanitize 用 LID 81h/AET 110b，Telemetry 使用 Notice 類型。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 151, 文件頁 184-185, PDF 頁 210-211</p></details>
+<p>Figure 151〈Asynchronous Event Request - Completion Queue Entry Dword 0〉：CQE DW0[23:16] 是 LID、[15:8] 是 AEI、[2:0] 是 AET；Sanitize 用 LID 81h/AET 110b，Telemetry 使用 Notice 類型。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 151, 文件頁 184-185, PDF 頁 210-211</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-152 -->
@@ -267,7 +267,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-155 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-155"><summary>Base Figure 155 · Asynchronous Event Information - Notice</summary>
 <!-- claim:BASEBTS-BASE-FIG-155-CLAIM -->
-<p>Figure 155〈Asynchronous Event Information - Notice〉：只取 Telemetry Log Changed Notice：用事件定位 08h，再讀 log；事件不包含診斷 payload。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 155, 文件頁 186-189, PDF 頁 212-215</p></details>
+<p>Figure 155〈Asynchronous Event Information - Notice〉：只取 Telemetry Log Changed Notice：用事件找出 08h，再讀 log；事件不包含診斷 payload。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 155, 文件頁 186-189, PDF 頁 212-215</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-204 -->
@@ -306,7 +306,7 @@ nvme_notes: true
 <!-- claim:BASEBTS-SAN-METHOD -->
 <p>Block Erase 使用媒體特有 erase；Crypto Erase 改變所有相關 media encryption keys，未加密資料另以適合方法處理；Overwrite 寫入 pattern。PREQ/SPRRS 控制 purge 要求與回報；Crypto Erase 遺留舊 key 或應處理的未加密資料時須失敗。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PREQ</dt><dd>Purge Request；與 SPRRS 一起判定 purge 要求與回報；兩種 Sanitize 命令的 bit 位置不同。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.2-8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.2-8.1.27.3, 文件頁 714-717, PDF 頁 740-743</p></details>
 <!-- claim:BASEBTS-NVM-VALUES -->
-<p>成功後 audit 讀到的值：Block Erase 為 vendor-specific，Crypto Erase 為 indeterminate，Overwrite 依 Base 的 pattern 機制。若已 deallocate，讀取另依 Deallocated or Unwritten Logical Blocks 規則；未 deallocate 且啟用 PI checking 的讀取可能發生 PI check error。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.12</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, 文件頁 174, PDF 頁 174</p></details>
+<p>成功後 audit 讀到的值：Block Erase 為 vendor-specific，Crypto Erase 為 indeterminate，Overwrite 依 Base 的 pattern 機制。若已 deallocate，讀取另依 Deallocated or Unwritten Logical Blocks 規則；未 deallocate 且啟用 PI checking 的讀取可能發生 PI check error。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.12</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, 文件頁 174, PDF 頁 174</p></details>
 </details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Boot/RPMB</td><td>不受 sanitize 影響</td><td>另由自身管理機制控制</td></tr><tr><td>Logs/features</td><td>必要時修改 user data</td><td>不能只檢查 namespace media</td></tr><tr><td>All namespace sanitizes</td><td>只完成各 target 的工作</td><td>不能因此宣告 subsystem GDE</td></tr><tr><td>Crypto Erase</td><td>改 key 並處理未加密資料</td><td>舊 key 副本也是重要條件</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>即使所有 namespaces 都已 sanitize，CMB 等 subsystem 層級資料仍不能由這個事實證明已完成 subsystem sanitization。相反地，成功 subsystem sanitize 也不會替 Boot Partition 更新或清除開機映像。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div></dl></aside>
@@ -332,13 +332,13 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-771 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-771"><summary>Base Figure 771 · Sanitize Operations - Overwrite Mechanism</summary>
 <!-- claim:BASEBTS-BASE-FIG-771-CLAIM -->
-<p>Figure 771〈Sanitize Operations - Overwrite Mechanism〉：用 total pass 奇偶決定第一輪是否反相，再逐輪反相；PI bytes 也有 FFh/00h 規則。不能只看最後的 OVRPAT。</p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.3, Figure 771, 文件頁 717, PDF 頁 743</p></details>
+<p>Figure 771〈Sanitize Operations - Overwrite Mechanism〉：用 total pass 奇偶決定第一輪是否反相，再逐輪反相；PI bytes 也有 FFh/00h 規則。不能只看最後的 OVRPAT。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.3, Figure 771, 文件頁 717, PDF 頁 743</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-201 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-201"><summary>Base Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</summary>
 <!-- claim:BASEBTS-BASE-FIG-201-CLAIM -->
-<p>Figure 201〈Completion Queue Entry Dword 0 when Select is set to 11b〉：SEL=011b 回傳的 bits 2/1/0 分別是 changeable/namespace-specific/saveable；不是 BP0WPS 或 NODRM 的當前值。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div><div><dt>NODRM</dt><dd>No-Deallocate Response Mode；FID 17h bit 0，選擇受抑制 NDAS 的 error 或 warning 回應。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details>
+<p>Figure 201〈Completion Queue Entry Dword 0 when Select is set to 11b〉：SEL=011b 回傳的 bits 2/1/0 分別是 changeable/namespace-specific/saveable；不是 BP0WPS 或 NODRM 的當前值。</p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div><div><dt>NODRM</dt><dd>No-Deallocate Response Mode；FID 17h bit 0，選擇受抑制 NDAS 的 error 或 warning 回應。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div></dl>
 </details>
 </details>
@@ -357,7 +357,7 @@ nvme_notes: true
 <!-- claim:BASEBTS-SAN-PREFLIGHT -->
 <p>PMR enabled、namespace write protection、controller suspended 或 pending firmware activation/reset 都可能阻止 subsystem sanitize。若啟動命令不是 Successful Completion，就不開始該 operation、不改 target 的 Sanitize Status，也不改 user data；已能預知的 operation 失敗則宜由後續 log 回報。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26; 8.1.27.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.1, 文件頁 449-451,712-714, PDF 頁 475-477,738-740</p></details>
 <!-- claim:BASEBTS-SAN-OVERWRITE -->
-<p>OWPASS=0h 表示 16 passes。OIPBP=0 時 user data 使用 OVRPAT、PI bytes 為 FFh。OIPBP=1 且總次數為偶數時第一輪使用反相 pattern、PI=00h；奇數時第一輪使用原 pattern、PI=FFh，其後逐輪反相。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.26; 8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.3, 文件頁 451,717, PDF 頁 477,743</p></details>
+<p>OWPASS=0h 表示 16 passes。OIPBP=0 時 user data 使用 OVRPAT、PI bytes 為 FFh。OIPBP=1 且總次數為偶數時第一輪使用反相 pattern、PI=00h；奇數時第一輪使用原 pattern、PI=FFh，其後逐輪反相。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26; 8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.3, 文件頁 451,717, PDF 頁 477,743</p></details>
 </details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>NDAS=1, NDI=0</td><td>不得因成功 sanitize deallocate</td><td>其他合法條件仍需符合</td></tr><tr><td>NDAS=1, NDI=1, NODRM=0</td><td>命令拒絕</td><td>Invalid Field in Command</td></tr><tr><td>NDAS=1, NDI=1, NODRM=1</td><td>允許處理</td><td>成功可回 SOS=100b</td></tr><tr><td>EMVS=1</td><td>Subsystem 要 VERS=1</td><td>Block/Crypto + NDAS=0</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NODRM</dt><dd>No-Deallocate Response Mode；FID 17h bit 0，選擇受抑制 NDAS 的 error 或 warning 回應。</dd></div><div><dt>EMVS</dt><dd>Enter Media Verification State；成功 processing 後要求進入驗證，受方法與 capability 限制。</dd></div><div><dt>NDAS</dt><dd>No-Deallocate After Sanitize；命令要求，需與 SANICAP.NDI 及 NODRM 一起解讀。</dd></div><div><dt>NDI</dt><dd>No-Deallocate Inhibited；宣告 controller 是否抑制 NDAS 的要求。</dd></div><div><dt>SOS</dt><dd>Sanitize Operation Status；SSTAT bits 2:0，與目前 SANS state 分開判讀。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>SANACT=010b、AUSE=0、EMVS=1、NDAS=0、PREQ=0 的 CDW10 是 0402h。只有支援 VERS/Block Erase 且其他前置條件成立時才適用。另一例：OWPASS=0h 是 16 次，不是『跳過 overwrite』。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SANACT</dt><dd>Sanitize Action；決定實際方法、退出 Failure 或退出 Media Verification。</dd></div><div><dt>AUSE</dt><dd>Allow Unrestricted Sanitize Exit；選擇失敗時是否允許不經成功重試就退出 Failure。</dd></div><div><dt>PREQ</dt><dd>Purge Request；與 SPRRS 一起判定 purge 要求與回報；兩種 Sanitize 命令的 bit 位置不同。</dd></div></dl></aside>
@@ -365,7 +365,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-451 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-451"><summary>Base Figure 451 · Sanitize - Command Dword 10</summary>
 <!-- claim:BASEBTS-BASE-FIG-451-CLAIM -->
-<p>Figure 451〈Sanitize - Command Dword 10〉：由 SANACT 決定操作，再依方法解讀其餘 bits；OWPASS=0 是 16，EMVS 不能搭配 Overwrite/NDAS=1。PREQ bit 11 與 namespace 命令不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450-451, PDF 頁 476-477</p></details>
+<p>Figure 451〈Sanitize - Command Dword 10〉：由 SANACT 決定操作，再依方法解讀其餘 bits；OWPASS=0 是 16，EMVS 不能搭配 Overwrite/NDAS=1。PREQ bit 11 與 namespace 命令不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450-451, PDF 頁 476-477</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-452 -->
@@ -476,7 +476,7 @@ nvme_notes: true
 </details>
 </section>
 <section class="lesson" id="module-sanitize-read"><h2 id="heading-sanitize-read"><span class="section-number">08</span> 操作限制與驗證讀取</h2>
-<p>把 command allowlist 與 NVM Read 特例分開判斷。Host 先辨識 target/state，再確認 PI checking 與 allocation，不能把平常 read 的處理完全套入驗證狀態。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<p>把 command allowlist 與 NVM Read 特例分開判斷。Host 先辨識 target/state，再確認 PI checking 與 allocation，不能把平常 read 的處理完全套入驗證狀態。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl>
 <details class="technical-note"><summary>機制與適用條件</summary>
 <!-- claim:BASEBTS-SAN-RESTRICT -->
 <p>Subsystem sanitize 進行中以 Figure 144 判斷允許的 Admin 命令及 log pages；Boot Partition log 在清單內，Telemetry 07h/08h 不在。未被允許的操作受 Sanitize In Progress 限制；namespace sanitize 另依 Figures 145/146 與 target NSID 判斷。Media Verification 的 NVM Read 有特定例外。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.5; 5.1.1-5.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.5; 5.1.1-5.1.2, 文件頁 178-181,730-732, PDF 頁 204-207,756-758</p></details>
@@ -493,7 +493,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-NVMCS-FIG-011 -->
 <details class="field-note" id="figure-BASEBTS-NVMCS-FIG-011"><summary>NVM Figure 11 · Protection Information Field Definition</summary>
 <!-- claim:BASEBTS-NVMCS-FIG-011-CLAIM -->
-<p>Figure 11〈Protection Information Field Definition〉：PRACT 處理 PI 傳遞，PRCHK 的三個 bits 分別要求 Guard/Application/Reference Tag checking；Media Verification 明確要求 PRCHK=000b。</p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.5, Figure 11, 文件頁 21-22, PDF 頁 21-22</p></details>
+<p>Figure 11〈Protection Information Field Definition〉：PRACT 處理 PI 傳遞，PRCHK 的三個 bits 分別要求 Guard/Application/Reference Tag checking；Media Verification 明確要求 PRCHK=000b。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div><div><dt>Guard</dt><dd>PI 的檢查值欄位；所選格式決定檢查值的寬度與計算方法。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.5, Figure 11, 文件頁 21-22, PDF 頁 21-22</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-NVMCS-FIG-012 -->
@@ -532,7 +532,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-188 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-188"><summary>Base Figure 188 · Firmware Commit - Completion Queue Entry Dword 0</summary>
 <!-- claim:BASEBTS-BASE-FIG-188-CLAIM -->
-<p>Figure 188〈Firmware Commit - Completion Queue Entry Dword 0〉：MUD 是重疊更新偵測的 completion 證據；仍需遵守單一 image sequence 的 controller/endpoint 邊界。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div><div><dt>MUD</dt><dd>Multiple Update Detected，completion 中指出 controller 偵測到 overlapping firmware update sequence 的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 188, 文件頁 204, PDF 頁 230</p></details>
+<p>Figure 188〈Firmware Commit - Completion Queue Entry Dword 0〉：MUD 是重疊更新偵測的 completion 證據；仍需遵守單一 image sequence 的 controller/endpoint 邊界。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div><div><dt>MUD</dt><dd>Multiple Update Detected，completion 中指出 controller 偵測到 overlapping firmware update sequence 的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 188, 文件頁 204, PDF 頁 230</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-189 -->
@@ -544,7 +544,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-190 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-190"><summary>Base Figure 190 · Firmware Image Download - Data Pointer</summary>
 <!-- claim:BASEBTS-BASE-FIG-190-CLAIM -->
-<p>Figure 190〈Firmware Image Download - Data Pointer〉：Download 的 DPTR 指向此次 image portion 的 host buffer；資料指標不代表目標 Boot Partition 位址。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 190, 文件頁 205, PDF 頁 231</p></details>
+<p>Figure 190〈Firmware Image Download - Data Pointer〉：Download 的 DPTR 指向此次 image portion 的 host buffer；資料指標不代表目標 Boot Partition 位址。</p><dl class="term-note" aria-label="本段名詞"><div><dt>portion</dt><dd>傳輸分段；一次 firmware download 所送的一段連續資料。</dd></div><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 190, 文件頁 205, PDF 頁 231</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-191 -->
@@ -604,7 +604,7 @@ nvme_notes: true
 <!-- figure-table:BASEBTS-BASE-FIG-208 -->
 <details class="field-note" id="figure-BASEBTS-BASE-FIG-208"><summary>Base Figure 208 · Get Log Page - Command Dword 14</summary>
 <!-- claim:BASEBTS-BASE-FIG-208-CLAIM -->
-<p>Figure 208〈Get Log Page - Command Dword 14〉：CDW14 的 CSI/OT/UUID Index 是共用解碼上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>Command Set Identifier，選擇 command 或 log page 所套用的 I/O Command Set context。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details>
+<p>Figure 208〈Get Log Page - Command Dword 14〉：CDW14 的 CSI/OT/UUID Index 是共用依欄位換算上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details>
 
 </details>
 <!-- figure-table:BASEBTS-BASE-FIG-209 -->

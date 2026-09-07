@@ -35,7 +35,7 @@ TERM_LIBRARY: dict[str, dict[str, str]] = {
     "VF": b("Virtual Function，由 SR-IOV 建立、資源較受限的 PCIe 虛擬功能。", "Virtual Function, a resource-constrained virtual PCIe function created by SR-IOV."),
     "Dword": b("Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。", "Double word, four bytes or 32 bits; NVMe command fields are commonly identified by CDW number."),
     "CDW": b("Command Dword，SQE 中以 32-bit 為單位編號的命令欄位。", "Command Dword, a 32-bit numbered command field in an SQE."),
-    "0's-based": b("0's-based encoding，以 0 表示實際數量 1；解碼公式通常是欄位值加 1。", "Zero-based encoding, where field value zero represents an actual quantity of one; decoding generally adds one."),
+    "0's-based": b("0's-based encoding，以 0 表示實際數量 1；依欄位換算公式通常是欄位值加 1。", "Zero-based encoding, where field value zero represents an actual quantity of one; decoding generally adds one."),
     "controller": b("controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。", "Controller, the entity that implements the NVMe interface, fetches commands, and reports completions."),
     "I/O controller": b("I/O controller，可執行使用者資料 I/O command 的 controller 類型。", "I/O controller, a controller type capable of executing user-data I/O commands."),
     "Administrative controller": b("Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。", "Administrative controller, a management-oriented controller type that does not execute user-data I/O commands."),
@@ -85,7 +85,7 @@ TERM_LIBRARY: dict[str, dict[str, str]] = {
     "UTF-8": b("Unicode Transformation Format - 8-bit，以一到四個 bytes 編碼 Unicode code point 的文字格式。", "Unicode Transformation Format - 8-bit, a text encoding that represents a Unicode code point with one to four bytes."),
     "PCIe": b("PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。", "PCI Express, the transport and device interconnect used by an NVMe memory-based controller."),
     "MMIO": b("Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。", "Memory-Mapped I/O, access to device registers through CPU memory operations."),
-    "BAR": b("Base Address Register，PCI configuration space 中用來定位裝置 memory space 的 register。", "Base Address Register, a PCI-configuration-space register locating a device memory space."),
+    "BAR": b("Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。", "Base Address Register, a PCI-configuration-space register locating a device memory space."),
     "DSTRD": b("Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。", "Doorbell Stride, the CAP field determining spacing between adjacent doorbell registers."),
     "SQyTDBL": b("Submission Queue y Tail Doorbell，host 用來公布 SQ y 新 tail 的 MMIO register。", "Submission Queue y Tail Doorbell, the MMIO register through which the host publishes the new tail of SQ y."),
     "CQyHDBL": b("Completion Queue y Head Doorbell，host 用來公布 CQ y 已消費 head 的 MMIO register。", "Completion Queue y Head Doorbell, the MMIO register through which the host publishes the consumed head of CQ y."),
@@ -376,7 +376,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
         {
             "id": "family",
             "title": b("先找對規格：不要把文件關係看成 protocol stack", "Find the owning specification: do not read document applicability as a protocol stack"),
-            "lead": b("遇到一個 command、register 或資料格式時，第一個問題不是『它在哪一頁』，而是『哪一份規格擁有這個定義』。Base 提供通用協定，Transport 補上 PCIe 綁定，I/O Command Set 再定義 namespace 資料操作。Figure 1 的框線代表適用關係，不代表封包一定逐層穿過這些方塊。", "When a command, register, or data format appears, the first question is not merely where it is located, but which specification owns the definition. Base supplies the common protocol, the Transport adds the PCIe binding, and an I/O Command Set defines namespace data operations. The boxes in Figure 1 show applicability, not mandatory packet traversal through a stack."),
+            "lead": b("遇到一個 command、register 或資料格式時，第一個問題不是『它在哪一頁』，而是『哪一份規格擁有這個定義』。Base 提供通用協定，Transport 補上 PCIe 綁定，I/O Command Set 再定義 namespace 資料操作。Figure 1 的框線代表適用關係，不代表封包一定逐層穿過這些方塊。", "When a command, register, or data format appears, the first question is not merely where it is found, but which specification owns the definition. Base supplies the common protocol, the Transport adds the PCIe binding, and an I/O Command Set defines namespace data operations. The boxes in Figure 1 show applicability, not mandatory packet traversal through a stack."),
             "nodes": b(["需求：我要做什麼？", "Base：共通機制", "PCIe Transport：記憶體與 register 綁定", "I/O Command Set：資料操作語意"], ["Need: what operation?", "Base: common mechanism", "PCIe Transport: memory and register binding", "I/O Command Set: data-operation semantics"]),
             "rows": b([
                 ["Base", "共通 command、queue、status 與資料結構", "不要假設它定義所有 PCIe register 細節"],
@@ -394,7 +394,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
         },
         {
             "id": "numbers",
-            "title": b("先解碼數值，再解讀欄位", "Decode the number before interpreting the field"),
+            "title": b("先依欄位換算數值，再解讀欄位", "Read the fields the number before interpreting the field"),
             "lead": b("NVMe 的數字同時帶有進位、單位、寬度、endian 與是否 0's-based 等資訊。欄位值看似相同，只要其中一項不同，實際意義就可能完全不同。Figure 2 與 Figure 3 是後續所有 register、SQE、CQE 與 log page 計算的共同底座。", "An NVMe number carries radix, unit, width, endian convention, and sometimes zero-based encoding. Equal-looking field values can represent different quantities when any one of these attributes differs. Figures 2 and 3 are the common foundation for later register, SQE, CQE, and log-page calculations."),
             "nodes": b(["原始 bits", "確認 bit/byte 範圍", "套用 radix 與 endian", "套用 unit／0's-based", "得到工程值"], ["Raw bits", "Confirm bit/byte range", "Apply radix and endian", "Apply unit/zero-based rule", "Obtain engineering value"]),
             "rows": b([
@@ -409,7 +409,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["NUMD=0", "One actual dword", "Add one only when the field is explicitly zero-based"],
             ]),
             "example": b("說明性範例：一個 512-byte transfer 含 512 ÷ 4 = 128 dwords。若 NUMD 是 0's-based，編碼值為 128 - 1 = 127 = 007Fh。若錯把 007Fh 當成 byte count，buffer 會短少；若忘記減 1，controller 會被要求傳輸 129 dwords。", "Informative example: a 512-byte transfer contains 512 / 4 = 128 dwords. If NUMD is zero-based, the encoded value is 128 - 1 = 127 = 007Fh. Treating 007Fh as a byte count under-allocates the buffer; forgetting the subtraction requests 129 dwords."),
-            "pitfall": b("Debug 時把五項資訊寫在同一行：raw value、bit range、radix、unit、encoding rule。只印出十進位結果而沒有原始 hex，通常不足以定位 off-by-one、byte swap 或單位錯誤。", "During debugging, record five items together: raw value, bit range, radix, unit, and encoding rule. A decimal result without the original hexadecimal value is usually insufficient to isolate off-by-one, byte-swap, or unit defects."),
+            "pitfall": b("Debug 時把五項資訊寫在同一行：raw value、bit range、radix、unit、encoding rule。只印出十進位結果而沒有原始 hex，通常不足以找出 off-by-one、byte swap 或單位錯誤。", "During debugging, record five items together: raw value, bit range, radix, unit, and encoding rule. A decimal result without the original hexadecimal value is usually insufficient to isolate off-by-one, byte-swap, or unit defects."),
             "sources": ["BASE12-NUMBERS", "BASE12-DWORD"],
             "figures": [2, 3],
         },
@@ -465,7 +465,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
             ], [
                 ["I/O controller", "Can execute user-data I/O", "Optional capabilities still require individual checks"],
                 ["Administrative controller", "Management purpose without data I/O commands", "An Admin Queue does not make it an I/O controller"],
-                ["Support marker", "Expresses support strength for a row and context", "Never decode it without its column and footnote"],
+                ["Support marker", "Expresses support strength for a row and context", "Never interpret the fields it without its column and footnote"],
             ]),
             "example": b("說明性範例：偵測到一個 Administrative controller 時，軟體仍會建立 Admin SQ/CQ 並執行管理 command，但不應把 namespace data path 掛到它。若只用『存在 Admin Queue』判斷 controller type，I/O 與 Administrative controller 會被錯誤歸成同類。", "Informative example: after detecting an Administrative controller, software still creates the Admin SQ/CQ and performs management commands, but it must not attach a namespace data path to that controller. Classifying by the mere presence of an Admin Queue incorrectly merges I/O and Administrative controllers."),
             "pitfall": b("能力矩陣解析器要保留 row、column、footnote 與 controller type 四個維度。把 O、M 或條件註記抽成全域 capability，會在另一種 controller 或 command-set context 中得到錯誤結論。", "A capability-matrix parser must preserve row, column, footnote, and controller type. Promoting an O, M, or conditional note into a global capability creates incorrect results in another controller or command-set context."),
@@ -569,20 +569,20 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["CDW10-15", "Command-specific payload", "Never borrow semantics from another command"],
             ]),
             "example": b("說明性範例：同一個 CID 可以在不同 SQ 使用，但同一 SQ 內 outstanding command 不可用相同 CID 造成識別衝突。driver 建 SQE 時以 (SQID,CID) 建 tracking key，填完全部欄位並完成必要 memory ordering 後才更新 SQ tail。", "Informative example: the same CID can be used on different SQs, but outstanding commands within one SQ must not create an identity collision. The driver tracks commands by (SQID,CID), completes every SQE field and required memory ordering, and only then updates the SQ tail."),
-            "pitfall": b("保留 raw 64 bytes 的 SQE dump，並同時印出 decode 後欄位。只保存高階 command object，無法查出 bit shift、endianness、未清 reserved bits 或錯誤 PSDT。", "Retain the raw 64-byte SQE dump together with decoded fields. A high-level command object alone cannot expose bit shifts, endian defects, uncleared reserved bits, or an incorrect PSDT."),
+            "pitfall": b("保留 raw 64 bytes 的 SQE dump，並同時印出 interpret the fields 後欄位。只保存高階 command object，無法查出 bit shift、endianness、未清 reserved bits 或錯誤 PSDT。", "Retain the raw 64-byte SQE dump together with interpret the fields fields. A high-level command object alone cannot expose bit shifts, endian defects, uncleared reserved bits, or an incorrect PSDT."),
             "sources": ["BASE4-SQE", "BASE4-CID", "BASE4-PSDT"],
             "figures": [92, 93, 94],
         },
         {
             "id": "cqe-status",
-            "title": b("CQE 先解 ownership，再解 identity，最後解 status", "Decode CQE ownership first, identity second, and status last"),
+            "title": b("CQE 先解 ownership，再解 identity，最後解 status", "Read the fields CQE ownership first, identity second, and status last"),
             "lead": b("host 先用 Phase Tag 判斷 CQ slot 是否是新 completion；確定 ownership 後再用 SQID/CID 找回 command，最後以 SCT 選 status 類別並解 SC、DNR、CRD。Figures 97-109 必須按這個順序讀，否則 stale CQE 或錯誤類別會被當成真實 command failure。", "The host first uses the Phase Tag to determine whether a CQ slot contains a new completion. After ownership is established, SQID/CID recovers the command; SCT then selects the status category before SC, DNR, and CRD are interpreted. Figures 97-109 must be read in this order so a stale CQE or wrong category is not mistaken for a command failure."),
-            "nodes": b(["檢查 Phase Tag", "讀 SQHD/SQID/CID", "用 SQID/CID 找 command", "解 SCT", "解 SC/DNR/CRD", "推進 CQ head"], ["Check Phase Tag", "Read SQHD/SQID/CID", "Recover command by SQID/CID", "Decode SCT", "Decode SC/DNR/CRD", "Advance CQ head"]),
+            "nodes": b(["檢查 Phase Tag", "讀 SQHD/SQID/CID", "用 SQID/CID 找 command", "解 SCT", "解 SC/DNR/CRD", "推進 CQ head"], ["Check Phase Tag", "Read SQHD/SQID/CID", "Recover command by SQID/CID", "Read the fields SCT", "Read the fields SC/DNR/CRD", "Advance CQ head"]),
             "rows": b([
                 ["SCT", "status 大類", "一定先解"], ["SC", "類別內具體結果", "不能脫離 SCT"],
                 ["DNR", "同 command 重試預期", "不是永久硬體故障的同義詞"], ["CRD", "建議 retry delay selector", "只有適用 status 才使用"],
             ], [
-                ["SCT", "Status category", "Always decode first"], ["SC", "Specific result within the category", "Never interpret without SCT"],
+                ["SCT", "Status category", "Always interpret the fields first"], ["SC", "Specific result within the category", "Never interpret without SCT"],
                 ["DNR", "Expectation for retrying the same command", "Not synonymous with permanent hardware failure"], ["CRD", "Recommended retry-delay selector", "Use only for an applicable status"],
             ]),
             "example": b("說明性範例：SC 數值 02h 在不同 SCT 下可能屬於不同 status 表。正確 log 應保存完整 status field，再輸出 P、SCT、SC、DNR、CRD 與原始 16-bit value。只印『SC=2』不足以決定 recovery。", "Informative example: SC value 02h can belong to different status tables under different SCT values. A correct log retains the complete status field and reports P, SCT, SC, DNR, CRD, and the raw 16-bit value. 'SC=2' alone is insufficient for recovery."),
@@ -702,7 +702,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["CQ-slot release", "Host completely consumed the CQE", "Then write the CQ-head doorbell"],
             ]),
             "example": b("說明性範例：host 先寫 doorbell、後補 SQE 的最後一個 dword，controller 可能 fetch 到半成品。另一個方向，host 在讀完 CQE 前先更新 CQ head，controller 可能重用該 CQ slot。兩者都是 ownership 順序錯誤，不是 command opcode 問題。", "Informative example: if the host rings the doorbell before writing the final SQE dword, the controller may fetch a partial command. In the other direction, updating CQ head before fully reading the CQE can let the controller reuse that CQ slot. Both are ownership-ordering failures, not opcode failures."),
-            "pitfall": b("時間軸同時記錄 CPU core、SQ tail、doorbell MMIO、SQHD、CQ phase、interrupt vector 與 CQ head。分散在不同 log 的事件需用 CID/SQID 與 timestamp 對齊，才能定位 lost interrupt、stale phase 或 memory-ordering 問題。", "A timeline records CPU core, SQ tail, doorbell MMIO, SQHD, CQ phase, interrupt vector, and CQ head. Events from separate logs are aligned by CID/SQID and timestamp to isolate lost interrupts, stale phase, or memory-ordering defects."),
+            "pitfall": b("時間軸同時記錄 CPU core、SQ tail、doorbell MMIO、SQHD、CQ phase、interrupt vector 與 CQ head。分散在不同 log 的事件需用 CID/SQID 與 timestamp 對齊，才能找出 lost interrupt、stale phase 或 memory-ordering 問題。", "A timeline records CPU core, SQ tail, doorbell MMIO, SQHD, CQ phase, interrupt vector, and CQ head. Events from separate logs are aligned by CID/SQID and timestamp to isolate lost interrupts, stale phase, or memory-ordering defects."),
             "sources": ["PCIE14-COMMAND", "PCIE14-QUEUE"],
             "figures": [7, 8],
         },
@@ -730,16 +730,16 @@ REPORT_MODULES: dict[str, list[dict]] = {
         {
             "id": "config-error",
             "title": b("Configuration space 是 capability map；AER 是 transport error map", "Configuration space is a capability map; AER is a transport-error map"),
-            "lead": b("Figures 10-67 從 Type 0 header 走到 Power Management、MSI/MSI-X、PCIe capability 與 AER。閱讀順序應先找 capability pointer／extended capability，再以該 capability base 加 offset；AER status/mask/severity/header log 應視為一組，不可只截取單一 error bit。", "Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Locate the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits."),
-            "nodes": b(["讀 Type 0 header", "定位 capability chain", "解析 PM/MSI/MSI-X/PXCAP", "定位 AERCAP", "讀 status+mask+severity", "必要時保存 header/TLP prefix"], ["Read Type 0 header", "Locate capability chain", "Parse PM/MSI/MSI-X/PXCAP", "Locate AERCAP", "Read status+mask+severity", "Preserve header/TLP prefix if needed"]),
+            "lead": b("Figures 10-67 從 Type 0 header 走到 Power Management、MSI/MSI-X、PCIe capability 與 AER。閱讀順序應先找 capability pointer／extended capability，再以該 capability base 加 offset；AER status/mask/severity/header log 應視為一組，不可只截取單一 error bit。", "Figures 10-67 traverse the Type 0 header, Power Management, MSI/MSI-X, PCIe capability, and AER. Find the capability or extended-capability base before applying offsets. AER status, mask, severity, and header log form one diagnostic set rather than isolated error bits."),
+            "nodes": b(["讀 Type 0 header", "找出 capability chain", "解析 PM/MSI/MSI-X/PXCAP", "找出 AERCAP", "讀 status+mask+severity", "必要時保存 header/TLP prefix"], ["Read Type 0 header", "Find capability chain", "Parse PM/MSI/MSI-X/PXCAP", "Find AERCAP", "Read status+mask+severity", "Preserve header/TLP prefix if needed"]),
             "rows": b([
                 ["NVMe CQE status", "command 執行結果", "由 NVMe command context 解"],
                 ["PCIe Device Status", "PCIe Function 狀態摘要", "位於 PCIe capability"],
                 ["AER", "correctable/uncorrectable transport errors", "status、mask、severity、header 一起看"],
                 ["power state", "slot limit 與 device power 控制", "不得選超過 slot power limit 的 NVMe state"],
             ], [
-                ["NVMe CQE status", "Command execution result", "Decode in NVMe command context"],
-                ["PCIe Device Status", "PCIe Function status summary", "Located in PCIe capability"],
+                ["NVMe CQE status", "Command execution result", "Read the fields in NVMe command context"],
+                ["PCIe Device Status", "PCIe Function status summary", "Found in PCIe capability"],
                 ["AER", "Correctable/uncorrectable transport errors", "Read status, mask, severity, and header together"],
                 ["Power state", "Slot limit and device power control", "Never choose an NVMe state above the slot power limit"],
             ]),
@@ -787,7 +787,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["MTFA / MPTFAWR", "Timing bounds for activation interruption", "Do not hard-code timeout"],
                 ["MDS / DID", "Domain that shares firmware slots", "A PCI Function is not the complete scope"],
             ]),
-            "example": b("若 FWUG 解碼為 4 KiB，12 KiB image 可切成三個 4 KiB portions；最後一筆不是任意長度的尾包。計畫還要先確認 slot 2 合法且不是 read-only，並依 activation path 選擇 timeout。", "If FWUG decodes to 4 KiB, a 12 KiB image can be split into three 4 KiB portions; the final transfer is not an arbitrary short tail. The plan must also establish that slot 2 is legal and writable and select a timeout for the activation path."),
+            "example": b("若 FWUG 依欄位換算為 4 KiB，12 KiB image 可切成三個 4 KiB portions；最後一筆不是任意長度的尾包。計畫還要先確認 slot 2 合法且不是 read-only，並依 activation path 選擇 timeout。", "If FWUG interpret the fieldss to 4 KiB, a 12 KiB image can be split into three 4 KiB portions; the final transfer is not an arbitrary short tail. The plan must also establish that slot 2 is legal and writable and select a timeout for the activation path."),
             "pitfall": b("只保存 command trace、不保存 capability snapshot，會讓相同 firmware image 在不同 controller revision 上出現不同結果時無法重現。", "A command trace without the capability snapshot cannot explain why the same firmware image behaves differently on another controller revision."),
             "sources": ["BASEFWLOG-CAP-FRMW", "BASEFWLOG-CAP-FWUG", "BASEFWLOG-CAP-MTFA", "BASEFWLOG-CAP-MPTFAWR", "BASEFWLOG-CAP-MDS-ULIST"],
             "figures": [337, 338],
@@ -817,7 +817,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
             "id": "fw-commit-state",
             "title": b("Commit 把 downloaded portions 轉成 slot state 與 activation policy", "Commit converts downloaded portions into slot state and activation policy"),
             "lead": b("Commit Action（CA）不是成功／失敗旗標；它同時決定 replace、activate 與 reset boundary。Firmware Slot（FS）選擇目標 slot，CQE status 決定下一步是驗證、執行特定 reset、等待，還是停止。", "Commit Action (CA) is not a success flag; it selects replacement, activation, and reset boundary. Firmware Slot (FS) selects the target slot, while CQE status determines whether software verifies, performs a specific reset, waits, or stops."),
-            "nodes": b(["downloaded portions 完整", "填 CA／FS", "controller 驗證 image", "放入 slot／排定或立即 activation", "解完整 SCT／SC／MUD", "依 status 選 reset／verify／stop"], ["Downloaded portions complete", "Encode CA / FS", "Controller validates image", "Place in slot / schedule or activate", "Decode complete SCT / SC / MUD", "Choose reset / verify / stop"]),
+            "nodes": b(["downloaded portions 完整", "填 CA／FS", "controller 驗證 image", "放入 slot／排定或立即 activation", "解完整 SCT／SC／MUD", "依 status 選 reset／verify／stop"], ["Downloaded portions complete", "Encode CA / FS", "Controller validates image", "Place in slot / schedule or activate", "Read the fields complete SCT / SC / MUD", "Choose reset / verify / stop"]),
             "rows": b([
                 ["CA", "replace 與 activation 行為", "不可只記十進位值"],
                 ["FS", "目標 firmware slot", "0 可能代表 controller 選 slot，依定義判讀"],
@@ -838,7 +838,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
             "id": "fw-lid03-proof",
             "title": b("LID 03h 驗證不是只讀一個版本字串", "LID 03h verification is more than reading one revision string"),
             "lead": b("Get Log Page 先用 common command 欄位建立 512-byte transfer，再以 LID=03h 選 Firmware Slot Information。AFI 同時拆成 CAFS 與 NAFS，FRS1-FRS7 表示各 slots 的 revision；最後還要用 Identify.FR 與 domain scope 交叉確認。", "Get Log Page first builds a 512-byte transfer from common command fields and selects Firmware Slot Information with LID=03h. AFI separates CAFS from NAFS, FRS1-FRS7 report slot revisions, and Identify.FR plus domain scope provide the final cross-check."),
-            "nodes": b(["建立 Get Log Page SQE", "LID=03h／NUMD=127", "讀滿 512-byte buffer", "AFI → CAFS／NAFS", "FRS1-FRS7 逐 slot 解碼", "與 Identify.FR／預期 domain 比對"], ["Build Get Log Page SQE", "LID=03h / NUMD=127", "Read the 512-byte buffer", "AFI → CAFS / NAFS", "Decode FRS1-FRS7 per slot", "Compare Identify.FR and expected domain"]),
+            "nodes": b(["建立 Get Log Page SQE", "LID=03h／NUMD=127", "讀滿 512-byte buffer", "AFI → CAFS／NAFS", "FRS1-FRS7 逐 slot 依欄位換算", "與 Identify.FR／預期 domain 比對"], ["Build Get Log Page SQE", "LID=03h / NUMD=127", "Read the 512-byte buffer", "AFI → CAFS / NAFS", "Read the fields FRS1-FRS7 per slot", "Compare Identify.FR and expected domain"]),
             "rows": b([
                 ["CAFS", "目前執行中的 slot", "它不是 next-reset intent"],
                 ["NAFS", "下一個 reset 後預定 active slot", "0 表示未排定"],
@@ -850,7 +850,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["FRSx", "Eight-byte revision for slot x", "All-zero bytes are not an ASCII string"],
                 ["Identify.FR", "Independent observation of current revision", "Cross-check against the FRSx selected by CAFS"],
             ]),
-            "example": b("AFI=22h 時，CAFS=2、NAFS=2；表示 slot 2 現在 active，且 reset 後仍預定 slot 2。若 CAFS=1、NAFS=2，代表 activation 尚未跨過 reset boundary。此解碼是說明性範例，仍須以 Figure 215 的 bit 定義核對。", "With AFI=22h, CAFS=2 and NAFS=2: slot 2 is current and remains scheduled after reset. CAFS=1 with NAFS=2 means activation has not crossed the reset boundary. This is an informative decode and remains subject to the bit definitions in Figure 215."),
+            "example": b("AFI=22h 時，CAFS=2、NAFS=2；表示 slot 2 現在 active，且 reset 後仍預定 slot 2。若 CAFS=1、NAFS=2，代表 activation 尚未跨過 reset boundary。此依欄位換算是說明性範例，仍須以 Figure 215 的 bit 定義核對。", "With AFI=22h, CAFS=2 and NAFS=2: slot 2 is current and remains scheduled after reset. CAFS=1 with NAFS=2 means activation has not crossed the reset boundary. This is an informative interpret the fields and remains subject to the bit definitions in Figure 215."),
             "pitfall": b("只比對 FRS2 字串而不讀 CAFS，無法證明 slot 2 正在執行；只讀 CAFS 而不比對 Identify.FR，也無法排除 parser offset 或 stale buffer 問題。", "Comparing FRS2 without CAFS does not prove slot 2 is executing; reading CAFS without Identify.FR does not exclude a parser-offset or stale-buffer defect."),
             "sources": ["BASEFWLOG-LOG-COMMAND", "BASEFWLOG-LOG-LENGTH", "BASEFWLOG-LOG-SCOPE", "BASEFWLOG-LID03-AFI", "BASEFWLOG-LID03-FRS", "BASEFWLOG-CAP-FR"],
             "figures": [203, 204, 205, 206, 207, 208, 209, 215, 338],
@@ -861,7 +861,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
             "id": "feature-read-set-loop",
             "title": b("先 Get、再 Set、最後重新觀測", "Get first, Set second, then observe again"),
             "lead": b("Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。", "A Feature is not a simple register. The host first reads capability with SEL=011b, then retrieves current/default/saved views, confirms scope and persistence, and only then writes. Set completion proves command outcome; a follow-up Get and runtime telemetry prove that software observes the new policy."),
-            "nodes": b(["Identify capability gates", "Get SEL=011b", "Get current/default", "選 FID-specific value", "Set + decode CQE", "Get again + observe runtime"], ["Identify capability gates", "Get SEL=011b", "Get current/default", "Choose FID-specific value", "Set + decode CQE", "Get again + observe runtime"]),
+            "nodes": b(["Identify capability gates", "Get SEL=011b", "Get current/default", "選 FID-specific value", "Set + interpret the fields CQE", "Get again + observe runtime"], ["Identify capability gates", "Get SEL=011b", "Get current/default", "Choose FID-specific value", "Set + interpret the fields CQE", "Get again + observe runtime"]),
             "rows": b([
                 ["SEL=000b", "current value", "確認此刻 controller policy"],
                 ["SEL=001b", "default value", "建立 rollback baseline"],
@@ -874,7 +874,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["SEL=011b", "CHANG/NSSPEC/SVBL", "Capability gate before writing"],
             ]),
             "example": b("讀 FID 02h current 時 CDW10=00000002h；讀 supported capabilities 時 SEL=3，所以 CDW10=(3×100h)+02h=00000302h。若 CHANG=0，流程在 Set 前停止；若 CHANG=1，再依 NPSS 與 PSD 組合 CDW11。", "For FID 02h current, CDW10=00000002h. For supported capabilities, SEL=3 so CDW10=(3×100h)+02h=00000302h. If CHANG=0, stop before Set; if CHANG=1, construct CDW11 from NPSS and the PSDs."),
-            "pitfall": b("不要只印『Get succeeded』。保留原始 CDW10／CDW14、CQE.DW0、SCT／SC／DNR，以及 current/default/saved/capability 哪一個 view；否則同一個 32-bit 回傳值會被錯解成不同語意。", "Do not log only 'Get succeeded.' Retain raw CDW10/CDW14, CQE.DW0, SCT/SC/DNR, and the selected current/default/saved/capability view; otherwise the same 32-bit result can be decoded with the wrong semantics."),
+            "pitfall": b("不要只印『Get succeeded』。保留原始 CDW10／CDW14、CQE.DW0、SCT／SC／DNR，以及 current/default/saved/capability 哪一個 view；否則同一個 32-bit 回傳值會被錯解成不同語意。", "Do not log only 'Get succeeded.' Retain raw CDW10/CDW14, CQE.DW0, SCT/SC/DNR, and the selected current/default/saved/capability view; otherwise the same 32-bit result can be interpret the fields with the wrong semantics."),
             "sources": ["BASEPOWER-READ-FIRST", "BASEPOWER-GET-SELECT", "BASEPOWER-GET-CAP", "BASEPOWER-SET-SAVE", "BASEPOWER-SET-AFTER"],
             "figures": [93, 197, 198, 199, 200, 201, 202, 463, 464, 465, 466],
         },
@@ -916,7 +916,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["NOPPME=1", "Background work may raise power temporarily", "Still capped by the last operational state"],
             ]),
             "example": b("entry 要在 idle 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 07D00000h；ITPS=3，放入 bits7:3 得 18h，所以低 dword=07D00018h。其餘 reserved bits 與 entry 高 dword 保持 0，32 entries 合計 256 bytes。", "To enter PS3 after 2000 ms idle: ITPT=2000=07D0h, shifted into bits31:8 gives 07D00000h; ITPS=3 in bits7:3 gives 18h, so the low dword is 07D00018h. Reserved bits and the entry high dword remain zero; 32 entries total 256 bytes."),
-            "pitfall": b("常見錯誤包括把 ITPT 當 microseconds、把 ITPS 填 operational state、沒有把未使用 entries 清零，或讓 256-byte PRP buffer 跨越不允許的 page boundary。trace 應保留整個 buffer 的 hash 與逐 entry decode。", "Common errors include treating ITPT as microseconds, selecting an operational ITPS, leaving unused entries nonzero, or placing the 256-byte PRP buffer across an unsupported page boundary. Retain a hash of the full buffer and a per-entry decode."),
+            "pitfall": b("常見錯誤包括把 ITPT 當 microseconds、把 ITPS 填 operational state、沒有把未使用 entries 清零，或讓 256-byte PRP buffer 跨越不允許的 page boundary。trace 應保留整個 buffer 的 hash 與逐 entry interpret the fields。", "Common errors include treating ITPT as microseconds, selecting an operational ITPS, leaving unused entries nonzero, or placing the 256-byte PRP buffer across an unsupported page boundary. Retain a hash of the full buffer and a per-entry interpret the fields."),
             "sources": ["BASEPOWER-FID0C", "BASEPOWER-APST-ENTRY", "BASEPOWER-APST-NOPPME", "BASEPOWER-NONOP-IO", "BASEPOWER-SET-DPTR"],
             "figures": [463, 475, 476, 477, 478],
         },
@@ -988,7 +988,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
         {
             "id": "three-boundaries",
             "title": b("先分清三個 boundary：operation、memory ownership、encoded address", "Start with three boundaries: operation, memory ownership, and encoded address"),
-            "lead": b("這組章節不是同一個 feature。Device Self-test 管背景 diagnostic operation；HMB 管 host memory 的 ownership transfer；DSTRD 與 vendor command format 管 encoded value 如何轉成安全的 memory access。共同方法是先找 capability gate，再找狀態或 ownership 轉換，最後找可觀測證據。", "These sections do not describe one feature. Device Self-test manages a background diagnostic operation, HMB manages ownership transfer of host memory, and DSTRD plus the vendor-command format turn encoded values into safe memory accesses. The shared method is to locate a capability gate, identify the state or ownership transition, and then collect observable evidence."),
+            "lead": b("這組章節不是同一個 feature。Device Self-test 管背景 diagnostic operation；HMB 管 host memory 的 ownership transfer；DSTRD 與 vendor command format 管 encoded value 如何轉成安全的 memory access。共同方法是先找 capability gate，再找狀態或 ownership 轉換，最後找可觀測證據。", "These sections do not describe one feature. Device Self-test manages a background diagnostic operation, HMB manages ownership transfer of host memory, and DSTRD plus the vendor-command format turn encoded values into safe memory accesses. The shared method is to find a capability gate, identify the state or ownership transition, and then collect observable evidence."),
             "nodes": b(["Identify capability", "選 engineering track", "提交 command／配置 memory", "controller 進入新狀態", "CQE／log／memory fence", "Debug 第一個斷點"], ["Identify capability", "Choose engineering track", "Submit command / allocate memory", "Controller enters new state", "CQE/log/memory fence", "Debug first broken boundary"]),
             "rows": b([
                 ["Self-test", "operation lifecycle", "CQE + LID 06h"],
@@ -1028,10 +1028,10 @@ REPORT_MODULES: dict[str, list[dict]] = {
             "figures": [93, 176, 177, 178, 179, 180, 338],
         },
         {
-            "id": "selftest-observe-debug",
-            "title": b("LID 06h：把 current operation 與 20 筆 history 分開解碼", "LID 06h: decode current operation separately from twenty history entries"),
+            "id": "selftest-observe-results",
+            "title": b("LID 06h：把 current operation 與 20 筆 history 分開依欄位換算", "LID 06h: interpret the fields current operation separately from twenty history entries"),
             "lead": b("log header 的 DSTOS／DSTCS 回答『現在跑到哪裡』；RDS1～RDS20 回答『之前怎麼結束』。result entry 又分成 operation code、result reason、segment、validity bitmap 與 diagnostic payload。NVM Command Set 只在 FVLD=1 時賦予 FLBA 明確的 LBA 語意。", "DSTOS/DSTCS in the header answer what is running now, while RDS1 through RDS20 answer how earlier operations ended. Each result then separates operation code, result reason, segment, validity bitmap, and diagnostic payload. The NVM Command Set gives FLBA an LBA meaning only when FVLD is one."),
-            "nodes": b(["Get LID06 564 bytes", "讀 DSTOS／DSTCS", "選 RDS1 newest", "解 DSTC／DSTR", "依 VDINFO gate fields", "NVM FLBA + timeline"], ["Get LID06 564 bytes", "Read DSTOS/DSTCS", "Select newest RDS1", "Decode DSTC/DSTR", "Gate fields with VDINFO", "NVM FLBA + timeline"]),
+            "nodes": b(["Get LID06 564 bytes", "讀 DSTOS／DSTCS", "選 RDS1 newest", "解 DSTC／DSTR", "依 VDINFO gate fields", "NVM FLBA + timeline"], ["Get LID06 564 bytes", "Read DSTOS/DSTCS", "Select newest RDS1", "Read the fields DSTC/DSTR", "Gate fields with VDINFO", "NVM FLBA + timeline"]),
             "rows": b([
                 ["DSTOS/DSTCS", "current state/progress", "DSTOS=0 時忽略 percentage"],
                 ["DSTR=7h + SEGN", "已知第一個 failed segment", "其他 DSTR 忽略 SEGN"],
@@ -1044,7 +1044,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["POH + STCT/STC", "Failure context", "Validity bits still apply"],
             ]),
             "example": b("完整 log 是 564 bytes=141 dwords，因此 NUMD=140=008Ch。LSP=0、RAE=0 時 CDW10=008C0006h。若 RDS1.DSTS=17h，high nibble 1h 表示 short test，low nibble 7h 表示已知 failed segment；此時才讀 SEGN。", "The complete log is 564 bytes or 141 dwords, so NUMD is 140 or 008Ch. With LSP 0 and RAE 0, CDW10 is 008C0006h. If RDS1.DSTS is 17h, high nibble 1h means short test and low nibble 7h means a known failed segment; only then read SEGN."),
-            "pitfall": b("parser 不得以 FLBA 非零就宣告 media failure。先檢查 DSTR、再檢查 FVLD 與 NSIDVLD，最後依 NVM Command Set 解 bytes 23:16；同時保存 raw 28-byte result，避免 validity 判斷錯後失去原始證據。", "A parser must not declare media failure because FLBA is nonzero. Check DSTR, then FVLD and NSIDVLD, and only then decode bytes 23:16 under the NVM Command Set. Preserve the raw 28-byte result so a validity-decoding defect does not destroy evidence."),
+            "pitfall": b("parser 不得以 FLBA 非零就宣告 media failure。先檢查 DSTR、再檢查 FVLD 與 NSIDVLD，最後依 NVM Command Set 解 bytes 23:16；同時保存 raw 28-byte result，避免 validity 判斷錯後失去原始證據。", "A parser must not declare media failure because FLBA is nonzero. Check DSTR, then FVLD and NSIDVLD, and only then interpret the fields bytes 23:16 under the NVM Command Set. Preserve the raw 28-byte result so a validity-decoding defect does not destroy evidence."),
             "sources": ["BASEDIAGMEM-SELFTEST-LOG-COMMAND", "BASEDIAGMEM-SELFTEST-CURRENT", "BASEDIAGMEM-SELFTEST-HISTORY", "BASEDIAGMEM-SELFTEST-RESULT", "BASEDIAGMEM-SELFTEST-VALIDITY", "BASEDIAGMEM-SELFTEST-NVM-FLBA", "BASEDIAGMEM-SELFTEST-DEBUG"],
             "figures": [203, 204, 205, 206, 207, 208, 209, 218, 219, 111, 700, 701],
         },
@@ -1113,9 +1113,9 @@ REPORT_MODULES: dict[str, list[dict]] = {
         },
         {
             "id": "encoded-boundary-safety",
-            "title": b("DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary", "DSTRD and NDT/NDM: decode to byte boundaries before memory access"),
+            "title": b("DSTRD 與 NDT／NDM：encoded value 必須先轉成 byte boundary", "DSTRD and NDT/NDM: interpret the fields to byte boundaries before memory access"),
             "lead": b("software emulator 與 vendor command passthrough 都在處理 untrusted encoded values。DSTRD 要套 2^(2+x) 才是 bytes；NDT／NDM 已是實際 dword count，要乘 4、不能再加 1。正確公式不同，但目的相同：在 MMIO 或 DMA 前先證明 address 與 length。", "Software emulators and vendor-command passthrough both handle untrusted encoded values. DSTRD becomes bytes through 2^(2+x); NDT/NDM are already actual dword counts and are multiplied by four without adding one. The formulas differ, but both prove address and length before MMIO or DMA."),
-            "nodes": b(["讀 capability bit／field", "選正確公式", "轉成 byte stride／length", "檢查 overflow／alignment", "執行 MMIO／DMA", "保存 raw+decoded trace"], ["Read capability bit/field", "Select the correct formula", "Convert to byte stride/length", "Check overflow/alignment", "Perform MMIO/DMA", "Retain raw+decoded trace"]),
+            "nodes": b(["讀 capability bit／field", "選正確公式", "轉成 byte stride／length", "檢查 overflow／alignment", "執行 MMIO／DMA", "保存 raw+interpret the fields trace"], ["Read capability bit/field", "Select the correct formula", "Convert to byte stride/length", "Check overflow/alignment", "Perform MMIO/DMA", "Retain raw plus the interpreted trace"]),
             "rows": b([
                 ["DSTRD", "2^(2+x) bytes", "0→4 B；4→64 B"],
                 ["NDT", "value×4 data bytes", "不是 0's-based"],
@@ -1127,7 +1127,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["NDM", "Value×4 metadata bytes", "Independent buffer bound"],
                 ["VSCF/SNVSCF", "Format gate", "Admin and I/O are separate"],
             ]),
-            "example": b("emulator 設 DSTRD=4 得 64-byte stride，可讓每個 doorbell 使用離散 cacheline。vendor command 的 NDT=0100h 則是 256 dwords=1024 bytes，不是 1028 bytes。兩者都要同時保存 raw encoded value 與 decoded bytes。", "An emulator with DSTRD 4 gets a 64-byte stride and can place doorbells on discrete cachelines. Vendor-command NDT 0100h is 256 dwords or 1024 bytes—not 1028 bytes. Retain both raw encoding and decoded bytes for each."),
+            "example": b("emulator 設 DSTRD=4 得 64-byte stride，可讓每個 doorbell 使用離散 cacheline。vendor command 的 NDT=0100h 則是 256 dwords=1024 bytes，不是 1028 bytes。兩者都要同時保存 raw encoded value 與 interpret the fields bytes。", "An emulator with DSTRD 4 gets a 64-byte stride and can place doorbells on discrete cachelines. Vendor-command NDT 0100h is 256 dwords or 1024 bytes—not 1028 bytes. Retain both raw encoding and interpret the fields bytes for each."),
             "pitfall": b("同一套 helper 若把所有 NVMe length 都當 0's-based，NDT／NDM 會多配置或多傳 4 bytes；若把 DSTRD 直接乘 4，又會在 DSTRD>0 時算錯。每個欄位的公式必須跟 Figure source 綁定。", "A helper that treats every NVMe length as zero based adds four bytes to NDT/NDM. Multiplying DSTRD directly by four also fails for nonzero values. Bind each field's formula to its owning Figure."),
             "sources": ["BASEDIAGMEM-DOORBELL-STRIDE", "BASEDIAGMEM-DOORBELL-DEBUG", "BASEDIAGMEM-VENDOR-GATE", "BASEDIAGMEM-VENDOR-FORMAT", "BASEDIAGMEM-VENDOR-LENGTH", "BASEDIAGMEM-BOUNDARY-DEBUG"],
             "figures": [36, 93, 94, 338],
@@ -1172,7 +1172,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["STC=Fh", "Abort current operation", "Write result before clearing current"],
             ]),
             "example": b("讀完整 LID 06h：564÷4=141 dwords，NUMD=141−1=140=008Ch。RAE=0、LSP=0、LID=06h，因此 CDW10=008C0006h。若 RDS1.DSTS=17h，DSTC=1h 是 short、DSTR=7h 才允許讀 SEGN。", "For a complete LID 06h read, 564/4 is 141 dwords and NUMD is 141−1=140=008Ch. With RAE zero, LSP zero, and LID 06h, CDW10 is 008C0006h. If RDS1.DSTS is 17h, DSTC 1h means short and DSTR 7h is the condition that permits reading SEGN."),
-            "pitfall": b("FLBA 非零不是有效證據。先解 DSTR，再查 FVLD／NSIDVLD，最後才套 NVM Command Set bytes 23:16 的 FLBA 語意；同時保存 raw 28-byte entry。", "A nonzero FLBA is not valid evidence. Decode DSTR, check FVLD and NSIDVLD, and only then apply the NVM Command Set meaning for FLBA bytes 23:16. Preserve the raw 28-byte entry."),
+            "pitfall": b("FLBA 非零不是有效證據。先解 DSTR，再查 FVLD／NSIDVLD，最後才套 NVM Command Set bytes 23:16 的 FLBA 語意；同時保存 raw 28-byte entry。", "A nonzero FLBA is not valid evidence. Read the fields DSTR, check FVLD and NSIDVLD, and only then apply the NVM Command Set meaning for FLBA bytes 23:16. Preserve the raw 28-byte entry."),
             "sources": ["BASENSMGMT-SELFTEST-GATE", "BASENSMGMT-SELFTEST-NSID", "BASENSMGMT-SELFTEST-STC", "BASENSMGMT-SELFTEST-CURRENT", "BASENSMGMT-SELFTEST-HISTORY", "BASENSMGMT-SELFTEST-VALIDITY", "BASENSMGMT-SELFTEST-NVM-FLBA"],
             "figures": [176, 177, 178, 179, 180, 203, 204, 205, 206, 207, 208, 209, 218, 219, 111, 700, 701],
         },
@@ -1193,7 +1193,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["NSG/NCG", "Bytes", "Preferred hint, not a sole abort gate"],
             ]),
             "example": b("LBA=4 KiB、NSG=1 MiB、NCG=2 MiB。NSZE=NCAP=1024 代表 4 MiB，4 MiB 可整除兩個 hints，且為 fully provisioned。NSZE=NCAP=1000 代表 3,906.25 KiB，無法整除 hints；可能浪費 allocation capacity，但 otherwise-valid create 仍不能只因這點 abort。", "With 4-KiB LBAs, NSG 1 MiB, and NCG 2 MiB, NSZE=NCAP=1024 represents 4 MiB, is divisible by both hints, and is fully provisioned. NSZE=NCAP=1000 represents 3,906.25 KiB and violates both hints. Allocation capacity may be wasted, but an otherwise valid create is not aborted solely for this reason."),
-            "pitfall": b("最常見錯誤是拿 NSZE=1024 直接除 NSG=1 MiB，或把 granularity violation 當 Invalid Field。工作紙要明列 raw blocks、LBA bytes、converted bytes、remainder 與 controller allocation unit。", "A common error divides NSZE 1024 directly by NSG 1 MiB or treats a granularity violation as Invalid Field. The worksheet lists raw blocks, LBA bytes, converted bytes, remainder, and the controller allocation unit."),
+            "pitfall": b("最常見錯誤是拿 NSZE=1024 直接除 NSG=1 MiB，或把 granularity violation 當 Invalid Field。工作紙要明列 raw blocks、LBA bytes、converted bytes、remainder 與 controller allocation unit。", "A common error divides NSZE 1024 directly by NSG 1 MiB or treats a granularity violation as Invalid Field. The teaching table lists raw blocks, LBA bytes, converted bytes, remainder, and the controller allocation unit."),
             "sources": ["BASENSMGMT-CAPACITY-MODEL", "BASENSMGMT-THIN-PROVISIONING", "BASENSMGMT-ALLOCATION-ROUNDING", "BASENSMGMT-GRANULARITY-HINTS", "BASENSMGMT-GRANULARITY-EXAMPLE"],
             "figures": [123, 132, 133],
         },
@@ -1277,7 +1277,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["Delete", "Allocated and possibly Active", "Processing-controller rule differs"],
             ]),
             "example": b("Controller 3 處理 attached NSID 7 的 Delete。其他已啟用 notice 的 controllers 依 §8.1.17.2 回報；processing controller 的要求不同。host 不應只計算 event 數量，而要為每個 controller 保存 before/after Active 與 Allocated lists。", "Controller three processes Delete for attached NSID seven. Other notice-enabled controllers report according to §8.1.17.2, while requirements differ for the processing controller. Instead of counting events alone, the host retains before/after Active and Allocated lists for every controller."),
-            "pitfall": b("常見誤解是把 AEN 當成 inventory delta。AEN 只觸發 refresh；真正 authoritative data 是後續 Identify result。若漏 event，也可由 before/after inventory 差異定位，但不能反向捏造未收到的通知。", "A common mistake treats an AEN as an inventory delta. It triggers refresh; the authoritative data is the subsequent Identify result. Before/after differences may expose a missed event, but software cannot invent a notification that was not received."),
+            "pitfall": b("常見誤解是把 AEN 當成 inventory delta。AEN 只觸發 refresh；真正 authoritative data 是後續 Identify result。若漏 event，也可由 before/after inventory 差異找出，但不能反向捏造未收到的通知。", "A common mistake treats an AEN as an inventory delta. It triggers refresh; the authoritative data is the subsequent Identify result. Before/after differences may expose a missed event, but software cannot invent a notification that was not received."),
             "sources": ["BASENSMGMT-NSMGMT-CAPABILITY", "BASENSMGMT-NAMESPACE-EVENTS", "BASENSMGMT-CREATE-COMPLETION"],
             "figures": [155, 474],
         },
@@ -1292,7 +1292,7 @@ REPORT_MODULES: dict[str, list[dict]] = {
                 ["Attach limit", "MAXDNA／MAXCNA＋before counts", "Domain 與 controller 分開"],
                 ["I/O inactive NSID", "Attach CQE、Active list、controller ID", "Create success 不夠"],
             ], [
-                ["Create Invalid Format", "FLBAS/DPS/LBSTM/LBAFEE", "Locate the format gate first"],
+                ["Create Invalid Format", "FLBAS/DPS/LBSTM/LBAFEE", "Find the format gate first"],
                 ["Insufficient Capacity", "NSZE/NCAP, unallocated bytes, group IDs", "Separate logical and consumed"],
                 ["Attach limit", "MAXDNA/MAXCNA and prior counts", "Separate Domain and controller"],
                 ["I/O inactive NSID", "Attach CQE, Active list, controller ID", "Create success is insufficient"],
@@ -1349,12 +1349,12 @@ def figure_kind(title: str) -> str:
 
 KIND_TEXT = {
     "register": b(
-        "這是一張 register／property 欄位表。先由 base offset 定位，再核對 access width、reset value 與 bit range；最後才把 bit value 轉成狀態或能力。讀表時把整個 register snapshot 留著，避免只擷取單一 bit 而失去相鄰條件。",
-        "This is a register or property field table. Locate the base offset, verify access width, reset value, and bit range, and only then convert bits into state or capability. Preserve the complete register snapshot so adjacent conditions are not lost by extracting one bit.",
+        "這是一張 register／property 欄位表。先由 base offset 找出，再核對 access width、reset value 與 bit range；最後才把 bit value 轉成狀態或能力。讀表時把整個 register snapshot 留著，避免只擷取單一 bit 而失去相鄰條件。",
+        "This is a register or property field table. Find the base offset, verify access width, reset value, and bit range, and only then convert bits into state or capability. Preserve the complete register snapshot so adjacent conditions are not lost by extracting one bit.",
     ),
     "command": b(
-        "這是一張 command construction 欄位表。先建立 common SQE，再定位指定 CDW，依 bit range 填值，清除 reserved bits，最後配合 transfer length、buffer 與 completion status 驗證。欄位名稱相同也不代表不同 command 具有相同語意。",
-        "This is a command-construction field table. Build the common SQE, locate the specified CDW, encode each bit range, clear reserved bits, and validate the result against transfer length, buffer, and completion status. Equal field names do not imply equal semantics across commands.",
+        "這是一張 command construction 欄位表。先建立 common SQE，再找出指定 CDW，依 bit range 填值，清除 reserved bits，最後配合 transfer length、buffer 與 completion status 驗證。欄位名稱相同也不代表不同 command 具有相同語意。",
+        "This is a command-construction field table. Build the common SQE, find the specified CDW, encode each bit range, clear reserved bits, and validate the result against transfer length, buffer, and completion status. Equal field names do not imply equal semantics across commands.",
     ),
     "status": b(
         "這是一張 status／error 分類表。先確定 status 所在資料結構與類別，再解 individual code、控制 bit 與 retry 指示。Reserved value 維持未定義；不要因名稱相似便映射到另一層 error code。",
@@ -1389,8 +1389,8 @@ KIND_TEXT = {
         "This is a measurement-data Figure. Confirm support, request selectors, and returned length before parsing headers, descriptors, units, and scale. Produce results only for complete lanes or entries actually returned.",
     ),
     "layout": b(
-        "這是一張結構／能力欄位表。先用結構 base 與 offset 定位，依 byte/bit 順序讀取，再把 capability gate、value encoding 與 reserved area 分開。表中的存在不等於功能一定支援。",
-        "This is a structure or capability field table. Locate it using the structure base and offset, read in byte/bit order, and separate capability gates, value encoding, and reserved areas. Presence in the table does not mean the function is supported.",
+        "這是一張結構／能力欄位表。先用結構 base 與 offset 找出，依 byte/bit 順序讀取，再把 capability gate、value encoding 與 reserved area 分開。表中的存在不等於功能一定支援。",
+        "This is a structure or capability field table. Find it using the structure base and offset, read in byte/bit order, and separate capability gates, value encoding, and reserved areas. Presence in the table does not mean the function is supported.",
     ),
     "relationship": b(
         "這張圖用來說明特定關係或範例。先辨識每個元件的類型與 owner，再沿連線判斷是資料流、控制流、包含關係或條件關係；圖形位置本身不新增 normative requirement。",
@@ -1425,8 +1425,8 @@ def expanded_figure_guide(figure: dict, language: str) -> dict:
             "The Figure supports the cited section; it is not a substitute for the surrounding normative text."
         )
         steps = [
-            f"Locate the structure, register, queue, or object named by the caption and confirm that §{figure['section']} is the applicable context.",
-            f"Decode {first} at its stated width and position; do not infer its unit or reset behavior from the abbreviation.",
+            f"Find the structure, register, queue, or object named by the caption and confirm that §{figure['section']} is the applicable context.",
+            f"Read the fields {first} at its stated width and position; do not infer its unit or reset behavior from the abbreviation.",
             f"Cross-check {second} as an independent condition, then validate every count, address, selector, or state against the returned buffer and capability gates.",
             "Keep reserved values uninterpreted and record the raw bytes or register value before converting the result into a software state.",
         ]
@@ -1437,7 +1437,7 @@ def expanded_figure_guide(figure: dict, language: str) -> dict:
         ]
         example = (
             f"Informative example: capture the raw value or buffer associated with Figure {figure['number']}. "
-            f"Annotate the bytes containing {first}, decode them, and independently verify {second}. "
+            f"Annotate the bytes containing {first}, interpret the fields them, and independently verify {second}. "
             "If either field exceeds the returned boundary, selects a reserved encoding, or conflicts with the capability context, stop the parser or command builder and report the exact field rather than continuing with a guessed default. "
             "This example describes a verification method and adds no requirement."
         )
@@ -1464,7 +1464,7 @@ def expanded_figure_guide(figure: dict, language: str) -> dict:
         )
         steps = [
             f"先由 caption 找到資料結構、register、queue 或物件，並確認目前適用的上下文確實是 §{figure['section']}。",
-            f"依圖中指定的寬度與位置解碼 {first}；縮寫本身不能用來猜 unit、reset value 或 encoding。",
+            f"依圖中指定的寬度與位置依欄位換算 {first}；縮寫本身不能用來猜 unit、reset value 或 encoding。",
             f"把 {second} 當成獨立條件交叉檢查，再以實際 buffer 長度與 capability gate 驗證 count、address、selector 或 state。",
             "保留值維持未解讀；把結果轉成 software state 前，先保存 raw bytes 或完整 register value。",
         ]
@@ -1475,7 +1475,7 @@ def expanded_figure_guide(figure: dict, language: str) -> dict:
         ]
         example = (
             f"說明性範例（informative example）：保存 Figure {figure['number']} 對應的 raw value 或 buffer，"
-            f"標出包含 {first} 的 bytes 並解碼，再獨立核對 {second}。若任一欄位超出實際回傳邊界、"
+            f"標出包含 {first} 的 bytes 並依欄位換算，再獨立核對 {second}。若任一欄位超出實際回傳邊界、"
             "選到 reserved encoding，或與 capability context 衝突，parser／command builder 應停止並指出精確欄位，"
             "不可用猜測的 default 繼續。此例只示範驗證方法，不新增規格要求。"
         )

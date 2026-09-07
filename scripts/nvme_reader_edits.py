@@ -11,7 +11,9 @@ def b(zh, en):
 
 def apply(reports, modules, headings):
     def module(rid, mid, **fields):
-        next(m for m in modules[rid] if m['id'] == mid).update(fields)
+        target = next((m for m in modules[rid] if m['id'] == mid), None)
+        if target is not None:
+            target.update(fields)
 
     def claim(rid, key, zh, en):
         next(c for c in reports[rid]['claims'] if c['key'] == key).update(zh_tw=zh, en=en)
@@ -28,7 +30,9 @@ def apply(reports, modules, headings):
     remove_claims('base-boot-telemetry-sanitize', {'SOURCE-XREF'})
     for rid, mid in [('base-power-features','end-to-end-debug'),
                      ('base-self-test-namespace-management','namespace-end-to-end-debug')]:
-        old = next(m for m in modules[rid] if m['id'] == mid)
+        old = next((m for m in modules[rid] if m['id'] == mid), None)
+        if old is None:
+            continue
         retained = [m for m in modules[rid] if m is not old]
         assigned = {s for m in retained for s in m['sources']}
         retained[-1]['sources'] += [s for s in old['sources'] if s not in assigned]
@@ -71,7 +75,7 @@ def apply(reports, modules, headings):
       'base-ch4': [('sqe','SQE 的共用格式與命令欄位','The common SQE format and command fields'),('cqe-status','CQE：新完成項目、命令識別與結果','CQEs: new entries, command identity, and results'),('prp','PRP 如何描述跨頁資料','How PRPs describe data across pages'),('sgl','SGL 的資料與串接描述子','SGL data and segment descriptors'),('identity-text','Feature 值、識別碼、清單與字串','Feature values, identifiers, lists, and strings')],
       'base-admin-fw-logs': [('fw-capability-plan','更新前的能力與限制','Capabilities and limits before an update'),('fw-download-geometry','Download 的長度、偏移與分段','Download lengths, offsets, and portions'),('fw-commit-state','Commit 的儲存與啟用選擇','Commit storage and activation choices'),('fw-lid03-proof','LID 03h 的目前與待啟用版本','Current and pending versions in LID 03h')],
       'base-power-features': [('feature-read-set-loop','Feature 的能力、讀取與設定','Feature capabilities, reads, and settings'),('power-state-mental-model','Power State 的功率、延遲與效能','Power-state power, latency, and performance'),('apst-state-machine','APST 的閒置條件與自動轉換','APST idle conditions and automatic transitions'),('temperature-event-loop','溫度門檻、感測器與通知','Temperature thresholds, sensors, and notifications'),('hctm-control-loop','HCTM 的兩級熱管理','Two levels of HCTM thermal management')],
-      'base-self-test-hmb-emulation': [('three-boundaries','背景測試、主機記憶體與位址編碼','Background tests, host memory, and address encoding'),('selftest-command-state-machine','Device Self-test 的啟動與執行','Starting and running Device Self-test'),('selftest-observe-debug','LID 06h 的目前進度與歷史結果','Current progress and history in LID 06h'),('hmb-ownership-lifecycle','HMB 記憶體的提供、使用與收回','Providing, using, and reclaiming HMB memory'),('hmb-command-math','HMB 的描述子、大小與位址','HMB descriptors, sizes, and addresses'),('hmb-reset-power','HMB 在電源轉換與 Reset 後的狀態','HMB state across power transitions and resets'),('encoded-boundary-safety','DSTRD、NDT 與 NDM 的單位','Units of DSTRD, NDT, and NDM')],
+      'base-self-test-hmb-emulation': [('three-boundaries','背景測試、主機記憶體與位址編碼','Background tests, host memory, and address encoding'),('selftest-command-state-machine','Device Self-test 的啟動與執行','Starting and running Device Self-test'),('selftest-observe-results','LID 06h 的目前進度與歷史結果','Current progress and history in LID 06h'),('hmb-ownership-lifecycle','HMB 記憶體的提供、使用與收回','Providing, using, and reclaiming HMB memory'),('hmb-command-math','HMB 的描述子、大小與位址','HMB descriptors, sizes, and addresses'),('hmb-reset-power','HMB 在電源轉換與 Reset 後的狀態','HMB state across power transitions and resets'),('encoded-boundary-safety','DSTRD、NDT 與 NDM 的單位','Units of DSTRD, NDT, and NDM')],
       'base-self-test-namespace-management': [('diagnostic-and-provisioning','裝置診斷與 Namespace 配置','Device diagnostics and namespace provisioning'),('selftest-command-state-machine','Device Self-test 的執行與結果','Device Self-test execution and results'),('capacity-granularity-math','容量數值與配置粒度','Capacity values and allocation granularity'),('namespace-create-payload','建立 Namespace 所需的資料','Data required to create a namespace'),('namespace-lifecycle','建立、連接與使用 Namespace','Creating, attaching, and using a namespace'),('delete-restore-state','刪除與恢復預設配置','Deletion and restoration of default configuration'),('namespace-events','Namespace 變更通知與重新辨識','Namespace change notifications and rediscovery')],
       'pcie-transport-1.4': [('layers','NVMe 如何使用 PCIe','How NVMe uses PCIe'),('mmio-doorbell','BAR、MMIO 與 Doorbell 位址','BARs, MMIO, and doorbell addresses'),('command','Host 與 Controller 的命令交換','Command exchange between host and controller'),('interrupts','Interrupt 模式與通知行為','Interrupt modes and notification behavior'),('config-error','Configuration Space 與 PCIe 錯誤回報','Configuration space and PCIe error reporting'),('eom','接收端眼圖量測資料的結構','Receiver eye-opening measurement data layout')],
       'base-boot-telemetry-sanitize': [('telemetry-capture','建立快照、分段讀取與確認完成','Snapshot creation, chunked reads, and acknowledgement'),('sanitize-state','背景 Sanitize 的狀態與進度','Background sanitize state and progress')],

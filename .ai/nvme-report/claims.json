@@ -670,8 +670,8 @@
       "printed_pages": "128-129,175",
       "pdf_pages": "128-129,175",
       "normative_keyword": "none",
-      "zh_tw": "NVM 的 Stream Write Size 以 logical blocks 表示；stream granularity length 是 SGS 乘解碼後 SWS blocks。使用 Streams 時，host 宜依 SGS／SWS 的建議處理 write／deallocate，再協調 namespace hints。",
-      "en": "NVM Stream Write Size is expressed in logical blocks. Stream granularity length is SGS multiplied by decoded SWS blocks. When using Streams, hosts should follow SGS/SWS guidance for writes/deallocation and reconcile namespace hints.",
+      "zh_tw": "NVM 的 Stream Write Size 以 logical blocks 表示；stream granularity length 是 SGS 乘依欄位換算後 SWS blocks。使用 Streams 時，host 宜依 SGS／SWS 的建議處理 write／deallocate，再協調 namespace hints。",
+      "en": "NVM Stream Write Size is expressed in logical blocks. Stream granularity length is SGS multiplied by the SWS value after reading the fields. When using Streams, hosts should follow SGS/SWS guidance for writes/deallocation and reconcile namespace hints.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "heading_zh_tw": "Streams 的 NVM 單位與優先順序",
       "heading_en": "NVM units and priorities for Streams",
@@ -727,8 +727,8 @@
       "printed_pages": "9",
       "pdf_pages": "9",
       "normative_keyword": "none",
-      "zh_tw": "Figure 1〈NVMe Family of Specifications〉：依功能層分開閱讀：Base 給共同機制，PCIe 給本機 transport，NVM 給 logical-block 命令語意；這是保留範圍的家族關係重畫。",
-      "en": "Figure 1, \"NVMe Family of Specifications\": Read by functional layer: Base supplies shared mechanisms, PCIe the local transport, and NVM logical-block command semantics. This redraw retains only the included family relationships.",
+      "zh_tw": "Figure 1〈NVMe Family of Specifications〉：依功能層分開閱讀：Base 給共同機制，PCIe 給本機 transport，NVM 給 logical-block 命令語意。",
+      "en": "Figure 1, \"NVMe Family of Specifications\": Read by functional layer: Base supplies shared mechanisms, PCIe the local transport, and NVM logical-block command semantics.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall"
@@ -803,8 +803,8 @@
       "printed_pages": "15-16",
       "pdf_pages": "15-16",
       "normative_keyword": "none",
-      "zh_tw": "Figure 4〈Atomicity Parameters for Single Atomicity Mode〉：先用 NSABP 選 controller 或 namespace 值，再解碼 0-based 大小及 namespace 的零值繼承規則；不可把每個 raw 0 都解釋成一個 block。",
-      "en": "Figure 4, \"Atomicity Parameters for Single Atomicity Mode\": Use NSABP to select controller or namespace parameters, then decode zero-based sizes and namespace zero-value inheritance. Raw zero does not universally mean one block.",
+      "zh_tw": "Figure 4〈Atomicity Parameters for Single Atomicity Mode〉：先用 NSABP 選 controller 或 namespace 值，再依欄位換算 0-based 大小及 namespace 的零值繼承規則；不可把每個 raw 0 都解釋成一個 block。",
+      "en": "Figure 4, \"Atomicity Parameters for Single Atomicity Mode\": Use NSABP to select controller or namespace parameters, then interpret the fields zero-based sizes and namespace zero-value inheritance. Raw zero does not universally mean one block.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -838,8 +838,8 @@
       "printed_pages": "17",
       "pdf_pages": "17",
       "normative_keyword": "none",
-      "zh_tw": "Figure 5〈AWUN/NAWUN Example Results〉：本圖討論正常運作下重疊寫入的可觀測結果；將 write size 與解碼後 AWUN 比較，再看讀取是否落在相同 atomic unit。",
-      "en": "Figure 5, \"AWUN/NAWUN Example Results\": This table concerns observable overlapping-write results during normal operation. Compare write size with decoded AWUN and locate the read within atomic units.",
+      "zh_tw": "Figure 5〈AWUN/NAWUN Example Results〉：本圖討論正常運作下重疊寫入的可觀測結果；將 write size 與依欄位換算後 AWUN 比較，再看讀取是否落在相同 atomic unit。",
+      "en": "Figure 5, \"AWUN/NAWUN Example Results\": This table concerns observable overlapping-write results during normal operation. Compare write size with interpret the fields AWUN and find the read within atomic units.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "may"
@@ -1062,8 +1062,8 @@
       "printed_pages": "23",
       "pdf_pages": "23",
       "normative_keyword": "none",
-      "zh_tw": "Figure 13〈NVM Command Set Admin Command Support〉：Get LBA Status 86h 對 I/O controller 是 optional、對 Administrative controller 禁止；本工作表只保留這兩欄。",
-      "en": "Figure 13, \"NVM Command Set Admin Command Support\": Get LBA Status 86h is optional for an I/O controller and prohibited for an Administrative controller; this worksheet retains those two columns.",
+      "zh_tw": "Figure 13〈NVM Command Set Admin Command Support〉：Get LBA Status 86h 對 I/O controller 是 optional、對 Administrative controller 禁止。",
+      "en": "Figure 13, \"NVM Command Set Admin Command Support\": Get LBA Status 86h is optional for an I/O controller and prohibited for an Administrative controller.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "optional",
@@ -1199,7 +1199,7 @@
       "printed_pages": "25",
       "pdf_pages": "25",
       "normative_keyword": "none",
-      "zh_tw": "Figure 18〈Status Code – Generic Command Status Values〉：Generic status 80h 是 LBA Out of Range，81h 是 Capacity Exceeded；解碼前保留 SCT，並分別核對 NSZE 與 NCAP／NUSE。",
+      "zh_tw": "Figure 18〈Status Code – Generic Command Status Values〉：Generic status 80h 是 LBA Out of Range，81h 是 Capacity Exceeded；依欄位換算前保留 SCT，並分別核對 NSZE 與 NCAP／NUSE。",
       "en": "Figure 18, \"Status Code – Generic Command Status Values\": Generic status 80h is LBA Out of Range and 81h Capacity Exceeded. Retain SCT and check NSZE separately from NCAP/NUSE.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
@@ -1590,8 +1590,8 @@
       "printed_pages": "30",
       "pdf_pages": "30",
       "normative_keyword": "none",
-      "zh_tw": "Figure 32〈Copy – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與解碼後 range count 計算。",
-      "en": "Figure 32, \"Copy – Data Pointer\": DPTR addresses descriptors rather than user data to copy or deallocate. Compute buffer length from descriptor size and decoded range count.",
+      "zh_tw": "Figure 32〈Copy – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與依欄位換算後 range count 計算。",
+      "en": "Figure 32, \"Copy – Data Pointer\": DPTR addresses descriptors rather than user data to copy or deallocate. Compute buffer length from descriptor size and the range count after reading the fields.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -1876,7 +1876,7 @@
       "pdf_pages": "38",
       "normative_keyword": "none",
       "zh_tw": "Figure 42〈Source LBA and Destination LBA Relationship Example〉：依 source descriptor 順序把各段長度相加，產生連續 destination；圖中的加總是 block 數，不能直接累加 raw NLB 而漏掉每段的一。",
-      "en": "Figure 42, \"Source LBA and Destination LBA Relationship Example\": Sum decoded source lengths in descriptor order to form the contiguous destination. The diagram sums block counts, not raw NLB values missing one block per range.",
+      "en": "Figure 42, \"Source LBA and Destination LBA Relationship Example\": Sum the source lengths after reading the fields in descriptor order to form the contiguous destination. The diagram sums block counts, not raw NLB values missing one block per range.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -1933,8 +1933,8 @@
       "printed_pages": "44",
       "pdf_pages": "44",
       "normative_keyword": "none",
-      "zh_tw": "Figure 44〈Dataset Management – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與解碼後 range count 計算。",
-      "en": "Figure 44, \"Dataset Management – Data Pointer\": DPTR addresses descriptors rather than user data to copy or deallocate. Compute buffer length from descriptor size and decoded range count.",
+      "zh_tw": "Figure 44〈Dataset Management – Data Pointer〉：DPTR 指向 descriptors，而不是待複製或 deallocate 的 user data；buffer 長度需由 descriptor size 與依欄位換算後 range count 計算。",
+      "en": "Figure 44, \"Dataset Management – Data Pointer\": DPTR addresses descriptors rather than user data to copy or deallocate. Compute buffer length from descriptor size and the range count after reading the fields.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "should not",
@@ -2016,8 +2016,8 @@
       "printed_pages": "45",
       "pdf_pages": "45",
       "normative_keyword": "none",
-      "zh_tw": "Figure 47〈Dataset Management – Range Definition〉：每筆 16 bytes：CATTR、1-based LLB、64-bit SLBA；256 筆需要 4096 bytes。不要沿用 NLB 的加一解碼。",
-      "en": "Figure 47, \"Dataset Management – Range Definition\": Each 16-byte entry contains CATTR, one-based LLB, and 64-bit SLBA; 256 entries require 4096 bytes. Do not apply NLB’s add-one decoding.",
+      "zh_tw": "Figure 47〈Dataset Management – Range Definition〉：每筆 16 bytes：CATTR、1-based LLB、64-bit SLBA；256 筆需要 4096 bytes。不要沿用 NLB 的加一依欄位換算。",
+      "en": "Figure 47, \"Dataset Management – Range Definition\": Each 16-byte entry contains CATTR, one-based LLB, and 64-bit SLBA; 256 entries require 4096 bytes. Do not apply NLB’s add-one reading the fields.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "should",
@@ -2128,8 +2128,8 @@
       "printed_pages": "49",
       "pdf_pages": "49",
       "normative_keyword": "none",
-      "zh_tw": "Figure 51〈Read – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list，兩者不可共用 payload parser。",
-      "en": "Figure 51, \"Read – Data Pointer\": DPTR addresses the host destination: Read returns data and Get LBA Status returns a descriptor list. They cannot share one payload parser.",
+      "zh_tw": "Figure 51〈Read – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list；兩者的回傳資料格式不同。",
+      "en": "Figure 51, \"Read – Data Pointer\": DPTR addresses the host destination: Read returns data and Get LBA Status returns a descriptor list. Their response data formats differ.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -3638,7 +3638,7 @@
       "pdf_pages": "73",
       "normative_keyword": "none",
       "zh_tw": "Figure 105〈Performance Characteristics – Vendor Specific Performance Attribute〉：PAID 指出 vendor payload 的定義，ATTRL 限制有效 VS bytes，最大 FE0h；未知 PAID 不應由標準表格猜測。",
-      "en": "Figure 105, \"Performance Characteristics – Vendor Specific Performance Attribute\": PAID identifies the vendor payload definition and ATTRL bounds valid VS bytes, at most FE0h. Do not invent a standard decoding for an unknown PAID.",
+      "en": "Figure 105, \"Performance Characteristics – Vendor Specific Performance Attribute\": PAID identifies the vendor payload definition and ATTRL bounds valid VS bytes, at most FE0h. Do not invent a standard reading the fields for an unknown PAID.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -3902,7 +3902,7 @@
       "printed_pages": "78",
       "pdf_pages": "78",
       "normative_keyword": "none",
-      "zh_tw": "Figure 114〈LBA Status Log Namespace Element〉：NEID 定位 namespace，RATYPE 建議後續 Get LBA Status 的 ATYPE；NLRD=FFFFFFFFh 表示無 range list 且宜檢查全 namespace。",
+      "zh_tw": "Figure 114〈LBA Status Log Namespace Element〉：NEID 找出 namespace，RATYPE 建議後續 Get LBA Status 的 ATYPE；NLRD=FFFFFFFFh 表示無 range list 且宜檢查全 namespace。",
       "en": "Figure 114, \"LBA Status Log Namespace Element\": NEID identifies the namespace and RATYPE recommends the later Get LBA Status ATYPE. NLRD=FFFFFFFFh means no range list is available and the whole namespace should be examined.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
@@ -4051,7 +4051,7 @@
       "pdf_pages": "81",
       "normative_keyword": "none",
       "zh_tw": "Figure 119〈Rate Limiting Controller Descriptor〉：controller descriptor 以實際 NNSMAD 指出 access descriptors 數；這個 count 不採 NP／NC 的加一規則。",
-      "en": "Figure 119, \"Rate Limiting Controller Descriptor\": A controller descriptor gives the actual access-descriptor count in NNSMAD. It does not use NP/NC add-one decoding.",
+      "en": "Figure 119, \"Rate Limiting Controller Descriptor\": A controller descriptor gives the actual access-descriptor count in NNSMAD. It does not use NP/NC add-one reading the fields.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -4079,7 +4079,7 @@
       "printed_pages": "81-82",
       "pdf_pages": "81-82",
       "normative_keyword": "none",
-      "zh_tw": "Figure 120〈Non-Volatile Storage Medium Access Descriptor〉：先以 SC 選 scope 再解讀 SI 與巢狀 access list；本表 SI 說明仍提 NSET 且 byte 例子錯置，應以 SC 與表列 bytes7:4 定位。",
+      "zh_tw": "Figure 120〈Non-Volatile Storage Medium Access Descriptor〉：先以 SC 選 scope 再解讀 SI 與巢狀 access list；本表 SI 說明仍提 NSET 且 byte 例子錯置，應以 SC 與表列 bytes7:4 找出。",
       "en": "Figure 120, \"Non-Volatile Storage Medium Access Descriptor\": Select scope with SC before interpreting SI and nested access lists. The SI prose still mentions NSET and misplaced example bytes; SC and the tabulated bytes7:4 provide the field location.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
@@ -4554,8 +4554,8 @@
       "printed_pages": "114",
       "pdf_pages": "114",
       "normative_keyword": "none",
-      "zh_tw": "Figure 135〈Get LBA Status – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list，兩者不可共用 payload parser。",
-      "en": "Figure 135, \"Get LBA Status – Data Pointer\": DPTR addresses the host destination: Read returns data and Get LBA Status returns a descriptor list. They cannot share one payload parser.",
+      "zh_tw": "Figure 135〈Get LBA Status – Data Pointer〉：DPTR 是 controller 回傳資料的 host 目的位置；Read 回 data，Get LBA Status 回 descriptor list；兩者的回傳資料格式不同。",
+      "en": "Figure 135, \"Get LBA Status – Data Pointer\": DPTR addresses the host destination: Read returns data and Get LBA Status returns a descriptor list. Their response data formats differ.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -4895,8 +4895,8 @@
       "printed_pages": "125",
       "pdf_pages": "125",
       "normative_keyword": "none",
-      "zh_tw": "Figure 147〈Example namespace broken down to illustrate potential NPWA and NPWG settings〉：NPWA 指起點，NPWG 指長度 granularity；示意的 8 blocks 是解碼後大小，並非 raw field=8。",
-      "en": "Figure 147, \"Example namespace broken down to illustrate potential NPWA and NPWG settings\": NPWA governs the start and NPWG the length granularity. The illustrated eight blocks are a decoded size, not raw field value eight.",
+      "zh_tw": "Figure 147〈Example namespace broken down to illustrate potential NPWA and NPWG settings〉：NPWA 指起點，NPWG 指長度 granularity；示意的 8 blocks 是依欄位換算後大小，並非 raw field=8。",
+      "en": "Figure 147, \"Example namespace broken down to illustrate potential NPWA and NPWG settings\": NPWA governs the start and NPWG the length granularity. The illustrated eight blocks are a size after reading the fields, not raw field value eight.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "may"
@@ -5994,8 +5994,8 @@
       "printed_pages": "157-158",
       "pdf_pages": "157-158",
       "normative_keyword": "none",
-      "zh_tw": "Figure 189〈Reference Exported Controller Configuration State〉：本機欄位 slice：ECNTLID=0，限制值不得超過 underlying；NCQS／NSQS 先解 0-based。WZS／DSMS 需對應底層能力與所報 Commands Supported and Effects。",
-      "en": "Figure 189, \"Reference Exported Controller Configuration State\": Local-field slice: ECNTLID=0 and limits must not exceed underlying support. Decode zero-based NCQS/NSQS. WZS/DSMS must correspond to underlying support and reported Commands Supported and Effects.",
+      "zh_tw": "Figure 189〈Reference Exported Controller Configuration State〉：ECNTLID=0，限制值不得超過 underlying；NCQS／NSQS 先解 0-based。WZS／DSMS 需對應底層能力與所報 Commands Supported and Effects。",
+      "en": "Figure 189, \"Reference Exported Controller Configuration State\": ECNTLID=0 and limits must not exceed underlying support. Read the fields zero-based NCQS/NSQS. WZS/DSMS must correspond to underlying support and reported Commands Supported and Effects.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -6090,7 +6090,7 @@
       "pdf_pages": "161",
       "normative_keyword": "none",
       "zh_tw": "Figure 192〈LBA Format List Structure〉：先把 raw NLBAF 加1成共同格式數，再加 NULBAF；unique attributes 區緊接在共同區之後。",
-      "en": "Figure 192, \"LBA Format List Structure\": Decode raw NLBAF by adding one, then add NULBAF. Unique-attribute formats immediately follow the common-format region.",
+      "en": "Figure 192, \"LBA Format List Structure\": Read the fields raw NLBAF by adding one, then add NULBAF. Unique-attribute formats immediately follow the common-format region.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "should"
@@ -6206,8 +6206,8 @@
       "printed_pages": "169-170",
       "pdf_pages": "169-170",
       "normative_keyword": "none",
-      "zh_tw": "Figure 196〈Rate Limiting Log Page Example〉：以 Figure195 重畫關係；來源示例把 dword offset299 寫成 byte1916，但299×4=1196，且其他範圍也不一致，必須做 bounds 檢查。",
-      "en": "Figure 196, \"Rate Limiting Log Page Example\": Redraw the relationships from Figure195. The source labels dword offset299 as byte1916, although 299×4=1196, and other ranges also conflict. Bounds checks are essential.",
+      "zh_tw": "Figure 196〈Rate Limiting Log Page Example〉：描述子以相對於 log 起點的 dword offset 連接。例如 offset=299 對應 299×4=1196 bytes；共享的 descriptor 可由多條連接指向。",
+      "en": "Figure 196, \"Rate Limiting Log Page Example\": Descriptors connect through dword offsets from the log start. For example, offset=299 means 299×4=1196 bytes; multiple connections can reference a shared descriptor.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -6594,8 +6594,8 @@
       "printed_pages": "161",
       "pdf_pages": "187",
       "normative_keyword": "none",
-      "zh_tw": "Figure 116〈Generic SGL Descriptor Format〉：本機 SGL descriptor 用 address、length 與 type 描述 buffer；保留 generic layout，不展開其他 transport 的 descriptor types。",
-      "en": "Figure 116, \"Generic SGL Descriptor Format\": A local SGL descriptor describes a buffer with address, length, and type. This slice retains the generic layout without expanding other transport descriptor types.",
+      "zh_tw": "Figure 116〈Generic SGL Descriptor Format〉：本機 SGL descriptor 用 address、length 與 type 描述 buffer。",
+      "en": "Figure 116, \"Generic SGL Descriptor Format\": A local SGL descriptor describes a buffer with address, length, and type.",
       "scope_entry_id": "NVMCS13-BASE-DEPENDENCY",
       "source_keywords": [
         "shall",
@@ -6652,8 +6652,8 @@
       "printed_pages": "340-382",
       "pdf_pages": "366-408",
       "normative_keyword": "none",
-      "zh_tw": "Figure 338〈Identify – Identify Controller Data Structure, I/O Command Set Independent〉：NVM 需要 Base Identify 的 ONCS variants、CTRATT.ELBAS／MEM、MDTS 與 SANICAP 等能力；本 slice 不展開其餘跨頁欄位。",
-      "en": "Figure 338, \"Identify – Identify Controller Data Structure, I/O Command Set Independent\": NVM uses Base Identify capabilities including ONCS variants, CTRATT.ELBAS/MEM, MDTS, and SANICAP. This slice does not expand the remaining multipage fields.",
+      "zh_tw": "Figure 338〈Identify – Identify Controller Data Structure, I/O Command Set Independent〉：NVM 需要 Base Identify 的 ONCS variants、CTRATT.ELBAS／MEM、MDTS 與 SANICAP 等能力。",
+      "en": "Figure 338, \"Identify – Identify Controller Data Structure, I/O Command Set Independent\": NVM uses Base Identify capabilities including ONCS variants, CTRATT.ELBAS/MEM, MDTS, and SANICAP.",
       "scope_entry_id": "NVMCS13-BASE-DEPENDENCY",
       "source_keywords": [
         "shall not",
@@ -6719,8 +6719,8 @@
       "printed_pages": "450-451",
       "pdf_pages": "476-477",
       "normative_keyword": "none",
-      "zh_tw": "Figure 451〈Sanitize – Command Dword 10〉：Subsystem Sanitize 的 CDW10 分開方法及修飾 bits；本教學只把 NVM §4.1.7 的 Base 命令相依補齊。",
-      "en": "Figure 451, \"Sanitize – Command Dword 10\": Subsystem Sanitize CDW10 separates method from modifiers. This worksheet supplies the Base command dependency of NVM §4.1.7.",
+      "zh_tw": "Figure 451〈Sanitize – Command Dword 10〉：Subsystem Sanitize 的 CDW10 分開方法及修飾 bits；NVM §4.1.7 使用這個 Base 命令格式。",
+      "en": "Figure 451, \"Sanitize – Command Dword 10\": Subsystem Sanitize CDW10 separates method from modifiers. NVM §4.1.7 uses this Base command format.",
       "scope_entry_id": "NVMCS13-BASE-DEPENDENCY",
       "source_keywords": [
         "shall not",
@@ -6804,8 +6804,8 @@
       "printed_pages": "523",
       "pdf_pages": "549",
       "normative_keyword": "none",
-      "zh_tw": "Figure 561〈Track Send – Command Dword 10〉：Track Send CDW10 先選 management operation，MOS 再依 operation 解讀；NVM 的本範圍使用 Log User Data Changes。",
-      "en": "Figure 561, \"Track Send – Command Dword 10\": Track Send CDW10 selects a management operation before MOS is interpreted. This NVM scope uses Log User Data Changes.",
+      "zh_tw": "Figure 561〈Track Send – Command Dword 10〉：Track Send CDW10 先選 management operation，MOS 再依 operation 解讀；Log User Data Changes 用來追蹤 NVM 資料變更。",
+      "en": "Figure 561, \"Track Send – Command Dword 10\": Track Send CDW10 selects a management operation before MOS is interpreted. Log User Data Changes tracks changes to NVM data.",
       "scope_entry_id": "NVMCS13-BASE-DEPENDENCY",
       "source_keywords": [
         "shall",
@@ -6886,8 +6886,8 @@
       "printed_pages": "624-625",
       "pdf_pages": "650-651",
       "normative_keyword": "none",
-      "zh_tw": "Figure 712〈Streams Directive – Return Parameters Data Structure〉：只讀 Streams Return Parameters 的 SWS／SGS 相依 slice；NVM §5.13 將 SWS 的 command-set 單位定義為 logical blocks。",
-      "en": "Figure 712, \"Streams Directive – Return Parameters Data Structure\": Read only the SWS/SGS slice of Streams Return Parameters. NVM §5.13 defines the command-set unit of SWS as logical blocks.",
+      "zh_tw": "Figure 712〈Streams Directive – Return Parameters Data Structure〉：Streams Return Parameters 的 SWS／SGS 描述寫入大小與配置粒度；NVM §5.13 將 SWS 的 command-set 單位定義為 logical blocks。",
+      "en": "Figure 712, \"Streams Directive – Return Parameters Data Structure\": SWS/SGS in Streams Return Parameters describe write size and granularity. NVM §5.13 defines the command-set unit of SWS as logical blocks.",
       "scope_entry_id": "NVMCS13-BASE-DEPENDENCY",
       "source_keywords": [
         "shall",
@@ -7884,7 +7884,7 @@
       "pdf_pages": "476-477",
       "normative_keyword": "none",
       "zh_tw": "Figure 451〈Sanitize - Command Dword 10〉：由 SANACT 決定操作，再依方法解讀其餘 bits；OWPASS=0 是 16，EMVS 不能搭配 Overwrite/NDAS=1。PREQ bit 11 與 namespace 命令不同。",
-      "en": "Figure 451, \"Sanitize - Command Dword 10\": Select the action with SANACT before decoding method-dependent bits. OWPASS=0 means 16, and EMVS cannot combine with Overwrite/NDAS=1. PREQ bit 11 differs from the namespace command.",
+      "en": "Figure 451, \"Sanitize - Command Dword 10\": Select the action with SANACT before reading the fields method-dependent bits. OWPASS=0 means 16, and EMVS cannot combine with Overwrite/NDAS=1. PREQ bit 11 differs from the namespace command.",
       "scope_entry_id": "BASE-BTS-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -8826,8 +8826,8 @@
       "printed_pages": "186-189",
       "pdf_pages": "212-215",
       "normative_keyword": "none",
-      "zh_tw": "Figure 155〈Asynchronous Event Information - Notice〉：只取 Telemetry Log Changed Notice：用事件定位 08h，再讀 log；事件不包含診斷 payload。",
-      "en": "Figure 155, \"Asynchronous Event Information - Notice\": Use the Telemetry Log Changed Notice slice: locate 08h from the event and read the log; the event does not contain the diagnostic payload.",
+      "zh_tw": "Figure 155〈Asynchronous Event Information - Notice〉：只取 Telemetry Log Changed Notice：用事件找出 08h，再讀 log；事件不包含診斷 payload。",
+      "en": "Figure 155, \"Asynchronous Event Information - Notice\": Use the Telemetry Log Changed Notice 部分內容: find 08h from the event and read the log; the event does not contain the diagnostic payload.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -9291,8 +9291,8 @@
       "printed_pages": "214-215",
       "pdf_pages": "240-241",
       "normative_keyword": "none",
-      "zh_tw": "Figure 208〈Get Log Page - Command Dword 14〉：CDW14 的 CSI/OT/UUID Index 是共用解碼上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。",
-      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
+      "zh_tw": "Figure 208〈Get Log Page - Command Dword 14〉：CDW14 的 CSI/OT/UUID Index 是共用依欄位換算上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。",
+      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common reading the fields context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall",
@@ -9376,7 +9376,7 @@
       "pdf_pages": "243-244",
       "normative_keyword": "none",
       "zh_tw": "Figure 211〈LID Supported and Effects Data Structure〉：先查 LSUPP 再解該 LID 的 specific parameter；MCDAS 的 bit 0 是此 parameter 的內容，不是 CTHID。",
-      "en": "Figure 211, \"LID Supported and Effects Data Structure\": Check LSUPP before decoding that LID's specific parameter. MCDAS bit 0 belongs to this parameter, not to CTHID.",
+      "en": "Figure 211, \"LID Supported and Effects Data Structure\": Check LSUPP before reading the fields that LID's specific parameter. MCDAS bit 0 belongs to this parameter, not to CTHID.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall",
@@ -9432,7 +9432,7 @@
       "pdf_pages": "366-408",
       "normative_keyword": "none",
       "zh_tw": "Figure 338〈Identify - Identify Controller Data Structure, I/O Command Set Independent〉：只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。",
-      "en": "Figure 338, \"Identify - Identify Controller Data Structure, I/O Command Set Independent\": Decode only this report's fields: BPCAP byte 102, LPA byte 261, SANICAP bytes 328–331, and MDS in CTRATT. Check methods, VERS/NVERS, SPRRS, NDI, and NODMMAS separately.",
+      "en": "Figure 338, \"Identify - Identify Controller Data Structure, I/O Command Set Independent\": Read the fields only this report's fields: BPCAP byte 102, LPA byte 261, SANICAP bytes 328–331, and MDS in CTRATT. Check methods, VERS/NVERS, SPRRS, NDI, and NODMMAS separately.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -10415,8 +10415,8 @@
       "printed_pages": "17",
       "pdf_pages": "17",
       "normative_keyword": "none",
-      "zh_tw": "Figure 11〈Offset 00h: ID - Identifiers〉：定義 offset 00h 的 ID（Identifiers），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 11, \"Offset 00h: ID - Identifiers\": Defines ID (Identifiers) at offset 00h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 11〈Offset 00h: ID - Identifiers〉：定義 offset 00h 的 ID（Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 11, \"Offset 00h: ID - Identifiers\": Defines ID (Identifiers) at offset 00h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10439,8 +10439,8 @@
       "printed_pages": "17",
       "pdf_pages": "17",
       "normative_keyword": "none",
-      "zh_tw": "Figure 12〈Offset 04h: CMD - Command〉：定義 offset 04h 的 CMD（Command），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 12, \"Offset 04h: CMD - Command\": Defines CMD (Command) at offset 04h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 12〈Offset 04h: CMD - Command〉：定義 offset 04h 的 CMD（Command），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 12, \"Offset 04h: CMD - Command\": Defines CMD (Command) at offset 04h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -10470,8 +10470,8 @@
       "printed_pages": "18",
       "pdf_pages": "18",
       "normative_keyword": "none",
-      "zh_tw": "Figure 13〈Offset 06h: STS - Device Status〉：定義 offset 06h 的 STS（Device Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 13, \"Offset 06h: STS - Device Status\": Defines STS (Device Status) at offset 06h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 13〈Offset 06h: STS - Device Status〉：定義 offset 06h 的 STS（Device Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 13, \"Offset 06h: STS - Device Status\": Defines STS (Device Status) at offset 06h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -10501,8 +10501,8 @@
       "printed_pages": "18",
       "pdf_pages": "18",
       "normative_keyword": "none",
-      "zh_tw": "Figure 14〈Offset 08h: RID - Revision ID〉：定義 offset 08h 的 RID（Revision ID），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 14, \"Offset 08h: RID - Revision ID\": Defines RID (Revision ID) at offset 08h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 14〈Offset 08h: RID - Revision ID〉：定義 offset 08h 的 RID（Revision ID），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 14, \"Offset 08h: RID - Revision ID\": Defines RID (Revision ID) at offset 08h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10524,8 +10524,8 @@
       "printed_pages": "18",
       "pdf_pages": "18",
       "normative_keyword": "none",
-      "zh_tw": "Figure 15〈Offset 09h: CC - Class Code〉：定義 offset 09h 的 CC（Class Code），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 15, \"Offset 09h: CC - Class Code\": Defines CC (Class Code) at offset 09h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 15〈Offset 09h: CC - Class Code〉：定義 offset 09h 的 CC（Class Code），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 15, \"Offset 09h: CC - Class Code\": Defines CC (Class Code) at offset 09h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10549,8 +10549,8 @@
       "printed_pages": "18",
       "pdf_pages": "18",
       "normative_keyword": "none",
-      "zh_tw": "Figure 16〈Offset 0Ch: CLS - Cache Line Size〉：定義 offset 0Ch 的 CLS（Cache Line Size），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 16, \"Offset 0Ch: CLS - Cache Line Size\": Defines CLS (Cache Line Size) at offset 0Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 16〈Offset 0Ch: CLS - Cache Line Size〉：定義 offset 0Ch 的 CLS（Cache Line Size），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 16, \"Offset 0Ch: CLS - Cache Line Size\": Defines CLS (Cache Line Size) at offset 0Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10571,8 +10571,8 @@
       "printed_pages": "18",
       "pdf_pages": "18",
       "normative_keyword": "none",
-      "zh_tw": "Figure 17〈Offset 0Dh: MLT - Master Latency Timer〉：定義 offset 0Dh 的 MLT（Master Latency Timer），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 17, \"Offset 0Dh: MLT - Master Latency Timer\": Defines MLT (Master Latency Timer) at offset 0Dh and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 17〈Offset 0Dh: MLT - Master Latency Timer〉：定義 offset 0Dh 的 MLT（Master Latency Timer），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 17, \"Offset 0Dh: MLT - Master Latency Timer\": Defines MLT (Master Latency Timer) at offset 0Dh and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10593,8 +10593,8 @@
       "printed_pages": "19",
       "pdf_pages": "19",
       "normative_keyword": "none",
-      "zh_tw": "Figure 18〈Offset 0Eh: HTYPE - Header Type〉：定義 offset 0Eh 的 HTYPE（Header Type），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 18, \"Offset 0Eh: HTYPE - Header Type\": Defines HTYPE (Header Type) at offset 0Eh and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 18〈Offset 0Eh: HTYPE - Header Type〉：定義 offset 0Eh 的 HTYPE（Header Type），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 18, \"Offset 0Eh: HTYPE - Header Type\": Defines HTYPE (Header Type) at offset 0Eh and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10617,8 +10617,8 @@
       "printed_pages": "19",
       "pdf_pages": "19",
       "normative_keyword": "none",
-      "zh_tw": "Figure 19〈Offset 0Fh: BIST - Built-In Self Test (Optional)〉：定義 offset 0Fh 的 BIST（Built-In Self Test (Optional)），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 19, \"Offset 0Fh: BIST - Built-In Self Test (Optional)\": Defines BIST (Built-In Self Test (Optional)) at offset 0Fh and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 19〈Offset 0Fh: BIST - Built-In Self Test (Optional)〉：定義 offset 0Fh 的 BIST（Built-In Self Test (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 19, \"Offset 0Fh: BIST - Built-In Self Test (Optional)\": Defines BIST (Built-In Self Test (Optional)) at offset 0Fh and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -10702,8 +10702,8 @@
       "printed_pages": "20",
       "pdf_pages": "20",
       "normative_keyword": "none",
-      "zh_tw": "Figure 22〈Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific〉：定義 offset 18h 的 BAR2（Index/Data Pair Register Base Address or Vendor Specific），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 22, \"Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific\": Defines BAR2 (Index/Data Pair Register Base Address or Vendor Specific) at offset 18h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 22〈Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific〉：定義 offset 18h 的 BAR2（Index/Data Pair Register Base Address or Vendor Specific），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 22, \"Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific\": Defines BAR2 (Index/Data Pair Register Base Address or Vendor Specific) at offset 18h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may",
@@ -10730,8 +10730,8 @@
       "printed_pages": "20",
       "pdf_pages": "20",
       "normative_keyword": "none",
-      "zh_tw": "Figure 23〈Offset 28h: CCPTR - CardBus CIS Pointer〉：定義 offset 28h 的 CCPTR（CardBus CIS Pointer），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 23, \"Offset 28h: CCPTR - CardBus CIS Pointer\": Defines CCPTR (CardBus CIS Pointer) at offset 28h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 23〈Offset 28h: CCPTR - CardBus CIS Pointer〉：定義 offset 28h 的 CCPTR（CardBus CIS Pointer），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 23, \"Offset 28h: CCPTR - CardBus CIS Pointer\": Defines CCPTR (CardBus CIS Pointer) at offset 28h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall"
@@ -10755,8 +10755,8 @@
       "printed_pages": "20",
       "pdf_pages": "20",
       "normative_keyword": "none",
-      "zh_tw": "Figure 24〈Offset 2Ch: SS - Subsystem Identifiers〉：定義 offset 2Ch 的 SS（Subsystem Identifiers），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 24, \"Offset 2Ch: SS - Subsystem Identifiers\": Defines SS (Subsystem Identifiers) at offset 2Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 24〈Offset 2Ch: SS - Subsystem Identifiers〉：定義 offset 2Ch 的 SS（Subsystem Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 24, \"Offset 2Ch: SS - Subsystem Identifiers\": Defines SS (Subsystem Identifiers) at offset 2Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10780,8 +10780,8 @@
       "printed_pages": "20",
       "pdf_pages": "20",
       "normative_keyword": "none",
-      "zh_tw": "Figure 25〈Offset 30h: EROM - Expansion ROM (Optional)〉：定義 offset 30h 的 EROM（Expansion ROM (Optional)），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 25, \"Offset 30h: EROM - Expansion ROM (Optional)\": Defines EROM (Expansion ROM (Optional)) at offset 30h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 25〈Offset 30h: EROM - Expansion ROM (Optional)〉：定義 offset 30h 的 EROM（Expansion ROM (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 25, \"Offset 30h: EROM - Expansion ROM (Optional)\": Defines EROM (Expansion ROM (Optional)) at offset 30h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10804,8 +10804,8 @@
       "printed_pages": "21",
       "pdf_pages": "21",
       "normative_keyword": "none",
-      "zh_tw": "Figure 26〈Offset 34h: CAP - Capabilities Pointer〉：定義 offset 34h 的 CAP（Capabilities Pointer），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 26, \"Offset 34h: CAP - Capabilities Pointer\": Defines CAP (Capabilities Pointer) at offset 34h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 26〈Offset 34h: CAP - Capabilities Pointer〉：定義 offset 34h 的 CAP（Capabilities Pointer），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 26, \"Offset 34h: CAP - Capabilities Pointer\": Defines CAP (Capabilities Pointer) at offset 34h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10827,8 +10827,8 @@
       "printed_pages": "21",
       "pdf_pages": "21",
       "normative_keyword": "none",
-      "zh_tw": "Figure 27〈Offset 3Ch: INTR - Interrupt Information〉：定義 offset 3Ch 的 INTR（Interrupt Information），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 27, \"Offset 3Ch: INTR - Interrupt Information\": Defines INTR (Interrupt Information) at offset 3Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 27〈Offset 3Ch: INTR - Interrupt Information〉：定義 offset 3Ch 的 INTR（Interrupt Information），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 27, \"Offset 3Ch: INTR - Interrupt Information\": Defines INTR (Interrupt Information) at offset 3Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10852,8 +10852,8 @@
       "printed_pages": "21",
       "pdf_pages": "21",
       "normative_keyword": "none",
-      "zh_tw": "Figure 28〈Offset 3Eh: MGNT - Minimum Grant〉：定義 offset 3Eh 的 MGNT（Minimum Grant），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 28, \"Offset 3Eh: MGNT - Minimum Grant\": Defines MGNT (Minimum Grant) at offset 3Eh and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 28〈Offset 3Eh: MGNT - Minimum Grant〉：定義 offset 3Eh 的 MGNT（Minimum Grant），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 28, \"Offset 3Eh: MGNT - Minimum Grant\": Defines MGNT (Minimum Grant) at offset 3Eh and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10875,8 +10875,8 @@
       "printed_pages": "21",
       "pdf_pages": "21",
       "normative_keyword": "none",
-      "zh_tw": "Figure 29〈Offset 3Fh: MLAT - Maximum Latency〉：定義 offset 3Fh 的 MLAT（Maximum Latency），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 29, \"Offset 3Fh: MLAT - Maximum Latency\": Defines MLAT (Maximum Latency) at offset 3Fh and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 29〈Offset 3Fh: MLAT - Maximum Latency〉：定義 offset 3Fh 的 MLAT（Maximum Latency），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 29, \"Offset 3Fh: MLAT - Maximum Latency\": Defines MLAT (Maximum Latency) at offset 3Fh and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -10925,8 +10925,8 @@
       "printed_pages": "21",
       "pdf_pages": "21",
       "normative_keyword": "none",
-      "zh_tw": "Figure 31〈Offset PMCAP: PID - PCI Power Management Capability ID〉：定義 offset PMCAP 的 PID（PCI Power Management Capability ID），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 31, \"Offset PMCAP: PID - PCI Power Management Capability ID\": Defines PID (PCI Power Management Capability ID) at offset PMCAP and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 31〈Offset PMCAP: PID - PCI Power Management Capability ID〉：定義 offset PMCAP 的 PID（PCI Power Management Capability ID），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 31, \"Offset PMCAP: PID - PCI Power Management Capability ID\": Defines PID (PCI Power Management Capability ID) at offset PMCAP and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may"
@@ -10953,8 +10953,8 @@
       "printed_pages": "22",
       "pdf_pages": "22",
       "normative_keyword": "none",
-      "zh_tw": "Figure 32〈Offset PMCAP + 2h: PC - PCI Power Management Capabilities〉：定義 offset PMCAP + 2h 的 PC（PCI Power Management Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 32, \"Offset PMCAP + 2h: PC - PCI Power Management Capabilities\": Defines PC (PCI Power Management Capabilities) at offset PMCAP + 2h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 32〈Offset PMCAP + 2h: PC - PCI Power Management Capabilities〉：定義 offset PMCAP + 2h 的 PC（PCI Power Management Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 32, \"Offset PMCAP + 2h: PC - PCI Power Management Capabilities\": Defines PC (PCI Power Management Capabilities) at offset PMCAP + 2h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -10984,8 +10984,8 @@
       "printed_pages": "22",
       "pdf_pages": "22",
       "normative_keyword": "none",
-      "zh_tw": "Figure 33〈Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status〉：定義 offset PMCAP + 4h 的 PMCS（PCI Power Management Control and Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 33, \"Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status\": Defines PMCS (PCI Power Management Control and Status) at offset PMCAP + 4h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 33〈Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status〉：定義 offset PMCAP + 4h 的 PMCS（PCI Power Management Control and Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 33, \"Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status\": Defines PMCS (PCI Power Management Control and Status) at offset PMCAP + 4h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -11047,8 +11047,8 @@
       "printed_pages": "23",
       "pdf_pages": "23",
       "normative_keyword": "none",
-      "zh_tw": "Figure 35〈Offset MSICAP: MID - Message Signaled Interrupt Identifiers〉：定義 offset MSICAP 的 MID（Message Signaled Interrupt Identifiers），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 35, \"Offset MSICAP: MID - Message Signaled Interrupt Identifiers\": Defines MID (Message Signaled Interrupt Identifiers) at offset MSICAP and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 35〈Offset MSICAP: MID - Message Signaled Interrupt Identifiers〉：定義 offset MSICAP 的 MID（Message Signaled Interrupt Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 35, \"Offset MSICAP: MID - Message Signaled Interrupt Identifiers\": Defines MID (Message Signaled Interrupt Identifiers) at offset MSICAP and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may"
@@ -11077,8 +11077,8 @@
       "printed_pages": "23",
       "pdf_pages": "23",
       "normative_keyword": "none",
-      "zh_tw": "Figure 36〈Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control〉：定義 offset MSICAP + 2h 的 MC（Message Signaled Interrupt Message Control），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 36, \"Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control\": Defines MC (Message Signaled Interrupt Message Control) at offset MSICAP + 2h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 36〈Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control〉：定義 offset MSICAP + 2h 的 MC（Message Signaled Interrupt Message Control），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 36, \"Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control\": Defines MC (Message Signaled Interrupt Message Control) at offset MSICAP + 2h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11111,8 +11111,8 @@
       "printed_pages": "23",
       "pdf_pages": "23",
       "normative_keyword": "none",
-      "zh_tw": "Figure 37〈Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address〉：定義 offset MSICAP + 4h 的 MA（Message Signaled Interrupt Message Address），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 37, \"Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address\": Defines MA (Message Signaled Interrupt Message Address) at offset MSICAP + 4h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 37〈Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address〉：定義 offset MSICAP + 4h 的 MA（Message Signaled Interrupt Message Address），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 37, \"Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address\": Defines MA (Message Signaled Interrupt Message Address) at offset MSICAP + 4h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -11139,8 +11139,8 @@
       "printed_pages": "23",
       "pdf_pages": "23",
       "normative_keyword": "none",
-      "zh_tw": "Figure 38〈Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address〉：定義 offset MSICAP + 8h 的 MUA（Message Signaled Interrupt Upper Address），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 38, \"Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address\": Defines MUA (Message Signaled Interrupt Upper Address) at offset MSICAP + 8h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 38〈Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address〉：定義 offset MSICAP + 8h 的 MUA（Message Signaled Interrupt Upper Address），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 38, \"Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address\": Defines MUA (Message Signaled Interrupt Upper Address) at offset MSICAP + 8h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -11165,8 +11165,8 @@
       "printed_pages": "23",
       "pdf_pages": "23",
       "normative_keyword": "none",
-      "zh_tw": "Figure 39〈Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data〉：定義 offset MSICAP + Ch 的 MD（Message Signaled Interrupt Message Data），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 39, \"Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data\": Defines MD (Message Signaled Interrupt Message Data) at offset MSICAP + Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 39〈Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data〉：定義 offset MSICAP + Ch 的 MD（Message Signaled Interrupt Message Data），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 39, \"Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data\": Defines MD (Message Signaled Interrupt Message Data) at offset MSICAP + Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -11192,8 +11192,8 @@
       "printed_pages": "24",
       "pdf_pages": "24",
       "normative_keyword": "none",
-      "zh_tw": "Figure 40〈Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)〉：定義 offset MSICAP + 10h 的 MMASK（Message Signaled Interrupt Mask Bits (Optional)），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 40, \"Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)\": Defines MMASK (Message Signaled Interrupt Mask Bits (Optional)) at offset MSICAP + 10h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 40〈Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)〉：定義 offset MSICAP + 10h 的 MMASK（Message Signaled Interrupt Mask Bits (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 40, \"Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)\": Defines MMASK (Message Signaled Interrupt Mask Bits (Optional)) at offset MSICAP + 10h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -11217,8 +11217,8 @@
       "printed_pages": "24",
       "pdf_pages": "24",
       "normative_keyword": "none",
-      "zh_tw": "Figure 41〈Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)〉：定義 offset MSICAP + 14h 的 MPEND（Message Signaled Interrupt Pending Bits (Optional)），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 41, \"Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)\": Defines MPEND (Message Signaled Interrupt Pending Bits (Optional)) at offset MSICAP + 14h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 41〈Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)〉：定義 offset MSICAP + 14h 的 MPEND（Message Signaled Interrupt Pending Bits (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 41, \"Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)\": Defines MPEND (Message Signaled Interrupt Pending Bits (Optional)) at offset MSICAP + 14h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional"
@@ -11279,8 +11279,8 @@
       "printed_pages": "24",
       "pdf_pages": "24",
       "normative_keyword": "none",
-      "zh_tw": "Figure 43〈Offset MSIXCAP: MXID - MSI-X Identifiers〉：定義 offset MSIXCAP 的 MXID（MSI-X Identifiers），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 43, \"Offset MSIXCAP: MXID - MSI-X Identifiers\": Defines MXID (MSI-X Identifiers) at offset MSIXCAP and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 43〈Offset MSIXCAP: MXID - MSI-X Identifiers〉：定義 offset MSIXCAP 的 MXID（MSI-X Identifiers），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 43, \"Offset MSIXCAP: MXID - MSI-X Identifiers\": Defines MXID (MSI-X Identifiers) at offset MSIXCAP and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may"
@@ -11308,8 +11308,8 @@
       "printed_pages": "24-25",
       "pdf_pages": "24-25",
       "normative_keyword": "none",
-      "zh_tw": "Figure 44〈Offset MSIXCAP + 2h: MXC - MSI-X Message Control〉：定義 offset MSIXCAP + 2h 的 MXC（MSI-X Message Control），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 44, \"Offset MSIXCAP + 2h: MXC - MSI-X Message Control\": Defines MXC (MSI-X Message Control) at offset MSIXCAP + 2h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 44〈Offset MSIXCAP + 2h: MXC - MSI-X Message Control〉：定義 offset MSIXCAP + 2h 的 MXC（MSI-X Message Control），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 44, \"Offset MSIXCAP + 2h: MXC - MSI-X Message Control\": Defines MXC (MSI-X Message Control) at offset MSIXCAP + 2h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -11339,8 +11339,8 @@
       "printed_pages": "25",
       "pdf_pages": "25",
       "normative_keyword": "none",
-      "zh_tw": "Figure 45〈Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR〉：定義 offset MSIXCAP + 4h 的 MTAB（MSI-X Table Offset / Table BIR），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 45, \"Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR\": Defines MTAB (MSI-X Table Offset / Table BIR) at offset MSIXCAP + 4h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 45〈Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR〉：定義 offset MSIXCAP + 4h 的 MTAB（MSI-X Table Offset / Table BIR），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 45, \"Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR\": Defines MTAB (MSI-X Table Offset / Table BIR) at offset MSIXCAP + 4h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -11370,8 +11370,8 @@
       "printed_pages": "25",
       "pdf_pages": "25",
       "normative_keyword": "none",
-      "zh_tw": "Figure 46〈Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR〉：定義 offset MSIXCAP + 8h 的 MPBA（MSI-X PBA Offset / PBA BIR），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 46, \"Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR\": Defines MPBA (MSI-X PBA Offset / PBA BIR) at offset MSIXCAP + 8h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 46〈Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR〉：定義 offset MSIXCAP + 8h 的 MPBA（MSI-X PBA Offset / PBA BIR），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 46, \"Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR\": Defines MPBA (MSI-X PBA Offset / PBA BIR) at offset MSIXCAP + 8h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may",
@@ -11431,8 +11431,8 @@
       "printed_pages": "26",
       "pdf_pages": "26",
       "normative_keyword": "none",
-      "zh_tw": "Figure 48〈Offset PXCAP: PXID - PCI Express Capability ID〉：定義 offset PXCAP 的 PXID（PCI Express Capability ID），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 48, \"Offset PXCAP: PXID - PCI Express Capability ID\": Defines PXID (PCI Express Capability ID) at offset PXCAP and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 48〈Offset PXCAP: PXID - PCI Express Capability ID〉：定義 offset PXCAP 的 PXID（PCI Express Capability ID），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 48, \"Offset PXCAP: PXID - PCI Express Capability ID\": Defines PXID (PCI Express Capability ID) at offset PXCAP and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may"
@@ -11459,8 +11459,8 @@
       "printed_pages": "26",
       "pdf_pages": "26",
       "normative_keyword": "none",
-      "zh_tw": "Figure 49〈Offset PXCAP + 2h: PXCAP - PCI Express Capabilities〉：定義 offset PXCAP + 2h 的 PXCAP（PCI Express Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 49, \"Offset PXCAP + 2h: PXCAP - PCI Express Capabilities\": Defines PXCAP (PCI Express Capabilities) at offset PXCAP + 2h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 49〈Offset PXCAP + 2h: PXCAP - PCI Express Capabilities〉：定義 offset PXCAP + 2h 的 PXCAP（PCI Express Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 49, \"Offset PXCAP + 2h: PXCAP - PCI Express Capabilities\": Defines PXCAP (PCI Express Capabilities) at offset PXCAP + 2h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11490,8 +11490,8 @@
       "printed_pages": "26-27",
       "pdf_pages": "26-27",
       "normative_keyword": "none",
-      "zh_tw": "Figure 50〈Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities〉：定義 offset PXCAP + 4h 的 PXDCAP（PCI Express Device Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 50, \"Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities\": Defines PXDCAP (PCI Express Device Capabilities) at offset PXCAP + 4h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 50〈Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities〉：定義 offset PXCAP + 4h 的 PXDCAP（PCI Express Device Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 50, \"Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities\": Defines PXDCAP (PCI Express Device Capabilities) at offset PXCAP + 4h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11524,8 +11524,8 @@
       "printed_pages": "27-28",
       "pdf_pages": "27-28",
       "normative_keyword": "none",
-      "zh_tw": "Figure 51〈Offset PXCAP + 8h: PXDC - PCI Express Device Control〉：定義 offset PXCAP + 8h 的 PXDC（PCI Express Device Control），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 51, \"Offset PXCAP + 8h: PXDC - PCI Express Device Control\": Defines PXDC (PCI Express Device Control) at offset PXCAP + 8h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 51〈Offset PXCAP + 8h: PXDC - PCI Express Device Control〉：定義 offset PXCAP + 8h 的 PXDC（PCI Express Device Control），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 51, \"Offset PXCAP + 8h: PXDC - PCI Express Device Control\": Defines PXDC (PCI Express Device Control) at offset PXCAP + 8h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -11557,8 +11557,8 @@
       "printed_pages": "28",
       "pdf_pages": "28",
       "normative_keyword": "none",
-      "zh_tw": "Figure 52〈Offset PXCAP + Ah: PXDS - PCI Express Device Status〉：定義 offset PXCAP + Ah 的 PXDS（PCI Express Device Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 52, \"Offset PXCAP + Ah: PXDS - PCI Express Device Status\": Defines PXDS (PCI Express Device Status) at offset PXCAP + Ah and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 52〈Offset PXCAP + Ah: PXDS - PCI Express Device Status〉：定義 offset PXCAP + Ah 的 PXDS（PCI Express Device Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 52, \"Offset PXCAP + Ah: PXDS - PCI Express Device Status\": Defines PXDS (PCI Express Device Status) at offset PXCAP + Ah and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11589,8 +11589,8 @@
       "printed_pages": "28-29",
       "pdf_pages": "28-29",
       "normative_keyword": "none",
-      "zh_tw": "Figure 53〈Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities〉：定義 offset PXCAP + Ch 的 PXLCAP（PCI Express Link Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 53, \"Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities\": Defines PXLCAP (PCI Express Link Capabilities) at offset PXCAP + Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 53〈Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities〉：定義 offset PXCAP + Ch 的 PXLCAP（PCI Express Link Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 53, \"Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities\": Defines PXLCAP (PCI Express Link Capabilities) at offset PXCAP + Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -11622,8 +11622,8 @@
       "printed_pages": "29",
       "pdf_pages": "29",
       "normative_keyword": "none",
-      "zh_tw": "Figure 54〈Offset PXCAP + 10h: PXLC - PCI Express Link Control〉：定義 offset PXCAP + 10h 的 PXLC（PCI Express Link Control），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 54, \"Offset PXCAP + 10h: PXLC - PCI Express Link Control\": Defines PXLC (PCI Express Link Control) at offset PXCAP + 10h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 54〈Offset PXCAP + 10h: PXLC - PCI Express Link Control〉：定義 offset PXCAP + 10h 的 PXLC（PCI Express Link Control），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 54, \"Offset PXCAP + 10h: PXLC - PCI Express Link Control\": Defines PXLC (PCI Express Link Control) at offset PXCAP + 10h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11654,8 +11654,8 @@
       "printed_pages": "29",
       "pdf_pages": "29",
       "normative_keyword": "none",
-      "zh_tw": "Figure 55〈Offset PXCAP + 12h: PXLS - PCI Express Link Status〉：定義 offset PXCAP + 12h 的 PXLS（PCI Express Link Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 55, \"Offset PXCAP + 12h: PXLS - PCI Express Link Status\": Defines PXLS (PCI Express Link Status) at offset PXCAP + 12h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 55〈Offset PXCAP + 12h: PXLS - PCI Express Link Status〉：定義 offset PXCAP + 12h 的 PXLS（PCI Express Link Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 55, \"Offset PXCAP + 12h: PXLS - PCI Express Link Status\": Defines PXLS (PCI Express Link Status) at offset PXCAP + 12h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11684,8 +11684,8 @@
       "printed_pages": "30",
       "pdf_pages": "30",
       "normative_keyword": "none",
-      "zh_tw": "Figure 56〈Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2〉：定義 offset PXCAP + 24h 的 PXDCAP2（PCI Express Device Capabilities 2），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 56, \"Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2\": Defines PXDCAP2 (PCI Express Device Capabilities 2) at offset PXCAP + 24h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 56〈Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2〉：定義 offset PXCAP + 24h 的 PXDCAP2（PCI Express Device Capabilities 2），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 56, \"Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2\": Defines PXDCAP2 (PCI Express Device Capabilities 2) at offset PXCAP + 24h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -11717,8 +11717,8 @@
       "printed_pages": "30-31",
       "pdf_pages": "30-31",
       "normative_keyword": "none",
-      "zh_tw": "Figure 57〈Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2〉：定義 offset PXCAP + 28h 的 PXDC2（PCI Express Device Control 2），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 57, \"Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2\": Defines PXDC2 (PCI Express Device Control 2) at offset PXCAP + 28h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 57〈Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2〉：定義 offset PXCAP + 28h 的 PXDC2（PCI Express Device Control 2），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 57, \"Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2\": Defines PXDC2 (PCI Express Device Control 2) at offset PXCAP + 28h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may",
@@ -11781,8 +11781,8 @@
       "printed_pages": "31",
       "pdf_pages": "31",
       "normative_keyword": "none",
-      "zh_tw": "Figure 59〈Offset AERCAP: AERID - AER Capability ID〉：定義 offset AERCAP 的 AERID（AER Capability ID），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 59, \"Offset AERCAP: AERID - AER Capability ID\": Defines AERID (AER Capability ID) at offset AERCAP and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 59〈Offset AERCAP: AERID - AER Capability ID〉：定義 offset AERCAP 的 AERID（AER Capability ID），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 59, \"Offset AERCAP: AERID - AER Capability ID\": Defines AERID (AER Capability ID) at offset AERCAP and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may"
@@ -11811,8 +11811,8 @@
       "printed_pages": "31-32",
       "pdf_pages": "31-32",
       "normative_keyword": "none",
-      "zh_tw": "Figure 60〈Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register〉：定義 offset AERCAP + 4 的 AERUCES（AER Uncorrectable Error Status Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 60, \"Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register\": Defines AERUCES (AER Uncorrectable Error Status Register) at offset AERCAP + 4 and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 60〈Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register〉：定義 offset AERCAP + 4 的 AERUCES（AER Uncorrectable Error Status Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 60, \"Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register\": Defines AERUCES (AER Uncorrectable Error Status Register) at offset AERCAP + 4 and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -11843,8 +11843,8 @@
       "printed_pages": "32",
       "pdf_pages": "32",
       "normative_keyword": "none",
-      "zh_tw": "Figure 61〈Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register〉：定義 offset AERCAP + 8 的 AERUCEM（AER Uncorrectable Error Mask Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 61, \"Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register\": Defines AERUCEM (AER Uncorrectable Error Mask Register) at offset AERCAP + 8 and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 61〈Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register〉：定義 offset AERCAP + 8 的 AERUCEM（AER Uncorrectable Error Mask Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 61, \"Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register\": Defines AERUCEM (AER Uncorrectable Error Mask Register) at offset AERCAP + 8 and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -11875,8 +11875,8 @@
       "printed_pages": "32-33",
       "pdf_pages": "32-33",
       "normative_keyword": "none",
-      "zh_tw": "Figure 62〈Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register〉：定義 offset AERCAP + Ch 的 AERUCESEV（AER Uncorrectable Error Severity Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 62, \"Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register\": Defines AERUCESEV (AER Uncorrectable Error Severity Register) at offset AERCAP + Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 62〈Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register〉：定義 offset AERCAP + Ch 的 AERUCESEV（AER Uncorrectable Error Severity Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 62, \"Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register\": Defines AERUCESEV (AER Uncorrectable Error Severity Register) at offset AERCAP + Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -11907,8 +11907,8 @@
       "printed_pages": "33",
       "pdf_pages": "33",
       "normative_keyword": "none",
-      "zh_tw": "Figure 63〈Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register〉：定義 offset AERCAP + 10h 的 AERCES（AER Correctable Error Status Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 63, \"Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register\": Defines AERCES (AER Correctable Error Status Register) at offset AERCAP + 10h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 63〈Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register〉：定義 offset AERCAP + 10h 的 AERCES（AER Correctable Error Status Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 63, \"Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register\": Defines AERCES (AER Correctable Error Status Register) at offset AERCAP + 10h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -11939,8 +11939,8 @@
       "printed_pages": "33",
       "pdf_pages": "33",
       "normative_keyword": "none",
-      "zh_tw": "Figure 64〈Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register〉：定義 offset AERCAP + 14h 的 AERCEM（AER Correctable Error Mask Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 64, \"Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register\": Defines AERCEM (AER Correctable Error Mask Register) at offset AERCAP + 14h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 64〈Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register〉：定義 offset AERCAP + 14h 的 AERCEM（AER Correctable Error Mask Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 64, \"Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register\": Defines AERCEM (AER Correctable Error Mask Register) at offset AERCAP + 14h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -11971,8 +11971,8 @@
       "printed_pages": "34",
       "pdf_pages": "34",
       "normative_keyword": "none",
-      "zh_tw": "Figure 65〈Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register〉：定義 offset AERCAP + 18h 的 AERCC（AER Capabilities and Control Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 65, \"Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register\": Defines AERCC (AER Capabilities and Control Register) at offset AERCAP + 18h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 65〈Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register〉：定義 offset AERCAP + 18h 的 AERCC（AER Capabilities and Control Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 65, \"Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register\": Defines AERCC (AER Capabilities and Control Register) at offset AERCAP + 18h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -12002,8 +12002,8 @@
       "printed_pages": "34",
       "pdf_pages": "34",
       "normative_keyword": "none",
-      "zh_tw": "Figure 66〈Offset AERCAP + 1Ch: AERHL - AER Header Log Register〉：定義 offset AERCAP + 1Ch 的 AERHL（AER Header Log Register），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 66, \"Offset AERCAP + 1Ch: AERHL - AER Header Log Register\": Defines AERHL (AER Header Log Register) at offset AERCAP + 1Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 66〈Offset AERCAP + 1Ch: AERHL - AER Header Log Register〉：定義 offset AERCAP + 1Ch 的 AERHL（AER Header Log Register），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 66, \"Offset AERCAP + 1Ch: AERHL - AER Header Log Register\": Defines AERHL (AER Header Log Register) at offset AERCAP + 1Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -12031,8 +12031,8 @@
       "printed_pages": "35",
       "pdf_pages": "35",
       "normative_keyword": "none",
-      "zh_tw": "Figure 67〈Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)〉：定義 offset AERCAP + 38h 的 AERTLP（AER TLP Prefix Log Register (Optional)），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 67, \"Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)\": Defines AERTLP (AER TLP Prefix Log Register (Optional)) at offset AERCAP + 38h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 67〈Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)〉：定義 offset AERCAP + 38h 的 AERTLP（AER TLP Prefix Log Register (Optional)），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 67, \"Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)\": Defines AERTLP (AER TLP Prefix Log Register (Optional)) at offset AERCAP + 38h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -13491,8 +13491,8 @@
       "printed_pages": "55-58",
       "pdf_pages": "81-84",
       "normative_keyword": "none",
-      "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE-NSMGMT-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -15067,8 +15067,8 @@
       "printed_pages": "55-58",
       "pdf_pages": "81-84",
       "normative_keyword": "none",
-      "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -15618,7 +15618,7 @@
       "pdf_pages": "237-238",
       "normative_keyword": "none",
       "zh_tw": "SEL=011b 時，CQE.DW0 以 CHANG、NSSPEC、SVBL 回報是否可變更、是否 namespace-specific、是否可 save。這三個 capability bits 與 Feature value 是兩種不同資料，不能混解。",
-      "en": "With SEL=011b, CQE.DW0 reports CHANG, NSSPEC, and SVBL: changeable, namespace-specific, and saveable. These capability bits are distinct from the Feature value and must not be decoded as one.",
+      "en": "With SEL=011b, CQE.DW0 reports CHANG, NSSPEC, and SVBL: changeable, namespace-specific, and saveable. These capability bits are distinct from the Feature value and must not be interpreted values as one.",
       "scope_entry_id": "BASE-POWER-INCLUDE",
       "heading_zh_tw": "CHANG／NSSPEC／SVBL",
       "heading_en": "CHANG/NSSPEC/SVBL",
@@ -18072,7 +18072,7 @@
       "pdf_pages": "171-181",
       "normative_keyword": "none",
       "zh_tw": "status 要先解 Status Code Type（SCT），再解 Status Code（SC），同時檢查 Do Not Retry（DNR）等控制 bit；數值不能脫離 SCT 單獨解讀。",
-      "en": "Status decoding starts with Status Code Type (SCT), then Status Code (SC), together with control bits such as Do Not Retry (DNR). An SC value is not interpreted without its SCT.",
+      "en": "Status reading the fields starts with Status Code Type (SCT), then Status Code (SC), together with control bits such as Do Not Retry (DNR). An SC value is not interpreted without its SCT.",
       "scope_entry_id": "BASE4-INCLUDE",
       "heading_zh_tw": "SCT、SC 與 DNR",
       "heading_en": "SCT, SC, and DNR",
@@ -19965,8 +19965,8 @@
       "printed_pages": "55-58",
       "pdf_pages": "81-84",
       "normative_keyword": "none",
-      "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": Defines CAP (Controller Capabilities) at offset 0h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -20049,8 +20049,8 @@
       "printed_pages": "59",
       "pdf_pages": "85",
       "normative_keyword": "none",
-      "zh_tw": "Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：定義 offset Ch 的 INTMS（Interrupt Mask Set），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 39, \"Offset Ch: INTMS - Interrupt Mask Set\": Defines INTMS (Interrupt Mask Set) at offset Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：定義 offset Ch 的 INTMS（Interrupt Mask Set），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 39, \"Offset Ch: INTMS - Interrupt Mask Set\": Defines INTMS (Interrupt Mask Set) at offset Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -20075,8 +20075,8 @@
       "printed_pages": "59",
       "pdf_pages": "85",
       "normative_keyword": "none",
-      "zh_tw": "Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：定義 offset 10h 的 INTMC（Interrupt Mask Clear），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 40, \"Offset 10h: INTMC - Interrupt Mask Clear\": Defines INTMC (Interrupt Mask Clear) at offset 10h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：定義 offset 10h 的 INTMC（Interrupt Mask Clear），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 40, \"Offset 10h: INTMC - Interrupt Mask Clear\": Defines INTMC (Interrupt Mask Clear) at offset 10h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -20100,8 +20100,8 @@
       "printed_pages": "60-63",
       "pdf_pages": "86-89",
       "normative_keyword": "none",
-      "zh_tw": "Figure 41〈Offset 14h: CC - Controller Configuration〉：定義 offset 14h 的 CC（Controller Configuration），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 41, \"Offset 14h: CC - Controller Configuration\": Defines CC (Controller Configuration) at offset 14h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 41〈Offset 14h: CC - Controller Configuration〉：定義 offset 14h 的 CC（Controller Configuration），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 41, \"Offset 14h: CC - Controller Configuration\": Defines CC (Controller Configuration) at offset 14h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -20135,8 +20135,8 @@
       "printed_pages": "63-65",
       "pdf_pages": "89-91",
       "normative_keyword": "none",
-      "zh_tw": "Figure 42〈Offset 1Ch: CSTS - Controller Status〉：定義 offset 1Ch 的 CSTS（Controller Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 42, \"Offset 1Ch: CSTS - Controller Status\": Defines CSTS (Controller Status) at offset 1Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 42〈Offset 1Ch: CSTS - Controller Status〉：定義 offset 1Ch 的 CSTS（Controller Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 42, \"Offset 1Ch: CSTS - Controller Status\": Defines CSTS (Controller Status) at offset 1Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -20171,8 +20171,8 @@
       "printed_pages": "66",
       "pdf_pages": "92",
       "normative_keyword": "none",
-      "zh_tw": "Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：定義 offset 20h 的 NSSR（NVM Subsystem Reset），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 43, \"Offset 20h: NSSR - NVM Subsystem Reset\": Defines NSSR (NVM Subsystem Reset) at offset 20h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：定義 offset 20h 的 NSSR（NVM Subsystem Reset），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 43, \"Offset 20h: NSSR - NVM Subsystem Reset\": Defines NSSR (NVM Subsystem Reset) at offset 20h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall"
@@ -20197,8 +20197,8 @@
       "printed_pages": "66",
       "pdf_pages": "92",
       "normative_keyword": "none",
-      "zh_tw": "Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：定義 offset 24h 的 AQA（Admin Queue Attributes），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 44, \"Offset 24h: AQA - Admin Queue Attributes\": Defines AQA (Admin Queue Attributes) at offset 24h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：定義 offset 24h 的 AQA（Admin Queue Attributes），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 44, \"Offset 24h: AQA - Admin Queue Attributes\": Defines AQA (Admin Queue Attributes) at offset 24h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20223,8 +20223,8 @@
       "printed_pages": "66",
       "pdf_pages": "92",
       "normative_keyword": "none",
-      "zh_tw": "Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：定義 offset 28h 的 ASQ（Admin Submission Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 45, \"Offset 28h: ASQ - Admin Submission Queue Base Address\": Defines ASQ (Admin Submission Queue Base Address) at offset 28h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：定義 offset 28h 的 ASQ（Admin Submission Queue Base Address），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 45, \"Offset 28h: ASQ - Admin Submission Queue Base Address\": Defines ASQ (Admin Submission Queue Base Address) at offset 28h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20251,8 +20251,8 @@
       "printed_pages": "67",
       "pdf_pages": "93",
       "normative_keyword": "none",
-      "zh_tw": "Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：定義 offset 30h 的 ACQ（Admin Completion Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 46, \"Offset 30h: ACQ - Admin Completion Queue Base Address\": Defines ACQ (Admin Completion Queue Base Address) at offset 30h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：定義 offset 30h 的 ACQ（Admin Completion Queue Base Address），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 46, \"Offset 30h: ACQ - Admin Completion Queue Base Address\": Defines ACQ (Admin Completion Queue Base Address) at offset 30h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20279,8 +20279,8 @@
       "printed_pages": "67-68",
       "pdf_pages": "93-94",
       "normative_keyword": "none",
-      "zh_tw": "Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：定義 offset 38h 的 CMBLOC（Controller Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 47, \"Offset 38h: CMBLOC - Controller Memory Buffer Location\": Defines CMBLOC (Controller Memory Buffer Location) at offset 38h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：定義 offset 38h 的 CMBLOC（Controller Memory Buffer Location），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 47, \"Offset 38h: CMBLOC - Controller Memory Buffer Location\": Defines CMBLOC (Controller Memory Buffer Location) at offset 38h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall"
@@ -20308,8 +20308,8 @@
       "printed_pages": "68-69",
       "pdf_pages": "94-95",
       "normative_keyword": "none",
-      "zh_tw": "Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：定義 offset 3Ch 的 CMBSZ（Controller Memory Buffer Size），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 48, \"Offset 3Ch: CMBSZ - Controller Memory Buffer Size\": Defines CMBSZ (Controller Memory Buffer Size) at offset 3Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：定義 offset 3Ch 的 CMBSZ（Controller Memory Buffer Size），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 48, \"Offset 3Ch: CMBSZ - Controller Memory Buffer Size\": Defines CMBSZ (Controller Memory Buffer Size) at offset 3Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -20341,8 +20341,8 @@
       "printed_pages": "69",
       "pdf_pages": "95",
       "normative_keyword": "none",
-      "zh_tw": "Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：定義 offset 40h 的 BPINFO（Boot Partition Information），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 49, \"Offset 40h: BPINFO - Boot Partition Information\": Defines BPINFO (Boot Partition Information) at offset 40h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：定義 offset 40h 的 BPINFO（Boot Partition Information），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 49, \"Offset 40h: BPINFO - Boot Partition Information\": Defines BPINFO (Boot Partition Information) at offset 40h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20370,8 +20370,8 @@
       "printed_pages": "69-70",
       "pdf_pages": "95-96",
       "normative_keyword": "none",
-      "zh_tw": "Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：定義 offset 44h 的 BPRSEL（Boot Partition Read Select），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 50, \"Offset 44h: BPRSEL - Boot Partition Read Select\": Defines BPRSEL (Boot Partition Read Select) at offset 44h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：定義 offset 44h 的 BPRSEL（Boot Partition Read Select），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 50, \"Offset 44h: BPRSEL - Boot Partition Read Select\": Defines BPRSEL (Boot Partition Read Select) at offset 44h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20397,8 +20397,8 @@
       "printed_pages": "70",
       "pdf_pages": "96",
       "normative_keyword": "none",
-      "zh_tw": "Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：定義 offset 48h 的 BPMBL（Boot Partition Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 51, \"Offset 48h: BPMBL - Boot Partition Memory Buffer Location\": Defines BPMBL (Boot Partition Memory Buffer Location) at offset 48h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：定義 offset 48h 的 BPMBL（Boot Partition Memory Buffer Location），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 51, \"Offset 48h: BPMBL - Boot Partition Memory Buffer Location\": Defines BPMBL (Boot Partition Memory Buffer Location) at offset 48h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20422,8 +20422,8 @@
       "printed_pages": "70-71",
       "pdf_pages": "96-97",
       "normative_keyword": "none",
-      "zh_tw": "Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：定義 offset 50h 的 CMBMSC（Controller Memory Buffer Memory Space Control），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 52, \"Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control\": Defines CMBMSC (Controller Memory Buffer Memory Space Control) at offset 50h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：定義 offset 50h 的 CMBMSC（Controller Memory Buffer Memory Space Control），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 52, \"Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control\": Defines CMBMSC (Controller Memory Buffer Memory Space Control) at offset 50h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20454,8 +20454,8 @@
       "printed_pages": "71",
       "pdf_pages": "97",
       "normative_keyword": "none",
-      "zh_tw": "Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：定義 offset 58h 的 CMBSTS（Controller Memory Buffer Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 53, \"Offset 58h: CMBSTS - Controller Memory Buffer Status\": Defines CMBSTS (Controller Memory Buffer Status) at offset 58h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：定義 offset 58h 的 CMBSTS（Controller Memory Buffer Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 53, \"Offset 58h: CMBSTS - Controller Memory Buffer Status\": Defines CMBSTS (Controller Memory Buffer Status) at offset 58h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20484,8 +20484,8 @@
       "printed_pages": "71",
       "pdf_pages": "97",
       "normative_keyword": "none",
-      "zh_tw": "Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：定義 offset 5Ch 的 CMBEBS（Controller Memory Buffer Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 54, \"Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size\": Defines CMBEBS (Controller Memory Buffer Elasticity Buffer Size) at offset 5Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：定義 offset 5Ch 的 CMBEBS（Controller Memory Buffer Elasticity Buffer Size），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 54, \"Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size\": Defines CMBEBS (Controller Memory Buffer Elasticity Buffer Size) at offset 5Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20515,8 +20515,8 @@
       "printed_pages": "72",
       "pdf_pages": "98",
       "normative_keyword": "none",
-      "zh_tw": "Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：定義 offset 60h 的 CMBSWTP（Controller Memory Buffer Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 55, \"Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput\": Defines CMBSWTP (Controller Memory Buffer Sustained Write Throughput) at offset 60h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：定義 offset 60h 的 CMBSWTP（Controller Memory Buffer Sustained Write Throughput），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 55, \"Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput\": Defines CMBSWTP (Controller Memory Buffer Sustained Write Throughput) at offset 60h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20546,8 +20546,8 @@
       "printed_pages": "72",
       "pdf_pages": "98",
       "normative_keyword": "none",
-      "zh_tw": "Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：定義 offset 64h 的 NSSD（NVM Subsystem Shutdown），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 56, \"Offset 64h: NSSD - NVM Subsystem Shutdown\": Defines NSSD (NVM Subsystem Shutdown) at offset 64h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：定義 offset 64h 的 NSSD（NVM Subsystem Shutdown），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 56, \"Offset 64h: NSSD - NVM Subsystem Shutdown\": Defines NSSD (NVM Subsystem Shutdown) at offset 64h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall"
@@ -20573,8 +20573,8 @@
       "printed_pages": "73",
       "pdf_pages": "99",
       "normative_keyword": "none",
-      "zh_tw": "Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：定義 offset 68h 的 CRTO（Controller Ready Timeouts），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 57, \"Offset 68h: CRTO - Controller Ready Timeouts\": Defines CRTO (Controller Ready Timeouts) at offset 68h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：定義 offset 68h 的 CRTO（Controller Ready Timeouts），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 57, \"Offset 68h: CRTO - Controller Ready Timeouts\": Defines CRTO (Controller Ready Timeouts) at offset 68h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "should not",
@@ -20607,8 +20607,8 @@
       "printed_pages": "73-74",
       "pdf_pages": "99-100",
       "normative_keyword": "none",
-      "zh_tw": "Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：定義 offset E00h 的 PMRCAP（Persistent Memory Region Capabilities），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 58, \"Offset E00h: PMRCAP - Persistent Memory Region Capabilities\": Defines PMRCAP (Persistent Memory Region Capabilities) at offset E00h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：定義 offset E00h 的 PMRCAP（Persistent Memory Region Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 58, \"Offset E00h: PMRCAP - Persistent Memory Region Capabilities\": Defines PMRCAP (Persistent Memory Region Capabilities) at offset E00h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -20642,8 +20642,8 @@
       "printed_pages": "74",
       "pdf_pages": "100",
       "normative_keyword": "none",
-      "zh_tw": "Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：定義 offset E04h 的 PMRCTL（Persistent Memory Region Control），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 59, \"Offset E04h: PMRCTL - Persistent Memory Region Control\": Defines PMRCTL (Persistent Memory Region Control) at offset E04h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：定義 offset E04h 的 PMRCTL（Persistent Memory Region Control），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 59, \"Offset E04h: PMRCTL - Persistent Memory Region Control\": Defines PMRCTL (Persistent Memory Region Control) at offset E04h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20669,8 +20669,8 @@
       "printed_pages": "75",
       "pdf_pages": "101",
       "normative_keyword": "none",
-      "zh_tw": "Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：定義 offset E08h 的 PMRSTS（Persistent Memory Region Status），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 60, \"Offset E08h: PMRSTS - Persistent Memory Region Status\": Defines PMRSTS (Persistent Memory Region Status) at offset E08h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：定義 offset E08h 的 PMRSTS（Persistent Memory Region Status），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 60, \"Offset E08h: PMRSTS - Persistent Memory Region Status\": Defines PMRSTS (Persistent Memory Region Status) at offset E08h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20702,8 +20702,8 @@
       "printed_pages": "76",
       "pdf_pages": "102",
       "normative_keyword": "none",
-      "zh_tw": "Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：定義 offset E0Ch 的 PMREBS（Persistent Memory Region Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 61, \"Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size\": Defines PMREBS (Persistent Memory Region Elasticity Buffer Size) at offset E0Ch and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：定義 offset E0Ch 的 PMREBS（Persistent Memory Region Elasticity Buffer Size），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 61, \"Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size\": Defines PMREBS (Persistent Memory Region Elasticity Buffer Size) at offset E0Ch and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20732,8 +20732,8 @@
       "printed_pages": "76",
       "pdf_pages": "102",
       "normative_keyword": "none",
-      "zh_tw": "Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：定義 offset E10h 的 PMRSWTP（Persistent Memory Region Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 62, \"Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput\": Defines PMRSWTP (Persistent Memory Region Sustained Write Throughput) at offset E10h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：定義 offset E10h 的 PMRSWTP（Persistent Memory Region Sustained Write Throughput），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 62, \"Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput\": Defines PMRSWTP (Persistent Memory Region Sustained Write Throughput) at offset E10h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20762,8 +20762,8 @@
       "printed_pages": "77",
       "pdf_pages": "103",
       "normative_keyword": "none",
-      "zh_tw": "Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：定義 offset E14h 的 PMRMSCL（Persistent Memory Region Memory Space Control Lower），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 63, \"Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower\": Defines PMRMSCL (Persistent Memory Region Memory Space Control Lower) at offset E14h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：定義 offset E14h 的 PMRMSCL（Persistent Memory Region Memory Space Control Lower），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 63, \"Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower\": Defines PMRMSCL (Persistent Memory Region Memory Space Control Lower) at offset E14h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20790,8 +20790,8 @@
       "printed_pages": "77",
       "pdf_pages": "103",
       "normative_keyword": "none",
-      "zh_tw": "Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：定義 offset E18h 的 PMRMSCU（Persistent Memory Region Memory Space Control Upper），並指出軟體在該位置必須分別解碼的欄位。",
-      "en": "Figure 64, \"Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper\": Defines PMRMSCU (Persistent Memory Region Memory Space Control Upper) at offset E18h and identifies the fields that software must decode at that location.",
+      "zh_tw": "Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：定義 offset E18h 的 PMRMSCU（Persistent Memory Region Memory Space Control Upper），並指出軟體在該位置必須分別依欄位換算的欄位。",
+      "en": "Figure 64, \"Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper\": Defines PMRMSCU (Persistent Memory Region Memory Space Control Upper) at offset E18h and identifies the fields that software must read the fields at that location.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -21311,7 +21311,7 @@
       "pdf_pages": "31",
       "normative_keyword": "none",
       "zh_tw": "NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。",
-      "en": "NVMe expresses field locations in bytes, words, and dwords. A word is two bytes and a dword is four bytes; field decoding starts by confirming byte and bit numbering.",
+      "en": "NVMe expresses field locations in bytes, words, and dwords. A word is two bytes and a dword is four bytes; field reading the fields starts by confirming byte and bit numbering.",
       "scope_entry_id": "BASE12-INCLUDE",
       "heading_zh_tw": "byte、word 與 dword",
       "heading_en": "Byte, word, and dword relationships",

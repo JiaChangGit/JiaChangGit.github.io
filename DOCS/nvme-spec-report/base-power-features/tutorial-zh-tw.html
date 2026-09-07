@@ -23,6 +23,8 @@
 .reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
 .reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
 .reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
 .reader-nav nav { display: grid; gap: 3px; }
 .reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
 .reader-nav a:hover { background: var(--soft); color: var(--accent); }
@@ -104,15 +106,15 @@
 <article><span class="axis-number">02</span><h3>設定與自動轉移</h3><p>理解 Get／Set Features、APST 與背景工作的限制。</p></article>
 <article><span class="axis-number">03</span><h3>溫度控制</h3><p>分開溫度事件通知與控制器的熱管理行為。</p></article>
 </div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition，controller 依 idle timer 自主切到 non-operational state 的機制。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
 <p>Features 是控制器提供給主機查詢或設定的功能。支援某個功能、目前功能值，以及設定能否跨斷電保存，是不同資訊。</p>
 </section>
 <section class="lesson" id="module-feature-read-set-loop"><h2 id="heading-feature-read-set-loop"><span class="section-number">01</span> Feature 的能力、讀取與設定</h2>
-<p>Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl>
+<p>Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl>
 <!-- claim:BASEPOWER-READ-FIRST -->
-<p>Get Features 是讀取 Feature 屬性的 Admin command。工程流程不應從寫入猜測開始，而要先辨認 FID、查 capability，再取得 current／default／saved value。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>FID</dt><dd>Feature Identifier，Get／Set Features 用來選擇功能的 8-bit identifier。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235</p></details>
+<p>Get Features 是讀取 Feature 屬性的 Admin command。工程流程不應從寫入猜測開始，而要先辨認 FID、查 capability，再取得 current／default／saved value。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235</p></details>
 <!-- claim:BASEPOWER-GET-SELECT -->
-<p>CDW10.SEL 選擇 current=000b、default=001b、saved=010b 或 supported capabilities=011b；CDW10.FID 選 Feature。其餘 SEL encoding reserved。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236</p></details>
+<p>CDW10.SEL 選擇 current=000b、default=001b、saved=010b 或 supported capabilities=011b；CDW10.FID 選 Feature。其餘 SEL encoding reserved。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>Command Dword；命令中的 32-bit 欄位單位，後面的數字是其索引。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236</p></details>
 <!-- claim:BASEPOWER-GET-CAP -->
 <p>SEL=011b 時，CQE.DW0 以 CHANG、NSSPEC、SVBL 回報是否可變更、是否 namespace-specific、是否可 save。這三個 capability bits 與 Feature value 是兩種不同資料，不能混解。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, 文件頁 211-212, PDF 頁 237-238</p></details>
 <!-- claim:BASEPOWER-SET-SAVE -->
@@ -131,7 +133,7 @@
 <!-- figure-table:BASEPOWER-FIG-198 -->
 <details class="field-note" id="figure-BASEPOWER-FIG-198"><summary>Base Figure 198 · Get Features – Command Dword 10</summary>
 <!-- claim:BASEPOWER-FIG-198-CLAIM -->
-<p>Figure 198〈Get Features – Command Dword 10〉：定義〈Get Features – Command Dword 10〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details>
+<p>Figure 198〈Get Features – Command Dword 10〉：定義〈Get Features – Command Dword 10〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details>
 
 </details>
 <!-- figure-table:BASEPOWER-FIG-199 -->
@@ -212,7 +214,7 @@
 <!-- figure-table:BASEPOWER-FIG-468 -->
 <details class="field-note" id="figure-BASEPOWER-FIG-468"><summary>Base Figure 468 · Power Management – Command Dword 11</summary>
 <!-- claim:BASEPOWER-FIG-468-CLAIM -->
-<p>Figure 468〈Power Management – Command Dword 11〉：定義〈Power Management – Command Dword 11〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, Figure 468, 文件頁 461, PDF 頁 487</p></details>
+<p>Figure 468〈Power Management – Command Dword 11〉：定義〈Power Management – Command Dword 11〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, Figure 468, 文件頁 461, PDF 頁 487</p></details>
 
 </details>
 <!-- figure-table:BASEPOWER-FIG-738 -->
@@ -262,12 +264,12 @@
 <!-- claim:BASEPOWER-SET-DPTR -->
 <p>Set Features 的 DPTR 只在所選 Feature 定義 data structure 時使用。以 PRP 指向 buffer 時，該 data buffer 不得跨越超過一個 memory page boundary，因 PRP2 不能在此指向 PRP List。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>APSTE=0</td><td>只允許 host-directed entry</td><td>table 可存在但 timer 不驅動</td></tr><tr><td>APSTE=1</td><td>host 或 timer entry</td><td>ITPT 必須連續滿足</td></tr><tr><td>NOPPME=0</td><td>background work 不得超過 non-op limits</td><td>可能延後 controller work</td></tr><tr><td>NOPPME=1</td><td>background work 可暫時提高 power</td><td>上限仍受最後 operational state 限制</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>例子</h3><p>entry 要在 idle 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 07D00000h；ITPS=3，放入 bits7:3 得 18h，所以低 dword=07D00018h。其餘 reserved bits 與 entry 高 dword 保持 0，32 entries 合計 256 bytes。</p></aside>
+<aside class="worked-example"><h3>例子</h3><p>entry 要在 idle 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 07D00000h；ITPS=3，放入 bits7:3 得 18h，所以低 dword=07D00018h。其餘 reserved bits 與 entry 高 dword 保持 0，32 entries 合計 256 bytes。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:BASEPOWER-FIG-475 -->
 <details class="field-note" id="figure-BASEPOWER-FIG-475"><summary>Base Figure 475 · Autonomous Power State Transition – Command Dword 11</summary>
 <!-- claim:BASEPOWER-FIG-475-CLAIM -->
-<p>Figure 475〈Autonomous Power State Transition – Command Dword 11〉：定義〈Autonomous Power State Transition – Command Dword 11〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 475, 文件頁 468, PDF 頁 494</p></details>
+<p>Figure 475〈Autonomous Power State Transition – Command Dword 11〉：定義〈Autonomous Power State Transition – Command Dword 11〉的實際配置或數值關係。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 475, 文件頁 468, PDF 頁 494</p></details>
 
 </details>
 <!-- figure-table:BASEPOWER-FIG-476 -->
@@ -297,14 +299,14 @@
 <!-- claim:BASEPOWER-HYST -->
 <p>Figure 470 的 TMPSEL 選 sensor、THSEL 選 over/under、TMPTH 是 threshold、TMPTHH 是 hysteresis。over event 在溫度降到 threshold−hysteresis 時結束；under event在溫度升到 threshold+hysteresis 時結束。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, 文件頁 463-464, PDF 頁 489-490</p></details>
 <!-- claim:BASEPOWER-OBSERVE -->
-<p>設定完成不是驗證終點。SMART/Health 應同時觀察 Composite Temperature、TTC critical warning、warning temperature time、HCTM transition counters 與已實作 sensor readings，再對照 CQE 與 host latency。</p><dl class="term-note" aria-label="本段名詞"><div><dt>HCTM</dt><dd>Host Controlled Thermal Management，host 以 TMT1／TMT2 建立兩階段 controller thermal response。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251</p></details>
+<p>設定完成不是驗證終點。SMART/Health 應同時觀察 Composite Temperature、TTC critical warning、warning temperature time、HCTM transition counters 與已實作 sensor readings，再對照 CQE 與 host latency。</p><dl class="term-note" aria-label="本段名詞"><div><dt>HCTM</dt><dd>Host Controlled Thermal Management；由 host 設定溫度門檻的熱管理機制。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>TMPSEL</td><td>Composite 或 sensor 1-8</td><td>Get 不使用 all-sensors selector</td></tr><tr><td>THSEL</td><td>over／under</td><td>比較方向相反</td></tr><tr><td>TMPTH</td><td>觸發 Kelvin</td><td>log raw K 及轉換後 °C</td></tr><tr><td>TMPTHH</td><td>clear hysteresis Kelvin</td><td>不是第二個觸發 threshold</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>例子</h3><p>Composite over threshold=343 K（約 70 °C）、hysteresis=5 K：TMPSEL=0、THSEL=0、TMPTH=0157h、TMPTHH=5，所以 CDW11=(5&lt;&lt;22)+0157h=01400157h。event 於 ≥343 K 觸發，降到 338 K（約 65 °C）才結束。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:BASEPOWER-FIG-470 -->
 <details class="field-note" id="figure-BASEPOWER-FIG-470"><summary>Base Figure 470 · Temperature Threshold – Command Dword 11</summary>
 <!-- claim:BASEPOWER-FIG-470-CLAIM -->
-<p>Figure 470〈Temperature Threshold – Command Dword 11〉：定義〈Temperature Threshold – Command Dword 11〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, Figure 470, 文件頁 463-464, PDF 頁 489-490</p></details>
+<p>Figure 470〈Temperature Threshold – Command Dword 11〉：定義〈Temperature Threshold – Command Dword 11〉的實際配置或數值關係。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, Figure 470, 文件頁 463-464, PDF 頁 489-490</p></details>
 
 </details>
 <!-- figure-table:BASEPOWER-FIG-213 -->
@@ -332,14 +334,14 @@
 <!-- claim:BASEPOWER-RTD3 -->
 <p>RTD3E 與 RTD3R 分別描述進入與恢復時間，供 PCIe D3cold 使用情境評估 idle break-even；NVMe 文字明確說這不是 D3hot 的時間。PCIe D-state 的完整原始行為不在目前提供來源內，不能據此自行補寫。</p><dl class="term-note" aria-label="本段名詞"><div><dt>RTD3E</dt><dd>Runtime D3 Entry Latency，controller 進入 PCIe D3cold 使用情境的預期時間。</dd></div><div><dt>RTD3R</dt><dd>Runtime D3 Resume Latency，controller 從 PCIe D3cold 使用情境恢復的預期時間。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696</p></details>
 <!-- claim:BASEPOWER-GET-STATUS -->
-<p>Get Features 指定不適用的 Controller Identifier 時，command-specific status 1Fh 表示 Invalid Controller Identifier；狀態碼需連同 SCT 解讀。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，先決定 status 所屬大類，再解讀 SC。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238</p></details>
+<p>Get Features 指定不適用的 Controller Identifier 時，command-specific status 1Fh 表示 Invalid Controller Identifier；狀態碼需連同 SCT 解讀。</p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>TMT1</td><td>較輕度控制起點</td><td>目標是 minimize impact</td></tr><tr><td>TMT2</td><td>較強控制起點</td><td>溫控優先於 impact</td></tr><tr><td>MNTMT／MXTMT</td><td>合法設定範圍</td><td>先做 host-side validation</td></tr><tr><td>SMART counters</td><td>transition count／time</td><td>證明 control loop 真的動作</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>例子</h3><p>若 MNTMT=273 K、MXTMT=373 K，選 TMT1=343 K、TMT2=353 K 合法，CDW11=(0157h&lt;&lt;16)+0161h=01570161h。FID 10h 可 save；若 capability.SVBL=1 且 policy 要保存，CDW10.SV=1、FID=10h，所以 CDW10=80000010h。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:BASEPOWER-FIG-482 -->
 <details class="field-note" id="figure-BASEPOWER-FIG-482"><summary>Base Figure 482 · Host Controlled Thermal Management – Command Dword 11</summary>
 <!-- claim:BASEPOWER-FIG-482-CLAIM -->
-<p>Figure 482〈Host Controlled Thermal Management – Command Dword 11〉：定義〈Host Controlled Thermal Management – Command Dword 11〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, Figure 482, 文件頁 472, PDF 頁 498</p></details>
+<p>Figure 482〈Host Controlled Thermal Management – Command Dword 11〉：定義〈Host Controlled Thermal Management – Command Dword 11〉的實際配置或數值關係。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, Figure 482, 文件頁 472, PDF 頁 498</p></details>
 
 </details>
 <!-- figure-table:BASEPOWER-FIG-741 -->
@@ -360,7 +362,7 @@
 <!-- figure-table:BASEPOWER-FIG-483 -->
 <details class="field-note" id="figure-BASEPOWER-FIG-483"><summary>Base Figure 483 · Non-Operational Power State Configuration – Command Dword 11</summary>
 <!-- claim:BASEPOWER-FIG-483-CLAIM -->
-<p>Figure 483〈Non-Operational Power State Configuration – Command Dword 11〉：定義〈Non-Operational Power State Configuration – Command Dword 11〉的實際配置或數值關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, Figure 483, 文件頁 472-473, PDF 頁 498-499</p></details>
+<p>Figure 483〈Non-Operational Power State Configuration – Command Dword 11〉：定義〈Non-Operational Power State Configuration – Command Dword 11〉的實際配置或數值關係。</p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, Figure 483, 文件頁 472-473, PDF 頁 498-499</p></details>
 
 </details>
 </section>

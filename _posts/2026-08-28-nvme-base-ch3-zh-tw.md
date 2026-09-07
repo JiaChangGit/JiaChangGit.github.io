@@ -37,7 +37,7 @@ nvme_notes: true
 <!-- claim:BASE3-TYPES -->
 <p>本輪只使用 I/O controller 與 Administrative controller：前者可執行使用者資料的 I/O，後者以管理為目的且不支援資料 I/O command。兩者都具有一組 Admin Submission／Completion Queue。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.3-3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69</p></details>
 <!-- claim:BASE3-ORDER -->
-<p>除 fused operation 外，controller 取走的命令與完成沒有一般性的先後保證；若有順序需求，強制該順序是 host 的責任。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66</p></details>
+<p>除 fused operation 外，controller 取走的命令與完成沒有一般性的先後保證；若有順序需求，強制該順序是 host 的責任。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66</p></details>
 </details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>I/O controller</td><td>可執行使用者資料 I/O</td><td>仍需逐項查 optional capability</td></tr><tr><td>Administrative controller</td><td>管理用途、無資料 I/O command</td><td>不能因有 Admin Queue 就當成 I/O controller</td></tr><tr><td>support marker</td><td>針對 row 與上下文描述強度</td><td>不能脫離 column／footnote 解讀</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>說明性範例：偵測到一個 Administrative controller 時，軟體仍會建立 Admin SQ/CQ 並執行管理 command，但不應把 namespace data path 掛到它。若只用『存在 Admin Queue』判斷 controller type，I/O 與 Administrative controller 會被錯誤歸成同類。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl></aside>
@@ -102,11 +102,11 @@ nvme_notes: true
 <p>Properties 不是彼此獨立的 register 清單。CAP 先限制 page size、queue 與 timeout 能力；AQA、ASQ、ACQ 建立 Admin queues；CC 選擇設定並以 EN 啟動；最後由 CSTS.RDY 宣告 controller 已能正常處理命令。Figures 33-46 與 Figure 57 應沿這條因果鏈閱讀。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div><div><dt>RDY</dt><dd>Ready，CSTS 中表示 controller 是否已準備正常處理 command 的 bit。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl>
 <details class="technical-note"><summary>機制與適用條件</summary>
 <!-- claim:BASE3-PROPERTY -->
-<p>host 必須（shall）以 property 指定的寬度，從 property 起始 offset 存取；memory-based controller 的實際存取規則由 PCIe Transport 補充。</p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</p></details>
+<p>host 必須（shall）以 property 指定的寬度，從 property 起始 offset 存取；memory-based controller 的實際存取規則由 PCIe Transport 補充。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</p></details>
 <!-- claim:BASE3-INIT -->
 <p>PCIe 初始化以 CAP 判斷能力與 timeout，設定 AQA／ASQ／ACQ 與 CC，接著等待 CSTS.RDY。ready mode 與 CRTO 會影響 host 等待與錯誤處理。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CRTO</dt><dd>Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.5.1, 3.5.3-3.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139</p></details>
 </details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CAP</td><td>能力與界限</td><td>在寫設定前讀</td></tr><tr><td>AQA/ASQ/ACQ</td><td>Admin queue 大小與位址</td><td>需符合 page/alignment 能力</td></tr><tr><td>CC</td><td>host 選擇與 enable</td><td>寫入值要與 CAP 相容</td></tr><tr><td>CSTS</td><td>controller 回報狀態</td><td>RDY/CFS/SHST 不可互相替代</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SHST</dt><dd>Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>CAP</td><td>能力與界限</td><td>在寫設定前讀</td></tr><tr><td>AQA/ASQ/ACQ</td><td>Admin queue 大小與位址</td><td>需符合 page/alignment 能力</td></tr><tr><td>CC</td><td>host 選擇與 enable</td><td>寫入值要與 CAP 相容</td></tr><tr><td>CSTS</td><td>controller 回報狀態</td><td>RDY/CFS/SHST 不可互相替代</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>SHST</dt><dd>Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>說明性範例：host 選擇 4 KiB MPS，ASQ 與 ACQ base address 因而必須依該 page size 對齊。寫 CC.EN=1 後，host 以 CAP／CRTO 指定的時間界限等待 CSTS.RDY=1；若 CFS 先出現，流程應進入 error recovery，而不是繼續建立 I/O queues。</p><dl class="term-note" aria-label="本段名詞"><div><dt>CRTO</dt><dd>Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div></dl></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:BASE3-FIG-033 -->
@@ -124,7 +124,7 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-036 -->
 <details class="field-note" id="figure-BASE3-FIG-036"><summary>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</summary>
 <!-- claim:BASE3-FIG-036-CLAIM -->
-<p>Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details>
+<p>Figure 36〈Offset 0h: CAP - Controller Capabilities〉：定義 offset 0h 的 CAP（Controller Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-037 -->
@@ -142,37 +142,37 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-041 -->
 <details class="field-note" id="figure-BASE3-FIG-041"><summary>Base Figure 41 · Offset 14h: CC - Controller Configuration</summary>
 <!-- claim:BASE3-FIG-041-CLAIM -->
-<p>Figure 41〈Offset 14h: CC - Controller Configuration〉：定義 offset 14h 的 CC（Controller Configuration），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89</p></details>
+<p>Figure 41〈Offset 14h: CC - Controller Configuration〉：定義 offset 14h 的 CC（Controller Configuration），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>SHN</dt><dd>Shutdown Notification，CC 中由 host 宣告 shutdown 類型的欄位。</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-042 -->
 <details class="field-note" id="figure-BASE3-FIG-042"><summary>Base Figure 42 · Offset 1Ch: CSTS - Controller Status</summary>
 <!-- claim:BASE3-FIG-042-CLAIM -->
-<p>Figure 42〈Offset 1Ch: CSTS - Controller Status〉：定義 offset 1Ch 的 CSTS（Controller Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91</p></details>
+<p>Figure 42〈Offset 1Ch: CSTS - Controller Status〉：定義 offset 1Ch 的 CSTS（Controller Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-044 -->
 <details class="field-note" id="figure-BASE3-FIG-044"><summary>Base Figure 44 · Offset 24h: AQA - Admin Queue Attributes</summary>
 <!-- claim:BASE3-FIG-044-CLAIM -->
-<p>Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：定義 offset 24h 的 AQA（Admin Queue Attributes），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92</p></details>
+<p>Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：定義 offset 24h 的 AQA（Admin Queue Attributes），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-045 -->
 <details class="field-note" id="figure-BASE3-FIG-045"><summary>Base Figure 45 · Offset 28h: ASQ - Admin Submission Queue Base Address</summary>
 <!-- claim:BASE3-FIG-045-CLAIM -->
-<p>Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：定義 offset 28h 的 ASQ（Admin Submission Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92</p></details>
+<p>Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：定義 offset 28h 的 ASQ（Admin Submission Queue Base Address），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CC.MPS</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.MPS 進一步指定其中的 MPS 子欄位。</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-046 -->
 <details class="field-note" id="figure-BASE3-FIG-046"><summary>Base Figure 46 · Offset 30h: ACQ - Admin Completion Queue Base Address</summary>
 <!-- claim:BASE3-FIG-046-CLAIM -->
-<p>Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：定義 offset 30h 的 ACQ（Admin Completion Queue Base Address），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93</p></details>
+<p>Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：定義 offset 30h 的 ACQ（Admin Completion Queue Base Address），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-057 -->
 <details class="field-note" id="figure-BASE3-FIG-057"><summary>Base Figure 57 · Offset 68h: CRTO - Controller Ready Timeouts</summary>
 <!-- claim:BASE3-FIG-057-CLAIM -->
-<p>Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：定義 offset 68h 的 CRTO（Controller Ready Timeouts），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99</p></details>
+<p>Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：定義 offset 68h 的 CRTO（Controller Ready Timeouts），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CAP.CRMS.CRIMS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CRMS.CRIMS 進一步指定其中的 CRMS.CRIMS 子欄位。</dd></div><div><dt>CC.CRIME</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.CRIME 進一步指定其中的 CRIME 子欄位。</dd></div><div><dt>CC.EN</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.EN 進一步指定其中的 EN 子欄位。</dd></div></dl>
 </details>
 </details>
@@ -228,79 +228,79 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-047 -->
 <details class="field-note" id="figure-BASE3-FIG-047"><summary>Base Figure 47 · Offset 38h: CMBLOC - Controller Memory Buffer Location</summary>
 <!-- claim:BASE3-FIG-047-CLAIM -->
-<p>Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：定義 offset 38h 的 CMBLOC（Controller Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來定位裝置 memory space 的 register。</dd></div><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div></dl>
+<p>Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：定義 offset 38h 的 CMBLOC（Controller Memory Buffer Location），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94</p></details>
+<dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-048 -->
 <details class="field-note" id="figure-BASE3-FIG-048"><summary>Base Figure 48 · Offset 3Ch: CMBSZ - Controller Memory Buffer Size</summary>
 <!-- claim:BASE3-FIG-048-CLAIM -->
-<p>Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：定義 offset 3Ch 的 CMBSZ（Controller Memory Buffer Size），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95</p></details>
+<p>Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：定義 offset 3Ch 的 CMBSZ（Controller Memory Buffer Size），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-052 -->
 <details class="field-note" id="figure-BASE3-FIG-052"><summary>Base Figure 52 · Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</summary>
 <!-- claim:BASE3-FIG-052-CLAIM -->
-<p>Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：定義 offset 50h 的 CMBMSC（Controller Memory Buffer Memory Space Control），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97</p></details>
+<p>Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：定義 offset 50h 的 CMBMSC（Controller Memory Buffer Memory Space Control），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-053 -->
 <details class="field-note" id="figure-BASE3-FIG-053"><summary>Base Figure 53 · Offset 58h: CMBSTS - Controller Memory Buffer Status</summary>
 <!-- claim:BASE3-FIG-053-CLAIM -->
-<p>Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：定義 offset 58h 的 CMBSTS（Controller Memory Buffer Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97</p></details>
+<p>Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：定義 offset 58h 的 CMBSTS（Controller Memory Buffer Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-054 -->
 <details class="field-note" id="figure-BASE3-FIG-054"><summary>Base Figure 54 · Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</summary>
 <!-- claim:BASE3-FIG-054-CLAIM -->
-<p>Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：定義 offset 5Ch 的 CMBEBS（Controller Memory Buffer Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97</p></details>
+<p>Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：定義 offset 5Ch 的 CMBEBS（Controller Memory Buffer Elasticity Buffer Size），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-055 -->
 <details class="field-note" id="figure-BASE3-FIG-055"><summary>Base Figure 55 · Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</summary>
 <!-- claim:BASE3-FIG-055-CLAIM -->
-<p>Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：定義 offset 60h 的 CMBSWTP（Controller Memory Buffer Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98</p></details>
+<p>Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：定義 offset 60h 的 CMBSWTP（Controller Memory Buffer Sustained Write Throughput），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，PCIe transaction layer 傳送的 packet。</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-058 -->
 <details class="field-note" id="figure-BASE3-FIG-058"><summary>Base Figure 58 · Offset E00h: PMRCAP - Persistent Memory Region Capabilities</summary>
 <!-- claim:BASE3-FIG-058-CLAIM -->
-<p>Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：定義 offset E00h 的 PMRCAP（Persistent Memory Region Capabilities），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100</p></details>
+<p>Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：定義 offset E00h 的 PMRCAP（Persistent Memory Region Capabilities），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-059 -->
 <details class="field-note" id="figure-BASE3-FIG-059"><summary>Base Figure 59 · Offset E04h: PMRCTL - Persistent Memory Region Control</summary>
 <!-- claim:BASE3-FIG-059-CLAIM -->
-<p>Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：定義 offset E04h 的 PMRCTL（Persistent Memory Region Control），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100</p></details>
+<p>Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：定義 offset E04h 的 PMRCTL（Persistent Memory Region Control），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-060 -->
 <details class="field-note" id="figure-BASE3-FIG-060"><summary>Base Figure 60 · Offset E08h: PMRSTS - Persistent Memory Region Status</summary>
 <!-- claim:BASE3-FIG-060-CLAIM -->
-<p>Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：定義 offset E08h 的 PMRSTS（Persistent Memory Region Status），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101</p></details>
+<p>Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：定義 offset E08h 的 PMRSTS（Persistent Memory Region Status），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-061 -->
 <details class="field-note" id="figure-BASE3-FIG-061"><summary>Base Figure 61 · Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</summary>
 <!-- claim:BASE3-FIG-061-CLAIM -->
-<p>Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：定義 offset E0Ch 的 PMREBS（Persistent Memory Region Elasticity Buffer Size），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102</p></details>
+<p>Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：定義 offset E0Ch 的 PMREBS（Persistent Memory Region Elasticity Buffer Size），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-062 -->
 <details class="field-note" id="figure-BASE3-FIG-062"><summary>Base Figure 62 · Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</summary>
 <!-- claim:BASE3-FIG-062-CLAIM -->
-<p>Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：定義 offset E10h 的 PMRSWTP（Persistent Memory Region Sustained Write Throughput），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102</p></details>
+<p>Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：定義 offset E10h 的 PMRSWTP（Persistent Memory Region Sustained Write Throughput），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-063 -->
 <details class="field-note" id="figure-BASE3-FIG-063"><summary>Base Figure 63 · Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</summary>
 <!-- claim:BASE3-FIG-063-CLAIM -->
-<p>Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：定義 offset E14h 的 PMRMSCL（Persistent Memory Region Memory Space Control Lower），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103</p></details>
+<p>Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：定義 offset E14h 的 PMRMSCL（Persistent Memory Region Memory Space Control Lower），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-064 -->
 <details class="field-note" id="figure-BASE3-FIG-064"><summary>Base Figure 64 · Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</summary>
 <!-- claim:BASE3-FIG-064-CLAIM -->
-<p>Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：定義 offset E18h 的 PMRMSCU（Persistent Memory Region Memory Space Control Upper），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103</p></details>
+<p>Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：定義 offset E18h 的 PMRMSCU（Persistent Memory Region Memory Space Control Upper），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-086 -->
@@ -347,13 +347,13 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-043 -->
 <details class="field-note" id="figure-BASE3-FIG-043"><summary>Base Figure 43 · Offset 20h: NSSR - NVM Subsystem Reset</summary>
 <!-- claim:BASE3-FIG-043-CLAIM -->
-<p>Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：定義 offset 20h 的 NSSR（NVM Subsystem Reset），並指出軟體在該位置必須分別解碼的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSR</dt><dd>NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92</p></details>
+<p>Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：定義 offset 20h 的 NSSR（NVM Subsystem Reset），並指出軟體在該位置必須分別依欄位換算的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSR</dt><dd>NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-056 -->
 <details class="field-note" id="figure-BASE3-FIG-056"><summary>Base Figure 56 · Offset 64h: NSSD - NVM Subsystem Shutdown</summary>
 <!-- claim:BASE3-FIG-056-CLAIM -->
-<p>Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：定義 offset 64h 的 NSSD（NVM Subsystem Shutdown），並指出軟體在該位置必須分別解碼的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98</p></details>
+<p>Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：定義 offset 64h 的 NSSD（NVM Subsystem Shutdown），並指出軟體在該位置必須分別依欄位換算的欄位。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CAP.CPS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CPS 進一步指定其中的 CPS 子欄位。</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-084 -->
@@ -390,31 +390,31 @@ nvme_notes: true
 <!-- figure-table:BASE3-FIG-039 -->
 <details class="field-note" id="figure-BASE3-FIG-039"><summary>Base Figure 39 · Offset Ch: INTMS - Interrupt Mask Set</summary>
 <!-- claim:BASE3-FIG-039-CLAIM -->
-<p>Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：定義 offset Ch 的 INTMS（Interrupt Mask Set），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85</p></details>
+<p>Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：定義 offset Ch 的 INTMS（Interrupt Mask Set），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85</p></details>
 <dl class="term-note" aria-label="本段名詞"><div><dt>MSI</dt><dd>Message Signaled Interrupt，透過 memory write message 傳遞 interrupt 的 PCI 機制。</dd></div></dl>
 </details>
 <!-- figure-table:BASE3-FIG-040 -->
 <details class="field-note" id="figure-BASE3-FIG-040"><summary>Base Figure 40 · Offset 10h: INTMC - Interrupt Mask Clear</summary>
 <!-- claim:BASE3-FIG-040-CLAIM -->
-<p>Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：定義 offset 10h 的 INTMC（Interrupt Mask Clear），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85</p></details>
+<p>Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：定義 offset 10h 的 INTMC（Interrupt Mask Clear），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-049 -->
 <details class="field-note" id="figure-BASE3-FIG-049"><summary>Base Figure 49 · Offset 40h: BPINFO - Boot Partition Information</summary>
 <!-- claim:BASE3-FIG-049-CLAIM -->
-<p>Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：定義 offset 40h 的 BPINFO（Boot Partition Information），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95</p></details>
+<p>Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：定義 offset 40h 的 BPINFO（Boot Partition Information），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-050 -->
 <details class="field-note" id="figure-BASE3-FIG-050"><summary>Base Figure 50 · Offset 44h: BPRSEL - Boot Partition Read Select</summary>
 <!-- claim:BASE3-FIG-050-CLAIM -->
-<p>Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：定義 offset 44h 的 BPRSEL（Boot Partition Read Select），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96</p></details>
+<p>Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：定義 offset 44h 的 BPRSEL（Boot Partition Read Select），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-051 -->
 <details class="field-note" id="figure-BASE3-FIG-051"><summary>Base Figure 51 · Offset 48h: BPMBL - Boot Partition Memory Buffer Location</summary>
 <!-- claim:BASE3-FIG-051-CLAIM -->
-<p>Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：定義 offset 48h 的 BPMBL（Boot Partition Memory Buffer Location），並指出軟體在該位置必須分別解碼的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96</p></details>
+<p>Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：定義 offset 48h 的 BPMBL（Boot Partition Memory Buffer Location），並指出軟體在該位置必須分別依欄位換算的欄位。</p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96</p></details>
 
 </details>
 <!-- figure-table:BASE3-FIG-065 -->

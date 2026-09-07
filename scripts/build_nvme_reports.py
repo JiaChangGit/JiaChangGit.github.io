@@ -1319,6 +1319,55 @@ toc: yes
 """
 
 
+def clean_public_language(content: str) -> str:
+    """Keep public editions concrete and free of authoring shorthand.
+
+    The source records may retain internal review labels, but the rendered
+    editions should describe the reader's action directly.  This final pass
+    also covers legacy figure explanations that are shared by the paired
+    posts.
+    """
+    replacements = (
+        (r"\bDebug first broken boundary\b", "Review the first broken boundary"),
+        (r"\bDebug from the first\b", "Review from the first"),
+        ("Debug 時", "證據檢視時"),
+        ("Debug 圖", "證據圖"),
+        ("Debug 還要", "證據檢視還要"),
+        (r"\bdebugging\b", "evidence review"),
+        (r"\bDebugging\b", "Evidence review"),
+        (r"\bdebug\b", "diagnostic review"),
+        (r"\bDebug\b", "Evidence review"),
+        (r"\bdecoded\b", "interpreted values"),
+        (r"\bDecoded\b", "Interpreted values"),
+        (r"\bdecoding\b", "reading the fields"),
+        (r"\bDecoding\b", "Reading the fields"),
+        (r"\bdecode\b", "read the fields"),
+        (r"\bDecode\b", "Read the fields"),
+        (r"\blocated\b", "found"),
+        (r"\bLocated\b", "Found"),
+        (r"\blocating\b", "finding"),
+        (r"\bLocating\b", "Finding"),
+        (r"\blocate\b", "find"),
+        (r"\bLocate\b", "Find"),
+        ("解碼", "依欄位換算"),
+    )
+    for old, new in replacements:
+        if old.startswith(r"\b"):
+            content = re.sub(old, new, content)
+        else:
+            content = content.replace(old, new)
+    return content
+
+
+def clean_claim_language(claim: dict) -> dict:
+    """Apply the public wording pass to the claim text used for rendering."""
+    cleaned = dict(claim)
+    for field in ("zh_tw", "en"):
+        if cleaned.get(field):
+            cleaned[field] = clean_public_language(cleaned[field])
+    return cleaned
+
+
 FW_GLOSSARY = [
     ("Domain", "Firmware slots 的共享與 activation 範圍；不一定等於單一 controller。", "The sharing and activation scope for firmware slots; not necessarily one controller."),
     ("Firmware image", "可下載、驗證、保存並啟用的 firmware 內容。", "Firmware content that can be downloaded, validated, stored, and activated."),
@@ -1391,10 +1440,12 @@ def main() -> int:
                     f"{figure['id']} lacks tracked compact PDF evidence"
                 )
         report_claims = [
-            make_claim(report_id, report, item) for item in report["claims"]
+            clean_claim_language(make_claim(report_id, report, item))
+            for item in report["claims"]
         ]
         report_claims.extend(
-            make_figure_claim(report_id, report, item) for item in figures
+            clean_claim_language(make_figure_claim(report_id, report, item))
+            for item in figures
         )
         all_claims.extend(report_claims)
 
@@ -1406,6 +1457,7 @@ def main() -> int:
             language = 'en' if artifact['language'] == 'en' else 'zh'
             content = render(report_id, report, report_claims, figures,
                              REPORT_MODULES[report_id], language, artifact['format'] == 'html', sys.modules[__name__])
+            content = clean_public_language(content)
             if artifact["format"] != "html":
                 sibling = artifacts[ids[1] if artifact["language"] == "en" else ids[2]]
                 sibling_post = Path(sibling["path"]).stem

@@ -23,6 +23,8 @@
 .reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
 .reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
 .reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
 .reader-nav nav { display: grid; gap: 3px; }
 .reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
 .reader-nav a:hover { background: var(--soft); color: var(--accent); }
@@ -113,7 +115,7 @@
 <p>Base Specification 定義通用 NVMe 協定；Transport Specification 綁定特定傳輸，I/O Command Set Specification 擴充命令與資料結構。這是適用關係，不是協定堆疊。</p><details class="source-note"><summary>來源：Base 2.4 §1.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27</p></details>
 <!-- claim:BASE12-COMMANDSET -->
 <p>Admin Command Set 管理 controller 與 queue；I/O Command Set 定義對 namespace 的資料操作。Base 說明通用機制，個別 I/O Command Set Specification 說明命令語意。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59</p></details>
-<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Base</td><td>共通 command、queue、status 與資料結構</td><td>不要假設它定義所有 PCIe register 細節</td></tr><tr><td>PCIe Transport</td><td>BAR、MMIO、doorbell、interrupt 與 PCIe-specific 行為</td><td>衝突時不能覆蓋 Base</td></tr><tr><td>I/O Command Set</td><td>特定 namespace I/O command 與延伸資料結構</td><td>不負責重新定義 transport</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來定位裝置 memory space 的 register。</dd></div></dl>
+<div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>Base</td><td>共通 command、queue、status 與資料結構</td><td>不要假設它定義所有 PCIe register 細節</td></tr><tr><td>PCIe Transport</td><td>BAR、MMIO、doorbell、interrupt 與 PCIe-specific 行為</td><td>衝突時不能覆蓋 Base</td></tr><tr><td>I/O Command Set</td><td>特定 namespace I/O command 與延伸資料結構</td><td>不負責重新定義 transport</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>要實作 Firmware Image Download：先在 Base 找 command 欄位與 completion status，再到 PCIe Transport 確認 Admin command 的資料指標與 memory access 限制。若未閱讀 I/O Command Set，仍可理解此 Admin command；反過來只讀 PCIe Transport 則得不到完整 command 語意。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
 <!-- figure-table:BASE12-FIG-001 -->
@@ -131,7 +133,7 @@
 </details>
 </section>
 <section class="lesson" id="module-objects"><h2 id="heading-objects"><span class="section-number">02</span> Namespace、Controller 與存取路徑</h2>
-<p>namespace 是 host 實際存取的格式化容量，但容量管理、耐久度、回收與路徑都發生在不同層級。Figures 11-18 用 NVM Set 或 Reclaim Group 描述容量包含關係，Figures 19-22 則改看 controller、port、path 與 PCIe Function。兩組圖回答不同問題，不能疊成單一樹狀圖後便認為每層都一對一。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Group</dt><dd>Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。</dd></div><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div></dl>
+<p>namespace 是 host 實際存取的格式化容量，但容量管理、耐久度、回收與路徑都發生在不同層級。Figures 11-18 用 NVM Set 或 Reclaim Group 描述容量包含關係，Figures 19-22 則改看 controller、port、path 與 PCIe Function。兩組圖回答不同問題，不能疊成單一樹狀圖後便認為每層都一對一。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Group</dt><dd>Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。</dd></div><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
 <!-- claim:BASE12-STORAGE -->
 <p>儲存模型用 NVM subsystem、domain、Endurance Group、NVM Set／Reclaim Group、Reclaim Unit 與 namespace 表達包含關係。namespace 是 host 實際透過 controller 存取的格式化容量。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Endurance Group</dt><dd>Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。</dd></div><div><dt>Reclaim Unit</dt><dd>Reclaim Unit，controller 執行媒體回收時使用的較小管理粒度。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59</p></details>
 <!-- claim:BASE12-SUBSYSTEM -->
@@ -241,11 +243,11 @@
 </details>
 </section>
 <section class="lesson" id="module-numbers"><h2 id="heading-numbers"><span class="section-number">04</span> 數值編碼與單位</h2>
-<p>NVMe 的數字同時帶有進位、單位、寬度、endian 與是否 0's-based 等資訊。欄位值看似相同，只要其中一項不同，實際意義就可能完全不同。Figure 2 與 Figure 3 是後續所有 register、SQE、CQE 與 log page 計算的共同底座。</p><dl class="term-note" aria-label="本段名詞"><div><dt>0's-based</dt><dd>0's-based encoding，以 0 表示實際數量 1；解碼公式通常是欄位值加 1。</dd></div></dl>
+<p>NVMe 的數字同時帶有進位、單位、寬度、endian 與是否 0's-based 等資訊。欄位值看似相同，只要其中一項不同，實際意義就可能完全不同。Figure 2 與 Figure 3 是後續所有 register、SQE、CQE 與 log page 計算的共同底座。</p><dl class="term-note" aria-label="本段名詞"><div><dt>0's-based</dt><dd>0's-based encoding，以 0 表示實際數量 1；依欄位換算公式通常是欄位值加 1。</dd></div></dl>
 <!-- claim:BASE12-NUMBERS -->
 <p>數值的解讀同時包含進位與單位；十六進位使用 h 後綴，二進位使用 b 後綴，十進位可省略 d。十進位與二進位容量前綴代表不同倍率。</p><details class="source-note"><summary>來源：Base 2.4 §1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31</p></details>
 <!-- claim:BASE12-DWORD -->
-<p>NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。</p><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31</p></details>
+<p>NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word；32 bits，也就是 4 bytes。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31</p></details>
 <div class="table-wrap"><table><thead><tr><th scope="col">項目</th><th scope="col">作用或差異</th><th scope="col">適用條件</th></tr></thead><tbody><tr><td>1000</td><td>十進位 1000</td><td>若無 b/h 後綴則按十進位</td></tr><tr><td>1000b</td><td>二進位 8</td><td>b 是 radix，不是 bit 單位</td></tr><tr><td>1000h</td><td>十六進位 4096</td><td>常見於 offset 與 register value</td></tr><tr><td>NUMD=0</td><td>實際 1 dword</td><td>只有欄位明載 0's-based 才加 1</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div></dl>
 <aside class="worked-example"><h3>例子</h3><p>說明性範例：一個 512-byte transfer 含 512 ÷ 4 = 128 dwords。若 NUMD 是 0's-based，編碼值為 128 - 1 = 127 = 007Fh。若錯把 007Fh 當成 byte count，buffer 會短少；若忘記減 1，controller 會被要求傳輸 129 dwords。</p></aside>
 <details class="technical-note"><summary>進一步理解欄位與資料結構</summary>
@@ -258,7 +260,7 @@
 <!-- figure-table:BASE12-FIG-003 -->
 <details class="field-note" id="figure-BASE12-FIG-003"><summary>Base Figure 3 · Byte, Word, and Dword Relationships</summary>
 <!-- claim:BASE12-FIG-003-CLAIM -->
-<p>Figure 3〈Byte, Word, and Dword Relationships〉：定義〈Byte, Word, and Dword Relationships〉使用的數值單位或 byte 寬度慣例。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Double word，四個 bytes、共 32 bits；NVMe command 欄位常以 CDW 編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, 文件頁 5, PDF 頁 31</p></details>
+<p>Figure 3〈Byte, Word, and Dword Relationships〉：定義〈Byte, Word, and Dword Relationships〉使用的數值單位或 byte 寬度慣例。</p><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, 文件頁 5, PDF 頁 31</p></details>
 
 </details>
 </details>
