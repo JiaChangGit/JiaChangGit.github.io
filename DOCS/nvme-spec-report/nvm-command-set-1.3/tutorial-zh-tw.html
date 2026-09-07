@@ -55,6 +55,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
 .nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
 .nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
 .nvme-note .term-note > div { margin: 5px 0; }
@@ -105,7 +107,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 @media (max-width: 600px) {
   .nvme-note .topic-map { grid-template-columns: 1fr; }
   .edition-tutorial main { padding-inline: 18px; }
-  .nvme-note .reader-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
 }
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {
@@ -122,13 +124,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>NVM Command Set 說明主機如何以 logical block 為單位讀寫與管理儲存空間。理解它的關鍵，是把資料格式、命令行為、資料完整性與資源管理連起來：同一筆命令，會因 namespace 格式、支援能力與設定不同而有不同的適用條件。</p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>儲存空間與格式</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>先理解 namespace 的容量、LBA 格式，以及資料與 metadata 的關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>LBA</dt><dd>Logical Block Address；以所選格式的 block 為單位。</dd></div></dl></article>
-<article><span class="axis-number">02</span><h3>命令做了什麼</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>比較 Read、Write、Compare、Verify、Copy 與空間管理命令的作用及完成條件。</p></article>
-<article><span class="axis-number">03</span><h3>資料完整性與順序</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>理解原子性、命令相依、Protection Information，以及資料檢查的範圍。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div></dl></article>
-<article><span class="axis-number">04</span><h3>能力與資源管理</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.05">00.05.</span>以 Identify、Features 和 log 理解格式選擇、效能限制及進階資源功能。</p></article>
+<article><span class="axis-number">01</span><h3>儲存空間與格式</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>先理解 namespace 的容量、LBA 格式，以及資料與 metadata 的關係。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>LBA</dt><dd>Logical Block Address；以所選格式的 block 為單位。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>命令做了什麼</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>比較 Read、Write、Compare、Verify、Copy 與空間管理命令的作用及完成條件。</p></article>
+<article><span class="axis-number">03</span><h3>資料完整性與順序</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>理解原子性、命令相依、Protection Information，以及資料檢查的範圍。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div></dl></article>
+<article><span class="axis-number">04</span><h3>能力與資源管理</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span>以 Identify、Features 和 log 理解格式選擇、效能限制及進階資源功能。</p></article>
 </div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>LBA</dt><dd>Logical Block Address；以所選格式的 block 為單位。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.06">00.06.</span>主機透過提交佇列送出命令，控制器透過完成佇列回報結果。Base 規格定義這套共同機制；本篇聚焦命令如何作用於 namespace 內的 logical blocks。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>主機透過提交佇列送出命令，控制器透過完成佇列回報結果。Base 規格定義這套共同機制；本篇聚焦命令如何作用於 namespace 內的 logical blocks。</p>
 </section>
 <section class="lesson" id="module-nvmcs-foundation"><h2 id="heading-nvmcs-foundation"><span class="section-number">01</span> Logical block、格式與單位</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Host 透過 logical block address 存取 namespace。先確定一個 block 的 data 與 metadata 大小，才能計算 buffer、理解命令範圍，並選擇適用的資料保護方式。讀 Format Index 時把 index 與 offset 分開：index 選格式，offset 才是從起點算出的位移。</p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div><div><dt>Format Index</dt><dd>格式索引；用來選取一組 LBAF／ELBAF 格式資訊的編號。</dd></div><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>

@@ -22,12 +22,12 @@ nvme_notes: true
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>本篇涵蓋裝置自我測試、Host Memory Buffer，以及與記憶體和命令格式相關的延伸功能。主線是分清楚功能由誰啟動、資料由誰提供，以及控制器何時仍可使用這些資源。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>自我測試</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>分清啟動命令、背景測試進度與結果記錄。</p></article>
-<article><span class="axis-number">02</span><h3>Host Memory Buffer</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>理解主機記憶體如何提供給控制器，以及可回收的時機。</p></article>
-<article><span class="axis-number">03</span><h3>記憶體與命令延伸</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>理解 descriptor、Doorbell Emulation 與 vendor command 長度的界線。</p></article>
+<article><span class="axis-number">01</span><h3>自我測試</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>分清啟動命令、背景測試進度與結果記錄。</p></article>
+<article><span class="axis-number">02</span><h3>Host Memory Buffer</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>理解主機記憶體如何提供給控制器，以及可回收的時機。</p></article>
+<article><span class="axis-number">03</span><h3>記憶體與命令延伸</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>理解 descriptor、Doorbell Emulation 與 vendor command 長度的界線。</p></article>
 </div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>主機和控制器各自有記憶體；能夠提供某段記憶體的位址，不代表另一方已停止使用它。這與 OS 中記憶體生命週期的概念相通。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>主機和控制器各自有記憶體；能夠提供某段記憶體的位址，不代表另一方已停止使用它。這與 OS 中記憶體生命週期的概念相通。</p>
 </section>
 <section class="lesson" id="module-three-boundaries"><h2 id="heading-three-boundaries"><span class="section-number">01</span> 背景測試、主機記憶體與位址編碼</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>這組章節不是同一個 feature。Device Self-test 管背景 diagnostic operation；HMB 管 host memory 的 ownership transfer；DSTRD 與 vendor command format 管 encoded value 如何轉成安全的 memory access。共同方法是先找 capability gate，再找狀態或 ownership 轉換，最後找可觀測證據。</p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div><div><dt>HMB</dt><dd>Host Memory Buffer，由 host 配置並在 enable 期間交由 controller 專用的 volatile memory ranges。</dd></div></dl>

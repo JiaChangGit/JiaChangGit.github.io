@@ -44,6 +44,8 @@ class Reading:
         self.term_note_counts = {}
         self.section_no = 0
         self.section_paragraph_no = 0
+        self.axis_no = 0
+        self.axis_paragraph_no = 0
         self.term_sources = dict(api.REPORT_GLOSSARIES[report_id])
         if report_id == 'nvm-command-set-1.3':
             from scripts.nvme_nvmcs_figures import TERMS
@@ -90,6 +92,10 @@ class Reading:
         self.section_no = int(number)
         self.section_paragraph_no = 0
 
+    def begin_axis(self, number):
+        self.axis_no = int(number)
+        self.axis_paragraph_no = 0
+
     def paragraph(self, value, extra=(), css=""):
         if not value:
             return ""
@@ -97,6 +103,18 @@ class Reading:
         classes = 'reader-paragraph' + (f' {css}' if css else '')
         number = f'<span class="paragraph-number" aria-label="{self.section_no:02d}.{self.section_paragraph_no:02d}">{self.section_no:02d}.{self.section_paragraph_no:02d}.</span>'
         return f'<p class="{classes}">{number}{esc(value)}</p>' + self.terms(value, extra)
+
+    def axis_paragraph(self, value, extra=()):
+        """Render text inside a main-axis card with its own block numbering."""
+        if not value:
+            return ""
+        self.axis_paragraph_no += 1
+        number = f'{self.axis_no:02d}-{self.axis_paragraph_no:02d}'
+        return (
+            f'<p class="axis-paragraph"><span class="axis-paragraph-number" '
+            f'aria-label="{number}">{number}</span>{esc(value)}</p>'
+            + self.terms(value, extra)
+        )
 
     def source(self, claims):
         if not claims:
@@ -176,7 +194,8 @@ class Reading:
         out.append('<h2 id="main-ideas">' + pair(self.lang, '這篇的主軸', 'The main ideas') + '</h2>')
         out.append('<div class="topic-map">')
         for index, (title, explanation) in enumerate(context['axes'][self.lang], 1):
-            out.append(f'<article><span class="axis-number">{index:02d}</span><h3>{esc(title)}</h3>{self.paragraph(explanation, css="axis-description")}</article>')
+            self.begin_axis(index)
+            out.append(f'<article><span class="axis-number">{index:02d}</span><h3>{esc(title)}</h3>{self.axis_paragraph(explanation)}</article>')
         out.append('</div>')
         out.append(self.terms(' '.join(' '.join(row) for row in context['axes'][self.lang])))
         for paragraph in context['background'][self.lang]:

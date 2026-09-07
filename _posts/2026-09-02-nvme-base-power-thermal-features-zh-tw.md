@@ -22,12 +22,12 @@ nvme_notes: true
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>NVMe 的功耗與溫度管理是在耗電、回應延遲與工作能力之間做取捨。本篇先建立 power state 的意義，再說明主機設定、自動閒置轉移與溫度相關控制如何分工。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>功耗狀態</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>比較功耗、可否處理 I/O，以及進出狀態的延遲。</p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl></article>
-<article><span class="axis-number">02</span><h3>設定與自動轉移</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>理解 Get／Set Features、APST 與背景工作的限制。</p><dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div></dl></article>
-<article><span class="axis-number">03</span><h3>溫度控制</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>分開溫度事件通知與控制器的熱管理行為。</p></article>
+<article><span class="axis-number">01</span><h3>功耗狀態</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>比較功耗、可否處理 I/O，以及進出狀態的延遲。</p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>設定與自動轉移</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>理解 Get／Set Features、APST 與背景工作的限制。</p><dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>溫度控制</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>分開溫度事件通知與控制器的熱管理行為。</p></article>
 </div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>Features 是控制器提供給主機查詢或設定的功能。支援某個功能、目前功能值，以及設定能否跨斷電保存，是不同資訊。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>Features 是控制器提供給主機查詢或設定的功能。支援某個功能、目前功能值，以及設定能否跨斷電保存，是不同資訊。</p>
 </section>
 <section class="lesson" id="module-feature-read-set-loop"><h2 id="heading-feature-read-set-loop"><span class="section-number">01</span> Feature 的能力、讀取與設定</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Feature 不是一個單純 register。Host 要先用 SEL=011b 讀 capability，再分別讀 current／default／saved view，確認 scope 與 persistence 後才寫入。Set completion 只證明 command outcome；重新 Get 與 runtime telemetry 才能證明軟體看見的新 policy。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl>

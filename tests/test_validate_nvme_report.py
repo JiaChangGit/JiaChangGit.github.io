@@ -64,6 +64,27 @@ class NvmeReportContractTest(unittest.TestCase):
                     list(range(1, len(paragraphs) + 1)),
                     f"{artifact['id']} section {section:02d}",
                 )
+            axis_labels = [
+                tuple(int(part) for part in value.split("-"))
+                for value in re.findall(
+                    r'class="axis-paragraph-number"[^>]*>(\d{2}-\d{2})</span>', text
+                )
+            ]
+            self.assertTrue(axis_labels, artifact["id"])
+            by_axis = {}
+            axis_order = []
+            for axis, paragraph in axis_labels:
+                if axis not in by_axis:
+                    by_axis[axis] = []
+                    axis_order.append(axis)
+                by_axis[axis].append(paragraph)
+            self.assertEqual(axis_order, sorted(axis_order), artifact["id"])
+            for axis, paragraphs in by_axis.items():
+                self.assertEqual(
+                    paragraphs,
+                    list(range(1, len(paragraphs) + 1)),
+                    f"{artifact['id']} axis {axis:02d}",
+                )
 
     def test_standalone_command_set_preserves_registered_source_coverage(self):
         from scripts.nvme_nvm_command_set import MODULES, REPORT_ID

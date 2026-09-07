@@ -22,12 +22,12 @@ nvme_notes: true
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>控制器開始處理 I/O 之前，需要先建立可用的介面、佇列與狀態。本篇沿著控制器的運作生命週期，連起能力查詢、初始化、命令處理、記憶體資源，以及關機、重設與韌體啟用。</p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>啟動與能力</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>從識別控制器，到設定必要 properties 與確認可處理命令。</p></article>
-<article><span class="axis-number">02</span><h3>佇列與命令處理</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>理解佇列位置、Doorbell 更新與仲裁分工。</p></article>
-<article><span class="axis-number">03</span><h3>資源與生命週期</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>區分容量、控制器記憶體與各種狀態改變的影響範圍。</p></article>
+<article><span class="axis-number">01</span><h3>啟動與能力</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>從識別控制器，到設定必要 properties 與確認可處理命令。</p></article>
+<article><span class="axis-number">02</span><h3>佇列與命令處理</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>理解佇列位置、Doorbell 更新與仲裁分工。</p></article>
+<article><span class="axis-number">03</span><h3>資源與生命週期</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>區分容量、控制器記憶體與各種狀態改變的影響範圍。</p></article>
 </div>
 
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>提交佇列保存主機送出的命令，完成佇列保存控制器回報的結果。主機要先建立這些共同機制，再使用讀寫等命令；以下從這個先後關係展開。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>提交佇列保存主機送出的命令，完成佇列保存控制器回報的結果。主機要先建立這些共同機制，再使用讀寫等命令；以下從這個先後關係展開。</p>
 </section>
 <section class="lesson" id="module-identity"><h2 id="heading-identity"><span class="section-number">01</span> Controller 類型、識別碼與能力</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Controller type 回答『能做哪類工作』，Controller ID 回答『這是哪一個 controller』，support-requirement Figure 回答『在這個上下文中 command／log／feature 的支援強度』。Figures 23-32 應連續閱讀，但三種問題不能合併成一個布林值。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl>

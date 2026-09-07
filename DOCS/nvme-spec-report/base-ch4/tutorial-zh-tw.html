@@ -55,6 +55,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
 .nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
 .nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
 .nvme-note .term-note > div { margin: 5px 0; }
@@ -105,7 +107,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 @media (max-width: 600px) {
   .nvme-note .topic-map { grid-template-columns: 1fr; }
   .edition-tutorial main { padding-inline: 18px; }
-  .nvme-note .reader-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
 }
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {
@@ -122,13 +124,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>一筆 NVMe 命令必須告訴控制器要做什麼、對哪個 namespace 操作，以及資料放在哪裡；完成結果則必須讓主機認出是哪筆命令、結果如何。本篇從這兩個方向拆解 SQE、CQE 與 PRP／SGL。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>命令內容 SQE</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>理解命令識別、操作碼與資料指標的分工。</p></article>
-<article><span class="axis-number">02</span><h3>完成結果 CQE</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>分開理解新完成項目、命令身分與狀態碼。</p></article>
-<article><span class="axis-number">03</span><h3>資料位址 PRP／SGL</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>把作業系統的記憶體頁面概念接到 NVMe 資料傳輸。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl></article>
-<article><span class="axis-number">04</span><h3>其他共用資料結構</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.05">00.05.</span>理解功能值、識別碼、清單與文字的表示方式。</p></article>
+<article><span class="axis-number">01</span><h3>命令內容 SQE</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>理解命令識別、操作碼與資料指標的分工。</p></article>
+<article><span class="axis-number">02</span><h3>完成結果 CQE</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>分開理解新完成項目、命令身分與狀態碼。</p></article>
+<article><span class="axis-number">03</span><h3>資料位址 PRP／SGL</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>把作業系統的記憶體頁面概念接到 NVMe 資料傳輸。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl></article>
+<article><span class="axis-number">04</span><h3>其他共用資料結構</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span>理解功能值、識別碼、清單與文字的表示方式。</p></article>
 </div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.06">00.06.</span>命令與完成項目是佇列中的記錄，讀寫的資料通常由資料指標指定。先分清楚「命令記錄」與「命令要搬移的資料」，就能理解後面的欄位配置。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>命令與完成項目是佇列中的記錄，讀寫的資料通常由資料指標指定。先分清楚「命令記錄」與「命令要搬移的資料」，就能理解後面的欄位配置。</p>
 </section>
 <section class="lesson" id="module-sqe"><h2 id="heading-sqe"><span class="section-number">01</span> SQE 的共用格式與命令欄位</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Common SQE 先固定 CDW0、NSID、metadata/data pointer 與 CDW10-15 的位置。OPC 選 command，CID 建立完成關聯，PSDT 決定 DPTR 解讀方式；只有完成這些 common 欄位後，才應進入個別 command 的 CDW10-15 定義。Figures 92-94 是後續所有 command construction 的座標系。</p><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>

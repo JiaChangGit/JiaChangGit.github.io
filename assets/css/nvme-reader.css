@@ -49,6 +49,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
 .nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
 .nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
 .nvme-note .term-note > div { margin: 5px 0; }
@@ -99,7 +101,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 @media (max-width: 600px) {
   .nvme-note .topic-map { grid-template-columns: 1fr; }
   .edition-tutorial main { padding-inline: 18px; }
-  .nvme-note .reader-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
 }
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {

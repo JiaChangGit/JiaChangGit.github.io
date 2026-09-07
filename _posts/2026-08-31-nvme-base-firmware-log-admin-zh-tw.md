@@ -22,12 +22,12 @@ nvme_notes: true
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>韌體更新包含傳送映像、保存至 slot 與切換執行版本。這篇說明 Firmware Image Download、Firmware Commit 和 Firmware Slot Information 如何一起完成這件事，並分清楚每一步改變了什麼狀態。</p>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>能力與更新單位</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>確認可用 slots、寫入限制及下載片段的粒度。</p></article>
-<article><span class="axis-number">02</span><h3>下載與啟用</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>理解映像範圍、Commit Action 與 reset 的關係。</p></article>
-<article><span class="axis-number">03</span><h3>執行版本</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>以目前與預定 active slot 區分已保存和正在執行的版本。</p></article>
+<article><span class="axis-number">01</span><h3>能力與更新單位</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>確認可用 slots、寫入限制及下載片段的粒度。</p></article>
+<article><span class="axis-number">02</span><h3>下載與啟用</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>理解映像範圍、Commit Action 與 reset 的關係。</p></article>
+<article><span class="axis-number">03</span><h3>執行版本</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>以目前與預定 active slot 區分已保存和正在執行的版本。</p></article>
 </div>
 
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>Firmware slot 是保存韌體映像的位置；有版本字串不代表該映像正在執行。控制器的能力查詢、命令完成與 slot 資訊必須分別理解。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>Firmware slot 是保存韌體映像的位置；有版本字串不代表該映像正在執行。控制器的能力查詢、命令完成與 slot 資訊必須分別理解。</p>
 </section>
 <section class="lesson" id="module-fw-capability-plan"><h2 id="heading-fw-capability-plan"><span class="section-number">01</span> 更新前的能力與限制</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Firmware update 不是固定 command recipe。FRMW 決定 slot 與 activation 能力，FWUG 決定 download chunk 的 granularity／alignment，MTFA 與 MPTFAWR 決定 host 能等待多久，MDS／DID 則決定結果影響哪一組 controllers。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTFAWR</dt><dd>Maximum Processing Time for Firmware Activation Without Reset，立即 activation 不需要 reset 時的最大處理時間。</dd></div><div><dt>FRMW</dt><dd>Firmware Updates，Identify Controller 中回報 slot 數、slot 1 read-only 與 activation 能力的欄位。</dd></div><div><dt>FWUG</dt><dd>Firmware Update Granularity，download portion 的 granularity／alignment 能力欄位。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>MTFA</dt><dd>Maximum Time for Firmware Activation，activation 可能暫停 command processing 的最長時間。</dd></div><div><dt>DID</dt><dd>Domain Identifier，辨識 NVM subsystem 內 domain 的 identifier。</dd></div><div><dt>MDS</dt><dd>Multiple Domain Subsystem，指出 NVM subsystem 是否包含多個 domains 的能力 bit。</dd></div></dl>

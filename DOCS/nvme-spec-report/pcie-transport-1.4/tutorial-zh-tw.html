@@ -55,6 +55,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
 .nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
 .nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
 .nvme-note .term-note > div { margin: 5px 0; }
@@ -105,7 +107,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 @media (max-width: 600px) {
   .nvme-note .topic-map { grid-template-columns: 1fr; }
   .edition-tutorial main { padding-inline: 18px; }
-  .nvme-note .reader-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
 }
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {
@@ -122,12 +124,12 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>NVMe over PCIe Transport 說明 NVMe 的佇列、properties 與通知如何透過 PCIe 運作。本篇把作業系統熟悉的記憶體映射 I/O、DMA 與中斷，接到一筆 NVMe 命令的實際傳遞過程。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>介面位置</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>透過 BAR 與 configuration space 找到 NVMe 介面及能力。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl></article>
-<article><span class="axis-number">02</span><h3>命令與通知</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>區分佇列資料、Doorbell 與 interrupt 的作用。</p></article>
-<article><span class="axis-number">03</span><h3>平台行為</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>理解 reset、電源、錯誤回報與鏈路量測各自的適用範圍。</p></article>
+<article><span class="axis-number">01</span><h3>介面位置</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>透過 BAR 與 configuration space 找到 NVMe 介面及能力。</p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>命令與通知</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>區分佇列資料、Doorbell 與 interrupt 的作用。</p></article>
+<article><span class="axis-number">03</span><h3>平台行為</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>理解 reset、電源、錯誤回報與鏈路量測各自的適用範圍。</p></article>
 </div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>Base 規格定義 NVMe 的共同命令與佇列模型；PCIe Transport 補上本機 PCIe 的連接方式。讀取記憶體中的 queue entry，與存取裝置的 MMIO register，是不同種類的存取。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>Base 規格定義 NVMe 的共同命令與佇列模型；PCIe Transport 補上本機 PCIe 的連接方式。讀取記憶體中的 queue entry，與存取裝置的 MMIO register，是不同種類的存取。</p><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl>
 </section>
 <section class="lesson" id="module-layers"><h2 id="heading-layers"><span class="section-number">01</span> NVMe 如何使用 PCIe</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Figure 1 說明文件適用關係，Figure 2 再把 protocol responsibility 分層。工程上應把『command 語意』與『如何透過 host memory、MMIO、configuration space、interrupt 傳送』分開查證；Transport 發現衝突時不能改寫 Base。</p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div></dl>

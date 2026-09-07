@@ -55,6 +55,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
 .nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
 .nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
 .nvme-note .term-note > div { margin: 5px 0; }
@@ -105,7 +107,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 @media (max-width: 600px) {
   .nvme-note .topic-map { grid-template-columns: 1fr; }
   .edition-tutorial main { padding-inline: 18px; }
-  .nvme-note .reader-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
 }
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {
@@ -122,12 +124,12 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>Device Self-test 用來理解裝置測試的結果；Namespace Management 用來建立與管理主機可存取的儲存空間。本篇把測試結果、容量與格式選擇，以及 namespace 的建立、附加、刪除和還原分開說清楚。</p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>測試與結果</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>分清命令完成、測試完成與有效的結果欄位。</p></article>
-<article><span class="axis-number">02</span><h3>容量與格式</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>理解容量單位、配置粒度及 LBA 格式選擇。</p></article>
-<article><span class="axis-number">03</span><h3>Namespace 生命週期</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>把建立、附加、刪除與還原視為不同的狀態改變。</p></article>
+<article><span class="axis-number">01</span><h3>測試與結果</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>分清命令完成、測試完成與有效的結果欄位。</p></article>
+<article><span class="axis-number">02</span><h3>容量與格式</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>理解容量單位、配置粒度及 LBA 格式選擇。</p></article>
+<article><span class="axis-number">03</span><h3>Namespace 生命週期</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>把建立、附加、刪除與還原視為不同的狀態改變。</p></article>
 </div>
 
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>Namespace 是控制器呈現給主機的邏輯儲存空間，以 NSID 識別。建立 namespace 與把它附加至 controller 是兩個步驟，不能由其中一步推論另一步已完成。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>Namespace 是控制器呈現給主機的邏輯儲存空間，以 NSID 識別。建立 namespace 與把它附加至 controller 是兩個步驟，不能由其中一步推論另一步已完成。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
 </section>
 <section class="lesson" id="module-diagnostic-and-provisioning"><h2 id="heading-diagnostic-and-provisioning"><span class="section-number">01</span> 裝置診斷與 Namespace 配置</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>Device Self-test 與 Namespace Management 都使用 Admin command，但它們改變的物件完全不同。Self-test 建立一個背景 operation，command CQE 只是接受點，最後要靠 LID 06h 證明結果；Namespace Management 建立或移除 namespace object，Create CQE 回傳 NSID，但還要 Attach 才建立 controller access。先分開兩條線，才能理解 completion 為何不是終點。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>LID 06h</dt><dd>Device Self-test Log Page 的 identifier 06h；同時包含 current operation 與 20 筆歷史結果。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl>

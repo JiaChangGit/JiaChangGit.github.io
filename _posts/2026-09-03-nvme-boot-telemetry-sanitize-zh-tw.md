@@ -23,12 +23,12 @@ nvme_notes: true
 <p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span>Boot Partitions、Telemetry 與 Sanitize 分別處理開機映像、裝置內部狀態資料與資料清除。這篇把三者放在同一套控制方式下理解：先確認支援能力，再分清楚命令要求、背景狀態與回報資料，才能知道一次操作實際完成了什麼。</p>
 <h2 id="main-ideas">這篇的主軸</h2>
 <div class="topic-map">
-<article><span class="axis-number">01</span><h3>Boot Partitions</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.02">00.02.</span>讀取與更新開機映像，並理解 active partition 與寫入保護。</p></article>
-<article><span class="axis-number">02</span><h3>Telemetry</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.03">00.03.</span>理解資料範圍、快照版本與分段讀取的一致性。</p></article>
-<article><span class="axis-number">03</span><h3>Sanitize</h3><p class="reader-paragraph axis-description"><span class="paragraph-number" aria-label="00.04">00.04.</span>區分清除目標、清除方法、背景狀態與清除後的讀取規則。</p></article>
+<article><span class="axis-number">01</span><h3>Boot Partitions</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span>讀取與更新開機映像，並理解 active partition 與寫入保護。</p></article>
+<article><span class="axis-number">02</span><h3>Telemetry</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span>理解資料範圍、快照版本與分段讀取的一致性。</p></article>
+<article><span class="axis-number">03</span><h3>Sanitize</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span>區分清除目標、清除方法、背景狀態與清除後的讀取規則。</p></article>
 </div>
 
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span>命令完成與背景作業完成可能是不同事件。Get Log Page 用來讀取回報資料；Get／Set Features 用來查詢及設定功能。後文會在使用處解釋相關識別碼與欄位。</p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span>命令完成與背景作業完成可能是不同事件。Get Log Page 用來讀取回報資料；Get／Set Features 用來查詢及設定功能。後文會在使用處解釋相關識別碼與欄位。</p>
 </section>
 <section class="lesson" id="module-boot-read"><h2 id="heading-boot-read"><span class="section-number">01</span> Boot 的兩條讀取路徑</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span>先問 controller 是否已建立 Admin command 環境，再選 property 或 LID 15h。兩條路徑讀同一類 Boot 內容，但回傳格式與狀態觀察點不同。</p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl>
