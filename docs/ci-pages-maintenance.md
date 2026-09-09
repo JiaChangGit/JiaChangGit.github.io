@@ -5,8 +5,8 @@ Bundler 2.6.7，最低需要 Ruby 3.1.0；workflow 卻固定 Ruby 3.0，實際�
 本機 Ruby 3.3.8 建置成功，不能證明不同 Ruby 版本的 CI 可以通過。
 失敗紀錄：https://github.com/JiaChangGit/JiaChangGit.github.io/actions/runs/34142318247
 
-Ruby 系列以 .ruby-version 為共同來源，Gemfile 宣告同一系列；Bundler 版本沿用
-Gemfile.lock。修改任一版本時，一起檢查 Ruby、RubyGems、Bundler 與已鎖定 gems
+Ruby 系列以 .ruby-version 與 workflow 的 setup-ruby 設定為共同來源；Gemfile
+不另外鎖定 Ruby 版本，Bundler 版本沿用 Gemfile.lock。修改任一版本時，一起檢查 Ruby、RubyGems 與已鎖定 gems
 的相容性。不要手動改寫 lockfile 的 BUNDLED WITH 來掩蓋安裝問題。
 
 Pages 使用 GitHub Actions 作為部署來源；不再同時以 main 分支啟動 legacy build。
