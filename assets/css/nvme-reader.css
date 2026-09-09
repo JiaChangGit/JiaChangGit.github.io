@@ -40,8 +40,16 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
 .nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
 .nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
-.nvme-note .reader-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
-.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
 .nvme-note .review-answer { margin-bottom: 12px; }
 .nvme-note .opening { font-size: 19px; line-height: 1.85; }
 .nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
@@ -49,8 +57,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
 .nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
-.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: 2.3em minmax(0, 1fr); column-gap: .55em; align-items: start; }
-.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
 .nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
 .nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
 .nvme-note .term-note > div { margin: 5px 0; }
@@ -101,7 +109,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 @media (max-width: 600px) {
   .nvme-note .topic-map { grid-template-columns: 1fr; }
   .edition-tutorial main { padding-inline: 18px; }
-  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: 1.9em minmax(0, 1fr); column-gap: .35em; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
 }
 @media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
 @media print {

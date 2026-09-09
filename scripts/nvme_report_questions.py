@@ -25,7 +25,8 @@ def render_questions(report_id, modules, claims, language, fmt, section_no=0):
         answer = html.escape(q['answer'][language])
         answer_paragraph = (
             f'<p class="reader-paragraph review-answer">'
-            f'<span class="paragraph-number" aria-label="{section_no:02d}.{paragraph_no:02d}">{section_no:02d}.{paragraph_no:02d}.</span>{answer}</p>'
+            f'<span class="paragraph-number" aria-label="{section_no:02d}.{paragraph_no:02d}">{section_no:02d}.{paragraph_no:02d}.</span>'
+            f'<span class="paragraph-text">{answer}</span></p>'
         )
         lines.extend([f'<!-- qa:{q["id"]} -->',
             f'<details class="review-question" id="qa-{q["id"]}"><summary>{index}. {html.escape(q["question"][language])}</summary>',

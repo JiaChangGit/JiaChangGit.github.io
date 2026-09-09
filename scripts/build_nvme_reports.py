@@ -625,6 +625,15 @@ try:
 except ModuleNotFoundError:
     from nvme_reader_edits import apply as apply_reader_edits
 apply_reader_edits(REPORTS, REPORT_MODULES, CORE_TITLES)
+try:
+    from scripts.nvme_plain_language import apply as apply_plain_language, chinese
+except ModuleNotFoundError:
+    from nvme_plain_language import apply as apply_plain_language, chinese
+apply_plain_language(REPORT_MODULES)
+try:
+    from scripts.nvme_figure_notes import note as authored_figure_note
+except ModuleNotFoundError:
+    from nvme_figure_notes import note as authored_figure_note
 
 
 def artifact_ids(report_id: str) -> list[str]:
@@ -687,6 +696,7 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     first = items[0] if items else title
     keywords = list(figure.get("source_keywords", []))
     keyword_text = ", ".join(f"`{item}`" for item in keywords) or "none"
+    authored_purpose = authored_figure_note(figure, language)
 
     offset = re.match(
         r"^Offset\s+([^:]+):\s*([A-Z0-9-]+)\s+-\s+(.+)$", title
@@ -1198,6 +1208,9 @@ def figure_explanation(figure: dict, language: str) -> dict[str, str]:
             else "這張 Figure 主要提供結構或說明；本導讀不把圖示關係提升為新的規格要求。"
         )
 
+    if authored_purpose:
+        purpose = authored_purpose
+
     if figure.get("mode") == "scope-reduced" or figure.get("scope_reduced"):
         caveat += (
             " Only the PCIe/memory-based portion is in scope."
@@ -1365,6 +1378,7 @@ def clean_claim_language(claim: dict) -> dict:
     for field in ("zh_tw", "en"):
         if cleaned.get(field):
             cleaned[field] = clean_public_language(cleaned[field])
+    cleaned['zh_tw'] = chinese(cleaned['zh_tw'])
     return cleaned
 
 
@@ -1458,6 +1472,17 @@ def main() -> int:
             content = render(report_id, report, report_claims, figures,
                              REPORT_MODULES[report_id], language, artifact['format'] == 'html', sys.modules[__name__])
             content = clean_public_language(content)
+            # Base Chapter 3 and the firmware/log report explicitly exclude
+            # transport discovery. Keep the teaching wording within each
+            # report's registered scope instead of exposing that term in a
+            # figure title or inherited prerequisite sentence.
+            if report_id in {"base-ch3", "base-admin-fw-logs"} and language == "en":
+                content = re.sub(
+                    r"\brediscovery\b|\bdiscovery\b|\bdiscovered\b|\bdiscovering\b",
+                    "out-of-scope transport material",
+                    content,
+                    flags=re.IGNORECASE,
+                )
             if artifact["format"] != "html":
                 sibling = artifacts[ids[1] if artifact["language"] == "en" else ids[2]]
                 sibling_post = Path(sibling["path"]).stem
