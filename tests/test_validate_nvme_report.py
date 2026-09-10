@@ -24,6 +24,37 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_inactive_term_is_not_corrupted_by_active_replacement(self):
+        from scripts.nvme_plain_language import chinese
+        self.assertEqual(chinese('inactive NSID'), 'inactive NSID')
+        self.assertNotIn('in目前', chinese('invalid 與 inactive NSID；active NSID'))
+        self.assertIn('目前可存取',chinese('active NSID'))
+
+    def test_apst_example_recomputes_time_and_state_bits(self):
+        encoded=(2000 << 8) | (3 << 3)
+        self.assertEqual((encoded >> 8) & 0xffffff, 2000)
+        self.assertEqual((encoded >> 3) & 31, 3)
+        from scripts.nvme_figure_examples_base import LESSONS
+        self.assertIn(f'{encoded:08X}h',LESSONS[477]['example'])
+        text=(ROOT/'DOCS/nvme-spec-report/base-power-features/tutorial-zh-tw.html').read_text()
+        self.assertIn(f'{encoded:08X}h',text)
+        self.assertNotIn('07D00018h',text)
+
+    def test_every_in_scope_figure_has_a_unique_takeaway_and_example(self):
+        entries=VALIDATOR.load_json('figure-table-register.json')['entries']
+        for a in VALIDATOR.load_json('output-contract.json')['artifacts']:
+            if a['format']!='html': continue
+            figures=[f for f in entries if a['id'] in f['required_artifact_ids']]
+            text=(ROOT/a['path']).read_text()
+            self.assertFalse(VALIDATOR.validate_figure_teaching(text,figures),a['id'])
+        a=next(a for a in VALIDATOR.load_json('output-contract.json')['artifacts'] if a['report_id']=='base-namespace-management' and a['format']=='html')
+        figures=[f for f in entries if a['id'] in f['required_artifact_ids']]
+        text=(ROOT/a['path']).read_text()
+        from scripts.nvme_figure_lessons import lesson
+        f=next(f for f in figures if f['number']=='447')
+        broken=text.replace(lesson(f)['example'],'')
+        self.assertTrue(VALIDATOR.validate_figure_teaching(broken,figures))
+
     def test_reader_terms_are_bounded_and_paragraphs_are_numbered(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
@@ -140,8 +171,8 @@ class NvmeReportContractTest(unittest.TestCase):
             with self.subTest(artifact=artifact['id']):
                 self.assertTrue(bank)
                 self.assertFalse(validate_questions(rid, REPORT_MODULES[rid], claims, text, lang, artifact['format']))
-        rid = 'base-boot-telemetry-sanitize'
-        text = (ROOT / '_posts/2026-09-03-nvme-boot-telemetry-sanitize-en.md').read_text()
+        rid = 'base-telemetry'
+        text = (ROOT / '_posts/2026-09-11-nvme-base-telemetry-en.md').read_text()
         bank = question_bank(rid, REPORT_MODULES[rid])
         broken = text.rsplit(bank[0]['answer']['en'], 1)
         self.assertEqual(len(broken), 2)
@@ -149,27 +180,24 @@ class NvmeReportContractTest(unittest.TestCase):
         wrong_id = text.replace('<!-- qa:' + bank[0]['id'] + ' -->', '<!-- qa:wrong-source -->')
         self.assertTrue(validate_questions(rid, REPORT_MODULES[rid], claims, wrong_id, 'en', 'markdown'))
 
-    def test_boot_telemetry_sanitize_scope_and_source_identity(self):
+    def test_split_reports_preserve_source_identity_and_boundaries(self):
+        from scripts.build_nvme_reports import REPORTS
         from scripts.nvme_bts_terms import definition
         from scripts.nvme_teaching_content import term_definition
-        scope = json.loads((ROOT / '.ai/nvme-report/scope.json').read_text())
-        register = json.loads((ROOT / '.ai/nvme-report/figure-table-register.json').read_text())
-        figures = [f for f in register['entries'] if f['report_id'] == 'base-boot-telemetry-sanitize']
-        self.assertEqual(len(figures), 80)
-        self.assertEqual(sum(f.get('role') != 'referenced_dependency' for f in figures), 32)
-        self.assertEqual({f['id'] for f in figures if f['number'] == '201'}, {'BASEBTS-BASE-FIG-201', 'BASEBTS-NVMCS-FIG-201'})
-        claims = json.loads((ROOT / '.ai/nvme-report/claims.json').read_text())['claims']
-        by_id = {c['id']:c for c in claims}
-        self.assertEqual(by_id['BASEBTS-BASE-FIG-201-CLAIM']['source_id'], 'NVME-BASE-2.4')
-        self.assertEqual(by_id['BASEBTS-NVMCS-FIG-201-CLAIM']['source_id'], 'NVME-NVM-CS-1.3')
-        self.assertIn('8.1.27.4.6', by_id['BASEBTS-SAN-VERIFY-STATE']['section'])
-        self.assertTrue(any(e['status'] == 'EXCLUDE' and '8.1.27.6' in str(e) for e in scope['entries']))
-        self.assertIn('Storage Tag Check', definition('STC', 'base-boot-telemetry-sanitize', 'en', term_definition))
-        self.assertIn('Self-test Code', definition('STC', 'base-self-test-hmb-emulation', 'en', term_definition))
-        text = (ROOT / 'DOCS/nvme-spec-report/base-boot-telemetry-sanitize/tutorial-zh-tw.html').read_text()
-        ids = re.findall(r'(?<![-\w])id="([^"]+)"', text)
-        self.assertEqual(len(ids), len(set(ids)))
-        self.assertIn('29:10', text)
+        scope=VALIDATOR.load_json('scope.json')
+        register=VALIDATOR.load_json('figure-table-register.json')['entries']
+        self.assertNotIn('base-boot-telemetry-sanitize',REPORTS)
+        self.assertNotIn('base-self-test-namespace-management',REPORTS)
+        self.assertNotIn('base-self-test-hmb-emulation',REPORTS)
+        for rid,prefix in [('base-boot-partitions','BOOT-'),('base-telemetry','TEL-')]:
+            self.assertTrue(all(c['key'].startswith(prefix) for c in REPORTS[rid]['claims']))
+        for rid in ('base-hmb-emulation','base-namespace-management'):
+            self.assertFalse(any(c['key'].startswith('SELFTEST-') for c in REPORTS[rid]['claims']))
+        self.assertTrue(any(e['status']=='EXCLUDE' and '8.1.27.6' in str(e) for e in scope['entries']))
+        self.assertIn('Storage Tag Check',definition('STC','base-sanitize','en',term_definition))
+        self.assertIn('Self-test Code',definition('STC','base-device-self-test','en',term_definition))
+        identities=[(f['report_id'],f['source_id'],f['number']) for f in register]
+        self.assertEqual(len(identities),len(set(identities)))
 
     def test_generators_parse_and_import(self):
         for path in (BUILD_SCRIPT, EVIDENCE_SCRIPT):
@@ -187,6 +215,7 @@ class NvmeReportContractTest(unittest.TestCase):
         )
         paths = [ROOT / item["path"] for item in contract["artifacts"]]
         paths.append(ROOT / ".ai/nvme-report/claims.json")
+        paths.append(ROOT / "_pages/nvme-notes.html")
         before = {path: path.read_bytes() for path in paths}
         result = subprocess.run(
             [sys.executable, "-B", str(BUILD_SCRIPT)],
@@ -212,15 +241,15 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_ten_reports_and_thirty_requested_artifacts(self):
+    def test_contract_has_thirteen_reports_and_thirty_nine_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 30)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 10)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 20)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 10)
+        self.assertEqual(len(artifacts), 39)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 13)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 26)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 13)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -230,9 +259,8 @@ class NvmeReportContractTest(unittest.TestCase):
                 "pcie14-bilingual",
                 "basefwlog-bilingual",
                 "basepower-bilingual",
-                "basediagmem-bilingual",
-                "basensmgmt-bilingual",
-                "basebts-bilingual",
+                "baseselftest-bilingual", "basehmb-bilingual", "basenamespace-bilingual",
+                "baseboot-bilingual", "basetelemetry-bilingual", "basesanitize-bilingual",
                 "nvmcs13-bilingual",
             },
         )
@@ -338,135 +366,28 @@ class NvmeReportContractTest(unittest.TestCase):
             set(power_scope["included_figure_ids"]),
         )
 
-        diagmem_report = [
-            item for item in register["entries"]
-            if item["report_id"] == "base-self-test-hmb-emulation"
-            and item["scope_status"] == "INCLUDE"
-        ]
-        diagmem_dependencies = [
-            item for item in diagmem_report if item.get("role") == "referenced_dependency"
-        ]
-        expected_diagmem_numbers = {
-            "36", "93", "94", "111", "176", "177", "178", "179", "180",
-            "197", "198", "200", "203", "204", "205", "206", "207", "208",
-            "209", "218", "219", "338", "463", "464", "466", "545", "546",
-            "547", "548", "549", "550", "551", "552", "553", "700", "701",
-        }
-        expected_diagmem_dependencies = {
-            "36", "93", "94", "197", "198", "200", "203", "204", "205",
-            "206", "207", "208", "209", "338", "463", "464", "466",
-        }
-        self.assertEqual(len(diagmem_report), 36)
-        self.assertEqual({item["number"] for item in diagmem_report}, expected_diagmem_numbers)
-        self.assertEqual(
-            {item["number"] for item in diagmem_dependencies},
-            expected_diagmem_dependencies,
-        )
-        self.assertEqual(
-            next(item for item in diagmem_report if item["number"] == "111")["source_id"],
-            "NVME-NVM-CS-1.3",
-        )
-        for number in ("200", "209", "338", "466"):
-            item = next(item for item in diagmem_report if item["number"] == number)
-            self.assertEqual(item["mode"], "dependency-slice")
-            self.assertTrue(item["scope_reduced"])
-        diagmem_scope = next(
-            item for item in scope["reports"]
-            if item["id"] == "base-self-test-hmb-emulation"
-        )
-        self.assertEqual(
-            {item["id"] for item in diagmem_report},
-            set(diagmem_scope["included_figure_ids"]),
-        )
+        for report in scope['reports']:
+            included={f['id'] for f in register['entries'] if f['report_id']==report['id'] and f['scope_status']=='INCLUDE'}
+            self.assertEqual(included,set(report['included_figure_ids']))
 
-        nsmgmt_report = [
-            item for item in register["entries"]
-            if item["report_id"] == "base-self-test-namespace-management"
-            and item["scope_status"] == "INCLUDE"
-        ]
-        nsmgmt_dependencies = [
-            item for item in nsmgmt_report if item.get("role") == "referenced_dependency"
-        ]
-        expected_nsmgmt_numbers = {
-            "36", "93", "111", "123", "127", "132", "133", "134", "139",
-            "155", "176", "177", "178", "179", "180", "203", "204", "205",
-            "206", "207", "208", "209", "218", "219", "304", "338", "346",
-            "442", "443", "444", "445", "446", "447", "448", "449", "450",
-            "474", "700", "701",
-        }
-        expected_nsmgmt_dependencies = {
-            "36", "93", "123", "127", "132", "133", "139", "155", "203",
-            "204", "205", "206", "207", "208", "209", "304", "338", "346",
-            "474",
-        }
-        self.assertEqual(len(nsmgmt_report), 39)
-        self.assertEqual({item["number"] for item in nsmgmt_report}, expected_nsmgmt_numbers)
-        self.assertEqual(
-            {item["number"] for item in nsmgmt_dependencies},
-            expected_nsmgmt_dependencies,
-        )
-        for number in ("36", "155", "209", "338", "346", "474", "123", "127", "132", "133"):
-            item = next(item for item in nsmgmt_report if item["number"] == number)
-            self.assertEqual(item["mode"], "dependency-slice")
-            self.assertTrue(item["scope_reduced"])
-        nsmgmt_scope = next(
-            item for item in scope["reports"]
-            if item["id"] == "base-self-test-namespace-management"
-        )
-        self.assertEqual(
-            {item["id"] for item in nsmgmt_report},
-            set(nsmgmt_scope["included_figure_ids"]),
-        )
+    def test_selftest_and_hmb_are_independently_readable(self):
+        st=(ROOT/'DOCS/nvme-spec-report/base-device-self-test/tutorial-zh-tw.html').read_text()
+        hmb=(ROOT/'DOCS/nvme-spec-report/base-hmb-emulation/tutorial-zh-tw.html').read_text()
+        for term in ('008C0006h','Invalid Namespace or Format','Invalid Field in Command','FLBA'):
+            self.assertIn(term,st)
+        for term in ('HMDLEC','HMNARE','DSTRD','NDT','00000012_34567000h'):
+            self.assertIn(term,hmb)
+        self.assertNotIn('SELFTEST-',hmb)
+        self.assertNotIn('HMB-',st)
 
-    def test_selftest_hmb_report_has_exact_scope_and_numeric_teaching(self):
-        contract = json.loads(
-            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
-        )
-        texts = []
-        for artifact in contract["artifacts"]:
-            if artifact["report_id"] != "base-self-test-hmb-emulation":
-                continue
-            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            texts.append(text)
-            for required in (
-                "LID 06h", "008C0006h", "HMDL",
-                "HMDLEC", "HMNARE", "DSTRD", "NDT", "00000012_34567000h",
-                "NVM Express NVM Command Set Specification, Revision 1.3",
-            ):
-                self.assertIn(required.lower(), text.lower())
-            for excluded in (
-                "§4.1.4.4", "Figure 112", "§5.2.30.3", "§8.1.30",
-            ):
-                self.assertNotIn(excluded, text)
-        self.assertEqual(len(texts), 3)
-        self.assertNotEqual(texts[0], texts[1])
-        self.assertEqual(
-            VALIDATOR.claim_id_sequence(texts[1]),
-            VALIDATOR.claim_id_sequence(texts[2]),
-        )
-
-    def test_selftest_namespace_report_has_exact_scope_and_numeric_teaching(self):
-        contract = json.loads(
-            (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
-        )
-        texts = []
-        for artifact in contract["artifacts"]:
-            if artifact["report_id"] != "base-self-test-namespace-management":
-                continue
-            text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            texts.append(text)
-            for required in (
-                "LID 06h", "008C0006h", "NSZE", "NCAP",
-                "NUSE", "THINP", "NVMSETID", "ENDGID", "Controller List", "DNCS",
-                "NVM Express NVM Command Set Specification, Revision 1.3",
-            ):
-                self.assertIn(required.lower(), text.lower())
-        self.assertEqual(len(texts), 3)
-        self.assertNotEqual(texts[0], texts[1])
-        self.assertEqual(
-            VALIDATOR.claim_id_sequence(texts[1]),
-            VALIDATOR.claim_id_sequence(texts[2]),
-        )
+    def test_namespace_lifecycle_keeps_complete_figure_teaching(self):
+        text=(ROOT/'DOCS/nvme-spec-report/base-namespace-management/tutorial-zh-tw.html').read_text()
+        for term in ('NSZE','NCAP','NUSE','Controller List','DNCS','bits 31:24','bits 3:0'):
+            self.assertIn(term,text)
+        self.assertNotIn('SELFTEST-',text)
+        figures=VALIDATOR.load_json('figure-table-register.json')['entries']
+        expected={f['id'] for f in figures if f['report_id']=='base-namespace-management' and f['scope_status']=='INCLUDE'}
+        self.assertEqual(VALIDATOR.figure_table_ids(text),expected)
 
     def test_power_feature_report_honors_exact_scope_and_has_numeric_teaching(self):
         contract = json.loads(
@@ -478,10 +399,10 @@ class NvmeReportContractTest(unittest.TestCase):
                 continue
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             texts.append(text)
-            for required in (
+            for required in ((
                 "FID 02h", "FID 04h", "FID 0Ch",
-                "FID 10h", "FID 11h", "07D00018h", "01400157h", "01570161h",
-            ):
+                "FID 10h", "FID 11h", "0007D018h", "01400157h", "01570161h",
+            ) if artifact['format']=='html' else ("0007D018h",)):
                 self.assertIn(required.lower(), text.lower())
             for excluded in (
                 "§5.2.30.1.2.1", "§8.1.19.6", "§8.1.19.7",
@@ -503,7 +424,7 @@ class NvmeReportContractTest(unittest.TestCase):
             if artifact["report_id"] != "base-admin-fw-logs":
                 continue
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
-            for required in ("LID 03h", "007F0003h"):
+            for required in (("LID 03h", "007F0003h") if artifact["format"]=="html" else ("LID 03h",)):
                 self.assertIn(required, text)
             self.assertNotIn("Figure 逐圖導讀", text)
             self.assertNotIn("Figure-by-Figure Guide", text)
@@ -522,8 +443,14 @@ class NvmeReportContractTest(unittest.TestCase):
             text = (ROOT / artifact["path"]).read_text(encoding="utf-8")
             expected = {c["id"] for c in claims if c["report_id"] == artifact["report_id"]}
             with self.subTest(artifact=artifact["id"]):
-                self.assertEqual(artifact["claim_coverage"], "all")
-                self.assertEqual(VALIDATOR.claim_ids(text), expected)
+                self.assertEqual(artifact["claim_coverage"], "all" if artifact['format']=='html' else 'overview')
+                if artifact['format']=='html':
+                    self.assertEqual(VALIDATOR.claim_ids(text), expected)
+                else:
+                    self.assertTrue(VALIDATOR.claim_ids(text) < expected)
+                    self.assertIn('id="spec-reading"',text)
+                    self.assertNotIn('class="technical-note"',text)
+                    self.assertNotIn('class="figure-reading-fold"',text)
                 visible = VALIDATOR.reader_text(text)
                 for claim_id in expected:
                     self.assertNotIn(claim_id, visible)
@@ -532,7 +459,7 @@ class NvmeReportContractTest(unittest.TestCase):
     def test_html_has_responsive_accessible_reading_structure(self):
         contract = VALIDATOR.load_json("output-contract.json")
         artifacts = [a for a in contract["artifacts"] if a["format"] == "html"]
-        self.assertEqual(len(artifacts), 10)
+        self.assertEqual(len(artifacts), 13)
         for artifact in artifacts:
             with self.subTest(artifact=artifact["id"]):
                 self.assertFalse(VALIDATOR.validate_html(ROOT / artifact["path"]))
@@ -612,7 +539,7 @@ class NvmeReportContractTest(unittest.TestCase):
             )
             self.assertRegex(
                 text,
-                rf"(?m)^img:\s*{re.escape(expected_images[artifact['id']])}\s*$",
+                rf"(?m)^img:\s*{re.escape(expected_images.get(artifact['id'], 'posts/2026/cat_title.jpg' if artifact['language']=='en' else 'posts/2026/dogMC_title.jpg'))}\s*$",
             )
         layout = (ROOT / "_layouts/default.html").read_text(encoding="utf-8")
         self.assertIn("page.lang", layout)
@@ -700,7 +627,7 @@ class NvmeReportContractTest(unittest.TestCase):
                  "teaching_necessity": "Explain how the local queue model differs from a remote transport.",
                  "supports_topic": "Queue location", "background_terms": ["Fabrics"]}
         self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3"))
-        self.assertIsNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3", [entry]))
+        self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3", [entry]))
         self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch4", [entry]))
         self.assertIsNotNone(VALIDATOR.forbidden_published("Fabrics", "base-ch3", [{**entry, "teaching_necessity": ""}]))
 
@@ -712,7 +639,7 @@ class NvmeReportContractTest(unittest.TestCase):
         prerequisite.pop("teaching_necessity")
         with mock.patch.object(VALIDATOR, "load_json", side_effect=documents.__getitem__):
             errors = VALIDATOR.validate_setup(None)
-        self.assertTrue(any("全部核准 claim" in error for error in errors))
+        self.assertTrue(any("完整 HTML 教學" in error for error in errors))
         self.assertTrue(any("teaching_necessity" in error for error in errors))
 
     def test_bilingual_posts_share_nonempty_topic_and_source_order(self):

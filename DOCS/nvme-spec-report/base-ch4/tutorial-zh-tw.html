@@ -78,6 +78,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
 .nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
 .nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
 .nvme-note .field-note > summary { font-size: 15px; }
 .nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
 .nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
@@ -134,59 +145,59 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <div class="topic-map">
 <article><span class="axis-number">01</span><h3>命令內容 SQE</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">理解命令識別、操作碼與資料指標的分工。</span></p></article>
 <article><span class="axis-number">02</span><h3>完成結果 CQE</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">分開理解新完成項目、命令身分與狀態碼。</span></p></article>
-<article><span class="axis-number">03</span><h3>資料位址 PRP／SGL</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">把作業系統的記憶體頁面概念接到 NVMe 資料傳輸。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>資料位址 PRP／SGL</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">把作業系統的記憶體頁面概念接到 NVMe 資料傳輸。</span></p></article>
 <article><span class="axis-number">04</span><h3>其他共用資料結構</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">理解功能值、識別碼、清單與文字的表示方式。</span></p></article>
 </div>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">命令與完成項目是佇列中的記錄，讀寫的資料通常由資料指標指定。先分清楚「命令記錄」與「命令要搬移的資料」，就能理解後面的欄位配置。</span></p>
 <div class="overview-connections"><h3>把主軸連起來</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">把一次操作拆成三份資訊：SQE 說明主機要做什麼，PRP／SGL 描述資料在哪裡，CQE 回報是哪筆命令完成及其結果。識別碼與清單則協助主機選擇正確對象。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">把一次操作拆成三份資訊：SQE 說明主機要做什麼，PRP／SGL 描述資料在哪裡，CQE 回報是哪筆命令完成及其結果。識別碼與清單則協助主機選擇正確對象。</span></p>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">本篇由共同布局逐步深入位元、長度與指標。讀完應能從一個命令範圍算出資料量，選擇正確的指標解讀方式，再利用完成項目找回原命令。每次計算都要先確認單位，而不是只憑欄位名稱推測。</span></p>
 </div>
 </section>
 <section class="lesson" id="module-sqe"><h2 id="heading-sqe"><span class="section-number">01</span> SQE 的共用格式與命令欄位</h2>
 <div class="lesson-explanation">
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">SQE 是控制器要讀取的一份命令資料結構。共用欄位先告訴控制器這是哪種命令、命令識別值和對象，命令專用欄位再補充操作參數。資料指標則指向另外的緩衝區；命令本身與它要傳輸的資料，不必放在同一個位置。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">相同 Dword 編號在不同命令中可能有不同用途。因此先認出 opcode，再查該命令對 CDW10–15 的定義。CID 則與提交佇列身分合用，讓完成結果找回原命令；它不是 namespace 的位址，也不指定資料緩衝區。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">相同 Dword 編號在不同命令中可能有不同用途。因此先認出 opcode，再查該命令對 CDW10–15 的定義。CID 則與提交佇列身分合用，讓完成結果找回原命令；它不是 namespace 的位址，也不指定資料緩衝區。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
 <details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140, PDF 頁 166</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168</p></details>
 </div>
 <figure><div class="diagram-scroll"><svg viewBox="0 0 760 160" role="img"><title>CDW0 · 32 bits</title><desc>CDW0 把命令識別、資料指標類型、融合操作與操作碼放在同一個 Dword。欄位寬度以標示的 bit 範圍為準，圖塊為閱讀需要調整。</desc><rect x="20" y="35" width="300" height="85" rx="6" class="v-object"/><text x="170.0" y="71.0" text-anchor="middle" font-size="17">CID</text><text x="170.0" y="96.0" text-anchor="middle" font-size="17">31:16</text><rect x="320" y="35" width="90" height="85" rx="6" class="v-command"/><text x="365.0" y="71.0" text-anchor="middle" font-size="17">PSDT</text><text x="365.0" y="96.0" text-anchor="middle" font-size="17">15:14</text><rect x="410" y="35" width="130" height="85" rx="6" class="v-decision"/><text x="475.0" y="71.0" text-anchor="middle" font-size="17">Reserved</text><text x="475.0" y="96.0" text-anchor="middle" font-size="17">13:10</text><rect x="540" y="35" width="90" height="85" rx="6" class="v-command"/><text x="585.0" y="71.0" text-anchor="middle" font-size="17">FUSE</text><text x="585.0" y="96.0" text-anchor="middle" font-size="17">9:8</text><rect x="630" y="35" width="110" height="85" rx="6" class="v-success"/><text x="685.0" y="71.0" text-anchor="middle" font-size="17">OPC</text><text x="685.0" y="96.0" text-anchor="middle" font-size="17">7:0</text></svg></div><figcaption>CDW0 把命令識別、資料指標類型、融合操作與操作碼放在同一個 Dword。欄位寬度以標示的 bit 範圍為準，圖塊為閱讀需要調整。</figcaption></figure>
-<dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div></dl>
 <!-- claim:BASE4-SQE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Admin 與 I/O common SQE 固定為 64 bytes。CDW0、NSID、data pointer 與 CDW10-15 的通用位置先固定，再由各 command 定義命令專屬內容。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 139-143, PDF 頁 165-169</p></details>
 <!-- claim:BASE4-CID -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">CID 與 Submission Queue identifier 的組合用來唯一識別 command；FFFFh 宜（should）避免使用，因 Error Information log 以該值表示錯誤未對應特定 command。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140, PDF 頁 166</p></details>
 <!-- claim:BASE4-PSDT -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">CDW0.PSDT 決定 DPTR 解讀為 PRP 或 SGL。NVMe over PCIe 的 Admin command 原則上必須（shall）使用 PRP，除非 command 定義另有規定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168</p></details>
-<div class="table-wrap"><table><caption>SQE 的共用格式與命令欄位</caption><thead><tr><th scope="col">SQE 區域</th><th scope="col">主機在這裡描述什麼</th><th scope="col">如何選擇正確的欄位定義</th></tr></thead><tbody><tr><td>CDW0</td><td>命令身分 與 資料指標選擇欄位</td><td>所有 commands 共用</td></tr><tr><td>NSID</td><td>指定的 namespace 範圍</td><td>不用時必須依 command 定義清零或使用特殊值</td></tr><tr><td>MPTR/DPTR</td><td>metadata 與 data buffer</td><td>由 PSDT 與 command 規則決定</td></tr><tr><td>CDW10-15</td><td>命令專用參數</td><td>不能跨 command 借用語意</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">CDW0.PSDT 決定 DPTR 解讀為 PRP 或 SGL。NVMe over PCIe 的 Admin command 原則上必須（shall）使用 PRP，除非 command 定義另有規定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168</p></details>
+<div class="table-wrap"><table><caption>SQE 的共用格式與命令欄位</caption><thead><tr><th scope="col">SQE 區域</th><th scope="col">主機在這裡描述什麼</th><th scope="col">如何選擇正確的欄位定義</th></tr></thead><tbody><tr><td>CDW0</td><td>命令身分 與 資料指標選擇欄位</td><td>所有 commands 共用</td></tr><tr><td>NSID</td><td>指定的 namespace 範圍</td><td>不用時必須依 command 定義清零或使用特殊值</td></tr><tr><td>MPTR/DPTR</td><td>metadata 與 data buffer</td><td>由 PSDT 與 command 規則決定</td></tr><tr><td>CDW10-15</td><td>命令專用參數</td><td>不能跨 command 借用語意</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div></dl>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">說明性範例：同一個 CID 可以在不同 SQ 使用，但同一 SQ 內 outstanding command 不可用相同 CID 造成識別衝突。driver 建 SQE 時以 (SQID,CID) 建 tracking key，填完全部欄位並完成必要 memory ordering 後才更新 SQ tail。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl></aside>
 <a class="reading-link" href="#reading-sqe">閱讀相關規格圖表 → SQE 的共用格式與命令欄位</a>
 </section>
 <section class="lesson" id="module-cqe-status"><h2 id="heading-cqe-status"><span class="section-number">02</span> CQE：新完成項目、命令識別與結果</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">主機讀取 CQE 時，先要知道這個位置是否包含新完成項目，再辨認它屬於哪筆命令，最後才解釋結果。Phase Tag、SQID／CID、SCT／SC 分別參與這三個問題。單獨讀出一個狀態碼，缺少命令和類別，就容易查到錯的狀態定義。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">主機讀取 CQE 時，先要知道這個位置是否包含新完成項目，再辨認它屬於哪筆命令，最後才解釋結果。Phase Tag、SQID／CID、SCT／SC 分別參與這三個問題。單獨讀出一個狀態碼，缺少命令和類別，就容易查到錯的狀態定義。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">DNR 描述以相同命令重試是否預期能成功，不等於永久硬體故障診斷。CRD 在適用時提供重試延遲選擇，也不是所有狀態都通用的等待時間。這些補充欄位應在辨認主要結果後閱讀，而不是取代主要結果。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CRD</dt><dd>Command Retry Delay，status 中選擇 controller 建議重試延遲值的欄位。</dd></div><div><dt>DNR</dt><dd>Do Not Retry，CQE status 中提示以相同 command 重試預期不會成功的 bit。</dd></div></dl>
 <details class="source-note"><summary>來源：Base 2.4 §4.2.1 · Base 2.4 §4.2.3 · Base 2.4 §4.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, 文件頁 144-145, PDF 頁 170-171</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184</p></details>
 </div>
 <!-- claim:BASE4-CQE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">common CQE 至少 16 bytes；若以多次寫入建立 CQE，Phase Tag 必須（shall）在最後一次寫入更新，避免 host 看到半成品。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, 文件頁 144-145, PDF 頁 170-171</p></details>
 <!-- claim:BASE4-STATUS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">status 要先解 Status Code Type（SCT），再解 Status Code（SC），同時檢查 Do Not Retry（DNR）等控制 bit；數值不能脫離 SCT 單獨解讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DNR</dt><dd>Do Not Retry，CQE status 中提示以相同 command 重試預期不會成功的 bit。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">status 要先解 Status Code Type（SCT），再解 Status Code（SC），同時檢查 Do Not Retry（DNR）等控制 bit；數值不能脫離 SCT 單獨解讀。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, 文件頁 145-155, PDF 頁 171-181</p></details>
 <!-- claim:BASE4-PHASE -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">Phase Tag 讓 host 判斷環形 Completion Queue slot 是否為新完成項目；host 消費 CQE 後推進 CQ head doorbell，wrap 時預期 phase 翻轉。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184</p></details>
-<div class="table-wrap"><table><caption>CQE：新完成項目、命令識別與結果</caption><thead><tr><th scope="col">完成狀態欄位</th><th scope="col">回答哪個問題</th><th scope="col">解讀時還需哪些資訊</th></tr></thead><tbody><tr><td>SCT</td><td>status 大類</td><td>一定先解</td></tr><tr><td>SC</td><td>類別內具體結果</td><td>不能脫離 SCT</td></tr><tr><td>DNR</td><td>同 command 重試預期</td><td>不是永久硬體故障的同義詞</td></tr><tr><td>CRD</td><td>建議 retry delay selector</td><td>只有適用 status 才使用</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CRD</dt><dd>Command Retry Delay，status 中選擇 controller 建議重試延遲值的欄位。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">Phase Tag 讓 host 判斷環形 Completion Queue slot 是否為新完成項目；host 消費 CQE 後推進 CQ head doorbell，wrap 時預期 phase 翻轉。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, 文件頁 155-158, PDF 頁 181-184</p></details>
+<div class="table-wrap"><table><caption>CQE：新完成項目、命令識別與結果</caption><thead><tr><th scope="col">完成狀態欄位</th><th scope="col">回答哪個問題</th><th scope="col">解讀時還需哪些資訊</th></tr></thead><tbody><tr><td>SCT</td><td>status 大類</td><td>一定先解</td></tr><tr><td>SC</td><td>類別內具體結果</td><td>不能脫離 SCT</td></tr><tr><td>DNR</td><td>同 command 重試預期</td><td>不是永久硬體故障的同義詞</td></tr><tr><td>CRD</td><td>建議 retry delay selector</td><td>只有適用 status 才使用</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">說明性範例：SC 數值 02h 在不同 SCT 下可能屬於不同 status 表。正確 log 應保存完整 status field，再輸出 P、SCT、SC、DNR、CRD 與原始 16-bit value。只印『SC=2』不足以決定 recovery。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>P</dt><dd>Phase Tag，讓 host 判斷 CQ slot 是否包含新 completion 的翻轉 bit。</dd></div></dl></aside>
 <a class="reading-link" href="#reading-cqe-status">閱讀相關規格圖表 → CQE：新完成項目、命令識別與結果</a>
 </section>
 <section class="lesson" id="module-prp"><h2 id="heading-prp"><span class="section-number">03</span> PRP 如何描述跨頁資料</h2>
 <div class="lesson-explanation">
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">PRP 用記憶體頁描述資料位置。第一個指標可以從頁內某個 offset 開始，因此第一頁可用空間是 page size 減掉 offset。剩下多少資料，才決定 PRP2 是不使用、直接指向另一個資料頁，還是指向一份列出更多頁位址的 PRP List。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">例如 page size 是 4096 bytes、第一個 offset 是 512 bytes，第一頁還有 3584 bytes。若傳輸 6000 bytes，剩餘 2416 bytes 可放在另一頁，PRP2 指向該資料頁；若傳輸 10000 bytes，剩餘 6416 bytes 需要兩頁，PRP2 就需要指向 PRP List。下一頁的位址不必緊接第一頁的實體位址。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">例如 page size 是 4096 bytes、第一個 offset 是 512 bytes，第一頁還有 3584 bytes。若傳輸 6000 bytes，剩餘 2416 bytes 可放在另一頁，PRP2 指向該資料頁；若傳輸 10000 bytes，剩餘 6416 bytes 需要兩頁，PRP2 就需要指向 PRP List。下一頁的位址不必緊接第一頁的實體位址。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §4.3.1 · Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, 文件頁 158-159, PDF 頁 184-185</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168</p></details>
 </div>
 <!-- claim:BASE4-PRP -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">PRP 以固定大小 entry 指向 physical memory page。第一個 entry 可含 page offset；後續 PRP 必須（shall）符合 page alignment，資料長度決定需要幾個 entry。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>page offset</dt><dd>page offset；資料在第一個記憶體 page 內的起始位移；跨過 page boundary 後，位置由下一個 page pointer 決定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, 文件頁 158-159, PDF 頁 184-185</p></details>
 <div class="table-wrap"><table><caption>PRP 如何描述跨頁資料</caption><thead><tr><th scope="col">資料跨頁情況</th><th scope="col">PRP2 的解讀方式</th><th scope="col">指標與對齊要求</th></tr></thead><tbody><tr><td>資料不跨第一頁</td><td>只需 PRP1</td><td>PRP2 不承載下一段</td></tr><tr><td>剩餘資料只需一頁</td><td>PRP2 指第二個 data page</td><td>address page-aligned</td></tr><tr><td>剩餘資料超過一頁</td><td>PRP2 指 PRP List</td><td>list entries 再指 data pages</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">若 PRP1 的 page offset 是 512 bytes，第一頁只承載從 512 bytes 開始的資料；跨過 page boundary 後，下一段位置由下一個 page pointer 指定，不是把同一個實體位址繼續加上去。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>page offset</dt><dd>page offset；資料在第一個記憶體 page 內的起始位移；跨過 page boundary 後，位置由下一個 page pointer 決定。</dd></div></dl></aside>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">若 PRP1 的 page offset 是 512 bytes，第一頁只承載從 512 bytes 開始的資料；跨過 page boundary 後，下一段位置由下一個 page pointer 指定，不是把同一個實體位址繼續加上去。</span></p></aside>
 <a class="reading-link" href="#reading-prp">閱讀相關規格圖表 → PRP 如何描述跨頁資料</a>
 </section>
 <section class="lesson" id="module-sgl"><h2 id="heading-sgl"><span class="section-number">04</span> SGL 的資料與串接描述子</h2>
@@ -196,7 +207,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details class="source-note"><summary>來源：Base 2.4 §4.3.2 · Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 文件頁 140-142, PDF 頁 166-168</p></details>
 </div>
 <!-- claim:BASE4-SGL -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">SGL 由一個以上 descriptor／segment 描述資料 buffer。SGL length 必須（shall）大於等於 requested transfer length；本報告只介紹 PCIe 可用的通用 descriptor。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">SGL 由一個以上 descriptor／segment 描述資料 buffer。SGL length 必須（shall）大於等於 requested transfer length；本報告只介紹 PCIe 可用的通用 descriptor。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, 文件頁 159-166, PDF 頁 185-192</p></details>
 <div class="table-wrap"><table><caption>SGL 的資料與串接描述子</caption><thead><tr><th scope="col">指標或描述子種類</th><th scope="col">位址與長度描述什麼</th><th scope="col">沿指標會找到什麼</th></tr></thead><tbody><tr><td>PRP</td><td>以記憶體頁描述位址</td><td>第一頁 offset + 後續 page alignment</td></tr><tr><td>SGL Data Block</td><td>起始位址與資料長度（bytes）</td><td>資料區段可用 descriptor 表示</td></tr><tr><td>SGL Segment</td><td>清單位址與清單長度（bytes）</td><td>指向下一層 descriptors，不是 data</td></tr><tr><td>Bit Bucket</td><td>只消耗 transfer length</td><td>不代表可讀寫的 memory buffer</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">一筆 12 KiB 的資料傳輸，可以由 2 個 Data Block descriptors 描述 8 KiB 與 4 KiB。若 descriptor 類型是 Segment，它的 length 則描述下一段 descriptor list 的大小，並非使用者資料的大小。</span></p></aside>
 <a class="reading-link" href="#reading-sgl">閱讀相關規格圖表 → SGL 的資料與串接描述子</a>
@@ -212,299 +223,475 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <!-- claim:BASE4-IDENTIFIER -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">VID／SSVID、SN／MN、IEEE OUI、EUI64、NGUID 與 UUID 的來源、長度與唯一性範圍不同；不能只因外觀相似就互換。此節為 informative。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>EUI64</dt><dd>64-bit Extended Unique Identifier，使用 IEEE 配置空間建立的 64-bit identifier。</dd></div><div><dt>NGUID</dt><dd>Namespace Globally Unique Identifier，namespace 的 128-bit 全域識別值。</dd></div><div><dt>SSVID</dt><dd>Subsystem Vendor ID，辨識 subsystem vendor 的 PCI identifier。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div><div><dt>OUI</dt><dd>Organizationally Unique Identifier，由 IEEE 配置給組織的 identifier 前綴。</dd></div><div><dt>VID</dt><dd>Vendor ID，由 PCI-SIG 配置、辨識 vendor 的 identifier。</dd></div><div><dt>MN</dt><dd>Model Number，辨識產品型號的字串。</dd></div><div><dt>SN</dt><dd>Serial Number，辨識一個產品實例的序號字串。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5, 文件頁 169-172, PDF 頁 195-198</p></details>
 <!-- claim:BASE4-LISTS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">Controller List 先以 NUMCIDS 指定數量，再依遞增順序排列最多 2047 個 16-bit controller identifiers。Namespace List 沒有數量 header，直接依遞增順序排列 32-bit NSIDs；兩種清單未使用的 entries 都填 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>NUMCIDS</dt><dd>Number of Controller Identifiers；Controller List 中有效 controller IDs 的數量。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6, 文件頁 172-173, PDF 頁 198-199</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">Controller List 先以 NUMCIDS 指定數量，再依遞增順序排列最多 2047 個 16-bit controller identifiers。Namespace List 沒有數量 header，直接依遞增順序排列 32-bit NSIDs；兩種清單未使用的 entries 都填 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6, 文件頁 172-173, PDF 頁 198-199</p></details>
 <!-- claim:BASE4-UTF8 -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">處理 UTF-8 輸入時要依規格流程驗證編碼、禁止的 code point 與截斷情況；不可把任意 byte sequence 當成有效字串。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UTF-8</dt><dd>Unicode Transformation Format - 8-bit，以一到四個 bytes 編碼 Unicode code point 的文字格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.8, 文件頁 175, PDF 頁 201</p></details>
-<div class="table-wrap"><table><caption>Feature 值、識別碼、清單與字串</caption><thead><tr><th scope="col">識別欄位或清單</th><th scope="col">辨認的對象與格式</th><th scope="col">長度及數量如何解讀</th></tr></thead><tbody><tr><td>VID／SSVID</td><td>廠商與 subsystem 廠商識別值</td><td>按各自欄位辨認對象</td></tr><tr><td>SN／MN</td><td>產品序號與型號字串</td><td>依固定欄位長度與填補規則閱讀</td></tr><tr><td>EUI64／NGUID／UUID</td><td>不同格式的物件識別值</td><td>長度及身分範圍不能互換</td></tr><tr><td>Controller List</td><td>NUMCIDS 加上 16-bit IDs</td><td>有明確數量欄位</td></tr><tr><td>Namespace List</td><td>直接排列 32-bit NSIDs</td><td>沒有 Controller List 的數量標頭</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>EUI64</dt><dd>64-bit Extended Unique Identifier，使用 IEEE 配置空間建立的 64-bit identifier。</dd></div><div><dt>NGUID</dt><dd>Namespace Globally Unique Identifier，namespace 的 128-bit 全域識別值。</dd></div><div><dt>SSVID</dt><dd>Subsystem Vendor ID，辨識 subsystem vendor 的 PCI identifier。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div><div><dt>VID</dt><dd>Vendor ID，由 PCI-SIG 配置、辨識 vendor 的 identifier。</dd></div><div><dt>MN</dt><dd>Model Number，辨識產品型號的字串。</dd></div><div><dt>SN</dt><dd>Serial Number，辨識一個產品實例的序號字串。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">處理 UTF-8 輸入時要依規格流程驗證編碼、禁止的 code point 與截斷情況；不可把任意 byte sequence 當成有效字串。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.8, 文件頁 175, PDF 頁 201</p></details>
+<div class="table-wrap"><table><caption>Feature 值、識別碼、清單與字串</caption><thead><tr><th scope="col">識別欄位或清單</th><th scope="col">辨認的對象與格式</th><th scope="col">長度及數量如何解讀</th></tr></thead><tbody><tr><td>VID／SSVID</td><td>廠商與 subsystem 廠商識別值</td><td>按各自欄位辨認對象</td></tr><tr><td>SN／MN</td><td>產品序號與型號字串</td><td>依固定欄位長度與填補規則閱讀</td></tr><tr><td>EUI64／NGUID／UUID</td><td>不同格式的物件識別值</td><td>長度及身分範圍不能互換</td></tr><tr><td>Controller List</td><td>NUMCIDS 加上 16-bit IDs</td><td>有明確數量欄位</td></tr><tr><td>Namespace List</td><td>直接排列 32-bit NSIDs</td><td>沒有 Controller List 的數量標頭</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">含 3 個 controllers 的清單以 NUMCIDS=3 開始，後接 3 個 16-bit IDs。含 3 個 namespaces 的清單則直接從第 1 個 32-bit NSID 開始。UTF-8 字串的 byte 數也不等於字元數，例如「中」占 3 bytes。</span></p></aside>
 <a class="reading-link" href="#reading-identity-text">閱讀相關規格圖表 → Feature 值、識別碼、清單與字串</a>
 </section>
 <section id="figure-reading"><h2><span class="section-number">06</span> 讀懂本篇的規格圖表</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
-<div class="figure-reading-group" id="reading-sqe"><h3>圖表組 01 · SQE 的共用格式與命令欄位</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">共用布局圖先找 CDW0、NSID、MPTR／DPTR 與命令專用區域，再看 CDW0 的 bit 範圍。圖塊為方便閱讀而調整寬度時，以標註的 bits 為準，不能拿像素寬度計算欄位大小。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div></dl>
+<details open class="figure-reading-group" id="reading-sqe"><summary>圖表組 01 · SQE 的共用格式與命令欄位 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">共用布局圖先找 CDW0、NSID、MPTR／DPTR 與命令專用區域，再看 CDW0 的 bit 範圍。圖塊為方便閱讀而調整寬度時，以標註的 bits 為準，不能拿像素寬度計算欄位大小。</span></p>
 <a class="reading-link" href="#module-sqe">回到本節的解釋與範例</a>
 <!-- figure-table:BASE4-FIG-092 -->
-<details class="field-note" id="figure-BASE4-FIG-092"><summary>Base Figure 92 · Command Dword 0</summary>
-<!-- claim:BASE4-FIG-092-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">Figure 92〈Command Dword 0〉：共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 92, 文件頁 139-140, PDF 頁 165-166</p></details>
+<article class="field-note" id="figure-BASE4-FIG-092"><h4>Base Figure 92 · Command Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-092-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base92-1">Base92-1</span><span class="paragraph-text">CDW0 把操作碼、資料指標類型、融合設定與命令識別放在一起。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 92, 文件頁 139-140, PDF 頁 165-166</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base92-2">Base92-2</span><span class="paragraph-text">兩筆命令 OPC 相同但 CID 不同，代表相同操作的兩個請求；不能把 CID 當成操作種類。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base92-3">Base92-3</span><span class="paragraph-text">共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CID</li><li>PSDT</li><li>FUSE</li><li>OPC</li><li>FN</li><li>DTD</li><li>PRP</li><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-093 -->
-<details class="field-note" id="figure-BASE4-FIG-093"><summary>Base Figure 93 · Common Command Format</summary>
-<!-- claim:BASE4-FIG-093-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">Figure 93〈Common Command Format〉：共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details>
+<article class="field-note" id="figure-BASE4-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共通 SQE 固定各命令共用欄位的位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">同樣在 CDW10，Read 與管理命令可以有完全不同含義；先依 OPC 選命令，再查專屬欄位表。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-092">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CDW0</li><li>NSID</li><li>CDW2</li><li>CDW3</li><li>MPTR</li><li>DPTR</li><li>PRP2</li><li>PRP1</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-094 -->
-<details class="field-note" id="figure-BASE4-FIG-094"><summary>Base Figure 94 · Common Command Format - Vendor Specific Commands (Optional)</summary>
-<!-- claim:BASE4-FIG-094-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">Figure 94〈Common Command Format - Vendor Specific Commands (Optional)〉：廠商自訂命令的標準格式以 NDT 和 NDM 分別描述 data 與 metadata 的 Dword 數量，兩者是直接計數。先確認 VSCF／SNVSCF 對應的格式支援，再解讀指標和長度；格式本身不定義廠商 payload。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>SNVSCF</dt><dd>Same NVM Vendor Specific Command Format，ICSVSCC 中表示 I/O commands 是否使用 Figure 94 的 bit。</dd></div><div><dt>VSCF</dt><dd>Vendor Specific Command Format，AVSCC 中表示 Admin commands 是否使用 Figure 94 的 bit。</dd></div><div><dt>NDM</dt><dd>Number of Dwords in Metadata Transfer，standard vendor-specific format 中的實際 metadata dword 數。</dd></div><div><dt>NDT</dt><dd>Number of Dwords in Data Transfer，standard vendor-specific format 中的實際 data dword 數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>NDM</dt><dd>Number of Dwords in Metadata Transfer，standard vendor-specific format 中的實際 metadata dword 數。</dd></div><div><dt>NDT</dt><dd>Number of Dwords in Data Transfer，standard vendor-specific format 中的實際 data dword 數。</dd></div></dl>
+<article class="field-note" id="figure-BASE4-FIG-094"><h4>Base Figure 94 · Common Command Format - Vendor Specific Commands (Optional)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-094-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base94-1">Base94-1</span><span class="paragraph-text">廠商命令格式另以 NDT、NDM 表達傳輸長度資訊。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NDM</dt><dd>Number of Dwords in Metadata Transfer，standard vendor-specific format 中的實際 metadata dword 數。</dd></div><div><dt>NDT</dt><dd>Number of Dwords in Data Transfer，standard vendor-specific format 中的實際 data dword 數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base94-2">Base94-2</span><span class="paragraph-text">若依欄位定義 NDT＝16 個 Dwords，資料長度為 64 bytes；此值不能套用別的命令從零起算的加 1 規則。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base94-3">Base94-3</span><span class="paragraph-text">廠商自訂命令的標準格式以 NDT 和 NDM 分別描述 data 與 metadata 的 Dword 數量，兩者是直接計數。先確認 VSCF／SNVSCF 對應的格式支援，再解讀指標和長度；格式本身不定義廠商 payload。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SNVSCF</dt><dd>Same NVM Vendor Specific Command Format，ICSVSCC 中表示 I/O commands 是否使用 Figure 94 的 bit。</dd></div><div><dt>VSCF</dt><dd>Vendor Specific Command Format，AVSCC 中表示 Admin commands 是否使用 Figure 94 的 bit。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CDW0</li><li>NSID</li><li>MDPTR</li><li>NDT</li><li>NDM</li><li>CDW12</li><li>CDW13</li><li>CDW14</li></ul></div>
+
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-cqe-status"><h3>圖表組 02 · CQE：新完成項目、命令識別與結果</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">完成布局圖按「新項目→原命令→結果」閱讀：先確認 P，再連接 SQID、CID，最後用 SCT 選狀態表並查 SC。DNR、CRD 接在主要結果後解釋。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>P</dt><dd>Phase Tag，讓 host 判斷 CQ slot 是否包含新 completion 的翻轉 bit。</dd></div></dl>
+<details open class="figure-reading-group" id="reading-cqe-status"><summary>圖表組 02 · CQE：新完成項目、命令識別與結果 · 11 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">完成布局圖按「新項目→原命令→結果」閱讀：先確認 P，再連接 SQID、CID，最後用 SCT 選狀態表並查 SC。DNR、CRD 接在主要結果後解釋。</span></p>
 <a class="reading-link" href="#module-cqe-status">回到本節的解釋與範例</a>
 <!-- figure-table:BASE4-FIG-097 -->
-<details class="field-note" id="figure-BASE4-FIG-097"><summary>Base Figure 97 · Common Completion Queue Entry Layout - Admin and All I/O Command Sets</summary>
-<!-- claim:BASE4-FIG-097-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">Figure 97〈Common Completion Queue Entry Layout - Admin and All I/O Command Sets〉：CQE 用 SQID／CID 找回原命令，SQHD 回報提交佇列的消費位置，Status 則描述完成結果。這些欄位不能互代：SQHD 前進不表示所有較早提交命令都已完成。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, 文件頁 144, PDF 頁 170</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE4-FIG-097"><h4>Base Figure 97 · Common Completion Queue Entry Layout - Admin and All I/O Command Sets</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-097-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base97-1">Base97-1</span><span class="paragraph-text">CQE 把命令結果、佇列資訊與識別碼組成完成紀錄。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, 文件頁 144, PDF 頁 170</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base97-2">Base97-2</span><span class="paragraph-text">先用 SQID 與 CID 找回原命令，再解 status 與命令專屬結果；DW0 並非每種命令都代表相同東西。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base97-3">Base97-3</span><span class="paragraph-text">CQE 用 SQID／CID 找回原命令，SQHD 回報提交佇列的消費位置，Status 則描述完成結果。這些欄位不能互代：SQHD 前進不表示所有較早提交命令都已完成。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DW0</li><li>DW1</li><li>DW2</li><li>SQ</li><li>DW3</li><li>Command Set</li><li>Completion Queue</li><li>Command</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE4-FIG-098 -->
-<details class="field-note" id="figure-BASE4-FIG-098"><summary>Base Figure 98 · Completion Queue Entry: DW 2</summary>
-<!-- claim:BASE4-FIG-098-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.08">06.08.</span><span class="paragraph-text">Figure 98〈Completion Queue Entry: DW 2〉：CQE 用 SQID／CID 找回原命令，SQHD 回報提交佇列的消費位置，Status 則描述完成結果。這些欄位不能互代：SQHD 前進不表示所有較早提交命令都已完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, 文件頁 144, PDF 頁 170</p></details>
+<article class="field-note" id="figure-BASE4-FIG-098"><h4>Base Figure 98 · Completion Queue Entry: DW 2</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-098-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base98-1">Base98-1</span><span class="paragraph-text">CQE DW2 回報來源 SQ 與該 SQ 的 head 資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, 文件頁 144, PDF 頁 170</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base98-2">Base98-2</span><span class="paragraph-text">SQID 指向 SQ2、SQHD 已前進時，主機可理解控制器消耗進度；它不表示其他所有命令都已完成。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-097">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SQID</li><li>SQHD</li><li>DW</li><li>SQ</li><li>CID</li><li>Completion Queue</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-099 -->
-<details class="field-note" id="figure-BASE4-FIG-099"><summary>Base Figure 99 · Completion Queue Entry: DW 3</summary>
-<!-- claim:BASE4-FIG-099-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.09">06.09.</span><span class="paragraph-text">Figure 99〈Completion Queue Entry: DW 3〉：CQE 用 SQID／CID 找回原命令，SQHD 回報提交佇列的消費位置，Status 則描述完成結果。這些欄位不能互代：SQHD 前進不表示所有較早提交命令都已完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, 文件頁 145, PDF 頁 171</p></details>
+<article class="field-note" id="figure-BASE4-FIG-099"><h4>Base Figure 99 · Completion Queue Entry: DW 3</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-099-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base99-1">Base99-1</span><span class="paragraph-text">CQE DW3 同時帶有命令識別碼與完成狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, 文件頁 145, PDF 頁 171</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base99-2">Base99-2</span><span class="paragraph-text">找到 CID 7 的回覆後，仍要讀 STATUS；識別到這筆命令並不等於它成功執行。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-097">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>STATUS</li><li>CID</li><li>DW</li><li>SQ</li><li>Completion Queue</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-101 -->
-<details class="field-note" id="figure-BASE4-FIG-101"><summary>Base Figure 101 · Completion Queue Entry: Status Field</summary>
-<!-- claim:BASE4-FIG-101-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.10">06.10.</span><span class="paragraph-text">Figure 101〈Completion Queue Entry: Status Field〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172</p></details>
+<article class="field-note" id="figure-BASE4-FIG-101"><h4>Base Figure 101 · Completion Queue Entry: Status Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-101-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base101-1">Base101-1</span><span class="paragraph-text">Status 欄位必須把類型、代碼與附加控制資訊一起解釋。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base101-2">Base101-2</span><span class="paragraph-text">相同 SC 數值搭配不同 SCT 可以有不同意思；DNR 也不能從 SC 名稱猜出，必須看實際 bit。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base101-3">Base101-3</span><span class="paragraph-text">先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DNR</li><li>CRD</li><li>SCT</li><li>SC</li><li>ACRE</li><li>CRDT1</li><li>CRDT2</li><li>CRDT3</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-102 -->
-<details class="field-note" id="figure-BASE4-FIG-102"><summary>Base Figure 102 · Status Code - Status Code Type Values</summary>
-<!-- claim:BASE4-FIG-102-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.11">06.11.</span><span class="paragraph-text">Figure 102〈Status Code - Status Code Type Values〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, 文件頁 146, PDF 頁 172</p></details>
+<article class="field-note" id="figure-BASE4-FIG-102"><h4>Base Figure 102 · Status Code - Status Code Type Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-102-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base102-1">Base102-1</span><span class="paragraph-text">SCT 先把狀態分成通用、命令專屬等類別。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 102, 文件頁 146, PDF 頁 172</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base102-2">Base102-2</span><span class="paragraph-text">先看到 SCT＝1，再去查命令專屬狀態；若忽略 SCT 直接在通用表找同值，可能得到錯誤原因。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-101">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SC</li><li>Status Code</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-103 -->
-<details class="field-note" id="figure-BASE4-FIG-103"><summary>Base Figure 103 · Status Code - Generic Command Status Values</summary>
-<!-- claim:BASE4-FIG-103-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.12">06.12.</span><span class="paragraph-text">Figure 103〈Status Code - Generic Command Status Values〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, 文件頁 147-150, PDF 頁 173-176</p></details>
+<article class="field-note" id="figure-BASE4-FIG-103"><h4>Base Figure 103 · Status Code - Generic Command Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-103-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base103-1">Base103-1</span><span class="paragraph-text">通用狀態表描述跨命令可出現的共同錯誤。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 103, 文件頁 147-150, PDF 頁 173-176</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base103-2">Base103-2</span><span class="paragraph-text">Invalid Field in Command 表示有欄位不符合要求，但哪個欄位仍須回到該命令定義，不是表格會直接告訴你修改哪個 byte。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-101">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ID</li><li>SQ</li><li>TCG</li><li>SGL</li><li>PRP</li><li>ZNS</li><li>RACQA</li><li>CMB</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-104 -->
-<details class="field-note" id="figure-BASE4-FIG-104"><summary>Base Figure 104 · Status Code - Command Specific Status Values</summary>
-<!-- claim:BASE4-FIG-104-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.13">06.13.</span><span class="paragraph-text">Figure 104〈Status Code - Command Specific Status Values〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, 文件頁 151-152, PDF 頁 177-178</p></details>
+<article class="field-note" id="figure-BASE4-FIG-104"><h4>Base Figure 104 · Status Code - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-104-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base104-1">Base104-1</span><span class="paragraph-text">命令專屬狀態表必須和發出命令的種類連用。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 104, 文件頁 151-152, PDF 頁 177-178</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base104-2">Base104-2</span><span class="paragraph-text">Namespace Insufficient Capacity 應連回建立 namespace 所需容量；不能拿它解釋一般 Read 超出 LBA 範圍。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-101">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ANA</li><li>NOTE</li><li>Status Code</li><li>Command</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>ANA</dt><dd>Asymmetric Namespace Access；描述同一 namespace 經不同 controllers 存取時的路徑狀態。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-105 -->
-<details class="field-note" id="figure-BASE4-FIG-105"><summary>Base Figure 105 · Status Code - Command Specific Status Values, I/O Command Set Specific</summary>
-<!-- claim:BASE4-FIG-105-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.14">06.14.</span><span class="paragraph-text">Figure 105〈Status Code - Command Specific Status Values, I/O Command Set Specific〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, 文件頁 152-153, PDF 頁 178-179</p></details>
+<article class="field-note" id="figure-BASE4-FIG-105"><h4>Base Figure 105 · Status Code - Command Specific Status Values, I/O Command Set Specific</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-105-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base105-1">Base105-1</span><span class="paragraph-text">I/O Command Set 專屬狀態要再到相應命令集規格解釋。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 105, 文件頁 152-153, PDF 頁 178-179</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base105-2">Base105-2</span><span class="paragraph-text">Base 提供共用分類，NVM Command Set 補上資料操作的具體含義；兩份規格在這裡接續。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-101">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ID</li><li>Command Set</li><li>Status Code</li><li>Command</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-107 -->
-<details class="field-note" id="figure-BASE4-FIG-107"><summary>Base Figure 107 · Status Code - Media and Data Integrity Error Values</summary>
-<!-- claim:BASE4-FIG-107-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.15">06.15.</span><span class="paragraph-text">Figure 107〈Status Code - Media and Data Integrity Error Values〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, 文件頁 154-155, PDF 頁 180-181</p></details>
+<article class="field-note" id="figure-BASE4-FIG-107"><h4>Base Figure 107 · Status Code - Media and Data Integrity Error Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-107-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base107-1">Base107-1</span><span class="paragraph-text">媒體與資料完整性狀態指出資料讀寫或檢查的結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.2, Figure 107, 文件頁 154-155, PDF 頁 180-181</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base107-2">Base107-2</span><span class="paragraph-text">Guard Check Error 與 Compare Failure 都與資料有關，但前者是保護檢查、後者是內容不符，不應用同一句「資料錯誤」帶過。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Guard</dt><dd>PI 的檢查值欄位；所選格式決定檢查值的寬度與計算方法。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-101">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TCG</li><li>SCT</li><li>Status Code</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-108 -->
-<details class="field-note" id="figure-BASE4-FIG-108"><summary>Base Figure 108 · Status Code - Path Related Status Values</summary>
-<!-- claim:BASE4-FIG-108-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.16">06.16.</span><span class="paragraph-text">Figure 108〈Status Code - Path Related Status Values〉：先讀 SCT 選擇狀態類別，再用 SC 查該類別中的結果。Generic、command-specific、media/data integrity 和 path-related 分別解釋不同原因；DNR 與 CRD 補充重試資訊，不能由單一 SC 數字推論全部處理方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.3, Figure 108, 文件頁 155, PDF 頁 181</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>ANA</dt><dd>Asymmetric Namespace Access；描述同一 namespace 經不同 controllers 存取時的路徑狀態。</dd></div></dl>
-</details>
-<!-- figure-table:BASE4-FIG-109 -->
-<details class="field-note" id="figure-BASE4-FIG-109"><summary>Base Figure 109 · Phase Tag bit Transition Example</summary>
-<!-- claim:BASE4-FIG-109-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.17">06.17.</span><span class="paragraph-text">Figure 109〈Phase Tag bit Transition Example〉：Phase Tag 讓主機區分 CQ slot 中的新完成項目與上一次繞行留下的內容。讀圖時沿同一個 slot 追蹤每次繞回後的 phase，而不是把 P=1 永遠當成新項目的通用條件。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, Figure 109, 文件頁 156-157, PDF 頁 182-183</p></details>
+<article class="field-note" id="figure-BASE4-FIG-108"><h4>Base Figure 108 · Status Code - Path Related Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-108-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base108-1">Base108-1</span><span class="paragraph-text">路徑相關狀態描述透過目前控制器到資料的存取情況。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.3, Figure 108, 文件頁 155, PDF 頁 181</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base108-2">Base108-2</span><span class="paragraph-text">某條路徑不適合存取時，不一定表示 namespace 資料已損毀；要依狀態與可用路徑判斷。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-101">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DNR</li><li>ANA</li><li>Status Code</li></ul></div>
 
+</details></article>
+<!-- figure-table:BASE4-FIG-109 -->
+<article class="field-note" id="figure-BASE4-FIG-109"><h4>Base Figure 109 · Phase Tag bit Transition Example</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-109-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base109-1">Base109-1</span><span class="paragraph-text">Phase Tag 隨 CQ 繞回而改變，幫助辨識新完成項目。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.4, Figure 109, 文件頁 156-157, PDF 頁 182-183</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base109-2">Base109-2</span><span class="paragraph-text">主機把一輪 entries 讀完回到 slot 0 時，期待的 phase 已翻轉，因此舊 CQE 不會被再次當成新結果。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base109-3">Base109-3</span><span class="paragraph-text">Phase Tag 讓主機區分 CQ slot 中的新完成項目與上一次繞行留下的內容。讀圖時沿同一個 slot 追蹤每次繞回後的 phase，而不是把 P=1 永遠當成新項目的通用條件。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Phase Tag</li></ul></div>
+
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-prp"><h3>圖表組 03 · PRP 如何描述跨頁資料</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.18">06.18.</span><span class="paragraph-text">先算第一頁剩餘量，再算未覆蓋的資料長度，用這個結果選 PRP2 分支。沿 PRP List 圖中的箭頭辨認「清單所在頁」和「資料頁」，兩者的用途不同。</span></p>
+<details open class="figure-reading-group" id="reading-prp"><summary>圖表組 03 · PRP 如何描述跨頁資料 · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">先算第一頁剩餘量，再算未覆蓋的資料長度，用這個結果選 PRP2 分支。沿 PRP List 圖中的箭頭辨認「清單所在頁」和「資料頁」，兩者的用途不同。</span></p>
 <a class="reading-link" href="#module-prp">回到本節的解釋與範例</a>
 <!-- figure-table:BASE4-FIG-110 -->
-<details class="field-note" id="figure-BASE4-FIG-110"><summary>Base Figure 110 · PRP Entry Layout</summary>
-<!-- claim:BASE4-FIG-110-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.19">06.19.</span><span class="paragraph-text">Figure 110〈PRP Entry Layout〉：PRP1 可同時帶頁基底與頁內位移，後續資料頁依相應對齊規則描述。PRP2 的解讀取決於剩餘資料跨幾頁；PRP List 可以指向不連續的資料頁，所以清單順序與實體位址是否連續是不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, 文件頁 158, PDF 頁 184</p></details>
+<article class="field-note" id="figure-BASE4-FIG-110"><h4>Base Figure 110 · PRP Entry Layout</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-110-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base110-1">Base110-1</span><span class="paragraph-text">PRP entry 是有固定位元配置的記憶體指標。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 110, 文件頁 158, PDF 頁 184</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base110-2">Base110-2</span><span class="paragraph-text">先按圖取出位址相關位元，再配合頁大小判斷它指向哪一頁；不能把 64-bit entry 當成資料長度。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base110-3">Base110-3</span><span class="paragraph-text">PRP1 可同時帶頁基底與頁內位移，後續資料頁依相應對齊規則描述。PRP2 的解讀取決於剩餘資料跨幾頁；PRP List 可以指向不連續的資料頁，所以清單順序與實體位址是否連續是不同問題。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PRP</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-111 -->
-<details class="field-note" id="figure-BASE4-FIG-111"><summary>Base Figure 111 · PRP Entry - Page Base Address and Offset</summary>
-<!-- claim:BASE4-FIG-111-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.20">06.20.</span><span class="paragraph-text">Figure 111〈PRP Entry - Page Base Address and Offset〉：PRP1 可同時帶頁基底與頁內位移，後續資料頁依相應對齊規則描述。PRP2 的解讀取決於剩餘資料跨幾頁；PRP List 可以指向不連續的資料頁，所以清單順序與實體位址是否連續是不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 111, 文件頁 158, PDF 頁 184</p></details>
+<article class="field-note" id="figure-BASE4-FIG-111"><h4>Base Figure 111 · PRP Entry - Page Base Address and Offset</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-111-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base111-1">Base111-1</span><span class="paragraph-text">PRP 的頁基底與頁內 offset 共同形成第一段資料位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 111, 文件頁 158, PDF 頁 184</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base111-2">Base111-2</span><span class="paragraph-text">4 KiB 頁、offset＝128 時，第一頁剩餘 4096−128＝3968 bytes；是否需要下一個 PRP 由總長度決定。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-110">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PBAO</li><li>PRP</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>PBAO</dt><dd>Page Base Address and Offset，第一個 PRP entry 中同時包含 page base 與 page 內 offset 的配置。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-112 -->
-<details class="field-note" id="figure-BASE4-FIG-112"><summary>Base Figure 112 · PRP List Layout for Physically Contiguous Memory Pages</summary>
-<!-- claim:BASE4-FIG-112-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.21">06.21.</span><span class="paragraph-text">Figure 112〈PRP List Layout for Physically Contiguous Memory Pages〉：PRP1 可同時帶頁基底與頁內位移，後續資料頁依相應對齊規則描述。PRP2 的解讀取決於剩餘資料跨幾頁；PRP List 可以指向不連續的資料頁，所以清單順序與實體位址是否連續是不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 112, 文件頁 159, PDF 頁 185</p></details>
+<article class="field-note" id="figure-BASE4-FIG-112"><h4>Base Figure 112 · PRP List Layout for Physically Contiguous Memory Pages</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-112-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base112-1">Base112-1</span><span class="paragraph-text">連續實體頁面仍可用 PRP List 逐頁描述。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 112, 文件頁 159, PDF 頁 185</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base112-2">Base112-2</span><span class="paragraph-text">三個資料頁位址相鄰，PRP entries 也各指一頁；連續排列不表示可以把三頁壓成一個只含長度的 PRP。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-110">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PRP</li><li>Memory Page</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-113 -->
-<details class="field-note" id="figure-BASE4-FIG-113"><summary>Base Figure 113 · PRP List Layout for Physically Non-Contiguous Memory Pages</summary>
-<!-- claim:BASE4-FIG-113-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.22">06.22.</span><span class="paragraph-text">Figure 113〈PRP List Layout for Physically Non-Contiguous Memory Pages〉：PRP1 可同時帶頁基底與頁內位移，後續資料頁依相應對齊規則描述。PRP2 的解讀取決於剩餘資料跨幾頁；PRP List 可以指向不連續的資料頁，所以清單順序與實體位址是否連續是不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 113, 文件頁 159, PDF 頁 185</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CC.MPS</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.MPS 進一步指定其中的 MPS 子欄位。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
+<article class="field-note" id="figure-BASE4-FIG-113"><h4>Base Figure 113 · PRP List Layout for Physically Non-Contiguous Memory Pages</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-113-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base113-1">Base113-1</span><span class="paragraph-text">不連續實體頁面可由 PRP List 組成連續的傳輸資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.1, Figure 113, 文件頁 159, PDF 頁 185</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base113-2">Base113-2</span><span class="paragraph-text">第一頁在位址 A、第二頁在 B，主機資料順序由 list 順序決定，不要求 A 和 B 的實體位址相鄰。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-110">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PRP</li><li>CC.MPS</li><li>Memory Page</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-sgl"><h3>圖表組 04 · SGL 的資料與串接描述子</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.23">06.23.</span><span class="paragraph-text">每次沿箭頭前先讀 descriptor type，區分目的地是 data 還是 descriptor list。加總傳輸資料量只計入相應的資料描述，不能把存放清單的 bytes 也當作使用者資料。</span></p>
+<details open class="figure-reading-group" id="reading-sgl"><summary>圖表組 04 · SGL 的資料與串接描述子 · 10 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">每次沿箭頭前先讀 descriptor type，區分目的地是 data 還是 descriptor list。加總傳輸資料量只計入相應的資料描述，不能把存放清單的 bytes 也當作使用者資料。</span></p>
 <a class="reading-link" href="#module-sgl">回到本節的解釋與範例</a>
 <!-- figure-table:BASE4-FIG-114 -->
-<details class="field-note" id="figure-BASE4-FIG-114"><summary>Base Figure 114 · SGL Validation Error Conditions</summary>
-<!-- claim:BASE4-FIG-114-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.24">06.24.</span><span class="paragraph-text">Figure 114〈SGL Validation Error Conditions〉：SGL 先用 descriptor type 和 subtype 決定後續位址、長度如何解讀，再檢查該類型允許的組合。描述子清單中的長度與資料傳輸量不同，不能先把所有 LEN 相加再判斷類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 114, 文件頁 161, PDF 頁 187</p></details>
+<article class="field-note" id="figure-BASE4-FIG-114"><h4>Base Figure 114 · SGL Validation Error Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-114-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base114-1">Base114-1</span><span class="paragraph-text">SGL 錯誤條件涵蓋描述子格式與傳輸長度等不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 114, 文件頁 161, PDF 頁 187</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base114-2">Base114-2</span><span class="paragraph-text">描述子型別合法但總長度不足，與型別本身不受支援不同；先確定問題出在哪一層。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base114-3">Base114-3</span><span class="paragraph-text">SGL 先用 descriptor type 和 subtype 決定後續位址、長度如何解讀，再檢查該類型允許的組合。描述子清單中的長度與資料傳輸量不同，不能先把所有 LEN 相加再判斷類型。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-115 -->
-<details class="field-note" id="figure-BASE4-FIG-115"><summary>Base Figure 115 · SGL Segment</summary>
-<!-- claim:BASE4-FIG-115-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.25">06.25.</span><span class="paragraph-text">Figure 115〈SGL Segment〉：SGL 先用 descriptor type 和 subtype 決定後續位址、長度如何解讀，再檢查該類型允許的組合。描述子清單中的長度與資料傳輸量不同，不能先把所有 LEN 相加再判斷類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 115, 文件頁 161, PDF 頁 187</p></details>
+<article class="field-note" id="figure-BASE4-FIG-115"><h4>Base Figure 115 · SGL Segment</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-115-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base115-1">Base115-1</span><span class="paragraph-text">SGL Segment 是一組描述子的容器。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 115, 文件頁 161, PDF 頁 187</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base115-2">Base115-2</span><span class="paragraph-text">一個 segment 裡可有多個 data descriptors，不能把 segment 的 byte 長度直接當成使用者資料長度。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-114">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-116 -->
-<details class="field-note" id="figure-BASE4-FIG-116"><summary>Base Figure 116 · Generic SGL Descriptor Format</summary>
-<!-- claim:BASE4-FIG-116-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.26">06.26.</span><span class="paragraph-text">Figure 116〈Generic SGL Descriptor Format〉：SGL 先用 descriptor type 和 subtype 決定後續位址、長度如何解讀，再檢查該類型允許的組合。描述子清單中的長度與資料傳輸量不同，不能先把所有 LEN 相加再判斷類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, 文件頁 161, PDF 頁 187</p></details>
+<article class="field-note" id="figure-BASE4-FIG-116"><h4>Base Figure 116 · Generic SGL Descriptor Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-116-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base116-1">Base116-1</span><span class="paragraph-text">Generic SGL Descriptor 固定型別欄位的位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 116, 文件頁 161, PDF 頁 187</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base116-2">Base116-2</span><span class="paragraph-text">先讀 SGLID 判斷 descriptor 類型，再解其餘 bytes；同一位置在資料描述子與 segment 描述子中指向不同對象。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-114">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DTS</li><li>SGLID</li><li>SGLDT</li><li>SGLDST</li><li>SGL</li><li>NULL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-117 -->
-<details class="field-note" id="figure-BASE4-FIG-117"><summary>Base Figure 117 · SGL Descriptor Type</summary>
-<!-- claim:BASE4-FIG-117-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.27">06.27.</span><span class="paragraph-text">Figure 117〈SGL Descriptor Type〉：SGL 先用 descriptor type 和 subtype 決定後續位址、長度如何解讀，再檢查該類型允許的組合。描述子清單中的長度與資料傳輸量不同，不能先把所有 LEN 相加再判斷類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 117, 文件頁 161-162, PDF 頁 187-188</p></details>
+<article class="field-note" id="figure-BASE4-FIG-117"><h4>Base Figure 117 · SGL Descriptor Type</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-117-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base117-1">Base117-1</span><span class="paragraph-text">SGL Descriptor Type 決定這個項目描述資料還是另一組描述子。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 117, 文件頁 161-162, PDF 頁 187-188</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base117-2">Base117-2</span><span class="paragraph-text">Data Block 指向資料，Segment 指向描述子清單；把後者當成資料會把清單內容誤作使用者 payload。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-114">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-118 -->
-<details class="field-note" id="figure-BASE4-FIG-118"><summary>Base Figure 118 · SGL Descriptor Sub Type Values</summary>
-<!-- claim:BASE4-FIG-118-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.28">06.28.</span><span class="paragraph-text">Figure 118〈SGL Descriptor Sub Type Values〉：SGL 先用 descriptor type 和 subtype 決定後續位址、長度如何解讀，再檢查該類型允許的組合。描述子清單中的長度與資料傳輸量不同，不能先把所有 LEN 相加再判斷類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 118, 文件頁 162, PDF 頁 188</p></details>
+<article class="field-note" id="figure-BASE4-FIG-118"><h4>Base Figure 118 · SGL Descriptor Sub Type Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-118-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base118-1">Base118-1</span><span class="paragraph-text">Descriptor Subtype 進一步限定同一型別的解釋。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 118, 文件頁 162, PDF 頁 188</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base118-2">Base118-2</span><span class="paragraph-text">主型別相同仍要查看 subtype 是否適用於 PCIe 情境，不只比對 descriptor 第一層分類。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-114">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-119 -->
-<details class="field-note" id="figure-BASE4-FIG-119"><summary>Base Figure 119 · SGL Data Block descriptor</summary>
-<!-- claim:BASE4-FIG-119-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.29">06.29.</span><span class="paragraph-text">Figure 119〈SGL Data Block descriptor〉：Data Block 指向資料，Segment／Last Segment 指向描述子清單，Bit Bucket 則有自己的傳輸量語意。沿 Read 例子的箭頭先辨認目的物件，再加總資料量；存放描述子的記憶體不是使用者資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 119, 文件頁 162-163, PDF 頁 188-189</p></details>
+<article class="field-note" id="figure-BASE4-FIG-119"><h4>Base Figure 119 · SGL Data Block descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-119-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base119-1">Base119-1</span><span class="paragraph-text">Data Block descriptor 用位址與長度描述一段資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 119, 文件頁 162-163, PDF 頁 188-189</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base119-2">Base119-2</span><span class="paragraph-text">ADDR 指向主機 buffer、LEN＝4096 表示這段有 4096 bytes；它不同於 PRP 依頁大小隱含覆蓋長度。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base119-3">Base119-3</span><span class="paragraph-text">Data Block 指向資料，Segment／Last Segment 指向描述子清單，Bit Bucket 則有自己的傳輸量語意。沿 Read 例子的箭頭先辨認目的物件，再加總資料量；存放描述子的記憶體不是使用者資料。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ADDR</li><li>LEN</li><li>SGLID</li><li>SGLDT</li><li>SGLDST</li><li>SGL</li><li>SGLS</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-120 -->
-<details class="field-note" id="figure-BASE4-FIG-120"><summary>Base Figure 120 · SGL Bit Bucket descriptor</summary>
-<!-- claim:BASE4-FIG-120-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.30">06.30.</span><span class="paragraph-text">Figure 120〈SGL Bit Bucket descriptor〉：Data Block 指向資料，Segment／Last Segment 指向描述子清單，Bit Bucket 則有自己的傳輸量語意。沿 Read 例子的箭頭先辨認目的物件，再加總資料量；存放描述子的記憶體不是使用者資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 120, 文件頁 163, PDF 頁 189</p></details>
+<article class="field-note" id="figure-BASE4-FIG-120"><h4>Base Figure 120 · SGL Bit Bucket descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-120-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base120-1">Base120-1</span><span class="paragraph-text">Bit Bucket descriptor 表示資料流中要丟棄的部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 120, 文件頁 163, PDF 頁 189</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base120-2">Base120-2</span><span class="paragraph-text">只需保留某段 Read 資料時，可依允許規則讓不需要的部分進 bit bucket；LEN 仍要計入整筆資料流的覆蓋範圍。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-119">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LEN</li><li>SGLID</li><li>SGLDT</li><li>SGLDST</li><li>SGL</li><li>NLB</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-121 -->
-<details class="field-note" id="figure-BASE4-FIG-121"><summary>Base Figure 121 · SGL Segment descriptor</summary>
-<!-- claim:BASE4-FIG-121-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.31">06.31.</span><span class="paragraph-text">Figure 121〈SGL Segment descriptor〉：Data Block 指向資料，Segment／Last Segment 指向描述子清單，Bit Bucket 則有自己的傳輸量語意。沿 Read 例子的箭頭先辨認目的物件，再加總資料量；存放描述子的記憶體不是使用者資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 121, 文件頁 163, PDF 頁 189</p></details>
+<article class="field-note" id="figure-BASE4-FIG-121"><h4>Base Figure 121 · SGL Segment descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-121-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base121-1">Base121-1</span><span class="paragraph-text">Segment descriptor 指向下一組 SGL 描述子。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 121, 文件頁 163, PDF 頁 189</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base121-2">Base121-2</span><span class="paragraph-text">LEN 描述下一組 descriptor 占用的 bytes，不能把它當成下一段使用者資料的 bytes。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-119">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ADDR</li><li>LEN</li><li>SGLID</li><li>SGLDT</li><li>SGDST</li><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-122 -->
-<details class="field-note" id="figure-BASE4-FIG-122"><summary>Base Figure 122 · SGL Last Segment descriptor</summary>
-<!-- claim:BASE4-FIG-122-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.32">06.32.</span><span class="paragraph-text">Figure 122〈SGL Last Segment descriptor〉：Data Block 指向資料，Segment／Last Segment 指向描述子清單，Bit Bucket 則有自己的傳輸量語意。沿 Read 例子的箭頭先辨認目的物件，再加總資料量；存放描述子的記憶體不是使用者資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 122, 文件頁 164, PDF 頁 190</p></details>
+<article class="field-note" id="figure-BASE4-FIG-122"><h4>Base Figure 122 · SGL Last Segment descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-122-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base122-1">Base122-1</span><span class="paragraph-text">Last Segment descriptor 表示最後一組描述子的連結。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2, Figure 122, 文件頁 164, PDF 頁 190</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base122-2">Base122-2</span><span class="paragraph-text">走到最後一組後應按此型別結束後續連結，不因 buffer 後面還有資料就繼續解成另一個 segment。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-119">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ADDR</li><li>LEN</li><li>SGLID</li><li>SGLDT</li><li>SGLDST</li><li>SGL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-125 -->
-<details class="field-note" id="figure-BASE4-FIG-125"><summary>Base Figure 125 · SGL Read Example</summary>
-<!-- claim:BASE4-FIG-125-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.33">06.33.</span><span class="paragraph-text">Figure 125〈SGL Read Example〉：Data Block 指向資料，Segment／Last Segment 指向描述子清單，Bit Bucket 則有自己的傳輸量語意。沿 Read 例子的箭頭先辨認目的物件，再加總資料量；存放描述子的記憶體不是使用者資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2.1, Figure 125, 文件頁 166, PDF 頁 192</p></details>
+<article class="field-note" id="figure-BASE4-FIG-125"><h4>Base Figure 125 · SGL Read Example</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-125-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base125-1">Base125-1</span><span class="paragraph-text">SGL Read 範例把多個 descriptor 串成一筆完整傳輸。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.3.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.3.2.1, Figure 125, 文件頁 166, PDF 頁 192</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base125-2">Base125-2</span><span class="paragraph-text">沿箭頭累計每段資料長度，遇到 segment 先走到描述子清單，遇到 data block 才累計使用者資料。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-119">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SGL</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-identity-text"><h3>圖表組 05 · Feature 值、識別碼、清單與字串</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.34">06.34.</span><span class="paragraph-text">識別格式圖先看對象、寬度及字串填補規則。Controller List 依 NUMCIDS 讀有效項目；Namespace List 依自己的結構和零值規則讀取，不借用另一張清單的 header 格式。</span></p>
+<details open class="figure-reading-group" id="reading-identity-text"><summary>圖表組 05 · Feature 值、識別碼、清單與字串 · 16 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">識別格式圖先看對象、寬度及字串填補規則。Controller List 依 NUMCIDS 讀有效項目；Namespace List 依自己的結構和零值規則讀取，不借用另一張清單的 header 格式。</span></p>
 <a class="reading-link" href="#module-identity-text">回到本節的解釋與範例</a>
 <!-- figure-table:BASE4-FIG-126 -->
-<details class="field-note" id="figure-BASE4-FIG-126"><summary>Base Figure 126 · Current Value after Reset with Scope of Entire NVM Subsystem</summary>
-<!-- claim:BASE4-FIG-126-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.35">06.35.</span><span class="paragraph-text">Figure 126〈Current Value after Reset with Scope of Entire NVM Subsystem〉：Feature 目前值 在重設後如何改變，需要同時看 Feature 的作用範圍與重設影響的範圍。整個 subsystem 與其子集合的重設可能影響不同對象，不能把一張保留表套到所有重設事件。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, 文件頁 167, PDF 頁 193</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE4-FIG-126"><h4>Base Figure 126 · Current Value after Reset with Scope of Entire NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-126-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base126-1">Base126-1</span><span class="paragraph-text">整個 subsystem reset 後，Feature 目前值 依保存與預設規則恢復。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, 文件頁 167, PDF 頁 193</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base126-2">Base126-2</span><span class="paragraph-text">重設前暫時修改的 目前值 不一定保留；要看 保存值與預設值 的選擇條件，不能只讀重設前的值。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base126-3">Base126-3</span><span class="paragraph-text">Feature 目前值 在重設後如何改變，需要同時看 Feature 的作用範圍與重設影響的範圍。整個 subsystem 與其子集合的重設可能影響不同對象，不能把一張保留表套到所有重設事件。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE4-FIG-127 -->
-<details class="field-note" id="figure-BASE4-FIG-127"><summary>Base Figure 127 · Current Value after Reset with Scope of Subset of the NVM Subsystem</summary>
-<!-- claim:BASE4-FIG-127-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.36">06.36.</span><span class="paragraph-text">Figure 127〈Current Value after Reset with Scope of Subset of the NVM Subsystem〉：Feature 目前值 在重設後如何改變，需要同時看 Feature 的作用範圍與重設影響的範圍。整個 subsystem 與其子集合的重設可能影響不同對象，不能把一張保留表套到所有重設事件。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, 文件頁 168, PDF 頁 194</p></details>
+<article class="field-note" id="figure-BASE4-FIG-127"><h4>Base Figure 127 · Current Value after Reset with Scope of Subset of the NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-127-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base127-1">Base127-1</span><span class="paragraph-text">只重設 subsystem 的部分範圍時，Feature 恢復行為可能不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, 文件頁 168, PDF 頁 194</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base127-2">Base127-2</span><span class="paragraph-text">將 Figure 126 的全部重設改成部分控制器重設，先確認 Feature scope 是否涵蓋未重設的物件，再沿表判斷 目前值。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-126">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-128 -->
-<details class="field-note" id="figure-BASE4-FIG-128"><summary>Base Figure 128 · PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</summary>
-<!-- claim:BASE4-FIG-128-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.37">06.37.</span><span class="paragraph-text">Figure 128〈PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)〉：VID／SSVID 辨認廠商，SN／MN 描述序號與型號。固定字串欄位要依寬度及填補規則閱讀；不能把字串直接當成以零結尾的任意長度資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.1, Figure 128, 文件頁 169, PDF 頁 195</p></details>
+<article class="field-note" id="figure-BASE4-FIG-128"><h4>Base Figure 128 · PCI Vendor ID (VID) and PCI Subsystem Vendor ID (SSVID)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-128-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base128-1">Base128-1</span><span class="paragraph-text">VID 與 SSVID 分別識別廠商與 subsystem 廠商。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.1, Figure 128, 文件頁 169, PDF 頁 195</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base128-2">Base128-2</span><span class="paragraph-text">兩台裝置 VID 相同，並不代表 SSVID 或產品配置相同；這些不是 namespace 的唯一識別碼。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base128-3">Base128-3</span><span class="paragraph-text">VID／SSVID 辨認廠商，SN／MN 描述序號與型號。固定字串欄位要依寬度及填補規則閱讀；不能把字串直接當成以零結尾的任意長度資料。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ID</li><li>VID</li><li>SSVID</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-129 -->
-<details class="field-note" id="figure-BASE4-FIG-129"><summary>Base Figure 129 · Serial Number (SN) and Model Number (MN)</summary>
-<!-- claim:BASE4-FIG-129-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.38">06.38.</span><span class="paragraph-text">Figure 129〈Serial Number (SN) and Model Number (MN)〉：VID／SSVID 辨認廠商，SN／MN 描述序號與型號。固定字串欄位要依寬度及填補規則閱讀；不能把字串直接當成以零結尾的任意長度資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.2, Figure 129, 文件頁 170, PDF 頁 196</p></details>
+<article class="field-note" id="figure-BASE4-FIG-129"><h4>Base Figure 129 · Serial Number (SN) and Model Number (MN)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-129-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base129-1">Base129-1</span><span class="paragraph-text">Serial Number 與 Model Number 是字元資料欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.2, Figure 129, 文件頁 170, PDF 頁 196</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base129-2">Base129-2</span><span class="paragraph-text">顯示型號時依欄位長度及字元規則處理，不能把固定長度字串讀成一個整數。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-128">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SN</li><li>MN</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-130 -->
-<details class="field-note" id="figure-BASE4-FIG-130"><summary>Base Figure 130 · IEEE OUI Identifier (IEEE)</summary>
-<!-- claim:BASE4-FIG-130-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.39">06.39.</span><span class="paragraph-text">Figure 130〈IEEE OUI Identifier (IEEE)〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>OUI</dt><dd>Organizationally Unique Identifier，由 IEEE 配置給組織的 identifier 前綴。</dd></div><div><dt>WWN</dt><dd>World Wide Name，用於儲存與網路裝置識別的全域名稱格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.5.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.3, Figure 130, 文件頁 170, PDF 頁 196</p></details>
+<article class="field-note" id="figure-BASE4-FIG-130"><h4>Base Figure 130 · IEEE OUI Identifier (IEEE)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-130-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base130-1">Base130-1</span><span class="paragraph-text">IEEE OUI 提供識別碼中的組織分配部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.3, Figure 130, 文件頁 170, PDF 頁 196</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base130-2">Base130-2</span><span class="paragraph-text">相同 OUI 的不同裝置仍需要其他位元區分；OUI 本身不是完整裝置唯一識別碼。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base130-3">Base130-3</span><span class="paragraph-text">OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>WWN</dt><dd>World Wide Name，用於儲存與網路裝置識別的全域名稱格式。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IEEE</li><li>OUI</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-131 -->
-<details class="field-note" id="figure-BASE4-FIG-131"><summary>Base Figure 131 · IEEE Extended Unique Identifier (EUI64), MA-L Format</summary>
-<!-- claim:BASE4-FIG-131-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.40">06.40.</span><span class="paragraph-text">Figure 131〈IEEE Extended Unique Identifier (EUI64), MA-L Format〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>WWN</dt><dd>World Wide Name，用於儲存與網路裝置識別的全域名稱格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 131, 文件頁 170, PDF 頁 196</p></details>
+<article class="field-note" id="figure-BASE4-FIG-131"><h4>Base Figure 131 · IEEE Extended Unique Identifier (EUI64), MA-L Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-131-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base131-1">Base131-1</span><span class="paragraph-text">EUI64 的 MA-L 格式把組織與延伸識別部分分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 131, 文件頁 170, PDF 頁 196</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base131-2">Base131-2</span><span class="paragraph-text">先依圖切開組織部分及廠商分配部分，再理解完整 64-bit 識別碼；不把其中一半當成完整值。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IEEE</li><li>EUI64</li><li>MA</li><li>EUI</li><li>OUI</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-132 -->
-<details class="field-note" id="figure-BASE4-FIG-132"><summary>Base Figure 132 · IEEE Extended Unique Identifier (EUI64), OUI Identifier</summary>
-<!-- claim:BASE4-FIG-132-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.41">06.41.</span><span class="paragraph-text">Figure 132〈IEEE Extended Unique Identifier (EUI64), OUI Identifier〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 132, 文件頁 170, PDF 頁 196</p></details>
+<article class="field-note" id="figure-BASE4-FIG-132"><h4>Base Figure 132 · IEEE Extended Unique Identifier (EUI64), OUI Identifier</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-132-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base132-1">Base132-1</span><span class="paragraph-text">OUI 在 EUI64 中有固定的分配位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 132, 文件頁 170, PDF 頁 196</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base132-2">Base132-2</span><span class="paragraph-text">比較兩個 EUI64 時，可先看 OUI 是否相同，再看其餘位元；OUI 相同不代表兩個 namespace 相同。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IEEE</li><li>EUI64</li><li>OUI</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-133 -->
-<details class="field-note" id="figure-BASE4-FIG-133"><summary>Base Figure 133 · IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</summary>
-<!-- claim:BASE4-FIG-133-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.42">06.42.</span><span class="paragraph-text">Figure 133〈IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 133, 文件頁 170-171, PDF 頁 196-197</p></details>
+<article class="field-note" id="figure-BASE4-FIG-133"><h4>Base Figure 133 · IEEE Extended Unique Identifier (EUI64), Ext. ID (cont)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-133-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base133-1">Base133-1</span><span class="paragraph-text">延伸識別欄位補足 EUI64 的個別識別資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 133, 文件頁 170-171, PDF 頁 196-197</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base133-2">Base133-2</span><span class="paragraph-text">同一組織分配的兩個 ID，可以只在延伸部分不同；比較時必須保留全部位元。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IEEE</li><li>EUI64</li><li>ID</li><li>MA</li><li>WWN</li><li>NAA</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>NAA</dt><dd>Network Address Authority，WWN 中選擇 identifier 格式與配置方式的 nibble。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-134 -->
-<details class="field-note" id="figure-BASE4-FIG-134"><summary>Base Figure 134 · MA-L similarity to WWN</summary>
-<!-- claim:BASE4-FIG-134-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.43">06.43.</span><span class="paragraph-text">Figure 134〈MA-L similarity to WWN〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 134, 文件頁 171, PDF 頁 197</p></details>
+<article class="field-note" id="figure-BASE4-FIG-134"><h4>Base Figure 134 · MA-L similarity to WWN</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-134-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base134-1">Base134-1</span><span class="paragraph-text">MA-L 與 WWN 的相似排列不表示它們可以直接互換。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.4, Figure 134, 文件頁 171, PDF 頁 197</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base134-2">Base134-2</span><span class="paragraph-text">看到相近的十六進位外觀時，仍先辨識格式與分配規則，不只按字串長度判斷識別碼種類。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MA</li><li>WWN</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-135 -->
-<details class="field-note" id="figure-BASE4-FIG-135"><summary>Base Figure 135 · Namespace Globally Unique Identifier (NGUID)</summary>
-<!-- claim:BASE4-FIG-135-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.44">06.44.</span><span class="paragraph-text">Figure 135〈Namespace Globally Unique Identifier (NGUID)〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 135, 文件頁 171, PDF 頁 197</p></details>
+<article class="field-note" id="figure-BASE4-FIG-135"><h4>Base Figure 135 · Namespace Globally Unique Identifier (NGUID)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-135-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base135-1">Base135-1</span><span class="paragraph-text">NGUID 提供 namespace 的全域識別資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 135, 文件頁 171, PDF 頁 197</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base135-2">Base135-2</span><span class="paragraph-text">NSID 可能因配置而改變，辨識是否同一 namespace 時可以依支援情況使用 NGUID；兩者回答不同問題。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NGUID</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-136 -->
-<details class="field-note" id="figure-BASE4-FIG-136"><summary>Base Figure 136 · Namespace Globally Unique Identifier (NGUID), OUI</summary>
-<!-- claim:BASE4-FIG-136-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.45">06.45.</span><span class="paragraph-text">Figure 136〈Namespace Globally Unique Identifier (NGUID), OUI〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 136, 文件頁 171, PDF 頁 197</p></details>
+<article class="field-note" id="figure-BASE4-FIG-136"><h4>Base Figure 136 · Namespace Globally Unique Identifier (NGUID), OUI</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-136-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base136-1">Base136-1</span><span class="paragraph-text">NGUID 的 OUI 與廠商部分有各自位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 136, 文件頁 171, PDF 頁 197</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base136-2">Base136-2</span><span class="paragraph-text">比較完整 NGUID 時，把組織部分與其餘識別資訊一起保留，不能只用 OUI 當資料庫唯一鍵。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NGUID</li><li>OUI</li><li>VSP</li><li>ID</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-137 -->
-<details class="field-note" id="figure-BASE4-FIG-137"><summary>Base Figure 137 · Namespace Globally Unique Identifier</summary>
-<!-- claim:BASE4-FIG-137-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.46">06.46.</span><span class="paragraph-text">Figure 137〈Namespace Globally Unique Identifier〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 137, 文件頁 171, PDF 頁 197</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>NAA</dt><dd>Network Address Authority，WWN 中選擇 identifier 格式與配置方式的 nibble。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE4-FIG-137"><h4>Base Figure 137 · Namespace Globally Unique Identifier</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-137-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base137-1">Base137-1</span><span class="paragraph-text">NGUID 的欄位排列需要按完整格式解釋。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 137, 文件頁 171, PDF 頁 197</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base137-2">Base137-2</span><span class="paragraph-text">讀出 128-bit 值後先維持原本 byte 順序，再按圖拆欄位，避免把一個合法 ID 顯示成另一種排列。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NGUID</li><li>WWN</li><li>IEEE</li><li>NAA</li><li>Namespace</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE4-FIG-138 -->
-<details class="field-note" id="figure-BASE4-FIG-138"><summary>Base Figure 138 · Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</summary>
-<!-- claim:BASE4-FIG-138-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.47">06.47.</span><span class="paragraph-text">Figure 138〈Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN〉：OUI、EUI64、NGUID 與 WWN 對照圖用來辨認識別值的組成及配置關係。外觀相似不代表格式可互換；先確認欄位寬度及定義，再辨認廠商部分與其他識別部分。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 138, 文件頁 171, PDF 頁 197</p></details>
+<article class="field-note" id="figure-BASE4-FIG-138"><h4>Base Figure 138 · Namespace Globally Unique Identifier (NGUID), NGUID similarity to WWN</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-138-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base138-1">Base138-1</span><span class="paragraph-text">NGUID 與 WWN 的結構對照用來理解相似處與不同處。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.5.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.5.5, Figure 138, 文件頁 171, PDF 頁 197</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base138-2">Base138-2</span><span class="paragraph-text">把相似欄位並排看可以幫助定位，但格式標記和完整位元仍要保留，不用 WWN 的欄位解釋直接取代 NGUID。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-130">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NGUID</li><li>WWN</li><li>OUI</li><li>NAA</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-139 -->
-<details class="field-note" id="figure-BASE4-FIG-139"><summary>Base Figure 139 · Controller List Format</summary>
-<!-- claim:BASE4-FIG-139-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.48">06.48.</span><span class="paragraph-text">Figure 139〈Controller List Format〉：Controller List 以 NUMCIDS 開頭，後接 16-bit controller IDs；Namespace List 直接列出 32-bit NSIDs。兩者都依各自排序及未使用項目規則讀取，但不能共用同一種 header。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.6.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6.1, Figure 139, 文件頁 172, PDF 頁 198</p></details>
+<article class="field-note" id="figure-BASE4-FIG-139"><h4>Base Figure 139 · Controller List Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-139-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base139-1">Base139-1</span><span class="paragraph-text">Controller List 先列數量，再列要操作的控制器識別碼。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.6.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6.1, Figure 139, 文件頁 172, PDF 頁 198</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base139-2">Base139-2</span><span class="paragraph-text">Attach 到控制器 A 與 B 時，清單含 2 個 Controller IDs；命令 NSID 指 namespace，清單則指定哪些控制器。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base139-3">Base139-3</span><span class="paragraph-text">Controller List 以 NUMCIDS 開頭，後接 16-bit controller IDs；Namespace List 直接列出 32-bit NSIDs。兩者都依各自排序及未使用項目規則讀取，但不能共用同一種 header。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMCIDS</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-140 -->
-<details class="field-note" id="figure-BASE4-FIG-140"><summary>Base Figure 140 · Namespace List Format</summary>
-<!-- claim:BASE4-FIG-140-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.49">06.49.</span><span class="paragraph-text">Figure 140〈Namespace List Format〉：Controller List 以 NUMCIDS 開頭，後接 16-bit controller IDs；Namespace List 直接列出 32-bit NSIDs。兩者都依各自排序及未使用項目規則讀取，但不能共用同一種 header。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.6.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6.2, Figure 140, 文件頁 172, PDF 頁 198</p></details>
+<article class="field-note" id="figure-BASE4-FIG-140"><h4>Base Figure 140 · Namespace List Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-140-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base140-1">Base140-1</span><span class="paragraph-text">Namespace List 是識別碼清單，不包含每個 namespace 的全部屬性。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.6.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6.2, Figure 140, 文件頁 172, PDF 頁 198</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base140-2">Base140-2</span><span class="paragraph-text">從清單取得 NSID 3 後，還需相應 Identify 資料才能知道它的格式與容量。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE4-FIG-139">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ID</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE4-FIG-142 -->
-<details class="field-note" id="figure-BASE4-FIG-142"><summary>Base Figure 142 · UTF-8 Input Processing</summary>
-<!-- claim:BASE4-FIG-142-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.50">06.50.</span><span class="paragraph-text">Figure 142〈UTF-8 Input Processing〉：UTF-8 的一個字元可由多個 bytes 編碼。沿輸入處理圖分辨起始 byte 與後續 bytes，長度限制仍按所定義的 byte 數計算；字元數不是 buffer 長度。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.8, Figure 142, 文件頁 175, PDF 頁 201</p></details>
+<article class="field-note" id="figure-BASE4-FIG-142"><h4>Base Figure 142 · UTF-8 Input Processing</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE4-FIG-142-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base142-1">Base142-1</span><span class="paragraph-text">UTF-8 輸入處理需要區分 byte 序列與字元。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.8, Figure 142, 文件頁 175, PDF 頁 201</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base142-2">Base142-2</span><span class="paragraph-text">一個中文字通常占多個 bytes；限制 byte 長度時，不能用相同數值當成可容納字元數，也不能截斷字元中間的 bytes。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base142-3">Base142-3</span><span class="paragraph-text">UTF-8 的一個字元可由多個 bytes 編碼。沿輸入處理圖分辨起始 byte 與後續 bytes，長度限制仍按所定義的 byte 數計算；字元數不是 buffer 長度。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>UTF</li></ul></div>
 
+</details></article>
 </details>
-</div>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
 <!-- qa:base-ch4-command-id -->

@@ -9,6 +9,7 @@ except ModuleNotFoundError:
 
 
 def question_bank(report_id, modules):
+    from scripts.nvme_review_bank import BANK
     return BANK[report_id]
 
 

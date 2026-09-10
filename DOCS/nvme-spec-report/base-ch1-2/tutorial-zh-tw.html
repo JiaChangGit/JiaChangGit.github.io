@@ -78,6 +78,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
 .nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
 .nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
 .nvme-note .field-note > summary { font-size: 15px; }
 .nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
 .nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
@@ -134,9 +145,9 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <div class="topic-map">
 <article><span class="axis-number">01</span><h3>規格如何分工</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">分辨 Base、Transport 與 I/O Command Set 各自定義的內容。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl></article>
 <article><span class="axis-number">02</span><h3>命令如何往返</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">以提交佇列與完成佇列理解主機和控制器的合作。</span></p></article>
-<article><span class="axis-number">03</span><h3>儲存物件與路徑</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">分清 namespace、controller 與 subsystem，並理解多條存取路徑。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>儲存物件與路徑</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">分清 namespace、controller 與 subsystem，並理解多條存取路徑。</span></p></article>
 </div>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">這裡的主機包含作業系統與驅動程式；控制器提供主機可存取的 NVMe 介面。NVMe 描述主機可見的行為，不能直接等同 SSD 內部 NAND 的實體配置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">這裡的主機包含作業系統與驅動程式；控制器提供主機可存取的 NVMe 介面。NVMe 描述主機可見的行為，不能直接等同 SSD 內部 NAND 的實體配置。</span></p>
 <div class="overview-connections"><h3>把主軸連起來</h3>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">先用主機、控制器及 namespace 建立整體關係，再跟著一筆命令看提交與完成。規格分工告訴我們這些關係分別由哪份文件定義，數值與單位則是讀懂後續欄位的共同工具。</span></p>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">閱讀後應能畫出主機到儲存空間的路徑，說明命令與資料各放在哪裡，並分辨同一份儲存空間的多條路徑和多個主機的共享。這些基本概念會在後續各篇的具體機制中再次被使用。</span></p>
@@ -145,20 +156,20 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <section class="lesson" id="module-family"><h2 id="heading-family"><span class="section-number">01</span> Base、Command Set 與 Transport 的分工</h2>
 <div class="lesson-explanation">
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">第一次讀 NVMe，容易把它當成一本規格就能說完的介面。實際上，命令的共同格式、命令對資料做什麼，以及命令如何經由某種連接方式交換，被分在不同文件。先理解這個分工，才能知道遇到問題時要查哪一份，而不是在單一章節裡找所有答案。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">以讀取資料為例，NVM Command Set 解釋 Read 的區塊範圍與資料處理；Base 提供提交及完成的共同機制；PCIe Transport 解釋本機控制器如何利用 PCIe 存取佇列與通知。這些內容共同組成一次操作，閱讀順序可以從操作情境出發，再回到相關欄位。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">以讀取資料為例，NVM Command Set 解釋 Read 的區塊範圍與資料處理；Base 提供提交及完成的共同機制；PCIe Transport 解釋本機控制器如何利用 PCIe 存取佇列與通知。這些內容共同組成一次操作，閱讀順序可以從操作情境出發，再回到相關欄位。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl>
 <details class="source-note"><summary>來源：Base 2.4 §1.1.1 · Base 2.4 §2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59</p></details>
 </div>
 <!-- claim:BASE12-FAMILY -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Base Specification 定義通用 NVMe 協定；Transport Specification 綁定特定傳輸，I/O Command Set Specification 擴充命令與資料結構。這是適用關係，不是協定堆疊。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §1.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Base Specification 定義通用 NVMe 協定；Transport Specification 綁定特定傳輸，I/O Command Set Specification 擴充命令與資料結構。這是適用關係，不是協定堆疊。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, 文件頁 1, PDF 頁 27</p></details>
 <!-- claim:BASE12-COMMANDSET -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Admin Command Set 管理 controller 與 queue；I/O Command Set 定義對 namespace 的資料操作。Base 說明通用機制，個別 I/O Command Set Specification 說明命令語意。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.2, 文件頁 33, PDF 頁 59</p></details>
-<div class="table-wrap"><table><caption>Base、Command Set 與 Transport 的分工</caption><thead><tr><th scope="col">規格文件</th><th scope="col">負責定義的內容</th><th scope="col">與其他規格如何分工</th></tr></thead><tbody><tr><td>Base</td><td>共通 command、queue、status 與資料結構</td><td>不要假設它定義所有 PCIe register 細節</td></tr><tr><td>PCIe Transport</td><td>BAR、MMIO、doorbell、interrupt 與 PCIe-specific 行為</td><td>衝突時不能覆蓋 Base</td></tr><tr><td>I/O Command Set</td><td>特定 namespace I/O command 與延伸資料結構</td><td>不負責重新定義 transport</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">要實作 Firmware Image Download：先在 Base 找 command 欄位與 completion status，再到 PCIe Transport 確認 Admin command 的資料指標與 memory access 限制。若未閱讀 I/O Command Set，仍可理解此 Admin command；反過來只讀 PCIe Transport 則得不到完整 command 語意。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl></aside>
+<div class="table-wrap"><table><caption>Base、Command Set 與 Transport 的分工</caption><thead><tr><th scope="col">規格文件</th><th scope="col">負責定義的內容</th><th scope="col">與其他規格如何分工</th></tr></thead><tbody><tr><td>Base</td><td>共通 command、queue、status 與資料結構</td><td>不要假設它定義所有 PCIe register 細節</td></tr><tr><td>PCIe Transport</td><td>BAR、MMIO、doorbell、interrupt 與 PCIe-specific 行為</td><td>衝突時不能覆蓋 Base</td></tr><tr><td>I/O Command Set</td><td>特定 namespace I/O command 與延伸資料結構</td><td>不負責重新定義 transport</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MMIO</dt><dd>Memory-Mapped I/O，以 CPU memory access 形式讀寫裝置 register。</dd></div><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">要實作 Firmware Image Download：先在 Base 找 command 欄位與 completion status，再到 PCIe Transport 確認 Admin command 的資料指標與 memory access 限制。若未閱讀 I/O Command Set，仍可理解此 Admin command；反過來只讀 PCIe Transport 則得不到完整 command 語意。</span></p></aside>
 <a class="reading-link" href="#reading-family">閱讀相關規格圖表 → Base、Command Set 與 Transport 的分工</a>
 </section>
 <section class="lesson" id="module-objects"><h2 id="heading-objects"><span class="section-number">02</span> Namespace、Controller 與存取路徑</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Namespace 是主機可存取的儲存空間，controller 是處理命令的控制器，NVM subsystem 則包含相關控制器與非揮發性儲存資源。它們不是同一個物件的三種名稱。一個 namespace 可以透過不同控制器被存取，因此看見兩條路徑，不一定表示有兩份資料。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Namespace 是主機可存取的儲存空間，controller 是處理命令的控制器，NVM subsystem 則包含相關控制器與非揮發性儲存資源。它們不是同一個物件的三種名稱。一個 namespace 可以透過不同控制器被存取，因此看見兩條路徑，不一定表示有兩份資料。</span></p>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">多路徑先關心同一主機是否有多條路到同一份儲存空間；共享則關心是否有多個主機存取同一份空間。兩種情況可以同時存在。辨認時應先畫出主機、控制器與 namespace 的連線，再確認儲存對象的身分，不能只數裝置名稱或比較一個局部識別值。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §2.3.1 · Base 2.4 §2.3.3 · Base 2.4 §2.4.1 · Base 2.4 §2.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, 文件頁 26-33, PDF 頁 52-59</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63</p></details>
 </div>
@@ -167,11 +178,11 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <!-- claim:BASE12-SUBSYSTEM -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">controller、port、namespace 與 PCI Function 是不同物件；NSID 是 controller 用來指向 namespace 的 handle，不是 namespace 本身。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61</p></details>
 <!-- claim:BASE12-MULTIPATH -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">multi-path I/O 是同一 host 到同一 namespace 的兩條以上獨立路徑；namespace sharing 是兩個以上 host 經不同 controller 存取同一 shared namespace。兩者都需要至少兩個 controller。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">multi-path I/O 是同一 host 到同一 namespace 的兩條以上獨立路徑；namespace sharing 是兩個以上 host 經不同 controller 存取同一 shared namespace。兩者都需要至少兩個 controller。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, 文件頁 35-37, PDF 頁 61-63</p></details>
 <!-- claim:BASE12-ASYMMETRY -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">支援多路徑或共享時，各 controller 對同一 namespace 的存取特性不一定相同；host 可依 controller 所回報的狀態選擇路徑。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.2, 文件頁 37, PDF 頁 63</p></details>
 <div class="table-wrap"><table><caption>Namespace、Controller 與存取路徑</caption><thead><tr><th scope="col">存取方式</th><th scope="col">涉及的主機與儲存對象</th><th scope="col">它解決什麼問題</th></tr></thead><tbody><tr><td>multi-path I/O</td><td>同一 host、同一 namespace、兩條以上獨立路徑</td><td>重點是 path redundancy</td></tr><tr><td>namespace sharing</td><td>兩個以上 hosts 存取同一 shared namespace</td><td>重點是 host ownership 與 coordination</td></tr><tr><td>SR-IOV</td><td>一個 PCIe 裝置呈現 PF/VF</td><td>PCIe Function 不必等同獨立 subsystem</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，讓一個 PCIe 裝置呈現一個 PF 與多個 VF 的虛擬化能力。</dd></div><div><dt>PF</dt><dd>Physical Function，具有完整 PCIe 設定能力、可管理相關 VF 的實體功能。</dd></div><div><dt>VF</dt><dd>Virtual Function，由 SR-IOV 建立、資源較受限的 PCIe 虛擬功能。</dd></div></dl>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">說明性範例：host A 經 controller 1 與 controller 2 都能存取 namespace X，這是 multi-path。host B 也經 controller 2 存取同一 namespace X，才同時構成 namespace sharing。NSID 在兩個 controller 上可能不同，因此跨 controller 比對時應先確認 namespace identity，而不是直接比較 NSID 數值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl></aside>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">說明性範例：host A 經 controller 1 與 controller 2 都能存取 namespace X，這是 multi-path。host B 也經 controller 2 存取同一 namespace X，才同時構成 namespace sharing。NSID 在兩個 controller 上可能不同，因此跨 controller 比對時應先確認 namespace identity，而不是直接比較 NSID 數值。</span></p></aside>
 <a class="reading-link" href="#reading-objects">閱讀相關規格圖表 → Namespace、Controller 與存取路徑</a>
 </section>
 <section class="lesson" id="module-queues"><h2 id="heading-queues"><span class="section-number">03</span> 命令提交與完成的往返</h2>
@@ -181,10 +192,10 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details class="source-note"><summary>來源：Base 2.4 §2.1 · Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, 文件頁 33-35, PDF 頁 59-61</p></details>
 </div>
 <figure><figcaption><strong>一筆命令如何往返</strong></figcaption><ol class="flow-steps"><li>Host 將命令寫入 SQ（提交佇列）。</li><li>Host 更新 SQ Tail Doorbell，通知 Controller 有新命令。</li><li>Controller 取出並執行命令，將結果寫入 CQ（完成佇列）。</li><li>Host 讀取 CQE，再更新 CQ Head Doorbell，交還已讀取的位置。</li></ol><figcaption>命令與結果放在佇列；Doorbell 傳達佇列位置的更新。</figcaption></figure>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl>
+<dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
 <!-- claim:BASE12-QUEUE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">PCIe memory-based model 把 Submission Queue 與 Completion Queue 配置在記憶體。多個 I/O Submission Queues 可共用一個 I/O Completion Queue；Admin queue pair 維持一對一。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, 文件頁 21-23, PDF 頁 47-49</p></details>
-<div class="table-wrap"><table><caption>命令提交與完成的往返</caption><thead><tr><th scope="col">佇列配置</th><th scope="col">SQ 與 CQ 的對應</th><th scope="col">如何辨認完成的命令</th></tr></thead><tbody><tr><td>Admin queue pair</td><td>一個 Admin SQ 對一個 Admin CQ</td><td>初始化與管理路徑</td></tr><tr><td>I/O 1:1</td><td>一個 I/O SQ 對一個 I/O CQ</td><td>追蹤簡單、隔離清楚</td></tr><tr><td>I/O n:1</td><td>多個 I/O SQ 共用一個 I/O CQ</td><td>完成路徑整併，仍以 SQID/CID 找回命令</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
+<div class="table-wrap"><table><caption>命令提交與完成的往返</caption><thead><tr><th scope="col">佇列配置</th><th scope="col">SQ 與 CQ 的對應</th><th scope="col">如何辨認完成的命令</th></tr></thead><tbody><tr><td>Admin queue pair</td><td>一個 Admin SQ 對一個 Admin CQ</td><td>初始化與管理路徑</td></tr><tr><td>I/O 1:1</td><td>一個 I/O SQ 對一個 I/O CQ</td><td>追蹤簡單、隔離清楚</td></tr><tr><td>I/O n:1</td><td>多個 I/O SQ 共用一個 I/O CQ</td><td>完成路徑整併，仍以 SQID/CID 找回命令</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">說明性範例：SQ 3 與 SQ 4 共用 CQ 2。兩筆 command 都使用 CID 5 仍可區分，因唯一鍵是 (SQID, CID)：(3,5) 與 (4,5)。只用 CID 建 outstanding-command map，會把其中一筆 completion 配錯。</span></p></aside>
 <a class="reading-link" href="#reading-queues">閱讀相關規格圖表 → 命令提交與完成的往返</a>
 </section>
@@ -197,139 +208,211 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <!-- claim:BASE12-NUMBERS -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">數值的解讀同時包含進位與單位；十六進位使用 h 後綴，二進位使用 b 後綴，十進位可省略 d。十進位與二進位容量前綴代表不同倍率。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, 文件頁 3-5, PDF 頁 29-31</p></details>
 <!-- claim:BASE12-DWORD -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>word</dt><dd>word；16 bits，也就是 2 bytes。它比 Dword 小一半；欄位長度不能只看數字，還要看單位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31</p></details>
-<div class="table-wrap"><table><caption>數值編碼與單位</caption><thead><tr><th scope="col">欄位或表示法</th><th scope="col">換算後的值</th><th scope="col">採用這種解讀的依據</th></tr></thead><tbody><tr><td>1000</td><td>十進位 1000</td><td>若無 b/h 後綴則按十進位</td></tr><tr><td>1000b</td><td>二進位 8</td><td>b 是 radix，不是 bit 單位</td></tr><tr><td>1000h</td><td>十六進位 4096</td><td>常見於 offset 與 register value</td></tr><tr><td>NUMD=0</td><td>實際 1 dword</td><td>只有欄位明載 0's-based 才加 1</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>0's-based</dt><dd>0's-based encoding，以 0 表示實際數量 1；依欄位換算公式通常是欄位值加 1。</dd></div><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div></dl>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">說明性範例：一個 512-byte transfer 含 512 ÷ 4 = 128 dwords。若 NUMD 是 0's-based，編碼值為 128 - 1 = 127 = 007Fh。若錯把 007Fh 當成 byte count，buffer 會短少；若忘記減 1，controller 會被要求傳輸 129 dwords。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>0's-based</dt><dd>0's-based encoding，以 0 表示實際數量 1；依欄位換算公式通常是欄位值加 1。</dd></div></dl></aside>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>word</dt><dd>word；16 bits，也就是 2 bytes。它比 Dword 小一半；欄位長度不能只看數字，還要看單位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, 文件頁 5, PDF 頁 31</p></details>
+<div class="table-wrap"><table><caption>數值編碼與單位</caption><thead><tr><th scope="col">欄位或表示法</th><th scope="col">換算後的值</th><th scope="col">採用這種解讀的依據</th></tr></thead><tbody><tr><td>1000</td><td>十進位 1000</td><td>若無 b/h 後綴則按十進位</td></tr><tr><td>1000b</td><td>二進位 8</td><td>b 是 radix，不是 bit 單位</td></tr><tr><td>1000h</td><td>十六進位 4096</td><td>常見於 offset 與 register value</td></tr><tr><td>NUMD=0</td><td>實際 1 dword</td><td>只有欄位明載 0's-based 才加 1</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>0's-based</dt><dd>0's-based encoding，以 0 表示實際數量 1；依欄位換算公式通常是欄位值加 1。</dd></div><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">說明性範例：一個 512-byte transfer 含 512 ÷ 4 = 128 dwords。若 NUMD 是 0's-based，編碼值為 128 - 1 = 127 = 007Fh。若錯把 007Fh 當成 byte count，buffer 會短少；若忘記減 1，controller 會被要求傳輸 129 dwords。</span></p></aside>
 <a class="reading-link" href="#reading-numbers">閱讀相關規格圖表 → 數值編碼與單位</a>
 </section>
 <section id="figure-reading"><h2><span class="section-number">05</span> 讀懂本篇的規格圖表</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
-<div class="figure-reading-group" id="reading-family"><h3>圖表組 01 · Base、Command Set 與 Transport 的分工</h3>
+<details open class="figure-reading-group" id="reading-family"><summary>圖表組 01 · Base、Command Set 與 Transport 的分工 · 2 張圖表</summary>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">規格家族圖用來連接責任，箭頭不是命令執行順序。先用一個操作分類「共同格式」「命令行為」「傳輸方式」，再對照三份規格的位置。</span></p>
 <a class="reading-link" href="#module-family">回到本節的解釋與範例</a>
 <!-- figure-table:BASE12-FIG-001 -->
-<details class="field-note" id="figure-BASE12-FIG-001"><summary>Base Figure 1 · NVMe Family of Specifications</summary>
-<!-- claim:BASE12-FIG-001-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">Figure 1〈NVMe Family of Specifications〉：Base 定義共同命令及資料結構，Transport 說明交換方式，I/O Command Set 定義特定儲存資料的操作。讀圖時先把正在研究的問題放到對應層次，再沿引用取得其他層的必要資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, Figure 1, 文件頁 1, PDF 頁 27</p></details>
+<article class="field-note" id="figure-BASE12-FIG-001"><h4>Base Figure 1 · NVMe Family of Specifications</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-001-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base1-1">Base1-1</span><span class="paragraph-text">規格家族把共同機制、傳輸與命令語意分工定義。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.1.1, Figure 1, 文件頁 1, PDF 頁 27</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base1-2">Base1-2</span><span class="paragraph-text">追一筆 PCIe Read 時，Base 回答命令長什麼樣，PCIe Transport 回答如何傳遞，NVM Command Set 回答讀取的資料與保護行為。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base1-3">Base1-3</span><span class="paragraph-text">Base 定義共同命令及資料結構，Transport 說明交換方式，I/O Command Set 定義特定儲存資料的操作。讀圖時先把正在研究的問題放到對應層次，再沿引用取得其他層的必要資訊。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVMe Family</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-005 -->
-<details class="field-note" id="figure-BASE12-FIG-005"><summary>Base Figure 5 · Types of NVMe Command Sets</summary>
-<!-- claim:BASE12-FIG-005-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">Figure 5〈Types of NVMe Command Sets〉：Base 定義共同命令及資料結構，Transport 說明交換方式，I/O Command Set 定義特定儲存資料的操作。讀圖時先把正在研究的問題放到對應層次，再沿引用取得其他層的必要資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2, Figure 5, 文件頁 21, PDF 頁 47</p></details>
+<article class="field-note" id="figure-BASE12-FIG-005"><h4>Base Figure 5 · Types of NVMe Command Sets</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-005-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base5-1">Base5-1</span><span class="paragraph-text">Admin 與 I/O Command Set 分別管理裝置與操作 namespace 資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2, Figure 5, 文件頁 21, PDF 頁 47</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base5-2">Base5-2</span><span class="paragraph-text">建立 I/O queue 是管理工作；對 namespace 發出 Read 則屬資料操作。兩者共用命令機制，但用途不同。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-001">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Command Set</li><li>Command</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-objects"><h3>圖表組 02 · Namespace、Controller 與存取路徑</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">關係圖先找 namespace，再沿線回到能存取它的 controllers 和 hosts。兩條線通往同一物件表示多條路徑；兩個 hosts 指向同一物件表示共享。SR-IOV 圖另外描述 PCIe Function 的呈現方式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SR-IOV</dt><dd>Single Root I/O Virtualization，讓一個 PCIe 裝置呈現一個 PF 與多個 VF 的虛擬化能力。</dd></div></dl>
+<details open class="figure-reading-group" id="reading-objects"><summary>圖表組 02 · Namespace、Controller 與存取路徑 · 12 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">關係圖先找 namespace，再沿線回到能存取它的 controllers 和 hosts。兩條線通往同一物件表示多條路徑；兩個 hosts 指向同一物件表示共享。SR-IOV 圖另外描述 PCIe Function 的呈現方式。</span></p>
 <a class="reading-link" href="#module-objects">回到本節的解釋與範例</a>
 <!-- figure-table:BASE12-FIG-011 -->
-<details class="field-note" id="figure-BASE12-FIG-011"><summary>Base Figure 11 · Simple NVM Storage Hierarchy with NVM Sets</summary>
-<!-- claim:BASE12-FIG-011-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">Figure 11〈Simple NVM Storage Hierarchy with NVM Sets〉：NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 11, 文件頁 27, PDF 頁 53</p></details>
+<article class="field-note" id="figure-BASE12-FIG-011"><h4>Base Figure 11 · Simple NVM Storage Hierarchy with NVM Sets</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-011-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base11-1">Base11-1</span><span class="paragraph-text">簡單 NVM Set 階層把 namespace 與容量集合放在同一張關係圖。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 11, 文件頁 27, PDF 頁 53</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base11-2">Base11-2</span><span class="paragraph-text">沿一個 namespace 向上追所屬的 NVM Set 與 Endurance Group，就能指出容量和耐久度管理各位於哪一層。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base11-3">Base11-3</span><span class="paragraph-text">NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Storage Hierarchy</li><li>NVM Set</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-012 -->
-<details class="field-note" id="figure-BASE12-FIG-012"><summary>Base Figure 12 · Simple NVM Storage Hierarchy with One Reclaim Group</summary>
-<!-- claim:BASE12-FIG-012-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">Figure 12〈Simple NVM Storage Hierarchy with One Reclaim Group〉：Reclaim Group 與資料放置的關係圖，說明儲存資源如何分組及共享。比較單一和多個群組時，追蹤同一 namespace 能使用哪些資源，不要將圖中的每個方框當成額外增加的一份總容量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Group</dt><dd>Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 12, 文件頁 28, PDF 頁 54</p></details>
+<article class="field-note" id="figure-BASE12-FIG-012"><h4>Base Figure 12 · Simple NVM Storage Hierarchy with One Reclaim Group</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-012-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base12-1">Base12-1</span><span class="paragraph-text">一個 Reclaim Group 可以提供資料回收所使用的資源。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 12, 文件頁 28, PDF 頁 54</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base12-2">Base12-2</span><span class="paragraph-text">選一個 namespace 的資料放置位置，沿圖找所使用的回收群組；namespace 名稱與回收單位不是一對一同義詞。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base12-3">Base12-3</span><span class="paragraph-text">Reclaim Group 與資料放置的關係圖，說明儲存資源如何分組及共享。比較單一和多個群組時，追蹤同一 namespace 能使用哪些資源，不要將圖中的每個方框當成額外增加的一份總容量。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Storage Hierarchy</li><li>Reclaim Group</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-013 -->
-<details class="field-note" id="figure-BASE12-FIG-013"><summary>Base Figure 13 · Simple NVM Storage Hierarchy with Multiple Reclaim Groups</summary>
-<!-- claim:BASE12-FIG-013-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.08">05.08.</span><span class="paragraph-text">Figure 13〈Simple NVM Storage Hierarchy with Multiple Reclaim Groups〉：Reclaim Group 與資料放置的關係圖，說明儲存資源如何分組及共享。比較單一和多個群組時，追蹤同一 namespace 能使用哪些資源，不要將圖中的每個方框當成額外增加的一份總容量。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 13, 文件頁 29, PDF 頁 55</p></details>
+<article class="field-note" id="figure-BASE12-FIG-013"><h4>Base Figure 13 · Simple NVM Storage Hierarchy with Multiple Reclaim Groups</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-013-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base13-1">Base13-1</span><span class="paragraph-text">多個 Reclaim Groups 讓放置位置需要同時辨識群組。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 13, 文件頁 29, PDF 頁 55</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base13-2">Base13-2</span><span class="paragraph-text">同樣的回收單位編號放在不同群組中，不應直接當成同一個位置；沿群組與單位兩層讀圖。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Storage Hierarchy</li><li>Reclaim Group</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-014 -->
-<details class="field-note" id="figure-BASE12-FIG-014"><summary>Base Figure 14 · Complex NVM Storage Hierarchy with NVM Sets</summary>
-<!-- claim:BASE12-FIG-014-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.09">05.09.</span><span class="paragraph-text">Figure 14〈Complex NVM Storage Hierarchy with NVM Sets〉：NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 14, 文件頁 30, PDF 頁 56</p></details>
+<article class="field-note" id="figure-BASE12-FIG-014"><h4>Base Figure 14 · Complex NVM Storage Hierarchy with NVM Sets</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-014-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base14-1">Base14-1</span><span class="paragraph-text">較複雜的 NVM Set 階層展示多個容量集合如何共存。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 14, 文件頁 30, PDF 頁 56</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base14-2">Base14-2</span><span class="paragraph-text">先選定一個 Endurance Group，再比較其中的 NVM Sets；不要把圖上並列的所有集合都當成同一份可互換容量。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-011">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Storage Hierarchy</li><li>NVM Set</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-015 -->
-<details class="field-note" id="figure-BASE12-FIG-015"><summary>Base Figure 15 · Complex NVM Storage Hierarchy with Multiple Reclaim Groups</summary>
-<!-- claim:BASE12-FIG-015-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.10">05.10.</span><span class="paragraph-text">Figure 15〈Complex NVM Storage Hierarchy with Multiple Reclaim Groups〉：Reclaim Group 與資料放置的關係圖，說明儲存資源如何分組及共享。比較單一和多個群組時，追蹤同一 namespace 能使用哪些資源，不要將圖中的每個方框當成額外增加的一份總容量。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 15, 文件頁 31, PDF 頁 57</p></details>
+<article class="field-note" id="figure-BASE12-FIG-015"><h4>Base Figure 15 · Complex NVM Storage Hierarchy with Multiple Reclaim Groups</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-015-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base15-1">Base15-1</span><span class="paragraph-text">多個回收群組與其他儲存層級需要分別追蹤。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.1, Figure 15, 文件頁 31, PDF 頁 57</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base15-2">Base15-2</span><span class="paragraph-text">先從要管理的 namespace 出發，依圖追到放置與回收資源；只看方塊距離不能推論共享或包含關係。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Storage Hierarchy</li><li>Reclaim Group</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-016 -->
-<details class="field-note" id="figure-BASE12-FIG-016"><summary>Base Figure 16 · Single-Namespace NVM Subsystem</summary>
-<!-- claim:BASE12-FIG-016-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.11">05.11.</span><span class="paragraph-text">Figure 16〈Single-Namespace NVM Subsystem〉：先固定 NVM subsystem，再數其中的 controllers 和 namespaces。Namespace 是可定址的儲存物件，controller 是處理命令的對象；新增一個 namespace 並不必然新增一個 controller。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 16, 文件頁 32, PDF 頁 58</p></details>
+<article class="field-note" id="figure-BASE12-FIG-016"><h4>Base Figure 16 · Single-Namespace NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-016-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base16-1">Base16-1</span><span class="paragraph-text">單一 namespace 的例子把控制器介面與儲存空間分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 16, 文件頁 32, PDF 頁 58</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base16-2">Base16-2</span><span class="paragraph-text">主機透過控制器存取 namespace，即使兩者各只有一個，也不代表控制器就是 namespace。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base16-3">Base16-3</span><span class="paragraph-text">先固定 NVM subsystem，再數其中的 controllers 和 namespaces。Namespace 是可定址的儲存物件，controller 是處理命令的對象；新增一個 namespace 並不必然新增一個 controller。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-017 -->
-<details class="field-note" id="figure-BASE12-FIG-017"><summary>Base Figure 17 · Two-Namespace NVM Subsystem</summary>
-<!-- claim:BASE12-FIG-017-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.12">05.12.</span><span class="paragraph-text">Figure 17〈Two-Namespace NVM Subsystem〉：先固定 NVM subsystem，再數其中的 controllers 和 namespaces。Namespace 是可定址的儲存物件，controller 是處理命令的對象；新增一個 namespace 並不必然新增一個 controller。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 17, 文件頁 33, PDF 頁 59</p></details>
+<article class="field-note" id="figure-BASE12-FIG-017"><h4>Base Figure 17 · Two-Namespace NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-017-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base17-1">Base17-1</span><span class="paragraph-text">兩個 namespace 可以經由同一套裝置介面提供不同儲存空間。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 17, 文件頁 33, PDF 頁 59</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base17-2">Base17-2</span><span class="paragraph-text">主機選 NSID 1 或 2 會指向不同 namespace，不是切換同一 namespace 裡的兩個檔案。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-016">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-018 -->
-<details class="field-note" id="figure-BASE12-FIG-018"><summary>Base Figure 18 · Complex NVM Subsystem</summary>
-<!-- claim:BASE12-FIG-018-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.13">05.13.</span><span class="paragraph-text">Figure 18〈Complex NVM Subsystem〉：先固定 NVM subsystem，再數其中的 controllers 和 namespaces。Namespace 是可定址的儲存物件，controller 是處理命令的對象；新增一個 namespace 並不必然新增一個 controller。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 18, 文件頁 34, PDF 頁 60</p></details>
+<article class="field-note" id="figure-BASE12-FIG-018"><h4>Base Figure 18 · Complex NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-018-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base18-1">Base18-1</span><span class="paragraph-text">複雜 subsystem 圖用來追蹤控制器、連接埠與 namespace 的關係。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.3.3, Figure 18, 文件頁 34, PDF 頁 60</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base18-2">Base18-2</span><span class="paragraph-text">選一個 host 要用的 namespace，沿線確認可經哪些控制器到達；不是圖中每個控制器都必然連到每個 namespace。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-016">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-019 -->
-<details class="field-note" id="figure-BASE12-FIG-019"><summary>Base Figure 19 · NVM Express Controller with Two Namespaces</summary>
-<!-- claim:BASE12-FIG-019-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.14">05.14.</span><span class="paragraph-text">Figure 19〈NVM Express Controller with Two Namespaces〉：先固定 NVM subsystem，再數其中的 controllers 和 namespaces。Namespace 是可定址的儲存物件，controller 是處理命令的對象；新增一個 namespace 並不必然新增一個 controller。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 19, 文件頁 35, PDF 頁 61</p></details>
+<article class="field-note" id="figure-BASE12-FIG-019"><h4>Base Figure 19 · NVM Express Controller with Two Namespaces</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-019-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base19-1">Base19-1</span><span class="paragraph-text">同一控制器可以讓主機存取兩個 namespace。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 19, 文件頁 35, PDF 頁 61</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base19-2">Base19-2</span><span class="paragraph-text">Read 的命令機制相同，但 NSID 不同會選到不同容量與格式；不能沿用另一個 namespace 的 LBA 大小。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-016">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Namespace</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-020 -->
-<details class="field-note" id="figure-BASE12-FIG-020"><summary>Base Figure 20 · NVM Subsystem with Two Controllers and One Port</summary>
-<!-- claim:BASE12-FIG-020-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.15">05.15.</span><span class="paragraph-text">Figure 20〈NVM Subsystem with Two Controllers and One Port〉：將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 20, 文件頁 35, PDF 頁 61</p></details>
+<article class="field-note" id="figure-BASE12-FIG-020"><h4>Base Figure 20 · NVM Subsystem with Two Controllers and One Port</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-020-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base20-1">Base20-1</span><span class="paragraph-text">兩個控制器可以共用一個連接埠。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 20, 文件頁 35, PDF 頁 61</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base20-2">Base20-2</span><span class="paragraph-text">主機看到兩個控制器時，不應直接推論存在兩條實體連線；圖將介面物件數與 port 數分開。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base20-3">Base20-3</span><span class="paragraph-text">將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-021 -->
-<details class="field-note" id="figure-BASE12-FIG-021"><summary>Base Figure 21 · NVM Subsystem with Two Controllers and Two Ports</summary>
-<!-- claim:BASE12-FIG-021-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.16">05.16.</span><span class="paragraph-text">Figure 21〈NVM Subsystem with Two Controllers and Two Ports〉：將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 21, 文件頁 36, PDF 頁 62</p></details>
+<article class="field-note" id="figure-BASE12-FIG-021"><h4>Base Figure 21 · NVM Subsystem with Two Controllers and Two Ports</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-021-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base21-1">Base21-1</span><span class="paragraph-text">兩個連接埠提供與單一 port 不同的連接關係。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 21, 文件頁 36, PDF 頁 62</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base21-2">Base21-2</span><span class="paragraph-text">與 Figure 20 比較時，先保留控制器數相同，再觀察 port 由 1 變 2，理解路徑結構到底改變在哪裡。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-020">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-022 -->
-<details class="field-note" id="figure-BASE12-FIG-022"><summary>Base Figure 22 · PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</summary>
-<!-- claim:BASE12-FIG-022-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.17">05.17.</span><span class="paragraph-text">Figure 22〈PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)〉：SR-IOV 圖把 PCIe 裝置呈現的 Physical Function 與 Virtual Functions 分開。Function 是介面呈現的層次；要知道它通往哪份儲存資源，仍須沿控制器與 namespace 的關係閱讀。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 22, 文件頁 37, PDF 頁 63</p></details>
+<article class="field-note" id="figure-BASE12-FIG-022"><h4>Base Figure 22 · PCI Express Device Supporting Single Root I/O Virtualization (SR-IOV)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-022-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base22-1">Base22-1</span><span class="paragraph-text">SR-IOV 把 PCIe Function 與控制器介面對應起來。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.4.1, Figure 22, 文件頁 37, PDF 頁 63</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base22-2">Base22-2</span><span class="paragraph-text">作業系統使用不同 Function 時，仍需辨識各自的控制器與資源關係；多個 Function 不表示有多套獨立 NAND。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base22-3">Base22-3</span><span class="paragraph-text">SR-IOV 圖把 PCIe 裝置呈現的 Physical Function 與 Virtual Functions 分開。Function 是介面呈現的層次；要知道它通往哪份儲存資源，仍須沿控制器與 namespace 的關係閱讀。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SR</li><li>IOV</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-queues"><h3>圖表組 03 · 命令提交與完成的往返</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.18">05.18.</span><span class="paragraph-text">佇列圖分開標示存放命令與結果的位置，沿主機→SQ→控制器→CQ→主機閱讀。再看 SQ／CQ 的配對圖，確認完成項目中的 SQID、CID 如何指回原來的命令。</span></p>
+<details open class="figure-reading-group" id="reading-queues"><summary>圖表組 03 · 命令提交與完成的往返 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">佇列圖分開標示存放命令與結果的位置，沿主機→SQ→控制器→CQ→主機閱讀。再看 SQ／CQ 的配對圖，確認完成項目中的 SQID、CID 如何指回原來的命令。</span></p>
 <a class="reading-link" href="#module-queues">回到本節的解釋與範例</a>
 <!-- figure-table:BASE12-FIG-006 -->
-<details class="field-note" id="figure-BASE12-FIG-006"><summary>Base Figure 6 · Queue Pair Example, 1:1 Mapping</summary>
-<!-- claim:BASE12-FIG-006-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.19">05.19.</span><span class="paragraph-text">Figure 6〈Queue Pair Example, 1:1 Mapping〉：1:1 圖中每個 SQ 對應自己的 CQ；n:1 圖中多個 SQ 共用一個 CQ。沿完成項目的 SQID、CID 回到原 SQ，才能在共用 CQ 中辨認是哪一筆命令完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 6, 文件頁 22, PDF 頁 48</p></details>
+<article class="field-note" id="figure-BASE12-FIG-006"><h4>Base Figure 6 · Queue Pair Example, 1:1 Mapping</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-006-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base6-1">Base6-1</span><span class="paragraph-text">一對一佇列映射讓一個 SQ 的結果送到指定 CQ。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 6, 文件頁 22, PDF 頁 48</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base6-2">Base6-2</span><span class="paragraph-text">SQ1 送出的兩筆命令都回到 CQ1；結果出現順序仍不一定等於提交順序，需要用識別資訊配對。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base6-3">Base6-3</span><span class="paragraph-text">1:1 圖中每個 SQ 對應自己的 CQ；n:1 圖中多個 SQ 共用一個 CQ。沿完成項目的 SQID、CID 回到原 SQ，才能在共用 CQ 中辨認是哪一筆命令完成。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Queue Pair</li><li>1:1</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-007 -->
-<details class="field-note" id="figure-BASE12-FIG-007"><summary>Base Figure 7 · Queue Pair Example, n:1 Mapping</summary>
-<!-- claim:BASE12-FIG-007-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.20">05.20.</span><span class="paragraph-text">Figure 7〈Queue Pair Example, n:1 Mapping〉：1:1 圖中每個 SQ 對應自己的 CQ；n:1 圖中多個 SQ 共用一個 CQ。沿完成項目的 SQID、CID 回到原 SQ，才能在共用 CQ 中辨認是哪一筆命令完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 7, 文件頁 22, PDF 頁 48</p></details>
+<article class="field-note" id="figure-BASE12-FIG-007"><h4>Base Figure 7 · Queue Pair Example, n:1 Mapping</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-007-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base7-1">Base7-1</span><span class="paragraph-text">多個 SQ 可以把完成結果送到同一個 CQ。</span></p><details class="source-note"><summary>來源：Base 2.4 §2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §2.1, Figure 7, 文件頁 22, PDF 頁 48</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base7-2">Base7-2</span><span class="paragraph-text">SQ1 與 SQ2 的 CID 都可有值 5；共用 CQ 收到結果時，必須連同 SQID 判斷結果屬於哪一筆。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-006">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Queue Pair</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-numbers"><h3>圖表組 04 · 數值編碼與單位</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.21">05.21.</span><span class="paragraph-text">閱讀數值表時，把原始表示、實際數量及單位排成不同欄。Index 選第幾個項目；offset 表示離起點多遠。只有知道每個項目大小及起點，才能把 index 轉成 offset。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl>
+<details open class="figure-reading-group" id="reading-numbers"><summary>圖表組 04 · 數值編碼與單位 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">閱讀數值表時，把原始表示、實際數量及單位排成不同欄。Index 選第幾個項目；offset 表示離起點多遠。只有知道每個項目大小及起點，才能把 index 轉成 offset。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl>
 <a class="reading-link" href="#module-numbers">回到本節的解釋與範例</a>
 <!-- figure-table:BASE12-FIG-002 -->
-<details class="field-note" id="figure-BASE12-FIG-002"><summary>Base Figure 2 · Decimal and Binary Units</summary>
-<!-- claim:BASE12-FIG-002-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.22">05.22.</span><span class="paragraph-text">Figure 2〈Decimal and Binary Units〉：十進位與二進位容量單位先分開：1 kB=1000 bytes，1 KiB=1024 bytes。Word 為 2 bytes，Dword 為 4 bytes；它們描述資料寬度，不會替某個數量欄位決定是否需要加 1。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>word</dt><dd>word；16 bits，也就是 2 bytes。它比 Dword 小一半；欄位長度不能只看數字，還要看單位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, Figure 2, 文件頁 3, PDF 頁 29</p></details>
+<article class="field-note" id="figure-BASE12-FIG-002"><h4>Base Figure 2 · Decimal and Binary Units</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-002-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base2-1">Base2-1</span><span class="paragraph-text">十進位與二進位容量前綴使用不同倍率。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.2, Figure 2, 文件頁 3, PDF 頁 29</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base2-2">Base2-2</span><span class="paragraph-text">1 MB＝1000000 bytes，1 MiB＝1048576 bytes；數字都寫 1，容量仍不相同。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base2-3">Base2-3</span><span class="paragraph-text">十進位與二進位容量單位先分開：1 kB=1000 bytes，1 KiB=1024 bytes。Word 為 2 bytes，Dword 為 4 bytes；它們描述資料寬度，不會替某個數量欄位決定是否需要加 1。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Decimal and Binary Units</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE12-FIG-003 -->
-<details class="field-note" id="figure-BASE12-FIG-003"><summary>Base Figure 3 · Byte, Word, and Dword Relationships</summary>
-<!-- claim:BASE12-FIG-003-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.23">05.23.</span><span class="paragraph-text">Figure 3〈Byte, Word, and Dword Relationships〉：十進位與二進位容量單位先分開：1 kB=1000 bytes，1 KiB=1024 bytes。Word 為 2 bytes，Dword 為 4 bytes；它們描述資料寬度，不會替某個數量欄位決定是否需要加 1。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, 文件頁 5, PDF 頁 31</p></details>
+<article class="field-note" id="figure-BASE12-FIG-003"><h4>Base Figure 3 · Byte, Word, and Dword Relationships</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE12-FIG-003-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base3-1">Base3-1</span><span class="paragraph-text">Byte、Word、Dword 是不同大小的單位。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.3, Figure 3, 文件頁 5, PDF 頁 31</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base3-2">Base3-2</span><span class="paragraph-text">64-byte SQE 有 16 個 Dwords；CDW10 的起點在 10×4＝40 bytes，不是 byte 10。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE12-FIG-002">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Byte, Word, and Dword Relationships</li></ul></div>
 
+</details></article>
 </details>
-</div>
 <!-- claim:BASE12-KEYWORDS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.24">05.24.</span><span class="paragraph-text">規格的 mandatory、may、optional、reserved、shall、should 各有固定語氣；引用時保留英文 keyword，不能把 may 或 should 翻成 shall。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.1, 文件頁 2-3, PDF 頁 28-29</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">規格的 mandatory、may、optional、reserved、shall、should 各有固定語氣；引用時保留英文 keyword，不能把 may 或 should 翻成 shall。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.1, 文件頁 2-3, PDF 頁 28-29</p></details>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
 <!-- qa:base-ch1-2-spec-family -->

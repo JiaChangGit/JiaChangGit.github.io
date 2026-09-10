@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Base 2.4：Device Self-test：執行、進度與結果</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-selftest-command-state-machine">01 Device Self-test 的啟動與執行</a><a href="#module-selftest-observe-results">02 LID 06h 的目前進度與歷史結果</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Base 2.4：Device Self-test：執行、進度與結果</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">Device Self-test 讓控制器在背景執行內部測試。讀懂這項功能，必須分清「接受測試要求」、「正在測試」與「留下測試結果」三件事；主機收到命令成功完成，並不表示裝置已通過測試。</span></p>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>決定測試對象</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">先確認支援能力，再選擇測試種類及要納入的 namespace；控制器接受要求後，才開始背景測試。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>追蹤正在進行的作業</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">用目前作業與完成百分比回答「是否還在測試、做到哪裡」；新的命令、重設或中止要求可能影響進行中的作業。</span></p></article>
+<article><span class="axis-number">03</span><h3>判讀留下的結果</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">測試停止後，再看結果紀錄。先確認哪些欄位有效，才能解釋失敗位置與相關資訊。</span></p></article>
+</div>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">先確認控制器支援哪些測試，再選擇測試種類與 namespace，送出命令後觀察目前作業及進度，最後閱讀歷史結果與有效性標記。相同的 Get Log Page 可以在不同時間回答「做到哪裡」和「最後結果如何」，但兩者使用不同欄位。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-selftest-command-state-machine"><h2 id="heading-selftest-command-state-machine"><span class="section-number">01</span> Device Self-test 的啟動與執行</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Device Self-test 啟動的是背景測試。主機用 STC 選短測試、延伸測試或中止，用 NSID 選對象；命令完成後還需要查詢進度與結果。測試對象在開始時決定，因此不能因稍後增加了可存取 namespace，就假設它自動加入既有測試。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>STC</dt><dd>Self-test Code 是 Device Self-test CDW10 的動作 nibble；result entry 的 STC 則是 Status Code，須依 SCVLD 判斷有效。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">NSID=0、指定 namespace、所有可存取的 attached namespaces，代表不同範圍。最後的結果也需要先看結果種類，再判斷哪些附加欄位有效。失敗 segment 或 LBA 並非每筆結果都提供，不能因欄位裡有數字就直接採用。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1, 8.1.8 · Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 352-358, 614, PDF 頁 378-384, 640</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 200, PDF 頁 226</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227</p></details>
+</div>
+<!-- claim:BASESELFTEST-SELFTEST-GATE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">啟動 Device Self-test 前，先讀 Identify Controller：OACS.DSTS 判斷 command 是否支援；EDSTT 是 extended operation 在 power state 0 的名目分鐘數；DSTO.SDSO 決定同時只能有一個 subsystem-wide operation，或每個 controller 各一個。這三個欄位回答不同問題。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>OACS.DSTS</dt><dd>Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。</dd></div><div><dt>EDSTT</dt><dd>Extended Device Self-test Time，在 power state 0 下的 extended test 名目完成分鐘數。</dd></div><div><dt>DSTO</dt><dd>Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。</dd></div><div><dt>SDSO</dt><dd>Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1, 8.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.8, 文件頁 352-358, 614, PDF 頁 378-384, 640</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-NSID -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">NSID 指定 Device Self-test 要納入的 namespace。0h 表示只測試控制器；FFFFFFFFh 表示納入作業開始時、已附加且可透過該控制器存取的所有 namespace。指定單一 namespace 時，識別碼超出有效範圍會回覆 Invalid Namespace or Format；有效識別碼若尚未配置，或 namespace 未附加到收到命令的控制器，則屬 inactive，回覆 Invalid Field in Command。Host-Initiated Refresh 忽略 NSID。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199, PDF 頁 225</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-STC -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">CDW10.STC[3:0] 選動作：1h=short、2h=extended、3h=Host-Initiated Refresh、Eh=vendor specific、Fh=abort；其餘 encoding reserved。只有 STC=Eh 時 CDW15.DSTP 才是 vendor specific，其他情況 CDW15 reserved。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTP</dt><dd>Device Self-test Parameter，只有 vendor-specific STC=Eh 時才有 vendor-defined 語意的 CDW15。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 199-200, PDF 頁 225-226</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-INPROGRESS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">已有 operation 時，再送 short、extended 或 Host-Initiated Refresh 必須以 Device Self-test in Progress 中止；vendor-specific 新命令的行為仍是 vendor specific。STC=Fh 則依序中止目前 operation、建立最新 result、清除 current status，最後成功完成 command。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 200, PDF 頁 226</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-COMPLETION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">Device Self-test command 的 Admin CQE 只證明『啟動／中止動作已被處理』，不是背景測試已完成。command-specific status 1Dh 表示已有 operation in progress；software 必須把 CQE 與後續 LID 06h 分開記錄。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID 06h</dt><dd>Device Self-test Log Page 的 identifier 06h；同時包含 current operation 與 20 筆歷史結果。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227</p></details>
+<div class="table-wrap"><table><caption>Device Self-test 的啟動與執行</caption><thead><tr><th scope="col">測試對象或控制值</th><th scope="col">涵蓋的範圍或動作</th><th scope="col">執行與結果的規則</th></tr></thead><tbody><tr><td>NSID=0</td><td>只包含 controller</td><td>不測 namespace media</td></tr><tr><td>目前可存取的 NSID</td><td>指定 namespace</td><td>invalid 與 inactive status 不同</td></tr><tr><td>NSID=FFFFFFFFh</td><td>所有 attached／accessible namespaces</td><td>集合以 start 時點為準</td></tr><tr><td>STC=Fh</td><td>abort current operation</td><td>成功不代表曾有 operation</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.08">01.08.</span><span class="paragraph-text">啟動 namespace 5 的 short test：NSID=00000005h、STC=1h，因此 CDW10=00000001h、CDW15=0。若立刻再送 extended STC=2h，應預期 command-specific status 1Dh，而不是建立第二個 operation。</span></p></aside>
+<a class="reading-link" href="#reading-selftest-command-state-machine">閱讀相關規格圖表 → Device Self-test 的啟動與執行</a>
+</section>
+<section class="lesson" id="module-selftest-observe-results"><h2 id="heading-selftest-observe-results"><span class="section-number">02</span> LID 06h 的目前進度與歷史結果</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Self-test log 同時包含現在執行中的狀態與先前完成的結果。主機想知道測試是否仍在執行，先看 current operation；想知道測試通過與否，則讀歷史結果。百分比欄位只有在相應狀態下才有意義，不能把沒有測試時的數值當成進度。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">結果描述子可能記錄 segment、LBA、執行時數或相關狀態，但每項都有使用條件。FLBA 若有效，可以指出其中一個失敗位置；它不是完整的壞區清單，也不能保證沒有被列出的區塊都正常。這些限制需要在讀數值之前先理解。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FLBA</dt><dd>Failing LBA，NVM Command Set 定義為造成 self-test failure 的其中一個 logical block address。</dd></div></dl>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13 · Base 2.4 §5.2.13.1.7 · NVM Command Set 1.3 §4.1.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-216, PDF 頁 239-242</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231, PDF 頁 257</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76</p></details>
+</div>
+<!-- claim:BASESELFTEST-SELFTEST-LOG-COMMAND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">讀取 LID 06h 所需的最小 Get Log Page slice 是：LID=06h、LSP=0、RAE 依事件策略選擇、NUMD 表示 564 bytes、LPOL/LPOU=0、OT=0、CSI=0、UIDX=0。564 bytes=141 dwords，因此 0's-based NUMD=140=008Ch；RAE=0 時 CDW10=008C0006h。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>0's-based</dt><dd>0's-based encoding，以 0 表示實際數量 1；依欄位換算公式通常是欄位值加 1。</dd></div><div><dt>LPOL</dt><dd>Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。</dd></div><div><dt>LPOU</dt><dd>Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。</dd></div><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event，Get Log Page 是否保留相關 asynchronous event 的 selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, 文件頁 213-216, PDF 頁 239-242</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-CURRENT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">LID 06h 的 byte 0 以 DSTOS 表示目前 operation，byte 1 的 DSTCS[6:0] 是完成百分比；DSTOS=0 時 host 應忽略 DSTCS。controller 在 operation 完成或被中止時，必須先建立 result entry，之後才能把 in-progress status 清為 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTCS</dt><dd>Device Self-test Completion Status，LID 06h 中的 0 到 100 完成百分比。</dd></div><div><dt>DSTOS</dt><dd>Device Self-test Operation Status，LID 06h 中表示目前 operation 類型的 nibble。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-HISTORY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">LID 06h 保留 20 筆、每筆 28 bytes 的結果，RDS1 永遠是最新完成或中止的 operation。未使用 entry 必須讓 DSTR=Fh 且 DSTC=0h，其他欄位由 host 忽略；不能把全零以外的殘值當成歷史結果。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTR</dt><dd>Device Self-test Result，結果 entry 中表示成功、abort 或 segment failure 的 nibble。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-RESULT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">每筆 DSTS 的高 nibble DSTC 表示原始 self-test code，低 nibble DSTR 表示完成／中止原因。只有 DSTR=7h 時 SEGN 才指出第一個失敗 segment；其他 DSTR 下 SEGN 應忽略。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SEGN</dt><dd>Segment Number，只有 DSTR=7h 時指出第一個失敗 diagnostic segment。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231, PDF 頁 257</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-VALIDITY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">VDINFO 的 NSIDVLD、FVLD、SCTVLD、SCVLD 是四個獨立 有效性判斷。NSID、FLBA、STCT、STC 只有在對應 bit=1 時才可解讀；先驗證 validity，再讀數值，不能用非零值猜測有效。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>VDINFO</dt><dd>Valid Diagnostic Information，分別 gate NSID、FLBA、SCT 與 SC 的 validity bitmap。</dd></div><div><dt>FVLD</dt><dd>Failing LBA Valid，決定 FLBA 欄位是否可解讀的 validity bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-NVM-FLBA -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">Base 將 Figure 219 的 FLBA 留給 I/O Command Set 定義。NVM Command Set 1.3 規定 bytes 23:16 是造成失敗的 logical block address；若有多個失敗 logical blocks，只回其中一個，且僅 FVLD=1 時有效。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76</p></details>
+<div class="table-wrap"><table><caption>LID 06h 的目前進度與歷史結果</caption><thead><tr><th scope="col">進度或歷史欄位</th><th scope="col">描述什麼資訊</th><th scope="col">何時可以使用這個欄位</th></tr></thead><tbody><tr><td>DSTOS/DSTCS</td><td>current state/progress</td><td>DSTOS=0 時忽略 percentage</td></tr><tr><td>DSTR=7h + SEGN</td><td>已知第一個 failed segment</td><td>其他 DSTR 忽略 SEGN</td></tr><tr><td>FVLD + FLBA</td><td>其中一個 failing LBA</td><td>不是所有失敗 LBA 清單</td></tr><tr><td>POH + STCT/STC</td><td>failure context</td><td>仍需 validity bits</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>POH</dt><dd>Power On Hours，self-test result 建立時累積的 power-on hours，不含指定 low-power 時間。</dd></div></dl>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">完整 log 是 564 bytes=141 dwords，因此 NUMD=140=008Ch。LSP=0、RAE=0 時 CDW10=008C0006h。若 RDS1.DSTS=17h，high nibble 1h 表示 short test，low nibble 7h 表示已知 failed segment；此時才讀 SEGN。</span></p></aside>
+<a class="reading-link" href="#reading-selftest-observe-results">閱讀相關規格圖表 → LID 06h 的目前進度與歷史結果</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">03</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-selftest-command-state-machine"><summary>圖表組 01 · Device Self-test 的啟動與執行 · 8 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">命令格式先讀 NSID 與 STC，再沿狀態流程找到 LID 06h。結果布局先拆開測試種類與結果碼，再依 SEGN、FVLD 等有效性條件決定要讀哪些細節。</span></p>
+<a class="reading-link" href="#module-selftest-command-state-machine">回到本節的解釋與範例</a>
+<!-- figure-table:BASESELFTEST-FIG-176 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-176"><h4>Base Figure 176 · Device Self-test Namespace Test Action</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-176-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base176-1">Base176-1</span><span class="paragraph-text">Self-test 的 NSID 選擇測試對象，invalid 與 inactive 分別表示不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 176, 文件頁 199, PDF 頁 225</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base176-2">Base176-2</span><span class="paragraph-text">假設 NN＝8，NSID 9 無效；NSID 3 若尚未配置或未附加到此控制器，則為 inactive。0h 在此命令特別表示只測控制器，Host-Initiated Refresh 忽略 NSID。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base176-3">Base176-3</span><span class="paragraph-text">Self-test 的 NSID 選擇測試範圍，STC 選動作，DSTP 則依相應測試格式解讀。狀態流程區分啟動、已在執行及中止；啟動命令的完成不表示背景測試通過。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSID 00000000h</li><li>NSID 00000001h-FFFFFFFEh</li><li>NSID FFFFFFFFh</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-177 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-177"><h4>Base Figure 177 · Device Self-test - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-177-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base177-1">Base177-1</span><span class="paragraph-text">STC 選擇短測試、延伸測試、Refresh、廠商測試或中止。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 177, 文件頁 199, PDF 頁 225</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base177-2">Base177-2</span><span class="paragraph-text">想執行短測試填 1h，想中止正在執行的測試填 Fh；這個選擇器不是測試目前完成百分比。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-176">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>STC 1h</li><li>STC 2h</li><li>STC 3h</li><li>STC Eh</li><li>STC Fh</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-178 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-178"><h4>Base Figure 178 · Device Self-test - Command Dword 15</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-178-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base178-1">Base178-1</span><span class="paragraph-text">DSTP 只在廠商自訂 Self-test 情境提供參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 178, 文件頁 200, PDF 頁 226</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base178-2">Base178-2</span><span class="paragraph-text">STC＝Eh 時依廠商定義解釋 DSTP；短測試時不能把 DSTP 當成主機指定的測試秒數。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-176">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DSTP</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-179 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-179"><h4>Base Figure 179 · Device Self-test - Command Processing</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-179-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base179-1">Base179-1</span><span class="paragraph-text">Self-test 命令處理取決於是否已有測試在執行。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 179, 文件頁 200, PDF 頁 226</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base179-2">Base179-2</span><span class="paragraph-text">沒有測試時送 Abort 可以成功但不新增測試結果；有測試時送 Abort 則會中止並記錄結果，兩種成功有不同效果。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-176">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>self-test in progress</li><li>new STC</li><li>abort</li><li>result creation</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-180 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-180"><h4>Base Figure 180 · Device Self-test - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-180-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base180-1">Base180-1</span><span class="paragraph-text">Device Self-test in Progress 表示已有測試，新的要求未能開始。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 180, 文件頁 201, PDF 頁 227</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base180-2">Base180-2</span><span class="paragraph-text">收到此狀態後，先讀目前測試資訊；它不是新測試的通過結果，也不是說裝置的資料一定壞掉。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-176">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Device Self-test in Progress</li><li>status 1Dh</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-093 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共通 SQE 固定各命令共用欄位的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">同樣在 CDW10，Read 與管理命令可以有完全不同含義；先依 OPC 選命令，再查專屬欄位表。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-3">Base93-3</span><span class="paragraph-text">共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OPC</li><li>CID</li><li>NSID</li><li>DPTR</li><li>CDW10-CDW15</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-338 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-338"><h4>Base Figure 338 · Identify Controller Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-364, PDF 頁 366-390</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">Identify Controller 的欄位分別描述能力、限制、身分與目前資訊。依本篇主題選出需要的欄位後，再連到相應命令；支援位和大小上限必須一起用，不能以單一旗標推論所有參數都有效。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OACS.DSTS</li><li>EDSTT</li><li>DSTO.SDSO</li><li>HMPRE</li><li>HMMIN</li><li>HMMINDS</li><li>HMMAXD</li><li>CTRATT.HMBR</li><li>AVSCC.VSCF</li><li>ICSVSCC.SNVSCF</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>HMMINDS</dt><dd>Host Memory Buffer Minimum Descriptor Entry Size，每個可用 descriptor 的最低 4 KiB-unit 大小。</dd></div><div><dt>ICSVSCC</dt><dd>I/O Command Set Vendor Specific Command Configuration，回報 vendor-specific I/O command format 的 Identify field。</dd></div><div><dt>HMMAXD</dt><dd>Host Memory Maximum Descriptor Entries，controller 可使用的 descriptor entry 上限。</dd></div><div><dt>SNVSCF</dt><dd>Same NVM Vendor Specific Command Format，ICSVSCC 中表示 I/O commands 是否使用 Figure 94 的 bit。</dd></div><div><dt>AVSCC</dt><dd>Admin Vendor Specific Command Configuration，回報 vendor-specific Admin command format 的 Identify field。</dd></div><div><dt>HMMIN</dt><dd>Host Memory Buffer Minimum Size，以 4 KiB units 回報 controller 要求的最低大小。</dd></div><div><dt>HMPRE</dt><dd>Host Memory Buffer Preferred Size，以 4 KiB units 回報 controller 偏好的配置大小。</dd></div><div><dt>VSCF</dt><dd>Vendor Specific Command Format，AVSCC 中表示 Admin commands 是否使用 Figure 94 的 bit。</dd></div></dl>
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-036 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-036"><h4>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-036-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-1">Base36-1</span><span class="paragraph-text">CAP 描述控制器能力，主機設定必須落在其支援範圍。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-2">Base36-2</span><span class="paragraph-text">設定記憶體頁大小前，先比對 MPSMIN 與 MPSMAX；主機偏好的頁大小不一定就是控制器接受的大小。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-3">Base36-3</span><span class="paragraph-text">CAP 回報支援能力、大小與時間限制，主機以這些資訊選擇可用設定。讀到支援位並不表示對應功能已啟用或控制器已就緒；設定與目前狀態要再讀各自的欄位。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DSTRD</li><li>2^(2+DSTRD) bytes</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl>
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-selftest-observe-results"><summary>圖表組 02 · LID 06h 的目前進度與歷史結果 · 12 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">先分開 log 的 current header 與歷史結果描述子。DSTS 中測試種類和結果碼分開讀，再以結果種類及有效位決定 SEGN、FLBA 等欄位是否有效；NUMD 計算則使用整個所需傳輸長度。</span></p>
+<a class="reading-link" href="#module-selftest-observe-results">回到本節的解釋與範例</a>
+<!-- figure-table:BASESELFTEST-FIG-111 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-111"><h4>NVM Figure 111 · Self-test Results Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-111-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM111-1">NVM111-1</span><span class="paragraph-text">Self-test 的 FLBA 只有在有效性標記成立時才是有效故障位置。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, Figure 111, 文件頁 76, PDF 頁 76</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM111-2">NVM111-2</span><span class="paragraph-text">紀錄中即使保留一個非零 FLBA，若對應有效 bit 沒有設定，就不能據此指認那個 LBA 壞掉。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM111-3">NVM111-3</span><span class="paragraph-text">FLBA 只有 valid bit=1 時可用；多個失敗 blocks 時只需回一個，與 Error Information 的最低 LBA 定義不同。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FLBA</li><li>bytes 23:16</li><li>FVLD</li><li>one failed logical block</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-218 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-218"><h4>Base Figure 218 · Device Self-test Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-218-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base218-1">Base218-1</span><span class="paragraph-text">Self-test log 同時保存目前作業狀態與歷史結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, Figure 218, 文件頁 230, PDF 頁 256</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base218-2">Base218-2</span><span class="paragraph-text">目前進度 50% 表示正在執行的測試；最前面的歷史結果可能屬於前一次已結束測試，兩者不要混成同一次結果。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base218-3">Base218-3</span><span class="paragraph-text">Self-test log 把 current operation 與最多 20 筆歷史結果分開。歷史項目先讀測試種類和結果碼，再按有效位讀 NSID、FLBA 或狀態；有數值不代表欄位有效。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DSTOS</li><li>DSTCS</li><li>RDS1</li><li>RDS20</li><li>564 bytes</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-219 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-219"><h4>Base Figure 219 · Self-test Result Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-219-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base219-1">Base219-1</span><span class="paragraph-text">Self-test Result 的有效標記決定哪些失敗欄位可以解讀。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, Figure 219, 文件頁 231-232, PDF 頁 257-258</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base219-2">Base219-2</span><span class="paragraph-text">先看 VDINFO，再決定 NSID、FLBA 或狀態欄位是否有效；欄位有非零內容不代表它在這次結果中有效。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-218">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DSTC</li><li>DSTR</li><li>SEGN</li><li>VDINFO</li><li>POH</li><li>NSID</li><li>FLBA</li><li>STCT</li><li>STC</li><li>VS</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-700 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-700"><h4>Base Figure 700 · Example Device Self-test Operation (Informative)</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-700-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base700-1">Base700-1</span><span class="paragraph-text">Self-test 範例示意分段測試與失敗判斷的關係。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.8, Figure 700, 文件頁 615, PDF 頁 641</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base700-2">Base700-2</span><span class="paragraph-text">沿某一 segment 看測試內容與失敗條件，再看結果如何記錄；此圖是說明性例子，不要求每家控制器都用相同內部測試順序。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base700-3">Base700-3</span><span class="paragraph-text">自我測試操作圖是說明性例子，不能將它的每個 segment 當成裝置必須採用的實作。Format NVM 是否中止測試，則要把 Format 的對象、設定與目前測試範圍一起比較。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>segment</li><li>test performed</li><li>failure criteria</li><li>informative</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-701 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-701"><h4>Base Figure 701 · Format NVM command Aborting a Device Self-Test Operation</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-701-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base701-1">Base701-1</span><span class="paragraph-text">Format NVM 是否中止 Self-test 取決於作用範圍與格式化條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.8.1-8.1.8.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.8.1-8.1.8.2, Figure 701, 文件頁 616, PDF 頁 642</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base701-2">Base701-2</span><span class="paragraph-text">格式化另一個不在測試範圍內的 namespace，不能只憑「有 Format 命令」就推論測試必須中止；按 NSID、SES 等條件交叉查表。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-700">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SES</li><li>FNS</li><li>SENS</li><li>Format NSID</li><li>Self-test NSID</li><li>abort decision</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-203 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-203"><h4>Base Figure 203 · Get Log Page - Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-203-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-1">Base203-1</span><span class="paragraph-text">Get Log Page 的 DPTR 指向主機接收 log 資料的空間。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-2">Base203-2</span><span class="paragraph-text">同樣是 512-byte buffer，LID 不同會得到不同結構；DPTR 只提供位置，不會決定 log 類型。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-3">Base203-3</span><span class="paragraph-text">Get Log Page 先由 LID 選資料，再以 NUMDU／NUMDL 描述傳輸長度、LPOU／LPOL 描述位移，RAE 控制事件保留。LSI、CSI、UIDX 的意義由所選 log 決定，不能直接沿用其他 log 的選擇值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDL</dt><dd>Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。</dd></div><div><dt>NUMDU</dt><dd>Number of Dwords Upper，Get Log Page 的 NUMD 高 16 bits。</dd></div><div><dt>LSI</dt><dd>Log Specific Identifier，意義由所選 log page 定義的 identifier。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-204 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-204"><h4>Base Figure 204 · Get Log Page - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-204-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-1">Base204-1</span><span class="paragraph-text">Get Log Page 的 CDW10 選擇 log、低位長度及相關控制參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-2">Base204-2</span><span class="paragraph-text">讀取 512 bytes 共 128 Dwords，長度原始值為 127；同時填正確 LID，才能知道回來的是哪一份紀錄。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-203">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMDL</li><li>RAE</li><li>LSP</li><li>LID 06h</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-205 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-205"><h4>Base Figure 205 · Get Log Page - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-205-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-1">Base205-1</span><span class="paragraph-text">CDW11 提供長度高位與 log 特定識別資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">NUMDU 非零時總長度需與 NUMDL 合併後再加 1；不能把兩個長度欄位各加 1 再相加。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-203">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LSI</li><li>NUMDU</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-206 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-206-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-203">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOL</li><li>OT</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-207 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-207"><h4>Base Figure 207 · Get Log Page - Command Dword 13</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-207-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 補齊較大 log offset 的高 32 bits。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-2">Base207-2</span><span class="paragraph-text">完整 offset＝00000001_00000000h 時，LPOU＝1、LPOL＝0；只讀 LPOL 會誤以為從開頭開始。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-203">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOU</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-208 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-208"><h4>Base Figure 208 · Get Log Page - Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-208-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-2">Base208-2</span><span class="paragraph-text">相同 LPOL＝4，在 byte-offset 與 index-offset 下表示不同事物；先看 OT 才能正確解讀位置。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-203">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSI</li><li>OT</li><li>UIDX</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESELFTEST-FIG-209 -->
+<article class="field-note" id="figure-BASESELFTEST-FIG-209"><h4>Base Figure 209 · Get Log Page - Log Page Identifiers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-209-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-1">Base209-1</span><span class="paragraph-text">LID 清單把紀錄編號與其命令集、範圍連在一起。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-2">Base209-2</span><span class="paragraph-text">先依本篇所需的紀錄選取清單中的對應列，再看 CSI 與作用範圍；編號只選紀錄種類，完整欄位排列仍到該 log 的結構表閱讀。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASESELFTEST-FIG-203">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID 06h</li><li>CSI = N</li><li>Controller / Domain / NVM subsystem</li><li>Device Self-test</li><li>§5.2.13.1.7</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div></dl>
+</details></article>
+</details>
+<!-- claim:BASESELFTEST-SELFTEST-BACKGROUND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">Device Self-test 是由 vendor-specific segments 組成的背景工作。若另一個 command 必須暫停測試才能處理，controller 必須（shall）依序 suspend self-test、處理並完成該 command、再 resume self-test；同時可處理哪些 command 則由 vendor 決定。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.8, 文件頁 614, PDF 頁 640</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-TIMING -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">short operation 應（should）在兩分鐘內完成，且 Controller Level Reset 會中止；extended operation 應在 EDSTT 內完成，必須跨 Controller Level Reset 與 power restoration 持續並於之後 resume。兩者不能共用同一套 reset 預期。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.8.1-8.1.8.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.8.1-8.1.8.2, 文件頁 615-616, PDF 頁 641-642</p></details>
+<!-- claim:BASESELFTEST-SELFTEST-ABORTS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">short 與 extended 都會被適用的 Format NVM、sanitize start 或 STC=Fh 中止，namespace 從 inventory 移除時則可能（may）中止。Figure 701 顯示 Format 的 NSID 與 secure-erase 選項會改變是否必須中止，不能只看 opcode。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.8.1-8.1.8.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.8.1-8.1.8.2, 文件頁 615-616, PDF 頁 641-642</p></details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:base-device-self-test-1 -->
+<details class="review-question" id="qa-base-device-self-test-1"><summary>1. Device Self-test 啟動命令成功後，如何知道測試是否還在執行？</summary>
+<div data-qa-answer="base-device-self-test-1"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">啟動 completion 不包含整個測試的最終結果。Device Self-test log 的 current operation 與 completion percentage 描述目前進度；結果紀錄則用於已結束的測試。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 文件頁 201, PDF 頁 227</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 229-230, PDF 頁 255-256</p>
+</details></details>
+<!-- qa:base-device-self-test-2 -->
+<details class="review-question" id="qa-base-device-self-test-2"><summary>2. Self-test result 中 FLBA 看起來是合理地址，就一定可以當作失敗位置嗎？</summary>
+<div data-qa-answer="base-device-self-test-2"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">要先檢查對應的 validity bit；未宣告有效時不能依數值推論。即使有效，也可能只描述多個失敗 logical blocks 中的一個，並非完整範圍。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, 文件頁 231-232, PDF 頁 257-258</p>
+<p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.3, 文件頁 76, PDF 頁 76</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p><p>NVM Express NVM Command Set Specification, Revision 1.3</p></details></footer></main></div></body></html>

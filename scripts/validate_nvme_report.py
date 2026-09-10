@@ -54,8 +54,10 @@ def forbidden_published(text: str, report_id: str, background_entries=()):
     # full-command-set scope includes it; its NQN field remains excluded.
     if report_id == 'nvm-command-set-1.3':
         text = re.sub(r'\bExported\s+NVM\s+Subsystem\b', '', text, flags=re.I)
-    # Formerly excluded terminology is allowed when a source-backed, report-specific
-    # prerequisite names the teaching need. This does not expand Figure allowlists.
+    # The September 11 scope excludes Fabrics even from prerequisite material.
+    hard_exclusion = re.search(r'NVMe\s+over\s+Fabrics|\bFabrics?\b|message-based|\bDiscovery\b|\bNQN\b|\bcapsules?\b',text,re.I)
+    if hard_exclusion:
+        return hard_exclusion
     for entry in background_entries:
         if (entry.get("status") == "PREREQUISITE_ONLY"
                 and entry.get("report_id") == report_id
@@ -263,6 +265,29 @@ def figure_table_ids(text: str) -> set[str]:
     return set(FIGURE_TABLE_MARKER.findall(text))
 
 
+def validate_figure_teaching(text, figures):
+    """Require actual per-figure teaching, not only IDs or a copied group note."""
+    from scripts.nvme_figure_lessons import lesson
+    errors=[]
+    takeaways=[]
+    examples=[]
+    for f in figures:
+        block=re.search(r'<article class="field-note" id="figure-'+re.escape(f['id'])+r'">(.*?)</article>',text,re.S)
+        if not block:
+            errors.append(f'{f["id"]} 缺少獨立圖表教學'); continue
+        visible=normalized_text(reader_text(block.group(1)))
+        teaching=lesson(f)
+        for field,label in [('takeaway','一句話重點'),('example','用例子讀懂')]:
+            if label not in block.group(1) or normalized_text(teaching[field]) not in visible:
+                errors.append(f'{f["id"]} 缺少完整{label}')
+        if 'class="figure-detail"' not in block.group(1):
+            errors.append(f'{f["id"]} 缺少欄位與條件細節')
+        takeaways.append(teaching['takeaway']); examples.append(teaching['example'])
+    if len(takeaways)!=len(set(takeaways)) or len(examples)!=len(set(examples)):
+        errors.append('不同圖表重複使用同一重點或案例')
+    return errors
+
+
 def validate_setup(source_dir: Path | None) -> list[str]:
     errors: list[str] = []
     source_register = load_json("source-register.json")
@@ -314,19 +339,19 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 30 or formats.count("html") != 10 or formats.count("markdown") != 20:
-        errors.append("輸出契約必須固定為 10 份 HTML 與 20 份 Markdown")
+    if len(artifacts) != 39 or formats.count("html") != 13 or formats.count("markdown") != 26:
+        errors.append("輸出契約必須為 13 份 HTML 與 26 份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 10 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的十份報告")
+    if len(report_ids) != 13 or artifact_report_ids != report_ids:
+        errors.append("輸出契約必須完整對應 scope.json 的 13 份報告")
     for report_id in report_ids:
         editions = [item for item in artifacts if item.get("report_id") == report_id]
         if {(item.get("format"), item.get("language")) for item in editions} != {
                 ("html", "zh-Hant-TW"), ("markdown", "zh-Hant-TW"), ("markdown", "en")}:
             errors.append(f"{report_id} 必須恰有中文 HTML 及中英文 post")
-        if any(item.get("claim_coverage") != "all" for item in editions):
-            errors.append(f"{report_id} 的 3 版都必須涵蓋全部核准 claim")
+        if any(item.get("claim_coverage") != ('all' if item['format']=='html' else 'overview') for item in editions):
+            errors.append(f"{report_id} 須提供完整 HTML 教學與中英文全局報告")
     for entry in scope.get("entries", []):
         if entry.get("status") == "PREREQUISITE_ONLY":
             for field in ("report_id", "sections", "teaching_necessity", "supports_topic"):
@@ -503,6 +528,8 @@ def validate_publish() -> list[str]:
                 f"missing={sorted(expected_figure_ids - figure_markers)}, "
                 f"extra={sorted(figure_markers - expected_figure_ids)}"
             )
+        if artifact['format']=='html':
+            errors.extend(f'{artifact["path"]}：{e}' for e in validate_figure_teaching(text,expected_figures))
         source_markers = contract.get("source_markers", {})
         for source_id in artifact.get("required_source_ids", []):
             marker = source_markers.get(source_id)

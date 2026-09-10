@@ -45,8 +45,8 @@ def definition(term, report_id, language, fallback):
         except ModuleNotFoundError:
             from nvme_nvmcs_figures import TERMS as nvm_terms
         return nvm_terms[term][language] if term in nvm_terms else fallback(term, language)
-    if report_id == "base-boot-telemetry-sanitize" and term in TERMS:
+    if report_id in {"base-boot-telemetry-sanitize","base-boot-partitions","base-telemetry","base-sanitize"} and term in TERMS:
         return TERMS[term][language]
-    if report_id == "base-self-test-namespace-management" and term == "SEL":
+    if report_id in {"base-self-test-namespace-management","base-namespace-management"} and term == "SEL":
         return b("Select；Namespace Management 的 create/delete/restore selector，與 Get Features 的 SEL 不同。", "Select; the Namespace Management create/delete/restore selector, distinct from Get Features SEL.")[language]
     return fallback(term, language)

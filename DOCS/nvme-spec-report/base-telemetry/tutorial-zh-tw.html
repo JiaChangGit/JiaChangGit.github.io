@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Base 2.4：Telemetry：資料收集與一致性讀取</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-telemetry-layout">01 資料區如何排列與計算大小</a><a href="#module-telemetry-capture">02 建立快照、分段讀取與確認完成</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Base 2.4：Telemetry：資料收集與一致性讀取</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">Telemetry 把裝置收集的內部狀態整理成主機可讀取的紀錄。這篇的重點是取得一份完整且一致的資料：誰建立紀錄、各資料區有多大，以及分段讀取期間紀錄是否已經換成另一份。</span></p>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>先確認誰建立紀錄</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">主機發起與控制器發起的紀錄有不同建立方式；先分清來源，才能正確選擇讀取與確認完成的做法。</span></p></article>
+<article><span class="axis-number">02</span><h3>從表頭找出資料範圍</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">先讀表頭，再用資料區邊界決定要讀哪些區段；標準定義位置，廠商資料格式決定如何理解內容。</span></p></article>
+<article><span class="axis-number">03</span><h3>確保分段讀到同一份紀錄</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">資料可能分多次取回；要檢查紀錄識別與變更資訊，避免把不同時間的內容拼成一份。</span></p></article>
+</div>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">先分清主機發起與控制器發起的紀錄，再從 header 得知資料區範圍。讀取多個區段時，要保留同一份紀錄的識別資訊，並依該類紀錄的規則確認讀取完成；資料區位置可由標準解釋，廠商自訂內容則需要相應格式資料。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-telemetry-layout"><h2 id="heading-telemetry-layout"><span class="section-number">01</span> 資料區如何排列與計算大小</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Telemetry 把裝置收集的狀態資料放在可讀取的 log 中。Block 0 是 header，後面的資料以 512-byte block 編號。每個 Data Area 的 Last Block 是最後一個編號，不是額外增加的長度；因此 Area 2、Area 3 的範圍包含前面較小 Area 的內容。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">如果 Area 1 到 block 65、Area 2 到 block 1000，Area 2 的資料量是 1000×512 bytes，不是 (65+1000)×512。要連 header 一起讀，再加 512 bytes。兩個 Area 的 Last Block 相同，表示後一個 Area 沒有增加範圍，而不是兩份不同位置的等長資料。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.13.1.8-5.2.13.1.9 · Base 2.4 §8.1.30; 5.2.30.1.15 · Base 2.4 §5.2.13.1.8-5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.13.1.8-5.2.13.1.9, 文件頁 232-237,733-737, PDF 頁 258-263,759-763</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.30.1.15, 文件頁 476,733-734, PDF 頁 502,759-760</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8-5.2.13.1.9, 文件頁 232-237, PDF 頁 258-263</p></details>
+</div>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 260" role="img"><title>Telemetry Data Areas 是累積範圍</title><desc>Header 位於 block 0。每個 Data Area 都從 block 1 開始，較大的 Area 包含較小 Area 的資料。</desc><rect x="20" y="20" width="155" height="210" rx="6" class="v-command"/><text x="97.5" y="118.5" text-anchor="middle" font-size="17">Header</text><text x="97.5" y="143.5" text-anchor="middle" font-size="17">Block 0</text><rect x="205" y="20" width="160" height="55" rx="6" class="v-object"/><text x="285.0" y="53.5" text-anchor="middle" font-size="17">Area 1</text><rect x="205" y="95" width="325" height="55" rx="6" class="v-decision"/><text x="367.5" y="128.5" text-anchor="middle" font-size="17">Area 2</text><rect x="205" y="170" width="535" height="55" rx="6" class="v-success"/><text x="472.5" y="203.5" text-anchor="middle" font-size="17">Area 3</text></svg></div><figcaption>Header 位於 block 0。每個 Data Area 都從 block 1 開始，較大的 Area 包含較小 Area 的資料。</figcaption></figure>
+
+<!-- claim:BASETELEMETRY-TEL-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Telemetry 的 header 為 block 0，每個 block 是 512 bytes；所有 Data Areas 都從 block 1 起算。Area 2/3/4 是更大的累積集合，不是接在 Area 1 後的獨立區塊。Last Block 是包含在內的最後 block 編號；payload 格式與大小由廠商定義。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.13.1.8-5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.13.1.8-5.2.13.1.9, 文件頁 232-237,733-737, PDF 頁 258-263,759-763</p></details>
+<!-- claim:BASETELEMETRY-TEL-DA4 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Controller 以 LPA.TS 宣告 Telemetry 支援，以 LPA.DA4S 宣告 Area 4；Host 以 FID 16h Host Behavior Support 的 ETDAS=1 宣告支援。DA4S 與 ETDAS 一起決定 Area 4 是否適用；建立 Area 4 時也須建立有資料的 Area 3。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ETDAS</dt><dd>Extended Telemetry Data Area 4 Supported；Host Behavior Support 中由 host 宣告 Area 4 支援。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.30.1.15</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.30.1.15, 文件頁 476,733-734, PDF 頁 502,759-760</p></details>
+<!-- claim:BASETELEMETRY-TEL-ALIGN -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">讀取 LID 07h/08h 時，offset 與 transfer length 必須是 512 bytes 的倍數，否則回報 Invalid Field in Command。Controller 回傳被要求的 blocks，但超過適用最後 Data Area 邊界的資料不具規格定義的內容。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8-5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8-5.2.13.1.9, 文件頁 232-237, PDF 頁 258-263</p></details>
+<div class="table-wrap"><table><caption>資料區如何排列與計算大小</caption><thead><tr><th scope="col">資料區域</th><th scope="col">包含哪些 blocks</th><th scope="col">Last Block 數值的限制</th></tr></thead><tbody><tr><td>Area 1</td><td>1 到 L1</td><td>L1=0 表示沒有資料</td></tr><tr><td>Area 2</td><td>1 到 L2</td><td>L2 &gt;= L1</td></tr><tr><td>Area 3</td><td>1 到 L3</td><td>L3 &gt;= L2</td></tr><tr><td>Area 4</td><td>1 到 L4</td><td>支援條件另行檢查</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">Last Blocks=65/1000/30000 時，Area 3 payload 為 30000×512=15360000 bytes；包含 header 的 log 為 15360512 bytes。0/1000/1000 則表示 Area 1 空、Area 3 沒有超出 Area 2 的新增內容。</span></p></aside>
+<a class="reading-link" href="#reading-telemetry-layout">閱讀相關規格圖表 → 資料區如何排列與計算大小</a>
+</section>
+<section class="lesson" id="module-telemetry-capture"><h2 id="heading-telemetry-capture"><span class="section-number">02</span> 建立快照、分段讀取與確認完成</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">一份 Telemetry 資料可能比單次傳輸大，需要分成多段讀取。主機真正需要的是同一份快照的各段資料，而不是不同時間各取一段再拼在一起。因此要先區分建立新快照與讀取既有快照，並用 generation 等欄位確認資料版本。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">例如讀第一段時 generation 是 2Ah，最後再讀 header 已變成 2Bh，就不能把前後資料當成同一次收集。RAE 可以保留事件，但不代表其他讀取者不存在，也不等於替這份資料上鎖。Host-Initiated 與 Controller-Initiated 兩條流程的確認條件，需要各自閱讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RAE</dt><dd>Retain Asynchronous Event；Telemetry 收集中用 1 保留通知狀態，完成後用 0 acknowledgement。</dd></div></dl>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8 · Base 2.4 §8.1.30 · Base 2.4 §5.2.13.1.9 · Base 2.4 §5.2.13.1.8-5.2.13.1.9 · Base 2.4 §8.1.30; 5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, 文件頁 232-235, PDF 頁 258-261</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30, 文件頁 734-735, PDF 頁 760-761</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, 文件頁 237, PDF 頁 263</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8-5.2.13.1.9, 文件頁 233,235,237, PDF 頁 259,261,263</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.30.1.6, 文件頁 734-735,466-468, PDF 頁 760-761,492-494</p></details>
+</div>
+<figure><figcaption><strong>讓分段讀取對應同一份資料</strong></figcaption><ol class="flow-steps"><li>讀取 header，記下 generation number。</li><li>依資料範圍分段讀取，沿用同一份快照。</li><li>再次讀取 header，比較 generation number。</li><li>兩次 generation 相符後，才把分段內容視為同一份資料。</li></ol><figcaption>Generation number 用來辨識資料版本；建立新快照與讀取既有快照是不同動作。</figcaption></figure>
+
+<!-- claim:BASETELEMETRY-TEL-CREATE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">LID 07h 的 CTHID 是 CDW10 bit 8；設為 1 要求新 capture，0 不更新該 snapshot。MCDA 是 bits 11:9，只有 MCDAS=1 且 CTHID=1 時適用；001b 至 100b 分別要求建立至 Area 1 至 Area 4，000b 由 controller 決定。MCDAS 來自 Supported Log Pages 的 LID Specific Parameter。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>CTHID</dt><dd>Create Telemetry Host-Initiated Data；07h 的 capture 要求，後續分段讀同一快照要清為 0。</dd></div><div><dt>MCDAS</dt><dd>Maximum Created Data Area Supported；07h 的 LID Specific Parameter bit 0，宣告 MCDA 支援。</dd></div><div><dt>MCDA</dt><dd>Maximum Created Data Area；支援且要求 capture 時選擇建立的最大 area。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, 文件頁 232-235, PDF 頁 258-261</p></details>
+<!-- claim:BASETELEMETRY-TEL-CONSISTENCY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">Host 讀 header 記住 generation，以 RAE=1 分段收集，再重讀 header 比對 generation；不同就重新讀取。讀 08h 還需確認 TCDA 未被其他讀取者清除；完成後用 RAE=0 讀任一部分來 acknowledgement。Generation 是 8-bit，FFh 後回到 0h。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TCDA</dt><dd>Telemetry Controller-Initiated Data Available；2.4 中表示自上次 RAE=0 acknowledgement 後是否有更新。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30, 文件頁 734-735, PDF 頁 760-761</p></details>
+<!-- claim:BASETELEMETRY-TEL-TCDA -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">Base 2.4 的 TCDA=0 表示自上次成功 RAE=0 讀取後沒有更新。第一次 capture 前 header 可讀；capture 過後，即使 TCDA=0，仍回傳 header 與目前保存的 internal state。不能把舊版『0 表示只有 header』的解讀沿用至 2.4。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, 文件頁 237, PDF 頁 263</p></details>
+<!-- claim:BASETELEMETRY-TEL-PERSIST -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">07h 的 snapshot 不變，直到新的 CTHID=1、Firmware Commit 或 power-on reset。08h Areas 1–3 跨所有 resets 保留，Area 4 可跨 Controller Level Resets 保留；08h 的 TCDA、TCDGN 跨 power cycles 與 resets 保留。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TCDGN</dt><dd>Telemetry Controller-Initiated Data Generation Number；8-bit generation，完成更新最後才遞增。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8-5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8-5.2.13.1.9, 文件頁 233,235,237, PDF 頁 259,261,263</p></details>
+<!-- claim:BASETELEMETRY-TEL-EVENT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">Host 以 FID 0Bh 的 TLN bit 10 啟用 Telemetry Log Notices；controller 以 Notice 類型的 Telemetry Log Changed AER 通知，也可由 07h/08h 的 TCDA 得知資料更新。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AER</dt><dd>Advanced Error Reporting，PCIe 用來分類、遮罩與記錄 link／transaction error 的 capability。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.30; 5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.30.1.6, 文件頁 734-735,466-468, PDF 頁 760-761,492-494</p></details>
+<div class="table-wrap"><table><caption>建立快照、分段讀取與確認完成</caption><thead><tr><th scope="col">快照控制欄位</th><th scope="col">執行或回報的動作</th><th scope="col">分段讀取時須注意什麼</th></tr></thead><tbody><tr><td>CTHID=1</td><td>觸發新 07h capture</td><td>後續分段讀不要再次 create</td></tr><tr><td>MCDA</td><td>限制建立到哪個 area</td><td>先看 MCDAS</td></tr><tr><td>RAE=1</td><td>保留事件</td><td>不保證沒有其他 reader</td></tr><tr><td>TCDA=0</td><td>上次 acknowledgement 後未更新</td><td>2.4 不等於 payload 消失</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">讀取前 generation=2Ah，讀完變成 2Bh，這批 blocks 不能當成同一 capture 的一致資料。若值保持 2Ah 但 TCDA 被其他 host 清成 0，08h 收集仍需依流程檢查該競態。</span></p></aside>
+<a class="reading-link" href="#reading-telemetry-capture">閱讀相關規格圖表 → 建立快照、分段讀取與確認完成</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">03</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-telemetry-layout"><summary>圖表組 01 · 資料區如何排列與計算大小 · 12 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">把 header 放在 block 0，再讓各 Area 的長條都從 block 1 開始。比較終點而不累加長條；計算新增部分時才使用兩個 Last Block 的差。Area 4 的存在還需查對應支援能力。</span></p>
+<a class="reading-link" href="#module-telemetry-layout">回到本節的解釋與範例</a>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-221 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-221"><h4>Base Figure 221 · Telemetry Host-Initiated Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-221-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base221-1">Base221-1</span><span class="paragraph-text">Host-Initiated Telemetry header 給出各資料區終點與紀錄版本。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, 文件頁 234-235, PDF 頁 260-261</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base221-2">Base221-2</span><span class="paragraph-text">讀完第一段後若 generation 資訊改變，就要重新確認是否仍為同一份紀錄，不能僅按 byte offset 繼續串接。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base221-3">Base221-3</span><span class="paragraph-text">07h 的 Last Blocks 在 bytes 8–19，THS 在 380、THDGN 在 381、TCDA/TCDGN 在 382/383；RID 在 384–511。先讀 header，再按累積 area 大小讀 payload。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>THDGN</dt><dd>Telemetry Host-Initiated Data Generation Number；用來比對分段讀取是否仍屬同一快照。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>THDA1LB</li><li>THDA2LB</li><li>THDA3LB</li><li>THDA4LB</li><li>THS</li><li>THDGN</li><li>TCDA</li><li>TCDGN</li><li>RID</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-223 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-223"><h4>Base Figure 223 · Telemetry Controller-Initiated Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-223-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base223-1">Base223-1</span><span class="paragraph-text">Controller-Initiated Telemetry 由控制器建立並回報可讀取狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, Figure 223, 文件頁 236-237, PDF 頁 262-263</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base223-2">Base223-2</span><span class="paragraph-text">TCDA 表示有相應資料可供取得時，主機還要依 TCDGN 等資訊讀完同一份紀錄並遵守確認規則。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base223-3">Base223-3</span><span class="paragraph-text">08h 的 TCS 在 byte 381；TCDA/TCDGN 位於 382/383。TCDGN 在資料更新最後才增加，讀完重讀 header 比對；TCDA=0 採 2.4 的 acknowledgement 後未更新語義。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TCDA1LB</li><li>TCDA2LB</li><li>TCDA3LB</li><li>TCDA4LB</li><li>TCS</li><li>TCDA</li><li>TCDGN</li><li>RID</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-780 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-780"><h4>Base Figure 780 · Telemetry Log Example - All Data Areas Populated</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-780-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base780-1">Base780-1</span><span class="paragraph-text">Telemetry 各資料區終點以 Last Block 描述，可由相鄰終點相減得大小。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30, Figure 780, 文件頁 736, PDF 頁 762</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base780-2">Base780-2</span><span class="paragraph-text">DA1 最後 block＝65、DA2＝1000 時，DA2 有 1000−65＝935 blocks，即 478720 bytes；不用再加一次 header。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base780-3">Base780-3</span><span class="paragraph-text">65/1000/30000 的三個 areas 共享前綴；Area 3 包含 Area 1 與 2，不把長度相加。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Last Block 65</li><li>Last Block 1000</li><li>Last Block 30000</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-781 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-781"><h4>Base Figure 781 · Telemetry Log Example - Data Area 2 Populated</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-781-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base781-1">Base781-1</span><span class="paragraph-text">未填入的資料區可由相同或零的終點表示。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30, Figure 781, 文件頁 737, PDF 頁 763</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base781-2">Base781-2</span><span class="paragraph-text">DA1 終點為 0、DA2 為 1000 時，資料區 2 從 header 後開始，占 1000×512＝512000 bytes；不能憑「第二區」就假設前面一定有第一區資料。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base781-3">Base781-3</span><span class="paragraph-text">0/1000/1000 表示 Area 1 空、Area 2 有資料、Area 3 無新增資料；Area 3 的視圖仍涵蓋與 Area 2 相同的 blocks。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Last Block 0</li><li>Last Block 1000</li><li>Equal Endpoints</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-338 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-338"><h4>Base Figure 338 · Identify - Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPCAP</dt><dd>Boot Partition Capabilities；辨識 Set Features 與 RPMB 保護機制的支援組合。</dd></div><div><dt>MDS</dt><dd>Multiple Domain Subsystem，指出 NVM subsystem 是否包含多個 domains 的能力 bit。</dd></div><div><dt>NDI</dt><dd>No-Deallocate Inhibited；宣告 controller 是否抑制 NDAS 的要求。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPCAP</li><li>LPA</li><li>SANICAP</li><li>CTRATT</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-491 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-491"><h4>Base Figure 491 · Host Behavior Support - Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-491-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base491-1">Base491-1</span><span class="paragraph-text">Host Behavior Support 告知控制器主機能處理哪些延伸行為。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.15</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.15, Figure 491, 文件頁 476-477, PDF 頁 502-503</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base491-2">Base491-2</span><span class="paragraph-text">裝置支援某功能與主機宣告已能使用它不同；先確認能力，再看主機是否按對應欄位啟用相容行為。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base491-3">Base491-3</span><span class="paragraph-text">Host Behavior Support byte 1 的 ETDAS=1 表示 host 支援 Area 4；仍需 controller 的 DA4S。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ETDAS</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-203 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-203"><h4>Base Figure 203 · Get Log Page - Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-203-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-1">Base203-1</span><span class="paragraph-text">Get Log Page 的 DPTR 指向主機接收 log 資料的空間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-2">Base203-2</span><span class="paragraph-text">同樣是 512-byte buffer，LID 不同會得到不同結構；DPTR 只提供位置，不會決定 log 類型。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-3">Base203-3</span><span class="paragraph-text">Get Log Page 的 data pointer 指向接收 buffer；buffer 必須容納 encoded NUMD 所要求的資料。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-205 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-205"><h4>Base Figure 205 · Get Log Page - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-205-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-1">Base205-1</span><span class="paragraph-text">CDW11 提供長度高位與 log 特定識別資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">NUMDU 非零時總長度需與 NUMDL 合併後再加 1；不能把兩個長度欄位各加 1 再相加。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDL</dt><dd>Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。</dd></div><div><dt>NUMDU</dt><dd>Number of Dwords Upper，Get Log Page 的 NUMD 高 16 bits。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-3">Base205-3</span><span class="paragraph-text">NUMDU 與 NUMDL 組成 zero-based dword count；LSI 是另一個 log-specific selector，不是 LSP。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>zero-based</dt><dd>zero-based；數值從 0 開始計算，因此 raw=3 代表第 4 個項目或 4 個單位，實際含義仍要看欄位定義。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>LSI</dt><dd>Log Specific Identifier，意義由所選 log page 定義的 identifier。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMDU</li><li>LSI</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-206 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-206-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LPOL</dt><dd>Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-3">Base206-3</span><span class="paragraph-text">LPO 低 32 bits 位於 CDW12；Telemetry byte offset 必須以 512-byte blocks 對齊。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOL</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-207 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-207"><h4>Base Figure 207 · Get Log Page - Command Dword 13</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-207-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 補齊較大 log offset 的高 32 bits。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LPOU</dt><dd>Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-2">Base207-2</span><span class="paragraph-text">完整 offset＝00000001_00000000h 時，LPOU＝1、LPOL＝0；只讀 LPOL 會誤以為從開頭開始。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-3">Base207-3</span><span class="paragraph-text">LPO 高 32 bits 位於 CDW13；不可先截斷為 32-bit 再計算大型 log 的 offset。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOU</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-208 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-208"><h4>Base Figure 208 · Get Log Page - Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-208-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-2">Base208-2</span><span class="paragraph-text">相同 LPOL＝4，在 byte-offset 與 index-offset 下表示不同事物；先看 OT 才能正確解讀位置。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-3">Base208-3</span><span class="paragraph-text">CDW14 的 CSI/OT/UUID Index 是共用依欄位換算上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSI</li><li>OT</li><li>UUID Index</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-209 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-209"><h4>Base Figure 209 · Get Log Page - Log Page Identifiers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-209-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-1">Base209-1</span><span class="paragraph-text">LID 清單把紀錄編號與其命令集、範圍連在一起。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-2">Base209-2</span><span class="paragraph-text">先依本篇所需的紀錄選取清單中的對應列，再看 CSI 與作用範圍；編號只選紀錄種類，完整欄位排列仍到該 log 的結構表閱讀。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-3">Base209-3</span><span class="paragraph-text">僅取 07h、08h、15h、81h 四列；每列把 log ID 與其章節相連，不延伸其他 log 的教學。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID 07h</li><li>LID 08h</li><li>LID 15h</li><li>LID 81h</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-telemetry-capture"><summary>圖表組 02 · 建立快照、分段讀取與確認完成 · 9 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">先選 07h 或 08h 流程，再區分建立、讀取和確認事件的步驟。07h 後續分段不再重複觸發建立；08h 同時檢查 generation 和資料可用狀態，不能只靠 generation 相等就忽略其他主機的確認操作。</span></p>
+<a class="reading-link" href="#module-telemetry-capture">回到本節的解釋與範例</a>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-220 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-220"><h4>Base Figure 220 · Telemetry Host-Initiated Log Specific Parameter Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-220-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base220-1">Base220-1</span><span class="paragraph-text">Host-Initiated Telemetry 的參數選擇是否建立新資料及收集範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 220, 文件頁 232-233, PDF 頁 258-259</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base220-2">Base220-2</span><span class="paragraph-text">想分段讀同一份紀錄時，不應每段都要求重新建立，否則可能把不同時間的資料接在一起。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base220-3">Base220-3</span><span class="paragraph-text">CTHID 位於 CDW10 bit 8，MCDA 位於 bits 11:9。MCDAS=1 且 CTHID=1 才套用 MCDA；後續讀同一 snapshot 用 CTHID=0。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CTHID</li><li>MCDA</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-222 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-222"><h4>Base Figure 222 · Telemetry Host-Initiated Log Page - LID Specific Parameter Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-222-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base222-1">Base222-1</span><span class="paragraph-text">MCDAS 回報主機發起 Telemetry 支援的收集資料區能力。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 222, 文件頁 235, PDF 頁 261</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base222-2">Base222-2</span><span class="paragraph-text">打算要求較大的資料區前，先查支援能力，再設 MCDA；要求欄位與支援欄位不能互相取代。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base222-3">Base222-3</span><span class="paragraph-text">LID Specific Parameter bit 0 是 MCDAS；它宣告是否支援 MCDA，不表示已建立到哪一個 area。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MCDAS</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-151 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-151"><h4>Base Figure 151 · Asynchronous Event Request - Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-151-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base151-1">Base151-1</span><span class="paragraph-text">AER 完成的 DW0 指出事件類型、事件資訊與相關 log。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 151, 文件頁 184-185, PDF 頁 210-211</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base151-2">Base151-2</span><span class="paragraph-text">收到通知後，以 AET 分類、AEI 看具體事件，再用 LID 找後續資料；單看 LID 不足以知道發生什麼事。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base151-3">Base151-3</span><span class="paragraph-text">CQE DW0[23:16] 是 LID、[15:8] 是 AEI、[2:0] 是 AET；Sanitize 用 LID 81h/AET 110b，Telemetry 使用 Notice 類型。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID</li><li>AEI</li><li>AET</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-152 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-152"><h4>Base Figure 152 · Asynchronous Event Request - Completion Queue Entry Dword 1</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-152-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base152-1">Base152-1</span><span class="paragraph-text">AER 的 DW1 提供事件專用的補充資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 152, 文件頁 185, PDF 頁 211</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base152-2">Base152-2</span><span class="paragraph-text">同一個 EVNTSP 數值在不同事件中不一定同義；先由 DW0 辨識事件，再按該事件解釋 DW1。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base152-3">Base152-3</span><span class="paragraph-text">AER DW1 是 event-specific parameter；Sanitize 以 0h 指 subsystem，以 NSID 指 namespace，不能把它讀成進度。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>EVNTSP</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-155 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-155"><h4>Base Figure 155 · Asynchronous Event Information - Notice</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-155-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base155-1">Base155-1</span><span class="paragraph-text">Notice 類事件告知主機有狀態或配置變更。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 155, 文件頁 186-189, PDF 頁 212-215</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base155-2">Base155-2</span><span class="paragraph-text">收到 Firmware Activation Starting 通知，表示切換流程開始；要確認目前韌體仍須讀對應狀態及 log，而非把通知當完成證明。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base155-3">Base155-3</span><span class="paragraph-text">只取 Telemetry Log Changed Notice：用事件找出 08h，再讀 log；事件不包含診斷 payload。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Telemetry Log Changed</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-204 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-204"><h4>Base Figure 204 · Get Log Page - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-204-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-1">Base204-1</span><span class="paragraph-text">Get Log Page 的 CDW10 選擇 log、低位長度及相關控制參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-2">Base204-2</span><span class="paragraph-text">讀取 512 bytes 共 128 Dwords，長度原始值為 127；同時填正確 LID，才能知道回來的是哪一份紀錄。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-3">Base204-3</span><span class="paragraph-text">CDW10[7:0]=LID，[14:8]=LSP，[15]=RAE，[31:16]=NUMDL；LID 決定 LSP 是 Boot BPID 或 Telemetry capture controls。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID</li><li>LSP</li><li>RAE</li><li>NUMDL</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-210 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-210"><h4>Base Figure 210 · Supported Log Pages Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-210-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base210-1">Base210-1</span><span class="paragraph-text">Supported Log Pages 列出裝置實際支援哪些紀錄。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.1, Figure 210, 文件頁 217, PDF 頁 243</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base210-2">Base210-2</span><span class="paragraph-text">規格定義某個 LID，但裝置沒有支援時，不能把表中定義當成裝置能力；先查支援清單。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base210-3">Base210-3</span><span class="paragraph-text">Supported Log Pages 依 LID 提供 descriptor；07h descriptor 是 MCDAS 的查詢入口。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Supported Log Pages</li><li>LID Support and Effects</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-211 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-211"><h4>Base Figure 211 · LID Supported and Effects Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-211-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base211-1">Base211-1</span><span class="paragraph-text">每個 LID 的支援與效果描述子補上紀錄特性。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.1, Figure 211, 文件頁 217-218, PDF 頁 243-244</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base211-2">Base211-2</span><span class="paragraph-text">LSUPP 表示是否支援，LID-specific parameter 另描述相應特性；不能只看一個 bit 就推論全部參數可用。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base211-3">Base211-3</span><span class="paragraph-text">先查 LSUPP 再解該 LID 的 specific parameter；MCDAS 的 bit 0 是此 parameter 的內容，不是 CTHID。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LSUPP</li><li>LID Specific Parameter</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASETELEMETRY-BASE-FIG-474 -->
+<article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-474"><h4>Base Figure 474 · Asynchronous Event Configuration - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-474-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-1">Base474-1</span><span class="paragraph-text">Asynchronous Event Configuration 各 bit 選擇對應的通知類別。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-2">Base474-2</span><span class="paragraph-text">主機啟用本篇需要的通知時，只設定對應的事件 bit；一種通知已啟用，不會自動啟用其他通知。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-3">Base474-3</span><span class="paragraph-text">只取 bit 10 TLN：TCDA 從 0h 變 1h 且 TLN enabled 時發送 Telemetry Log Changed；此表在 5.2.30.1.6。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TLN</li></ul></div>
+
+</details></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:base-telemetry-1 -->
+<details class="review-question" id="qa-base-telemetry-1"><summary>1. Area 1 的 Last Block=3，Area 2 的 Last Block=7；Area 2 包含哪些 payload blocks？</summary>
+<div data-qa-answer="base-telemetry-1"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">Area 2 包含 blocks 1 到 7，共 7×512=3584 bytes，已包含 Area 1 的 blocks 1 到 3。Header 是 block 0，另占 512 bytes；Last Block 是包含在範圍內的最後編號。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30; 5.2.13.1.8-5.2.13.1.9, 文件頁 232-237,733-737, PDF 頁 258-263,759-763</p>
+</details></details>
+<!-- qa:base-telemetry-2 -->
+<details class="review-question" id="qa-base-telemetry-2"><summary>2. 分段讀完 Telemetry 後，為何還要重讀 header？</summary>
+<div data-qa-answer="base-telemetry-2"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">分段期間可能出現另一代 snapshot。重讀 generation 可確認資料是否仍屬同一代；若改變便須重收。Controller-initiated 資料還要檢查 TCDA，避免忽略其他讀取者已確認資料的情況。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.30, 文件頁 734-735, PDF 頁 760-761</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, 文件頁 237, PDF 頁 263</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p></details></footer></main></div></body></html>

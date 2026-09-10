@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Base 2.4：Sanitize：清除範圍、方法與完成判斷</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-sanitize-scope">01 清除會涵蓋哪些資料</a><a href="#module-sanitize-command">02 清除方法、支援能力與命令參數</a><a href="#module-sanitize-state">03 背景 Sanitize 的狀態與進度</a><a href="#module-sanitize-read">04 操作限制與驗證讀取</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Base 2.4：Sanitize：清除範圍、方法與完成判斷</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">Sanitize 處理資料清除。理解它需要依序回答：清除哪些資料、使用哪一種方法、控制器目前處於什麼狀態，以及什麼證據能證明清除已完成。命令已被接受，與清除作業已完成，必須分別確認。</span></p>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>決定清除範圍</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">先確認要清除的資料類別與範圍，再看控制器支援哪些清除能力。</span></p></article>
+<article><span class="axis-number">02</span><h3>選擇方法與參數</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">比較區塊清除、覆寫及密碼清除的做法；命令參數必須配合所選的方法。</span></p></article>
+<article><span class="axis-number">03</span><h3>區分接受、進行與完成</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">命令回覆成功不代表資料已清除完畢；持續從狀態紀錄確認進度、成功或失敗。</span></p></article>
+<article><span class="axis-number">04</span><h3>理解清除後的讀取</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">媒體驗證和正常讀取的用途不同；讀回資料的意義還要結合 NVM Command Set 的規則。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl></article>
+</div>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">先選清除目標與支援的方法，再根據方法設定命令；之後由狀態紀錄判斷進度、成功或失敗。若進入媒體驗證狀態，還要分清驗證讀取與正常資料存取，並用 NVM Command Set 的規則理解清除後讀到的內容。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-sanitize-scope"><h2 id="heading-sanitize-scope"><span class="section-number">01</span> 清除會涵蓋哪些資料</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">開始清除前，首先要回答「要清除哪個範圍」。Namespace 和 NVM subsystem 是不同層級：對各 namespace 逐一完成清除，不能單憑這些結果證明所有 subsystem 層級的使用者資料都已處理。控制器記憶體與其他可能含使用者資料的位置，也有各自規則。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">Sanitize 同時存在明確的排除對象，例如 Boot Partition 與 RPMB。成功完成清除不會替主機更新或清空開機映像。Crypto Erase 則要處理讓舊資料可解密的金鑰及相關資料；閱讀時不能只把它理解成變更一個目前使用的金鑰欄位。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.27 · Base 2.4 §8.1.27.2-8.1.27.3 · NVM Command Set 1.3 §5.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27, 文件頁 711-712, PDF 頁 737-738</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.2-8.1.27.3, 文件頁 714-717, PDF 頁 740-743</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, 文件頁 174, PDF 頁 174</p></details>
+</div>
+<!-- claim:BASESANITIZE-SAN-SCOPE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Subsystem sanitize 與 namespace sanitize 的資料範圍不同。逐一 sanitize 全部 namespaces 不等同 subsystem sanitize，也不能因此把 subsystem GDE 設為 1。兩者都不影響 Boot Partitions 或 RPMB；含 user data 的 logs/features 則可能必須修改。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27, 文件頁 711-712, PDF 頁 737-738</p></details>
+<!-- claim:BASESANITIZE-SAN-MEDIA -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Sanitize 涵蓋 target 的 allocated/deallocated media 與含其 user data 的快取。Subsystem sanitize 對 CMB queue 內容是否修改由實作定義，其餘 CMB 資料須處理；HMB 不受影響。PMR 必須先 disabled，subsystem sanitize 才可開始，且其資料在處理範圍內；namespace sanitize 不影響 CMB、HMB、PMR 或 PDA。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div><div><dt>HMB</dt><dd>Host Memory Buffer，由 host 配置並在 enable 期間交由 controller 專用的 volatile memory ranges。</dd></div><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27, 文件頁 711-712, PDF 頁 737-738</p></details>
+<!-- claim:BASESANITIZE-SAN-METHOD -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">Block Erase 使用媒體特有 erase；Crypto Erase 改變所有相關 media encryption keys，未加密資料另以適合方法處理；Overwrite 寫入 pattern。PREQ/SPRRS 控制 purge 要求與回報；Crypto Erase 遺留舊 key 或應處理的未加密資料時須失敗。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PREQ</dt><dd>Purge Request；與 SPRRS 一起判定 purge 要求與回報；兩種 Sanitize 命令的 bit 位置不同。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.2-8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.2-8.1.27.3, 文件頁 714-717, PDF 頁 740-743</p></details>
+<!-- claim:BASESANITIZE-NVM-VALUES -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">成功後 audit 讀到的值：Block Erase 為 vendor-specific，Crypto Erase 為 indeterminate，Overwrite 依 Base 的 pattern 機制。若已 deallocate，讀取另依 Deallocated or Unwritten Logical Blocks 規則；未 deallocate 且啟用 PI checking 的讀取可能發生 PI check error。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.12</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, 文件頁 174, PDF 頁 174</p></details>
+<div class="table-wrap"><table><caption>清除會涵蓋哪些資料</caption><thead><tr><th scope="col">清除對象或方法</th><th scope="col">包含或排除哪些資料</th><th scope="col">可據此確認的範圍</th></tr></thead><tbody><tr><td>Boot/RPMB</td><td>不受 sanitize 影響</td><td>另由自身管理機制控制</td></tr><tr><td>Logs/features</td><td>必要時修改 user data</td><td>不能只檢查 namespace media</td></tr><tr><td>All namespace sanitizes</td><td>只完成各 target 的工作</td><td>不能因此宣告 subsystem GDE</td></tr><tr><td>Crypto Erase</td><td>改 key 並處理未加密資料</td><td>舊 key 副本也是重要條件</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">即使所有 namespaces 都已 sanitize，CMB 等 subsystem 層級資料仍不能由這個事實證明已完成 subsystem sanitization。相反地，成功 subsystem sanitize 也不會替 Boot Partition 更新或清除開機映像。</span></p></aside>
+<a class="reading-link" href="#reading-sanitize-scope">閱讀相關規格圖表 → 清除會涵蓋哪些資料</a>
+</section>
+<section class="lesson" id="module-sanitize-command"><h2 id="heading-sanitize-command"><span class="section-number">02</span> 清除方法、支援能力與命令參數</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Sanitize 命令的欄位不是彼此獨立的開關。SANACT 選擇操作，其他位元則提出解除配置、失敗後存取或媒體驗證等要求；控制器是否允許某個組合，還取決於它回報的能力。判斷命令是否合法時，要把一組條件一起看。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SANACT</dt><dd>Sanitize Action；決定實際方法、退出 Failure 或退出 Media Verification。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">例如 NDAS 描述主機對成功清除後解除配置的要求，NDI 和 NODRM 則參與判斷這個要求如何處理。把這些值逐列並排，才能看出為何只改一個能力或設定，結果就不同。Overwrite 次數也有特殊編碼，OWPASS=0h 代表 16 次，不能按一般整數理解成不執行。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NODRM</dt><dd>No-Deallocate Response Mode；FID 17h bit 0，選擇受抑制 NDAS 的 error 或 warning 回應。</dd></div><div><dt>NDAS</dt><dd>No-Deallocate After Sanitize；命令要求，需與 SANICAP.NDI 及 NODRM 一起解讀。</dd></div><div><dt>NDI</dt><dd>No-Deallocate Inhibited；宣告 controller 是否抑制 NDAS 的要求。</dd></div></dl>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.26 · Base 2.4 §8.1.27.1; 5.2.27 · Base 2.4 §5.2.30.1.16; 8.1.27.2-8.1.27.3 · Base 2.4 §5.2.26; 8.1.27.1 · Base 2.4 §5.2.26; 8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, 文件頁 448-451, PDF 頁 474-477</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.1; 5.2.27, 文件頁 713,453, PDF 頁 739,479</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.16; 8.1.27.2-8.1.27.3, 文件頁 477-478,715-719, PDF 頁 503-504,741-745</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, 文件頁 449, PDF 頁 475</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.1, 文件頁 449-451,712-714, PDF 頁 475-477,738-740</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.3, 文件頁 451,717, PDF 頁 477,743</p></details>
+</div>
+<!-- claim:BASESANITIZE-SAN-COMMAND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">CDW10 包含 SANACT[2:0]、AUSE[3]、OWPASS[7:4]、OIPBP[8]、NDAS[9]、EMVS[10]、PREQ[11]；CDW11 是 OVRPAT。SANACT 001b=Exit Failure Mode、010b=Block Erase、011b=Overwrite、100b=Crypto Erase、101b=Exit Media Verification；其他值保留。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AUSE</dt><dd>Allow Unrestricted Sanitize Exit；選擇失敗時是否允許不經成功重試就退出 Failure。</dd></div><div><dt>EMVS</dt><dd>Enter Media Verification State；成功 processing 後要求進入驗證，受方法與 capability 限制。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, 文件頁 448-451, PDF 頁 474-477</p></details>
+<!-- claim:BASESANITIZE-SAN-NAMESPACE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">Namespace Sanitize 的命令格式如下：SANACT 只允許 001b、100b、101b；AUSE 在 bit 3、PREQ 在 bit 4、EMVS 在 bit 10。它沒有 Overwrite/NDAS 欄位，不可直接複製 subsystem Sanitize 的 CDW10。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.1; 5.2.27</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.1; 5.2.27, 文件頁 713,453, PDF 頁 739,479</p></details>
+<!-- claim:BASESANITIZE-SAN-NDAS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">NDAS 是本次命令的保留配置要求；NDI 表示 controller 是否抑制它。NDAS=1 且 NDI=1 時，FID 17h 的 NODRM=0 使命令以 Invalid Field in Command 拒絕，NODRM=1 可接受並在成功後以 SOS=100b 回報 unexpected deallocation。NODMMAS=10b 則描述適用時的額外 media modification。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div><div><dt>SOS</dt><dd>Sanitize Operation Status；SSTAT bits 2:0，與目前 SANS state 分開判讀。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.16; 8.1.27.2-8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.16; 8.1.27.2-8.1.27.3, 文件頁 477-478,715-719, PDF 頁 503-504,741-745</p></details>
+<!-- claim:BASESANITIZE-SAN-EMVS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">Subsystem sanitize 要求 EMVS=1 時，需要 VERS=1、SANACT 為 Block Erase 或 Crypto Erase，且 NDAS=0；Overwrite 或 NDAS=1 的組合以 Invalid Field in Command 拒絕。SANACT=101b 只可在 Media Verification state 使用，並啟動後續 deallocation 而非新的 sanitize。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, 文件頁 449, PDF 頁 475</p></details>
+<!-- claim:BASESANITIZE-SAN-PREFLIGHT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">PMR enabled、namespace write protection、controller suspended 或 pending firmware activation/reset 都可能阻止 subsystem sanitize。若啟動命令不是 Successful Completion，就不開始該 operation、不改 target 的 Sanitize Status，也不改 user data；已能預知的 operation 失敗則宜由後續 log 回報。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.26; 8.1.27.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.1, 文件頁 449-451,712-714, PDF 頁 475-477,738-740</p></details>
+<!-- claim:BASESANITIZE-SAN-OVERWRITE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">OWPASS=0h 表示 16 passes。OIPBP=0 時 user data 使用 OVRPAT、PI bytes 為 FFh。OIPBP=1 且總次數為偶數時第一輪使用反相 pattern、PI=00h；奇數時第一輪使用原 pattern、PI=FFh，其後逐輪反相。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.26; 8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26; 8.1.27.3, 文件頁 451,717, PDF 頁 477,743</p></details>
+<div class="table-wrap"><table><caption>清除方法、支援能力與命令參數</caption><thead><tr><th scope="col">命令與能力組合</th><th scope="col">控制器如何處理</th><th scope="col">完成或拒絕的原因</th></tr></thead><tbody><tr><td>NDAS=1, NDI=0</td><td>不得因成功 sanitize deallocate</td><td>其他合法條件仍需符合</td></tr><tr><td>NDAS=1, NDI=1, NODRM=0</td><td>命令拒絕</td><td>Invalid Field in Command</td></tr><tr><td>NDAS=1, NDI=1, NODRM=1</td><td>允許處理</td><td>成功可回 SOS=100b</td></tr><tr><td>EMVS=1</td><td>Subsystem 要 VERS=1</td><td>Block/Crypto + NDAS=0</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">SANACT=010b、AUSE=0、EMVS=1、NDAS=0、PREQ=0 的 CDW10 是 0402h。只有支援 VERS/Block Erase 且其他前置條件成立時才適用。另一例：OWPASS=0h 是 16 次，不是『跳過 overwrite』。</span></p></aside>
+<a class="reading-link" href="#reading-sanitize-command">閱讀相關規格圖表 → 清除方法、支援能力與命令參數</a>
+</section>
+<section class="lesson" id="module-sanitize-state"><h2 id="heading-sanitize-state"><span class="section-number">03</span> 背景 Sanitize 的狀態與進度</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">Sanitize 不是一個只有「開始／結束」的動作。作業可能經過處理、媒體驗證及驗證後解除配置，也可能進入不同失敗狀態。命令完成表示啟動要求得到處理，背景作業狀態則回答清除目前走到哪一個階段。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">進度欄位描述的是目前被量測的階段，不能一律當成整個作業只會遞增的百分比。某個階段完成後，下一階段可能從 0 重新計算。失敗後回到 Idle 也不會自動把失敗歷史改寫成成功；應分別閱讀當前狀態與上次結果。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.26.1; 8.1.27.1 · Base 2.4 §8.1.27.4 · Base 2.4 §8.1.27.4.6-8.1.27.4.7 · Base 2.4 §5.2.13.1.38 · Base 2.4 §5.2.13.1.38; 8.1.27.3 · Base 2.4 §8.1.27.1; 8.1.27.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26.1; 8.1.27.1, 文件頁 451,712-713, PDF 頁 477,738-739</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4, 文件頁 719-730, PDF 頁 745-756</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.6-8.1.27.4.7, 文件頁 727-730, PDF 頁 753-756</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, 文件頁 313-319, PDF 頁 339-345</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38; 8.1.27.3, 文件頁 314-319,718, PDF 頁 340-345,744</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.1; 8.1.27.4, 文件頁 712-713,720, PDF 頁 738-739,746</p></details>
+</div>
+<!-- claim:BASESANITIZE-SAN-BACKGROUND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">Sanitize 在背景執行。開始 operation 後先更新 LID 81h，再完成啟動命令；Host 需用狀態 log 與事件判定後續進度。執行中的 operation 不能被 abort，並持續跨 reset/power cycle，但 verification 階段可能因指定 reset 被取消。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.26.1; 8.1.27.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26.1; 8.1.27.1, 文件頁 451,712-713, PDF 頁 477,738-739</p></details>
+<!-- claim:BASESANITIZE-SAN-STATE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">每個支援的 target 有一份狀態機。AUSE=0/1 分別進入 Restricted/Unrestricted Processing；失敗落入對應 Failure。Restricted Failure 必須以 restricted sanitize 重試；Unrestricted Failure 可重試或 Exit Failure Mode 回 Idle。Idle 因而不必然表示最後一次 sanitize 成功。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4, 文件頁 719-730, PDF 頁 745-756</p></details>
+<!-- claim:BASESANITIZE-SAN-VERIFY-STATE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">Processing 成功且 EMVS 要求未被取消時進入 Media Verification。Exit Media Verification、適用 reset 或阻止驗證的 composition change 使 target 進入 Post-Verification Deallocation；成功才回 Idle，失敗依原 AUSE 回 Restricted/Unrestricted Failure，FAILS=6h。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.6-8.1.27.4.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.6-8.1.27.4.7, 文件頁 727-730, PDF 頁 753-756</p></details>
+<!-- claim:BASESANITIZE-SAN-STATUS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">LID 81h 的 NSID=0h 或 FFFFFFFFh 指 subsystem，allocated NSID 指 namespace。SSTAT 含 SOS、OPC、GDE、MVCNCLD、NDE、PRGD；SSI 含 SANS/FAILS；SCDW10 保存啟動參數。MNSOIP 回報並行 namespace operations 上限，STNSID 識別 namespace target。Log 跨 power cycles/resets 保留。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MVCNCLD</dt><dd>Media Verification Canceled；記錄要求的驗證被取消，會影響 processing 後的轉移。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, 文件頁 313-319, PDF 頁 339-345</p></details>
+<!-- claim:BASESANITIZE-SAN-PROGRESS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">SPROG 的比例是 raw/65536，分別表示 Processing 或 Post-Verification Deallocation 的進度，進入這些階段時重設為 0。Media Verification 時可為 FFFFh 而 SOS 仍是 Sanitizing；不能只看 SPROG 判斷完成。時間估計依方法與額外 media modification 分開，FFFFFFFFh 表示未回報。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SPROG</dt><dd>Sanitize Progress；raw/65536，僅表示目前量測階段的進度。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.38; 8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38; 8.1.27.3, 文件頁 314-319,718, PDF 頁 340-345,744</p></details>
+<!-- claim:BASESANITIZE-SAN-EVENT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">Sanitize AER 使用 AET=110b、LID=81h，AEI=01h/02h/03h 分別表示 Completed、Completed With Unexpected Deallocation、Entered Media Verification。DW1 的 EVNTSP 為 subsystem 的 0h 或 target NSID。事件要與 log 一起判讀，Completed 不自動代表成功。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AER</dt><dd>Advanced Error Reporting，PCIe 用來分類、遮罩與記錄 link／transaction error 的 capability。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.1; 8.1.27.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.1; 8.1.27.4, 文件頁 712-713,720, PDF 頁 738-739,746</p></details>
+<div class="table-wrap"><table><caption>背景 Sanitize 的狀態與進度</caption><thead><tr><th scope="col">作業階段</th><th scope="col">可以採取的後續動作</th><th scope="col">進度與歷史如何回報</th></tr></thead><tbody><tr><td>Restricted Failure</td><td>只以 restricted 重試</td><td>Exit Failure Mode 不可解套</td></tr><tr><td>Unrestricted Failure</td><td>重試或 Exit Failure Mode</td><td>回 Idle 不會改寫失敗歷史</td></tr><tr><td>Media Verification</td><td>Processing 已成功</td><td>整個 operation 仍 Sanitizing</td></tr><tr><td>Post-Verification Deallocation</td><td>SPROG 重新由 0 起算</td><td>失敗 FAILS=6h</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.09">03.09.</span><span class="paragraph-text">SPROG=8000h 表示目前被量測的階段約 50%。進入 Media Verification 後 SPROG=FFFFh，SOS 仍可為 010b；退出驗證進入 deallocation 又從 0 開始。這不是進度倒退。</span></p></aside>
+<a class="reading-link" href="#reading-sanitize-state">閱讀相關規格圖表 → 背景 Sanitize 的狀態與進度</a>
+</section>
+<section class="lesson" id="module-sanitize-read"><h2 id="heading-sanitize-read"><span class="section-number">04</span> 操作限制與驗證讀取</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">媒體驗證期間的 Read 用來觀察清除後的內容，因此不能沿用一般資料完整性讀取的全部假設。主機要求 PI 檢查會走到不同結果；對仍已配置的媒體，也要分成資料能讀出與不能讀出兩種情況。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">若讀取的是已解除配置的 LBA，控制器可能依 deallocated／unwritten 規則回傳資料。這種回傳值無法直接證明原本媒體上的資料模式。因此驗證結果必須連同 LBA 配置狀態、控制器目前作業階段和命令檢查選項解釋。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.27.5; 5.1.1-5.1.2 · Base 2.4 §8.1.27.5 · NVM Command Set 1.3 §4.1.7; 5.12 · NVM Command Set 1.3 §5.12 · NVM Command Set 1.3 §5.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.5; 5.1.1-5.1.2, 文件頁 178-181,730-732, PDF 頁 204-207,756-758</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.5, 文件頁 730-732, PDF 頁 756-758</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.7; 5.12, 文件頁 113,173-175, PDF 頁 113,173-175</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, 文件頁 174, PDF 頁 174</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12.1, 文件頁 174-175, PDF 頁 174-175</p></details>
+</div>
+<!-- claim:BASESANITIZE-SAN-RESTRICT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">Subsystem sanitize 進行中以 Figure 144 判斷允許的 Admin 命令及 log pages；Boot Partition log 在清單內，Telemetry 07h/08h 不在。未被允許的操作受 Sanitize In Progress 限制；namespace sanitize 另依 Figures 145/146 與 target NSID 判斷。Media Verification 的 NVM Read 有特定例外。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.5; 5.1.1-5.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.5; 5.1.1-5.1.2, 文件頁 178-181,730-732, PDF 頁 204-207,756-758</p></details>
+<!-- claim:BASESANITIZE-SAN-POWER -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">Sanitize 開始時 controllers 更新 target log 並暫停 autonomous power state management。依 target 中止受影響 I/O/self-test、釋放相關 streams；進行中不得 activation 新 firmware。Subsystem operation 也阻止 PMR enable 與 PDA access。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.27.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.5, 文件頁 730-732, PDF 頁 756-758</p></details>
+<!-- claim:BASESANITIZE-NVM-BRIDGE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">NVM 4.1.7 沿用 Base 的 Sanitize command；5.12 補充允許的 Admin 行為、sanitize 後的資料值與 Media Verification Read。Error Information 的 LBA 要回傳 0，其他含 user data 的欄位仍依 Base 處理。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.7; 5.12</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.7; 5.12, 文件頁 113,173-175, PDF 頁 113,173-175</p></details>
+<!-- claim:BASESANITIZE-NVM-VERIFY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">Media Verification Read 不要求 PI checking，即 PRCHK=000b 且 STC=0。Allocated media 能讀時回傳實際資料並忽略可讀情況下的 integrity errors，未被其他錯誤中止就以 Successful Media Verification Read 完成；不能讀取 allocated media 時回 Unrecovered Read Error。指定 PI checking 則回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PRCHK</dt><dd>Protection Information Check；三個 bits 分別要求 guard、application tag、reference tag 檢查；驗證讀取設 000b。</dd></div><div><dt>STC</dt><dd>Storage Tag Check；本報告指 NVM Read 的 storage tag 檢查，驗證讀取設 0。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.12.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12.1, 文件頁 174-175, PDF 頁 174-175</p></details>
+<div class="table-wrap"><table><caption>操作限制與驗證讀取</caption><thead><tr><th scope="col">驗證讀取條件</th><th scope="col">回傳內容或狀態</th><th scope="col">這個結果能說明什麼</th></tr></thead><tbody><tr><td>PI checking requested</td><td>Invalid Field in Command</td><td>驗證讀取不允許此組合</td></tr><tr><td>Allocated media readable</td><td>回實際 media data</td><td>可忽略可讀情況的 integrity error</td></tr><tr><td>Allocated media unreadable</td><td>Unrecovered Read Error</td><td>不可假造資料</td></tr><tr><td>Deallocated LBA</td><td>依 deallocated/unwritten 規則</td><td>不是檢查原始 media pattern 的證據</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">驗證讀取 PRCHK=000b、STC=0，所有 allocated LBAs 都能讀取，且沒有其他 abort 原因時，預期 Successful Media Verification Read。只要請求 PI checking，預期分支即改為 Invalid Field in Command。</span></p></aside>
+<a class="reading-link" href="#reading-sanitize-read">閱讀相關規格圖表 → 操作限制與驗證讀取</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">05</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-sanitize-scope"><summary>圖表組 01 · 清除會涵蓋哪些資料 · 13 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">範圍圖先分 subsystem、namespace 及明確排除區域，再把清除方法放到正確對象上。GDE 等整體狀態的判斷必須使用其定義的範圍，不能由較小範圍的成功結果直接推論。</span></p>
+<a class="reading-link" href="#module-sanitize-scope">回到本節的解釋與範例</a>
+<!-- figure-table:BASESANITIZE-NVMCS-FIG-200 -->
+<article class="field-note" id="figure-BASESANITIZE-NVMCS-FIG-200"><h4>NVM Figure 200 · Sanitize Operations - Admin Commands Allowed</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-NVMCS-FIG-200-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM200-1">NVM200-1</span><span class="paragraph-text">Sanitize 期間仍可執行哪些 Admin 命令，要按作業情境查表。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.12</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, Figure 200, 文件頁 173, PDF 頁 173</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM200-2">NVM200-2</span><span class="paragraph-text">清除進行中想讀 Get Log Page，需看這張表及該 log 的條件；不能以「正在清除」推論所有管理命令都停止。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM200-3">NVM200-3</span><span class="paragraph-text">NVM 這張 Figure200 補充 sanitize 期間 Error Information 的 LBA 回0；它不是 Base 同號的 Feature 表，也不能取代 Base 的允許命令清單。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Get Log Page</li><li>Error Information</li><li>LBA</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-NVMCS-FIG-201 -->
+<article class="field-note" id="figure-BASESANITIZE-NVMCS-FIG-201"><h4>NVM Figure 201 · Sanitize Operation Types - User Data Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-NVMCS-FIG-201-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM201-1">NVM201-1</span><span class="paragraph-text">清除方法不同，清除後可觀察到的使用者資料值也不同。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.12</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, Figure 201, 文件頁 174, PDF 頁 174</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM201-2">NVM201-2</span><span class="paragraph-text">Overwrite 的內容與 pattern 及輪數有關；Crypto Erase 不應被口頭簡化成「全部 bytes 寫零」。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM201-3">NVM201-3</span><span class="paragraph-text">保留已配置 media 的成功 sanitize 回值依方法不同；若已 deallocate，改採 deallocated-read 規則，不將任何方法一概寫成全零。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Block Erase</li><li>Crypto Erase</li><li>Overwrite</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-770 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-770"><h4>Base Figure 770 · Sanitization Operation Scope Based on Sanitize Operation</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-770-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base770-1">Base770-1</span><span class="paragraph-text">清除範圍隨 subsystem 或 namespace 目標而不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27, Figure 770, 文件頁 711-712, PDF 頁 737-738</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base770-2">Base770-2</span><span class="paragraph-text">清除一個 namespace，不能推論其他 namespace、Boot Partition 或其他列出的區域全部同時被清除；按目標欄逐項看。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base770-3">Base770-3</span><span class="paragraph-text">每一資料類別分別看兩種 target：Boot/RPMB 不動，user-data locations 要處理，CMB/PMR/PDA 的差異不可被『全部 namespaces』概括。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Subsystem Target</li><li>Namespace Target</li><li>User Data</li><li>Boot Partition</li><li>CMB</li><li>PMR</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-771 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-771"><h4>Base Figure 771 · Sanitize Operations - Overwrite Mechanism</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-771-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base771-1">Base771-1</span><span class="paragraph-text">Overwrite 每輪的 pattern 取決於初值、反相設定與輪數。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.3, Figure 771, 文件頁 717, PDF 頁 743</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base771-2">Base771-2</span><span class="paragraph-text">初值 A5A5A5A5h、相應反相條件成立時，反相值為 5A5A5A5Ah；依輪次追圖，不能只記最後一次寫入的名稱。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base771-3">Base771-3</span><span class="paragraph-text">用 total pass 奇偶決定第一輪是否反相，再逐輪反相；PI bytes 也有 FFh/00h 規則。不能只看最後的 OVRPAT。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OIPBP</li><li>OWPASS</li><li>OVRPAT</li><li>PI</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-201 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-201"><h4>Base Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-201-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-1">Base201-1</span><span class="paragraph-text">Supported Capabilities 回覆把可修改、namespace 範圍與可保存能力分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-2">Base201-2</span><span class="paragraph-text">CHANG 表示可修改，SVBL 表示可保存；支援其中一項，不代表另一項也成立。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-3">Base201-3</span><span class="paragraph-text">SEL=011b 回傳的 bits 2/1/0 分別是 changeable/namespace-specific/saveable；不是 BP0WPS 或 NODRM 的當前值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CHANG</li><li>NSSPEC</li><li>SVBL</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div></dl>
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-203 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-203"><h4>Base Figure 203 · Get Log Page - Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-203-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-1">Base203-1</span><span class="paragraph-text">Get Log Page 的 DPTR 指向主機接收 log 資料的空間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-2">Base203-2</span><span class="paragraph-text">同樣是 512-byte buffer，LID 不同會得到不同結構；DPTR 只提供位置，不會決定 log 類型。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-3">Base203-3</span><span class="paragraph-text">Get Log Page 的 data pointer 指向接收 buffer；buffer 必須容納 encoded NUMD 所要求的資料。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-204 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-204"><h4>Base Figure 204 · Get Log Page - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-204-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-1">Base204-1</span><span class="paragraph-text">Get Log Page 的 CDW10 選擇 log、低位長度及相關控制參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-2">Base204-2</span><span class="paragraph-text">讀取 512 bytes 共 128 Dwords，長度原始值為 127；同時填正確 LID，才能知道回來的是哪一份紀錄。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-3">Base204-3</span><span class="paragraph-text">CDW10[7:0]=LID，[14:8]=LSP，[15]=RAE，[31:16]=NUMDL；LID 決定 LSP 是 Boot BPID 或 Telemetry capture controls。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDL</dt><dd>Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。</dd></div><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event；Telemetry 收集中用 1 保留通知狀態，完成後用 0 acknowledgement。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID</li><li>LSP</li><li>RAE</li><li>NUMDL</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-205 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-205"><h4>Base Figure 205 · Get Log Page - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-205-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-1">Base205-1</span><span class="paragraph-text">CDW11 提供長度高位與 log 特定識別資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">NUMDU 非零時總長度需與 NUMDL 合併後再加 1；不能把兩個長度欄位各加 1 再相加。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDU</dt><dd>Number of Dwords Upper，Get Log Page 的 NUMD 高 16 bits。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-3">Base205-3</span><span class="paragraph-text">NUMDU 與 NUMDL 組成 zero-based dword count；LSI 是另一個 log-specific selector，不是 LSP。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>zero-based</dt><dd>zero-based；數值從 0 開始計算，因此 raw=3 代表第 4 個項目或 4 個單位，實際含義仍要看欄位定義。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>LSI</dt><dd>Log Specific Identifier，意義由所選 log page 定義的 identifier。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMDU</li><li>LSI</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-206 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-206-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>LPOL</dt><dd>Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-3">Base206-3</span><span class="paragraph-text">LPO 低 32 bits 位於 CDW12；Telemetry byte offset 必須以 512-byte blocks 對齊。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOL</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-207 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-207"><h4>Base Figure 207 · Get Log Page - Command Dword 13</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-207-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 補齊較大 log offset 的高 32 bits。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LPOU</dt><dd>Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-2">Base207-2</span><span class="paragraph-text">完整 offset＝00000001_00000000h 時，LPOU＝1、LPOL＝0；只讀 LPOL 會誤以為從開頭開始。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-3">Base207-3</span><span class="paragraph-text">LPO 高 32 bits 位於 CDW13；不可先截斷為 32-bit 再計算大型 log 的 offset。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOU</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-208 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-208"><h4>Base Figure 208 · Get Log Page - Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-208-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-2">Base208-2</span><span class="paragraph-text">相同 LPOL＝4，在 byte-offset 與 index-offset 下表示不同事物；先看 OT 才能正確解讀位置。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-3">Base208-3</span><span class="paragraph-text">CDW14 的 CSI/OT/UUID Index 是共用依欄位換算上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSI</li><li>OT</li><li>UUID Index</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-209 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-209"><h4>Base Figure 209 · Get Log Page - Log Page Identifiers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-209-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-1">Base209-1</span><span class="paragraph-text">LID 清單把紀錄編號與其命令集、範圍連在一起。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-2">Base209-2</span><span class="paragraph-text">先依本篇所需的紀錄選取清單中的對應列，再看 CSI 與作用範圍；編號只選紀錄種類，完整欄位排列仍到該 log 的結構表閱讀。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-3">Base209-3</span><span class="paragraph-text">僅取 07h、08h、15h、81h 四列；每列把 log ID 與其章節相連，不延伸其他 log 的教學。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID 07h</li><li>LID 08h</li><li>LID 15h</li><li>LID 81h</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-474 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-474"><h4>Base Figure 474 · Asynchronous Event Configuration - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-474-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-1">Base474-1</span><span class="paragraph-text">Asynchronous Event Configuration 各 bit 選擇對應的通知類別。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-2">Base474-2</span><span class="paragraph-text">主機啟用本篇需要的通知時，只設定對應的事件 bit；一種通知已啟用，不會自動啟用其他通知。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-3">Base474-3</span><span class="paragraph-text">只取 bit 10 TLN：TCDA 從 0h 變 1h 且 TLN enabled 時發送 Telemetry Log Changed；此表在 5.2.30.1.6。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TCDA</dt><dd>Telemetry Controller-Initiated Data Available；2.4 中表示自上次 RAE=0 acknowledgement 後是否有更新。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TLN</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-sanitize-command"><summary>圖表組 02 · 清除方法、支援能力與命令參數 · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">先讀 Sanitize 支援方法，再依 SANACT 選分支。條件表一次固定其他欄位，只改 NDAS、NDI 或 NODRM 中一項，觀察結果；EMVS 的支援與方法限制另行核對。</span></p>
+<a class="reading-link" href="#module-sanitize-command">回到本節的解釋與範例</a>
+<!-- figure-table:BASESANITIZE-BASE-FIG-451 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-451"><h4>Base Figure 451 · Sanitize - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-451-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base451-1">Base451-1</span><span class="paragraph-text">Sanitize 的 SANACT 決定方法，其他參數依方法才有意義。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450-451, PDF 頁 476-477</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base451-2">Base451-2</span><span class="paragraph-text">選 Overwrite 後才解 OWPASS、OIPBP；OWPASS＝0 特別表示 16 輪，不是零輪。換成 Crypto Erase 時不能照搬 overwrite 參數。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base451-3">Base451-3</span><span class="paragraph-text">由 SANACT 決定操作，再依方法解讀其餘 bits；OWPASS=0 是 16，EMVS 不能搭配 Overwrite/NDAS=1。PREQ bit 11 與 namespace 命令不同。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SANACT</li><li>AUSE</li><li>OWPASS</li><li>OIPBP</li><li>NDAS</li><li>EMVS</li><li>PREQ</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-452 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-452"><h4>Base Figure 452 · Sanitize - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-452-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base452-1">Base452-1</span><span class="paragraph-text">OVRPAT 指定 Overwrite 使用的 32-bit pattern。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 452, 文件頁 451, PDF 頁 477</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base452-2">Base452-2</span><span class="paragraph-text">OVRPAT＝A5A5A5A5h 時，還要配合 OIPBP 與輪數判斷各輪是否反相；它不是進度或清除後資料量。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base452-3">Base452-3</span><span class="paragraph-text">CDW11 的 32-bit OVRPAT 僅在 Overwrite 適用；搭配 OIPBP 與 pass 奇偶才可推導每一輪寫入 pattern。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OVRPAT</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-453 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-453"><h4>Base Figure 453 · Sanitize - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-453-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base453-1">Base453-1</span><span class="paragraph-text">啟動 Sanitize 的命令失敗與背景清除失敗是不同階段。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 453, 文件頁 451, PDF 頁 477</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base453-2">Base453-2</span><span class="paragraph-text">命令因 PMR Enabled 被拒絕時，清除可能尚未開始；背景作業稍後失敗則要讀 Sanitize Status，不能只看啟動 CQE。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base453-3">Base453-3</span><span class="paragraph-text">這些是啟動命令的 command-specific failure；與稍後背景作業的 Sanitize Failed/SOS 分開記錄。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Firmware Activation Requires Reset</li><li>PMR Enabled</li><li>Controller Suspended</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-492 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-492"><h4>Base Figure 492 · Sanitize Config - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-492-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base492-1">Base492-1</span><span class="paragraph-text">Sanitize Config 的 NODRM 控制相應的清除後配置行為。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.16, Figure 492, 文件頁 477-478, PDF 頁 503-504</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base492-2">Base492-2</span><span class="paragraph-text">需要判斷 NDAS 的效果時，連同 NODRM 與 SANICAP 閱讀；不能只看命令中的一個 bit 就推論所有資料是否重新配置。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base492-3">Base492-3</span><span class="paragraph-text">FID 17h CDW11 bit 0 是 NODRM；只有 NDI=1 且命令 NDAS=1 才影響 error/warning response。不是每次 sanitize 都必須設定的開關。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NODRM</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-338 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-338"><h4>Base Figure 338 · Identify - Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPCAP</dt><dd>Boot Partition Capabilities；辨識 Set Features 與 RPMB 保護機制的支援組合。</dd></div><div><dt>MDS</dt><dd>Multiple Domain Subsystem，指出 NVM subsystem 是否包含多個 domains 的能力 bit。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPCAP</li><li>LPA</li><li>SANICAP</li><li>CTRATT</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-454 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-454"><h4>Base Figure 454 · Sanitize Namespace - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-454-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base454-1">Base454-1</span><span class="paragraph-text">Sanitize Namespace 的欄位與 subsystem Sanitize 不完全相同。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.27</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.27, Figure 454, 文件頁 453, PDF 頁 479</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base454-2">Base454-2</span><span class="paragraph-text">Namespace 命令的 PREQ 在 bit 4，且不含 subsystem 命令的 Overwrite 參數；不能把同一 CDW10 原值直接換操作碼重送。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base454-3">Base454-3</span><span class="paragraph-text">Namespace CDW10 只有 Exit Failure/Crypto Erase/Exit Verification；PREQ 在 bit 4，EMVS 在 bit 10，無 NDAS 或 Overwrite 參數。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SANACT</li><li>AUSE</li><li>PREQ</li><li>EMVS</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-sanitize-state"><summary>圖表組 03 · 背景 Sanitize 的狀態與進度 · 12 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">沿狀態圖辨認每個轉移所要求的動作，再將 SOS、SPROG 和失敗階段配對閱讀。Restricted 與 Unrestricted Failure 的可用出口不同；Media Verification 時的滿進度值也不能單獨證明整個 operation 已結束。</span></p>
+<a class="reading-link" href="#module-sanitize-state">回到本節的解釋與範例</a>
+<!-- figure-table:BASESANITIZE-BASE-FIG-312 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-312"><h4>Base Figure 312 · Sanitize Status Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-312-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base312-1">Base312-1</span><span class="paragraph-text">Sanitize Status 將進度、狀態與啟動命令資訊放在同一份紀錄。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, Figure 312, 文件頁 314-319, PDF 頁 340-345</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base312-2">Base312-2</span><span class="paragraph-text">SPROG 看起來很接近完成時，仍須讀 SSTAT 判斷成功、失敗或其他狀態；不能只以百分比作完成證明。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base312-3">Base312-3</span><span class="paragraph-text">512-byte log：SPROG[1:0]、SSTAT[3:2]、SCDW10[7:4]、時間估計[35:8]、SSI[36]、MNSOIP[43:40]、STNSID[47:44]。先用 NSID 決定 target，再一起讀 SOS/SANS/FAILS 與進度。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SPROG</li><li>SSTAT</li><li>SCDW10</li><li>ETO</li><li>ETPVDS</li><li>SSI</li><li>MNSOIP</li><li>STNSID</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-772 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-772"><h4>Base Figure 772 · Sanitize Operation State Machine</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-772-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base772-1">Base772-1</span><span class="paragraph-text">Sanitize 狀態圖把處理、失敗、驗證及後續配置分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4, Figure 772, 文件頁 720, PDF 頁 746</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base772-2">Base772-2</span><span class="paragraph-text">同樣回到可接受命令的情況，可能經成功完成或退出失敗模式；沿箭頭保留原因，不能只看終點名稱。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base772-3">Base772-3</span><span class="paragraph-text">七個 state 以 AUSE 分出兩條 processing/failure 路徑，EMVS 接到 verification，再經 deallocation 返回；逐條配合 Figures 773–779 判讀。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Idle</li><li>Restricted Processing</li><li>Restricted Failure</li><li>Unrestricted Processing</li><li>Unrestricted Failure</li><li>Media Verification</li><li>Post-Verification Deallocation</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-773 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-773"><h4>Base Figure 773 · Idle State Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-773-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base773-1">Base773-1</span><span class="paragraph-text">Idle 的離開條件依要求及 AUSE 選擇不同處理路徑。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.1, Figure 773, 文件頁 721, PDF 頁 747</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base773-2">Base773-2</span><span class="paragraph-text">同一清除方法分別設定 AUSE＝0、1，沿 A1、B1 看進入哪一個 processing state；方法與失敗限制選擇是不同參數。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base773-3">Base773-3</span><span class="paragraph-text">Idle 的 A1/B1 分別進 Restricted/Unrestricted Processing；進入時清 SPROG 與 MVCNCLD，不代表 operation 已完成。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>A1</li><li>AUSE=0</li><li>B1</li><li>AUSE=1</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-774 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-774"><h4>Base Figure 774 · Restricted Processing State Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-774-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base774-1">Base774-1</span><span class="paragraph-text">Restricted Processing 的下一步由成功、失敗及驗證條件決定。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.2, Figure 774, 文件頁 722, PDF 頁 748</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base774-2">Base774-2</span><span class="paragraph-text">清除成功且需要媒體驗證時，沿驗證分支；發生失敗則沿另一條路徑，不把兩者都說成「處理結束」。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base774-3">Base774-3</span><span class="paragraph-text">Restricted Processing 成功可 C1 回 Idle 或 F1 進 Verification，取決於 EMVS/MVCNCLD；D1 表示 processing 失敗。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>C1</li><li>D1</li><li>F1</li><li>EMVS</li><li>MVCNCLD</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-775 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-775"><h4>Base Figure 775 · Restricted Failure State Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-775-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base775-1">Base775-1</span><span class="paragraph-text">Restricted Failure 的恢復必須滿足該狀態允許的要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.3, Figure 775, 文件頁 724, PDF 頁 750</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base775-2">Base775-2</span><span class="paragraph-text">失敗後再次要求清除前，先看 A2 的條件；不能按 Idle 的可接受命令清單推論目前也相同。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base775-3">Base775-3</span><span class="paragraph-text">Restricted Failure 只有 A2 重進 Restricted Processing 的恢復路徑；Exit Failure Mode 與 AUSE=1 不能取代成功的 restricted retry。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>A2</li><li>Restricted Retry</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-776 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-776"><h4>Base Figure 776 · Unrestricted Processing State Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-776-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base776-1">Base776-1</span><span class="paragraph-text">Unrestricted Processing 有自己的成功、失敗與驗證轉移。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.4, Figure 776, 文件頁 725, PDF 頁 751</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base776-2">Base776-2</span><span class="paragraph-text">與 Figure 774 比較時，把相同清除結果放進兩種狀態，觀察後續限制如何不同，而不是重複背一樣的成功定義。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base776-3">Base776-3</span><span class="paragraph-text">Unrestricted Processing 的 C2/D2/F2 對應成功回 Idle、失敗、進入 Verification；不是允許一般 I/O 不受限制。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>C2</li><li>D2</li><li>F2</li><li>EMVS</li><li>MVCNCLD</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-777 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-777"><h4>Base Figure 777 · Unrestricted Failure State Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-777-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base777-1">Base777-1</span><span class="paragraph-text">Unrestricted Failure 可以依允許的要求重試或退出失敗模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.5, Figure 777, 文件頁 727, PDF 頁 753</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base777-2">Base777-2</span><span class="paragraph-text">Exit Failure Mode 讓狀態改變，不等於先前失敗的清除突然成功；仍要保留失敗結果的含義。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base777-3">Base777-3</span><span class="paragraph-text">Unrestricted Failure 可 A3 restricted retry、B2 unrestricted retry，或 E Exit Failure Mode 到 Idle；E 不能當成 sanitize 成功證據。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>A3</li><li>B2</li><li>E</li><li>Exit Failure Mode</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-778 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-778"><h4>Base Figure 778 · Media Verification State Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-778-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base778-1">Base778-1</span><span class="paragraph-text">Media Verification 的退出與 reset 有明確轉移條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.6, Figure 778, 文件頁 728, PDF 頁 754</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base778-2">Base778-2</span><span class="paragraph-text">驗證讀取完成後，依允許機制離開；若期間發生 reset，沿對應箭頭看下一狀態，不能假設永遠保留在驗證中。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base778-3">Base778-3</span><span class="paragraph-text">G 進 Post-Verification Deallocation：由退出動作、指定 reset 或阻止 verification 的 composition change 觸發；取消驗證須對照 MVCNCLD。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>G</li><li>Exit Media Verification</li><li>Reset</li><li>MVCNCLD</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-779 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-779"><h4>Base Figure 779 · Post-Verification Deallocation state Transition Conditions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-779-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base779-1">Base779-1</span><span class="paragraph-text">Post-Verification Deallocation 的結果決定最終轉移。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.27.4.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.4.7, Figure 779, 文件頁 729, PDF 頁 755</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base779-2">Base779-2</span><span class="paragraph-text">已完成媒體驗證仍可能需要後續 deallocation；觀察 H、I1、I2 的條件，不能在進入此狀態時就宣布整個流程結束。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base779-3">Base779-3</span><span class="paragraph-text">Deallocation 成功走 H 到 Idle；失敗依原 AUSE 走 I1/I2 到 Failure，FAILS 記 6h，與 processing 失敗的來源區分。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>H</li><li>I1</li><li>I2</li><li>FAILS</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-151 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-151"><h4>Base Figure 151 · Asynchronous Event Request - Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-151-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base151-1">Base151-1</span><span class="paragraph-text">AER 完成的 DW0 指出事件類型、事件資訊與相關 log。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 151, 文件頁 184-185, PDF 頁 210-211</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base151-2">Base151-2</span><span class="paragraph-text">收到通知後，以 AET 分類、AEI 看具體事件，再用 LID 找後續資料；單看 LID 不足以知道發生什麼事。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base151-3">Base151-3</span><span class="paragraph-text">CQE DW0[23:16] 是 LID、[15:8] 是 AEI、[2:0] 是 AET；Sanitize 用 LID 81h/AET 110b，Telemetry 使用 Notice 類型。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID</li><li>AEI</li><li>AET</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-152 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-152"><h4>Base Figure 152 · Asynchronous Event Request - Completion Queue Entry Dword 1</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-152-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base152-1">Base152-1</span><span class="paragraph-text">AER 的 DW1 提供事件專用的補充資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 152, 文件頁 185, PDF 頁 211</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base152-2">Base152-2</span><span class="paragraph-text">同一個 EVNTSP 數值在不同事件中不一定同義；先由 DW0 辨識事件，再按該事件解釋 DW1。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base152-3">Base152-3</span><span class="paragraph-text">AER DW1 是 event-specific parameter；Sanitize 以 0h 指 subsystem，以 NSID 指 namespace，不能把它讀成進度。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>EVNTSP</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-156 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-156"><h4>Base Figure 156 · Asynchronous Event Information - I/O Command Specific Status</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-156-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base156-1">Base156-1</span><span class="paragraph-text">I/O Command Set 事件用不同通知區分清除完成與進入驗證。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 156, 文件頁 189-190, PDF 頁 215-216</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base156-2">Base156-2</span><span class="paragraph-text">Entered Media Verification State 與 Sanitize Operation Completed 不是同一事件；前者表示還有驗證階段的存取規則需要遵守。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base156-3">Base156-3</span><span class="paragraph-text">01h/02h/03h 三種 Sanitize AEI 必須與 SOS/SANS 一起看；Entered Media Verification 不是 operation 全部完成。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Sanitize Operation Completed</li><li>Unexpected Deallocation</li><li>Entered Media Verification</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-sanitize-read"><summary>圖表組 04 · 操作限制與驗證讀取 · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">先檢查是否處於 Media Verification，再依 PI 檢查要求及 allocated／deallocated 分支閱讀結果表。表中的特定成功狀態與一般 Successful Completion 要分辨，且不能用解除配置後的回傳值代替實體媒體觀察。</span></p>
+<a class="reading-link" href="#module-sanitize-read">回到本節的解釋與範例</a>
+<!-- figure-table:BASESANITIZE-NVMCS-FIG-011 -->
+<article class="field-note" id="figure-BASESANITIZE-NVMCS-FIG-011"><h4>NVM Figure 11 · Protection Information Field Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-NVMCS-FIG-011-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM11-1">NVM11-1</span><span class="paragraph-text">PRACT 決定 PI 的處理方式，PRCHK 決定要進行哪些檢查。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.5, Figure 11, 文件頁 21-22, PDF 頁 21-22</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM11-2">NVM11-2</span><span class="paragraph-text">同樣 PRACT＝1，metadata 大小等於 PI 大小或大於 PI 大小時，傳輸的內容可能不同；要沿表中相應列追資料，而非只看 PRACT。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM11-3">NVM11-3</span><span class="paragraph-text">PRACT 是 action，PRCHK 是三種檢查的 bit mask。PRACT=1 時先比較 MS 與 PI size，才能知道資料是否 strip／insert 或維持 metadata 大小。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PRACT</li><li>PRCHK</li><li>GRDCHK</li><li>ATCHK</li><li>RTCHK</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-NVMCS-FIG-012 -->
+<article class="field-note" id="figure-BASESANITIZE-NVMCS-FIG-012"><h4>NVM Figure 12 · Storage Tag Check Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-NVMCS-FIG-012-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM12-1">NVM12-1</span><span class="paragraph-text">Storage Tag 是否存在，決定 STC 檢查要求是否有對象。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.5</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.5, Figure 12, 文件頁 22, PDF 頁 22</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM12-2">NVM12-2</span><span class="paragraph-text">STS＝0 表示沒有 Storage Tag，因此設定 STC 也不會憑空產生一個要比對的 tag；改成非零 STS 後才有對應位元。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM12-3">NVM12-3</span><span class="paragraph-text">STC 啟用 Storage Tag checking；STS=0 時沒有 Storage Tag，controller 忽略 STC。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>STC</li><li>Storage Tag</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-144 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-144"><h4>Base Figure 144 · NVM Subsystem Sanitize Operations and Format NVM Command - Admin</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-144-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base144-1">Base144-1</span><span class="paragraph-text">Subsystem Sanitize 期間的 Admin 命令限制依命令與清除狀態而定。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.1.1, Figure 144, 文件頁 178-179, PDF 頁 204-205</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base144-2">Base144-2</span><span class="paragraph-text">想讀 Boot Partition log 時，先查這一列在目前清除情境是否允許，不把其他 log 的許可套用過來。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base144-3">Base144-3</span><span class="paragraph-text">比較 Sanitize 欄的命令白名單及各命令限制；Boot log 可讀，Telemetry 07h/08h 未被列入。只使用通用與 memory-based 命令列。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Get Log Page</li><li>Boot Partition</li><li>Sanitize Status</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-145 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-145"><h4>Base Figure 145 · Namespace Sanitize Operations - Admin Command Restrictions, All Controllers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-145-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base145-1">Base145-1</span><span class="paragraph-text">Namespace Sanitize 對所有控制器的管理操作有共同限制。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.1.2, Figure 145, 文件頁 179-180, PDF 頁 205-206</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base145-2">Base145-2</span><span class="paragraph-text">清除某個 namespace 時，另一控制器送出的管理操作也可能受影響；限制範圍不只送出清除命令的控制器。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base145-3">Base145-3</span><span class="paragraph-text">這張表約束所有 controllers：例如拒絕刪除正被 sanitize 的 namespace，並限制 firmware update；先套用 target 關係再判斷 status。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Set Features</li><li>Namespace Management</li><li>Firmware Commit</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-146 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-146"><h4>Base Figure 146 · Namespace Sanitize Operations - Admin Command Restrictions if Sanitizing</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-146-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base146-1">Base146-1</span><span class="paragraph-text">與正在清除的 namespace 有關的控制器還有額外限制。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.1.2, Figure 146, 文件頁 180-181, PDF 頁 206-207</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base146-2">Base146-2</span><span class="paragraph-text">比較附加該 namespace 與未附加它的控制器時，先套用共同限制，再看這張表的條件是否成立。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base146-3">Base146-3</span><span class="paragraph-text">這張表補充有 attached sanitizing namespace 的 controllers；不能把所有 controller 與只有 attached controller 的限制混為一談。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Attached Namespace</li><li>Admin command restrictions</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASESANITIZE-BASE-FIG-311 -->
+<article class="field-note" id="figure-BASESANITIZE-BASE-FIG-311"><h4>Base Figure 311 · Reservation Notification Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-311-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base311-1">Base311-1</span><span class="paragraph-text">Reservation Notification log 描述保留狀態相關通知。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.37</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.37, Figure 311, 文件頁 313, PDF 頁 339</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base311-2">Base311-2</span><span class="paragraph-text">收到通知後先看通知種類與計數，確認是否需要重新讀取保留狀態；通知紀錄本身不是完整使用者資料。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base311-3">Base311-3</span><span class="paragraph-text">這是 Reservation Notification 的通知資料結構，回報通知計數與類型等；不含 SPROG。8.1.27.4.2 的引用疑似錯置，進度應對照 Figure 312。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Reservation Notification</li><li>Log Page Count</li><li>Notification Type</li></ul></div>
+
+</details></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:base-sanitize-1 -->
+<details class="review-question" id="qa-base-sanitize-1"><summary>1. Sanitize 命令回報 Successful Completion，是否可以立即宣告清除完成？</summary>
+<div data-qa-answer="base-sanitize-1"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">它表示啟動命令成功，背景 operation 可能仍在進行。後續要用相應的 Sanitize Status 判斷 operation 狀態；SPROG 與時間估計提供進度資訊，不能取代最終狀態。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26.1; 8.1.27.1, 文件頁 451,712-713, PDF 頁 477,738-739</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, 文件頁 313-319, PDF 頁 339-345</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38; 8.1.27.3, 文件頁 314-319,718, PDF 頁 340-345,744</p>
+</details></details>
+<!-- qa:base-sanitize-2 -->
+<details class="review-question" id="qa-base-sanitize-2"><summary>2. 為何不能用「讀回全零」作為所有 sanitize 方法的共同成功標準？</summary>
+<div data-qa-answer="base-sanitize-2"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">各方法的讀值規則不同，且 deallocation 會改用另一組規則。Block Erase、Crypto Erase、Overwrite 不能用同一預期 pattern 判斷；Media Verification state 也有自己的讀取語意。先確認 operation 狀態，再按方法與 block 狀態解釋資料。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.27.2-8.1.27.3, 文件頁 714-717, PDF 頁 740-743</p>
+<p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12, 文件頁 174, PDF 頁 174</p>
+<p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.12.1, 文件頁 174-175, PDF 頁 174-175</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p><p>NVM Express NVM Command Set Specification, Revision 1.3</p></details></footer></main></div></body></html>

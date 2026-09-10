@@ -78,6 +78,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
 .nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
 .nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
 .nvme-note .field-note > summary { font-size: 15px; }
 .nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
 .nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
@@ -144,38 +155,38 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-identity"><h2 id="heading-identity"><span class="section-number">01</span> Controller 類型、識別碼與能力</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">控制器類型先決定它負責哪些工作。I/O controller 能處理使用者資料 I/O；Administrative controller 負責管理用途。兩者都可能有 Admin Queue，所以不能因為找到管理佇列，就推論這個控制器也能接受資料讀寫。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">控制器類型先決定它負責哪些工作。I/O controller 能處理使用者資料 I/O；Administrative controller 負責管理用途。兩者都可能有 Admin Queue，所以不能因為找到管理佇列，就推論這個控制器也能接受資料讀寫。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">同一類型內，選用功能仍可能不同。規格表中的支援標示，必須連同它所在的列、欄與註腳閱讀，才能知道是一定要支援、可以選擇支援，或在某種條件下才適用。控制器識別碼用來辨認對象，也不會單獨證明它具有哪種能力。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §3.1.1 · Base 2.4 §3.1.3-3.1.3.2 · Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66</p></details>
 </div>
 <!-- claim:BASE3-STATIC -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">memory-based controller 必須（shall）只支援 static controller model。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">memory-based controller 必須（shall）只支援 static controller model。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.1, 文件頁 38, PDF 頁 64</p></details>
 <!-- claim:BASE3-TYPES -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">本輪只使用 I/O controller 與 Administrative controller：前者可執行使用者資料的 I/O，後者以管理為目的且不支援資料 I/O command。兩者都具有一組 Admin Submission／Completion Queue。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Administrative controller</dt><dd>Administrative controller，以管理為目的且不執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.3-3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">本輪只使用 I/O controller 與 Administrative controller：前者可執行使用者資料的 I/O，後者以管理為目的且不支援資料 I/O command。兩者都具有一組 Admin Submission／Completion Queue。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3-3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3-3.1.3.2, 文件頁 39-43, PDF 頁 65-69</p></details>
 <!-- claim:BASE3-ORDER -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">除 fused operation 外，controller 取走的命令與完成沒有一般性的先後保證；若有順序需求，強制該順序是 host 的責任。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66</p></details>
 <div class="table-wrap"><table><caption>Controller 類型、識別碼與能力</caption><thead><tr><th scope="col">控制器類型或標示</th><th scope="col">可以處理的工作</th><th scope="col">支援能力如何確認</th></tr></thead><tbody><tr><td>I/O controller</td><td>可執行使用者資料 I/O</td><td>仍需逐項查 optional capability</td></tr><tr><td>Administrative controller</td><td>管理用途、無資料 I/O command</td><td>不能因有 Admin Queue 就當成 I/O controller</td></tr><tr><td>支援標示</td><td>針對 row 與上下文描述強度</td><td>不能脫離 column／footnote 解讀</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">說明性範例：偵測到一個 Administrative controller 時，軟體仍會建立 Admin SQ/CQ 並執行管理 command，但不應把 namespace data path 掛到它。若只用『存在 Admin Queue』判斷 controller type，I/O 與 Administrative controller 會被錯誤歸成同類。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl></aside>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">說明性範例：偵測到一個 Administrative controller 時，軟體仍會建立 Admin SQ/CQ 並執行管理 command，但不應把 namespace data path 掛到它。若只用『存在 Admin Queue』判斷 controller type，I/O 與 Administrative controller 會被錯誤歸成同類。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl></aside>
 <a class="reading-link" href="#reading-identity">閱讀相關規格圖表 → Controller 類型、識別碼與能力</a>
 </section>
 <section class="lesson" id="module-properties-init"><h2 id="heading-properties-init"><span class="section-number">02</span> 從設定到 CSTS.RDY：初始化流程</h2>
 <div class="lesson-explanation">
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">初始化是一段由雙方配合的流程。主機先讀能力，選擇相容設定，準備 Admin 佇列記憶體及大小，再要求控制器啟用。控制器完成自己的準備後，才以 RDY 回報可使用。主機寫入 enable 位，只代表提出要求，並不表示控制器已立即就緒。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RDY</dt><dd>Ready，CSTS 中表示 controller 是否已準備正常處理 command 的 bit。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">CAP、CC、CSTS 分別描述能力、主機選擇與控制器狀態。把它們當成不同角色的資訊，才不會用「支援某種 page size」推論目前已使用它，或用「已要求啟用」推論 RDY 已成立。時間上限及錯誤狀態也是初始化條件的一部分。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div><div><dt>RDY</dt><dd>Ready，CSTS 中表示 controller 是否已準備正常處理 command 的 bit。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">CAP、CC、CSTS 分別描述能力、主機選擇與控制器狀態。把它們當成不同角色的資訊，才不會用「支援某種 page size」推論目前已使用它，或用「已要求啟用」推論 RDY 已成立。時間上限及錯誤狀態也是初始化條件的一部分。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
 <details class="source-note"><summary>來源：Base 2.4 §3.1.4 · Base 2.4 §3.5.1, 3.5.3-3.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139</p></details>
 </div>
 <!-- claim:BASE3-PROPERTY -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">host 必須（shall）以 property 指定的寬度，從 property 起始 offset 存取；memory-based controller 的實際存取規則由 PCIe Transport 補充。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">host 必須（shall）以 property 指定的寬度，從 property 起始 offset 存取；memory-based controller 的實際存取規則由 PCIe Transport 補充。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</p></details>
 <!-- claim:BASE3-INIT -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">PCIe 初始化以 CAP 判斷能力與 timeout，設定 AQA／ASQ／ACQ 與 CC，接著等待 CSTS.RDY。ready mode 與 CRTO 會影響 host 等待與錯誤處理。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CRTO</dt><dd>Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。</dd></div><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.5.1, 3.5.3-3.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139</p></details>
-<div class="table-wrap"><table><caption>從設定到 CSTS.RDY：初始化流程</caption><thead><tr><th scope="col">Property 或設定</th><th scope="col">主機與控制器各自提供什麼</th><th scope="col">初始化時的先後關係</th></tr></thead><tbody><tr><td>CAP</td><td>能力與界限</td><td>在寫設定前讀</td></tr><tr><td>AQA/ASQ/ACQ</td><td>Admin queue 大小與位址</td><td>需符合 page/alignment 能力</td></tr><tr><td>CC</td><td>host 選擇與 enable</td><td>寫入值要與 CAP 相容</td></tr><tr><td>CSTS</td><td>controller 回報狀態</td><td>RDY/CFS/SHST 不可互相替代</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SHST</dt><dd>Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。</dd></div><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div></dl>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">說明性範例：host 選擇 4 KiB MPS，ASQ 與 ACQ base address 因而必須依該 page size 對齊。寫 CC.EN=1 後，host 以 CAP／CRTO 指定的時間界限等待 CSTS.RDY=1；若 CFS 先出現，流程應進入 error recovery，而不是繼續建立 I/O queues。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CRTO</dt><dd>Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl></aside>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">PCIe 初始化以 CAP 判斷能力與 timeout，設定 AQA／ASQ／ACQ 與 CC，接著等待 CSTS.RDY。ready mode 與 CRTO 會影響 host 等待與錯誤處理。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CRTO</dt><dd>Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。</dd></div><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.5.1, 3.5.3-3.5.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.1, 3.5.3-3.5.4, 文件頁 105-113, PDF 頁 131-139</p></details>
+<div class="table-wrap"><table><caption>從設定到 CSTS.RDY：初始化流程</caption><thead><tr><th scope="col">Property 或設定</th><th scope="col">主機與控制器各自提供什麼</th><th scope="col">初始化時的先後關係</th></tr></thead><tbody><tr><td>CAP</td><td>能力與界限</td><td>在寫設定前讀</td></tr><tr><td>AQA/ASQ/ACQ</td><td>Admin queue 大小與位址</td><td>需符合 page/alignment 能力</td></tr><tr><td>CC</td><td>host 選擇與 enable</td><td>寫入值要與 CAP 相容</td></tr><tr><td>CSTS</td><td>controller 回報狀態</td><td>RDY/CFS/SHST 不可互相替代</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SHST</dt><dd>Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。</dd></div></dl>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">說明性範例：host 選擇 4 KiB MPS，ASQ 與 ACQ base address 因而必須依該 page size 對齊。寫 CC.EN=1 後，host 以 CAP／CRTO 指定的時間界限等待 CSTS.RDY=1；若 CFS 先出現，流程應進入 error recovery，而不是繼續建立 I/O queues。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl></aside>
 <a class="reading-link" href="#reading-properties-init">閱讀相關規格圖表 → 從設定到 CSTS.RDY：初始化流程</a>
 </section>
 <section class="lesson" id="module-queue-arbitration"><h2 id="heading-queue-arbitration"><span class="section-number">03</span> Queue 位置與命令選取</h2>
 <div class="lesson-explanation">
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">環狀佇列的 head、tail 用來追蹤哪些位置已被使用或釋放。索引走到末端後會回到開頭，因此同一個 slot 會被反覆使用；不能只看到某個索引數值，就把它當成命令累積總數。空與滿的判斷也必須依該佇列的規則進行。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">Arbitration 決定控制器下一步從哪些候選 SQ 選工作，不保證每筆工作花一樣時間。即使某筆命令先被選中，另一筆較短的命令仍可能先完成。閱讀優先級與權重時，要分清楚服務選擇、命令執行、完成回報三件事。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">Arbitration 決定控制器下一步從哪些候選 SQ 選工作，不保證每筆工作花一樣時間。即使某筆命令先被選中，另一筆較短的命令仍可能先完成。閱讀優先級與權重時，要分清楚服務選擇、命令執行、完成回報三件事。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §3.3.1 · Base 2.4 §3.4.1-3.4.5 · Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1, 文件頁 88-91, PDF 頁 114-117</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.1-3.4.5, 文件頁 101-105, PDF 頁 127-131</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, 文件頁 40, PDF 頁 66</p></details>
 </div>
 <!-- claim:BASE3-QUEUE -->
@@ -193,10 +204,10 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details class="source-note"><summary>來源：Base 2.4 §3.1.4 · Base 2.4 §3.8 · Base 2.4 §3.2.2-3.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, 文件頁 52-54, PDF 頁 78-80</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111</p></details>
 </div>
 <!-- claim:BASE3-CAPACITY -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">capacity model 分開追蹤 NVM subsystem、Endurance Group、NVM Set 與 namespace 的可用或配置容量；同一數值不可跨層級直接比較。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Endurance Group</dt><dd>Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。</dd></div><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">capacity model 分開追蹤 NVM subsystem、Endurance Group、NVM Set 與 namespace 的可用或配置容量；同一數值不可跨層級直接比較。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8, 文件頁 125-129, PDF 頁 151-155</p></details>
 <!-- claim:BASE3-MEDIA -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">NVM Set、Endurance Group、Reclaim Group 與 Reclaim Unit 分別描述容量集合、耐久度管理與回收粒度。是否支援及其 identifier 由 Identify／log page 能力判定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Group</dt><dd>Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。</dd></div><div><dt>Reclaim Unit</dt><dd>Reclaim Unit，controller 執行媒體回收時使用的較小管理粒度。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.2.2-3.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2-3.2.4, 文件頁 80-85, PDF 頁 106-111</p></details>
-<div class="table-wrap"><table><caption>Namespace、CMB、PMR 與容量</caption><thead><tr><th scope="col">記憶體或容量層級</th><th scope="col">提供哪種資源</th><th scope="col">使用或比較前的確認</th></tr></thead><tbody><tr><td>CMB</td><td>controller-provided working memory</td><td>是否能放 SQ/CQ/list/data 由能力 bit 決定</td></tr><tr><td>PMR</td><td>具有持久性語意的 region</td><td>enable、ready、error 與 address control 要一起看</td></tr><tr><td>capacity model</td><td>subsystem／group／set／namespace 的容量</td><td>不同層級欄位不可直接相減</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div></dl>
+<div class="table-wrap"><table><caption>Namespace、CMB、PMR 與容量</caption><thead><tr><th scope="col">記憶體或容量層級</th><th scope="col">提供哪種資源</th><th scope="col">使用或比較前的確認</th></tr></thead><tbody><tr><td>CMB</td><td>controller-provided working memory</td><td>是否能放 SQ/CQ/list/data 由能力 bit 決定</td></tr><tr><td>PMR</td><td>具有持久性語意的 region</td><td>enable、ready、error 與 address control 要一起看</td></tr><tr><td>capacity model</td><td>subsystem／group／set／namespace 的容量</td><td>不同層級欄位不可直接相減</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">說明性範例：CMB size 足以容納一個 SQ，不代表 controller 的 namespace 多出同樣容量；前者是 queue/data structure 的放置資源，後者才是 host 可格式化與存取的非揮發性容量。</span></p></aside>
 <a class="reading-link" href="#reading-memory-capacity">閱讀相關規格圖表 → Namespace、CMB、PMR 與容量</a>
 </section>
@@ -207,397 +218,633 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details class="source-note"><summary>來源：Base 2.4 §3.6.1, 3.6.3 · Base 2.4 §3.7 · Base 2.4 §3.9 · Base 2.4 §3.10-3.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164</p></details>
 </div>
 <!-- claim:BASE3-SHUTDOWN -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">正常 shutdown 由 host 設定 CC.SHN，controller 透過 CSTS.SHST 回報進度；NVM subsystem shutdown 是更大範圍的處理，不能與單一 controller shutdown 混為一談。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div><div><dt>SHST</dt><dd>Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。</dd></div><div><dt>SHN</dt><dd>Shutdown Notification，CC 中由 host 宣告 shutdown 類型的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.6.1, 3.6.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">正常 shutdown 由 host 設定 CC.SHN，controller 透過 CSTS.SHST 回報進度；NVM subsystem shutdown 是更大範圍的處理，不能與單一 controller shutdown 混為一談。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SHN</dt><dd>Shutdown Notification，CC 中由 host 宣告 shutdown 類型的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.6.1, 3.6.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.6.1, 3.6.3, 文件頁 113-120, PDF 頁 139-146</p></details>
 <!-- claim:BASE3-RESET -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">NVM Subsystem Reset、Controller Level Reset 與 Queue Level Reset 的影響範圍不同；設計 recovery flow 前先確認哪一層狀態會被清除、queue 是否仍存在。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.7, 文件頁 120-125, PDF 頁 146-151</p></details>
 <!-- claim:BASE3-KEEPALIVE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">Keep Alive 以 KATO／KATT 建立 host 與 controller 的存活監測；本報告只保留 controller 共通與 PCIe 可用的 timer、command 與 timeout 行為。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>KATO</dt><dd>Keep Alive Timeout，host 與 controller 約定的存活逾時設定。</dd></div><div><dt>KATT</dt><dd>Keep Alive Timeout Total，controller 用於偵測逾時的總時間基準。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.9, 文件頁 129-135, PDF 頁 155-161</p></details>
 <!-- claim:BASE3-FIRMWARE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">privileged action 會影響其他 host 或 controller；firmware update 分成 image download、commit／activate 與可能的 reset，host 依回報的 activation action 安排流程。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.10-3.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.10-3.11, 文件頁 135-138, PDF 頁 161-164</p></details>
-<div class="table-wrap"><table><caption>Shutdown、Reset 與狀態保留</caption><thead><tr><th scope="col">停止或重設事件</th><th scope="col">影響的對象與目的</th><th scope="col">判斷完成或保留狀態的資訊</th></tr></thead><tbody><tr><td>normal shutdown</td><td>保護性停止與狀態回報</td><td>看 SHN/SHST</td></tr><tr><td>controller reset</td><td>controller 層級狀態</td><td>queue 是否保留要依 reset 類型</td></tr><tr><td>NVM subsystem reset</td><td>更大 subsystem scope</td><td>可能影響多個 controllers</td></tr><tr><td>Keep Alive timeout</td><td>liveness failure</td><td>不能直接等同 media failure</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SHN</dt><dd>Shutdown Notification，CC 中由 host 宣告 shutdown 類型的欄位。</dd></div></dl>
+<div class="table-wrap"><table><caption>Shutdown、Reset 與狀態保留</caption><thead><tr><th scope="col">停止或重設事件</th><th scope="col">影響的對象與目的</th><th scope="col">判斷完成或保留狀態的資訊</th></tr></thead><tbody><tr><td>normal shutdown</td><td>保護性停止與狀態回報</td><td>看 SHN/SHST</td></tr><tr><td>controller reset</td><td>controller 層級狀態</td><td>queue 是否保留要依 reset 類型</td></tr><tr><td>NVM subsystem reset</td><td>更大 subsystem scope</td><td>可能影響多個 controllers</td></tr><tr><td>Keep Alive timeout</td><td>liveness failure</td><td>不能直接等同 media failure</td></tr></tbody></table></div>
 <aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">說明性範例：host 要做 normal shutdown 時先停止提交新 I/O，設定 CC.SHN，再監看 CSTS.SHST。若等待期間發生 controller fatal status，後續 recovery 應按 reset scope 重建資源，而不是假設 normal shutdown 已完成。</span></p></aside>
 <a class="reading-link" href="#reading-lifecycle">閱讀相關規格圖表 → Shutdown、Reset 與狀態保留</a>
 </section>
 <section id="figure-reading"><h2><span class="section-number">06</span> 讀懂本篇的規格圖表</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
-<div class="figure-reading-group" id="reading-identity"><h3>圖表組 01 · Controller 類型、識別碼與能力</h3>
+<details open class="figure-reading-group" id="reading-identity"><summary>圖表組 01 · Controller 類型、識別碼與能力 · 9 張圖表</summary>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">先按 controller type 選表格欄，再看每項命令或功能的支援標示。識別碼表回答「是哪一個」，能力表回答「能做什麼」；兩者要在同一控制器的上下文中連接。</span></p>
 <a class="reading-link" href="#module-identity">回到本節的解釋與範例</a>
 <!-- figure-table:BASE3-FIG-023 -->
-<details class="field-note" id="figure-BASE3-FIG-023"><summary>Base Figure 23 · Controller Types</summary>
-<!-- claim:BASE3-FIG-023-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">Figure 23〈Controller Types〉：Controller type 決定控制器角色，Controller ID 辨認具體對象。高值識別碼另有保留或特殊用途，應依清單解讀，不能把 FFF0h–FFFFh 全部當成一般可指派的控制器編號。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 23, 文件頁 39, PDF 頁 65</p></details>
+<article class="field-note" id="figure-BASE3-FIG-023"><h4>Base Figure 23 · Controller Types</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-023-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base23-1">Base23-1</span><span class="paragraph-text">控制器類型決定它以資料 I/O 或管理為主要角色。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 23, 文件頁 39, PDF 頁 65</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base23-2">Base23-2</span><span class="paragraph-text">I/O controller 可以處理 namespace 資料命令；Administrative controller 有管理用途，但不能因此推論也可執行一般 Read。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base23-3">Base23-3</span><span class="paragraph-text">Controller type 決定控制器角色，Controller ID 辨認具體對象。高值識別碼另有保留或特殊用途，應依清單解讀，不能把 FFF0h–FFFFh 全部當成一般可指派的控制器編號。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-024 -->
-<details class="field-note" id="figure-BASE3-FIG-024"><summary>Base Figure 24 · NVM Subsystem with Three I/O Controllers</summary>
-<!-- claim:BASE3-FIG-024-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">Figure 24〈NVM Subsystem with Three I/O Controllers〉：將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.1, Figure 24, 文件頁 41, PDF 頁 67</p></details>
+<article class="field-note" id="figure-BASE3-FIG-024"><h4>Base Figure 24 · NVM Subsystem with Three I/O Controllers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-024-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base24-1">Base24-1</span><span class="paragraph-text">多個 I/O controllers 讓同一 subsystem 提供多個資料介面。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.1, Figure 24, 文件頁 41, PDF 頁 67</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base24-2">Base24-2</span><span class="paragraph-text">對圖中的某個 namespace，分別追查每個控制器是否附加它；控制器都屬於同一 subsystem，仍可能有不同可存取範圍。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base24-3">Base24-3</span><span class="paragraph-text">將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>I/O Controller</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-025 -->
-<details class="field-note" id="figure-BASE3-FIG-025"><summary>Base Figure 25 · NVM Subsystem with One Administrative and Two I/O Controllers</summary>
-<!-- claim:BASE3-FIG-025-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">Figure 25〈NVM Subsystem with One Administrative and Two I/O Controllers〉：將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 25, 文件頁 42, PDF 頁 68</p></details>
+<article class="field-note" id="figure-BASE3-FIG-025"><h4>Base Figure 25 · NVM Subsystem with One Administrative and Two I/O Controllers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-025-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base25-1">Base25-1</span><span class="paragraph-text">管理控制器與 I/O controllers 可以分工共存。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 25, 文件頁 42, PDF 頁 68</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base25-2">Base25-2</span><span class="paragraph-text">管理程式使用 Administrative controller 取得管理資訊，資料路徑則使用 I/O controller；先說明角色，再介紹各自命令。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-024">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>I/O Controller</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-026 -->
-<details class="field-note" id="figure-BASE3-FIG-026"><summary>Base Figure 26 · NVM Subsystem with One Administrative Controller</summary>
-<!-- claim:BASE3-FIG-026-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">Figure 26〈NVM Subsystem with One Administrative Controller〉：將 controller、port 與 namespace 分別標示，再沿連線看存取關係。多個控制器可以處在同一 subsystem；Administrative controller 的管理角色不能用來推論它也處理 namespace 資料 I/O。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 26, 文件頁 42, PDF 頁 68</p></details>
+<article class="field-note" id="figure-BASE3-FIG-026"><h4>Base Figure 26 · NVM Subsystem with One Administrative Controller</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-026-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base26-1">Base26-1</span><span class="paragraph-text">只有 Administrative controller 的配置仍是管理介面。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.2, Figure 26, 文件頁 42, PDF 頁 68</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base26-2">Base26-2</span><span class="paragraph-text">即使主機能送出 Admin command，也不能推論這個介面已提供一般 namespace Read／Write 路徑。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-024">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li><li>Administrative Controller</li><li>Controller</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-027 -->
-<details class="field-note" id="figure-BASE3-FIG-027"><summary>Base Figure 27 · Controller IDs FFF0h to FFFFh</summary>
-<!-- claim:BASE3-FIG-027-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">Figure 27〈Controller IDs FFF0h to FFFFh〉：Controller type 決定控制器角色，Controller ID 辨認具體對象。高值識別碼另有保留或特殊用途，應依清單解讀，不能把 FFF0h–FFFFh 全部當成一般可指派的控制器編號。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3, Figure 27, 文件頁 44, PDF 頁 70</p></details>
+<article class="field-note" id="figure-BASE3-FIG-027"><h4>Base Figure 27 · Controller IDs FFF0h to FFFFh</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-027-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base27-1">Base27-1</span><span class="paragraph-text">部分 Controller ID 值有特殊用途，不能視為普通控制器編號。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3, Figure 27, 文件頁 44, PDF 頁 70</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base27-2">Base27-2</span><span class="paragraph-text">在控制器清單看到接近 FFFFh 的值時，先依這張表查用途；不要直接把它當成裝置上真的有第 65535 個控制器。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-023">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Controller</li><li>Controller ID</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-028 -->
-<details class="field-note" id="figure-BASE3-FIG-028"><summary>Base Figure 28 · Admin Command Support Requirements</summary>
-<!-- claim:BASE3-FIG-028-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.08">06.08.</span><span class="paragraph-text">Figure 28〈Admin Command Support Requirements〉：先選控制器類型，再讀命令、log 或 Feature 所在列的支援標示。帶有數字註腳的標示必須連同條件閱讀；同一功能在另一種控制器類型下可能有不同要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3.3, Figure 28, 文件頁 45-47, PDF 頁 71-73</p></details>
+<article class="field-note" id="figure-BASE3-FIG-028"><h4>Base Figure 28 · Admin Command Support Requirements</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-028-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base28-1">Base28-1</span><span class="paragraph-text">Admin 命令支援要求需要連同表格註腳閱讀。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.3.3, Figure 28, 文件頁 45-47, PDF 頁 71-73</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base28-2">Base28-2</span><span class="paragraph-text">某列為 optional 且帶條件註記時，先確認條件是否成立，再查 Identify 能力；表內列出命令並不表示裝置已實作。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base28-3">Base28-3</span><span class="paragraph-text">先選控制器類型，再讀命令、log 或 Feature 所在列的支援標示。帶有數字註腳的標示必須連同條件閱讀；同一功能在另一種控制器類型下可能有不同要求。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MI</li><li>O10</li><li>O11</li><li>Command</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-030 -->
-<details class="field-note" id="figure-BASE3-FIG-030"><summary>Base Figure 30 · Common I/O Command Support Requirements</summary>
-<!-- claim:BASE3-FIG-030-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.09">06.09.</span><span class="paragraph-text">Figure 30〈Common I/O Command Support Requirements〉：先選控制器類型，再讀命令、log 或 Feature 所在列的支援標示。帶有數字註腳的標示必須連同條件閱讀；同一功能在另一種控制器類型下可能有不同要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 30, 文件頁 47-48, PDF 頁 73-74</p></details>
+<article class="field-note" id="figure-BASE3-FIG-030"><h4>Base Figure 30 · Common I/O Command Support Requirements</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-030-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base30-1">Base30-1</span><span class="paragraph-text">共通 I/O 命令的要求與個別命令集能力一起決定可用操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 30, 文件頁 47-48, PDF 頁 73-74</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base30-2">Base30-2</span><span class="paragraph-text">使用與資料放置有關的操作前，先看支援要求，再查相應功能是否存在，不以操作碼表取代能力判斷。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-028">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FDPS</li><li>Command</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-031 -->
-<details class="field-note" id="figure-BASE3-FIG-031"><summary>Base Figure 31 · Log Page Support Requirements</summary>
-<!-- claim:BASE3-FIG-031-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.10">06.10.</span><span class="paragraph-text">Figure 31〈Log Page Support Requirements〉：先選控制器類型，再讀命令、log 或 Feature 所在列的支援標示。帶有數字註腳的標示必須連同條件閱讀；同一功能在另一種控制器類型下可能有不同要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 31, 文件頁 48-50, PDF 頁 74-76</p></details>
+<article class="field-note" id="figure-BASE3-FIG-031"><h4>Base Figure 31 · Log Page Support Requirements</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-031-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base31-1">Base31-1</span><span class="paragraph-text">Log Page 支援表描述哪些紀錄在何種條件下需要提供。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.4, Figure 31, 文件頁 48-50, PDF 頁 74-76</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base31-2">Base31-2</span><span class="paragraph-text">一個健康狀態 log 與一個選用功能 log，可能有不同支援要求；先看列與註腳，再選要讀的 LID。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-028">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>M3</li><li>SMART</li><li>O4</li><li>O6</li><li>O12</li><li>O13</li><li>FDP</li><li>O5</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，把資料放置提示與媒體回收管理連結的能力。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-032 -->
-<details class="field-note" id="figure-BASE3-FIG-032"><summary>Base Figure 32 · Feature Support Requirements</summary>
-<!-- claim:BASE3-FIG-032-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.11">06.11.</span><span class="paragraph-text">Figure 32〈Feature Support Requirements〉：先選控制器類型，再讀命令、log 或 Feature 所在列的支援標示。帶有數字註腳的標示必須連同條件閱讀；同一功能在另一種控制器類型下可能有不同要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.5, Figure 32, 文件頁 50-52, PDF 頁 76-78</p></details>
+<article class="field-note" id="figure-BASE3-FIG-032"><h4>Base Figure 32 · Feature Support Requirements</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-032-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base32-1">Base32-1</span><span class="paragraph-text">Feature 支援表區分功能存在、控制器類型與附加條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3.5, Figure 32, 文件頁 50-52, PDF 頁 76-78</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base32-2">Base32-2</span><span class="paragraph-text">某 Feature 在 I/O controller 有條件支援，並不代表在管理控制器也有相同作用範圍。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-028">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LBA</li><li>O8</li><li>M10</li><li>M7</li><li>O9</li><li>O6</li><li>O5</li><li>O3</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-properties-init"><h3>圖表組 02 · 從設定到 CSTS.RDY：初始化流程</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.12">06.12.</span><span class="paragraph-text">沿能力→佇列配置→啟用→就緒的順序連接 CAP、AQA／ASQ／ACQ、CC、CSTS。寄存器布局圖中的 offset 是定位欄位，狀態圖中的箭頭才描述條件成立後的轉移。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<details open class="figure-reading-group" id="reading-properties-init"><summary>圖表組 02 · 從設定到 CSTS.RDY：初始化流程 · 16 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">沿能力→佇列配置→啟用→就緒的順序連接 CAP、AQA／ASQ／ACQ、CC、CSTS。寄存器布局圖中的 offset 是定位欄位，狀態圖中的箭頭才描述條件成立後的轉移。</span></p>
 <a class="reading-link" href="#module-properties-init">回到本節的解釋與範例</a>
 <!-- figure-table:BASE3-FIG-033 -->
-<details class="field-note" id="figure-BASE3-FIG-033"><summary>Base Figure 33 · Property Definition</summary>
-<!-- claim:BASE3-FIG-033-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.13">06.13.</span><span class="paragraph-text">Figure 33〈Property Definition〉：Property 索引先列出位址與名稱，個別欄位表再定義讀寫方式和內容。Memory-based 的 Doorbell 間距由 CAP.DSTRD 決定，不能把索引表中的第一組位置直接複製到所有佇列。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 33, 文件頁 52-53, PDF 頁 78-79</p></details>
+<article class="field-note" id="figure-BASE3-FIG-033"><h4>Base Figure 33 · Property Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-033-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base33-1">Base33-1</span><span class="paragraph-text">Property 總表提供各暫存器的位置與存取概要。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 33, 文件頁 52-53, PDF 頁 78-79</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base33-2">Base33-2</span><span class="paragraph-text">要讀 CSTS，先在總表找到 offset，再到 CSTS 欄位表解釋 RDY；總表與欄位表回答不同層次的問題。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base33-3">Base33-3</span><span class="paragraph-text">Property 索引先列出位址與名稱，個別欄位表再定義讀寫方式和內容。Memory-based 的 Doorbell 間距由 CAP.DSTRD 決定，不能把索引表中的第一組位置直接複製到所有佇列。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OFST</li><li>CAP</li><li>VS</li><li>M2</li><li>INTMS</li><li>INTMC</li><li>CC</li><li>CSTS</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>OFST</dt><dd>Offset，Firmware Image Download 中以 dword 為單位的 image-relative offset。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-034 -->
-<details class="field-note" id="figure-BASE3-FIG-034"><summary>Base Figure 34 · Memory-Based Property Definition</summary>
-<!-- claim:BASE3-FIG-034-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.14">06.14.</span><span class="paragraph-text">Figure 34〈Memory-Based Property Definition〉：Property 索引先列出位址與名稱，個別欄位表再定義讀寫方式和內容。Memory-based 的 Doorbell 間距由 CAP.DSTRD 決定，不能把索引表中的第一組位置直接複製到所有佇列。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, 文件頁 54, PDF 頁 80</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CAP.DSTRD</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.DSTRD 進一步指定其中的 DSTRD 子欄位。</dd></div><div><dt>OFST</dt><dd>Offset，Firmware Image Download 中以 dword 為單位的 image-relative offset。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-034"><h4>Base Figure 34 · Memory-Based Property Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-034-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base34-1">Base34-1</span><span class="paragraph-text">記憶體介面的 property 空間也包含依 stride 排列的 doorbells。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4, Figure 34, 文件頁 54, PDF 頁 80</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base34-2">Base34-2</span><span class="paragraph-text">QID 改變時，doorbell offset 依 CAP.DSTRD 推進；不能把所有佇列都寫入同一個固定暫存器位置。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-033">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OFST</li><li>CAP.DSTRD</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-036 -->
-<details class="field-note" id="figure-BASE3-FIG-036"><summary>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</summary>
-<!-- claim:BASE3-FIG-036-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.15">06.15.</span><span class="paragraph-text">Figure 36〈Offset 0h: CAP - Controller Capabilities〉：CAP 回報支援能力、大小與時間限制，主機以這些資訊選擇可用設定。讀到支援位並不表示對應功能已啟用或控制器已就緒；設定與目前狀態要再讀各自的欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details>
+<article class="field-note" id="figure-BASE3-FIG-036"><h4>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-036-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-1">Base36-1</span><span class="paragraph-text">CAP 描述控制器能力，主機設定必須落在其支援範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-2">Base36-2</span><span class="paragraph-text">設定記憶體頁大小前，先比對 MPSMIN 與 MPSMAX；主機偏好的頁大小不一定就是控制器接受的大小。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-3">Base36-3</span><span class="paragraph-text">CAP 回報支援能力、大小與時間限制，主機以這些資訊選擇可用設定。讀到支援位並不表示對應功能已啟用或控制器已就緒；設定與目前狀態要再讀各自的欄位。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSSES</li><li>CRMS</li><li>CRIMS</li><li>CRWMS</li><li>NSSS</li><li>CMBS</li><li>PMRS</li><li>MPSMAX</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-037 -->
-<details class="field-note" id="figure-BASE3-FIG-037"><summary>Base Figure 37 · Specification Version Descriptor</summary>
-<!-- claim:BASE3-FIG-037-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.16">06.16.</span><span class="paragraph-text">Figure 37〈Specification Version Descriptor〉：版本描述子把 major、minor、tertiary 分開編碼。先分解欄位再比較版本；Version property 的重設值描述回報的版本，不是命令執行次數，也不代表所有選用功能都支援。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 37, 文件頁 58, PDF 頁 84</p></details>
+<article class="field-note" id="figure-BASE3-FIG-037"><h4>Base Figure 37 · Specification Version Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-037-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base37-1">Base37-1</span><span class="paragraph-text">版本描述子由主版、次版與修訂版組成。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 37, 文件頁 58, PDF 頁 84</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base37-2">Base37-2</span><span class="paragraph-text">MJR＝2、MNR＝4、TER＝0 組成版本 2.4.0；三個欄位不應當成單一十進位流水號。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base37-3">Base37-3</span><span class="paragraph-text">版本描述子把 major、minor、tertiary 分開編碼。先分解欄位再比較版本；Version property 的重設值描述回報的版本，不是命令執行次數，也不代表所有選用功能都支援。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MJR</li><li>MNR</li><li>TER</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-038 -->
-<details class="field-note" id="figure-BASE3-FIG-038"><summary>Base Figure 38 · NVM Express Base Specification Version Property Reset Values</summary>
-<!-- claim:BASE3-FIG-038-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.17">06.17.</span><span class="paragraph-text">Figure 38〈NVM Express Base Specification Version Property Reset Values〉：版本描述子把 major、minor、tertiary 分開編碼。先分解欄位再比較版本；Version property 的重設值描述回報的版本，不是命令執行次數，也不代表所有選用功能都支援。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, 文件頁 58-59, PDF 頁 84-85</p></details>
+<article class="field-note" id="figure-BASE3-FIG-038"><h4>Base Figure 38 · NVM Express Base Specification Version Property Reset Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-038-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base38-1">Base38-1</span><span class="paragraph-text">版本 property 的 reset 值對應規格版本的編碼方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 38, 文件頁 58-59, PDF 頁 84-85</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base38-2">Base38-2</span><span class="paragraph-text">對照 Version property 與版本描述表時，先拆開各欄位再比較，不能只比字串長度。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-037">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MJR</li><li>MNR</li><li>TER</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-041 -->
-<details class="field-note" id="figure-BASE3-FIG-041"><summary>Base Figure 41 · Offset 14h: CC - Controller Configuration</summary>
-<!-- claim:BASE3-FIG-041-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.18">06.18.</span><span class="paragraph-text">Figure 41〈Offset 14h: CC - Controller Configuration〉：CC 記錄主機的設定與要求，CSTS 回報控制器當前狀態。例如 EN 與 RDY 分別是啟用要求和就緒結果；SHN 與 SHST 則對應關機要求及處理階段。不要只看要求位就判斷動作已完成。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-041"><h4>Base Figure 41 · Offset 14h: CC - Controller Configuration</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-041-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base41-1">Base41-1</span><span class="paragraph-text">CC 是主機選擇控制器運作設定的地方。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 41, 文件頁 60-63, PDF 頁 86-89</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base41-2">Base41-2</span><span class="paragraph-text">完成佇列與格式設定後設 EN＝1；是否已能正常使用，還要到 CSTS 看 RDY，不能只讀回 EN。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base41-3">Base41-3</span><span class="paragraph-text">CC 記錄主機的設定與要求，CSTS 回報控制器當前狀態。例如 EN 與 RDY 分別是啟用要求和就緒結果；SHN 與 SHST 則對應關機要求及處理階段。不要只看要求位就判斷動作已完成。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CRIME</li><li>SHN</li><li>AMS</li><li>MPS</li><li>CSS</li><li>EN</li><li>CC</li><li>CC.EN</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-042 -->
-<details class="field-note" id="figure-BASE3-FIG-042"><summary>Base Figure 42 · Offset 1Ch: CSTS - Controller Status</summary>
-<!-- claim:BASE3-FIG-042-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.19">06.19.</span><span class="paragraph-text">Figure 42〈Offset 1Ch: CSTS - Controller Status〉：CC 記錄主機的設定與要求，CSTS 回報控制器當前狀態。例如 EN 與 RDY 分別是啟用要求和就緒結果；SHN 與 SHST 則對應關機要求及處理階段。不要只看要求位就判斷動作已完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91</p></details>
+<article class="field-note" id="figure-BASE3-FIG-042"><h4>Base Figure 42 · Offset 1Ch: CSTS - Controller Status</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-042-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base42-1">Base42-1</span><span class="paragraph-text">CSTS 回報控制器目前狀態，不是主機的設定要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.5, Figure 42, 文件頁 63-65, PDF 頁 89-91</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base42-2">Base42-2</span><span class="paragraph-text">CC.EN 已是 1、CSTS.RDY 仍是 0，表示主機已要求啟用但控制器尚未回報 ready；兩者並不矛盾。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-041">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ST</li><li>PP</li><li>NSSRO</li><li>SHST</li><li>CLR</li><li>CFS</li><li>RDY</li><li>CSTS</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-044 -->
-<details class="field-note" id="figure-BASE3-FIG-044"><summary>Base Figure 44 · Offset 24h: AQA - Admin Queue Attributes</summary>
-<!-- claim:BASE3-FIG-044-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.20">06.20.</span><span class="paragraph-text">Figure 44〈Offset 24h: AQA - Admin Queue Attributes〉：AQA 描述 Admin SQ／CQ 的大小，ASQ 與 ACQ 提供兩個佇列的基底位址。大小欄位採其數量編碼解讀，位址則依所選 page size 對齊；大小正確不能取代位址對齊檢查。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92</p></details>
+<article class="field-note" id="figure-BASE3-FIG-044"><h4>Base Figure 44 · Offset 24h: AQA - Admin Queue Attributes</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-044-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base44-1">Base44-1</span><span class="paragraph-text">AQA 分別設定 Admin SQ 與 CQ 的項目數。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 44, 文件頁 66, PDF 頁 92</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base44-2">Base44-2</span><span class="paragraph-text">ASQS＝63 表示 64 個 SQ entries；ACQS 有自己的欄位，不能直接以 SQ 長度取代 CQ 長度。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base44-3">Base44-3</span><span class="paragraph-text">AQA 描述 Admin SQ／CQ 的大小，ASQ 與 ACQ 提供兩個佇列的基底位址。大小欄位採其數量編碼解讀，位址則依所選 page size 對齊；大小正確不能取代位址對齊檢查。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ACQS</li><li>ASQS</li><li>AQA</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-045 -->
-<details class="field-note" id="figure-BASE3-FIG-045"><summary>Base Figure 45 · Offset 28h: ASQ - Admin Submission Queue Base Address</summary>
-<!-- claim:BASE3-FIG-045-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.21">06.21.</span><span class="paragraph-text">Figure 45〈Offset 28h: ASQ - Admin Submission Queue Base Address〉：AQA 描述 Admin SQ／CQ 的大小，ASQ 與 ACQ 提供兩個佇列的基底位址。大小欄位採其數量編碼解讀，位址則依所選 page size 對齊；大小正確不能取代位址對齊檢查。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CC.MPS</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.MPS 進一步指定其中的 MPS 子欄位。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-045"><h4>Base Figure 45 · Offset 28h: ASQ - Admin Submission Queue Base Address</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-045-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base45-1">Base45-1</span><span class="paragraph-text">ASQ 保存 Admin Submission Queue 的主機記憶體基底位址。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 45, 文件頁 66, PDF 頁 92</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base45-2">Base45-2</span><span class="paragraph-text">命令從這個位址開始按 entry 大小排列；ASQ 不是下一筆命令的 CID，也不會隨每次提交而改成 tail 值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-044">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ASQB</li><li>ASQ</li><li>CC.MPS</li><li>Submission Queue</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-046 -->
-<details class="field-note" id="figure-BASE3-FIG-046"><summary>Base Figure 46 · Offset 30h: ACQ - Admin Completion Queue Base Address</summary>
-<!-- claim:BASE3-FIG-046-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.22">06.22.</span><span class="paragraph-text">Figure 46〈Offset 30h: ACQ - Admin Completion Queue Base Address〉：AQA 描述 Admin SQ／CQ 的大小，ASQ 與 ACQ 提供兩個佇列的基底位址。大小欄位採其數量編碼解讀，位址則依所選 page size 對齊；大小正確不能取代位址對齊檢查。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CC.MPS</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.MPS 進一步指定其中的 MPS 子欄位。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-046"><h4>Base Figure 46 · Offset 30h: ACQ - Admin Completion Queue Base Address</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-046-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base46-1">Base46-1</span><span class="paragraph-text">ACQ 保存 Admin Completion Queue 的主機記憶體基底位址。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 46, 文件頁 67, PDF 頁 93</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base46-2">Base46-2</span><span class="paragraph-text">主機讀完成項目時，在 ACQ 所指環形空間依 head 前進；更新 head 不等於修改 ACQ 基底。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-044">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ACQB</li><li>ACQ</li><li>CC.MPS</li><li>Completion Queue</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-057 -->
-<details class="field-note" id="figure-BASE3-FIG-057"><summary>Base Figure 57 · Offset 68h: CRTO - Controller Ready Timeouts</summary>
-<!-- claim:BASE3-FIG-057-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.23">06.23.</span><span class="paragraph-text">Figure 57〈Offset 68h: CRTO - Controller Ready Timeouts〉：Ready timeout 與選擇的就緒模式有關。先核對 CAP.CRMS 的支援及 CC.CRIME 的設定，再選 CRTO 中適用時間；某些 Admin 命令的媒體尚未就緒狀態另依命令清單判斷。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CAP.CRMS.CRIMS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CRMS.CRIMS 進一步指定其中的 CRMS.CRIMS 子欄位。</dd></div><div><dt>CC.CRIME</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.CRIME 進一步指定其中的 CRIME 子欄位。</dd></div><div><dt>CC.EN</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.EN 進一步指定其中的 EN 子欄位。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-057"><h4>Base Figure 57 · Offset 68h: CRTO - Controller Ready Timeouts</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-057-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base57-1">Base57-1</span><span class="paragraph-text">CRTO 為不同 ready 模式提供等待時間資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 57, 文件頁 73, PDF 頁 99</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base57-2">Base57-2</span><span class="paragraph-text">若選擇不同 CC.CRIME 模式，主機需配合對應 timeout；不能永遠只用一個固定等待時間。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base57-3">Base57-3</span><span class="paragraph-text">Ready timeout 與選擇的就緒模式有關。先核對 CAP.CRMS 的支援及 CC.CRIME 的設定，再選 CRTO 中適用時間；某些 Admin 命令的媒體尚未就緒狀態另依命令清單判斷。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CRIMT</li><li>CRWMT</li><li>CRTO</li><li>CAP.CRMS.CRIMS</li><li>CC.EN</li><li>CC.CRIME</li><li>CRTO.CRIMT</li><li>Controller</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-039 -->
-<details class="field-note" id="figure-BASE3-FIG-039"><summary>Base Figure 39 · Offset Ch: INTMS - Interrupt Mask Set</summary>
-<!-- claim:BASE3-FIG-039-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.24">06.24.</span><span class="paragraph-text">Figure 39〈Offset Ch: INTMS - Interrupt Mask Set〉：INTMS 和 INTMC 分別用來設定與清除中斷遮罩。相同 bit 位置對應相同遮罩對象，但寫入語意相反；清除遮罩不代表已移除 CQ 中尚未處理的完成項目。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85</p></details>
+<article class="field-note" id="figure-BASE3-FIG-039"><h4>Base Figure 39 · Offset Ch: INTMS - Interrupt Mask Set</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-039-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base39-1">Base39-1</span><span class="paragraph-text">INTMS 以寫入位元來設定中斷遮罩。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 39, 文件頁 59, PDF 頁 85</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base39-2">Base39-2</span><span class="paragraph-text">要遮罩某個向量，寫入它對應的 bit；讀寫這種 set 寄存器的語意，不等同把整個遮罩暫存器覆寫成相同數值。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base39-3">Base39-3</span><span class="paragraph-text">INTMS 和 INTMC 分別用來設定與清除中斷遮罩。相同 bit 位置對應相同遮罩對象，但寫入語意相反；清除遮罩不代表已移除 CQ 中尚未處理的完成項目。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IVMS</li><li>INTMS</li><li>RWS</li><li>MSI</li><li>Interrupt</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>MSI</dt><dd>Message Signaled Interrupt，透過 memory write message 傳遞 interrupt 的 PCI 機制。</dd></div></dl>
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-040 -->
-<details class="field-note" id="figure-BASE3-FIG-040"><summary>Base Figure 40 · Offset 10h: INTMC - Interrupt Mask Clear</summary>
-<!-- claim:BASE3-FIG-040-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.25">06.25.</span><span class="paragraph-text">Figure 40〈Offset 10h: INTMC - Interrupt Mask Clear〉：INTMS 和 INTMC 分別用來設定與清除中斷遮罩。相同 bit 位置對應相同遮罩對象，但寫入語意相反；清除遮罩不代表已移除 CQ 中尚未處理的完成項目。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85</p></details>
+<article class="field-note" id="figure-BASE3-FIG-040"><h4>Base Figure 40 · Offset 10h: INTMC - Interrupt Mask Clear</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-040-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base40-1">Base40-1</span><span class="paragraph-text">INTMC 用來清除對應中斷遮罩位元。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.2, Figure 40, 文件頁 59, PDF 頁 85</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base40-2">Base40-2</span><span class="paragraph-text">解除上一張圖所設定的遮罩時，使用 clear 語意的位元；不能因名稱相近就將 INTMS 的寫入當成解除操作。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-039">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IVMC</li><li>INTMC</li><li>RWC</li><li>Interrupt</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-049 -->
-<details class="field-note" id="figure-BASE3-FIG-049"><summary>Base Figure 49 · Offset 40h: BPINFO - Boot Partition Information</summary>
-<!-- claim:BASE3-FIG-049-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.26">06.26.</span><span class="paragraph-text">Figure 49〈Offset 40h: BPINFO - Boot Partition Information〉：BPINFO 提供 active partition、大小與讀取狀態；BPRSEL 選擇要讀取的 partition、範圍；BPMBL 指向主機接收資料的記憶體。要求讀哪個 partition 與目前 active partition 是兩個不同資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95</p></details>
+<article class="field-note" id="figure-BASE3-FIG-049"><h4>Base Figure 49 · Offset 40h: BPINFO - Boot Partition Information</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-049-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base49-1">Base49-1</span><span class="paragraph-text">BPINFO 把啟用分割區、讀取狀態與大小放在一起回報。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 49, 文件頁 69, PDF 頁 95</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base49-2">Base49-2</span><span class="paragraph-text">主機要求讀 Partition 1 後，BRS 用來觀察讀取狀態；ABPID 仍是啟用分割區資訊，不能拿它替代此次讀取選擇。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base49-3">Base49-3</span><span class="paragraph-text">BPINFO 提供 active partition、大小與讀取狀態；BPRSEL 選擇要讀取的 partition、範圍；BPMBL 指向主機接收資料的記憶體。要求讀哪個 partition 與目前 active partition 是兩個不同資訊。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ABPID</li><li>BRS</li><li>BPSZ</li><li>BPINFO</li><li>ID</li><li>BPRSEL.BPID</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-050 -->
-<details class="field-note" id="figure-BASE3-FIG-050"><summary>Base Figure 50 · Offset 44h: BPRSEL - Boot Partition Read Select</summary>
-<!-- claim:BASE3-FIG-050-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.27">06.27.</span><span class="paragraph-text">Figure 50〈Offset 44h: BPRSEL - Boot Partition Read Select〉：BPINFO 提供 active partition、大小與讀取狀態；BPRSEL 選擇要讀取的 partition、範圍；BPMBL 指向主機接收資料的記憶體。要求讀哪個 partition 與目前 active partition 是兩個不同資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96</p></details>
+<article class="field-note" id="figure-BASE3-FIG-050"><h4>Base Figure 50 · Offset 44h: BPRSEL - Boot Partition Read Select</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-050-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base50-1">Base50-1</span><span class="paragraph-text">BPRSEL 指定 Boot Partition 讀取的目標、起点與長度。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.12, Figure 50, 文件頁 69-70, PDF 頁 95-96</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base50-2">Base50-2</span><span class="paragraph-text">要讀 Partition 1 的一段資料，BPID 選 1，BPROF 與 BPRSZ 按欄位單位設定；三者合起來才是一個完整讀取範圍。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-049">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPID</li><li>BPROF</li><li>BPRSZ</li><li>BPRSEL</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-051 -->
-<details class="field-note" id="figure-BASE3-FIG-051"><summary>Base Figure 51 · Offset 48h: BPMBL - Boot Partition Memory Buffer Location</summary>
-<!-- claim:BASE3-FIG-051-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.28">06.28.</span><span class="paragraph-text">Figure 51〈Offset 48h: BPMBL - Boot Partition Memory Buffer Location〉：BPINFO 提供 active partition、大小與讀取狀態；BPRSEL 選擇要讀取的 partition、範圍；BPMBL 指向主機接收資料的記憶體。要求讀哪個 partition 與目前 active partition 是兩個不同資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96</p></details>
+<article class="field-note" id="figure-BASE3-FIG-051"><h4>Base Figure 51 · Offset 48h: BPMBL - Boot Partition Memory Buffer Location</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-051-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base51-1">Base51-1</span><span class="paragraph-text">BPMBL 提供接收 Boot Partition 資料的主機記憶體位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 51, 文件頁 70, PDF 頁 96</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base51-2">Base51-2</span><span class="paragraph-text">BPRSEL 選的是裝置上的來源區段，BPMBL 選的是主機目的 buffer；相同的數字在兩處代表不同位址空間。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-049">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BMBBA</li><li>BPMBL</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-queue-arbitration"><h3>圖表組 03 · Queue 位置與命令選取</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.29">06.29.</span><span class="paragraph-text">先用環形圖追蹤 head／tail 移動及位置釋放，再閱讀 Round Robin 或權重選擇流程。佇列位置圖與仲裁圖回答不同問題，不用其中一張推論完成順序。</span></p>
+<details open class="figure-reading-group" id="reading-queue-arbitration"><summary>圖表組 03 · Queue 位置與命令選取 · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">先用環形圖追蹤 head／tail 移動及位置釋放，再閱讀 Round Robin 或權重選擇流程。佇列位置圖與仲裁圖回答不同問題，不用其中一張推論完成順序。</span></p>
 <a class="reading-link" href="#module-queue-arbitration">回到本節的解釋與範例</a>
 <!-- figure-table:BASE3-FIG-073 -->
-<details class="field-note" id="figure-BASE3-FIG-073"><summary>Base Figure 73 · Empty Queue Definition</summary>
-<!-- claim:BASE3-FIG-073-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.30">06.30.</span><span class="paragraph-text">Figure 73〈Empty Queue Definition〉：環狀佇列用 head／tail 及各自的使用規則區分空與滿。索引回到開頭不代表所有舊資料都可覆寫；必須看對方是否已消費或釋放相應位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 73, 文件頁 91, PDF 頁 117</p></details>
+<article class="field-note" id="figure-BASE3-FIG-073"><h4>Base Figure 73 · Empty Queue Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-073-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base73-1">Base73-1</span><span class="paragraph-text">環形佇列的空狀態由 head 與 tail 的關係判斷。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 73, 文件頁 91, PDF 頁 117</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base73-2">Base73-2</span><span class="paragraph-text">主機尚未提交新命令時 head 與 tail 相等；相等代表沒有待處理項目，不是表示 buffer 的所有 bytes 都是零。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base73-3">Base73-3</span><span class="paragraph-text">環狀佇列用 head／tail 及各自的使用規則區分空與滿。索引回到開頭不代表所有舊資料都可覆寫；必須看對方是否已消費或釋放相應位置。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Empty Queue Definition</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-074 -->
-<details class="field-note" id="figure-BASE3-FIG-074"><summary>Base Figure 74 · Full Queue Definition</summary>
-<!-- claim:BASE3-FIG-074-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.31">06.31.</span><span class="paragraph-text">Figure 74〈Full Queue Definition〉：環狀佇列用 head／tail 及各自的使用規則區分空與滿。索引回到開頭不代表所有舊資料都可覆寫；必須看對方是否已消費或釋放相應位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 74, 文件頁 91, PDF 頁 117</p></details>
+<article class="field-note" id="figure-BASE3-FIG-074"><h4>Base Figure 74 · Full Queue Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-074-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base74-1">Base74-1</span><span class="paragraph-text">環形佇列的滿狀態需要保留可辨識空、滿的配置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.3.1.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3.1.4, Figure 74, 文件頁 91, PDF 頁 117</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base74-2">Base74-2</span><span class="paragraph-text">在只能容納下一筆之前檢查 tail 再前進是否追上 head；不能因實體 buffer 還有某些舊資料就認為仍有空位。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-073">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Full Queue Definition</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-080 -->
-<details class="field-note" id="figure-BASE3-FIG-080"><summary>Base Figure 80 · Round Robin Arbitration</summary>
-<!-- claim:BASE3-FIG-080-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.32">06.32.</span><span class="paragraph-text">Figure 80〈Round Robin Arbitration〉：Round Robin 輪流選取候選佇列，Weighted Round Robin 再考慮優先級及權重。圖中選取先後不是完成順序，因為不同命令的執行時間及相依條件可能不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4, Figure 80, 文件頁 103, PDF 頁 129</p></details>
+<article class="field-note" id="figure-BASE3-FIG-080"><h4>Base Figure 80 · Round Robin Arbitration</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-080-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base80-1">Base80-1</span><span class="paragraph-text">Round Robin 仲裁輪流給各 SQ 取得服務的機會。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4, Figure 80, 文件頁 103, PDF 頁 129</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base80-2">Base80-2</span><span class="paragraph-text">SQ1 持續有命令、SQ2 只有少量命令時，按圖追每次輪到哪個 queue；仲裁選擇與命令完成先後仍是不同事情。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base80-3">Base80-3</span><span class="paragraph-text">Round Robin 輪流選取候選佇列，Weighted Round Robin 再考慮優先級及權重。圖中選取先後不是完成順序，因為不同命令的執行時間及相依條件可能不同。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Round Robin Arbitration</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-081 -->
-<details class="field-note" id="figure-BASE3-FIG-081"><summary>Base Figure 81 · Weighted Round Robin with Urgent Priority Class Arbitration</summary>
-<!-- claim:BASE3-FIG-081-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.33">06.33.</span><span class="paragraph-text">Figure 81〈Weighted Round Robin with Urgent Priority Class Arbitration〉：Round Robin 輪流選取候選佇列，Weighted Round Robin 再考慮優先級及權重。圖中選取先後不是完成順序，因為不同命令的執行時間及相依條件可能不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.4.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4.2, Figure 81, 文件頁 104, PDF 頁 130</p></details>
+<article class="field-note" id="figure-BASE3-FIG-081"><h4>Base Figure 81 · Weighted Round Robin with Urgent Priority Class Arbitration</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-081-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base81-1">Base81-1</span><span class="paragraph-text">Weighted Round Robin 依優先類別與權重分配服務機會。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.4.4.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.4.4.2, Figure 81, 文件頁 104, PDF 頁 130</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base81-2">Base81-2</span><span class="paragraph-text">提高某類 queue 權重會影響仲裁分配，但不能把它解釋成每一筆命令都有獨立 priority 欄位。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-080">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Weighted Round Robin with Urgent Priority Class Arbitration</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-memory-capacity"><h3>圖表組 04 · Namespace、CMB、PMR 與容量</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.34">06.34.</span><span class="paragraph-text">資源關係圖先區分工作記憶體和區塊儲存容量，再沿 subsystem 到各群組及 namespace 的關係閱讀。CMB／PMR 欄位則配對位置、大小、允許用途、啟用及就緒狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl>
+<details open class="figure-reading-group" id="reading-memory-capacity"><summary>圖表組 04 · Namespace、CMB、PMR 與容量 · 24 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">資源關係圖先區分工作記憶體和區塊儲存容量，再沿 subsystem 到各群組及 namespace 的關係閱讀。CMB／PMR 欄位則配對位置、大小、允許用途、啟用及就緒狀態。</span></p>
 <a class="reading-link" href="#module-memory-capacity">回到本節的解釋與範例</a>
 <!-- figure-table:BASE3-FIG-047 -->
-<details class="field-note" id="figure-BASE3-FIG-047"><summary>Base Figure 47 · Offset 38h: CMBLOC - Controller Memory Buffer Location</summary>
-<!-- claim:BASE3-FIG-047-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.35">06.35.</span><span class="paragraph-text">Figure 47〈Offset 38h: CMBLOC - Controller Memory Buffer Location〉：CMBLOC 與 CMBSZ 一起決定 CMB 的位置、大小及允許用途，CMBMSC 控制其位址空間，CMBSTS 回報相關狀態。先確認用途支援，再計算位置和大小；有足夠空間不表示允許放入任意資料結構。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div></dl>
-</details>
-<!-- figure-table:BASE3-FIG-048 -->
-<details class="field-note" id="figure-BASE3-FIG-048"><summary>Base Figure 48 · Offset 3Ch: CMBSZ - Controller Memory Buffer Size</summary>
-<!-- claim:BASE3-FIG-048-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.36">06.36.</span><span class="paragraph-text">Figure 48〈Offset 3Ch: CMBSZ - Controller Memory Buffer Size〉：CMBLOC 與 CMBSZ 一起決定 CMB 的位置、大小及允許用途，CMBMSC 控制其位址空間，CMBSTS 回報相關狀態。先確認用途支援，再計算位置和大小；有足夠空間不表示允許放入任意資料結構。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95</p></details>
-
-</details>
-<!-- figure-table:BASE3-FIG-052 -->
-<details class="field-note" id="figure-BASE3-FIG-052"><summary>Base Figure 52 · Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</summary>
-<!-- claim:BASE3-FIG-052-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.37">06.37.</span><span class="paragraph-text">Figure 52〈Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control〉：CMBLOC 與 CMBSZ 一起決定 CMB 的位置、大小及允許用途，CMBMSC 控制其位址空間，CMBSTS 回報相關狀態。先確認用途支援，再計算位置和大小；有足夠空間不表示允許放入任意資料結構。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97</p></details>
-
-</details>
-<!-- figure-table:BASE3-FIG-053 -->
-<details class="field-note" id="figure-BASE3-FIG-053"><summary>Base Figure 53 · Offset 58h: CMBSTS - Controller Memory Buffer Status</summary>
-<!-- claim:BASE3-FIG-053-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.38">06.38.</span><span class="paragraph-text">Figure 53〈Offset 58h: CMBSTS - Controller Memory Buffer Status〉：CMBLOC 與 CMBSZ 一起決定 CMB 的位置、大小及允許用途，CMBMSC 控制其位址空間，CMBSTS 回報相關狀態。先確認用途支援，再計算位置和大小；有足夠空間不表示允許放入任意資料結構。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97</p></details>
-
-</details>
-<!-- figure-table:BASE3-FIG-054 -->
-<details class="field-note" id="figure-BASE3-FIG-054"><summary>Base Figure 54 · Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</summary>
-<!-- claim:BASE3-FIG-054-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.39">06.39.</span><span class="paragraph-text">Figure 54〈Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size〉：CMB 的彈性緩衝大小與持續寫入吞吐量是兩種資源資訊。大小欄位先配對其尺度換成 bytes，吞吐量則配對其速率尺度；不能把容量數值直接當成每秒可寫入量。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97</p></details>
-
-</details>
-<!-- figure-table:BASE3-FIG-055 -->
-<details class="field-note" id="figure-BASE3-FIG-055"><summary>Base Figure 55 · Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</summary>
-<!-- claim:BASE3-FIG-055-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.40">06.40.</span><span class="paragraph-text">Figure 55〈Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput〉：CMB 的彈性緩衝大小與持續寫入吞吐量是兩種資源資訊。大小欄位先配對其尺度換成 bytes，吞吐量則配對其速率尺度；不能把容量數值直接當成每秒可寫入量。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，PCIe transaction layer 傳送的 packet。</dd></div></dl>
-</details>
-<!-- figure-table:BASE3-FIG-058 -->
-<details class="field-note" id="figure-BASE3-FIG-058"><summary>Base Figure 58 · Offset E00h: PMRCAP - Persistent Memory Region Capabilities</summary>
-<!-- claim:BASE3-FIG-058-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.41">06.41.</span><span class="paragraph-text">Figure 58〈Offset E00h: PMRCAP - Persistent Memory Region Capabilities〉：PMRCAP 描述 PMR 支援、位置與等待條件，PMRCTL 提出啟用要求，PMRSTS 回報就緒或錯誤。PMRMSCL／PMRMSCU 組成位址控制；位址、啟用與就緒必須分開讀取。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100</p></details>
+<article class="field-note" id="figure-BASE3-FIG-047"><h4>Base Figure 47 · Offset 38h: CMBLOC - Controller Memory Buffer Location</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-047-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base47-1">Base47-1</span><span class="paragraph-text">CMBLOC 說明控制器記憶體 buffer 映射到哪個 BAR 及位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BAR</dt><dd>Base Address Register，PCI configuration space 中用來找出裝置 memory space 的 register。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.9, Figure 47, 文件頁 67-68, PDF 頁 93-94</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base47-2">Base47-2</span><span class="paragraph-text">主機必須先找到該 BAR 的實際位址，再按 CMBLOC 定位；欄位中的 BAR 編號不是主機可直接讀寫的實體位址。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base47-3">Base47-3</span><span class="paragraph-text">CMBLOC 與 CMBSZ 一起決定 CMB 的位置、大小及允許用途，CMBMSC 控制其位址空間，CMBSTS 回報相關狀態。先確認用途支援，再計算位置和大小；有足夠空間不表示允許放入任意資料結構。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CQMMS</li><li>BIR</li><li>CMBLOC</li><li>CMB</li><li>BAR</li><li>Controller</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div></dl>
-</details>
-<!-- figure-table:BASE3-FIG-059 -->
-<details class="field-note" id="figure-BASE3-FIG-059"><summary>Base Figure 59 · Offset E04h: PMRCTL - Persistent Memory Region Control</summary>
-<!-- claim:BASE3-FIG-059-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.42">06.42.</span><span class="paragraph-text">Figure 59〈Offset E04h: PMRCTL - Persistent Memory Region Control〉：PMRCAP 描述 PMR 支援、位置與等待條件，PMRCTL 提出啟用要求，PMRSTS 回報就緒或錯誤。PMRMSCL／PMRMSCU 組成位址控制；位址、啟用與就緒必須分開讀取。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100</p></details>
+</details></article>
+<!-- figure-table:BASE3-FIG-048 -->
+<article class="field-note" id="figure-BASE3-FIG-048"><h4>Base Figure 48 · Offset 3Ch: CMBSZ - Controller Memory Buffer Size</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-048-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base48-1">Base48-1</span><span class="paragraph-text">CMBSZ 同時描述 CMB 大小與允許用途。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.11, Figure 48, 文件頁 68-69, PDF 頁 94-95</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base48-2">Base48-2</span><span class="paragraph-text">看到 CMB 有足夠容量，仍要查 SQS、CQS 等用途 bits；大小足夠不代表可以任意把 SQ、CQ 或資料都放進去。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SZ</li><li>SZU</li><li>WDS</li><li>RDS</li><li>LISTS</li><li>CQS</li><li>SQS</li><li>CMBSZ</li></ul></div>
 
-</details>
-<!-- figure-table:BASE3-FIG-060 -->
-<details class="field-note" id="figure-BASE3-FIG-060"><summary>Base Figure 60 · Offset E08h: PMRSTS - Persistent Memory Region Status</summary>
-<!-- claim:BASE3-FIG-060-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.43">06.43.</span><span class="paragraph-text">Figure 60〈Offset E08h: PMRSTS - Persistent Memory Region Status〉：PMRCAP 描述 PMR 支援、位置與等待條件，PMRCTL 提出啟用要求，PMRSTS 回報就緒或錯誤。PMRMSCL／PMRMSCU 組成位址控制；位址、啟用與就緒必須分開讀取。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101</p></details>
+</details></article>
+<!-- figure-table:BASE3-FIG-052 -->
+<article class="field-note" id="figure-BASE3-FIG-052"><h4>Base Figure 52 · Offset 50h: CMBMSC - Controller Memory Buffer Memory Space Control</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-052-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base52-1">Base52-1</span><span class="paragraph-text">CMBMSC 控制 CMB 記憶體空間的映射與啟用。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 52, 文件頁 70-71, PDF 頁 96-97</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base52-2">Base52-2</span><span class="paragraph-text">選好 CBA 後，仍要依 CRE、CMSE 的規則啟用；提供一個非零位址不等於控制器已接受映射。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CBA</li><li>CMSE</li><li>CRE</li><li>CMBMSC</li><li>CMBSMSC.CRE</li><li>CMBLOC</li><li>CMBSZ</li><li>Controller</li></ul></div>
 
-</details>
-<!-- figure-table:BASE3-FIG-061 -->
-<details class="field-note" id="figure-BASE3-FIG-061"><summary>Base Figure 61 · Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</summary>
-<!-- claim:BASE3-FIG-061-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.44">06.44.</span><span class="paragraph-text">Figure 61〈Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size〉：PMR 的彈性緩衝量與持續寫入速率使用各自的數值和尺度。先將 size 與 throughput 分成不同單位，再與相應操作需求比較；兩者不是可以直接相加的容量。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102</p></details>
+</details></article>
+<!-- figure-table:BASE3-FIG-053 -->
+<article class="field-note" id="figure-BASE3-FIG-053"><h4>Base Figure 53 · Offset 58h: CMBSTS - Controller Memory Buffer Status</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-053-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base53-1">Base53-1</span><span class="paragraph-text">CMBSTS 回報 CMB 位址設定是否被判為無效。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 53, 文件頁 71, PDF 頁 97</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base53-2">Base53-2</span><span class="paragraph-text">設定 CMBMSC 後若 CBAI 表示位址不合法，就不能只因 CBA 已寫入而認定這塊記憶體可用。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CBAI</li><li>CMBSTS</li><li>CMBMSC.CBA</li><li>CMBMSC.CRE</li><li>CMBMSC.CMSE</li><li>Controller</li></ul></div>
 
-</details>
-<!-- figure-table:BASE3-FIG-062 -->
-<details class="field-note" id="figure-BASE3-FIG-062"><summary>Base Figure 62 · Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</summary>
-<!-- claim:BASE3-FIG-062-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.45">06.45.</span><span class="paragraph-text">Figure 62〈Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput〉：PMR 的彈性緩衝量與持續寫入速率使用各自的數值和尺度。先將 size 與 throughput 分成不同單位，再與相應操作需求比較；兩者不是可以直接相加的容量。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102</p></details>
+</details></article>
+<!-- figure-table:BASE3-FIG-054 -->
+<article class="field-note" id="figure-BASE3-FIG-054"><h4>Base Figure 54 · Offset 5Ch: CMBEBS - Controller Memory Buffer Elasticity Buffer Size</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-054-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base54-1">Base54-1</span><span class="paragraph-text">CMBEBS 用大小與單位描述彈性緩衝能力。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.16, Figure 54, 文件頁 71, PDF 頁 97</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base54-2">Base54-2</span><span class="paragraph-text">兩個裝置報同樣數值、卻使用不同 CMBSZU 時，實際 bytes 不同；先換算再比較可吸收的資料量。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base54-3">Base54-3</span><span class="paragraph-text">CMB 的彈性緩衝大小與持續寫入吞吐量是兩種資源資訊。大小欄位先配對其尺度換成 bytes，吞吐量則配對其速率尺度；不能把容量數值直接當成每秒可寫入量。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CMBWBZ</li><li>CMBRBB</li><li>CMBSZU</li><li>CMBEBS</li><li>CMB</li><li>Controller</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASE3-FIG-055 -->
+<article class="field-note" id="figure-BASE3-FIG-055"><h4>Base Figure 55 · Offset 60h: CMBSWTP - Controller Memory Buffer Sustained Write Throughput</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-055-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base55-1">Base55-1</span><span class="paragraph-text">CMBSWTP 描述 CMB 可持續接收寫入的能力。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 55, 文件頁 72, PDF 頁 98</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base55-2">Base55-2</span><span class="paragraph-text">短時間寫入能被 buffer 吸收，不代表長時間速率也相同；將這張表的 sustained throughput 與前一張 buffer 大小分開理解。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-054">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CMBSWTV</li><li>CMBSWTU</li><li>CMBSWTP</li><li>CMB</li><li>TLP</li><li>MPS</li><li>PXDC</li><li>Controller</li></ul></div>
 <dl class="term-note" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，PCIe transaction layer 傳送的 packet。</dd></div></dl>
-</details>
+</details></article>
+<!-- figure-table:BASE3-FIG-058 -->
+<article class="field-note" id="figure-BASE3-FIG-058"><h4>Base Figure 58 · Offset E00h: PMRCAP - Persistent Memory Region Capabilities</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-058-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base58-1">Base58-1</span><span class="paragraph-text">PMRCAP 描述 Persistent Memory Region 的支援、映射與時間參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.21, Figure 58, 文件頁 73-74, PDF 頁 99-100</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base58-2">Base58-2</span><span class="paragraph-text">打算使用 PMR 前，先確認支援的讀寫與記憶體映射方式，再解 timeout 單位，不從暫存器存在推論所有能力皆可用。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base58-3">Base58-3</span><span class="paragraph-text">PMRCAP 描述 PMR 支援、位置與等待條件，PMRCTL 提出啟用要求，PMRSTS 回報就緒或錯誤。PMRMSCL／PMRMSCU 組成位址控制；位址、啟用與就緒必須分開讀取。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CMSS</li><li>PMRTO</li><li>PMRWBM</li><li>CPMTSTSR</li><li>CMR</li><li>PMRTU</li><li>BIR</li><li>WDS</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASE3-FIG-059 -->
+<article class="field-note" id="figure-BASE3-FIG-059"><h4>Base Figure 59 · Offset E04h: PMRCTL - Persistent Memory Region Control</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-059-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base59-1">Base59-1</span><span class="paragraph-text">PMRCTL 的 EN 是啟用 PMR 的要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.22, Figure 59, 文件頁 74, PDF 頁 100</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base59-2">Base59-2</span><span class="paragraph-text">設 EN＝1 後，仍需觀察 PMRSTS.NRDY；與控制器啟用相同，提出要求與可用狀態分別由不同欄位表達。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>EN</li><li>PMRCTL</li><li>PMRSTS.NRDY</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASE3-FIG-060 -->
+<article class="field-note" id="figure-BASE3-FIG-060"><h4>Base Figure 60 · Offset E08h: PMRSTS - Persistent Memory Region Status</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-060-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base60-1">Base60-1</span><span class="paragraph-text">PMRSTS 回報 PMR 是否 ready 及是否有錯誤。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.23, Figure 60, 文件頁 75, PDF 頁 101</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base60-2">Base60-2</span><span class="paragraph-text">NRDY 尚未清除時，主機不能把已設定 EN 當成可正常使用的唯一依據。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CBAI</li><li>HSTS</li><li>NRDY</li><li>ERR</li><li>PMRSTS</li><li>PMRMSCU.CBA</li><li>PMRMSCL.CBA</li><li>PMRCAP.CMSS</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASE3-FIG-061 -->
+<article class="field-note" id="figure-BASE3-FIG-061"><h4>Base Figure 61 · Offset E0Ch: PMREBS - Persistent Memory Region Elasticity Buffer Size</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-061-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base61-1">Base61-1</span><span class="paragraph-text">PMREBS 描述 PMR 彈性緩衝大小。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 61, 文件頁 76, PDF 頁 102</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base61-2">Base61-2</span><span class="paragraph-text">換算 PMRSZU 與大小值後得到可緩衝 bytes，再與預計的突發資料量比較；它不是持續頻寬數值。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base61-3">Base61-3</span><span class="paragraph-text">PMR 的彈性緩衝量與持續寫入速率使用各自的數值和尺度。先將 size 與 throughput 分成不同單位，再與相應操作需求比較；兩者不是可以直接相加的容量。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PMRWBZ</li><li>PMRRBB</li><li>PMRSZU</li><li>PMREBS</li><li>PMR</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASE3-FIG-062 -->
+<article class="field-note" id="figure-BASE3-FIG-062"><h4>Base Figure 62 · Offset E10h: PMRSWTP - Persistent Memory Region Sustained Write Throughput</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-062-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base62-1">Base62-1</span><span class="paragraph-text">PMRSWTP 描述 PMR 持續寫入吞吐量。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.24, Figure 62, 文件頁 76, PDF 頁 102</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base62-2">Base62-2</span><span class="paragraph-text">相同 buffer 大小的兩個 PMR，若持續吞吐量不同，在長時間寫入下仍會有不同表現。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-061">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PMRSWTV</li><li>PMRSWTU</li><li>PMRSWTP</li><li>PMR</li><li>TLP</li><li>MPS</li><li>PXDC</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-063 -->
-<details class="field-note" id="figure-BASE3-FIG-063"><summary>Base Figure 63 · Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</summary>
-<!-- claim:BASE3-FIG-063-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.46">06.46.</span><span class="paragraph-text">Figure 63〈Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower〉：PMRCAP 描述 PMR 支援、位置與等待條件，PMRCTL 提出啟用要求，PMRSTS 回報就緒或錯誤。PMRMSCL／PMRMSCU 組成位址控制；位址、啟用與就緒必須分開讀取。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103</p></details>
+<article class="field-note" id="figure-BASE3-FIG-063"><h4>Base Figure 63 · Offset E14h: PMRMSCL - Persistent Memory Region Memory Space Control Lower</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-063-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base63-1">Base63-1</span><span class="paragraph-text">PMRMSCL 保存 PMR 映射位址的低部與控制欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 63, 文件頁 77, PDF 頁 103</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base63-2">Base63-2</span><span class="paragraph-text">組合 CBA 時要把控制 bits 與位址 bits 分開；不能把整個暫存器原值直接當成完整實體位址。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CBA</li><li>CMSE</li><li>PMRMSCL</li><li>PMRMSCU.CBA</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-064 -->
-<details class="field-note" id="figure-BASE3-FIG-064"><summary>Base Figure 64 · Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</summary>
-<!-- claim:BASE3-FIG-064-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.47">06.47.</span><span class="paragraph-text">Figure 64〈Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper〉：PMRCAP 描述 PMR 支援、位置與等待條件，PMRCTL 提出啟用要求，PMRSTS 回報就緒或錯誤。PMRMSCL／PMRMSCU 組成位址控制；位址、啟用與就緒必須分開讀取。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103</p></details>
+<article class="field-note" id="figure-BASE3-FIG-064"><h4>Base Figure 64 · Offset E18h: PMRMSCU - Persistent Memory Region Memory Space Control Upper</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-064-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base64-1">Base64-1</span><span class="paragraph-text">PMRMSCU 補齊 PMR 映射位址的高部。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.26</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.26, Figure 64, 文件頁 77, PDF 頁 103</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base64-2">Base64-2</span><span class="paragraph-text">主機位址超過低 32-bit 可表示範圍時，必須連同高部合併；只讀低部會指向另一個位置。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CBA</li><li>PMRMSCU</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-086 -->
-<details class="field-note" id="figure-BASE3-FIG-086"><summary>Base Figure 86 · Simple NVM Subsystem</summary>
-<!-- claim:BASE3-FIG-086-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.48">06.48.</span><span class="paragraph-text">Figure 86〈Simple NVM Subsystem〉：容量關係圖先按 subsystem、domain、group、set 與 namespace 分層。容量欄位描述的是特定層級的總量、可用量或群組量；在比較或相減前，先確認兩個值的對象與單位相同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2, Figure 86, 文件頁 126, PDF 頁 152</p></details>
+<article class="field-note" id="figure-BASE3-FIG-086"><h4>Base Figure 86 · Simple NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-086-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base86-1">Base86-1</span><span class="paragraph-text">簡單 subsystem 範例提供容量模型的起始配置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2, Figure 86, 文件頁 126, PDF 頁 152</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base86-2">Base86-2</span><span class="paragraph-text">先固定只有圖中這些元件，再閱讀容量數字；後面更複雜的配置會增加層級，不能沿用一個總量代表每層。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base86-3">Base86-3</span><span class="paragraph-text">容量關係圖先按 subsystem、domain、group、set 與 namespace 分層。容量欄位描述的是特定層級的總量、可用量或群組量；在比較或相減前，先確認兩個值的對象與單位相同。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-087 -->
-<details class="field-note" id="figure-BASE3-FIG-087"><summary>Base Figure 87 · Vertically-Organized NVM Subsystem</summary>
-<!-- claim:BASE3-FIG-087-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.49">06.49.</span><span class="paragraph-text">Figure 87〈Vertically-Organized NVM Subsystem〉：容量關係圖先按 subsystem、domain、group、set 與 namespace 分層。容量欄位描述的是特定層級的總量、可用量或群組量；在比較或相減前，先確認兩個值的對象與單位相同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.2, Figure 87, 文件頁 127, PDF 頁 153</p></details>
+<article class="field-note" id="figure-BASE3-FIG-087"><h4>Base Figure 87 · Vertically-Organized NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-087-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base87-1">Base87-1</span><span class="paragraph-text">垂直組織的範例強調沿層級追蹤容量。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.2, Figure 87, 文件頁 127, PDF 頁 153</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base87-2">Base87-2</span><span class="paragraph-text">從 namespace 向上追到集合和 subsystem，逐層確認數值代表配置量還是可用量，不直接把不同層的欄位相減。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-086">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Subsystem</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-088 -->
-<details class="field-note" id="figure-BASE3-FIG-088"><summary>Base Figure 88 · Horizontally-Organized Dual NAND NVM Subsystem</summary>
-<!-- claim:BASE3-FIG-088-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.50">06.50.</span><span class="paragraph-text">Figure 88〈Horizontally-Organized Dual NAND NVM Subsystem〉：容量關係圖先按 subsystem、domain、group、set 與 namespace 分層。容量欄位描述的是特定層級的總量、可用量或群組量；在比較或相減前，先確認兩個值的對象與單位相同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.3, Figure 88, 文件頁 128, PDF 頁 154</p></details>
+<article class="field-note" id="figure-BASE3-FIG-088"><h4>Base Figure 88 · Horizontally-Organized Dual NAND NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-088-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base88-1">Base88-1</span><span class="paragraph-text">雙 NAND 配置展示不同儲存資源如何組成 subsystem。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.2.3, Figure 88, 文件頁 128, PDF 頁 154</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base88-2">Base88-2</span><span class="paragraph-text">圖中有兩組 NAND，不代表對主機一定呈現兩個相同大小的 namespace；先追實際對應關係。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-086">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NAND</li><li>NVM Subsystem</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-089 -->
-<details class="field-note" id="figure-BASE3-FIG-089"><summary>Base Figure 89 · Capacity Information Field Usage</summary>
-<!-- claim:BASE3-FIG-089-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.51">06.51.</span><span class="paragraph-text">Figure 89〈Capacity Information Field Usage〉：容量關係圖先按 subsystem、domain、group、set 與 namespace 分層。容量欄位描述的是特定層級的總量、可用量或群組量；在比較或相減前，先確認兩個值的對象與單位相同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.3, Figure 89, 文件頁 129, PDF 頁 155</p></details>
+<article class="field-note" id="figure-BASE3-FIG-089"><h4>Base Figure 89 · Capacity Information Field Usage</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-089-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base89-1">Base89-1</span><span class="paragraph-text">容量欄位的意義取決於 subsystem 或 Endurance Group 層級。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.8.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.8.3, Figure 89, 文件頁 129, PDF 頁 155</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base89-2">Base89-2</span><span class="paragraph-text">TNVMCAP 與 UNVMCAP 描述整體容量及未配置量；要比較某個 Endurance Group，則使用相應群組欄位。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-086">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TNVMCAP</li><li>UNVMCAP</li><li>MEGCAP</li><li>TEGCAP</li><li>UEGCAP</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-065 -->
-<details class="field-note" id="figure-BASE3-FIG-065"><summary>Base Figure 65 · NSID Types and Relationship to Namespace</summary>
-<!-- claim:BASE3-FIG-065-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.52">06.52.</span><span class="paragraph-text">Figure 65〈NSID Types and Relationship to Namespace〉：NSID 的狀態要放在 namespace 與控制器的關係中理解。Namespace 可以已配置但尚未對指定控制器啟用；特殊 NSID 值還可能選擇整個集合，不能把所有非零值都當成單一有效 namespace。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, Figure 65, 文件頁 78-79, PDF 頁 104-105</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-065"><h4>Base Figure 65 · NSID Types and Relationship to Namespace</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-065-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base65-1">Base65-1</span><span class="paragraph-text">有效 NSID 還要區分是否已配置及是否附加到控制器。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, Figure 65, 文件頁 78-79, PDF 頁 104-105</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base65-2">Base65-2</span><span class="paragraph-text">NSID 3 在有效範圍內卻尚未建立 namespace 時屬 unallocated；已建立但未附加到控制器 A 時，對 A 仍是 inactive。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base65-3">Base65-3</span><span class="paragraph-text">NSID 的狀態要放在 namespace 與控制器的關係中理解。Namespace 可以已配置但尚未對指定控制器啟用；特殊 NSID 值還可能選擇整個集合，不能把所有非零值都當成單一有效 namespace。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSID</li><li>Namespace</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-066 -->
-<details class="field-note" id="figure-BASE3-FIG-066"><summary>Base Figure 66 · NSID Types</summary>
-<!-- claim:BASE3-FIG-066-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.53">06.53.</span><span class="paragraph-text">Figure 66〈NSID Types〉：NSID 的狀態要放在 namespace 與控制器的關係中理解。Namespace 可以已配置但尚未對指定控制器啟用；特殊 NSID 值還可能選擇整個集合，不能把所有非零值都當成單一有效 namespace。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.1.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1.5, Figure 66, 文件頁 79, PDF 頁 105</p></details>
+<article class="field-note" id="figure-BASE3-FIG-066"><h4>Base Figure 66 · NSID Types</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-066-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base66-1">Base66-1</span><span class="paragraph-text">NSID 分類圖把數值範圍、配置狀態與附加關係分成不同層。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.1.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1.5, Figure 66, 文件頁 79, PDF 頁 105</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base66-2">Base66-2</span><span class="paragraph-text">若 NN＝8，NSID 9 屬 invalid；NSID 3 可能 valid 但 inactive。兩者都不能直接作正常資料存取，原因卻不同。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-065">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSID</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-067 -->
-<details class="field-note" id="figure-BASE3-FIG-067"><summary>Base Figure 67 · NVM Sets and Associated Namespaces</summary>
-<!-- claim:BASE3-FIG-067-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.54">06.54.</span><span class="paragraph-text">Figure 67〈NVM Sets and Associated Namespaces〉：NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</p></details>
+<article class="field-note" id="figure-BASE3-FIG-067"><h4>Base Figure 67 · NVM Sets and Associated Namespaces</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-067-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-1">Base67-1</span><span class="paragraph-text">namespace 與 NVM Set 的對應說明容量集合的歸屬。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-2">Base67-2</span><span class="paragraph-text">選一個 namespace 沿圖找到 NVM Set，再看相鄰 namespace 是否同屬該集合，不能只用 NSID 相近推論關係。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-3">Base67-3</span><span class="paragraph-text">NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Set</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-068 -->
-<details class="field-note" id="figure-BASE3-FIG-068"><summary>Base Figure 68 · NVM Set Aware Admin Commands</summary>
-<!-- claim:BASE3-FIG-068-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.55">06.55.</span><span class="paragraph-text">Figure 68〈NVM Set Aware Admin Commands〉：NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 68, 文件頁 81, PDF 頁 107</p></details>
+<article class="field-note" id="figure-BASE3-FIG-068"><h4>Base Figure 68 · NVM Set Aware Admin Commands</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-068-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base68-1">Base68-1</span><span class="paragraph-text">NVM Set aware 命令需要理解其集合層級作用範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 68, 文件頁 81, PDF 頁 107</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base68-2">Base68-2</span><span class="paragraph-text">命令作用於某個 NVM Set 時，先辨識該集合包含的 namespace；不要以單一 NSID 的效果代表全部集合。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-067">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Set</li><li>Command</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-069 -->
-<details class="field-note" id="figure-BASE3-FIG-069"><summary>Base Figure 69 · NVM Sets and Associated Namespaces</summary>
-<!-- claim:BASE3-FIG-069-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.56">06.56.</span><span class="paragraph-text">Figure 69〈NVM Sets and Associated Namespaces〉：NVM Set 把相關儲存資源與 namespace 的關係分組。先找 namespace 隸屬哪個 Set，再看命令是否需要選擇 Set；多個 namespace 的數量不等於有同樣多個獨立儲存裝置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.3, Figure 69, 文件頁 83, PDF 頁 109</p></details>
+<article class="field-note" id="figure-BASE3-FIG-069"><h4>Base Figure 69 · NVM Sets and Associated Namespaces</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-069-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base69-1">Base69-1</span><span class="paragraph-text">另一種 NVM Set 配置用來比較 namespace 如何分布。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.3, Figure 69, 文件頁 83, PDF 頁 109</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base69-2">Base69-2</span><span class="paragraph-text">把 Figure 67 與這張圖的 namespace 歸屬並排看，重點是關係改變，而不是方塊畫得比較大就有較多容量。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-067">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVM Set</li><li>Namespace</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-070 -->
-<details class="field-note" id="figure-BASE3-FIG-070"><summary>Base Figure 70 · Flexible Data Placement Logical View of Non-Volatile Storage</summary>
-<!-- claim:BASE3-FIG-070-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.57">06.57.</span><span class="paragraph-text">Figure 70〈Flexible Data Placement Logical View of Non-Volatile Storage〉：Reclaim Group 與資料放置的關係圖，說明儲存資源如何分組及共享。比較單一和多個群組時，追蹤同一 namespace 能使用哪些資源，不要將圖中的每個方框當成額外增加的一份總容量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Group</dt><dd>Reclaim Group，具有共同回收行為的一組非揮發性儲存資源。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111</p></details>
+<article class="field-note" id="figure-BASE3-FIG-070"><h4>Base Figure 70 · Flexible Data Placement Logical View of Non-Volatile Storage</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-070-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base70-1">Base70-1</span><span class="paragraph-text">FDP 邏輯視圖把資料放置與回收資源分開表達。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base70-2">Base70-2</span><span class="paragraph-text">主機選擇放置識別碼後，沿圖追到對應回收群組和資源；namespace 的 LBA 不會因此直接變成 NAND 實體位址。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base70-3">Base70-3</span><span class="paragraph-text">Reclaim Group 與資料放置的關係圖，說明儲存資源如何分組及共享。比較單一和多個群組時，追蹤同一 namespace 能使用哪些資源，不要將圖中的每個方框當成額外增加的一份總容量。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Flexible Data Placement Logical View of Non-Volatile Storage</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-071 -->
-<details class="field-note" id="figure-BASE3-FIG-071"><summary>Base Figure 71 · Example 1 Domain Structure</summary>
-<!-- claim:BASE3-FIG-071-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.58">06.58.</span><span class="paragraph-text">Figure 71〈Example 1 Domain Structure〉：容量關係圖先按 subsystem、domain、group、set 與 namespace 分層。容量欄位描述的是特定層級的總量、可用量或群組量；在比較或相減前，先確認兩個值的對象與單位相同。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.5.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5.1, Figure 71, 文件頁 86, PDF 頁 112</p></details>
+<article class="field-note" id="figure-BASE3-FIG-071"><h4>Base Figure 71 · Example 1 Domain Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-071-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base71-1">Base71-1</span><span class="paragraph-text">Domain 圖說明 subsystem 內可分開考慮的範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.5.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5.1, Figure 71, 文件頁 86, PDF 頁 112</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base71-2">Base71-2</span><span class="paragraph-text">某個 domain 的事件或資源資訊，不能直接當成其他 domain 同步發生；先沿圖確認物件所屬。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-086">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Domain</li></ul></div>
 
+</details></article>
 </details>
-</div>
-<div class="figure-reading-group" id="reading-lifecycle"><h3>圖表組 05 · Shutdown、Reset 與狀態保留</h3>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.59">06.59.</span><span class="paragraph-text">先選事件類型與範圍，再以保留表逐項看設定及資源的結果。關機狀態圖配對 SHN 的要求和 SHST 的回報；不要把重設後某個初始值當成上次關機成功的證明。</span></p>
+<details open class="figure-reading-group" id="reading-lifecycle"><summary>圖表組 05 · Shutdown、Reset 與狀態保留 · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">先選事件類型與範圍，再以保留表逐項看設定及資源的結果。關機狀態圖配對 SHN 的要求和 SHST 的回報；不要把重設後某個初始值當成上次關機成功的證明。</span></p>
 <a class="reading-link" href="#module-lifecycle">回到本節的解釋與範例</a>
 <!-- figure-table:BASE3-FIG-043 -->
-<details class="field-note" id="figure-BASE3-FIG-043"><summary>Base Figure 43 · Offset 20h: NSSR - NVM Subsystem Reset</summary>
-<!-- claim:BASE3-FIG-043-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.60">06.60.</span><span class="paragraph-text">Figure 43〈Offset 20h: NSSR - NVM Subsystem Reset〉：NSSR 與 NSSD 分別關係到 subsystem 重設及關機，作用範圍比單一控制器的設定更大。先確認能力及合法寫入值，再依對應操作流程解釋結果，不能把兩者都視為一般 controller disable。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。</dd></div><div><dt>NSSR</dt><dd>NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>NSSR</dt><dd>NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-043"><h4>Base Figure 43 · Offset 20h: NSSR - NVM Subsystem Reset</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-043-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base43-1">Base43-1</span><span class="paragraph-text">NSSR 觸發的是 subsystem 層級重設。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSR</dt><dd>NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.6, Figure 43, 文件頁 66, PDF 頁 92</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base43-2">Base43-2</span><span class="paragraph-text">若多個控制器屬於同一 subsystem，評估 NSSR 時要考慮整體影響，不能把它當成單一 I/O queue 的重設。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base43-3">Base43-3</span><span class="paragraph-text">NSSR 與 NSSD 分別關係到 subsystem 重設及關機，作用範圍比單一控制器的設定更大。先確認能力及合法寫入值，再依對應操作流程解釋結果，不能把兩者都視為一般 controller disable。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSSRC</li><li>NSSR</li><li>NVM Subsystem</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-056 -->
-<details class="field-note" id="figure-BASE3-FIG-056"><summary>Base Figure 56 · Offset 64h: NSSD - NVM Subsystem Shutdown</summary>
-<!-- claim:BASE3-FIG-056-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.61">06.61.</span><span class="paragraph-text">Figure 56〈Offset 64h: NSSD - NVM Subsystem Shutdown〉：NSSR 與 NSSD 分別關係到 subsystem 重設及關機，作用範圍比單一控制器的設定更大。先確認能力及合法寫入值，再依對應操作流程解釋結果，不能把兩者都視為一般 controller disable。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CAP.CPS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CPS 進一步指定其中的 CPS 子欄位。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-056"><h4>Base Figure 56 · Offset 64h: NSSD - NVM Subsystem Shutdown</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-056-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base56-1">Base56-1</span><span class="paragraph-text">NSSD 用於要求 NVM subsystem shutdown。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.19, Figure 56, 文件頁 72, PDF 頁 98</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base56-2">Base56-2</span><span class="paragraph-text">單一控制器的 CC.SHN 與 subsystem 的 NSSD 影響對象不同；先決定要關閉哪一層，再使用相應機制。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-043">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSSC</li><li>NSSD</li><li>CAP.CPS</li><li>NVM Subsystem</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-084 -->
-<details class="field-note" id="figure-BASE3-FIG-084"><summary>Base Figure 84 · Admin Commands Permitted to Return a Status Code of Admin Command Media Not</summary>
-<!-- claim:BASE3-FIG-084-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.62">06.62.</span><span class="paragraph-text">Figure 84〈Admin Commands Permitted to Return a Status Code of Admin Command Media Not〉：Ready timeout 與選擇的就緒模式有關。先核對 CAP.CRMS 的支援及 CC.CRIME 的設定，再選 CRTO 中適用時間；某些 Admin 命令的媒體尚未就緒狀態另依命令清單判斷。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.5.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.3, Figure 84, 文件頁 110-111, PDF 頁 136-137</p></details>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CAP.CRMS.CRIMS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CRMS.CRIMS 進一步指定其中的 CRMS.CRIMS 子欄位。</dd></div><div><dt>CAP.CRMS.CRWMS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CRMS.CRWMS 進一步指定其中的 CRMS.CRWMS 子欄位。</dd></div><div><dt>CAP.CRMS</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。 此處的 CAP.CRMS 進一步指定其中的 CRMS 子欄位。</dd></div><div><dt>CC.CRIME</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。 此處的 CC.CRIME 進一步指定其中的 CRIME 子欄位。</dd></div></dl>
-</details>
+<article class="field-note" id="figure-BASE3-FIG-084"><h4>Base Figure 84 · Admin Commands Permitted to Return a Status Code of Admin Command Media Not</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-084-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base84-1">Base84-1</span><span class="paragraph-text">部分 Admin 命令在媒體尚未 ready 時有特定回覆規則。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.5.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.5.3, Figure 84, 文件頁 110-111, PDF 頁 136-137</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base84-2">Base84-2</span><span class="paragraph-text">控制器介面 ready 與媒體能處理某種命令可能是不同階段；先看 ready 模式，再查這張表對該命令的規定。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASE3-FIG-057">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LBA</li><li>TCG</li><li>CAP.CRMS</li><li>CAP.CRMS.CRWMS</li><li>CAP.CRMS.CRIMS</li><li>CC.CRIME</li><li>Status Code</li><li>Command</li></ul></div>
+
+</details></article>
 <!-- figure-table:BASE3-FIG-085 -->
-<details class="field-note" id="figure-BASE3-FIG-085"><summary>Base Figure 85 · Shutdown Processing Interactions</summary>
-<!-- claim:BASE3-FIG-085-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.63">06.63.</span><span class="paragraph-text">Figure 85〈Shutdown Processing Interactions〉：Shutdown processing 的互動圖把主機要求與控制器處理階段分開。沿每個條件判斷可執行的動作，並以 SHST 等狀態確認進度；不能只因已寫 SHN 就判斷關機完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.6, Figure 85, 文件頁 113, PDF 頁 139</p></details>
+<article class="field-note" id="figure-BASE3-FIG-085"><h4>Base Figure 85 · Shutdown Processing Interactions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-085-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base85-1">Base85-1</span><span class="paragraph-text">Shutdown 圖把主機要求與控制器處理的互動串起來。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.6, Figure 85, 文件頁 113, PDF 頁 139</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base85-2">Base85-2</span><span class="paragraph-text">主機提出 shutdown 後，沿狀態回報等待完成，不能把「已送出要求」當成「可以立刻切斷電源」。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base85-3">Base85-3</span><span class="paragraph-text">Shutdown processing 的互動圖把主機要求與控制器處理階段分開。沿每個條件判斷可執行的動作，並以 SHST 等狀態確認進度；不能只因已寫 SHN 就判斷關機完成。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Shutdown Processing Interactions</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-090 -->
-<details class="field-note" id="figure-BASE3-FIG-090"><summary>Base Figure 90 · Detecting Timeout Takes up to 2 * KATT</summary>
-<!-- claim:BASE3-FIG-090-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.64">06.64.</span><span class="paragraph-text">Figure 90〈Detecting Timeout Takes up to 2 * KATT〉：Keep Alive 的圖以 KATT 時間間隔說明逾時判斷。不同檢查時點可使偵測延後，因此圖中的最長偵測時間不是單次命令允許的執行時間，也不表示媒體發生錯誤。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>KATT</dt><dd>Keep Alive Timeout Total，controller 用於偵測逾時的總時間基準。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.9.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.9.4.1, Figure 90, 文件頁 133, PDF 頁 159</p></details>
+<article class="field-note" id="figure-BASE3-FIG-090"><h4>Base Figure 90 · Detecting Timeout Takes up to 2 * KATT</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-090-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base90-1">Base90-1</span><span class="paragraph-text">Keep Alive timeout 的偵測延遲受計時觀察時點影響。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.9.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.9.4.1, Figure 90, 文件頁 133, PDF 頁 159</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base90-2">Base90-2</span><span class="paragraph-text">一次更新剛好落在計時檢查前後，可能造成不同的偵測時刻；圖說明為何不能把 KATT 直接當成精確偵測時間。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base90-3">Base90-3</span><span class="paragraph-text">Keep Alive 的圖以 KATT 時間間隔說明逾時判斷。不同檢查時點可使偵測延後，因此圖中的最長偵測時間不是單次命令允許的執行時間，也不表示媒體發生錯誤。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>KATT</li></ul></div>
 
-</details>
+</details></article>
 <!-- figure-table:BASE3-FIG-091 -->
-<details class="field-note" id="figure-BASE3-FIG-091"><summary>Base Figure 91 · Example Privileged Action Admin Commands</summary>
-<!-- claim:BASE3-FIG-091-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.65">06.65.</span><span class="paragraph-text">Figure 91〈Example Privileged Action Admin Commands〉：Privileged Action 的例子描述需要特定授權條件的管理操作。先辨認操作對象與權限要求，再看命令格式；僅有 Admin Queue 並不會自動消除這些操作要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.10, Figure 91, 文件頁 135, PDF 頁 161</p></details>
+<article class="field-note" id="figure-BASE3-FIG-091"><h4>Base Figure 91 · Example Privileged Action Admin Commands</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASE3-FIG-091-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base91-1">Base91-1</span><span class="paragraph-text">Privileged action 可能影響其他控制器或主機使用的狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.10, Figure 91, 文件頁 135, PDF 頁 161</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base91-2">Base91-2</span><span class="paragraph-text">韌體切換或 namespace 配置變更不一定只影響送出命令的程序；先確認作用範圍，再談協調需求。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base91-3">Base91-3</span><span class="paragraph-text">Privileged Action 的例子描述需要特定授權條件的管理操作。先辨認操作對象與權限要求，再看命令格式；僅有 Admin Queue 並不會自動消除這些操作要求。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Command</li></ul></div>
 
+</details></article>
 </details>
-</div>
 <!-- claim:BASE3-NAMESPACE -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.66">06.66.</span><span class="paragraph-text">NSID 0h 無效，FFFFFFFFh 是 broadcast 值；其餘 NSID 還要區分 allocated／unallocated 與 active／inactive，不能只看數字是否落在範圍內。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, 文件頁 78-80, PDF 頁 104-106</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">NSID 0h 無效，FFFFFFFFh 是 broadcast 值；其餘 NSID 還要區分 allocated／unallocated 與 active／inactive，不能只看數字是否落在範圍內。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.1, 文件頁 78-80, PDF 頁 104-106</p></details>
 <!-- claim:BASE3-DOMAIN -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.67">06.67.</span><span class="paragraph-text">domain 是 NVM subsystem 內的故障／通訊邊界。多 domain subsystem 的 identifier 必須（shall）在該 subsystem 內唯一。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5, 文件頁 85-88, PDF 頁 111-114</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.08">06.08.</span><span class="paragraph-text">domain 是 NVM subsystem 內的故障／通訊邊界。多 domain subsystem 的 identifier 必須（shall）在該 subsystem 內唯一。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.5, 文件頁 85-88, PDF 頁 111-114</p></details>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
 <!-- qa:base-ch3-ready -->

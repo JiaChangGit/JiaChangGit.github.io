@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Base 2.4：Namespace Management：容量、建立與附加</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-capacity-granularity-math">01 容量數值與配置粒度</a><a href="#module-namespace-create-payload">02 建立 Namespace 所需的資料</a><a href="#module-namespace-lifecycle">03 建立、連接與使用 Namespace</a><a href="#module-delete-restore-state">04 刪除與恢復預設配置</a><a href="#module-namespace-events">05 Namespace 變更通知與重新辨識</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Base 2.4：Namespace Management：容量、建立與附加</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">Namespace Management 管理主機可使用的儲存空間。建立 namespace 決定容量與格式；附加 namespace 才把它連到指定控制器。因此，存在一份儲存空間，與主機能經由某個控制器使用它，是兩個不同狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>規劃要建立的儲存空間</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">先分清容量、格式與配置粒度：需要多少可定址空間、每個區塊多大，以及控制器建議如何配置。</span></p></article>
+<article><span class="axis-number">02</span><h3>從建立走到可存取</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">Create 建立 namespace 並回傳識別碼；Attach 讓指定控制器能存取它。用這個流程理解兩種命令各自完成什麼。</span></p></article>
+<article><span class="axis-number">03</span><h3>分清移除連接與刪除資料空間</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">Detach 移除控制器的存取關係，Delete 刪除 namespace；還原預設配置又有不同的前提與結果。</span></p></article>
+<article><span class="axis-number">04</span><h3>讓主機得知配置變動</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">建立、附加或刪除後，其他控制器與主機看到的資訊可能改變；透過通知及重新識別更新認識。</span></p></article>
+</div>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">先理解容量與識別碼，再準備建立資料；Create 成功後取得 NSID，接著以 Attachment 建立存取關係。需要調整配置時，分別考慮 Detach、Delete 或還原預設配置，並處理受影響控制器收到的變更通知。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+</div>
+</section>
+<section class="lesson" id="module-capacity-granularity-math"><h2 id="heading-capacity-granularity-math"><span class="section-number">01</span> 容量數值與配置粒度</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">NSZE 是可定址的區塊數，NCAP 是可配置容量，NUSE 是目前配置量；NSG、NCG 則提供以 bytes 表示的建議粒度。這些欄位要先換到相同單位才能比較。容量關係屬於規格要求，是否符合粒度建議則影響配置是否有效率，兩者的判斷目的不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NCAP</dt><dd>Namespace Capacity，任一時點最多可配置給 namespace 的 logical blocks。</dd></div><div><dt>NSZE</dt><dd>Namespace Size，namespace 的總 logical block 數，LBA 範圍為 0 到 NSZE−1。</dd></div><div><dt>NUSE</dt><dd>Namespace Utilization，目前已配置給 namespace 的 logical blocks。</dd></div><div><dt>NCG</dt><dd>Namespace Capacity Granularity，以 bytes 表示 controller 偏好的 NCAP allocation granularity。</dd></div><div><dt>NSG</dt><dd>Namespace Size Granularity，以 bytes 表示 controller 偏好的 NSZE allocation granularity。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">每區塊 4 KiB 時，1024 個區塊是 4 MiB，1000 個區塊是 4000 KiB，也就是 3.90625 MiB。後者不是 1 MiB 或 2 MiB 的整數倍，可能需要配置部分主機無法定址的空間；但其他要求都符合時，不能只因未符合這項建議而拒絕建立。</span></p>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.1 · Base 2.4 §8.1.17 · NVM Command Set 1.3 §5.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13-14, PDF 頁 13-14</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13, PDF 頁 13</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165</p></details>
+</div>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 260" role="img"><title>可定址、可配置、已配置是 3 個不同的量</title><desc>教學例：NSZE=1000、NCAP=800、NUSE=600。LBA 編號的範圍與目前配置量要分開理解。</desc><rect x="20" y="20" width="720" height="70" rx="6" class="v-object"/><text x="380.0" y="48.5" text-anchor="middle" font-size="17">NSZE = 1000</text><text x="380.0" y="73.5" text-anchor="middle" font-size="17">LBA 0 … 999</text><rect x="20" y="110" width="576" height="55" rx="6" class="v-command"/><text x="308.0" y="143.5" text-anchor="middle" font-size="17">NCAP = 800</text><rect x="20" y="185" width="432" height="55" rx="6" class="v-success"/><text x="236.0" y="218.5" text-anchor="middle" font-size="17">NUSE = 600</text></svg></div><figcaption>教學例：NSZE=1000、NCAP=800、NUSE=600。LBA 編號的範圍與目前配置量要分開理解。</figcaption></figure>
+
+<!-- claim:BASENAMESPACE-CAPACITY-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Namespace Size（NSZE）是 LBA 0 到 n−1 的總 logical blocks；Namespace Capacity（NCAP）是任一時點最多可配置的 blocks；Namespace Utilization（NUSE）是目前已配置 blocks。永遠遵守 NSZE ≥ NCAP ≥ NUSE。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13-14, PDF 頁 13-14</p></details>
+<!-- claim:BASENAMESPACE-THIN-PROVISIONING -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">NSFEAT.THINP=1 時，controller 可（may）回報 NCAP&lt;NSZE，並必須（shall）追蹤 NUSE。THINP=0 時，controller 必須回報 NCAP=NSZE，且可讓 NUSE 永遠等於 NCAP。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>THINP</dt><dd>Thin Provisioning，NSFEAT 中決定 NCAP 是否可小於 NSZE，以及 controller 是否必須追蹤 NUSE 的 bit。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §2.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §2.1.1, 文件頁 13, PDF 頁 13</p></details>
+<!-- claim:BASENAMESPACE-ALLOCATION-ROUNDING -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">controller 可（may）按內部 內部配置單位 把實際消耗容量向上取整。Spec 範例中，32 blocks×4 KiB=128 KiB 的 namespace，在 1 MiB 內部配置單位 下可消耗 1 MiB；因此 實際消耗容量 不一定等於 logical block size×block count。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.17</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687</p></details>
+<!-- claim:BASENAMESPACE-GRANULARITY-HINTS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">Namespace Granularity 的 NSG 與 NCG 都是 以 bytes 為單位的配置粒度建議。若 NSZE×LBA size 可整除 NSG、NCAP×LBA size 可整除 NCG 且 NSZE=NCAP，配置為 完整配置 且全部容量可由 LBA 定址；不符合 hint 可能浪費容量，但 符合其他所有要求的建立命令 不得只因違反 hint 被中止。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165</p></details>
+<!-- claim:BASENAMESPACE-GRANULARITY-EXAMPLE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">說明性範例：LBA=4 KiB、NSG=1 MiB（256 LBAs）、NCG=2 MiB（512 LBAs）。NSZE=NCAP=1024 同時滿足兩種 granularity；NSZE=1000、NCAP=1000 不滿足 NSG／NCG 整除，但若其他欄位都合法，controller 不得只因這個 hint violation 中止 create。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165</p></details>
+<div class="table-wrap"><table><caption>容量數值與配置粒度</caption><thead><tr><th scope="col">容量欄位</th><th scope="col">使用的單位</th><th scope="col">這個數值描述什麼</th></tr></thead><tbody><tr><td>NSZE</td><td>logical blocks</td><td>LBA 0..NSZE−1</td></tr><tr><td>NCAP</td><td>logical blocks</td><td>最大可配置容量</td></tr><tr><td>NUSE</td><td>logical blocks</td><td>THINP=1 時需追蹤</td></tr><tr><td>NSG／NCG</td><td>bytes</td><td>建議配置粒度；未符合這項建議，不能單獨成為拒絕命令的理由</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.08">01.08.</span><span class="paragraph-text">每個區塊 4 KiB、NSG=1 MiB、NCG=2 MiB。NSZE=NCAP=1024 時，1024×4 KiB=4 MiB，是兩種粒度的整數倍。改成 1000 時，1000×4 KiB=4000 KiB=3.90625 MiB，不是 1 MiB 或 2 MiB 的整數倍；可能浪費部分配置容量。但只要其他要求符合，不能只因未符合粒度建議而中止建立命令。</span></p></aside>
+<a class="reading-link" href="#reading-capacity-granularity-math">閱讀相關規格圖表 → 容量數值與配置粒度</a>
+</section>
+<section class="lesson" id="module-namespace-create-payload"><h2 id="heading-namespace-create-payload"><span class="section-number">02</span> 建立 Namespace 所需的資料</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Namespace Create 的資料 buffer 同時涉及 Base 定義的共通外框與所選 I/O Command Set 的解讀方式。讀布局時要先確認現在看的是哪一層格式，不能把另一層同一 byte 範圍的標示直接搬過來。NVM 專用資料再描述容量、格式與保護設定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">某些欄位只有功能啟用時才使用，例如 FDP 的 Placement Handle List。資料出現在固定位置，不表示任何情況下都要填入。建立前應依所選功能檢查欄位組合，並區分有標準定義的部分、保留區與廠商定義區域。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FDP</dt><dd>Flexible Data Placement，把資料放置提示與媒體回收管理連結的能力。</dd></div></dl>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.25 · NVM Command Set 1.3 §4.1.6.4 · NVM Command Set 1.3 §4.1.6.2 · NVM Command Set 1.3 §4.1.6.3 · Base 2.4 §8.1.17</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 文件頁 446-448, PDF 頁 472-474</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, 文件頁 111-113, PDF 頁 111-113</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687</p></details>
+</div>
+<!-- claim:BASENAMESPACE-CREATE-BASE-COMMAND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">Create 使用 NSID=0、SEL=0h 與 CSI=00h（NVM Command Set）。DPTR 指向 4096-byte data structure：bytes 0:511 是 I/O Command Set specific、512:1023 reserved、1024:4095 vendor specific。reserved bytes 由 host 清為 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div><div><dt>SEL</dt><dd>Select；Namespace Management 的 create/delete/restore selector，與 Get Features 的 SEL 不同。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 文件頁 446-448, PDF 頁 472-474</p></details>
+<!-- claim:BASENAMESPACE-CREATE-NVM-PAYLOAD -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">NVM create payload 的主要 host-specified fields 是 NSZE、NCAP、FLBAS、DPS、NMIC、ANAGRPID、NVMSETID、ENDGID、LBSTM、NPHNDLS 與 Placement Handle List。成功 create 後，namespace 依這些屬性格式化；未使用的 reserved fields 應清為 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ANAGRPID</dt><dd>ANA Group Identifier，namespace 所屬 Asymmetric Namespace Access group 的 identifier；create 值 0 讓 controller 選擇。</dd></div><div><dt>NVMSETID</dt><dd>NVM Set Identifier，指定建立 namespace 時要從哪個 NVM Set 配置容量。</dd></div><div><dt>NPHNDLS</dt><dd>Number of Placement Handles，NVM create payload 中 Placement Handle List 的 entry count，最大 128。</dd></div><div><dt>ENDGID</dt><dd>Endurance Group Identifier，指定建立 namespace 時所屬 Endurance Group。</dd></div><div><dt>FLBAS</dt><dd>Formatted LBA Size，選擇 namespace 使用的 LBA format，並包含 metadata placement 相關控制。</dd></div><div><dt>LBSTM</dt><dd>Logical Block Storage Tag Mask，create 時指定哪些 Storage Tag bits 被 mask 的 64-bit 欄位。</dd></div><div><dt>NMIC</dt><dd>Namespace Multi-path I/O and Namespace Sharing Capabilities，create 時宣告 namespace sharing／multipath 屬性的欄位。</dd></div><div><dt>DPS</dt><dd>End-to-end Data Protection Type Settings，create 時選擇 Protection Information type 與位置的欄位。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, 文件頁 111-113, PDF 頁 111-113</p></details>
+<!-- claim:BASENAMESPACE-PROTECTION-VALIDATION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">End-to-end Data Protection 設定在 create 時套用。LBAFEE 未啟用時，特定 16-bit STS 非零、32-bit 或 64-bit Guard Protection Information 組合必須以 Invalid Namespace or Format 中止；LBSTM 不符合 Figure 127 capability 時則回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div><div><dt>Guard</dt><dd>PI 的檢查值欄位；所選格式決定檢查值的寬度與計算方法。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.2</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.2, 文件頁 110, PDF 頁 110</p></details>
+<!-- claim:BASENAMESPACE-FDP-VALIDATION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">只有指定 Endurance Group 已啟用 Flexible Data Placement（FDP）且 SEL=Create 時，NPHNDLS 與 Placement Handle List 才參與驗證。NPHNDLS 不得大於支援的 Reclaim Unit Handles 或 128；重複、越界、格式不相容或無可用 handle 會導向 Invalid Placement Handle List 或 Invalid Format。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Endurance Group</dt><dd>Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。</dd></div><div><dt>Reclaim Unit</dt><dd>Reclaim Unit，controller 執行媒體回收時使用的較小管理粒度。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-111, PDF 頁 110-111</p></details>
+<!-- claim:BASENAMESPACE-GROUP-SELECTION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">NVMSETID／ENDGID 的決策矩陣為：兩者 0 由 controller 選兩者；NVMSETID=0、ENDGID≠0 時由指定 Endurance Group 內選 NVM Set；NVMSETID≠0、ENDGID=0 必須 Invalid Field；兩者非 0 時只有該 NVM Set 確實屬於指定 Endurance Group 才可配置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.17</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687</p></details>
+<div class="table-wrap"><table><caption>建立 Namespace 所需的資料</caption><thead><tr><th scope="col">資料區域與解讀格式</th><th scope="col">該區域的用途</th><th scope="col">欄位有效的條件</th></tr></thead><tbody><tr><td>Base 0:511</td><td>SIOCS</td><td>NVM-specific create data</td></tr><tr><td>Base 512:1023</td><td>Reserved</td><td>host 清 0</td></tr><tr><td>Base 1024:4095</td><td>Vendor Specific</td><td>沒有來源定義就不猜</td></tr><tr><td>NVM 512:767</td><td>Placement Handle List</td><td>只在 FDP enable 時驗證</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SIOCS</dt><dd>Specified I/O Command Set，Base create buffer bytes 0:511 中放置所選 I/O Command Set specific fields 的區域。</dd></div></dl>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">建立 4 MiB namespace：LBA=4096 bytes、NSZE=NCAP=1024，因此 bytes 7:0 與 15:8 都寫 0000000000000400h。NVMSETID=0、ENDGID=5 表示由 Endurance Group 5 內選 NVM Set；反過來 NVMSETID=7、ENDGID=0 是 Invalid Field。</span></p></aside>
+<a class="reading-link" href="#reading-namespace-create-payload">閱讀相關規格圖表 → 建立 Namespace 所需的資料</a>
+</section>
+<section class="lesson" id="module-namespace-lifecycle"><h2 id="heading-namespace-lifecycle"><span class="section-number">03</span> 建立、連接與使用 Namespace</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">Create 建立儲存物件，Attach 建立它與控制器之間的存取關係。Detach 移除某個關係，Delete 才移除物件。因此 namespace 可以存在卻尚未連到控制器，也可以只從某個控制器分離，但仍由另一個控制器存取。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">例如 NSID 7 已連到控制器 3 和 5。只對控制器 3 執行 Detach，並不刪除 namespace，也不自動移除控制器 5 的連接。觀察結果時要分別查 allocated 清單及每個控制器的 active 清單，不能用其中一份清單代表全部關係。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.17 · Base 2.4 §5.2.24 · Base 2.4 §5.2.25, 8.1.17.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688</p></details>
+</div>
+<figure><figcaption><strong>Namespace 從建立到可存取</strong></figcaption><ol class="flow-steps"><li>建立 namespace，取得 NSID。</li><li>將 namespace 附加至指定 controller。</li><li>由該 controller 的 Identify 結果確認 namespace 與格式。</li><li>I/O 命令使用 NSID 指定要存取的 namespace。</li></ol><figcaption>建立儲存物件與讓 controller 可以存取它，是分開的動作。</figcaption></figure>
+
+<!-- claim:BASENAMESPACE-NSMGMT-CAPABILITY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">完整 Namespace Management capability 由 Namespace Management command 與 Namespace Attachment command 組成。支援時 controller 必須支援兩者、設 OACS.NMS=1、支援 Attached Namespace Attribute Changed event；Allocated event 為 should，Namespace Granularity 與 Restore Default 為 may。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>OACS.NMS</dt><dd>Optional Admin Command Support 的 Namespace Management Supported bit；設為 1 才宣告完整 Manage 加 Attach capability。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.17</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686</p></details>
+<!-- claim:BASENAMESPACE-NSID-LIFECYCLE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">create 成功後 namespace 已 allocated 但尚未 attached，因此對 controller 尚非 active。detach 使該 controller 上的 NSID 變 inactive；delete 使 subsystem 中的 NSID 變 unallocated。受影響的 outstanding 或後續 commands 依 inactive NSID 處理。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.17</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686</p></details>
+<!-- claim:BASENAMESPACE-ATTACH-COMMAND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">Namespace Attachment 的 DPTR 指向 4096-byte Controller List；SEL=0h attach、SEL=1h detach。以 PRP 指向此 buffer 時不得使用 PRP List，因 buffer 不可跨越超過一個 memory-page boundary。attach／detach 狀態跨所有 reset events 保留。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471</p></details>
+<!-- claim:BASENAMESPACE-ATTACH-LIMITS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">attach 前分別核對 Domain aggregate MAXDNA 與每個 I/O controller 的 MAXCNA；非零 limit 被超過時回 Namespace Attachment Limit Exceeded。還要核對 I/O Command Set support／enable state，不能把所有 attach failure 都歸成同一種 status。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O controller</dt><dd>I/O controller，可執行使用者資料 I/O command 的 controller 類型。</dd></div><div><dt>MAXCNA</dt><dd>Maximum I/O Controller Namespace Attachments，單一 I/O controller 可附掛 namespaces 的上限。</dd></div><div><dt>MAXDNA</dt><dd>Maximum Domain Namespace Attachments，整個 Domain 內所有 I/O controller attachment 數量總和的上限。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471</p></details>
+<!-- claim:BASENAMESPACE-CREATE-COMPLETION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">Create 成功時 controller 選擇可用 NSID，CQE.DW0 回傳該 NSID；此刻 namespace 尚未 attached。software 必須先保存 returned NSID，再以 Namespace Attachment 建立 controller access，不能在 create CQE 後直接送 I/O。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.25, 8.1.17.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688</p></details>
+<div class="table-wrap"><table><caption>建立、連接與使用 Namespace</caption><thead><tr><th scope="col">管理動作</th><th scope="col">改變哪個物件或關係</th><th scope="col">操作後仍保留什麼</th></tr></thead><tbody><tr><td>Create</td><td>object／capacity</td><td>不自動 attach</td></tr><tr><td>Attach</td><td>access relationship</td><td>Controller List 可含多個 CNTLID</td></tr><tr><td>Detach</td><td>對指定控制器的可存取狀態</td><td>namespace 仍 allocated</td></tr><tr><td>Delete</td><td>subsystem inventory</td><td>NSID 變 unallocated</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">Create 回 NSID=7。Controller List 的 NUMCIDS 與 entries 指定 controllers 3、5；Attach 成功後 NSID 7 對 3、5 active。再只 detach controller 3，NSID 7 對 3 inactive、對 5 仍 active，namespace 本身仍 allocated。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMCIDS</dt><dd>Number of Controller Identifiers；Controller List 中有效 controller IDs 的數量。</dd></div></dl></aside>
+<a class="reading-link" href="#reading-namespace-lifecycle">閱讀相關規格圖表 → 建立、連接與使用 Namespace</a>
+</section>
+<section class="lesson" id="module-delete-restore-state"><h2 id="heading-delete-restore-state"><span class="section-number">04</span> 刪除與恢復預設配置</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">刪除 namespace 與恢復預設配置是不同操作。Delete 先移除指定儲存物件；Restore 再要求裝置回到所定義的預設配置，且有自己支援能力與執行順序的要求。不能把 Restore 當成任何狀態下都可使用的重設按鈕。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">DNCS 回報是否處於預設 namespace 配置，但它不是完整的預設清單。即使 Restore 成功，主機仍要重新查詢實際存在的 namespace 與格式，才能重新建立對儲存空間的理解。成功狀態與配置內容是互補資訊。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DNCS</dt><dd>Default Namespace Configuration Status，表示目前 namespace configuration 是否等於 active firmware image defaults 的 status bit。</dd></div></dl>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.25, 8.1.17.1 · Base 2.4 §5.2.25.1 · Base 2.4 §8.1.17.1-8.1.17.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689</p></details>
+</div>
+<!-- claim:BASENAMESPACE-DELETE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">Delete 的 NSID 指定已建立 namespace；FFFFFFFFh 表示 delete all，即使目前零個 namespaces 也成功。delete 會使 namespace 從 subsystem 消失並具有 detach side effect；host 應先 detach 所有 controllers，讓 event 與 outstanding-I/O 行為更可控。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.25, 8.1.17.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688</p></details>
+<!-- claim:BASENAMESPACE-RESTORE-DEFAULT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">Restore Default 使用 SEL=2h，NSID 應為 0 且 controller 會忽略它。先讀 RDNCS，刪除 subsystem 中所有 namespaces，再送 restore；若仍有 namespace，回 Command Sequence Error。成功前 controller 必須套用 current active firmware image 的 default configuration 並設 DNCS=1。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RDNCS</dt><dd>Restore Default Namespace Configuration Supported，宣告 Restore Default operation 是否支援的 capability bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.25.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474</p></details>
+<!-- claim:BASENAMESPACE-NAMESPACE-EVENTS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">create 改變 Allocated Namespace ID list；attach／detach 改變 Active Namespace ID list；delete 可能同時改變兩者。啟用對應 notice 時，host 收到 asynchronous event 後應重新 Identify，而不是只用 event code 猜新 inventory。§8.1.17.2 對處理 delete 的 controller 與其他 controllers 規定不同 event reporting。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.17.1-8.1.17.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689</p></details>
+<div class="table-wrap"><table><caption>刪除與恢復預設配置</caption><thead><tr><th scope="col">刪除或恢復動作</th><th scope="col">命令如何選對象</th><th scope="col">完成後如何確認配置</th></tr></thead><tbody><tr><td>Delete one</td><td>NSID=target</td><td>成功後 object 消失</td></tr><tr><td>Delete all</td><td>NSID=FFFFFFFFh</td><td>zero namespace 仍成功</td></tr><tr><td>Restore</td><td>SEL=2h、NSID ignored</td><td>剩餘 namespace→Sequence Error</td></tr><tr><td>Post-condition</td><td>DNCS=1</td><td>仍要重新 Identify actual defaults</td></tr></tbody></table></div>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">先 detach NSID 7，再 Delete 7；讀 Allocated Namespace ID list 確認為空。若 RDNCS=1，送 SEL=2h、NSID=0。CQE success 後讀 DNCS=1，最後重新列舉 default namespaces；DNCS 是狀態證據，不是 default layout 的完整描述。</span></p></aside>
+<a class="reading-link" href="#reading-delete-restore-state">閱讀相關規格圖表 → 刪除與恢復預設配置</a>
+</section>
+<section class="lesson" id="module-namespace-events"><h2 id="heading-namespace-events"><span class="section-number">05</span> Namespace 變更通知與重新辨識</h2>
+<div class="lesson-explanation">
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">通知的用途是提醒主機配置可能改變，不是直接交付完整的新配置。Create 會改變已配置物件的集合，Attach 則改變某個控制器的可存取集合，因此它們引發的觀察需求不同。主機收到通知後，要查相應清單。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">同一個 namespace 變化，對處理命令的控制器與其他控制器可能有不同通知規則。不能只計算收到幾個事件就推論變更多寡。讀者應關心的是哪一份原本的資訊可能過期，以及哪個查詢能重建正確的物件與存取關係。</span></p>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.17 · Base 2.4 §8.1.17.1-8.1.17.2 · Base 2.4 §5.2.25, 8.1.17.1 · Base 2.4 §5.2.24-5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 660, PDF 頁 686</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1-8.1.17.2, 文件頁 662-663, PDF 頁 688-689</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 文件頁 445, 448, PDF 頁 471, 474</p></details>
+</div>
+<!-- claim:BASENAMESPACE-COMMAND-STATUS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">Namespace Attachment 與 Management 有各自的 command-specific status。Attachment 包括 already attached 18h、private 19h、not attached 1Ah、Controller List invalid 1Ch、ANA attach failed 25h、limit 27h、I/O Command Set 29h／2Ah；Management 包括 Invalid Format 0Ah、insufficient capacity 15h、NSID unavailable 16h、thin provisioning unsupported 1Bh、ANA group invalid 24h。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ANA</dt><dd>Asymmetric Namespace Access；描述同一 namespace 經不同 controllers 存取時的路徑狀態。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.24-5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24-5.2.25, 文件頁 445, 448, PDF 頁 471, 474</p></details>
+<div class="table-wrap"><table><caption>Namespace 變更通知與重新辨識</caption><thead><tr><th scope="col">通知或清單</th><th scope="col">描述哪種配置變化</th><th scope="col">應重新查詢什麼</th></tr></thead><tbody><tr><td>CNS 02h</td><td>Active Namespace ID list</td><td>Attached notice</td></tr><tr><td>CNS 10h</td><td>Allocated Namespace ID list</td><td>Allocated notice</td></tr><tr><td>Create</td><td>Allocated change</td><td>新 NSID 尚未 active</td></tr><tr><td>Delete</td><td>Allocated＋可能 Active</td><td>processing controller 規則不同</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CNS</dt><dd>Controller or Namespace Structure；Identify 命令用來選擇回傳資料結構的欄位。</dd></div></dl>
+<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">Controller 3 處理 attached NSID 7 的 Delete。其他已啟用 notice 的 controllers 依 §8.1.17.2 回報；processing controller 的要求不同。host 不應只計算 event 數量，而要為每個 controller 保存 before/after Active 與 Allocated lists。</span></p></aside>
+<a class="reading-link" href="#reading-namespace-events">閱讀相關規格圖表 → Namespace 變更通知與重新辨識</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">06</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-capacity-granularity-math"><summary>圖表組 01 · 容量數值與配置粒度 · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">容量圖比較 NSZE、NCAP、NUSE 的數量，粒度表則以 bytes 比較。先列出區塊數×區塊大小，再計算對 NSG、NCG 的餘數；不要直接拿區塊數除以 byte 粒度。</span></p>
+<a class="reading-link" href="#module-capacity-granularity-math">回到本節的解釋與範例</a>
+<!-- figure-table:BASENAMESPACE-FIG-123 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-123"><h4>NVM Figure 123 · Identify - Identify Namespace Data Structure, NVM Command Set</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-123-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM123-1">NVM123-1</span><span class="paragraph-text">Identify Namespace 同時描述容量、格式與資料操作能力。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.1, Figure 123, 文件頁 85-87, PDF 頁 85-87</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM123-2">NVM123-2</span><span class="paragraph-text">NSZE＝1000、NCAP＝800、NUSE＝600 分別表示可定址、最多可配置與目前已配置；換算 bytes 還要讀使用中的 LBA 格式。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM123-3">NVM123-3</span><span class="paragraph-text">把這張跨頁資料結構分成容量、格式能力／目前格式、deallocation、atomicity、performance、Copy limits 與識別資料七組；每組先看 功能支援條件 再使用數值。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSZE</li><li>NCAP</li><li>NUSE</li><li>NSFEAT.THINP</li><li>FLBAS</li><li>DPS</li><li>NMIC</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-132 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-132"><h4>NVM Figure 132 · Namespace Granularity List</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-132-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM132-1">NVM132-1</span><span class="paragraph-text">Namespace Granularity List 說明有哪些配置粒度描述子。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.8, Figure 132, 文件頁 108, PDF 頁 108</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM132-2">NVM132-2</span><span class="paragraph-text">先看模式與描述子數，再選符合情境的描述子；不能永遠只讀第一個 NSG／NCG。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM132-3">NVM132-3</span><span class="paragraph-text">GDM=0 時 descriptor0 套全部格式，ND=0；GDM=1 以相同 index 對應 format。ND 是 0-based，支援數量受 LBAFEE 影響。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NGA.GDM</li><li>ND</li><li>NGD0-NGD63</li><li>CNS 16h</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-133 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-133"><h4>NVM Figure 133 · Namespace Granularity Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-133-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM133-1">NVM133-1</span><span class="paragraph-text">NSG 與 NCG 分別提供 namespace 大小及容量的粒度提示。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.8</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.8, Figure 133, 文件頁 108, PDF 頁 108</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM133-2">NVM133-2</span><span class="paragraph-text">若 NSG＝1 MiB、每個 block＝4 KiB，NSZE＝250 對應 1000 KiB，不是 1 MiB 的整數倍；這可能影響配置效率，但不能單憑未遵循提示就否決其他方面合法的 Create。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM133-3">NVM133-3</span><span class="paragraph-text">NSG／NCG 以 bytes 表示 preferred allocation granularity；0 表示未回報，不能拿來做除法或要求 namespace 大小為零。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSG bytes 7:0</li><li>NCG bytes 15:8</li><li>byte units</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-346 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-346"><h4>Base Figure 346 · Identify - I/O Command Set Independent Identify Namespace Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-346-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-1">Base346-1</span><span class="paragraph-text">與命令集無關的 Identify Namespace 提供共享、屬性與路徑相關資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.3, Figure 346, 文件頁 391-394, PDF 頁 417-420</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-2">Base346-2</span><span class="paragraph-text">先知道某 NSID 對應的 namespace 是否共享，再解釋控制器間的存取關係；LBA 資料大小則仍需命令集專屬格式資訊。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-3">Base346-3</span><span class="paragraph-text">Command Set Independent Identify Namespace 提供跨命令集的 namespace 屬性。ANAGRPID、NVMSETID、ENDGID 分別連到不同資源群組，不能因都是 ID 就把它們當成同一層級。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ANAGRPID</li><li>NVMSETID</li><li>ENDGID</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-namespace-create-payload"><summary>圖表組 02 · 建立 Namespace 所需的資料 · 8 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">先從 Base 的資料外框進入 NVM 專用解讀，再對照相同 offset 的欄位。容量值按所選格式換算，Placement Handle List 按 FDP 啟用條件讀取；表中的不同列不是互相獨立且可以相加的 buffer。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<a class="reading-link" href="#module-namespace-create-payload">回到本節的解釋與範例</a>
+<!-- figure-table:BASENAMESPACE-FIG-134 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-134"><h4>NVM Figure 134 · Namespace Management - Host Specified Fields</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-134-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM134-1">NVM134-1</span><span class="paragraph-text">Create payload 把主機選擇的容量、格式與放置參數交給控制器。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, Figure 134, 文件頁 112-113, PDF 頁 112-113</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM134-2">NVM134-2</span><span class="paragraph-text">建立 1000 個 4 KiB blocks 的 namespace，先選對格式，再填 NSZE／NCAP；1000 代表 blocks，不是 1000 bytes。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM134-3">NVM134-3</span><span class="paragraph-text">Create payload 只有指定欄位可由 host 填寫；LBSTM／placement list 不在基本 Identify 相同區段，不能直接 memcpy 整份 Identify 結構。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSZE</li><li>NCAP</li><li>FLBAS</li><li>DPS</li><li>NMIC</li><li>ANAGRPID</li><li>NVMSETID</li><li>ENDGID</li><li>LBSTM</li><li>NPHNDLS</li><li>Placement Handle List</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-445 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-445"><h4>Base Figure 445 · Namespace Management - Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-445-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base445-1">Base445-1</span><span class="paragraph-text">Namespace Create 的 DPTR 指向 4096-byte 建立資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 445, 文件頁 446, PDF 頁 472</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base445-2">Base445-2</span><span class="paragraph-text">主機想建立新 namespace，將容量和格式放在 payload，DPTR 只提供 payload 的位置；不是提供未來 namespace 的資料位址。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base445-3">Base445-3</span><span class="paragraph-text">Namespace Management 用 SEL 選 Create、Delete 或 Restore，Create 的資料依 CSI 解讀。成功建立時 CQE DW0 回傳 NSID；這表示儲存物件已建立，並未自動替主機完成 Attachment。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li><li>4096-byte create buffer</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-446 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-446"><h4>Base Figure 446 · Namespace Management - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-446-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base446-1">Base446-1</span><span class="paragraph-text">CDW10 的 SEL 選擇建立、刪除或還原預設 namespace 配置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 446, 文件頁 446-447, PDF 頁 472-473</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base446-2">Base446-2</span><span class="paragraph-text">Create 用 SEL＝0h，Delete 用 1h，Restore Default 用 2h；bits 3:0 放選擇值，bits 31:4 保留。Delete 的目標另由 NSID 指定。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-445">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SEL 0h Create</li><li>SEL 1h Delete</li><li>SEL 2h Restore</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-447 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-447"><h4>Base Figure 447 · Namespace Management - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-447-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base447-1">Base447-1</span><span class="paragraph-text">CDW11 的 CSI 只在 Create 時指定新 namespace 的命令集。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 447, 文件頁 447, PDF 頁 473</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base447-2">Base447-2</span><span class="paragraph-text">建立 NVM namespace 時，SEL＝0h 且 CSI＝00h；CSI 位於 bits 31:24。Delete 或 Restore 時此欄位保留，不能用來指定 namespace 編號。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-445">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSI</li><li>NVM Command Set 00h</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-448 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-448"><h4>Base Figure 448 · Namespace Management - Data Structure for Create</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-448-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base448-1">Base448-1</span><span class="paragraph-text">Create buffer 把命令集專屬資料、保留區與廠商區分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 448, 文件頁 447, PDF 頁 473</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base448-2">Base448-2</span><span class="paragraph-text">bytes 0～511 依所選命令集解釋，512～1023 保留，1024～4095 為廠商區；不能把整個 buffer 都當成連續 LBA 資料。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-445">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SIOCS bytes 0:511</li><li>reserved bytes 512:1023</li><li>VS bytes 1024:4095</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-036 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-036"><h4>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-036-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-1">Base36-1</span><span class="paragraph-text">CAP 描述控制器能力，主機設定必須落在其支援範圍。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-2">Base36-2</span><span class="paragraph-text">設定記憶體頁大小前，先比對 MPSMIN 與 MPSMAX；主機偏好的頁大小不一定就是控制器接受的大小。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-3">Base36-3</span><span class="paragraph-text">CAP 回報支援能力、大小與時間限制，主機以這些資訊選擇可用設定。讀到支援位並不表示對應功能已啟用或控制器已就緒；設定與目前狀態要再讀各自的欄位。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSS</li><li>active I/O Command Set</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-093 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共通 SQE 固定各命令共用欄位的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">同樣在 CDW10，Read 與管理命令可以有完全不同含義；先依 OPC 選命令，再查專屬欄位表。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-3">Base93-3</span><span class="paragraph-text">共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div></dl>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OPC</li><li>NSID</li><li>DPTR</li><li>CDW10-CDW15</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-127 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-127"><h4>NVM Figure 127 · NVM Command Set I/O Command Set Specific Identify Namespace Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-127-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM127-1">NVM127-1</span><span class="paragraph-text">命令集專屬 Identify Namespace 補充 PI、格式與效能屬性。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.3, Figure 127, 文件頁 97-101, PDF 頁 97-101</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM127-2">NVM127-2</span><span class="paragraph-text">基礎 Identify 已知每個 block 有 4 KiB，仍要到這裡看 ELBAF／PI 能力，才能完成 tag 的配置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ELBAF</dt><dd>Extended LBA Format；與相同 index 的 LBAF 配對，補充 PI 格式與 Storage Tag 大小。</dd></div></dl></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM127-3">NVM127-3</span><span class="paragraph-text">延伸 namespace 結構把 PI／mask 能力、每-format ELBAF 與性能／allocation hints 分開；NPRG／NPRA／NORS 受 OPTRPERF 限制。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LBSTM</li><li>Storage Tag Masking Level</li><li>LBAFEE</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-namespace-lifecycle"><summary>圖表組 03 · 建立、連接與使用 Namespace · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">生命週期圖用實線物件表示 namespace，用連線表示 attachment。Create／Delete 改變物件，Attach／Detach 改變連線；Controller List 指定要改哪些控制器的關係。</span></p>
+<a class="reading-link" href="#module-namespace-lifecycle">回到本節的解釋與範例</a>
+<!-- figure-table:BASENAMESPACE-FIG-442 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-442"><h4>Base Figure 442 · Namespace Attachment - Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-442-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base442-1">Base442-1</span><span class="paragraph-text">Attachment 的 DPTR 指向要附加或分離的控制器清單。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 442, 文件頁 445, PDF 頁 471</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base442-2">Base442-2</span><span class="paragraph-text">NSID＝3、清單只有控制器 A，表示改變 namespace 3 與 A 的關係，不是建立新的 namespace 3。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base442-3">Base442-3</span><span class="paragraph-text">Namespace Attachment 的 DPTR 指向 Controller List，SEL 選 Attach 或 Detach。命令改變的是指定控制器與 namespace 的關係；完成狀態如已連接、未連接或清單不合法，要按該關係解讀。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li><li>Controller List</li><li>one page boundary</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-443 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-443"><h4>Base Figure 443 · Namespace Attachment - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-443-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base443-1">Base443-1</span><span class="paragraph-text">Attachment 的 SEL 選擇 Attach 或 Detach。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 443, 文件頁 445, PDF 頁 471</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base443-2">Base443-2</span><span class="paragraph-text">SEL＝0h 建立附加關係，SEL＝1h 移除關係；Detach 不會像 Delete 一樣刪除 namespace 物件。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-442">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SEL 0h Attach</li><li>SEL 1h Detach</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-444 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-444"><h4>Base Figure 444 · Namespace Attachment - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-444-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base444-1">Base444-1</span><span class="paragraph-text">Attachment 狀態描述附加關係、控制器清單與限制是否成立。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 444, 文件頁 445, PDF 頁 471</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base444-2">Base444-2</span><span class="paragraph-text">「已經附加」與「清單中的控制器不合法」是不同問題；先看是哪一個關係或輸入不符合要求。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-442">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>status 18h-1Ch</li><li>status 25h</li><li>status 27h</li><li>status 29h-2Ah</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-450 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-450"><h4>Base Figure 450 · Namespace Management - Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-450-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base450-1">Base450-1</span><span class="paragraph-text">Create 成功後 CQE DW0 回傳控制器分配的新 NSID。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 450, 文件頁 448, PDF 頁 474</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base450-2">Base450-2</span><span class="paragraph-text">回傳 NSID＝3 表示 namespace 3 已建立，主機還要透過 Attachment 附加到控制器，才能依該控制器的存取路徑使用它。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-445">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CQE DW0</li><li>created NSID</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-139 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-139"><h4>Base Figure 139 · Controller List Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-139-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base139-1">Base139-1</span><span class="paragraph-text">Controller List 先列數量，再列要操作的控制器識別碼。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.6.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.6.1, Figure 139, 文件頁 172, PDF 頁 198</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base139-2">Base139-2</span><span class="paragraph-text">Attach 到控制器 A 與 B 時，清單含 2 個 Controller IDs；命令 NSID 指 namespace，清單則指定哪些控制器。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base139-3">Base139-3</span><span class="paragraph-text">Controller List 以 NUMCIDS 開頭，後接 16-bit controller IDs；Namespace List 直接列出 32-bit NSIDs。兩者都依各自排序及未使用項目規則讀取，但不能共用同一種 header。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMCIDS</li><li>Controller Identifier list</li><li>4096 bytes</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-338 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-338"><h4>Base Figure 338 · Identify Controller Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340, 353, 365, 378, PDF 頁 366, 379, 391, 404</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">Identify Controller 的欄位分別描述能力、限制、身分與目前資訊。依本篇主題選出需要的欄位後，再連到相應命令；支援位和大小上限必須一起用，不能以單一旗標推論所有參數都有效。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OACS.DSTS</li><li>EDSTT</li><li>DSTO.SDSO</li><li>OACS.NMS</li><li>RDNCS</li><li>MAXDNA</li><li>MAXCNA</li></ul></div>
+<dl class="term-note" aria-label="本段名詞"><div><dt>OACS.DSTS</dt><dd>Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。</dd></div><div><dt>EDSTT</dt><dd>Extended Device Self-test Time，在 power state 0 下的 extended test 名目完成分鐘數。</dd></div><div><dt>DSTO</dt><dd>Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。</dd></div><div><dt>SDSO</dt><dd>Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。</dd></div></dl>
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-delete-restore-state"><summary>圖表組 04 · 刪除與恢復預設配置 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">先區分單一 Delete、Delete all 與 Restore 的 SEL／NSID 用法，再沿流程核對剩餘 namespace 及支援能力。結果圖把 DNCS 和重新取得的 namespace 清單並列閱讀。</span></p>
+<a class="reading-link" href="#module-delete-restore-state">回到本節的解釋與範例</a>
+<!-- figure-table:BASENAMESPACE-FIG-449 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-449"><h4>Base Figure 449 · Namespace Management - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-449-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base449-1">Base449-1</span><span class="paragraph-text">Create 失敗原因可能是格式、容量或識別碼資源，而非同一種空間不足。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 449, 文件頁 448, PDF 頁 474</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base449-2">Base449-2</span><span class="paragraph-text">還有未配置 bytes，卻已用完允許的 namespace 數量時，仍可能無法建立；NSID Unavailable 與 Insufficient Capacity 要分開。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-445">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Invalid Format</li><li>Insufficient Capacity</li><li>NSID Unavailable</li><li>Thin Provisioning Not Supported</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-304 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-304"><h4>Base Figure 304 · Manufacturer Default Configuration Status Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-304-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base304-1">Base304-1</span><span class="paragraph-text">DNCS 表示目前 namespace 配置是否仍符合韌體預設配置。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.31</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.31, Figure 304, 文件頁 301-302, PDF 頁 327-328</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base304-2">Base304-2</span><span class="paragraph-text">還原預設配置成功後 DNCS 設定；後續又建立或刪除 namespace 改變配置時，就不能仍把先前的預設狀態當成現在狀態。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base304-3">Base304-3</span><span class="paragraph-text">DNCS 描述是否處於製造商預設 namespace 配置。它是一個狀態判斷，並未列出每個預設 namespace 的容量及格式；這些內容仍需重新 Identify。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DNCS</li><li>default namespace configuration status</li></ul></div>
+
+</details></article>
+<!-- figure-table:BASENAMESPACE-FIG-474 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-474"><h4>Base Figure 474 · Asynchronous Event Configuration - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-474-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-1">Base474-1</span><span class="paragraph-text">Asynchronous Event Configuration 各 bit 選擇對應的通知類別。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-2">Base474-2</span><span class="paragraph-text">主機啟用本篇需要的通知時，只設定對應的事件 bit；一種通知已啟用，不會自動啟用其他通知。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-3">Base474-3</span><span class="paragraph-text">事件種類與事件啟用是兩份不同資訊。先以通知種類找到本篇使用的事件，再看相應啟用位；取得通知後仍需讀對應狀態或 log，通知本身不包含完整結果。</span></p>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Attached Namespace Attribute Notices</li><li>Allocated Namespace Attribute Notices</li></ul></div>
+
+</details></article>
+</details>
+<details open class="figure-reading-group" id="reading-namespace-events"><summary>圖表組 05 · Namespace 變更通知與重新辨識 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">事件圖從 Create／Attach／Detach／Delete 出發，分別連到 Allocated 和 Active 清單。CNS 02h 和 CNS 10h 查不同集合；namespace 的獨立屬性查詢則補足清單沒有提供的內容。</span></p>
+<a class="reading-link" href="#module-namespace-events">回到本節的解釋與範例</a>
+<!-- figure-table:BASENAMESPACE-FIG-155 -->
+<article class="field-note" id="figure-BASENAMESPACE-FIG-155"><h4>Base Figure 155 · Asynchronous Event Information - Notice</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASENAMESPACE-FIG-155-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base155-1">Base155-1</span><span class="paragraph-text">Notice 類事件告知主機有狀態或配置變更。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 155, 文件頁 186, PDF 頁 212</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base155-2">Base155-2</span><span class="paragraph-text">收到 Firmware Activation Starting 通知，表示切換流程開始；要確認目前韌體仍須讀對應狀態及 log，而非把通知當完成證明。</span></p></div>
+<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
+<a class="reading-link" href="#figure-BASENAMESPACE-FIG-474">共用規則已在前面的相關圖表說明，點此對照。</a>
+<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Attached Namespace Attribute Changed</li><li>Allocated Namespace Attribute Changed</li><li>CNS 02h</li><li>CNS 10h</li></ul></div>
+
+</details></article>
+</details>
+<!-- claim:BASENAMESPACE-CREATE-PREFLIGHT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">create 前先以 NSID=FFFFFFFFh、CNS=00h 讀 common namespace capabilities；若支援，再用 CNS=16h 讀 Namespace Granularity，並確認可用 capacity。這三步完成後才建立 4096-byte create buffer。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.17.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17.1, 文件頁 661-662, PDF 頁 687-688</p></details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:base-namespace-management-1 -->
+<details class="review-question" id="qa-base-namespace-management-1"><summary>1. Namespace Create 成功並回傳 NSID，為何還不能直接假設某 controller 可以對它做 I/O？</summary>
+<div data-qa-answer="base-namespace-management-1"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">Create 建立 namespace；Attachment 決定哪些 controllers 可以存取。還要確認 attachment 與 Identify 所回報的可見性、格式及可用狀態。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446-448, 662, PDF 頁 472-474, 688</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 文件頁 444-445, PDF 頁 470-471</p>
+</details></details>
+<!-- qa:base-namespace-management-2 -->
+<details class="review-question" id="qa-base-namespace-management-2"><summary>2. Namespace granularity hint 與實際媒體配置的 rounding，為何不能混為一談？</summary>
+<div data-qa-answer="base-namespace-management-2"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">Hint 協助 host 選擇合適的 size 或 capacity；rounding 描述實際配置可能耗用的資源。Hint 不是任意加上的命令合法性限制，容量規劃也不能只看 host 要求的數值。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.17, 文件頁 661, PDF 頁 687</p>
+<p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.8, 文件頁 165, PDF 頁 165</p>
+</details></details>
+<!-- qa:base-namespace-management-3 -->
+<details class="review-question" id="qa-base-namespace-management-3"><summary>3. Restore Default Namespace 是否表示恢復已刪除 namespace 的原有資料？</summary>
+<div data-qa-answer="base-namespace-management-3"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">它處理預設 namespace 配置，不是資料復原命令。Namespace 的建立、刪除與預設配置流程，不能被當成保留或找回舊資料的保證。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.1, 文件頁 447-448, PDF 頁 473-474</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, 8.1.17.1, 文件頁 446, 448, 662, PDF 頁 472, 474, 688</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express NVM Command Set Specification, Revision 1.3</p><p>NVM Express Base Specification, Revision 2.4</p></details></footer></main></div></body></html>

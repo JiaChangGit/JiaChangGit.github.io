@@ -10,7 +10,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -21,9 +21,9 @@
       "path": "_posts/2026-08-28-nvme-base-ch1-2-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "base12-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -34,9 +34,9 @@
       "path": "_posts/2026-08-28-nvme-base-ch1-2-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "base12-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -48,7 +48,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -59,9 +59,9 @@
       "path": "_posts/2026-08-28-nvme-base-ch3-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "base3-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -72,9 +72,9 @@
       "path": "_posts/2026-08-28-nvme-base-ch3-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "base3-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -86,7 +86,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -97,9 +97,9 @@
       "path": "_posts/2026-08-28-nvme-base-ch4-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "base4-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -110,9 +110,9 @@
       "path": "_posts/2026-08-28-nvme-base-ch4-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "base4-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -124,7 +124,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-PCIE-TRANSPORT-1.4",
         "NVME-BASE-2.4"
@@ -136,9 +136,9 @@
       "path": "_posts/2026-08-28-nvme-pcie-transport-1-4-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "pcie14-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-PCIE-TRANSPORT-1.4",
         "NVME-BASE-2.4"
@@ -150,9 +150,9 @@
       "path": "_posts/2026-08-28-nvme-pcie-transport-1-4-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "pcie14-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-PCIE-TRANSPORT-1.4",
         "NVME-BASE-2.4"
@@ -165,7 +165,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-BASE-2.4",
         "NVME-PCIE-TRANSPORT-1.4"
@@ -177,9 +177,9 @@
       "path": "_posts/2026-08-31-nvme-base-firmware-log-admin-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "basefwlog-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4",
         "NVME-PCIE-TRANSPORT-1.4"
@@ -191,9 +191,9 @@
       "path": "_posts/2026-08-31-nvme-base-firmware-log-admin-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "basefwlog-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4",
         "NVME-PCIE-TRANSPORT-1.4"
@@ -206,7 +206,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -217,9 +217,9 @@
       "path": "_posts/2026-09-02-nvme-base-power-thermal-features-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "basepower-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
@@ -230,135 +230,12 @@
       "path": "_posts/2026-09-02-nvme-base-power-thermal-features-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
+      "claim_coverage": "overview",
       "parity_group": "basepower-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-BASE-2.4"
       ]
-    },
-    {
-      "id": "basediagmem-tutorial-html",
-      "report_id": "base-self-test-hmb-emulation",
-      "path": "DOCS/nvme-spec-report/base-self-test-hmb-emulation/tutorial-zh-tw.html",
-      "language": "zh-Hant-TW",
-      "format": "html",
-      "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basediagmem-zh-md",
-      "report_id": "base-self-test-hmb-emulation",
-      "path": "_posts/2026-09-02-nvme-base-self-test-hmb-emulation-zh-tw.md",
-      "language": "zh-Hant-TW",
-      "format": "markdown",
-      "claim_coverage": "all",
-      "parity_group": "basediagmem-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basediagmem-en-md",
-      "report_id": "base-self-test-hmb-emulation",
-      "path": "_posts/2026-09-02-nvme-base-self-test-hmb-emulation-en.md",
-      "language": "en",
-      "format": "markdown",
-      "claim_coverage": "all",
-      "parity_group": "basediagmem-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basensmgmt-tutorial-html",
-      "report_id": "base-self-test-namespace-management",
-      "path": "DOCS/nvme-spec-report/base-self-test-namespace-management/tutorial-zh-tw.html",
-      "language": "zh-Hant-TW",
-      "format": "html",
-      "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basensmgmt-zh-md",
-      "report_id": "base-self-test-namespace-management",
-      "path": "_posts/2026-09-02-nvme-base-self-test-namespace-management-zh-tw.md",
-      "language": "zh-Hant-TW",
-      "format": "markdown",
-      "claim_coverage": "all",
-      "parity_group": "basensmgmt-bilingual",
-      "purpose": "中文 GitHub Pages 主管報告",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basensmgmt-en-md",
-      "report_id": "base-self-test-namespace-management",
-      "path": "_posts/2026-09-02-nvme-base-self-test-namespace-management-en.md",
-      "language": "en",
-      "format": "markdown",
-      "claim_coverage": "all",
-      "parity_group": "basensmgmt-bilingual",
-      "purpose": "英文 GitHub Pages 主管報告",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basebts-tutorial-html",
-      "report_id": "base-boot-telemetry-sanitize",
-      "path": "DOCS/nvme-spec-report/base-boot-telemetry-sanitize/tutorial-zh-tw.html",
-      "language": "zh-Hant-TW",
-      "format": "html",
-      "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ]
-    },
-    {
-      "id": "basebts-zh-md",
-      "report_id": "base-boot-telemetry-sanitize",
-      "path": "_posts/2026-09-03-nvme-boot-telemetry-sanitize-zh-tw.md",
-      "language": "zh-Hant-TW",
-      "format": "markdown",
-      "claim_coverage": "all",
-      "purpose": "中文 GitHub Pages 主管報告",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ],
-      "parity_group": "basebts-bilingual"
-    },
-    {
-      "id": "basebts-en-md",
-      "report_id": "base-boot-telemetry-sanitize",
-      "path": "_posts/2026-09-03-nvme-boot-telemetry-sanitize-en.md",
-      "language": "en",
-      "format": "markdown",
-      "claim_coverage": "all",
-      "purpose": "英文 GitHub Pages 主管報告",
-      "required_source_ids": [
-        "NVME-BASE-2.4",
-        "NVME-NVM-CS-1.3"
-      ],
-      "parity_group": "basebts-bilingual"
     },
     {
       "id": "nvmcs13-tutorial-html",
@@ -367,7 +244,7 @@
       "language": "zh-Hant-TW",
       "format": "html",
       "claim_coverage": "all",
-      "purpose": "iPad／Desktop 中文漸進教學：從新手到進階",
+      "purpose": "中文漸進教學與完整逐圖解釋",
       "required_source_ids": [
         "NVME-NVM-CS-1.3",
         "NVME-BASE-2.4"
@@ -379,8 +256,8 @@
       "path": "_posts/2026-09-03-nvme-nvm-command-set-1-3-zh-tw.md",
       "language": "zh-Hant-TW",
       "format": "markdown",
-      "claim_coverage": "all",
-      "purpose": "中文 GitHub Pages 主管報告",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-NVM-CS-1.3",
         "NVME-BASE-2.4"
@@ -393,13 +270,250 @@
       "path": "_posts/2026-09-03-nvme-nvm-command-set-1-3-en.md",
       "language": "en",
       "format": "markdown",
-      "claim_coverage": "all",
-      "purpose": "英文 GitHub Pages 主管報告",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
       "required_source_ids": [
         "NVME-NVM-CS-1.3",
         "NVME-BASE-2.4"
       ],
       "parity_group": "nvmcs13-bilingual"
+    },
+    {
+      "id": "baseselftest-tutorial-html",
+      "report_id": "base-device-self-test",
+      "path": "DOCS/nvme-spec-report/base-device-self-test/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "baseselftest-zh-md",
+      "report_id": "base-device-self-test",
+      "path": "_posts/2026-09-11-nvme-base-device-self-test-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "parity_group": "baseselftest-bilingual",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "baseselftest-en-md",
+      "report_id": "base-device-self-test",
+      "path": "_posts/2026-09-11-nvme-base-device-self-test-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "parity_group": "baseselftest-bilingual",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "basehmb-tutorial-html",
+      "report_id": "base-hmb-emulation",
+      "path": "DOCS/nvme-spec-report/base-hmb-emulation/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "basehmb-zh-md",
+      "report_id": "base-hmb-emulation",
+      "path": "_posts/2026-09-11-nvme-base-hmb-emulation-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "parity_group": "basehmb-bilingual",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "basehmb-en-md",
+      "report_id": "base-hmb-emulation",
+      "path": "_posts/2026-09-11-nvme-base-hmb-emulation-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "parity_group": "basehmb-bilingual",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "basenamespace-tutorial-html",
+      "report_id": "base-namespace-management",
+      "path": "DOCS/nvme-spec-report/base-namespace-management/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "basenamespace-zh-md",
+      "report_id": "base-namespace-management",
+      "path": "_posts/2026-09-11-nvme-base-namespace-management-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "parity_group": "basenamespace-bilingual",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "basenamespace-en-md",
+      "report_id": "base-namespace-management",
+      "path": "_posts/2026-09-11-nvme-base-namespace-management-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "parity_group": "basenamespace-bilingual",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "baseboot-tutorial-html",
+      "report_id": "base-boot-partitions",
+      "path": "DOCS/nvme-spec-report/base-boot-partitions/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "baseboot-zh-md",
+      "report_id": "base-boot-partitions",
+      "path": "_posts/2026-09-11-nvme-base-boot-partitions-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "baseboot-bilingual"
+    },
+    {
+      "id": "baseboot-en-md",
+      "report_id": "base-boot-partitions",
+      "path": "_posts/2026-09-11-nvme-base-boot-partitions-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "baseboot-bilingual"
+    },
+    {
+      "id": "basetelemetry-tutorial-html",
+      "report_id": "base-telemetry",
+      "path": "DOCS/nvme-spec-report/base-telemetry/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "basetelemetry-zh-md",
+      "report_id": "base-telemetry",
+      "path": "_posts/2026-09-11-nvme-base-telemetry-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "basetelemetry-bilingual"
+    },
+    {
+      "id": "basetelemetry-en-md",
+      "report_id": "base-telemetry",
+      "path": "_posts/2026-09-11-nvme-base-telemetry-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "basetelemetry-bilingual"
+    },
+    {
+      "id": "basesanitize-tutorial-html",
+      "report_id": "base-sanitize",
+      "path": "DOCS/nvme-spec-report/base-sanitize/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "basesanitize-zh-md",
+      "report_id": "base-sanitize",
+      "path": "_posts/2026-09-11-nvme-base-sanitize-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "basesanitize-bilingual"
+    },
+    {
+      "id": "basesanitize-en-md",
+      "report_id": "base-sanitize",
+      "path": "_posts/2026-09-11-nvme-base-sanitize-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "basesanitize-bilingual"
     }
   ],
   "source_markers": {
@@ -468,18 +582,27 @@
     "basepower-tutorial-html",
     "basepower-zh-md",
     "basepower-en-md",
-    "basediagmem-tutorial-html",
-    "basediagmem-zh-md",
-    "basediagmem-en-md",
-    "basensmgmt-tutorial-html",
-    "basensmgmt-zh-md",
-    "basensmgmt-en-md",
-    "basebts-tutorial-html",
-    "basebts-zh-md",
-    "basebts-en-md",
     "nvmcs13-tutorial-html",
     "nvmcs13-zh-md",
-    "nvmcs13-en-md"
+    "nvmcs13-en-md",
+    "baseselftest-tutorial-html",
+    "baseselftest-zh-md",
+    "baseselftest-en-md",
+    "basehmb-tutorial-html",
+    "basehmb-zh-md",
+    "basehmb-en-md",
+    "basenamespace-tutorial-html",
+    "basenamespace-zh-md",
+    "basenamespace-en-md",
+    "baseboot-tutorial-html",
+    "baseboot-zh-md",
+    "baseboot-en-md",
+    "basetelemetry-tutorial-html",
+    "basetelemetry-zh-md",
+    "basetelemetry-en-md",
+    "basesanitize-tutorial-html",
+    "basesanitize-zh-md",
+    "basesanitize-en-md"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -499,6 +622,8 @@
     "fixed_figure_quota": false,
     "per_figure_worksheet_required": false,
     "debug_sections_required": false,
-    "numerals": "preserve Arabic numerals, encodings and units"
+    "numerals": "preserve Arabic numerals, encodings and units",
+    "per_figure_takeaway_example_details": true,
+    "post_purpose": "global view before opening the specification"
   }
 }

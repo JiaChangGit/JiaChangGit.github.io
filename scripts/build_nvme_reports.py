@@ -10,6 +10,10 @@ import re
 import sys
 from pathlib import Path
 
+# All entry points share one module namespace (including question banks and
+# topic installation); direct execution must not create a second copy.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 try:
     from scripts.nvme_nvm_command_set import install as install_nvmcs
     from scripts.nvme_nvmcs_figures import guide_for as nvmcs_figure_guide
@@ -630,6 +634,12 @@ try:
 except ModuleNotFoundError:
     from nvme_plain_language import apply as apply_plain_language, chinese
 apply_plain_language(REPORT_MODULES)
+sys.path.insert(0, str(ROOT))
+from scripts.nvme_report_split import install as install_split, SPLITS
+install_split(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES)
+for new_id, (old_id, *_) in SPLITS.items():
+    POST_IMAGES[new_id] = POST_IMAGES[old_id]
+    REPORTS[new_id]['date'] = '2026-09-11'
 try:
     from scripts.nvme_figure_notes import note as authored_figure_note
 except ModuleNotFoundError:
@@ -637,6 +647,9 @@ except ModuleNotFoundError:
 
 
 def artifact_ids(report_id: str) -> list[str]:
+    if report_id in SPLITS:
+        key = REPORTS[report_id]['prefix'].lower()
+        return [key+'-tutorial-html', key+'-zh-md', key+'-en-md']
     key = {
         "base-ch1-2": "base12",
         "base-ch3": "base3",
@@ -673,6 +686,14 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
 
 def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     """Return a source-specific, non-verbatim guide for one Figure."""
+
+    if language == 'zh':
+        from scripts.nvme_figure_lessons import lesson
+        teaching = lesson(figure)
+        return dict(purpose=teaching['takeaway'], example=teaching['example'])
+
+    if figure.get('report_id') in SPLITS:
+        figure = dict(figure, report_id=SPLITS[figure['report_id']][0])
 
     if figure.get("report_id") in {"base-boot-telemetry-sanitize", "nvm-command-set-1.3"}:
         return {
@@ -1288,10 +1309,7 @@ def make_figure_claim(report_id: str, report: dict, figure: dict) -> dict:
         "printed_pages": figure["printed_pages"],
         "pdf_pages": figure["pdf_pages"],
         "normative_keyword": "none",
-        "zh_tw": (
-            f"Figure {figure['number']}〈{figure['title']}〉："
-            f"{zh_parts['purpose']}"
-        ),
+        "zh_tw": zh_parts['purpose'],
         "en": (
             f"Figure {figure['number']}, \"{figure['title']}\": "
             f"{en_parts['purpose']}"
@@ -1313,6 +1331,7 @@ def frontmatter(
     image = POST_IMAGES[report_id][language]
     report_date = REPORTS[report_id].get("date", "2026-08-28")
     slugs = {'base-boot-telemetry-sanitize': 'boot-telemetry-sanitize', 'nvm-command-set-1.3': 'nvm-command-set-1-3'}
+    slugs.update({rid:rid.removeprefix('base-') for rid in SPLITS})
     permalink = f"permalink: /nvme/{slugs[report_id]}-{'en' if language == 'en' else 'zh-tw'}/\n" if report_id in slugs else ""
     return f"""---
 {permalink}layout: post
@@ -1428,7 +1447,7 @@ def main() -> int:
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
 
-    priority = ['nvm-command-set-1.3', 'base-boot-telemetry-sanitize']
+    priority = ['nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
     order = priority + [key for key in reversed(REPORTS) if key not in priority]
     for report_id in order:
         report = REPORTS[report_id]
@@ -1515,6 +1534,23 @@ def main() -> int:
         json.dumps(claims_doc, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
+    # Topic landing page lists only current editions. Retired URLs are ordinary
+    # pages with links, so neither pagination nor feeds repeat the old articles.
+    from scripts.nvme_reader_context import REPORT_CONTEXT
+    hub=['---\nlayout: menu-page\ntitle: NVMe 教學與報告\npermalink: /nvme-notes/\nnvme_notes: true\n---\n<div class="nvme-note">',
+         '<h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>']
+    for rid in order:
+        editions=[a for a in contract['artifacts'] if a['report_id']==rid]
+        hub.append('<section><h2>'+html.escape(REPORTS[rid]['title_zh'])+'</h2><p>'+html.escape(REPORT_CONTEXT[rid]['intro']['zh'])+'</p><ul>')
+        for a in editions:
+            if a['format']=='html':
+                link='/'+a['path']; label='完整中文教學 HTML（iPad／電腦）'
+            else:
+                link='{% post_url '+Path(a['path']).stem+' %}'; label='English overview' if a['language']=='en' else '中文全局報告'
+            hub.append('<li><a href="'+link+'">'+label+'</a></li>')
+        hub.append('</ul></section>')
+    hub.append('</div>')
+    (ROOT/'_pages/nvme-notes.html').write_text('\n'.join(hub)+'\n',encoding='utf-8')
     print(
         f"Tracked {len(contract['artifacts'])} artifacts, {len(all_claims)} claims, "
         f"using {len(register_entries)} tracked Figure records"

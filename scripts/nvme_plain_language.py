@@ -71,7 +71,10 @@ WORDS = {
 
 def chinese(value):
     for old, new in sorted(PHRASES.items(), key=lambda item: -len(item[0])):
-        value = value.replace(old, new)
+        # Phrase boundaries also apply to the first/last English word. In
+        # particular, active NSID must never match inside inactive NSID.
+        pattern = (r'(?<![A-Za-z])' if old[0].isascii() and old[0].isalpha() else '') + re.escape(old) + (r'(?![A-Za-z])' if old[-1].isascii() and old[-1].isalpha() else '')
+        value = re.sub(pattern, lambda _: new, value)
     # Keep technical English terms in the sentence when the surrounding
     # paragraph defines them below. Replacing every isolated word (for
     # example, controller or host) created artificial spaces and duplicated
@@ -104,8 +107,8 @@ def apply(modules):
       example={'zh':'每個區塊 4 KiB、NSG=1 MiB、NCG=2 MiB。NSZE=NCAP=1024 時，1024×4 KiB=4 MiB，是兩種粒度的整數倍。改成 1000 時，1000×4 KiB=4000 KiB=3.90625 MiB，不是 1 MiB 或 2 MiB 的整數倍；可能浪費部分配置容量。但只要其他要求符合，不能只因未符合粒度建議而中止建立命令。',
                'en':'With 4 KiB blocks, NSG=1 MiB and NCG=2 MiB, NSZE=NCAP=1024 gives 4 MiB, a multiple of both granularities. A count of 1000 gives 4000 KiB=3.90625 MiB, not a multiple of 1 MiB or 2 MiB. Some allocated capacity may be wasted, but an otherwise valid creation command shall not be aborted solely for failing the granularity hints.'})
     update('base-power-features','apst-state-machine', example={
-      'zh':'閒置 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 07D00000h；ITPS=3，放入 bits7:3 得 18h。相加得到低 Dword=07D00018h，其餘保留位與高 Dword 為 0。32 個 8-byte 項目合計 256 bytes。',
-      'en':'For PS3 after 2000 ms idle: ITPT=2000=07D0h in bits31:8 gives 07D00000h; ITPS=3 in bits7:3 gives 18h. Their sum is low Dword 07D00018h. Reserved bits and the high Dword are zero. Thirty-two 8-byte entries total 256 bytes.'})
+      'zh':'閒置 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 0007D000h；ITPS=3，放入 bits7:3 得 18h。相加得到低 Dword=0007D018h，其餘保留位與高 Dword 為 0。32 個 8-byte 項目合計 256 bytes。',
+      'en':'For PS3 after 2000 ms idle: ITPT=2000=07D0h in bits31:8 gives 0007D000h; ITPS=3 in bits7:3 gives 18h. Their sum is low Dword 0007D018h. Reserved bits and the high Dword are zero. Thirty-two 8-byte entries total 256 bytes.'})
     update('base-ch4','identity-text', rows={
       'zh':[['VID／SSVID','廠商與 subsystem 廠商識別值','按各自欄位辨認對象'],['SN／MN','產品序號與型號字串','依固定欄位長度與填補規則閱讀'],['EUI64／NGUID／UUID','不同格式的物件識別值','長度及身分範圍不能互換'],['Controller List','NUMCIDS 加上 16-bit IDs','有明確數量欄位'],['Namespace List','直接排列 32-bit NSIDs','沒有 Controller List 的數量標頭']],
       'en':[['VID/SSVID','Vendor and subsystem vendor identifiers','Interpret each field for its own object'],['SN/MN','Product serial and model strings','Read fixed lengths and padding rules'],['EUI64/NGUID/UUID','Different object identifier formats','Widths and identity scopes are not interchangeable'],['Controller List','NUMCIDS followed by 16-bit IDs','Has an explicit count header'],['Namespace List','Direct sequence of 32-bit NSIDs','Does not have the Controller List count header']]})

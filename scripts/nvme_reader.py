@@ -1,7 +1,7 @@
 """Reader-oriented editions, with one home for each source-backed conclusion.
 
-The HTML course exposes the mechanism progressively. The paired posts put the
-same source-backed details behind disclosures so the main path works in a report.
+The HTML course exposes the mechanism progressively. The paired posts explain the overall flow and representative cases before
+directing the reader to the specification.
 """
 from __future__ import annotations
 
@@ -38,11 +38,17 @@ class Reading:
     def __init__(self, report_id, report, claims, figures, modules, language, tutorial, api):
         self.id, self.report, self.claims = report_id, report, claims
         self.figures, self.modules = figures, modules
+        self.all_modules = modules
+        if not tutorial:
+            selected = POST_MODULES.get(report_id)
+            self.modules = [m for m in modules if not selected or m['id'] in selected]
         self.lang, self.tutorial, self.api = language, tutorial, api
         self.by_id = {c["id"]: c for c in claims}
         self.used_claims, self.used_figures = set(), set()
-        # A definition may reappear once when a hidden field section needs it,
-        # but a long note must never keep explaining the same term.
+        self.detail_homes = {}
+        self.figure_label = None
+        self.figure_paragraph_no = 0
+        # Define each term once per document, including hidden field sections.
         self.term_note_counts = {}
         self.section_no = 0
         self.section_paragraph_no = 0
@@ -52,7 +58,7 @@ class Reading:
         if report_id == 'nvm-command-set-1.3':
             from scripts.nvme_nvmcs_figures import TERMS
             self.term_sources.update({t: '' for t in TERMS})
-        elif report_id == 'base-boot-telemetry-sanitize':
+        elif report_id in {'base-boot-partitions','base-telemetry','base-sanitize'}:
             from scripts.nvme_bts_terms import TERMS
             self.term_sources.update({t: '' for t in TERMS})
         self.definitions = {}
@@ -79,7 +85,7 @@ class Reading:
                 'index', 'offset', 'index-offset', 'zero-based', 'word',
                 'page offset', 'bit range', 'raw value',
             }
-            if self.term_note_counts.get(term_key, 0) >= 2 or not re.search(pattern, value, re.I if term in case_insensitive else 0):
+            if self.term_note_counts.get(term_key, 0) >= 1 or not re.search(pattern, value, re.I if term in case_insensitive else 0):
                 continue
             definition = candidates[term]
             self.term_note_counts[term_key] = self.term_note_counts.get(term_key, 0) + 1
@@ -103,9 +109,14 @@ class Reading:
             return ""
         if self.lang == 'zh':
             value = chinese(value)
-        self.section_paragraph_no += 1
         classes = 'reader-paragraph' + (f' {css}' if css else '')
-        number = f'<span class="paragraph-number" aria-label="{self.section_no:02d}.{self.section_paragraph_no:02d}">{self.section_no:02d}.{self.section_paragraph_no:02d}.</span>'
+        if self.figure_label:
+            self.figure_paragraph_no += 1
+            label=f'{self.figure_label}-{self.figure_paragraph_no}'
+            number=f'<span class="paragraph-number figure-paragraph-number" aria-label="{label}">{label}</span>'
+        else:
+            self.section_paragraph_no += 1
+            number = f'<span class="paragraph-number" aria-label="{self.section_no:02d}.{self.section_paragraph_no:02d}">{self.section_no:02d}.{self.section_paragraph_no:02d}.</span>'
         return f'<p class="{classes}">{number}<span class="paragraph-text">{esc(value)}</span></p>' + self.terms(value, extra)
 
     def axis_paragraph(self, value, extra=()):
@@ -157,14 +168,30 @@ class Reading:
         self.used_figures.add(f['id'])
         c = self.by_id[f['id'] + '-CLAIM']
         label = {'NVME-BASE-2.4': 'Base', 'NVME-NVM-CS-1.3': 'NVM', 'NVME-PCIE-TRANSPORT-1.4': 'PCIe'}[f['source_id']]
-        out = [f'<!-- figure-table:{f["id"]} -->', f'<details class="field-note" id="figure-{f["id"]}"><summary>{label} Figure {f["number"]} · {esc(f["title"])}</summary>']
-        out.append(self.claim(c))
-        # Known, source-backed definitions are useful; generic worksheets are not.
-        guide = self.api.expanded_figure_guide(f, self.lang)
-        specific = [(term, definition) for term, definition in guide['terms']
-                    if term not in {'Related fields', '相關欄位'} and not any(x in definition for x in ('這是本 Figure', 'A source field label'))]
-        out.append(self.terms(' '.join(f.get('key_items', [])), specific))
-        out.append('</details>')
+        self.figure_label = label+f['number']
+        self.figure_paragraph_no = 0
+        from scripts.nvme_figure_lessons import lesson, detail
+        teaching = lesson(f)
+        out = [f'<!-- figure-table:{f["id"]} -->', f'<article class="field-note" id="figure-{f["id"]}"><h4>{label} Figure {f["number"]} · {esc(f["title"])}</h4>']
+        out.append('<div class="figure-takeaway"><h5>一句話重點</h5>'+self.claim(c)+'</div>')
+        out.append('<div class="figure-example"><h5>用例子讀懂</h5>'+self.paragraph(teaching['example'])+'</div>')
+        explanation=detail(f)
+        out.append('<details class="figure-detail"><summary>欄位、條件與相關細節</summary>')
+        # A shared rule has one home; each Figure still has its own takeaway
+        # and example above. Do not paste the group introduction into every card.
+        if explanation:
+            key=re.sub(r'\s+','',explanation)
+            if key in self.detail_homes:
+                out.append('<a class="reading-link" href="#figure-'+self.detail_homes[key]+'">共用規則已在前面的相關圖表說明，點此對照。</a>')
+            else:
+                self.detail_homes[key]=f['id']
+                if not similar(explanation,teaching['takeaway']) and not similar(explanation,teaching['example']):
+                    out.append(self.paragraph(explanation))
+        items=f.get('key_items',[])
+        out.append('<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul>'+''.join('<li>'+esc(x)+'</li>' for x in items)+'</ul></div>')
+        out.append(self.terms(' '.join(items)))
+        out.append('</details></article>')
+        self.figure_label = None
         return '\n'.join(out)
 
     def assigned_figures(self):
@@ -200,6 +227,9 @@ class Reading:
                 **{str(n):'telemetry-capture' for n in (203,205,206,207,208,209)},
             },
         }.get(self.id, {})
+        if self.id in {'base-device-self-test','base-hmb-emulation','base-namespace-management','base-boot-partitions','base-telemetry','base-sanitize'}:
+            from scripts.nvme_report_split import EXTRA
+            extra.update({str(n):self.modules[0]['id'] for n in EXTRA[self.id]})
         unassigned = []
         for f in remainder:
             target = extra.get(f['number'])
@@ -231,7 +261,7 @@ class Reading:
             out.append(self.paragraph(passage))
         out.append('</div>')
         out.append('</section>')
-        groups, remainder = self.assigned_figures()
+        groups, remainder = self.assigned_figures() if self.tutorial else ({m['id']:[] for m in self.modules}, [])
         for index, module in enumerate(self.modules, 1):
             lesson = LESSONS[module['id']]
             self.begin_section(index)
@@ -240,6 +270,8 @@ class Reading:
                 self.definitions['SI'] = pair(self.lang, 'Scope Identifier；指定 SC 所選範圍中的實體。', 'Scope Identifier: identifies the entity in the scope selected by SC.')
             sources = [self.by_id[s] for s in module['sources']]
             fresh = [c for c in sources if c['id'] not in self.used_claims]
+            if not self.tutorial:
+                fresh = fresh[:1]
             out.append(f'<section class="lesson" id="module-{module["id"]}"><h2 id="heading-{module["id"]}"><span class="section-number">{index:02d}</span> {esc(module["title"][self.lang])}</h2>')
             lead = module['lead'][self.lang]
             if not self.tutorial and not any(similar(module['lead'][lang], c[text_key(lang)]) for c in fresh for lang in ('zh', 'en')):
@@ -253,11 +285,7 @@ class Reading:
             if illustration:
                 out.append(illustration)
                 out.append(self.terms(re.sub('<[^>]+>', ' ', illustration)))
-            if not self.tutorial and fresh:
-                out.append('<details class="technical-note"><summary>' + pair(self.lang, '完整規則：', 'Full rules: ') + esc(module['title'][self.lang]) + '</summary>')
             out.extend(self.claim(c) for c in fresh)
-            if not self.tutorial and fresh:
-                out.append('</details>')
             rows = module['rows'][self.lang]
             headers = lesson['headers'][self.lang]
             if rows:
@@ -269,12 +297,22 @@ class Reading:
             if groups[module['id']]:
                 out.append('<a class="reading-link" href="#reading-' + module['id'] + '">' + pair(self.lang, '閱讀相關規格圖表 → ', 'Read the related specification figures → ') + esc(module['title'][self.lang]) + '</a>')
             out.append('</section>')
-        remaining_claims = [c for c in self.claims if c['figure'] is None and c['id'] not in self.used_claims]
+        remaining_claims = [c for c in self.claims if c['figure'] is None and c['id'] not in self.used_claims] if self.tutorial else []
         if remainder:
             raise ValueError(f'{self.id}: figures lack a teaching home: {[f["id"] for f in remainder]}')
         self.begin_section(len(self.modules) + 1)
         if not self.tutorial:
-            out.append('<details class="figure-reading-fold"><summary>' + pair(self.lang, '展開圖表教學：依主軸閱讀來源圖表', 'Expand figure teaching: read source figures by concept') + '</summary>')
+            out.append('<section id="spec-reading"><h2>' + pair(self.lang, '接著打開 Spec 看什麼', 'Where to continue in the specification') + '</h2>')
+            out.append(self.paragraph(pair(self.lang, '以下按概念列出閱讀位置。報告時先用上面的流程說明問題，再打開對應章節看欄位與完整條件。中文教學 HTML 另有本篇全部圖表的逐圖重點、案例與細節。', 'Use the flow above to frame the problem, then open the corresponding sections for fields and full conditions. The Chinese tutorial also explains every in-scope figure with its takeaway, example, and details.')))
+            rows=[]
+            for module in self.all_modules:
+                references=list(dict.fromkeys({'NVME-BASE-2.4':'Base 2.4','NVME-NVM-CS-1.3':'NVM 1.3','NVME-PCIE-TRANSPORT-1.4':'PCIe Transport 1.4'}[self.by_id[s]['source_id']]+' §'+self.by_id[s]['section'] for s in module['sources']))
+                rows.append([module['title'][self.lang], ' · '.join(references)])
+            out.append(self.table(pair(self.lang,['要說明的觀念','Spec 閱讀位置'],['Concept to explain','Specification sections']),rows))
+            out.append('<a class="reading-link" href="/DOCS/nvme-spec-report/'+self.id+'/tutorial-zh-tw.html">'+pair(self.lang,'開啟完整中文教學與逐圖解釋 →','Open the complete Chinese tutorial and figure explanations →')+'</a></section>')
+            self.begin_section(len(self.modules)+2)
+            out.append(self.api.render_questions(self.id,self.all_modules,self.claims,self.lang,'html',len(self.modules)+2))
+            return '\n'.join(out)
         out.append('<section id="figure-reading"><h2><span class="section-number">' + str(len(self.modules)+1).zfill(2) + '</span> ' + pair(self.lang, '讀懂本篇的規格圖表', 'Reading the specification figures') + '</h2>')
         out.append(self.paragraph(pair(self.lang,
             '以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。',
@@ -282,11 +320,11 @@ class Reading:
         for index, module in enumerate(self.modules, 1):
             if not groups[module['id']]:
                 continue
-            out.append('<div class="figure-reading-group" id="reading-' + module['id'] + '"><h3>' + pair(self.lang, '圖表組 ', 'Figure group ') + f'{index:02d} · ' + esc(module['title'][self.lang]) + '</h3>')
+            out.append('<details open class="figure-reading-group" id="reading-' + module['id'] + '"><summary>' + pair(self.lang, '圖表組 ', 'Figure group ') + f'{index:02d} · ' + esc(module['title'][self.lang]) + f' · {len(groups[module["id"]])} 張圖表</summary>')
             out.append(self.paragraph(LESSONS[module['id']]['reading'][self.lang]))
             out.append('<a class="reading-link" href="#module-' + module['id'] + '">' + pair(self.lang, '回到本節的解釋與範例', 'Return to the explanation and example') + '</a>')
             out.extend(self.figure(f) for f in groups[module['id']])
-            out.append('</div>')
+            out.append('</details>')
         out.extend(self.claim(c) for c in remaining_claims)
         out.append('</section>')
         if not self.tutorial:
@@ -295,6 +333,11 @@ class Reading:
         self.begin_section(question_section)
         out.append(self.api.render_questions(self.id, self.modules, self.claims, self.lang, 'html', question_section))
         return '\n'.join(out)
+
+
+POST_MODULES = {
+ 'nvm-command-set-1.3': {'nvmcs-capacity','nvmcs-metadata','nvmcs-read-write','nvmcs-compare-verify','nvmcs-copy','nvmcs-atomic','nvmcs-pi-checking','nvmcs-rate-modes'},
+}
 
 
 def render(report_id, report, claims, figures, modules, language, tutorial, api):

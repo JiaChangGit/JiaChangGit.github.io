@@ -16,7 +16,7 @@ PCI Express Base Specification 或 controller vendor 行為。
 
 目前沒有其他適用的 Errata、Engineering Change Notice (ECN)、Technical Proposal 或
 controller vendor 文件。若之後新增，必須先更新來源登記、範圍與所有受影響 claim，
-再更新 10 份報告中受影響的輸出（每篇 3 版，共 30 個交付檔）。
+再更新 13 份報告中受影響的輸出（每篇 3 版，共 39 個交付檔）。
 
 ## 規範性用語
 
@@ -69,8 +69,7 @@ Base 2.4 的正文第 1 頁位於 PDF 第 27 頁；正文範圍可用 `PDF 頁 =
 跨頁 Figure／Table 應列完整頁碼範圍。
 
 正文引用到範圍外 Figure 時，若理解主題需要該 Figure，應以相依教學項目登記並只介紹
-被引用的欄位與關係；這不會把 Figure 所在章節整段納入範圍。Fabrics／Discovery 專用
-Figure 也可作必要背景，但必須另外登記 `PREREQUISITE_ONLY`、來源與具體教學必要性，不能因此將整張圖或整章全文納入。
+被引用的欄位與關係；這不會把 Figure 所在章節整段納入範圍。Fabrics／Discovery 專用 Figure 一律排除，不作必要背景。
 
 ## 公開與重繪邊界
 
@@ -81,4 +80,7 @@ Figure 也可作必要背景，但必須另外登記 `PREREQUISITE_ONLY`、來�
 
 ## 必要背景與公開內容
 
-使用者已允許教學需要的範圍外內容，包括原先明確排除的 Fabrics、Discovery 與 NQN 等主題。依 `scope.json` 的背景政策新增最小必要項目，列出本篇所需關係、具體必要性與來源；既有排除圖清單不會自動轉為納入。`DO_NOT_PUBLISH` 仍不公開。開發流程、內部追蹤及驗證紀錄只存於註解或內部文件，來源定位則保留供讀者查閱。
+使用者已允許教學需要的其他範圍外內容；Fabrics、Discovery 與 NQN 依最新要求仍全部排除。依 `scope.json` 的背景政策新增最小必要項目，列出本篇所需關係、具體必要性與來源；既有排除圖清單不會自動轉為納入。`DO_NOT_PUBLISH` 仍不公開。開發流程、內部追蹤及驗證紀錄只存於註解或內部文件，來源定位則保留供讀者查閱。
+
+
+2026-09-11：兩篇合輯拆為 Self-test、Namespace Management、Boot Partitions、Telemetry、Sanitize。原 HMB 合輯的完整 Self-test 集中至專篇。每張範圍內圖表須有獨立的一句話重點、具體案例、必要細節與來源；共用規則只解釋一次，其餘連回，禁止同段套給所有 Figure。APST 2000 ms、PS3 的低 Dword 正確值是 0007D018h，須以位移運算驗證，不得只用預期字串測試。英文片語替換須有單字邊界，active NSID 不得匹配 inactive NSID。
