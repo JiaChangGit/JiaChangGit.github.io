@@ -227,7 +227,85 @@ class NvmeReportContractTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stdout)
         after = {path: path.read_bytes() for path in paths}
-        self.assertEqual(before, after)
+        # Compare each artifact independently: a stale output should identify
+        # its path without constructing a multi-megabyte dictionary diff.
+        for path in paths:
+            self.assertTrue(before[path] == after[path], f'Generated output changed: {path}')
+
+    def test_course_field_links_require_real_explanations(self):
+        figures = [f for f in VALIDATOR.load_json('figure-table-register.json')['entries']
+                   if f['report_id']=='base-device-self-test' and f['scope_status']=='INCLUDE']
+        text = (ROOT/'DOCS/nvme-spec-report/base-device-self-test/tutorial-zh-tw.html').read_text()
+        self.assertFalse(VALIDATOR.validate_figure_teaching(text,figures))
+        broken = text.replace('id="fields-base-selftest-request"', 'id="missing-field-guide"')
+        self.assertTrue(any('目的內容' in e for e in VALIDATOR.validate_figure_teaching(broken,figures)))
+        missing_condition = text.replace('已有作業 + STC=1h／2h／3h','只有欄名')
+        self.assertTrue(any('未完整呈現' in e for e in VALIDATOR.validate_figure_teaching(missing_condition,figures)))
+
+    def test_all_tutorials_have_independent_reasoning_paths(self):
+        contract = VALIDATOR.load_json('output-contract.json')
+        for item in contract['artifacts']:
+            text = (ROOT/item['path']).read_text()
+            if item['format']=='html':
+                self.assertIn('class="course-walkthrough"',text,item['report_id'])
+                self.assertIn('class="field-guide"',text,item['report_id'])
+                self.assertLess(text.index('class="field-guide"'),text.index('id="knowledge-check"'))
+            else:
+                self.assertNotIn('class="course-walkthrough"',text,item['report_id'])
+
+    def test_power_and_boot_diagrams_show_conditions_and_outcomes(self):
+        from scripts.nvme_course_visuals import course_illustration
+        apst = VALIDATOR.reader_text(course_illustration('apst-state-machine'))
+        self.assertIn('連續閒置 > 2000 ms',apst)
+        self.assertIn('返回最近的 operational state',apst)
+        power = VALIDATOR.reader_text(course_illustration('power-state-mental-model'))
+        sums = re.findall(r'(\d+)\+(\d+)=(\d+) μs',power)
+        self.assertTrue(sums)
+        for exit_latency,entry_latency,total in sums:
+            self.assertEqual(int(exit_latency)+int(entry_latency),int(total))
+        boot = (ROOT/'DOCS/nvme-spec-report/base-boot-partitions/tutorial-zh-tw.html').read_text()
+        self.assertNotIn('共享 multi-domain partition 不可用',boot)
+        self.assertIn('Power cycle 後',boot)
+        self.assertIn('仍須明確解鎖',boot)
+
+    def test_precise_five_primary_scopes_are_preserved(self):
+        reports = {r['id']:r for r in VALIDATOR.load_json('scope.json')['reports']}
+        expected = {
+            'base-device-self-test': ['8.1.8','5.2.6','5.2.13.1.7','4.1.4.3'],
+            'base-namespace-management': ['8.1.17','5.2.24','5.2.25','2.1.1','4.1.6','5.8'],
+            'base-boot-partitions': ['8.1.3','5.2.13.1.21','5.2.30.1.39'],
+            'base-telemetry': ['8.1.30','5.2.13.1.8','5.2.13.1.9'],
+            'base-sanitize': ['8.1.27','5.2.13.1.38','5.2.26','5.2.30.1.16','4.1.7','5.12'],
+        }
+        for key, sections in expected.items():
+            scope = json.dumps(reports[key]['primary_scope'])
+            for section in sections:
+                self.assertIn('"'+section+'"',scope,key)
+        self.assertIn('8.1.17.3',str(reports['base-namespace-management']['excluded_sections']))
+        self.assertIn('8.1.27.6',str(reports['base-sanitize']['excluded_sections']))
+
+    def test_word_cleanup_preserves_meaningful_technical_phrases(self):
+        from scripts.build_nvme_reports import clean_public_language
+        for text in ('Decode the header fields.', 'The decoder checks the tag.', '依這份格式建立解碼器。'):
+            self.assertEqual(text,clean_public_language(text))
+
+    def test_overwrite_examples_respect_first_pass_parity_and_pi(self):
+        from scripts.nvme_field_guides_context import OVERRIDES
+        rows=OVERRIDES[('base-sanitize','base',771)]['rows']
+        checked=0
+        for _,_,example in rows:
+            match=re.search(r'OVRPAT=([0-9A-F]{8})h、(\d+) passes：user data 為 (.*?)；PI byte 為 (.*?)。',example)
+            if not match:
+                continue
+            pattern,count,data,pi=match.groups();count=int(count);pattern=int(pattern,16)
+            first=pattern if count%2 else pattern^0xffffffff
+            first_pi=0xff if count%2 else 0
+            self.assertEqual([int(x.rstrip('h'),16) for x in data.split('→')],
+                             [first^(0xffffffff if i%2 else 0) for i in range(count)])
+            self.assertEqual([int(x.rstrip('h'),16) for x in pi.split('→')],
+                             [first_pi^(0xff if i%2 else 0) for i in range(count)])
+            checked+=1
+        self.assertEqual(checked,2)
 
     def test_auto_runs_publish_when_outputs_are_ready(self):
         result = subprocess.run(

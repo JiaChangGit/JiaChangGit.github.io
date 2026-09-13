@@ -16096,48 +16096,6 @@
       "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
     },
     {
-      "id": "BASESELFTEST-FIG-036",
-      "report_id": "base-device-self-test",
-      "source_id": "NVME-BASE-2.4",
-      "type": "Figure",
-      "number": "36",
-      "title": "Offset 0h: CAP - Controller Capabilities",
-      "section": "3.1.4.1",
-      "printed_pages": "55-58",
-      "pdf_pages": "81-84",
-      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
-      "scope_status": "INCLUDE",
-      "mode": "dependency-slice",
-      "scope_reduced": false,
-      "role": "referenced_dependency",
-      "referenced_from": [
-        "8.2.3"
-      ],
-      "dependency_focus": {
-        "zh_tw": "只取 CAP.DSTRD encoding 與 byte-stride 公式。",
-        "en": "Use only CAP.DSTRD encoding and its byte-stride formula."
-      },
-      "required_artifact_ids": [
-        "baseselftest-tutorial-html"
-      ],
-      "introduced_in": [
-        "baseselftest-tutorial-html"
-      ],
-      "key_items": [
-        "DSTRD",
-        "2^(2+DSTRD) bytes"
-      ],
-      "source_keywords": [
-        "shall not",
-        "shall",
-        "should",
-        "may",
-        "optional",
-        "reserved"
-      ],
-      "evidence_digest": "232faae6b72aeb960edcd68bc90f40b267e55e98b70898e5a9c28c84d8d15465"
-    },
-    {
       "id": "BASESELFTEST-FIG-093",
       "report_id": "base-device-self-test",
       "source_id": "NVME-BASE-2.4",
@@ -16719,14 +16677,7 @@
       "key_items": [
         "OACS.DSTS",
         "EDSTT",
-        "DSTO.SDSO",
-        "HMPRE",
-        "HMMIN",
-        "HMMINDS",
-        "HMMAXD",
-        "CTRATT.HMBR",
-        "AVSCC.VSCF",
-        "ICSVSCC.SNVSCF"
+        "DSTO.SDSO"
       ],
       "source_keywords": [
         "shall not",
@@ -16737,7 +16688,8 @@
         "optional",
         "reserved"
       ],
-      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43"
+      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASESELFTEST-FIG-700",
@@ -17120,9 +17072,6 @@
         "basehmb-tutorial-html"
       ],
       "key_items": [
-        "OACS.DSTS",
-        "EDSTT",
-        "DSTO.SDSO",
         "HMPRE",
         "HMMIN",
         "HMMINDS",
@@ -17140,7 +17089,8 @@
         "optional",
         "reserved"
       ],
-      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43"
+      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43",
+      "teaching_slice_note": "Only HMB sizing/restriction and vendor-command-format fields are required here; Self-test is taught in its own report."
     },
     {
       "id": "BASEHMB-FIG-463",
@@ -17798,9 +17748,6 @@
         "basenamespace-tutorial-html"
       ],
       "key_items": [
-        "OACS.DSTS",
-        "EDSTT",
-        "DSTO.SDSO",
         "OACS.NMS",
         "RDNCS",
         "MAXDNA",
@@ -17815,7 +17762,8 @@
         "optional",
         "reserved"
       ],
-      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43"
+      "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASENAMESPACE-FIG-346",
@@ -19205,10 +19153,9 @@
         "baseboot-tutorial-html"
       ],
       "key_items": [
-        "LID 07h",
-        "LID 08h",
         "LID 15h",
-        "LID 81h"
+        "CSI",
+        "scope"
       ],
       "source_keywords": [
         "may",
@@ -19216,7 +19163,8 @@
         "reserved"
       ],
       "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASEBOOT-BASE-FIG-279",
@@ -19322,8 +19270,7 @@
       "key_items": [
         "BPCAP",
         "LPA",
-        "SANICAP",
-        "CTRATT"
+        "CTRATT.MDS"
       ],
       "source_keywords": [
         "shall not",
@@ -19335,7 +19282,8 @@
         "reserved"
       ],
       "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASEBOOT-BASE-FIG-464",
@@ -19446,9 +19394,8 @@
       ],
       "key_items": [
         "FID 85h",
-        "FID 17h",
-        "FID 0Bh",
-        "FID 16h"
+        "saveable",
+        "namespace specific"
       ],
       "source_keywords": [
         "shall",
@@ -19458,7 +19405,8 @@
         "reserved"
       ],
       "evidence_digest": "63fd6ea122a83192f4ac50be6063d40f41d308d87550239c7a7bc82e899dd617",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASEBOOT-BASE-FIG-542",
@@ -20417,8 +20365,8 @@
       "key_items": [
         "LID 07h",
         "LID 08h",
-        "LID 15h",
-        "LID 81h"
+        "CSI",
+        "scope"
       ],
       "source_keywords": [
         "may",
@@ -20426,7 +20374,8 @@
         "reserved"
       ],
       "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASETELEMETRY-BASE-FIG-210",
@@ -20695,10 +20644,8 @@
         "basetelemetry-tutorial-html"
       ],
       "key_items": [
-        "BPCAP",
-        "LPA",
-        "SANICAP",
-        "CTRATT"
+        "LPA.Telemetry support",
+        "LPA.DA4S"
       ],
       "source_keywords": [
         "shall not",
@@ -20710,7 +20657,8 @@
         "reserved"
       ],
       "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASETELEMETRY-BASE-FIG-474",
@@ -21417,10 +21365,9 @@
         "basesanitize-tutorial-html"
       ],
       "key_items": [
-        "LID 07h",
-        "LID 08h",
-        "LID 15h",
-        "LID 81h"
+        "LID 81h",
+        "CSI",
+        "scope"
       ],
       "source_keywords": [
         "may",
@@ -21428,7 +21375,8 @@
         "reserved"
       ],
       "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASESANITIZE-BASE-FIG-311",
@@ -21540,10 +21488,7 @@
         "basesanitize-tutorial-html"
       ],
       "key_items": [
-        "BPCAP",
-        "LPA",
-        "SANICAP",
-        "CTRATT"
+        "SANICAP"
       ],
       "source_keywords": [
         "shall not",
@@ -21555,7 +21500,8 @@
         "reserved"
       ],
       "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_slice_note": "2026-09-13：依拆篇主題限制必要引用欄位；其他功能欄位不在此篇展開。"
     },
     {
       "id": "BASESANITIZE-BASE-FIG-451",
@@ -21709,47 +21655,6 @@
         "reserved"
       ],
       "evidence_digest": "46c14c5a8f8569e681fa3de77123b14d3777e656c94b0d83ea2465204aabd7cf",
-      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
-    },
-    {
-      "id": "BASESANITIZE-BASE-FIG-474",
-      "report_id": "base-sanitize",
-      "source_id": "NVME-BASE-2.4",
-      "type": "Figure",
-      "number": "474",
-      "title": "Asynchronous Event Configuration - Command Dword 11",
-      "section": "5.2.30.1.6",
-      "printed_pages": "466-468",
-      "pdf_pages": "492-494",
-      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
-      "scope_status": "INCLUDE",
-      "mode": "dependency-slice",
-      "scope_reduced": true,
-      "role": "referenced_dependency",
-      "referenced_from": [
-        "8.1.30; 5.2.30.1.6"
-      ],
-      "dependency_focus": {
-        "zh_tw": "只取 bit 10 TLN：TCDA 從 0h 變 1h 且 TLN enabled 時發送 Telemetry Log Changed；此表在 5.2.30.1.6。",
-        "en": "Use TLN bit 10: when TCDA changes from 0h to 1h with TLN enabled, Telemetry Log Changed is reported. This table belongs to 5.2.30.1.6."
-      },
-      "required_artifact_ids": [
-        "basesanitize-tutorial-html"
-      ],
-      "introduced_in": [
-        "basesanitize-tutorial-html"
-      ],
-      "key_items": [
-        "TLN"
-      ],
-      "source_keywords": [
-        "shall not",
-        "shall",
-        "may",
-        "optional",
-        "reserved"
-      ],
-      "evidence_digest": "723ed76572e27f182ec05f128c095940d1666c4a1785ba635eb7e7dadfdc9b53",
       "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
     },
     {

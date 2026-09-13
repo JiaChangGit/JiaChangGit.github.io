@@ -3,7 +3,6 @@
   "approval_status": "approved",
   "production_status": "ready_for_publish",
   "default_status": "EXCLUDE",
-  "ppt_exclusion_follows_report_exclusion": true,
   "allowed_statuses": [
     "INCLUDE",
     "PREREQUISITE_ONLY",
@@ -12,17 +11,17 @@
     "OPEN"
   ],
   "status_meanings": {
-    "INCLUDE": "完整納入報告與未來 PPT",
+    "INCLUDE": "主範圍：中文教學完整介紹；中英文 Pages 以全局觀念、流程及案例銜接 Spec。",
     "PREREQUISITE_ONLY": "只提供理解當前主題所需的最小背景，包含原先明確排除主題；須記錄來源與具體必要性",
     "EXCLUDE": "不作本篇主教學；若為必要背景，另登記有來源與必要性說明的 PREREQUISITE_ONLY 項目",
-    "DO_NOT_PUBLISH": "可供私下分析，但不得出現在公開輸出或 PPT",
+    "DO_NOT_PUBLISH": "不得出現在公開輸出。",
     "OPEN": "尚待使用者決定；publish 階段禁止存在"
   },
   "reports": [
     {
       "id": "base-ch1-2",
-      "title_zh_tw": "NVMe Base 2.4 第 1、2 章",
-      "title_en": "NVMe Base 2.4 Chapters 1 and 2",
+      "title_zh_tw": "NVMe Base 2.4 第 1、2 章：規格語言、PCIe 佇列與儲存模型",
+      "title_en": "NVMe Base 2.4 Chapters 1-2: Specification Language, PCIe Queues, and Storage Model",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "1",
@@ -49,12 +48,13 @@
         "BASE12-FIG-020",
         "BASE12-FIG-021",
         "BASE12-FIG-022"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-ch3",
-      "title_zh_tw": "NVMe Base 2.4 第 3 章",
-      "title_en": "NVMe Base 2.4 Chapter 3",
+      "title_zh_tw": "NVMe Base 2.4 第 3 章：Controller、Queue、初始化與重設",
+      "title_en": "NVMe Base 2.4 Chapter 3: Controllers, Queues, Initialization, and Resets",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "3"
@@ -121,12 +121,13 @@
         "BASE3-FIG-089",
         "BASE3-FIG-090",
         "BASE3-FIG-091"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-ch4",
-      "title_zh_tw": "NVMe Base 2.4 第 4 章",
-      "title_en": "NVMe Base 2.4 Chapter 4",
+      "title_zh_tw": "NVMe Base 2.4 第 4 章：SQE、CQE、Status、PRP 與 SGL",
+      "title_en": "NVMe Base 2.4 Chapter 4: SQE, CQE, Status, PRP, and SGL",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "4"
@@ -178,12 +179,13 @@
         "BASE4-FIG-139",
         "BASE4-FIG-140",
         "BASE4-FIG-142"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "pcie-transport-1.4",
-      "title_zh_tw": "NVMe over PCIe Transport 1.4 全文",
-      "title_en": "NVMe over PCIe Transport 1.4, Complete",
+      "title_zh_tw": "NVMe over PCIe Transport 1.4：完整傳輸綁定",
+      "title_en": "NVMe over PCIe Transport 1.4: Complete Transport Binding",
       "source_id": "NVME-PCIE-TRANSPORT-1.4",
       "sections": [
         "1",
@@ -271,12 +273,13 @@
         "PCIE14-FIG-075",
         "PCIE14-FIG-076",
         "PCIE14-FIG-077"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-admin-fw-logs",
-      "title_zh_tw": "NVMe Base 2.4 韌體更新與 Firmware Slot 驗證（LID 03h）",
-      "title_en": "NVMe Base 2.4 Firmware Update and Firmware Slot Verification (LID 03h)",
+      "title_zh_tw": "NVMe Base 2.4：Firmware Update 與 LID 03h 驗證",
+      "title_en": "NVMe Base 2.4: Firmware Update and LID 03h Verification",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "3.11",
@@ -320,12 +323,13 @@
         "347",
         "348",
         "474"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-power-features",
-      "title_zh_tw": "NVMe Base 2.4 Power／Thermal Features 與 Power Management",
-      "title_en": "NVMe Base 2.4 Power/Thermal Features and Power Management",
+      "title_zh_tw": "NVMe Base 2.4：Power／Thermal Features 與 Power Management",
+      "title_en": "NVMe Base 2.4: Power/Thermal Features and Power Management",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "5.2.12",
@@ -374,12 +378,13 @@
         "338",
         "340",
         "474"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "nvm-command-set-1.3",
-      "title_zh_tw": "NVM Command Set 1.3 完整獨立報告",
-      "title_en": "NVM Command Set 1.3 Independent Complete Report",
+      "title_zh_tw": "NVM Command Set 1.3：邏輯區塊、I/O 命令與資料保護",
+      "title_en": "NVM Command Set 1.3: Logical blocks, I/O commands, and data protection",
       "source_id": "NVME-NVM-CS-1.3",
       "supporting_source_ids": [
         "NVME-BASE-2.4"
@@ -647,26 +652,23 @@
         "562",
         "563",
         "712"
-      ]
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-device-self-test",
-      "title_zh_tw": "NVMe Base 2.4 Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands",
-      "title_en": "NVMe Base 2.4 Device Self-test, HMB, Doorbell Emulation, and Vendor Commands",
+      "title_zh_tw": "NVMe Base 2.4：Device Self-test：執行、進度與結果",
+      "title_en": "NVMe Base 2.4: Device Self-test: execution, progress, and results",
       "source_id": "NVME-BASE-2.4",
       "sections": [
-        "NVME-BASE-2.4 §5.2.14.2.1, 8.1.8",
-        "NVME-BASE-2.4 §5.2.6",
         "NVME-BASE-2.4 §8.1.8",
-        "NVME-BASE-2.4 §8.1.8.1-8.1.8.2",
-        "NVME-BASE-2.4 §5.2.13",
+        "NVME-BASE-2.4 §5.2.6",
         "NVME-BASE-2.4 §5.2.13.1.7",
         "NVME-NVM-CS-1.3 §4.1.4.3"
       ],
-      "printed_pages": "Base 199-201, 229-232, 515-519, 614-616, 733, 744; NVM Command Set 76",
-      "pdf_pages": "Base 225-227, 255-258, 541-545, 640-642, 759, 770; NVM Command Set 76",
+      "printed_pages": "各主範圍章節及必要引用的精確頁碼，見逐筆 claim 與 Figure 來源。",
+      "pdf_pages": "見逐筆 claim 與 Figure 來源；Base 文件頁加 26，NVM 文件頁與 PDF 頁一致。",
       "included_figure_ids": [
-        "BASESELFTEST-FIG-036",
         "BASESELFTEST-FIG-093",
         "BASESELFTEST-FIG-176",
         "BASESELFTEST-FIG-177",
@@ -699,13 +701,24 @@
         "209",
         "338"
       ],
-      "title": "NVMe Base 2.4：Device Self-test：執行、進度與結果",
-      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。"
+      "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.8",
+          "5.2.6",
+          "5.2.13.1.7"
+        ],
+        "NVME-NVM-CS-1.3": [
+          "4.1.4.3"
+        ]
+      },
+      "excluded_sections": [],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-hmb-emulation",
-      "title_zh_tw": "NVMe Base 2.4 Device Self-test、HMB、Doorbell Emulation 與 Vendor Commands",
-      "title_en": "NVMe Base 2.4 Device Self-test, HMB, Doorbell Emulation, and Vendor Commands",
+      "title_zh_tw": "NVMe Base 2.4：HMB、Doorbell Emulation 與 Vendor Commands",
+      "title_en": "NVMe Base 2.4: HMB, Doorbell Emulation, and Vendor Commands",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "NVME-BASE-2.4 §5.2.14.2.1, 8.2.4",
@@ -753,31 +766,24 @@
         "464",
         "466"
       ],
-      "title": "NVMe Base 2.4：HMB、Doorbell Emulation 與 Vendor Commands",
-      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。"
+      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。",
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-namespace-management",
-      "title_zh_tw": "NVMe Base 2.4 Device Self-test 與 Namespace Management",
-      "title_en": "NVMe Base 2.4 Device Self-test and Namespace Management",
+      "title_zh_tw": "NVMe Base 2.4：Namespace Management：容量、建立與附加",
+      "title_en": "NVMe Base 2.4: Namespace Management: capacity, creation, and attachment",
       "source_id": "NVME-BASE-2.4",
       "sections": [
-        "NVME-NVM-CS-1.3 §2.1.1",
         "NVME-BASE-2.4 §8.1.17",
-        "NVME-BASE-2.4 §8.1.17.1",
-        "NVME-BASE-2.4 §5.2.25",
-        "NVME-NVM-CS-1.3 §4.1.6.4",
-        "NVME-NVM-CS-1.3 §4.1.6.2",
-        "NVME-NVM-CS-1.3 §4.1.6.3",
-        "NVME-NVM-CS-1.3 §5.8",
         "NVME-BASE-2.4 §5.2.24",
-        "NVME-BASE-2.4 §5.2.25, 8.1.17.1",
-        "NVME-BASE-2.4 §5.2.25.1",
-        "NVME-BASE-2.4 §5.2.24-5.2.25",
-        "NVME-BASE-2.4 §8.1.17.1-8.1.17.2"
+        "NVME-BASE-2.4 §5.2.25",
+        "NVME-NVM-CS-1.3 §2.1.1",
+        "NVME-NVM-CS-1.3 §4.1.6",
+        "NVME-NVM-CS-1.3 §5.8"
       ],
-      "printed_pages": "Base 199-201, 229-232, 444-448, 614-616, 660-663 before §8.1.17.3; NVM Command Set 13-14, 76, 110-113, 165",
-      "pdf_pages": "Base 225-227, 255-258, 470-474, 640-642, 686-689 before §8.1.17.3; NVM Command Set 13-14, 76, 110-113, 165",
+      "printed_pages": "各主範圍章節及必要引用的精確頁碼，見逐筆 claim 與 Figure 來源。",
+      "pdf_pages": "見逐筆 claim 與 Figure 來源；Base 文件頁加 26，NVM 文件頁與 PDF 頁一致。",
       "included_figure_ids": [
         "BASENAMESPACE-FIG-036",
         "BASENAMESPACE-FIG-093",
@@ -816,29 +822,37 @@
         "132",
         "133"
       ],
-      "title": "NVMe Base 2.4：Namespace Management：容量、建立與附加",
-      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。"
+      "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.17",
+          "5.2.24",
+          "5.2.25"
+        ],
+        "NVME-NVM-CS-1.3": [
+          "2.1.1",
+          "4.1.6",
+          "5.8"
+        ]
+      },
+      "excluded_sections": [
+        "8.1.17.3"
+      ],
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-boot-partitions",
-      "title_zh_tw": "Boot Partitions、Telemetry 與 Sanitize",
-      "title_en": "Boot Partitions, Telemetry, and Sanitize",
+      "title_zh_tw": "NVMe Base 2.4：Boot Partitions：讀取、更新與寫入保護",
+      "title_en": "NVMe Base 2.4: Boot Partitions: reading, updating, and write protection",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "NVME-BASE-2.4 §8.1.3",
-        "NVME-BASE-2.4 §8.1.3.1",
         "NVME-BASE-2.4 §5.2.13.1.21",
-        "NVME-BASE-2.4 §8.1.3.2",
-        "NVME-BASE-2.4 §8.1.3.3",
-        "NVME-BASE-2.4 §5.2.30.1.39",
-        "NVME-BASE-2.4 §8.1.3.3.1-8.1.3.3.3",
-        "NVME-BASE-2.4 §5.2.30.1.39; 8.1.3.3.3"
+        "NVME-BASE-2.4 §5.2.30.1.39"
       ],
-      "excluded_sections": [
-        "8.1.27.6"
-      ],
-      "pdf_pages": "Base 95-96, 204-216, 228-244, 258-263, 309-310, 339-345, 366-408, 474-479, 483-504, 539-540, 612-620, 716-727, 737-763 (selected sections and dependency slices); NVM 21-22, 113, 173-175",
-      "printed_pages": "See each source-located claim and Figure entry",
+      "excluded_sections": [],
+      "pdf_pages": "見逐筆 claim 與 Figure 來源；Base 文件頁加 26，NVM 文件頁與 PDF 頁一致。",
+      "printed_pages": "各主範圍章節及必要引用的精確頁碼，見逐筆 claim 與 Figure 來源。",
       "included_figure_ids": [
         "BASEBOOT-BASE-FIG-036",
         "BASEBOOT-BASE-FIG-049",
@@ -882,7 +896,6 @@
         "BASEBOOT-BASE-FIG-765",
         "BASEBOOT-BASE-FIG-766"
       ],
-      "approval_basis": "User confirmed prior teaching scope and requested creating/publishing this report on 2026-09-03",
       "dependency_figures": [
         "36",
         "49",
@@ -917,28 +930,29 @@
         "765",
         "766"
       ],
-      "title": "NVMe Base 2.4：Boot Partitions：讀取、更新與寫入保護",
-      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。"
+      "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.3",
+          "5.2.13.1.21",
+          "5.2.30.1.39"
+        ]
+      },
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-telemetry",
-      "title_zh_tw": "Boot Partitions、Telemetry 與 Sanitize",
-      "title_en": "Boot Partitions, Telemetry, and Sanitize",
+      "title_zh_tw": "NVMe Base 2.4：Telemetry：資料收集與一致性讀取",
+      "title_en": "NVMe Base 2.4: Telemetry: capture and consistent retrieval",
       "source_id": "NVME-BASE-2.4",
       "sections": [
-        "NVME-BASE-2.4 §8.1.30; 5.2.13.1.8-5.2.13.1.9",
-        "NVME-BASE-2.4 §5.2.13.1.8",
-        "NVME-BASE-2.4 §8.1.30; 5.2.30.1.15",
-        "NVME-BASE-2.4 §5.2.13.1.8-5.2.13.1.9",
         "NVME-BASE-2.4 §8.1.30",
-        "NVME-BASE-2.4 §5.2.13.1.9",
-        "NVME-BASE-2.4 §8.1.30; 5.2.30.1.6"
+        "NVME-BASE-2.4 §5.2.13.1.8",
+        "NVME-BASE-2.4 §5.2.13.1.9"
       ],
-      "excluded_sections": [
-        "8.1.27.6"
-      ],
-      "pdf_pages": "Base 95-96, 204-216, 228-244, 258-263, 309-310, 339-345, 366-408, 474-479, 483-504, 539-540, 612-620, 716-727, 737-763 (selected sections and dependency slices); NVM 21-22, 113, 173-175",
-      "printed_pages": "See each source-located claim and Figure entry",
+      "excluded_sections": [],
+      "pdf_pages": "見逐筆 claim 與 Figure 來源；Base 文件頁加 26，NVM 文件頁與 PDF 頁一致。",
+      "printed_pages": "各主範圍章節及必要引用的精確頁碼，見逐筆 claim 與 Figure 來源。",
       "included_figure_ids": [
         "BASETELEMETRY-BASE-FIG-151",
         "BASETELEMETRY-BASE-FIG-152",
@@ -962,7 +976,6 @@
         "BASETELEMETRY-BASE-FIG-780",
         "BASETELEMETRY-BASE-FIG-781"
       ],
-      "approval_basis": "User confirmed prior teaching scope and requested creating/publishing this report on 2026-09-03",
       "dependency_figures": [
         "151",
         "152",
@@ -980,39 +993,34 @@
         "474",
         "491"
       ],
-      "title": "NVMe Base 2.4：Telemetry：資料收集與一致性讀取",
-      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。"
+      "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.30",
+          "5.2.13.1.8",
+          "5.2.13.1.9"
+        ]
+      },
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     },
     {
       "id": "base-sanitize",
-      "title_zh_tw": "Boot Partitions、Telemetry 與 Sanitize",
-      "title_en": "Boot Partitions, Telemetry, and Sanitize",
+      "title_zh_tw": "NVMe Base 2.4：Sanitize：清除範圍、方法與完成判斷",
+      "title_en": "NVMe Base 2.4: Sanitize: targets, methods, and completion",
       "source_id": "NVME-BASE-2.4",
       "sections": [
         "NVME-BASE-2.4 §8.1.27",
-        "NVME-BASE-2.4 §8.1.27.2-8.1.27.3",
-        "NVME-BASE-2.4 §5.2.26",
-        "NVME-BASE-2.4 §8.1.27.1; 5.2.27",
-        "NVME-BASE-2.4 §5.2.30.1.16; 8.1.27.2-8.1.27.3",
-        "NVME-BASE-2.4 §5.2.26; 8.1.27.1",
-        "NVME-BASE-2.4 §5.2.26.1; 8.1.27.1",
-        "NVME-BASE-2.4 §5.2.26; 8.1.27.3",
-        "NVME-BASE-2.4 §8.1.27.4",
-        "NVME-BASE-2.4 §8.1.27.4.6-8.1.27.4.7",
         "NVME-BASE-2.4 §5.2.13.1.38",
-        "NVME-BASE-2.4 §5.2.13.1.38; 8.1.27.3",
-        "NVME-BASE-2.4 §8.1.27.1; 8.1.27.4",
-        "NVME-BASE-2.4 §8.1.27.5; 5.1.1-5.1.2",
-        "NVME-BASE-2.4 §8.1.27.5",
-        "NVME-NVM-CS-1.3 §4.1.7; 5.12",
-        "NVME-NVM-CS-1.3 §5.12",
-        "NVME-NVM-CS-1.3 §5.12.1"
+        "NVME-BASE-2.4 §5.2.26",
+        "NVME-BASE-2.4 §5.2.30.1.16",
+        "NVME-NVM-CS-1.3 §4.1.7",
+        "NVME-NVM-CS-1.3 §5.12"
       ],
       "excluded_sections": [
         "8.1.27.6"
       ],
-      "pdf_pages": "Base 95-96, 204-216, 228-244, 258-263, 309-310, 339-345, 366-408, 474-479, 483-504, 539-540, 612-620, 716-727, 737-763 (selected sections and dependency slices); NVM 21-22, 113, 173-175",
-      "printed_pages": "See each source-located claim and Figure entry",
+      "pdf_pages": "見逐筆 claim 與 Figure 來源；Base 文件頁加 26，NVM 文件頁與 PDF 頁一致。",
+      "printed_pages": "各主範圍章節及必要引用的精確頁碼，見逐筆 claim 與 Figure 來源。",
       "included_figure_ids": [
         "BASESANITIZE-BASE-FIG-144",
         "BASESANITIZE-BASE-FIG-145",
@@ -1035,7 +1043,6 @@
         "BASESANITIZE-BASE-FIG-452",
         "BASESANITIZE-BASE-FIG-453",
         "BASESANITIZE-BASE-FIG-454",
-        "BASESANITIZE-BASE-FIG-474",
         "BASESANITIZE-BASE-FIG-492",
         "BASESANITIZE-BASE-FIG-770",
         "BASESANITIZE-BASE-FIG-771",
@@ -1052,7 +1059,6 @@
         "BASESANITIZE-NVMCS-FIG-200",
         "BASESANITIZE-NVMCS-FIG-201"
       ],
-      "approval_basis": "User confirmed prior teaching scope and requested creating/publishing this report on 2026-09-03",
       "dependency_figures": [
         "144",
         "145",
@@ -1075,8 +1081,20 @@
         "11",
         "12"
       ],
-      "title": "NVMe Base 2.4：Sanitize：清除範圍、方法與完成判斷",
-      "approval_note": "2026-09-11：使用者核准拆篇、獨立教學、全局報告與完整圖表教學。"
+      "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.27",
+          "5.2.13.1.38",
+          "5.2.26",
+          "5.2.30.1.16"
+        ],
+        "NVME-NVM-CS-1.3": [
+          "4.1.7",
+          "5.12"
+        ]
+      },
+      "reference_teaching_policy": "必要引用需說明本篇使用的欄位、有效條件、關聯及範例；不擴張為來源整章；Fabrics 全部排除。"
     }
   ],
   "interpretation_sources": [
@@ -1697,10 +1715,10 @@
       "note": "Minimal common SQE/CQE, PRP/SGL, Identify, host-enabled Copy descriptors, Sanitize status/command, Track Send, and Streams parameter teaching. Excluded transport concepts remain excluded."
     }
   ],
-  "approval_note": "2026-09-11：13 篇各 3 版。中文 HTML 保留完整圖表教學；中英文 Pages 以全局觀念銜接規格。完全排除 Fabrics。",
+  "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
   "background_policy": {
     "approved_date": "2026-09-06",
-    "formerly_excluded_topics_allowed": false,
+    "formerly_excluded_topics_allowed": true,
     "requires_source": true,
     "requires_teaching_necessity": true,
     "required_fields": [
@@ -1712,7 +1730,13 @@
     ],
     "figure_allowlists_automatically_expanded": false,
     "do_not_publish_remains_excluded": true,
-    "formerly_excluded_term_field": "background_terms (list explicit terms needed by the report-specific background)"
+    "formerly_excluded_term_field": "background_terms (list explicit terms needed by the report-specific background)",
+    "absolute_exclusions": [
+      "Fabrics",
+      "NVMe-oF",
+      "Discovery",
+      "NQN"
+    ]
   },
   "main_scope_exclusions": [
     "NVMe over Fabrics",

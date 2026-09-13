@@ -268,6 +268,7 @@ def figure_table_ids(text: str) -> set[str]:
 def validate_figure_teaching(text, figures):
     """Require actual per-figure teaching, not only IDs or a copied group note."""
     from scripts.nvme_figure_lessons import lesson
+    from scripts.nvme_field_guides import get
     errors=[]
     takeaways=[]
     examples=[]
@@ -282,6 +283,24 @@ def validate_figure_teaching(text, figures):
                 errors.append(f'{f["id"]} 缺少完整{label}')
         if 'class="figure-detail"' not in block.group(1):
             errors.append(f'{f["id"]} 缺少欄位與條件細節')
+        try:
+            guide = get(f)
+        except KeyError:
+            errors.append(f'{f["id"]} 缺少已撰寫的欄位關係教學')
+            continue
+        anchor = 'fields-'+guide['id']
+        if f'href="#{anchor}"' not in block.group(1):
+            errors.append(f'{f["id"]} 未連到其欄位關係教學')
+        home = re.search(r'<section class="field-guide" id="'+re.escape(anchor)+r'">(.*?)</section>', text, re.S)
+        if not home:
+            errors.append(f'{f["id"]} 的欄位教學連結沒有目的內容')
+        else:
+            content = normalized_text(reader_text(home.group(1)))
+            for row in guide['rows']:
+                if len(row) != 3 or any(not value.strip() or normalized_text(value) not in content for value in row):
+                    errors.append(f'{f["id"]} 的欄位關係或案例未完整呈現')
+            if 'class="source-note"' not in home.group(1):
+                errors.append(f'{f["id"]} 的欄位教學缺少來源')
         takeaways.append(teaching['takeaway']); examples.append(teaching['example'])
     if len(takeaways)!=len(set(takeaways)) or len(examples)!=len(set(examples)):
         errors.append('不同圖表重複使用同一重點或案例')

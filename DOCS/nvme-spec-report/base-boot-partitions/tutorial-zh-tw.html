@@ -135,6 +135,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
   .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
   .edition-tutorial main { max-width: none; }
 }
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
 <div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-boot-read">01 Boot 的兩條讀取路徑</a><a href="#module-boot-protection">02 映像更新、啟用與寫入保護</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
@@ -153,461 +164,381 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-boot-read"><h2 id="heading-boot-read"><span class="section-number">01</span> Boot 的兩條讀取路徑</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Boot Partition 提供開機映像的儲存空間。開機早期可能還沒有建立一般 Admin 命令所需的環境，因此規格提供由 properties 控制的讀取路徑。當 Admin 命令環境已可使用，也可以透過 Get Log Page 取得 Boot Partition 資料。兩條路徑的啟動方式和完成狀態不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">讀取哪個 partition，與哪個 partition 被選為 active，是不同選擇。主機可以讀 BP1 來了解其映像，而不改變 active partition。計算 log 長度時，BPSZ 先乘 128 KiB 得到 Boot data 長度，再加上 16-byte header；同樣大小的 data 不表示整個傳輸緩衝區也只有那麼大。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPSZ</dt><dd>Boot Partition Size；每單位 128 KiB。</dd></div></dl>
+<div class="course-walkthrough"><h3>將開機映像讀進主機記憶體</h3>
+<h4>先認出讀取對象</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Boot Partition 是開機映像的儲存空間，不是一般 I/O 命令用 NSID 選取的 namespace。讀取前要知道控制器支援的路徑、目標分割區及大小；目前啟用的分割區編號與這次想讀的目標編號可以不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+<h4>沿 Properties 路徑組合要求</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">CAP.BPS 用於確認支援，BPINFO 提供大小、啟用資訊及讀取狀態。BPRSEL 的 BPID、BPROF、BPRSZ 分別選目標、起點及長度；BPMBL 的 BMBBA 指向主機接收記憶體。把來源範圍與目的位址分開畫，才不會把映像 offset 填到主機位址欄位。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>BMBBA</dt><dd>Boot Memory Buffer Base Address；BPMBL bits 63:12，低 12 bits 保留。</dd></div><div><dt>BPROF</dt><dd>Boot Partition Read Offset；BPRSEL bits 29:10，以 4 KiB 為單位；bit 30 保留。</dd></div><div><dt>BPRSZ</dt><dd>Boot Partition Read Size；以 4 KiB 為單位，不能套用 BPSZ 的單位。</dd></div><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl>
+<h4>沿 log 路徑先讀表頭</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">使用 LID 15h 時，先以對應的 BPID 選分割區，再讀 header 中的 BPINFO。Boot Partition Data 接在 log 的表頭後面；log 內的位移與映像本身的位移有不同起點。計畫分段讀取時，先把兩個起點標在同一張資料配置圖上。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl>
+<h4>確認資料已經可用</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Properties 路徑依 BRS 等狀態判斷讀取是否完成；Get Log Page 路徑則由該命令的 CQE 判斷結果。主機已配置好 buffer，只代表有接收位置，不能據此認定內容已完成更新。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BRS</dt><dd>Boot Read Status；00b 未請求、01b 進行中、10b 成功、11b 錯誤。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">一次讀取要能指出來源分割區、來源範圍、目的記憶體與完成依據，四項缺一就無法完整解釋資料如何到達主機。</span></p></aside></div>
 <details class="source-note"><summary>來源：Base 2.4 §8.1.3 · Base 2.4 §8.1.3.1 · Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3, 文件頁 586, PDF 頁 612</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, 文件頁 586-587, PDF 頁 612-613</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, 文件頁 283-284, PDF 頁 309-310</p></details>
 </div>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 350" role="img"><title>讀取 Boot 資料時，來源與目的各有自己的座標</title><desc>說明性例子：BPSZ=2，每個分割區有 256 KiB；選 BP1、BPROF=1、BPRSZ=2，表示從 BP1 的 4 KiB 位置取 8 KiB。BMBBA 指向 4 KiB 對齊的主機接收位址；BRS=10b 才表示這條 Properties 路徑讀取成功。LID 15h 是另一條 Admin 路徑，含 16-byte header，不能沿用同一個 log offset 起點。</desc><rect x="20" y="55" width="270" height="120" rx="6" class="v-object"/><text x="155.0" y="96.0" text-anchor="middle" font-size="17">BP1 · 256 KiB</text><text x="155.0" y="121.0" text-anchor="middle" font-size="17">來源起點：1 × 4 KiB</text><text x="155.0" y="146.0" text-anchor="middle" font-size="17">本次長度：2 × 4 KiB</text><rect x="470" y="55" width="270" height="120" rx="6" class="v-success"/><text x="605.0" y="96.0" text-anchor="middle" font-size="17">Host memory</text><text x="605.0" y="121.0" text-anchor="middle" font-size="17">目的：BMBBA &lt;&lt; 12</text><text x="605.0" y="146.0" text-anchor="middle" font-size="17">接收空間至少 8 KiB</text><path d="M290,115 L470,115" class="v-line"/><path d="M463,111 L470,115 L463,119" class="v-line"/><text x="380.0" y="105.0" text-anchor="middle" font-size="14">8 KiB</text><rect x="140" y="245" width="480" height="70" rx="6" class="v-command"/><text x="380.0" y="273.5" text-anchor="middle" font-size="17">BRS：01b 讀取中 → 10b 成功</text><text x="380.0" y="298.5" text-anchor="middle" font-size="17">11b 錯誤：buffer 內容未定義</text></svg></div><figcaption>說明性例子：BPSZ=2，每個分割區有 256 KiB；選 BP1、BPROF=1、BPRSZ=2，表示從 BP1 的 4 KiB 位置取 8 KiB。BMBBA 指向 4 KiB 對齊的主機接收位址；BRS=10b 才表示這條 Properties 路徑讀取成功。LID 15h 是另一條 Admin 路徑，含 16-byte header，不能沿用同一個 log offset 起點。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>BPSZ</dt><dd>Boot Partition Size；每單位 128 KiB。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEBOOT-BOOT-MODEL -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Boot Partitions 是選用功能；支援時有兩個等大的 partition，ID 為 0h、1h。Host 可在未建立 queues、未啟用 controller 時透過 properties 讀取。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3, 文件頁 586, PDF 頁 612</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">Boot Partitions 是選用功能；支援時有兩個等大的 partition，ID 為 0h、1h。Host 可在未建立 queues、未啟用 controller 時透過 properties 讀取。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3, 文件頁 586, PDF 頁 612</p></details>
 <!-- claim:BASEBOOT-BOOT-READ -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Host 先檢查 CAP.BPS、BPINFO 的 active ID/size，再配置連續 buffer 與 BPMBL，確認沒有讀取進行中後寫入 BPRSEL。BRS=01b 表示傳輸中，10b 表示成功，11b 表示錯誤；讀取中不得 reset、shutdown 或改動 transport-specific properties。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BRS</dt><dd>Boot Read Status；00b 未請求、01b 進行中、10b 成功、11b 錯誤。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, 文件頁 586-587, PDF 頁 612-613</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">Host 先檢查 CAP.BPS、BPINFO 的 active ID/size，再配置連續 buffer 與 BPMBL，確認沒有讀取進行中後寫入 BPRSEL。BRS=01b 表示傳輸中，10b 表示成功，11b 表示錯誤；讀取中不得 reset、shutdown 或改動 transport-specific properties。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, 文件頁 586-587, PDF 頁 612-613</p></details>
 <!-- claim:BASEBOOT-BOOT-LOG -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">LID 15h 以 CDW10.LSP 的 BPID 選 partition，回傳 16-byte header 與其後的資料；BPSZ 以 128 KiB 計。此 log 讀取不改變 BPINFO、BPRSEL 或 BPMBL properties。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, 文件頁 283-284, PDF 頁 309-310</p></details>
-<div class="table-wrap"><table><caption>Boot 的兩條讀取路徑</caption><thead><tr><th scope="col">讀取路徑或欄位</th><th scope="col">從哪裡取得資料或狀態</th><th scope="col">操作環境與單位</th></tr></thead><tbody><tr><td>Properties</td><td>BRS 回報讀取狀態</td><td>不要求 CC.EN=1</td></tr><tr><td>LID 15h</td><td>16-byte header + data</td><td>由 Admin command CQE 判斷命令結果</td></tr><tr><td>BPID</td><td>選取讀取 partition</td><td>不等於 active ID</td></tr><tr><td>BPSZ</td><td>每單位 128 KiB</td><td>不是 bytes</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">BPSZ=2 的 LID 15h 包含 262144 bytes 的 Boot data，加上 16-byte header，共 262160 bytes。讀 BP1 並不把 BP1 設為 active；讀 log 也不會推進 property 的 BRS。</span></p></aside>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.08">01.08.</span><span class="paragraph-text">LID 15h 以 CDW10.LSP 的 BPID 選 partition，回傳 16-byte header 與其後的資料；BPSZ 以 128 KiB 計。此 log 讀取不改變 BPINFO、BPRSEL 或 BPMBL properties。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>LSP</dt><dd>Log Specific Field，意義由所選 log page 定義的 command selector。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, 文件頁 283-284, PDF 頁 309-310</p></details>
+<div class="table-wrap"><table><caption>Boot 的兩條讀取路徑</caption><thead><tr><th scope="col">讀取路徑或欄位</th><th scope="col">從哪裡取得資料或狀態</th><th scope="col">操作環境與單位</th></tr></thead><tbody><tr><td>Properties</td><td>BRS 回報讀取狀態</td><td>不要求 CC.EN=1</td></tr><tr><td>LID 15h</td><td>16-byte header + data</td><td>由 Admin command CQE 判斷命令結果</td></tr><tr><td>BPID</td><td>選取讀取 partition</td><td>不等於 active ID</td></tr><tr><td>BPSZ</td><td>每單位 128 KiB</td><td>不是 bytes</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl>
 <a class="reading-link" href="#reading-boot-read">閱讀相關規格圖表 → Boot 的兩條讀取路徑</a>
 </section>
 <section class="lesson" id="module-boot-protection"><h2 id="heading-boot-protection"><span class="section-number">02</span> 映像更新、啟用與寫入保護</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">更新開機映像同時涉及內容更新及寫入保護。Download 傳送資料，Commit 選擇保存與啟用行為，保護設定則決定哪些修改被允許。把這些動作畫在同一條時間線上，才能看出「已下載」「已寫入 partition」「已被選為 active」不是同一個時刻。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">FID 85h 與 RPMB 控制的保護機制，具有不同的解鎖方式及狀態保留規則。主機不能把其中一套的重設行為套到另一套。RPMB 訊息還包含驗證和計數相關欄位，用來確認要求是否符合該機制；這些欄位不是一般 Boot data 的一部分。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl>
+<div class="course-walkthrough"><h3>更新 BP1 時，同時追蹤內容與保護狀態</h3>
+<h4>把四件事分開記錄</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">假設目前使用 BP0，準備更新 BP1。下載新映像只把映像交給控制器；Firmware Commit 才依動作與 BPID 寫入目標；選擇 active partition 又是另一個動作。寫入保護決定目標是否允許被修改，並不直接表示哪個映像正在啟用。</span></p>
+<h4>用 FID 85h 只解鎖目標</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">假設目前由 Set Features 控制保護，且 BP1 的狀態允許變更。BP1WPS 在 bits 5:3，填 001b 要求解鎖；BP0WPS 填 000b 表示不要求改變 BP0。CDW11=(1&lt;&lt;3)=08h。Get Features 回覆 BP0 時會給真實狀態，不會回傳這個「不改變」要求值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>BP1WPS</dt><dd>Boot Partition 1 Write Protection State；FID 85h 的 bits 5:3。</dd></div></dl>
+<h4>比較重設與斷電</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">在這套機制下，解鎖狀態可跨 Controller Level Reset 保留，power cycle 後回到 Write Locked。若先前設成 Write Locked Until Power Cycle，要求改變保護狀態的 Set Features 命令會被拒絕；要等 power cycle 才離開該狀態，重新上電後仍是鎖定，還需要明確解鎖才能改寫。</span></p>
+<h4>共享分割區要再檢查裝置配置</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">若 multi-domain NVM subsystem 的控制器 A、B 共享 BP0，將 BP0 設為 Write Locked Until Power Cycle 的要求會以 Feature Not Changeable 結束。這個限制針對特定狀態設定；共享分割區本身並未因此變成不可讀。解除該狀態牽涉共享控制器的同時 power cycle，不能只由其中一個控制器的重設來理解。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<h4>RPMB 啟用後改走另一套控制流程</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">RPMB 是 Replay Protected Memory Block，提供有驗證的操作。啟用其 Boot 保護後，FID 85h 的 Get 回報 100b，保護狀態改由 RPMB 的設定操作控制。解鎖的分割區遇 Controller Level Reset 或 power cycle 會重新鎖定。保護機制不能被停用，與各分割區仍可依規定鎖定或解鎖，是兩個不同層次。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">更新完成後，分別確認映像內容、active partition 與寫入保護；單一成功回覆不能同時證明這三件事。</span></p></aside></div>
 <details class="source-note"><summary>來源：Base 2.4 §8.1.3.2 · Base 2.4 §8.1.3.3 · Base 2.4 §5.2.30.1.39 · Base 2.4 §8.1.3.3.1-8.1.3.3.3 · Base 2.4 §5.2.30.1.39; 8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 587-588, PDF 頁 613-614</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 588, PDF 頁 614</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3, 文件頁 588-589, PDF 頁 614-615</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, 文件頁 513-514, PDF 頁 539-540</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1-8.1.3.3.3, 文件頁 589-594, PDF 頁 615-620</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39; 8.1.3.3.3, 文件頁 513-514,593-594, PDF 頁 539-540,619-620</p></details>
 </div>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 475" role="img"><title>Set Features 控制時的 Boot 寫入保護狀態</title><desc>這張圖只描述目前由 Set Features 控制、且允許使用圖中狀態的分割區。Write Unlocked 跨 Controller Level Reset 保留，但 power cycle 後回 Write Locked。Write Locked Until Power Cycle 的變更要求會被拒絕；power cycle 後回到 Write Locked，仍須明確解鎖才能更新。multi-domain 且跨控制器共享的分割區不得進入 until-power-cycle 狀態；RPMB 控制時改用另一套操作及保留規則。</desc><rect x="20" y="75" width="245" height="85" rx="6" class="v-object"/><text x="142.5" y="111.0" text-anchor="middle" font-size="17">Write Locked</text><text x="142.5" y="136.0" text-anchor="middle" font-size="17">禁止修改內容</text><rect x="485" y="75" width="245" height="85" rx="6" class="v-success"/><text x="607.5" y="111.0" text-anchor="middle" font-size="17">Write Unlocked</text><text x="607.5" y="136.0" text-anchor="middle" font-size="17">允許依更新流程寫入</text><path d="M265,95 L485,95" class="v-line"/><path d="M478,90 L485,95 L478,100" class="v-line"/><text x="375" y="75" text-anchor="middle" font-size="16">Set：解鎖 001b</text><path d="M485,140 L265,140" class="v-line"/><path d="M272,135 L265,140 L272,145" class="v-line"/><text x="375" y="185" text-anchor="middle" font-size="16">Set：鎖定 010b</text><rect x="240" y="300" width="290" height="100" rx="6" class="v-decision"/><text x="385.0" y="343.5" text-anchor="middle" font-size="17">Write Locked Until</text><text x="385.0" y="368.5" text-anchor="middle" font-size="17">Power Cycle</text><path d="M70,160 L70,350 L240,350" class="v-line"/><path d="M233,345 L240,350 L233,355" class="v-line"/><text x="130" y="280" text-anchor="middle" font-size="16">Set：011b</text><path d="M530,350 L710,350 L710,230 L140,230 L140,160" class="v-line"/><path d="M135,167 L140,160 L145,167" class="v-line"/><text x="440" y="252" text-anchor="middle" font-size="16">power cycle → Write Locked</text><text x="385" y="440" text-anchor="middle" font-size="16">Until Power Cycle 中：一般 Set 變更 → Feature Not Changeable</text></svg></div><figcaption>這張圖只描述目前由 Set Features 控制、且允許使用圖中狀態的分割區。Write Unlocked 跨 Controller Level Reset 保留，但 power cycle 後回 Write Locked。Write Locked Until Power Cycle 的變更要求會被拒絕；power cycle 後回到 Write Locked，仍須明確解鎖才能更新。multi-domain 且跨控制器共享的分割區不得進入 until-power-cycle 狀態；RPMB 控制時改用另一套操作及保留規則。</figcaption></figure>
+
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEBOOT-BOOT-UPDATE -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">Boot image 從開頭依序用 Firmware Image Download 傳送；將目標解鎖後，以 Firmware Commit CA=110b 寫入 BPID 指定的 partition。Host 可讀回驗證，再以 CA=111b 更新 active ID，最後重新上鎖。更新中斷可能留下新舊混合內容，因此宜先驗證再設為 active。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CA</dt><dd>Commit Action，Firmware Commit 中選擇 replace、activate 與 reset policy 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 587-588, PDF 頁 613-614</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">Boot image 從開頭依序用 Firmware Image Download 傳送；將目標解鎖後，以 Firmware Commit CA=110b 寫入 BPID 指定的 partition。Host 可讀回驗證，再以 CA=111b 更新 active ID，最後重新上鎖。更新中斷可能留下新舊混合內容，因此宜先驗證再設為 active。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CA</dt><dd>Commit Action，Firmware Commit 中選擇 replace、activate 與 reset policy 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 587-588, PDF 頁 613-614</p></details>
 <!-- claim:BASEBOOT-BOOT-SEQUENCE -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">Host 不宜在寫入 Boot Partition 時同時讀取，也不宜重疊 firmware/boot image 更新序列。單一序列宜使用同一 controller 或 Management Endpoint；跨端點提交可能使 Commit 以 Invalid Firmware Image 結束。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 588, PDF 頁 614</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">Host 不宜在寫入 Boot Partition 時同時讀取，也不宜重疊 firmware/boot image 更新序列。單一序列宜使用同一 controller 或 Management Endpoint；跨端點提交可能使 Commit 以 Invalid Firmware Image 結束。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.2, 文件頁 588, PDF 頁 614</p></details>
 <!-- claim:BASEBOOT-BOOT-CAP -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">BPCAP 回報 Set Features 與 RPMB Boot 保護能力。只有 Set Features 機制或 RPMB 尚未啟用時由 FID 85h 控制；RPMB 保護啟用後由 RPMB 控制。同一時刻只有一套機制控制狀態，共享 partition 的所有 controllers 都須執行其保護。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPCAP</dt><dd>Boot Partition Capabilities；辨識 Set Features 與 RPMB 保護機制的支援組合。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3, 文件頁 588-589, PDF 頁 614-615</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">BPCAP 回報 Set Features 與 RPMB Boot 保護能力。只有 Set Features 機制或 RPMB 尚未啟用時由 FID 85h 控制；RPMB 保護啟用後由 RPMB 控制。同一時刻只有一套機制控制狀態，共享 partition 的所有 controllers 都須執行其保護。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPCAP</dt><dd>Boot Partition Capabilities；辨識 Set Features 與 RPMB 保護機制的支援組合。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3, 文件頁 588-589, PDF 頁 614-615</p></details>
 <!-- claim:BASEBOOT-BOOT-FID -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">BP0WPS 位於 CDW11[2:0]，BP1WPS 位於 [5:3]。000b 僅用於 Set 的不改變請求；001b/010b/011b 分別為 unlocked/locked/locked until power cycle；100b 由 Get 回報 RPMB 控制，不能作為 Set 值。此 Feature 不可 save，power cycle 後預設 locked。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>BP1WPS</dt><dd>Boot Partition 1 Write Protection State；FID 85h 的 bits 5:3。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, 文件頁 513-514, PDF 頁 539-540</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.10">02.10.</span><span class="paragraph-text">BP0WPS 位於 CDW11[2:0]，BP1WPS 位於 [5:3]。000b 僅用於 Set 的不改變請求；001b/010b/011b 分別為 unlocked/locked/locked until power cycle；100b 由 Get 回報 RPMB 控制，不能作為 Set 值。此 Feature 不可 save，power cycle 後預設 locked。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, 文件頁 513-514, PDF 頁 539-540</p></details>
 <!-- claim:BASEBOOT-BOOT-RESET -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">Set Features 的 unlocked 狀態跨 Controller Level Reset 保留，但 power cycle 後回到 locked；locked-until-power-cycle 也不能用一般 Set 解開。RPMB 保護啟用後，unlocked 遇 power cycle 或 Controller Level Reset 會回到 locked，且啟用本身不可撤回。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.1-8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1-8.1.3.3.3, 文件頁 589-594, PDF 頁 615-620</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.11">02.11.</span><span class="paragraph-text">Set Features 的 unlocked 狀態跨 Controller Level Reset 保留，但 power cycle 後回到 locked；目前為 locked-until-power-cycle 時，Set Features 變更要求會以 Feature Not Changeable 結束；power cycle 後回到 locked，仍需明確解鎖才能寫入。RPMB 保護啟用後，unlocked 遇 power cycle 或 Controller Level Reset 會回到 locked，且啟用本身不可撤回。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.1-8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1-8.1.3.3.3, 文件頁 589-594, PDF 頁 615-620</p></details>
 <!-- claim:BASEBOOT-BOOT-REJECT -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">嘗試修改 locked-until-power-cycle 或 RPMB 控制中的狀態，FID 85h 以 Feature Not Changeable 拒絕。Multi-domain subsystem 中共享的 partition 不允許 locked-until-power-cycle。兩套機制並存時，只要任一 partition 在該狀態，就不得啟用 RPMB Boot 保護來繞過它。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39; 8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39; 8.1.3.3.3, 文件頁 513-514,593-594, PDF 頁 539-540,619-620</p></details>
-<div class="table-wrap"><table><caption>映像更新、啟用與寫入保護</caption><thead><tr><th scope="col">保護機制與狀態</th><th scope="col">哪種操作能改變狀態</th><th scope="col">重設或斷電後的結果</th></tr></thead><tbody><tr><td>FID 85h unlocked</td><td>Controller reset 後保留</td><td>Power cycle 後 locked</td></tr><tr><td>FID 85h until power cycle</td><td>一般 Set 不可解鎖</td><td>共享 multi-domain partition 不可用</td></tr><tr><td>RPMB enabled/unlocked</td><td>Controller reset 即 relock</td><td>啟用保護不可撤回</td></tr><tr><td>兩套機制</td><td>同時只有一套控制</td><td>RPMB enable 是控制權轉移</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">保留 BP0 不變、要求 BP1 unlocked 的 FID 85h CDW11 是 (001b &lt;&lt; 3) | 000b = 08h。讀回時 BP0 不會回傳 000b，而會回報它真正的狀態；RPMB 控制時則回報 100b。</span></p></aside>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.12">02.12.</span><span class="paragraph-text">嘗試修改 locked-until-power-cycle 或 RPMB 控制中的狀態，FID 85h 以 Feature Not Changeable 拒絕。Multi-domain subsystem 中共享的 partition 不允許 locked-until-power-cycle。兩套機制並存時，只要任一 partition 在該狀態，就不得啟用 RPMB Boot 保護來繞過它。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39; 8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39; 8.1.3.3.3, 文件頁 513-514,593-594, PDF 頁 539-540,619-620</p></details>
+<div class="table-wrap"><table><caption>映像更新、啟用與寫入保護</caption><thead><tr><th scope="col">目前的控制機制與狀態</th><th scope="col">Controller Level Reset 後</th><th scope="col">Power cycle 後</th></tr></thead><tbody><tr><td>Set Features：Write Unlocked</td><td>保持 Write Unlocked</td><td>回到 Write Locked</td></tr><tr><td>Set Features：Write Locked Until Power Cycle</td><td>保持原狀態</td><td>回到 Write Locked，需另行解鎖才能寫入</td></tr><tr><td>RPMB 已啟用：Write Unlocked</td><td>回到 Write Locked</td><td>回到 Write Locked</td></tr></tbody></table></div>
 <a class="reading-link" href="#reading-boot-protection">閱讀相關規格圖表 → 映像更新、啟用與寫入保護</a>
 </section>
 <section id="figure-reading"><h2><span class="section-number">03</span> 讀懂本篇的規格圖表</h2>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
-<details open class="figure-reading-group" id="reading-boot-read"><summary>圖表組 01 · Boot 的兩條讀取路徑 · 31 張圖表</summary>
+<details open class="figure-reading-group" id="reading-boot-read"><summary>圖表組 01 · Boot 的兩條讀取路徑 · 14 張圖表</summary>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">Properties 路徑依序連接 CAP.BPS、BPINFO、BPRSEL、BPMBL：支援能力、狀態、讀取選擇、主機緩衝區。LID 15h 則分開讀 header 與 data，並以 Admin CQE 解讀這筆命令的結果。</span></p>
 <a class="reading-link" href="#module-boot-read">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-boot-read"><h4 id="fields-heading-base-boot-read">同時標出映像座標與主機記憶體座標</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">Properties 路徑與 LID 15h 路徑都讀 Boot Partition，但要求與完成證據不同；兩條路徑的位移起點也應分別標示。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-boot-read"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>ABPID／BPSZ／BRS</td><td>分別給 active partition、以 128 KiB 為單位的分割區大小及 Properties 讀取狀態；ABPID 不等於本次目標 BPID。</td><td>目前 active 是 BP0 時，主機仍可能指定讀取 BP1。</td></tr><tr><td>BPID／BPROF／BPRSZ</td><td>BPID 選目標分割區；BPROF 與 BPRSZ 分別以 4 KiB 為單位指定起點與讀取量。</td><td>先用起點加長度檢查未超出 BPSZ，再提供主機接收位置。</td></tr><tr><td>BMBBA</td><td>指向接收開機資料的主機記憶體；與 HMB Feature 借給控制器的記憶體用途不同。</td><td>圖上標為 Host Memory Buffer 的接收區，不代表必須先啟用 Host Memory Buffer Feature。</td></tr><tr><td>LID 15h 的 BPID／BPINFO／BPD</td><td>log 先有表頭，再有 Boot Partition Data；Get Log Page 的 offset 從 log 起點計算。</td><td>讀映像 offset 0 的資料時，需考慮它在 log 內位於表頭之後，不能直接把兩種 offset 畫在同一起點。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>ABPID</dt><dd>Active Boot Partition ID；指出目前選為啟動映像的 partition。</dd></div><div><dt>HMB</dt><dd>Host Memory Buffer，由 host 配置並在 enable 期間交由 controller 專用的 volatile memory ranges。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEBOOT-BASE-FIG-279">Base 279</a><a href="#figure-BASEBOOT-BASE-FIG-280">Base 280</a><a href="#figure-BASEBOOT-BASE-FIG-679">Base 679</a><a href="#figure-BASEBOOT-BASE-FIG-049">Base 49</a><a href="#figure-BASEBOOT-BASE-FIG-050">Base 50</a><a href="#figure-BASEBOOT-BASE-FIG-051">Base 51</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21 · Base 2.4 §8.1.3.1 · Base 2.4 §3.1.4.13 · Base 2.4 §3.1.4.14 · Base 2.4 §3.1.4.15</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 279, 文件頁 283, PDF 頁 309</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 280, 文件頁 284, PDF 頁 310</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, Figure 679, 文件頁 587, PDF 頁 613</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.13, Figure 49, 文件頁 69, PDF 頁 95</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 50, 文件頁 69-70, PDF 頁 95-96</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.15, Figure 51, 文件頁 70, PDF 頁 96</p></details>
+</section>
 <!-- figure-table:BASEBOOT-BASE-FIG-279 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-279"><h4>Base Figure 279 · Boot Partition Log Specific Parameter Field</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-279-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base279-1">Base279-1</span><span class="paragraph-text">Boot Partition log 的參數用 BPID 選要讀的分割區。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 279, 文件頁 283, PDF 頁 309</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base279-2">Base279-2</span><span class="paragraph-text">同一 LID 配 BPID＝0 或 1 會選到不同 partition；LID 指紀錄種類，BPID 才指此次目標。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base279-3">Base279-3</span><span class="paragraph-text">LID 15h 使用 CDW10 bit 8 選 BPID，其他 LSP bits 保留；同一 bit 在 07h 卻是 CTHID。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CTHID</dt><dd>Create Telemetry Host-Initiated Data；07h 的 capture 要求，後續分段讀同一快照要清為 0。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-read">欄位、條件與相關細節：同時標出映像座標與主機記憶體座標 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-280 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-280"><h4>Base Figure 280 · Boot Partition Log Page</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-280-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base280-1">Base280-1</span><span class="paragraph-text">Boot Partition log 先回報 header，再提供分割區資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 280, 文件頁 284, PDF 頁 310</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base280-2">Base280-2</span><span class="paragraph-text">讀回 buffer 後先找 BPD 的開始位置；不能把 header 內容當成開機映像的第一段 bytes。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base280-3">Base280-3</span><span class="paragraph-text">Header bytes 0–15；BPINFO 在 bytes 4–7，ABPID 是 bit 31，BPSZ 是 bits 14:0。BPD 從 byte 16 起，長度為 BPSZ×128 KiB。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ABPID</dt><dd>Active Boot Partition ID；指出目前選為啟動映像的 partition。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID</li><li>BPINFO</li><li>ABPID</li><li>BPSZ</li><li>BPD</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-read">欄位、條件與相關細節：同時標出映像座標與主機記憶體座標 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-679 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-679"><h4>Base Figure 679 · Boot Partition Overview</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-679-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base679-1">Base679-1</span><span class="paragraph-text">Boot Partition 圖連起裝置分割區與主機接收 buffer。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.1, Figure 679, 文件頁 587, PDF 頁 613</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base679-2">Base679-2</span><span class="paragraph-text">沿一次讀取追 Partition 0 或 1 到主機記憶體的資料方向，分清來源、讀取選擇與目的位址。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base679-3">Base679-3</span><span class="paragraph-text">把兩個等大的 Boot Partitions 與此次 host 讀取 buffer 分開；active ID 選擇啟動映像，不限制 host 只能讀 active partition。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Boot Partition 0</li><li>Boot Partition 1</li><li>Host Memory Buffer</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-read">欄位、條件與相關細節：同時標出映像座標與主機記憶體座標 →</a></div></article>
+<section class="field-guide" id="fields-base-boot-capability"><h4 id="fields-heading-base-boot-capability">有 Boot 讀取能力，不等於所有保護機制都支援</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">CAP.BPS 決定 Boot Partitions 能力；LPA 與 BPCAP 再分別補充 log 讀取及保護方式。multi-domain 是共享配置的判斷條件，不是一種保護狀態。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-boot-capability"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CAP.BPS／LPA 的 Boot Partition Log Page Support</td><td>先確認 Boot 功能，再確認是否能透過 LID 15h 取得內容。</td><td>CAP.BPS=1 不能單獨代替 LPA 的 log 支援檢查。</td></tr><tr><td>BPCAP</td><td>回報 Set Features 與 RPMB Boot 保護能力；啟用哪一個機制還要看目前控制狀態。</td><td>同時支援兩套機制時，不是把兩個解鎖命令都送一次；先確認現在由誰控制。</td></tr><tr><td>CTRATT.MDS／分割區共享關係</td><td>MDS=1 且分割區跨控制器共享，才形成這裡的 until-power-cycle 限制條件。</td><td>A、B 共享 BP0 的 multi-domain subsystem：不得把 BP0 設為 Write Locked Until Power Cycle；正常讀取 BP0 並未因此被禁止。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MDS</dt><dd>Multiple Domain Subsystem，指出 NVM subsystem 是否包含多個 domains 的能力 bit。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEBOOT-BASE-FIG-036">Base 36</a><a href="#figure-BASEBOOT-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.1.4.1 · Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details>
+</section>
 <!-- figure-table:BASEBOOT-BASE-FIG-036 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-036"><h4>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-036-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-1">Base36-1</span><span class="paragraph-text">CAP 描述控制器能力，主機設定必須落在其支援範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-2">Base36-2</span><span class="paragraph-text">設定記憶體頁大小前，先比對 MPSMIN 與 MPSMAX；主機偏好的頁大小不一定就是控制器接受的大小。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-3">Base36-3</span><span class="paragraph-text">先查 BPS 再使用 Boot properties；支援 Boot 不代表已啟用 controller。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CAP.BPS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-capability">欄位、條件與相關細節：有 Boot 讀取能力，不等於所有保護機制都支援 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-049 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-049"><h4>Base Figure 49 · Offset 40h: BPINFO - Boot Partition Information</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-049-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base49-1">Base49-1</span><span class="paragraph-text">BPINFO 把啟用分割區、讀取狀態與大小放在一起回報。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.13, Figure 49, 文件頁 69, PDF 頁 95</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base49-2">Base49-2</span><span class="paragraph-text">主機要求讀 Partition 1 後，BRS 用來觀察讀取狀態；ABPID 仍是啟用分割區資訊，不能拿它替代此次讀取選擇。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base49-3">Base49-3</span><span class="paragraph-text">ABPID 指 active partition，BPSZ 使用 128 KiB，BRS 依 00b/01b/10b/11b 區分未請求、傳輸中、成功與錯誤。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ABPID</li><li>BPSZ</li><li>BRS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-read">欄位、條件與相關細節：同時標出映像座標與主機記憶體座標 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-050 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-050"><h4>Base Figure 50 · Offset 44h: BPRSEL - Boot Partition Read Select</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-050-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base50-1">Base50-1</span><span class="paragraph-text">BPRSEL 指定 Boot Partition 讀取的目標、起点與長度。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.14, Figure 50, 文件頁 69-70, PDF 頁 95-96</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base50-2">Base50-2</span><span class="paragraph-text">要讀 Partition 1 的一段資料，BPID 選 1，BPROF 與 BPRSZ 按欄位單位設定；三者合起來才是一個完整讀取範圍。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BPROF</dt><dd>Boot Partition Read Offset；BPRSEL bits 29:10，以 4 KiB 為單位；bit 30 保留。</dd></div><div><dt>BPRSZ</dt><dd>Boot Partition Read Size；以 4 KiB 為單位，不能套用 BPSZ 的單位。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base50-3">Base50-3</span><span class="paragraph-text">BPRSEL bit 31 是 BPID、bit 30 保留，[29:10] 是以 4 KiB 計的 BPROF，[9:0] 是以 4 KiB 計的 BPRSZ；寫入會觸發讀取。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPID</li><li>BPRSZ</li><li>BPROF</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base50-2">Base50-2</span><span class="paragraph-text">要讀 Partition 1 的一段資料，BPID 選 1，BPROF 與 BPRSZ 按欄位單位設定；三者合起來才是一個完整讀取範圍。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-read">欄位、條件與相關細節：同時標出映像座標與主機記憶體座標 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-051 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-051"><h4>Base Figure 51 · Offset 48h: BPMBL - Boot Partition Memory Buffer Location</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-051-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base51-1">Base51-1</span><span class="paragraph-text">BPMBL 提供接收 Boot Partition 資料的主機記憶體位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.15</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.15, Figure 51, 文件頁 70, PDF 頁 96</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base51-2">Base51-2</span><span class="paragraph-text">BPRSEL 選的是裝置上的來源區段，BPMBL 選的是主機目的 buffer；相同的數字在兩處代表不同位址空間。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base51-3">Base51-3</span><span class="paragraph-text">BPMBL[63:12] 提供 Boot Memory Buffer 基底位址，低 12 bits 保留；先確認 host buffer 的連續性與對齊。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BMBBA</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>BMBBA</dt><dd>Boot Memory Buffer Base Address；BPMBL bits 63:12，低 12 bits 保留。</dd></div></dl>
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-188 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-188"><h4>Base Figure 188 · Firmware Commit - Completion Queue Entry Dword 0</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-188-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base188-1">Base188-1</span><span class="paragraph-text">Firmware Commit 回覆中的旗標描述特定更新偵測結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 188, 文件頁 204, PDF 頁 230</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base188-2">Base188-2</span><span class="paragraph-text">命令完成後，仍應逐個解讀 MUD 等回覆位元；不能用一個非零 DW0 直接推論「韌體版本已切換」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MUD</dt><dd>Multiple Update Detected，completion 中指出 controller 偵測到 overlapping firmware update sequence 的 bit。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base188-3">Base188-3</span><span class="paragraph-text">MUD 是重疊更新偵測的 completion 證據；仍需遵守單一 image sequence 的 controller/endpoint 邊界。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MUD</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-189 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-189"><h4>Base Figure 189 · Firmware Commit - Command Specific Status Values</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-189-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base189-1">Base189-1</span><span class="paragraph-text">Firmware Commit 狀態區分映像、slot 與需要重設等條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 189, 文件頁 204-205, PDF 頁 230-231</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base189-2">Base189-2</span><span class="paragraph-text">回覆需要 reset 的啟用條件，與 Invalid Firmware Image 是不同結果；前者需要安排流程，後者先檢查映像。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base189-3">Base189-3</span><span class="paragraph-text">Boot Partition Write Prohibited 指向保護狀態；Invalid Firmware Image 指向 image/sequence 驗證。分辨 status 後才選重試步驟。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Boot Partition Write Prohibited</li><li>Invalid Firmware Image</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-190 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-190"><h4>Base Figure 190 · Firmware Image Download - Data Pointer</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-190-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base190-1">Base190-1</span><span class="paragraph-text">Firmware Image Download 的 DPTR 指向此次傳入的映像區段。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 190, 文件頁 205, PDF 頁 231</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base190-2">Base190-2</span><span class="paragraph-text">分兩次傳映像時，第二次 DPTR 可以指另一段主機 buffer；映像內的目的偏移另由 OFST 指定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>OFST</dt><dd>Offset，Firmware Image Download 中以 dword 為單位的 image-relative offset。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base190-3">Base190-3</span><span class="paragraph-text">Download 的 DPTR 指向此次 image portion 的 host buffer；資料指標不代表目標 Boot Partition 位址。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>portion</dt><dd>傳輸分段；一次 firmware download 所送的一段連續資料。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-191 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-191"><h4>Base Figure 191 · Firmware Image Download - Command Dword 10</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-191-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base191-1">Base191-1</span><span class="paragraph-text">Firmware Download 的 NUMD 以 Dwords 且從零起算表示長度。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 191, 文件頁 205, PDF 頁 231</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base191-2">Base191-2</span><span class="paragraph-text">傳入 4096 bytes 時共有 1024 Dwords，NUMD＝1023；若直接填 4096，單位及編碼都會錯。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base191-3">Base191-3</span><span class="paragraph-text">NUMD 是此次 portion 的 zero-based dword count：512 bytes 編為 127，並須另外符合 Download 的 alignment/granularity 規則。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>zero-based</dt><dd>zero-based；數值從 0 開始計算，因此 raw=3 代表第 4 個項目或 4 個單位，實際含義仍要看欄位定義。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMD</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-192 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-192"><h4>Base Figure 192 · Firmware Image Download - Command Dword 11</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-192-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base192-1">Base192-1</span><span class="paragraph-text">Firmware Download 的 OFST 指定映像中的 Dword 偏移。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 192, 文件頁 206, PDF 頁 232</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base192-2">Base192-2</span><span class="paragraph-text">接續前面 4096 bytes 的區段，OFST＝1024；它不是主機記憶體位址，也不是接續區段的 byte 長度。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base192-3">Base192-3</span><span class="paragraph-text">OFST 用 dword 表示 image offset；Boot image 需從開頭依序傳送，不能借用一般 firmware portion 的其他排序假設。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OFST</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-193 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-193"><h4>Base Figure 193 · Firmware Image Download - Command Specific Status Values</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-193-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base193-1">Base193-1</span><span class="paragraph-text">Overlapping Range 狀態指出傳入的映像區段發生不允許的重疊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 193, 文件頁 206, PDF 頁 232</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base193-2">Base193-2</span><span class="paragraph-text">第一段覆蓋前 4096 bytes，第二段卻又從 byte 2048 開始時，需要按下載規則檢查重疊，不能只核對兩個 buffer 各自長度。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base193-3">Base193-3</span><span class="paragraph-text">Overlapping Range 是 download portion 重疊的 status；保留每段 offset 與 length 才能重建錯誤區間。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Overlapping Range</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-198 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-198"><h4>Base Figure 198 · Get Features - Command Dword 10</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-198-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">Get Features 的 FID 選功能，SEL 選要查目前值、預設值等資訊。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">查 current 與查 saved 可以回不同內容；兩次 FID 相同不表示查詢完全相同。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-3">Base198-3</span><span class="paragraph-text">Get Features 以 FID 指定 feature，SEL 指定 current/default/saved/capabilities；FID 85h、17h 的值與 capability 不可混讀。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID</li><li>SEL</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-199 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-199"><h4>Base Figure 199 · Get Features - Command Dword 14</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-199-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-1">Base199-1</span><span class="paragraph-text">Get Features 的 UIDX 在使用 UUID 選擇時提供索引。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-2">Base199-2</span><span class="paragraph-text">UIDX 是 UUID List 中的位置，不是把 128-bit UUID 直接塞進命令欄位；使用前先確認該索引對應誰。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-3">Base199-3</span><span class="paragraph-text">CDW14 的 UUID Index 是共用 feature 介面的一部分；本報告的標準 FID 不需自創 vendor UUID 對應。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>UUID Index</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-read">欄位、條件與相關細節：同時標出映像座標與主機記憶體座標 →</a></div></article>
+<section class="field-guide" id="fields-base-get-log"><h4 id="fields-heading-base-get-log">同一筆 Get Log Page 的目標、範圍與資料位置</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">讀 log 先選 LID 與命令集，再解讀該 log 的 LSP／LSI；NUMD 決定本次量，LPO 決定本次起點，DPTR 決定主機接收位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div><div><dt>LSI</dt><dd>Log Specific Identifier，意義由所選 log page 定義的 identifier。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-get-log"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>LID／CSI／LSP／LSI</td><td>LID 與 CSI 選紀錄種類，LSP、LSI 的含義由所選 log 定義。</td><td>LSP 在 Boot 中可含 BPID，在 Telemetry 中有建立 capture 的控制位元，不能跨 log 照搬。</td></tr><tr><td>NUMDU／NUMDL</td><td>先合成 NUMD=(NUMDU&lt;&lt;16)|NUMDL，再計算 (NUMD+1)×4 bytes。</td><td>512 bytes 對應 NUMD=127；高低部分不能各自加 1。</td></tr><tr><td>LPOU／LPOL／OT</td><td>高低欄位組成 64-bit offset；OT 決定按 byte 位移或項目索引解讀。</td><td>byte-offset 模式下，從 512-byte 表頭後開始讀資料要保留起點差異；index 模式不能直接使用同一個 byte 數。</td></tr><tr><td>DPTR／RAE</td><td>DPTR 給接收記憶體，RAE 控制相關事件的保留行為。</td><td>分段讀取先準備每段 buffer，再在恰當時機確認事件，避免中途改變可取得的紀錄。</td></tr><tr><td>LSUPP／LID Specific Parameter</td><td>Supported Log Pages 回報實際支援及 log 專屬能力。</td><td>規格列有某個 LID，不代表此裝置一定實作；先查支援再使用進階選項。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDL</dt><dd>Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。</dd></div><div><dt>NUMDU</dt><dd>Number of Dwords Upper，Get Log Page 的 NUMD 高 16 bits。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div><div><dt>LPOL</dt><dd>Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。</dd></div><div><dt>LPOU</dt><dd>Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。</dd></div><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event；Telemetry 收集中用 1 保留通知狀態，完成後用 0 acknowledgement。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEBOOT-BASE-FIG-203">Base 203</a><a href="#figure-BASEBOOT-BASE-FIG-204">Base 204</a><a href="#figure-BASEBOOT-BASE-FIG-205">Base 205</a><a href="#figure-BASEBOOT-BASE-FIG-206">Base 206</a><a href="#figure-BASEBOOT-BASE-FIG-207">Base 207</a><a href="#figure-BASEBOOT-BASE-FIG-208">Base 208</a><a href="#figure-BASEBOOT-BASE-FIG-209">Base 209</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242</p></details>
+</section>
 <!-- figure-table:BASEBOOT-BASE-FIG-203 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-203"><h4>Base Figure 203 · Get Log Page - Data Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-203-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-1">Base203-1</span><span class="paragraph-text">Get Log Page 的 DPTR 指向主機接收 log 資料的空間。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-2">Base203-2</span><span class="paragraph-text">同樣是 512-byte buffer，LID 不同會得到不同結構；DPTR 只提供位置，不會決定 log 類型。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-3">Base203-3</span><span class="paragraph-text">Get Log Page 的 data pointer 指向接收 buffer；buffer 必須容納 encoded NUMD 所要求的資料。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-204 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-204"><h4>Base Figure 204 · Get Log Page - Command Dword 10</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-204-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-1">Base204-1</span><span class="paragraph-text">Get Log Page 的 CDW10 選擇 log、低位長度及相關控制參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-2">Base204-2</span><span class="paragraph-text">讀取 512 bytes 共 128 Dwords，長度原始值為 127；同時填正確 LID，才能知道回來的是哪一份紀錄。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-3">Base204-3</span><span class="paragraph-text">CDW10[7:0]=LID，[14:8]=LSP，[15]=RAE，[31:16]=NUMDL；LID 決定 LSP 是 Boot BPID 或 Telemetry capture controls。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDL</dt><dd>Number of Dwords Lower，Get Log Page 的 NUMD 低 16 bits。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event；Telemetry 收集中用 1 保留通知狀態，完成後用 0 acknowledgement。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID</li><li>LSP</li><li>RAE</li><li>NUMDL</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-205 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-205"><h4>Base Figure 205 · Get Log Page - Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-205-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-1">Base205-1</span><span class="paragraph-text">CDW11 提供長度高位與 log 特定識別資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">NUMDU 非零時總長度需與 NUMDL 合併後再加 1；不能把兩個長度欄位各加 1 再相加。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDU</dt><dd>Number of Dwords Upper，Get Log Page 的 NUMD 高 16 bits。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-3">Base205-3</span><span class="paragraph-text">NUMDU 與 NUMDL 組成 zero-based dword count；LSI 是另一個 log-specific selector，不是 LSP。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LSI</dt><dd>Log Specific Identifier，意義由所選 log page 定義的 identifier。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NUMDU</li><li>LSI</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">NUMDU 非零時總長度需與 NUMDL 合併後再加 1；不能把兩個長度欄位各加 1 再相加。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-206 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-206-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LPOL</dt><dd>Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-3">Base206-3</span><span class="paragraph-text">LPO 低 32 bits 位於 CDW12；Telemetry byte offset 必須以 512-byte blocks 對齊。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOL</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-207 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-207"><h4>Base Figure 207 · Get Log Page - Command Dword 13</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-207-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 補齊較大 log offset 的高 32 bits。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LPOU</dt><dd>Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 補齊較大 log offset 的高 32 bits。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-2">Base207-2</span><span class="paragraph-text">完整 offset＝00000001_00000000h 時，LPOU＝1、LPOL＝0；只讀 LPOL 會誤以為從開頭開始。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-3">Base207-3</span><span class="paragraph-text">LPO 高 32 bits 位於 CDW13；不可先截斷為 32-bit 再計算大型 log 的 offset。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LPOU</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-208 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-208"><h4>Base Figure 208 · Get Log Page - Command Dword 14</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-208-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-2">Base208-2</span><span class="paragraph-text">相同 LPOL＝4，在 byte-offset 與 index-offset 下表示不同事物；先看 OT 才能正確解讀位置。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-3">Base208-3</span><span class="paragraph-text">CDW14 的 CSI/OT/UUID Index 是共用依欄位換算上下文；先遵守該 LID 的 offset 語義，不能把 byte offset 誤作 index。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSI</li><li>OT</li><li>UUID Index</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-209 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-209"><h4>Base Figure 209 · Get Log Page - Log Page Identifiers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-209-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-1">Base209-1</span><span class="paragraph-text">LID 清單把紀錄編號與其命令集、範圍連在一起。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-2">Base209-2</span><span class="paragraph-text">先依本篇所需的紀錄選取清單中的對應列，再看 CSI 與作用範圍；編號只選紀錄種類，完整欄位排列仍到該 log 的結構表閱讀。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base209-3">Base209-3</span><span class="paragraph-text">僅取 07h、08h、15h、81h 四列；每列把 log ID 與其章節相連，不延伸其他 log 的教學。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LID 07h</li><li>LID 08h</li><li>LID 15h</li><li>LID 81h</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-338 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-338"><h4>Base Figure 338 · Identify - Identify Controller Data Structure, I/O Command Set Independent</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-338-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">只解本題欄位：BPCAP byte 102，LPA byte 261，SANICAP bytes 328–331，以及 CTRATT 的 MDS；SANICAP 分開檢查方法、VERS/NVERS、SPRRS、NDI 與 NODMMAS。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MDS</dt><dd>Multiple Domain Subsystem，指出 NVM subsystem 是否包含多個 domains 的能力 bit。</dd></div><div><dt>NDI</dt><dd>No-Deallocate Inhibited；宣告 controller 是否抑制 NDAS 的要求。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPCAP</li><li>LPA</li><li>SANICAP</li><li>CTRATT</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-464 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-464"><h4>Base Figure 464 · Set Features - Command Dword 10</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-464-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">Set Features 的 FID 選功能，SV 表示是否要求保存。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SV</dt><dd>Save，Set Features 要求 controller 同時保存所設定 value 的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">主機要求 SV＝1 前先確認 Feature 可保存；設定成功與重設後仍保留，是需要分別核對的行為。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-3">Base464-3</span><span class="paragraph-text">Set Features 的 FID 決定 CDW11 解法；SV 是保存要求，不能因設定成功就推論 power cycle 後仍保留。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID</li><li>SV</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-465 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-465"><h4>Base Figure 465 · Set Features - Command Dword 14</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-465-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-1">Base465-1</span><span class="paragraph-text">Set Features 的 UIDX 用於相應 UUID 關聯的選擇。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-2">Base465-2</span><span class="paragraph-text">若使用 UUID List 的某一項，先確認索引對應與適用規則；UIDX 不是 Set Features 的新 FID。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-3">Base465-3</span><span class="paragraph-text">Set 的 UUID Index 使用條件與 feature identity 一起判斷；本題標準 FIDs 不擴成 vendor feature protocol。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>UUID Index</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-466 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-466"><h4>Base Figure 466 · Set Features - Feature Identifiers</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-466-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-1">Base466-1</span><span class="paragraph-text">Set Features 的識別碼清單指引每種功能的專屬欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-2">Base466-2</span><span class="paragraph-text">FID 02h 的 CDW11 是 Power Management，FID 0Ch 的相同位置是 APST；欄位位置相同不表示內容相同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-3">Base466-3</span><span class="paragraph-text">只看 Boot protection、Sanitize Config、AEC、Host Behavior Support 的 feature rows 與 scope；FID 17h 是 subsystem policy。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID 85h</li><li>FID 17h</li><li>FID 0Bh</li><li>FID 16h</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-757 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-757"><h4>Base Figure 757 · RPMB Request and Response Message Types</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-757-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base757-1">Base757-1</span><span class="paragraph-text">RPMB Message Type 分辨不同要求與回覆。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 757, 文件頁 692-693, PDF 頁 718-719</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base757-2">Base757-2</span><span class="paragraph-text">Configuration Block Read 的 request 與 response 使用各自類型值；不能只因都含配置資料就當成相同訊息。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base757-3">Base757-3</span><span class="paragraph-text">只追蹤 Boot 所需的 authenticated configuration read/write message types；message type 必須與預期 response 配對。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Authenticated Device Configuration Block Read</li><li>Authenticated Device Configuration Block Write</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-758 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-758"><h4>Base Figure 758 · RPMB Operation Result</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-758-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base758-1">Base758-1</span><span class="paragraph-text">RPMB Operation Result 區分認證、計數器等操作結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 758, 文件頁 693, PDF 頁 719</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base758-2">Base758-2</span><span class="paragraph-text">Authentication Failure 表示認證不成立，Counter Failure 則與計數器條件有關；兩者不是不同名稱的同一種失敗。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base758-3">Base758-3</span><span class="paragraph-text">Operation Result 區分成功、認證與 counter 等失敗；傳輸命令完成不等於 RPMB 寫入已成功。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Result</li><li>Authentication Failure</li><li>Counter Failure</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-760 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-760"><h4>Base Figure 760 · RPMB Data Frame</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-760-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base760-1">Base760-1</span><span class="paragraph-text">RPMB Data Frame 把訊息類型、nonce、計數器與認證資料分區放置。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 760, 文件頁 694, PDF 頁 720</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base760-2">Base760-2</span><span class="paragraph-text">讀取回覆時先辨識 Message Type，再檢查該操作需要的 nonce／認證資訊；不能把所有欄位在所有操作中都視為有效。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base760-3">Base760-3</span><span class="paragraph-text">Frame 的 message type、counter、nonce、result 與 authentication 是驗證回應的不同證據；不能只看資料 payload。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Message Type</li><li>Result</li><li>Write Counter</li><li>Nonce</li><li>Authentication</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-761 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-761"><h4>Base Figure 761 · RPMB - Authentication Key Data Flow</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-761-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base761-1">Base761-1</span><span class="paragraph-text">RPMB Key 流程描述認證金鑰設定與結果取得的次序。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.2.1, Figure 761, 文件頁 695-696, PDF 頁 721-722</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base761-2">Base761-2</span><span class="paragraph-text">先有金鑰設定要求，再讀取相應結果；送出資料的傳輸完成不等於金鑰設定成功。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base761-3">Base761-3</span><span class="paragraph-text">Authentication key 的設定是 authenticated configuration 流程的前置背景；需核對 programming result，不把送出 key 當成成功。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Authentication Key</li><li>Program Result</li></ul></div>
-
-</details></article>
-<!-- figure-table:BASEBOOT-BASE-FIG-762 -->
-<article class="field-note" id="figure-BASEBOOT-BASE-FIG-762"><h4>Base Figure 762 · RPMB - Read Write Counter Value Flow</h4>
-<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-762-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base762-1">Base762-1</span><span class="paragraph-text">Read Write Counter 流程用 nonce 與認證回覆取得目前計數器。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.2.2, Figure 762, 文件頁 696, PDF 頁 722</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base762-2">Base762-2</span><span class="paragraph-text">主機用本次 nonce 對照回覆，確認回覆對應這次要求；僅看到一個較大的 counter 不足以證明回覆新鮮。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base762-3">Base762-3</span><span class="paragraph-text">先取得並驗證 write counter，配合 nonce/authentication 確認回應，再構造受保護的 configuration write。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Write Counter</li><li>Nonce</li><li>Authenticated Response</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 </details>
-<details open class="figure-reading-group" id="reading-boot-protection"><summary>圖表組 02 · 映像更新、啟用與寫入保護 · 10 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">保護狀態表先選定 FID 85h 或 RPMB 控制，再沿「目前狀態→允許的操作→重設／斷電後狀態」閱讀。RPMB frame 與訊息流程應配對看，分清要求、回應、計數器和驗證資料各自的位置。</span></p>
+<details open class="figure-reading-group" id="reading-boot-protection"><summary>圖表組 02 · 映像更新、啟用與寫入保護 · 27 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">保護狀態表先選定 FID 85h 或 RPMB 控制，再沿「目前狀態→允許的操作→重設／斷電後狀態」閱讀。RPMB frame 與訊息流程應配對看，分清要求、回應、計數器和驗證資料各自的位置。</span></p>
 <a class="reading-link" href="#module-boot-protection">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-boot-protect"><h4 id="fields-heading-base-boot-protect">把保護機制、分割區狀態與操作結果分開</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">先判斷目前由 Set Features 或 RPMB 控制，再選 BP0 或 BP1。讀值、要求變更、重設後保留與驗證操作分別有自己的規則。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-boot-protect"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>BP0WPS bits 2:0／BP1WPS bits 5:3</td><td>兩個 3-bit 欄位獨立描述分割區狀態。</td><td>只要求解鎖 BP1 並保留 BP0，CDW11=(001b&lt;&lt;3)|000b=08h。</td></tr><tr><td>000b／001b／010b／011b／100b</td><td>依序為 Set 不改變、解鎖、鎖定、鎖到 power cycle，以及 Get 回報 RPMB 控制；不是所有編碼都能同時用於 Set 與 Get。</td><td>Get 不回 000b；Set 指定 100b 會是 Invalid Field in Command。</td></tr><tr><td>Controller Level Reset／power cycle</td><td>Set Features 的解鎖可跨 controller reset；power cycle 會回 locked。RPMB 啟用後，兩種事件都會使已解鎖分割區重新鎖定。</td><td>要恢復寫入，先看是哪個機制控制，再採用對應的解鎖操作。</td></tr><tr><td>Write Locked Until Power Cycle／CTRATT.MDS／共享關係</td><td>目前狀態與裝置配置一起限制是否可變更；multi-domain 且跨控制器共享的分割區禁止使用此狀態。</td><td>A、B 共享 BP0，將 BP0 設 011b 的要求會回 Feature Not Changeable；不能以只重設 A 來解除。</td></tr><tr><td>RPMB Enable／各分割區 Write Protection bits</td><td>啟用機制與分割區鎖定是不同層次；啟用後不能停用機制，但可依驗證流程變更各分割區保護狀態。</td><td>FID 85h 回 100b 表示應改走 RPMB 控制，不表示所有分割區永遠不可解鎖。</td></tr><tr><td>Request/Response／Result／Counter／Nonce／MAC</td><td>訊息類型選操作，Result 回報結果，Counter 與 Nonce 配合驗證避免把舊回覆當成新操作結果。</td><td>Configuration Write 後依流程取回結果；Configuration Read 要核對驗證資訊，不能只看到有資料就認定操作成功。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEBOOT-BASE-FIG-542">Base 542</a><a href="#figure-BASEBOOT-BASE-FIG-680">Base 680</a><a href="#figure-BASEBOOT-BASE-FIG-681">Base 681</a><a href="#figure-BASEBOOT-BASE-FIG-682">Base 682</a><a href="#figure-BASEBOOT-BASE-FIG-683">Base 683</a><a href="#figure-BASEBOOT-BASE-FIG-684">Base 684</a><a href="#figure-BASEBOOT-BASE-FIG-756">Base 756</a><a href="#figure-BASEBOOT-BASE-FIG-757">Base 757</a><a href="#figure-BASEBOOT-BASE-FIG-758">Base 758</a><a href="#figure-BASEBOOT-BASE-FIG-760">Base 760</a><a href="#figure-BASEBOOT-BASE-FIG-761">Base 761</a><a href="#figure-BASEBOOT-BASE-FIG-762">Base 762</a><a href="#figure-BASEBOOT-BASE-FIG-765">Base 765</a><a href="#figure-BASEBOOT-BASE-FIG-766">Base 766</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39 · Base 2.4 §8.1.3.3.1 · Base 2.4 §8.1.3.3.2 · Base 2.4 §8.1.3.3.3 · Base 2.4 §8.1.24 · Base 2.4 §8.1.24.2.1 · Base 2.4 §8.1.24.2.2 · Base 2.4 §8.1.24.3 · Base 2.4 §8.1.24.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, Figure 542, 文件頁 513-514, PDF 頁 539-540</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1, Figure 680, 文件頁 589, PDF 頁 615</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1, Figure 681, 文件頁 590, PDF 頁 616</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.2, Figure 682, 文件頁 591, PDF 頁 617</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.2, Figure 683, 文件頁 591, PDF 頁 617</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.3, Figure 684, 文件頁 593, PDF 頁 619</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 756, 文件頁 691-692, PDF 頁 717-718</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 757, 文件頁 692-693, PDF 頁 718-719</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 758, 文件頁 693, PDF 頁 719</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 760, 文件頁 694, PDF 頁 720</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.2.1, Figure 761, 文件頁 695-696, PDF 頁 721-722</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.2.2, Figure 762, 文件頁 696, PDF 頁 722</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.3, Figure 765, 文件頁 700, PDF 頁 726</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.4, Figure 766, 文件頁 701, PDF 頁 727</p></details>
+</section>
 <!-- figure-table:BASEBOOT-BASE-FIG-542 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-542"><h4>Base Figure 542 · Boot Partition Write Protection Config - Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-542-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base542-1">Base542-1</span><span class="paragraph-text">Boot Partition Write Protection Config 分別設定兩個分割區的保護狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.39</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, Figure 542, 文件頁 513-514, PDF 頁 539-540</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base542-2">Base542-2</span><span class="paragraph-text">Partition 0 鎖定而 Partition 1 未鎖定是可分別描述的配置；不能只用一個「Boot 已鎖」句子忽略目標分割區。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base542-3">Base542-3</span><span class="paragraph-text">兩個 3-bit state 欄位獨立設定；000b 只表示 Set 不改變，Get 需回實際狀態，100b 只回報 RPMB 控制。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BP0WPS</li><li>BP1WPS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-680 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-680"><h4>Base Figure 680 · Set Features Boot Partition Write Protection State Machine Model</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-680-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base680-1">Base680-1</span><span class="paragraph-text">Set Features 保護狀態圖用狀態與轉移說明何時能解除鎖定。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1, Figure 680, 文件頁 589, PDF 頁 615</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base680-2">Base680-2</span><span class="paragraph-text">Write Locked 與 Write Locked Until Power Cycle 不能同樣用一般解鎖要求處理；先辨識目前狀態，再沿允許箭頭走。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base680-3">Base680-3</span><span class="paragraph-text">Set Features 在 unlocked/locked 間切換，兩者可進入 locked-until-power-cycle；power cycle 回 locked。Locked-until-power-cycle 沒有一般 Set 解鎖箭頭。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Write Unlocked</li><li>Write Locked</li><li>Write Locked Until Power Cycle</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-681 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-681"><h4>Base Figure 681 · Set Features Boot Partition Write Protection State Definitions</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-681-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base681-1">Base681-1</span><span class="paragraph-text">Set Features 保護狀態定義補上 reset 與斷電的影響。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.1, Figure 681, 文件頁 590, PDF 頁 616</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base681-2">Base681-2</span><span class="paragraph-text">比較 Controller Level Reset 與 power cycle 後的鎖定狀態，不能只說「重開機會解鎖」而不交代是哪一種事件。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base681-3">Base681-3</span><span class="paragraph-text">逐列比較三個 state：controller reset 保留它們；power cycle 後 unlocked 與 until-power-cycle 都變 locked。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Power Cycles</li><li>Controller Level Resets</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-682 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-682"><h4>Base Figure 682 · RPMB Boot Partition Write Protection State Machine Model</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-682-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base682-1">Base682-1</span><span class="paragraph-text">RPMB 保護狀態圖另外描述認證設定的啟用與鎖定。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.2, Figure 682, 文件頁 591, PDF 頁 617</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base682-2">Base682-2</span><span class="paragraph-text">RPMB protection 尚未啟用與已啟用但未鎖定，是不同狀態；先分清管理方式，再談是否允許寫入。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base682-3">Base682-3</span><span class="paragraph-text">RPMB enable 之前與之後是不同區域；啟用後以 authenticated configuration write 解鎖/上鎖，reset 會回 locked。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>RPMB Disabled</li><li>RPMB Enabled</li><li>Write Locked</li><li>Write Unlocked</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-683 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-683"><h4>Base Figure 683 · RPMB Boot Partition Write Protection State Definitions</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-683-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base683-1">Base683-1</span><span class="paragraph-text">RPMB 保護狀態定義說明其保存及控制方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.2, Figure 683, 文件頁 591, PDF 頁 617</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base683-2">Base683-2</span><span class="paragraph-text">與 Figure 681 並排比較時，看相同 reset 是否保留同一種狀態，不因兩張表都有 Locked 就當成完全等效。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base683-3">Base683-3</span><span class="paragraph-text">RPMB-only 且保護尚未啟用時 unlocked 可保留；保護啟用後 unlocked 不跨 reset/power cycle。雙機制支援時還要套用 Figure 684 的預設與控制權。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>RPMB Protection Enabled</li><li>Persistence</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-684 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-684"><h4>Base Figure 684 · Boot Partition Write Protection State Machine Model</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-684-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base684-1">Base684-1</span><span class="paragraph-text">整體 Boot 保護模型說明 Set Features 與 RPMB 狀態如何共同決定結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.3.3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.3.3.3, Figure 684, 文件頁 593, PDF 頁 619</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base684-2">Base684-2</span><span class="paragraph-text">兩種來源的狀態不同時，先按圖判斷目前由哪一套控制關係生效，不能直接把兩個數值取較大者當最終狀態。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base684-3">Base684-3</span><span class="paragraph-text">先沿 Set Features 區追蹤狀態，再經 enable gate 轉移到 RPMB；不能從 until-power-cycle bypass 到 RPMB。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Set Features Owner</li><li>RPMB Owner</li><li>Enable Gate</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
+<section class="field-guide" id="fields-base-boot-update-fields"><h4 id="fields-heading-base-boot-update-fields">從下載片段走到指定 Boot Partition</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">這裡只使用 Firmware Download／Commit 與 Boot 更新有關的分支。下載的來源記憶體、完整映像中的位置、目標分割區與啟用選擇是不同座標。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-boot-update-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>DPTR／NUMD／OFST</td><td>資料指標指本次主機 buffer；NUMD 是傳輸 Dword 數減 1；OFST 是完整映像中的 Dword 位移。</td><td>傳 4096 bytes 用 NUMD=1023，接續下一段的 OFST 增加 1024。</td></tr><tr><td>CA=110b／BPID</td><td>將下載內容替換指定 Boot Partition 的內容，仍需滿足寫入保護、映像與下載順序等要求。</td><td>BPID=1 選 BP1；若它仍受寫入保護，不能因 Download 成功就推論 BP1 已被改寫。</td></tr><tr><td>CA=111b／BPID／ABPID</td><td>選 active Boot Partition 是另一個 Commit 動作，與替換內容分開。</td><td>先替換 BP1 再選它為 active；讀回 ABPID 確认啟用選擇，與讀回映像核對內容是不同觀察。</td></tr><tr><td>MUD／命令專屬狀態</td><td>完成資訊需按動作與能力判讀；Boot Partition Write Prohibited、Invalid Firmware Image 與下載 Overlapping Range 分別針對不同條件。</td><td>同樣未完成預期更新，可能是分割區保護、映像驗證或傳輸範圍問題，不能全歸為「映像壞掉」。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>OFST</dt><dd>Offset，Firmware Image Download 中以 dword 為單位的 image-relative offset。</dd></div><div><dt>MUD</dt><dd>Multiple Update Detected，completion 中指出 controller 偵測到 overlapping firmware update sequence 的 bit。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEBOOT-BASE-FIG-187">Base 187</a><a href="#figure-BASEBOOT-BASE-FIG-188">Base 188</a><a href="#figure-BASEBOOT-BASE-FIG-189">Base 189</a><a href="#figure-BASEBOOT-BASE-FIG-190">Base 190</a><a href="#figure-BASEBOOT-BASE-FIG-191">Base 191</a><a href="#figure-BASEBOOT-BASE-FIG-192">Base 192</a><a href="#figure-BASEBOOT-BASE-FIG-193">Base 193</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.9 · Base 2.4 §5.2.9.1 · Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, Figure 187, 文件頁 203, PDF 頁 229</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 188, 文件頁 204, PDF 頁 230</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 189, 文件頁 204-205, PDF 頁 230-231</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 190, 文件頁 205, PDF 頁 231</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 191, 文件頁 205, PDF 頁 231</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 192, 文件頁 206, PDF 頁 232</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 193, 文件頁 206, PDF 頁 232</p></details>
+</section>
 <!-- figure-table:BASEBOOT-BASE-FIG-187 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-187"><h4>Base Figure 187 · Firmware Commit - Command Dword 10</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-187-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base187-1">Base187-1</span><span class="paragraph-text">Firmware Commit 的 CA 選動作，FS 或 BPID 指相關目標。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FS</dt><dd>Firmware Slot，Firmware Commit 中選擇目標 slot 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, Figure 187, 文件頁 203, PDF 頁 229</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base187-2">Base187-2</span><span class="paragraph-text">更新 Boot Partition 時先按 CA 選替換或啟用相關動作，再看 BPID；不要把一般 firmware slot 的 FS 當成 boot partition 編號。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base187-3">Base187-3</span><span class="paragraph-text">Boot 更新只取 BPID 與 CA=110b/111b：前者替換 partition 內容，後者更新 active ID；兩個動作分開。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BPID</li><li>CA</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-756 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-756"><h4>Base Figure 756 · RPMB Device Configuration Block Data Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-756-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base756-1">Base756-1</span><span class="paragraph-text">RPMB Device Configuration Block 保存 Boot 保護的設定資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 756, 文件頁 691-692, PDF 頁 717-718</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base756-2">Base756-2</span><span class="paragraph-text">讀到 protection enable 與 protection state 時要分開理解：啟用管理機制與把特定 partition 鎖定不是同一欄位。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base756-3">Base756-3</span><span class="paragraph-text">Device Configuration Block 分開保存啟用保護與每個 partition 的鎖定控制；啟用後拒絕關閉 RPMB Boot 保護的寫入。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Boot Partition Write Protection Enable</li><li>Boot Partition Write Protection</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-765 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-765"><h4>Base Figure 765 · RPMB - Authenticated Device Configuration Block Write Flow</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-765-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base765-1">Base765-1</span><span class="paragraph-text">Authenticated Configuration Write 把計數器、寫入與結果確認串成流程。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.3, Figure 765, 文件頁 700, PDF 頁 726</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base765-2">Base765-2</span><span class="paragraph-text">主機準備認證寫入後，仍按流程取得 operation result；不能把資料已送達當成保護設定已更新。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base765-3">Base765-3</span><span class="paragraph-text">Authenticated configuration write 後需核對 result；此流程變更 Boot 保護狀態，不是 Firmware Commit 寫入 image 的流程。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Configuration Write</li><li>Counter</li><li>Result Read</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEBOOT-BASE-FIG-766 -->
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-766"><h4>Base Figure 766 · RPMB - Authenticated Device Configuration Block Read Flow</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-766-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base766-1">Base766-1</span><span class="paragraph-text">Authenticated Configuration Read 以本次 nonce 與認證資訊確認讀取結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.4, Figure 766, 文件頁 701, PDF 頁 727</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base766-2">Base766-2</span><span class="paragraph-text">讀到 Boot protection 狀態後，先確認回覆屬於這次要求，再用它判斷是否允許更新分割區。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base766-3">Base766-3</span><span class="paragraph-text">Authenticated configuration read 取得可驗證的保護設定，用以確認哪一套機制目前控制 partition。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Configuration Read</li><li>Nonce</li><li>Authentication</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 
-</details></article>
+<!-- figure-table:BASEBOOT-BASE-FIG-188 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-188"><h4>Base Figure 188 · Firmware Commit - Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-188-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base188-1">Base188-1</span><span class="paragraph-text">Firmware Commit 回覆中的旗標描述特定更新偵測結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 188, 文件頁 204, PDF 頁 230</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base188-2">Base188-2</span><span class="paragraph-text">命令完成後，仍應逐個解讀 MUD 等回覆位元；不能用一個非零 DW0 直接推論「韌體版本已切換」。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-189 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-189"><h4>Base Figure 189 · Firmware Commit - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-189-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base189-1">Base189-1</span><span class="paragraph-text">Firmware Commit 狀態區分映像、slot 與需要重設等條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9.1, Figure 189, 文件頁 204-205, PDF 頁 230-231</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base189-2">Base189-2</span><span class="paragraph-text">回覆需要 reset 的啟用條件，與 Invalid Firmware Image 是不同結果；前者需要安排流程，後者先檢查映像。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-190 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-190"><h4>Base Figure 190 · Firmware Image Download - Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-190-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base190-1">Base190-1</span><span class="paragraph-text">Firmware Image Download 的 DPTR 指向此次傳入的映像區段。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 190, 文件頁 205, PDF 頁 231</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base190-2">Base190-2</span><span class="paragraph-text">分兩次傳映像時，第二次 DPTR 可以指另一段主機 buffer；映像內的目的偏移另由 OFST 指定。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-191 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-191"><h4>Base Figure 191 · Firmware Image Download - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-191-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base191-1">Base191-1</span><span class="paragraph-text">Firmware Download 的 NUMD 以 Dwords 且從零起算表示長度。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 191, 文件頁 205, PDF 頁 231</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base191-2">Base191-2</span><span class="paragraph-text">傳入 4096 bytes 時共有 1024 Dwords，NUMD＝1023；若直接填 4096，單位及編碼都會錯。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-192 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-192"><h4>Base Figure 192 · Firmware Image Download - Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-192-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base192-1">Base192-1</span><span class="paragraph-text">Firmware Download 的 OFST 指定映像中的 Dword 偏移。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 192, 文件頁 206, PDF 頁 232</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base192-2">Base192-2</span><span class="paragraph-text">接續前面 4096 bytes 的區段，OFST＝1024；它不是主機記憶體位址，也不是接續區段的 byte 長度。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-193 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-193"><h4>Base Figure 193 · Firmware Image Download - Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-193-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base193-1">Base193-1</span><span class="paragraph-text">Overlapping Range 狀態指出傳入的映像區段發生不允許的重疊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.10, Figure 193, 文件頁 206, PDF 頁 232</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base193-2">Base193-2</span><span class="paragraph-text">第一段覆蓋前 4096 bytes，第二段卻又從 byte 2048 開始時，需要按下載規則檢查重疊，不能只核對兩個 buffer 各自長度。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-update-fields">欄位、條件與相關細節：從下載片段走到指定 Boot Partition →</a></div></article>
+<section class="field-guide" id="fields-base-features"><h4 id="fields-heading-base-features">查能力、讀取值與寫入值的區別</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.09">03.09.</span><span class="paragraph-text">FID 指功能，Get 的 SEL 指要查哪一種資訊，Set 的 SV 指是否要求保存。支援能力回覆的 bits 與功能值是不同結構。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div><div><dt>SV</dt><dd>Save，Set Features 要求 controller 同時保存所設定 value 的 bit。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-features"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>FID／UIDX／DPTR</td><td>FID 選功能，必要時 UIDX 協助選 UUID，DPTR 傳輸該功能所需的資料結構。</td><td>不是每個 Feature 都只靠 CQE DW0 回覆；有 buffer 的功能還需讀其資料格式。</td></tr><tr><td>SEL=000b／001b／010b／011b</td><td>分別要求目前值、預設值、保存值、支援能力。</td><td>要確認裝置現在採用什麼值，應讀目前值；保存值不等於正在使用的值。</td></tr><tr><td>CHANG／NSSPEC／SVBL → SV</td><td>能力分別指出可變更、是否與 namespace 有關、可否保存；SV 是主機的保存要求。</td><td>SVBL=0 時提出保存要求可能被拒絕；Set 成功也不能一律推論跨 power cycle 保留。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEBOOT-BASE-FIG-198">Base 198</a><a href="#figure-BASEBOOT-BASE-FIG-199">Base 199</a><a href="#figure-BASEBOOT-BASE-FIG-464">Base 464</a><a href="#figure-BASEBOOT-BASE-FIG-465">Base 465</a><a href="#figure-BASEBOOT-BASE-FIG-466">Base 466</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details>
+</section>
+<!-- figure-table:BASEBOOT-BASE-FIG-198 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-198"><h4>Base Figure 198 · Get Features - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-198-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">Get Features 的 FID 選功能，SEL 選要查目前值、預設值等資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">查 current 與查 saved 可以回不同內容；兩次 FID 相同不表示查詢完全相同。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-199 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-199"><h4>Base Figure 199 · Get Features - Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-199-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-1">Base199-1</span><span class="paragraph-text">Get Features 的 UIDX 在使用 UUID 選擇時提供索引。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-2">Base199-2</span><span class="paragraph-text">UIDX 是 UUID List 中的位置，不是把 128-bit UUID 直接塞進命令欄位；使用前先確認該索引對應誰。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-338 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-338"><h4>Base Figure 338 · Identify - Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-capability">欄位、條件與相關細節：有 Boot 讀取能力，不等於所有保護機制都支援 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-464 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-464"><h4>Base Figure 464 · Set Features - Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-464-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">Set Features 的 FID 選功能，SV 表示是否要求保存。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">主機要求 SV＝1 前先確認 Feature 可保存；設定成功與重設後仍保留，是需要分別核對的行為。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-465 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-465"><h4>Base Figure 465 · Set Features - Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-465-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-1">Base465-1</span><span class="paragraph-text">Set Features 的 UIDX 用於相應 UUID 關聯的選擇。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-2">Base465-2</span><span class="paragraph-text">若使用 UUID List 的某一項，先確認索引對應與適用規則；UIDX 不是 Set Features 的新 FID。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-466 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-466"><h4>Base Figure 466 · Set Features - Feature Identifiers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-466-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-1">Base466-1</span><span class="paragraph-text">Set Features 的識別碼清單指引每種功能的專屬欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-2">Base466-2</span><span class="paragraph-text">FID 02h 的 CDW11 是 Power Management，FID 0Ch 的相同位置是 APST；欄位位置相同不表示內容相同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div></dl></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-757 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-757"><h4>Base Figure 757 · RPMB Request and Response Message Types</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-757-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base757-1">Base757-1</span><span class="paragraph-text">RPMB Message Type 分辨不同要求與回覆。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 757, 文件頁 692-693, PDF 頁 718-719</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base757-2">Base757-2</span><span class="paragraph-text">Configuration Block Read 的 request 與 response 使用各自類型值；不能只因都含配置資料就當成相同訊息。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-758 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-758"><h4>Base Figure 758 · RPMB Operation Result</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-758-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base758-1">Base758-1</span><span class="paragraph-text">RPMB Operation Result 區分認證、計數器等操作結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 758, 文件頁 693, PDF 頁 719</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base758-2">Base758-2</span><span class="paragraph-text">Authentication Failure 表示認證不成立，Counter Failure 則與計數器條件有關；兩者不是不同名稱的同一種失敗。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-760 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-760"><h4>Base Figure 760 · RPMB Data Frame</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-760-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base760-1">Base760-1</span><span class="paragraph-text">RPMB Data Frame 把訊息類型、nonce、計數器與認證資料分區放置。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 760, 文件頁 694, PDF 頁 720</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base760-2">Base760-2</span><span class="paragraph-text">讀取回覆時先辨識 Message Type，再檢查該操作需要的 nonce／認證資訊；不能把所有欄位在所有操作中都視為有效。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-761 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-761"><h4>Base Figure 761 · RPMB - Authentication Key Data Flow</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-761-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base761-1">Base761-1</span><span class="paragraph-text">RPMB Key 流程描述認證金鑰設定與結果取得的次序。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.2.1, Figure 761, 文件頁 695-696, PDF 頁 721-722</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base761-2">Base761-2</span><span class="paragraph-text">先有金鑰設定要求，再讀取相應結果；送出資料的傳輸完成不等於金鑰設定成功。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
+
+<!-- figure-table:BASEBOOT-BASE-FIG-762 -->
+<article class="field-note" id="figure-BASEBOOT-BASE-FIG-762"><h4>Base Figure 762 · RPMB - Read Write Counter Value Flow</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-762-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base762-1">Base762-1</span><span class="paragraph-text">Read Write Counter 流程用 nonce 與認證回覆取得目前計數器。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24.2.2, Figure 762, 文件頁 696, PDF 頁 722</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base762-2">Base762-2</span><span class="paragraph-text">主機用本次 nonce 對照回覆，確認回覆對應這次要求；僅看到一個較大的 counter 不足以證明回覆新鮮。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-boot-protect">欄位、條件與相關細節：把保護機制、分割區狀態與操作結果分開 →</a></div></article>
 </details>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>

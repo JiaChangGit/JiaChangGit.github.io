@@ -129,3 +129,14 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
   .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
   .edition-tutorial main { max-width: none; }
 }
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }

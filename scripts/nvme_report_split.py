@@ -12,12 +12,12 @@ SPLITS = {
 
 # Explicit source identities avoid collisions such as Base Figure 111 and NVM Figure 111.
 EXTRA = {
- 'base-device-self-test': [36,93,155,338],
+ 'base-device-self-test': [93,155,338],
  'base-hmb-emulation': [],
  'base-namespace-management': [346],
  'base-boot-partitions': [188,189,190,191,192,193,198,199,464,465,466,757,758,760,761,762,203,204,205,206,207,208,209,338],
  'base-telemetry': [203,205,206,207,208,209],
- 'base-sanitize': [203,204,205,206,207,208,209,474],
+ 'base-sanitize': [203,204,205,206,207,208,209],
 }
 
 def install(reports, titles, modules, glossaries):

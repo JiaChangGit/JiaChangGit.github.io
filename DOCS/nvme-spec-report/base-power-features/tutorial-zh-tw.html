@@ -135,6 +135,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
   .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
   .edition-tutorial main { max-width: none; }
 }
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
 <div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-feature-read-set-loop">01 Feature 的能力、讀取與設定</a><a href="#module-power-state-mental-model">02 Power State 的功率、延遲與效能</a><a href="#module-apst-state-machine">03 APST 的閒置條件與自動轉換</a><a href="#module-temperature-event-loop">04 溫度門檻、感測器與通知</a><a href="#module-hctm-control-loop">05 HCTM 的兩級熱管理</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
@@ -159,6 +170,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">設定流程應先確認可變更，再選擇符合控制器能力的值。是否保存是另一個選擇，不能因為 Set 成功就假設下次重設或斷電後仍會使用它。這個讀取與設定的共同流程，會被後面各個電源及溫度 Feature 使用。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.12.1 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.1, 文件頁 211-212, PDF 頁 237-238</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 459, PDF 頁 485</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEPOWER-READ-FIRST -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Get Features 是讀取 Feature 屬性的 Admin command。工程流程不應從寫入猜測開始，而要先辨認 FID、查 capability，再取得 current／default／保存值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209, PDF 頁 235</p></details>
 <!-- claim:BASEPOWER-GET-SELECT -->
@@ -175,48 +187,57 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-power-state-mental-model"><h2 id="heading-power-state-mental-model"><span class="section-number">02</span> Power State 的功率、延遲與效能</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">電源狀態描述的不只是消耗多少電。每個狀態還可能有不同的服務能力與進出延遲，因此更省電的選擇，可能讓下一次 I/O 等更久。Operational 與 non-operational 狀態也有不同工作條件，不能只按數字大小假設功能一致。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">ENLAT 描述進入一個狀態的延遲，EXLAT 描述離開的延遲。由 PS1 轉到 PS3 時，若走直接路徑，需要考慮 PS1 的離開時間和 PS3 的進入時間；若途經其他狀態，就逐段計算。相對效能值則用於相同類別的比較，不是直接的 IOPS 或微秒數。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ENLAT</dt><dd>Entry Latency，進入該 power state 的 maximum latency，單位為 microseconds。</dd></div><div><dt>EXLAT</dt><dd>Exit Latency，離開該 power state 的 maximum latency，單位為 microseconds。</dd></div><div><dt>IOPS</dt><dd>Input/Output Operations Per Second；每秒 I/O 操作數，與每秒傳輸 bytes 的頻寬不同。</dd></div></dl>
+<div class="course-walkthrough"><h3>由一次閒置間隔估算省電代價</h3>
+<h4>先查它能否處理 I/O</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">讀 Power State Descriptor 的 NOPS，確認狀態屬 operational 或 non-operational。數字較大的 PS 不代表一定不能處理 I/O；分類應由描述子決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NOPS</dt><dd>Non-Operational State，Power State Descriptor 中指出該 state 不處理 I/O commands 的 bit。</dd></div><div><dt>PS</dt><dd>Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。</dd></div></dl>
+<h4>把進出延遲放在同一條時間線</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">假設 PS0 到 PS3，PS0 的 EXLAT=0、PS3 的 ENLAT=100 μs；喚回 PS0 時，PS3 的 EXLAT=500 μs、PS0 的 ENLAT=0。這是一組說明性數值，進入與退出各使用來源狀態的 EXLAT 加目標狀態的 ENLAT。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ENLAT</dt><dd>Entry Latency，進入該 power state 的 maximum latency，單位為 microseconds。</dd></div><div><dt>EXLAT</dt><dd>Exit Latency，離開該 power state 的 maximum latency，單位為 microseconds。</dd></div></dl>
+<h4>比較長閒置與短間隔</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">若下一筆 I/O 很快到達，500 μs 的喚醒成本可能成為明顯等待；長時間閒置才有較多時間享受低功耗。比較時同時保留時間與功率，不能只找最小的 MP 值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MP</dt><dd>Maximum Power，一個 power state 的 sustained maximum power。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">省電狀態的價值取決於工作負載留下多少閒置時間，以及能容忍多少恢復延遲。</span></p></aside></div>
 <details class="source-note"><summary>來源：Base 2.4 §8.1.19 · Base 2.4 §8.1.19.1 · Base 2.4 §8.1.19.2 · Base 2.4 §5.2.30.1.2 · Base 2.4 §8.1.19.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695</p></details>
 </div>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 410" role="img"><title>功耗狀態轉移的時間如何計算</title><desc>說明性數值：PS0→PS3 的最大轉移時間是 EXLAT(PS0)+ENLAT(PS3)=0+100=100 μs；PS3→PS0 則是 500+0=500 μs。退出與進入取自不同狀態。圖中區塊寬度為排版用途，不代表時間比例；實際延遲以裝置的 Power State Descriptor 為準。</desc><rect x="20" y="40" width="150" height="75" rx="6" class="v-success"/><text x="95.0" y="71.0" text-anchor="middle" font-size="17">PS0</text><text x="95.0" y="96.0" text-anchor="middle" font-size="17">處理 I/O</text><rect x="185" y="40" width="175" height="75" rx="6" class="v-command"/><text x="272.5" y="71.0" text-anchor="middle" font-size="17">退出 PS0</text><text x="272.5" y="96.0" text-anchor="middle" font-size="17">EXLAT = 0 μs</text><rect x="375" y="40" width="195" height="75" rx="6" class="v-decision"/><text x="472.5" y="71.0" text-anchor="middle" font-size="17">進入 PS3</text><text x="472.5" y="96.0" text-anchor="middle" font-size="17">ENLAT = 100 μs</text><rect x="585" y="40" width="155" height="75" rx="6" class="v-object"/><text x="662.5" y="71.0" text-anchor="middle" font-size="17">PS3</text><text x="662.5" y="96.0" text-anchor="middle" font-size="17">閒置</text><path d="M50,150 L710,150" class="v-line"/><path d="M703,145 L710,150 L703,155" class="v-line"/><text x="380" y="180" text-anchor="middle" font-size="16">進入省電狀態：最多 100 μs</text><rect x="20" y="230" width="150" height="75" rx="6" class="v-object"/><text x="95.0" y="261.0" text-anchor="middle" font-size="17">PS3</text><text x="95.0" y="286.0" text-anchor="middle" font-size="17">新 I/O 到達</text><rect x="185" y="230" width="175" height="75" rx="6" class="v-command"/><text x="272.5" y="261.0" text-anchor="middle" font-size="17">退出 PS3</text><text x="272.5" y="286.0" text-anchor="middle" font-size="17">EXLAT = 500 μs</text><rect x="375" y="230" width="195" height="75" rx="6" class="v-decision"/><text x="472.5" y="261.0" text-anchor="middle" font-size="17">進入 PS0</text><text x="472.5" y="286.0" text-anchor="middle" font-size="17">ENLAT = 0 μs</text><rect x="585" y="230" width="155" height="75" rx="6" class="v-success"/><text x="662.5" y="261.0" text-anchor="middle" font-size="17">PS0</text><text x="662.5" y="286.0" text-anchor="middle" font-size="17">處理 I/O</text><path d="M50,340 L710,340" class="v-line"/><path d="M703,335 L710,340 L703,345" class="v-line"/><text x="380" y="373" text-anchor="middle" font-size="16">恢復處理：轉移最多 500 μs，另加命令處理時間</text></svg></div><figcaption>說明性數值：PS0→PS3 的最大轉移時間是 EXLAT(PS0)+ENLAT(PS3)=0+100=100 μs；PS3→PS0 則是 500+0=500 μs。退出與進入取自不同狀態。圖中區塊寬度為排版用途，不代表時間比例；實際延遲以裝置的 Power State Descriptor 為準。</figcaption></figure>
+
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEPOWER-POWER-STATES -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">controller 必須（shall）至少支援一個 power state，最多可（may）支援 32 個，編號從 0 連續排列。PS0 的 maximum power 最高；後續 state 的 maximum power 不得高於前一個 state。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">controller 必須（shall）至少支援一個 power state，最多可（may）支援 32 個，編號從 0 連續排列。PS0 的 maximum power 最高；後續 state 的 maximum power 不得高於前一個 state。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-667, PDF 頁 692-693</p></details>
 <!-- claim:BASEPOWER-POWER-METRICS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">Power State Descriptor（PSD）把 maximum power、operational/non-operational、entry/exit latency、idle/active power 與 relative performance 放在同一份描述。MP 是 sustained maximum；IDLP 與 ACTP 是不同測量情境，不能拿單次瞬間功耗互相比。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ACTP</dt><dd>Active Power，在指定 workload 與時間窗下描述的 average active power。</dd></div><div><dt>IDLP</dt><dd>Idle Power，依規格 idle 測量條件描述的 typical power。</dd></div><div><dt>MP</dt><dd>Maximum Power，一個 power state 的 sustained maximum power。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">Power State Descriptor（PSD）把 maximum power、operational/non-operational、entry/exit latency、idle/active power 與 relative performance 放在同一份描述。MP 是 sustained maximum；IDLP 與 ACTP 是不同測量情境，不能拿單次瞬間功耗互相比。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ACTP</dt><dd>Active Power，在指定 workload 與時間窗下描述的 average active power。</dd></div><div><dt>IDLP</dt><dd>Idle Power，依規格 idle 測量條件描述的 typical power。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 666-668, PDF 頁 692-694</p></details>
 <!-- claim:BASEPOWER-TRANSITION -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">從舊 state 直接切到新 state 的最大 transition time，是舊 state 的 EXLAT 加上新 state 的 ENLAT。若 controller 內部經過多個 state，則每一段 transition time 相加。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">從舊 state 直接切到新 state 的最大 transition time，是舊 state 的 EXLAT 加上新 state 的 ENLAT。若 controller 內部經過多個 state，則每一段 transition time 相加。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.1, 文件頁 668-669, PDF 頁 694-695</p></details>
 <!-- claim:BASEPOWER-RELATIVE -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">Relative Read／Write Throughput 與 Latency 都是『值越小越好』，但只可在相同 characteristic 內比較；throughput code 不能與 latency code 混成一個總分。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">Relative Read／Write Throughput 與 Latency 都是『值越小越好』，但只可在相同 characteristic 內比較；throughput code 不能與 latency code 混成一個總分。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.2, 文件頁 668, PDF 頁 694</p></details>
 <!-- claim:BASEPOWER-NONOP -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">non-operational power state 不處理 I/O commands，但仍可能處理 property、PMR、CMB、Admin／background 或 transport-specific access。『non-operational』不是 controller 關機。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">non-operational power state 不處理 I/O commands，但仍可能處理 property、PMR、CMB、Admin／background 或 transport-specific access。『non-operational』不是 controller 關機。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 667-668, PDF 頁 693-694</p></details>
 <!-- claim:BASEPOWER-FID02 -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">FID 02h 用 CDW11.PS[4:0] 選 power state、WH[7:5] 提供 workload hint。指定的 PS 必須（shall）在 Identify Controller.NPSS 宣告範圍內；不支援的 PS 應（should）以 Invalid Field in Command 中止。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PS</dt><dd>Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。</dd></div><div><dt>WH</dt><dd>Workload Hint，host 提供給 controller 的 workload category 提示，不是效能保證。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.10">02.10.</span><span class="paragraph-text">FID 02h 用 CDW11.PS[4:0] 選 power state、WH[7:5] 提供 workload hint。指定的 PS 必須（shall）在 Identify Controller.NPSS 宣告範圍內；不支援的 PS 應（should）以 Invalid Field in Command 中止。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>WH</dt><dd>Workload Hint，host 提供給 controller 的 workload category 提示，不是效能保證。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, 文件頁 460-461, PDF 頁 486-487</p></details>
 <!-- claim:BASEPOWER-WORKLOAD -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">WH=000b 表示未知 workload；001b 對應先 idle、再做 32 筆 random 1 MiB writes、再 idle 的情境；010b 對應 80,000 筆 sequential 128 KiB writes。011b～111b reserved。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.11">02.11.</span><span class="paragraph-text">WH=000b 表示未知 workload；001b 對應先 idle、再做 32 筆 random 1 MiB writes、再 idle 的情境；010b 對應 80,000 筆 sequential 128 KiB writes。011b～111b reserved。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, 文件頁 669, PDF 頁 695</p></details>
 <div class="table-wrap"><table><caption>Power State 的功率、延遲與效能</caption><thead><tr><th scope="col">電源狀態屬性</th><th scope="col">描述的功耗或效能</th><th scope="col">比較時需要的條件</th></tr></thead><tbody><tr><td>MP</td><td>持續最大功率</td><td>不是瞬間 sample</td></tr><tr><td>IDLP／ACTP</td><td>閒置典型功率／工作中平均功率</td><td>測量條件不同</td></tr><tr><td>ENLAT／EXLAT</td><td>進入／離開 maximum latency</td><td>跨 state 必須相加</td></tr><tr><td>RRT/RRL/RWT/RWL</td><td>相對吞吐量／相對延遲</td><td>只在同類 characteristic 比較</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.10">02.10.</span><span class="paragraph-text">說明性計算：目前 PS1.EXLAT=100 µs，目標 PS3.ENLAT=2500 µs，直接 transition budget=2600 µs。若 controller 路徑是 PS1→PS2→PS3，還要加入 PS1.EXLAT+PS2.ENLAT 與 PS2.EXLAT+PS3.ENLAT 的每一段，不可仍用 2600 µs。</span></p></aside>
 <a class="reading-link" href="#reading-power-state-mental-model">閱讀相關規格圖表 → Power State 的功率、延遲與效能</a>
 </section>
 <section class="lesson" id="module-apst-state-machine"><h2 id="heading-apst-state-machine"><span class="section-number">03</span> APST 的閒置條件與自動轉換</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">APST 讓主機設定閒置多久後進入哪個較省電狀態，控制器再依連續閒置時間執行。表格存在不代表計時器已啟動，還要看 APSTE 是否啟用。主機直接指定狀態與由閒置計時器觸發，則是兩種進入方式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>APSTE</dt><dd>Autonomous Power State Transition Enable，啟用 APST table timer 判斷的 bit。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">ITPT 記錄等待的閒置時間，ITPS 指定目標狀態。進入 non-operational 狀態後，背景工作能否暫時使用較高功率，還受 NOPPME 等規則控制。理解 APST 時應把節電、背景工作和恢復服務的延遲一起看，不能只把等待時間越短視為越好。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NOPPME</dt><dd>Non-Operational Power State Permissive Mode Enable，控制 controller background work 能否暫時超過 non-operational power limit。</dd></div><div><dt>ITPS</dt><dd>Idle Transition Power State，APST entry 選擇的目標 non-operational power state。</dd></div><div><dt>ITPT</dt><dd>Idle Time Prior to Transition，APST entry 的 idle threshold，單位為 milliseconds。</dd></div></dl>
+<div class="course-walkthrough"><h3>為 PS0 設定一條可檢查的自動轉移規則</h3>
+<h4>找到屬於目前狀態的 entry</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">假設控制器目前處於 operational PS0，支援 non-operational PS3。PS0 的 entry 選 ITPS=3、ITPT=2000 ms；這份 entry 放在表格的 PS0 位置，並不是放到目標 PS3 的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ITPS</dt><dd>Idle Transition Power State，APST entry 選擇的目標 non-operational power state。</dd></div><div><dt>ITPT</dt><dd>Idle Time Prior to Transition，APST entry 的 idle threshold，單位為 milliseconds。</dd></div></dl>
+<h4>把兩個欄位各自移到正確位置</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">低 Dword=(2000&lt;&lt;8)|(3&lt;&lt;3)=0007D018h。bits 31:8 保存時間，bits 7:3 保存狀態編號。兩者相鄰但單位不同，不能把整個 Dword 轉成一個毫秒數。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div></dl>
+<h4>沿箭頭看閒置與新 I/O</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">APSTE=1 且在目前狀態連續閒置超過 ITPT 時，依這筆 entry 轉入 PS3。新的 I/O 到來後，先回到適用的 operational state 再處理；進出延遲因此影響這筆 I/O 的等待。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>APSTE</dt><dd>Autonomous Power State Transition Enable，啟用 APST table timer 判斷的 bit。</dd></div></dl>
+<h4>分開考慮背景工作</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">NOPPME 控制 non-operational 狀態下的背景工作行為，APSTE 控制自動轉移。允許背景工作不等於停用 APST；必須分別理解「如何進入」與「進入後可做什麼」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NOPPME</dt><dd>Non-Operational Power State Permissive Mode Enable，控制 controller background work 能否暫時超過 non-operational power limit。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">狀態圖的一條箭頭需要目前狀態、連續閒置條件、目標狀態三項資訊，少一項就無法從表格還原行為。</span></p></aside></div>
 <details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7 · Base 2.4 §8.1.19 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483</p></details>
 </div>
-<figure><figcaption><strong>閒置時間如何影響功耗狀態</strong></figcaption><ol class="flow-steps"><li>Host 設定 APST entries 的閒置時間 ITPT 與目標狀態 ITPS。</li><li>啟用 APST 後，controller 依閒置計時判斷轉移。</li><li>到達適用門檻後，進入指定 non-operational power state。</li><li>恢復處理 I/O 前，需要計入離開該狀態的延遲。</li></ol><figcaption>APST 以閒置時間換取節能，同時引入狀態轉移延遲。</figcaption></figure>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 365" role="img"><title>APST：閒置條件與 I/O 觸發的兩條路徑</title><desc>說明性情境：目前是 operational PS0，目標是已支援的 non-operational PS3；PS0 entry 設 ITPT=2000 ms、ITPS=3。APSTE 啟用且連續閒置超過門檻時轉入 PS3；有未完成 I/O 時不符合閒置定義。若進行中作業會使功率超過目標狀態宣告值，規格建議控制器不要自動轉入。新的 I/O 到達後，控制器返回最近的 operational state，本例是 PS0。箭頭代表事件與轉移，並非等比例時間。</desc><rect x="25" y="90" width="245" height="100" rx="6" class="v-success"/><text x="147.5" y="133.5" text-anchor="middle" font-size="17">PS0 · operational</text><text x="147.5" y="158.5" text-anchor="middle" font-size="17">可處理 I/O</text><rect x="485" y="90" width="245" height="100" rx="6" class="v-object"/><text x="607.5" y="133.5" text-anchor="middle" font-size="17">PS3 · non-operational</text><text x="607.5" y="158.5" text-anchor="middle" font-size="17">先退出，才能處理 I/O</text><path d="M270,115 L380,115 L380,45 L607,45 L607,90" class="v-line"/><path d="M602,83 L607,90 L612,83" class="v-line"/><text x="380" y="25" text-anchor="middle" font-size="16">APSTE=1；連續閒置 &gt; 2000 ms</text><path d="M485,165 L380,165 L380,250 L147,250 L147,190" class="v-line"/><path d="M142,197 L147,190 L152,197" class="v-line"/><text x="380" y="283" text-anchor="middle" font-size="16">新 I/O → 返回最近的 operational state</text><text x="380" y="330" text-anchor="middle" font-size="16">PS0 entry：(2000 &lt;&lt; 8) | (3 &lt;&lt; 3) = 0007D018h</text></svg></div><figcaption>說明性情境：目前是 operational PS0，目標是已支援的 non-operational PS3；PS0 entry 設 ITPT=2000 ms、ITPS=3。APSTE 啟用且連續閒置超過門檻時轉入 PS3；有未完成 I/O 時不符合閒置定義。若進行中作業會使功率超過目標狀態宣告值，規格建議控制器不要自動轉入。新的 I/O 到達後，控制器返回最近的 operational state，本例是 PS0。箭頭代表事件與轉移，並非等比例時間。</figcaption></figure>
 
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEPOWER-FID0C -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">FID 0Ch 的 APSTE=1 啟用 Autonomous Power State Transition（APST）；預設值是 0。啟用只表示 controller 可依 APST table 的 idle timer 自主切換，並不保證一定進入任何特定 state。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">FID 0Ch 的 APSTE=1 啟用 Autonomous Power State Transition（APST）；預設值是 0。啟用只表示 controller 可依 APST table 的 idle timer 自主切換，並不保證一定進入任何特定 state。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 468-469, PDF 頁 494-495</p></details>
 <!-- claim:BASEPOWER-APST-ENTRY -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">APST data structure 固定 256 bytes，共 32 個 8-byte entries。每格 ITPT[31:8] 是毫秒 idle threshold，ITPS[7:3] 是目標 non-operational state；ITPT=0 會停用該 entry。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">APST data structure 固定 256 bytes，共 32 個 8-byte entries。每格 ITPT[31:8] 是毫秒 idle threshold，ITPS[7:3] 是目標 non-operational state；ITPT=0 會停用該 entry。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495</p></details>
 <!-- claim:BASEPOWER-APST-NOPPME -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">APSTE 控制 timer-based entry，NOPPME 控制 controller-initiated background operation 是否可暫時超過 non-operational limit。兩者是兩個正交開關：不要把『可自主進 state』誤解成『可為背景工作提高 power』。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">APSTE 控制 timer-based entry，NOPPME 控制 controller-initiated background operation 是否可暫時超過 non-operational limit。兩者是兩個正交開關：不要把『可自主進 state』誤解成『可為背景工作提高 power』。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, 文件頁 469, PDF 頁 495</p></details>
 <!-- claim:BASEPOWER-NONOP-IO -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">host 在手動切入 non-operational state 前宜（should）先 drain I/O。若 I/O command 到達，controller 會自主回到最近使用的 operational state，再處理 I/O。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.09">03.09.</span><span class="paragraph-text">host 在手動切入 non-operational state 前宜（should）先 drain I/O。若 I/O command 到達，controller 會自主回到最近使用的 operational state，再處理 I/O。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, 文件頁 668, PDF 頁 694</p></details>
 <!-- claim:BASEPOWER-SET-DPTR -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">Set Features 的 DPTR 只在所選 Feature 定義 data structure 時使用。以 PRP 指向 buffer 時，該 data buffer 不得跨越超過一個 memory page boundary，因 PRP2 不能在此指向 PRP List。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.10">03.10.</span><span class="paragraph-text">Set Features 的 DPTR 只在所選 Feature 定義 data structure 時使用。以 PRP 指向 buffer 時，該 data buffer 不得跨越超過一個 memory page boundary，因 PRP2 不能在此指向 PRP List。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-457, PDF 頁 482-483</p></details>
 <div class="table-wrap"><table><caption>APST 的閒置條件與自動轉換</caption><thead><tr><th scope="col">APST 或背景工作設定</th><th scope="col">控制器如何進入或使用狀態</th><th scope="col">受哪些條件限制</th></tr></thead><tbody><tr><td>APSTE=0</td><td>只允許 host-directed entry</td><td>table 可存在但 timer 不驅動</td></tr><tr><td>APSTE=1</td><td>host 或 timer entry</td><td>ITPT 必須連續滿足</td></tr><tr><td>NOPPME=0</td><td>background work 不得超過 non-op limits</td><td>可能延後 controller work</td></tr><tr><td>NOPPME=1</td><td>background work 可暫時提高 power</td><td>上限仍受最後 operational state 限制</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">閒置 2000 ms 後進 PS3：ITPT=2000=07D0h，放入 bits31:8 得 0007D000h；ITPS=3，放入 bits7:3 得 18h。相加得到低 Dword=0007D018h，其餘保留位與高 Dword 為 0。32 個 8-byte 項目合計 256 bytes。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div></dl></aside>
 <a class="reading-link" href="#reading-apst-state-machine">閱讀相關規格圖表 → APST 的閒置條件與自動轉換</a>
 </section>
 <section class="lesson" id="module-temperature-event-loop"><h2 id="heading-temperature-event-loop"><span class="section-number">04</span> 溫度門檻、感測器與通知</h2>
@@ -225,6 +246,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">Hysteresis 讓事件解除的溫度與觸發溫度不同，避免溫度在門檻附近小幅波動時反覆切換。以高溫門檻為例，降溫後需符合解除條件，不能只看到低於觸發值就忽略遲滯設定。通知描述的是溫度事件，並不等於 HCTM 已採取某一級熱控制。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3 · Base 2.4 §5.2.30.1.3.1 · Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, 文件頁 462-463, PDF 頁 488-489</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, 文件頁 463-464, PDF 頁 489-490</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEPOWER-FID04 -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">FID 04h 可為 Composite Temperature 與最多八個實作的 temperature sensors 設 over／under threshold。溫度以 Kelvin 編碼；到達 over threshold 或低於等於 under threshold 時，SMART/Health 的 Temperature Threshold critical warning 可能觸發 asynchronous event。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3, 文件頁 462-463, PDF 頁 488-489</p></details>
 <!-- claim:BASEPOWER-HYST -->
@@ -237,22 +259,25 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-hctm-control-loop"><h2 id="heading-hctm-control-loop"><span class="section-number">05</span> HCTM 的兩級熱管理</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">HCTM 讓主機提供兩級熱管理門檻。較低門檻著重減少對效能的影響，較高門檻允許更積極地控制溫度；這不是兩個感測器，也不是事件通知的觸發和解除溫度。主機需要在控制器允許的範圍內設定兩者。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">設定成功只能確認控制器接受這組值，不表示當時溫度已經觸發控制。轉換次數與累計時間可以幫助觀察曾經發生的熱管理活動，但它們是歷史統計，不能單獨當作目前正在節流的證明。讀目前值、即時溫度和統計時要分清時間意義。</span></p>
+<div class="course-walkthrough"><h3>同一個溫度，觀察、告警與控制各做什麼</h3>
+<h4>先讀溫度來源及單位</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">SMART 的 Composite Temperature 是觀察值；Temperature Threshold 選感測來源與門檻。設定前先將 Celsius 與 Kelvin 換成同一單位，不要把常見的攝氏數字直接填入要求 Kelvin 的欄位。</span></p>
+<h4>再決定溫度升高時的處理</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">HCTM 的 TMT1 與 TMT2 描述主機的熱管理要求。例如支援範圍為 273–373 K，TMT1=343 K、TMT2=353 K，CDW11=(343&lt;&lt;16)|353=01570161h。到達較高門檻時，控制器的規範義務與較低門檻不同；其實際調整功耗狀態或採用其他方式仍有實作空間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TMT1</dt><dd>Thermal Management Temperature 1，較輕度 thermal-management threshold，單位 Kelvin。</dd></div><div><dt>TMT2</dt><dd>Thermal Management Temperature 2，較強 thermal-management threshold，單位 Kelvin。</dd></div></dl>
+<h4>下降時讀回復條件</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">升溫時觸發某個動作，不表示剛降回同一數字就立即恢復。回復行為涉及 hysteresis；它讓控制不會在門檻附近反覆切換。觀察曲線時要把升溫與降溫路徑分開看。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">告警回答「要不要通知」，HCTM 回答「控制器如何嘗試降溫」，SMART 回答「現在及過去觀察到了什麼」。</span></p></aside></div>
 <details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10 · Base 2.4 §5.2.30.1.10, 8.1.19.5 · Base 2.4 §5.2.13.1.3 · Base 2.4 §5.2.30.1.11 · Base 2.4 §8.1.19.4 · Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, 文件頁 220-225, PDF 頁 246-251</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEPOWER-FID10 -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">FID 10h 的 TMT1[31:16] 是較輕度 thermal management threshold，TMT2[15:0] 是較重度 threshold，單位都是 Kelvin；0h 分別停用對應 threshold。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TMT1</dt><dd>Thermal Management Temperature 1，較輕度 thermal-management threshold，單位 Kelvin。</dd></div><div><dt>TMT2</dt><dd>Thermal Management Temperature 2，較強 thermal-management threshold，單位 Kelvin。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">FID 10h 的 TMT1[31:16] 是較輕度 thermal management threshold，TMT2[15:0] 是較重度 threshold，單位都是 Kelvin；0h 分別停用對應 threshold。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 文件頁 471-472, PDF 頁 497-498</p></details>
 <!-- claim:BASEPOWER-HCTM -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">非零 TMT1 必須（shall）小於 TMT2，且兩者必須落在 MNTMT～MXTMT 內；否則回 Invalid Field in Command。達 TMT1 時 controller 採降低影響的動作，達 TMT2 時採更強動作；hysteresis 由 vendor 決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MNTMT</dt><dd>Minimum Thermal Management Temperature，HCTM 可設定的最低 Kelvin 值。</dd></div><div><dt>MXTMT</dt><dd>Maximum Thermal Management Temperature，HCTM 可設定的最高 Kelvin 值。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10, 8.1.19.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">非零 TMT1 必須（shall）小於 TMT2，且兩者必須落在 MNTMT～MXTMT 內；否則回 Invalid Field in Command。達 TMT1 時 controller 採降低影響的動作，達 TMT2 時採更強動作；hysteresis 由 vendor 決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MNTMT</dt><dd>Minimum Thermal Management Temperature，HCTM 可設定的最低 Kelvin 值。</dd></div><div><dt>MXTMT</dt><dd>Maximum Thermal Management Temperature，HCTM 可設定的最高 Kelvin 值。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10, 8.1.19.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, 8.1.19.5, 文件頁 472, 670-671, PDF 頁 498, 696-697</p></details>
 <!-- claim:BASEPOWER-FID11 -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">FID 11h 的 NOPPME=1 允許 controller-initiated background operation 暫時把 power 提高到不超過最後一個 operational state 的上限；NOPPME=0 時，這類工作不得超過目前 non-operational state limits。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">FID 11h 的 NOPPME=1 允許 controller-initiated background operation 暫時把 power 提高到不超過最後一個 operational state 的上限；NOPPME=0 時，這類工作不得超過目前 non-operational state limits。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, 文件頁 472-473, PDF 頁 498-499</p></details>
 <!-- claim:BASEPOWER-RTD3 -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">RTD3E 與 RTD3R 分別描述進入與恢復時間，供 PCIe D3cold 使用情境評估 idle break-even；NVMe 文字明確說這不是 D3hot 的時間。PCIe D-state 的完整原始行為不在目前提供來源內，不能據此自行補寫。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RTD3E</dt><dd>Runtime D3 Entry Latency，controller 進入 PCIe D3cold 使用情境的預期時間。</dd></div><div><dt>RTD3R</dt><dd>Runtime D3 Resume Latency，controller 從 PCIe D3cold 使用情境恢復的預期時間。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.08">05.08.</span><span class="paragraph-text">RTD3E 與 RTD3R 分別描述進入與恢復時間，供 PCIe D3cold 使用情境評估 idle break-even；NVMe 文字明確說這不是 D3hot 的時間。PCIe D-state 的完整原始行為不在目前提供來源內，不能據此自行補寫。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RTD3E</dt><dd>Runtime D3 Entry Latency，controller 進入 PCIe D3cold 使用情境的預期時間。</dd></div><div><dt>RTD3R</dt><dd>Runtime D3 Resume Latency，controller 從 PCIe D3cold 使用情境恢復的預期時間。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.19.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.4, 文件頁 669-670, PDF 頁 695-696</p></details>
 <!-- claim:BASEPOWER-GET-STATUS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">Get Features 指定不適用的 Controller Identifier 時，command-specific status 1Fh 表示 Invalid Controller Identifier；狀態碼需連同 SCT 解讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.09">05.09.</span><span class="paragraph-text">Get Features 指定不適用的 Controller Identifier 時，command-specific status 1Fh 表示 Invalid Controller Identifier；狀態碼需連同 SCT 解讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, 文件頁 212, PDF 頁 238</p></details>
 <div class="table-wrap"><table><caption>HCTM 的兩級熱管理</caption><thead><tr><th scope="col">熱管理欄位或統計</th><th scope="col">設定或觀察的內容</th><th scope="col">使用前需確認什麼</th></tr></thead><tbody><tr><td>TMT1</td><td>較輕度控制起點</td><td>目標是 minimize impact</td></tr><tr><td>TMT2</td><td>較強控制起點</td><td>溫控優先於 impact</td></tr><tr><td>MNTMT／MXTMT</td><td>合法設定範圍</td><td>先做 host-side validation</td></tr><tr><td>SMART counters</td><td>transition count／time</td><td>證明 control loop 真的動作</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.08">05.08.</span><span class="paragraph-text">若 MNTMT=273 K、MXTMT=373 K，選 TMT1=343 K、TMT2=353 K 合法，CDW11=(0157h&lt;&lt;16)+0161h=01570161h。FID 10h 可 save；若 capability.SVBL=1 且 policy 要保存，CDW10.SV=1、FID=10h，所以 CDW10=80000010h。</span></p></aside>
 <a class="reading-link" href="#reading-hctm-control-loop">閱讀相關規格圖表 → HCTM 的兩級熱管理</a>
 </section>
 <section id="figure-reading"><h2><span class="section-number">06</span> 讀懂本篇的規格圖表</h2>
@@ -260,299 +285,253 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details open class="figure-reading-group" id="reading-feature-read-set-loop"><summary>圖表組 01 · Feature 的能力、讀取與設定 · 11 張圖表</summary>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">Get Features 的 CDW10 同時含 FID 與 SEL。先以 FID 選功能，再用 SEL 選 current、default、saved 或 supported capabilities；不要把支援旗標的回傳格式當成一般設定值。</span></p>
 <a class="reading-link" href="#module-feature-read-set-loop">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-features"><h4 id="fields-heading-base-features">查能力、讀取值與寫入值的區別</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">FID 指功能，Get 的 SEL 指要查哪一種資訊，Set 的 SV 指是否要求保存。支援能力回覆的 bits 與功能值是不同結構。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-features"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>FID／UIDX／DPTR</td><td>FID 選功能，必要時 UIDX 協助選 UUID，DPTR 傳輸該功能所需的資料結構。</td><td>不是每個 Feature 都只靠 CQE DW0 回覆；有 buffer 的功能還需讀其資料格式。</td></tr><tr><td>SEL=000b／001b／010b／011b</td><td>分別要求目前值、預設值、保存值、支援能力。</td><td>要確認裝置現在採用什麼值，應讀目前值；保存值不等於正在使用的值。</td></tr><tr><td>CHANG／NSSPEC／SVBL → SV</td><td>能力分別指出可變更、是否與 namespace 有關、可否保存；SV 是主機的保存要求。</td><td>SVBL=0 時提出保存要求可能被拒絕；Set 成功也不能一律推論跨 power cycle 保留。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-197">Base 197</a><a href="#figure-BASEPOWER-FIG-198">Base 198</a><a href="#figure-BASEPOWER-FIG-199">Base 199</a><a href="#figure-BASEPOWER-FIG-200">Base 200</a><a href="#figure-BASEPOWER-FIG-201">Base 201</a><a href="#figure-BASEPOWER-FIG-202">Base 202</a><a href="#figure-BASEPOWER-FIG-463">Base 463</a><a href="#figure-BASEPOWER-FIG-464">Base 464</a><a href="#figure-BASEPOWER-FIG-465">Base 465</a><a href="#figure-BASEPOWER-FIG-466">Base 466</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.12.2 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 200, 文件頁 210-211, PDF 頁 236-237</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 202, 文件頁 212, PDF 頁 238</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-197 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-197"><h4>Base Figure 197 · Get Features – Data Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-197-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-1">Base197-1</span><span class="paragraph-text">Get Features 的 DPTR 是需要資料結構時的回傳位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-2">Base197-2</span><span class="paragraph-text">查詢一個會回傳資料 buffer 的 Feature，先準備相應大小的目的空間；不是每個 Feature 都只靠 CQE DW0 回傳全部內容。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-3">Base197-3</span><span class="paragraph-text">Get／Set Features 共用命令外框，但 Get 的 SEL 選擇要讀哪種值，Set 的 SV 決定是否要求保存。CHANG、NSSPEC、SVBL 描述使用能力，資料指標和 UIDX 則按所選 Feature 的要求使用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li><li>PRP1</li><li>PRP2</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-198 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-198"><h4>Base Figure 198 · Get Features – Command Dword 10</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-198-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">Get Features 的 FID 選功能，SEL 選要查目前值、預設值等資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">查 current 與查 saved 可以回不同內容；兩次 FID 相同不表示查詢完全相同。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SEL</li><li>FID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-199 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-199"><h4>Base Figure 199 · Get Features – Command Dword 14</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-199-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-1">Base199-1</span><span class="paragraph-text">Get Features 的 UIDX 在使用 UUID 選擇時提供索引。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p></details></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-1">Base199-1</span><span class="paragraph-text">Get Features 的 UIDX 在使用 UUID 選擇時提供索引。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-2">Base199-2</span><span class="paragraph-text">UIDX 是 UUID List 中的位置，不是把 128-bit UUID 直接塞進命令欄位；使用前先確認該索引對應誰。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>UIDX</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-200 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-200"><h4>Base Figure 200 · Feature Identifiers for Get Features</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-200-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base200-1">Base200-1</span><span class="paragraph-text">Get Features 清單列出 FID 與該功能回傳形式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 200, 文件頁 210-211, PDF 頁 236-237</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base200-2">Base200-2</span><span class="paragraph-text">先由想查的功能找到 FID，再看需要 CQE 結果還是資料結構；不能用上一個 Feature 的接收格式讀下一個。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID 02h</li><li>FID 04h</li><li>FID 0Ch</li><li>FID 10h</li><li>FID 11h</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-201 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-201"><h4>Base Figure 201 · Get Features – Select Supported Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-201-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-1">Base201-1</span><span class="paragraph-text">Supported Capabilities 回覆把可修改、namespace 範圍與可保存能力分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-2">Base201-2</span><span class="paragraph-text">CHANG 表示可修改，SVBL 表示可保存；支援其中一項，不代表另一項也成立。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CHANG</li><li>NSSPEC</li><li>SVBL</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-202 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-202"><h4>Base Figure 202 · Get Features – Command Specific Status Values</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-202-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base202-1">Base202-1</span><span class="paragraph-text">Get Features 的命令專屬錯誤指出查詢目標等要求不成立。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 202, 文件頁 212, PDF 頁 238</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base202-2">Base202-2</span><span class="paragraph-text">回覆 Invalid Controller Identifier 時，應確認指定控制器識別碼，不把它解釋成 Feature 數值本身超出範圍。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Invalid Controller Identifier</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-463 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-463"><h4>Base Figure 463 · Set Features – Data Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-463-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-1">Base463-1</span><span class="paragraph-text">Set Features 的 DPTR 提供需要傳入的功能資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-2">Base463-2</span><span class="paragraph-text">設定 HMB 時傳入描述子相關資料，與單純只在 CDW11 放一個開關不同；先看該 Feature 是否使用資料 buffer。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HMB</dt><dd>Host Memory Buffer，由 host 配置並在 enable 期間交由 controller 專用的 volatile memory ranges。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li><li>PRP1</li><li>PRP2</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-464 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-464"><h4>Base Figure 464 · Set Features – Command Dword 10</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-464-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">Set Features 的 FID 選功能，SV 表示是否要求保存。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">主機要求 SV＝1 前先確認 Feature 可保存；設定成功與重設後仍保留，是需要分別核對的行為。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SV</li><li>FID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-465 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-465"><h4>Base Figure 465 · Set Features – Command Dword 14</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-465-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-1">Base465-1</span><span class="paragraph-text">Set Features 的 UIDX 用於相應 UUID 關聯的選擇。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-2">Base465-2</span><span class="paragraph-text">若使用 UUID List 的某一項，先確認索引對應與適用規則；UIDX 不是 Set Features 的新 FID。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>UIDX</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-466 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-466"><h4>Base Figure 466 · Feature Identifiers for Set Features</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-466-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-1">Base466-1</span><span class="paragraph-text">Set Features 的識別碼清單指引每種功能的專屬欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-2">Base466-2</span><span class="paragraph-text">FID 02h 的 CDW11 是 Power Management，FID 0Ch 的相同位置是 APST；欄位位置相同不表示內容相同。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID 02h</li><li>FID 04h</li><li>FID 0Ch</li><li>FID 10h</li><li>FID 11h</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
+<section class="field-guide" id="fields-base-sqe"><h4 id="fields-heading-base-sqe">同一筆命令的身分、對象與資料方向</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">CDW0 先選操作與資料指標格式；NSID 選操作對象；DPTR／MPTR 再指向資料。命令專屬 Dwords 的含義由 OPC 與命令集決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-sqe"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>OPC／FUSE／CID</td><td>OPC 選操作，FUSE 說明融合操作角色，CID 讓完成項目找回原命令。</td><td>相同的 CDW10 數值放在 Read 與 Set Features 中，可能完全不是同一種意思。</td></tr><tr><td>PSDT → DPTR／MPTR</td><td>PSDT 決定指標依 PRP 或 SGL 等格式解讀；指標內的數值不可在未選格式時直接當成長度。</td><td>主機先選指標格式，再按該格式準備 buffer 描述，最後由命令語意判斷資料方向。</td></tr><tr><td>NSID／CDW2–CDW15</td><td>NSID 與命令專屬欄位共同決定對象、範圍及選項。</td><td>Create 的 DPTR 指向建立參數；它不是新 namespace 的實體儲存位址。</td></tr><tr><td>NDT／NDM／MDPTR</td><td>廠商命令使用共同格式時，資料與 metadata 長度各有自己的欄位及指標。</td><td>先看廠商命令格式支援宣告，再依長度定義換算，不能把欄位上限直接加 1 後存回同寬整數。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div><div><dt>NDM</dt><dd>Number of Dwords in Metadata Transfer，standard vendor-specific format 中的實際 metadata dword 數。</dd></div><div><dt>NDT</dt><dd>Number of Dwords in Data Transfer，standard vendor-specific format 中的實際 data dword 數。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-093">Base 93</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-093 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-093-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共通 SQE 固定各命令共用欄位的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">同樣在 CDW10，Read 與管理命令可以有完全不同含義；先依 OPC 選命令，再查專屬欄位表。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-3">Base93-3</span><span class="paragraph-text">共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OPC</li><li>CID</li><li>NSID</li><li>MPTR</li><li>DPTR</li><li>CDW10-CDW15</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-sqe">欄位、條件與相關細節：同一筆命令的身分、對象與資料方向 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-power-state-mental-model"><summary>圖表組 02 · Power State 的功率、延遲與效能 · 6 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">Power State Descriptor 先看 operational 性質，再分組讀功率、進出延遲與相對效能。功率尺度和測量條件要與數值一起看，不能把典型值和最大值放在同一欄直接排名。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">Power State Descriptor 先看 operational 性質，再分組讀功率、進出延遲與相對效能。功率尺度和測量條件要與數值一起看，不能把典型值和最大值放在同一欄直接排名。</span></p>
 <a class="reading-link" href="#module-power-state-mental-model">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-power-state"><h4 id="fields-heading-base-power-state">先確認狀態用途，再比較功率與延遲</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">NPSS 指出最高支援的狀態編號；PSD 描述每個狀態的性質；Power Management 命令選狀態與 workload hint。狀態編號不是功率單位。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-power-state"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>PS／NOPS／WH</td><td>PS 選狀態，NOPS 指出是否 non-operational，WH 給工作負載提示。</td><td>WH 不直接指定 IOPS；選 non-operational 狀態後，恢復服務需依狀態轉換規則。</td></tr><tr><td>MP／MPS；IDLP／IPS；ACTP／APS／APW</td><td>功率數值需搭配比例及測量條件；最大功率、典型閒置功率與平均活動功率不可混比。</td><td>原始值相同但比例不同時，實際功率不同；先換成相同單位再比較。</td></tr><tr><td>ENLAT／EXLAT</td><td>以微秒描述進入與離開該狀態的延遲界限。</td><td>由 A 直接到 B 時，先考慮 A 的 EXLAT 與 B 的 ENLAT，而不是把 B 的兩個數字相加。</td></tr><tr><td>RRT／RRL／RWT／RWL</td><td>各自提供相對讀寫吞吐與延遲指標；同類數值之間才有可比性。</td><td>不能把相對效能值 3 解釋成 3 微秒或 3 倍 IOPS。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>IOPS</dt><dd>Input/Output Operations Per Second；每秒 I/O 操作數，與每秒傳輸 bytes 的頻寬不同。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-468">Base 468</a><a href="#figure-BASEPOWER-FIG-738">Base 738</a><a href="#figure-BASEPOWER-FIG-739">Base 739</a><a href="#figure-BASEPOWER-FIG-740">Base 740</a><a href="#figure-BASEPOWER-FIG-340">Base 340</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.2 · Base 2.4 §8.1.19 · Base 2.4 §8.1.19.3 · Base 2.4 §5.2.14.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, Figure 468, 文件頁 461, PDF 頁 487</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, Figure 738, 文件頁 666, PDF 頁 692</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, Figure 739, 文件頁 667, PDF 頁 693</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, Figure 740, 文件頁 669, PDF 頁 695</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.2, Figure 340, 文件頁 383-386, PDF 頁 409-412</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-468 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-468"><h4>Base Figure 468 · Power Management – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-468-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base468-1">Base468-1</span><span class="paragraph-text">Power Management 的 PS 選狀態，WH 提供工作負載提示。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.2, Figure 468, 文件頁 461, PDF 頁 487</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base468-2">Base468-2</span><span class="paragraph-text">選 PS 3 前先確認該 power state 存在；WH 描述負載特性，不會替控制器新增一個 PS 3。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base468-3">Base468-3</span><span class="paragraph-text">PS 選擇電源狀態，WH 提供工作負載提示。PS 必須對應控制器支援的狀態，WH 則按允許的提示值解讀；提示不會替主機指定一個新的 Power State Descriptor。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>WH</li><li>PS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-power-state">欄位、條件與相關細節：先確認狀態用途，再比較功率與延遲 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-738 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-738"><h4>Base Figure 738 · Power Management Overview</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-738-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base738-1">Base738-1</span><span class="paragraph-text">Power Management 總覽區分主機直接選擇與自動轉換。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, Figure 738, 文件頁 666, PDF 頁 692</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base738-2">Base738-2</span><span class="paragraph-text">工作負載降低時，主機可直接要求 state，或設定 APST 讓閒置條件觸發；兩條路徑需要不同的設定資訊。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base738-3">Base738-3</span><span class="paragraph-text">Power State Descriptor 把功率、進出延遲和相對效能分開。轉移成本要從目前狀態的離開時間與目標的進入時間計算；Workload Hint 描述負載提示，不是直接指定保證的延遲。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Static Power Management</li><li>Dynamic Power Management</li><li>Power State Descriptor</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-power-state">欄位、條件與相關細節：先確認狀態用途，再比較功率與延遲 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-739 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-739"><h4>Base Figure 739 · Power State Characteristics</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-739-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base739-1">Base739-1</span><span class="paragraph-text">功耗數值與轉換延遲共同描述 power state 特性。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19, Figure 739, 文件頁 667, PDF 頁 693</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base739-2">Base739-2</span><span class="paragraph-text">比較 PS1 與 PS2 時，較省電的狀態若離開延遲更長，下一筆 I/O 的等待成本也要納入說明。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-738">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MP</li><li>IDLP</li><li>ACTP</li><li>ENLAT</li><li>EXLAT</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-power-state">欄位、條件與相關細節：先確認狀態用途，再比較功率與延遲 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-740 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-740"><h4>Base Figure 740 · Workload Hints</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-740-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base740-1">Base740-1</span><span class="paragraph-text">Workload Hint 告訴控制器預期負載，並非指定命令排程順序。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.3, Figure 740, 文件頁 669, PDF 頁 695</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base740-2">Base740-2</span><span class="paragraph-text">WH＝001b 與另一個允許值用來描述不同負載特性；不能把 WH 當成 SQ priority 或保證吞吐量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-738">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>WH 000b</li><li>WH 001b</li><li>WH 010b</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-power-state">欄位、條件與相關細節：先確認狀態用途，再比較功率與延遲 →</a></div></article>
+<section class="field-guide" id="fields-base-power-capability"><h4 id="fields-heading-base-power-capability">從可選狀態數到可設定的熱管理範圍</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">讀 Power State Descriptor 前，先由 Identify 確認狀態數、自動轉移支援與熱管理能力；這些欄位負責告訴主機後面哪些設定有意義。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-power-capability"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NPSS／APSTA</td><td>NPSS 是支援狀態數減 1；APSTA 回報 APST 能力。</td><td>NPSS=3 表示 PS0–PS3 共 4 個狀態，但仍要看每個描述子的 NOPS，才能知道哪些可以當 ITPS。</td></tr><tr><td>HCTMA／MNTMT／MXTMT</td><td>HCTMA 回報 HCTM 支援，最小與最大溫度界定可設定的門檻，單位是 Kelvin。</td><td>設定 TMT1、TMT2 前先確認它們在此範圍內，再檢查相對順序及停用值規則。</td></tr><tr><td>WCTEMP／溫度事件門檻</td><td>警告複合溫度資訊與主機設定的事件／管理門檻用途不同。</td><td>不要把 WCTEMP 原值直接當成全部感測器的 TMT1；先確定要控制或觀察哪一項。</td></tr><tr><td>RTD3E／RTD3R</td><td>分別提供進入 RTD3 與恢復所需的預估延遲資訊；不等於某個 NVMe PS 的 ENLAT／EXLAT。</td><td>考慮移除主要電源時，比較兩段延遲與預期閒置時間；不能把 D3cold 當成 PS3 的別名。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>WCTEMP</dt><dd>Warning Composite Temperature Threshold，Identify Controller 回報的 composite warning threshold。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-364, PDF 頁 366-390</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-338 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-338"><h4>Base Figure 338 · Identify Controller Data Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-338-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-364, PDF 頁 366-390</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">Identify Controller 的欄位分別描述能力、限制、身分與目前資訊。依本篇主題選出需要的欄位後，再連到相應命令；支援位和大小上限必須一起用，不能以單一旗標推論所有參數都有效。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NPSS</li><li>APSTA</li><li>HCTMA</li><li>WCTEMP</li><li>MNTMT</li><li>MXTMT</li><li>RTD3E</li><li>RTD3R</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>WCTEMP</dt><dd>Warning Composite Temperature Threshold，Identify Controller 回報的 composite warning threshold。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-power-capability">欄位、條件與相關細節：從可選狀態數到可設定的熱管理範圍 →</a></div></article>
+
 <!-- figure-table:BASEPOWER-FIG-340 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-340"><h4>Base Figure 340 · Power State Descriptor Data Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-340-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base340-1">Base340-1</span><span class="paragraph-text">Power State Descriptor 同時描述功率、性能特性及進出延遲。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.2, Figure 340, 文件頁 383-386, PDF 頁 409-412</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base340-2">Base340-2</span><span class="paragraph-text">低功率狀態可能有較長 EXLAT；挑選省電狀態時，不能只比較 MP 而忽略下一次 I/O 等待多久。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-738">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MP</li><li>NOPS</li><li>ENLAT</li><li>EXLAT</li><li>IDLP</li><li>ACTP</li><li>RRT/RRL</li><li>RWT/RWL</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>NOPS</dt><dd>Non-Operational State，Power State Descriptor 中指出該 state 不處理 I/O commands 的 bit。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-power-state">欄位、條件與相關細節：先確認狀態用途，再比較功率與延遲 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-apst-state-machine"><summary>圖表組 03 · APST 的閒置條件與自動轉換 · 5 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">APST entry 圖先解讀 ITPT 與 ITPS，再連到被選 Power State Descriptor。以 2000 ms、PS3 為例，ITPT 放入 bits31:8，ITPS 放入 bits7:3；時間值移位與目標狀態編碼分開驗算。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.08">06.08.</span><span class="paragraph-text">APST entry 圖先解讀 ITPT 與 ITPS，再連到被選 Power State Descriptor。以 2000 ms、PS3 為例，ITPT 放入 bits31:8，ITPS 放入 bits7:3；時間值移位與目標狀態編碼分開驗算。</span></p>
 <a class="reading-link" href="#module-apst-state-machine">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-apst"><h4 id="fields-heading-base-apst">一個 APST entry 對應目前狀態的閒置規則</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.09">06.09.</span><span class="paragraph-text">先確認 APST 支援與 APSTE，再以目前 power state 的編號找到該 entry；ITPT 給等待條件，ITPS 給目標 non-operational state。I/O 到達與背景工作另依規則處理。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-apst"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>APSTE／32 entries／256 bytes</td><td>APSTE 控制自動轉換是否啟用；每筆 entry 8 bytes，由 power-state index 選取。</td><td>PS0 的 entry 存在，不代表控制器只會使用第一筆；目前狀態決定適用項目。</td></tr><tr><td>ITPT bits 31:8／ITPS bits 7:3</td><td>ITPT 以 ms 表示閒置時間；ITPS 是狀態編號。ITPT=0 停用該 entry。</td><td>2000 ms、目標 PS3 的低 Dword=(2000&lt;&lt;8)|(3&lt;&lt;3)=0007D018h。</td></tr><tr><td>NOPPME／APSTE</td><td>NOPPME 影響 non-operational 狀態內的背景工作功率行為，APSTE 影響自動進入狀態。</td><td>允許背景工作並不等於把 APST 關閉；要分別判斷進入條件和進入後行為。</td></tr><tr><td>進出延遲與目前 I/O</td><td>恢復處理需要走回適用 operational state，並計入轉換延遲。</td><td>閒置時省下的功率，要與下一次 I/O 的等待成本一起評估。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-475">Base 475</a><a href="#figure-BASEPOWER-FIG-476">Base 476</a><a href="#figure-BASEPOWER-FIG-477">Base 477</a><a href="#figure-BASEPOWER-FIG-478">Base 478</a><a href="#figure-BASEPOWER-FIG-483">Base 483</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7 · Base 2.4 §5.2.30.1.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 475, 文件頁 468, PDF 頁 494</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 476, 文件頁 469, PDF 頁 495</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 477, 文件頁 469, PDF 頁 495</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 478, 文件頁 469, PDF 頁 495</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, Figure 483, 文件頁 472-473, PDF 頁 498-499</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-475 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-475"><h4>Base Figure 475 · Autonomous Power State Transition – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-475-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base475-1">Base475-1</span><span class="paragraph-text">APSTE 控制是否啟用自動 power state 轉換。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 475, 文件頁 468, PDF 頁 494</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base475-2">Base475-2</span><span class="paragraph-text">主機準備好 APST 表之後才啟用 APSTE；開關本身不包含「閒置多久、轉去哪個 state」的完整策略。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base475-3">Base475-3</span><span class="paragraph-text">APSTE 啟用自動轉換，32 個 entry 共 256 bytes，每筆用 ITPT 指定閒置毫秒數、ITPS 指定目標狀態。NOPPME 另外控制 non-operational 狀態的背景工作規則；有 APST 表不表示它已啟用。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>APSTE</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-apst">欄位、條件與相關細節：一個 APST entry 對應目前狀態的閒置規則 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-476 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-476"><h4>Base Figure 476 · Autonomous Power State Transition Data Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-476-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base476-1">Base476-1</span><span class="paragraph-text">APST 表按目前 power state 索引到各自的轉換項目。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 476, 文件頁 469, PDF 頁 495</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base476-2">Base476-2</span><span class="paragraph-text">有 32 個 entries、每個 8 bytes，共 256 bytes；第 3 個 state 的 entry 不等於「下一個一定轉去 state 3」。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-475">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>32 entries</li><li>256 bytes</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-apst">欄位、條件與相關細節：一個 APST entry 對應目前狀態的閒置規則 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-477 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-477"><h4>Base Figure 477 · Autonomous Power State Transition Entry</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-477-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base477-1">Base477-1</span><span class="paragraph-text">APST entry 把閒置等待時間 ITPT 與目標 state ITPS 分開編碼。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 477, 文件頁 469, PDF 頁 495</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base477-2">Base477-2</span><span class="paragraph-text">ITPT＝2000 ms、ITPS＝3 時，低 Dword 為 (2000&lt;&lt;8)＋(3&lt;&lt;3)＝0007D018h；時間在 bits 31:8，state 在 bits 7:3。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-475">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ITPT</li><li>ITPS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-apst">欄位、條件與相關細節：一個 APST entry 對應目前狀態的閒置規則 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-478 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-478"><h4>Base Figure 478 · APST and NOPPME Interaction</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-478-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base478-1">Base478-1</span><span class="paragraph-text">APST 與 NOPPME 的互動取決於進入狀態的方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.7, Figure 478, 文件頁 469, PDF 頁 495</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base478-2">Base478-2</span><span class="paragraph-text">主機直接指定非操作狀態，與 APST timer 自動進入同名狀態，可能有不同背景處理規則；按表中進入方式讀對应列。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-475">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>APSTE</li><li>NOPPME</li><li>host entry</li><li>timer entry</li><li>background operations</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-apst">欄位、條件與相關細節：一個 APST entry 對應目前狀態的閒置規則 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-483 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-483"><h4>Base Figure 483 · Non-Operational Power State Configuration – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-483-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base483-1">Base483-1</span><span class="paragraph-text">NOPPME 控制非操作 power state 下的相應行為許可。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.11</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, Figure 483, 文件頁 472-473, PDF 頁 498-499</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base483-2">Base483-2</span><span class="paragraph-text">允許某些背景行為，不代表該狀態因此變成一般可處理 I/O 的操作狀態；仍要看 power state 定義。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-475">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NOPPME</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-apst">欄位、條件與相關細節：一個 APST entry 對應目前狀態的閒置規則 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-temperature-event-loop"><summary>圖表組 04 · 溫度門檻、感測器與通知 · 3 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">先看 TMPSEL 與 THSEL，再配對 TMPTH、TMPTHH。在溫度軸上分別標出觸發和解除位置，用規格的比較符號確認邊界，並與 SMART 的感測器讀值對照。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.10">06.10.</span><span class="paragraph-text">先看 TMPSEL 與 THSEL，再配對 TMPTH、TMPTHH。在溫度軸上分別標出觸發和解除位置，用規格的比較符號確認邊界，並與 SMART 的感測器讀值對照。</span></p>
 <a class="reading-link" href="#module-temperature-event-loop">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-thermal"><h4 id="fields-heading-base-thermal">溫度觀察、事件門檻與熱管理控制</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.11">06.11.</span><span class="paragraph-text">SMART 提供觀察值與累計資訊，Temperature Threshold 決定事件判斷，HCTM 決定主機設定的熱管理門檻。溫度相同，不表示這三種資料都代表相同狀態。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-thermal"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>TMPSEL／THSEL／TMPTH／TMPTHH</td><td>先選感測來源及超過或低於門檻的類型，再解讀門檻值及 hysteresis 值。</td><td>比較前統一溫度單位，不能把 Celsius 直接填入要求 Kelvin 的欄位。</td></tr><tr><td>TMT1／TMT2／hysteresis</td><td>兩個熱管理門檻須符合支援範圍與順序；回復行為還需配合控制器定義。</td><td>溫度下降後的恢復點不一定等於升溫時開始限制的那個點。</td></tr><tr><td>Composite Temperature／Sensors／累計時間與次數</td><td>即時溫度、各感測器讀值與過去累計統計回答不同問題。</td><td>目前溫度已下降，歷史 throttling 累計時間仍可保留；這不是欄位互相矛盾。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-470">Base 470</a><a href="#figure-BASEPOWER-FIG-482">Base 482</a><a href="#figure-BASEPOWER-FIG-741">Base 741</a><a href="#figure-BASEPOWER-FIG-213">Base 213</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3.1 · Base 2.4 §5.2.30.1.10 · Base 2.4 §8.1.19.5 · Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, Figure 470, 文件頁 463-464, PDF 頁 489-490</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, Figure 482, 文件頁 472, PDF 頁 498</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.5, Figure 741, 文件頁 671, PDF 頁 697</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 213, 文件頁 220-225, PDF 頁 246-251</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-470 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-470"><h4>Base Figure 470 · Temperature Threshold – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-470-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base470-1">Base470-1</span><span class="paragraph-text">溫度門檻要同時指定感測器、方向、門檻值與遲滯。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.3.1, Figure 470, 文件頁 463-464, PDF 頁 489-490</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base470-2">Base470-2</span><span class="paragraph-text">對同一感測器設定高溫門檻與低溫門檻時，THSEL 不同；不能只用一個 TMPTH 數值描述兩種觸發條件。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base470-3">Base470-3</span><span class="paragraph-text">TMPSEL 選感測器，THSEL 選高溫或低溫方向，TMPTH 設門檻，TMPTHH 設遲滯。先固定感測器和方向，再在溫度軸上標出觸發與解除條件，不能把遲滯當成另一個獨立觸發門檻。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TMPTHH</li><li>THSEL</li><li>TMPSEL</li><li>TMPTH</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-thermal">欄位、條件與相關細節：溫度觀察、事件門檻與熱管理控制 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-213 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-213"><h4>Base Figure 213 · SMART / Health Information Log</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-213-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base213-1">Base213-1</span><span class="paragraph-text">SMART／Health log 把溫度、健康狀態與累計統計分開回報。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 213, 文件頁 220-225, PDF 頁 246-251</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base213-2">Base213-2</span><span class="paragraph-text">Composite Temperature 與個別感測器溫度不同，HCTM 累計計數又是另一種單位；不能把整張表全部當成即時溫度。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base213-3">Base213-3</span><span class="paragraph-text">溫度、熱管理轉換次數與累計時間回答不同問題。感測器溫度是讀取到的量測值，計數與時間是累積結果；先配對名稱與單位，不能把歷史次數當成目前正在執行的熱管理級別。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Composite Temperature</li><li>TTC</li><li>Temperature Sensor</li><li>HCTM counters</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-thermal">欄位、條件與相關細節：溫度觀察、事件門檻與熱管理控制 →</a></div></article>
+<section class="field-guide" id="fields-base-events"><h4 id="fields-heading-base-events">事件通知指出要重新讀哪份狀態</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.12">06.12.</span><span class="paragraph-text">先依功能設定允許的事件通知，再由 AER 完成項目辨認事件類型、資訊與相應 log。通知、log 內容及事件確認是流程中的不同步驟。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AER</dt><dd>Advanced Error Reporting，PCIe 用來分類、遮罩與記錄 link／transaction error 的 capability。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-events"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>AET → AEI → LID</td><td>AET 選事件類別，AEI 指出該類別的事件，LID 指引相關紀錄。</td><td>收到 Telemetry Log Changed 時，先辨認類別與 log，再讀取紀錄；通知本身不是 payload。</td></tr><tr><td>EVNTSP</td><td>提供事件專屬的補充資訊，依該事件定義解讀。</td><td>同一個 DW1 位置在不同事件下，不保證代表相同對象。</td></tr><tr><td>Notice enable／RAE</td><td>前者控制相應通知，RAE 影響讀 log 時是否保留相關事件；兩者目的不同。</td><td>計畫分段取回同一份紀錄時，將確認事件的時機放在完整流程中決定。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event，Get Log Page 是否保留相關 asynchronous event 的 selector。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEPOWER-FIG-474">Base 474</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494</p></details>
+</section>
 <!-- figure-table:BASEPOWER-FIG-474 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-474"><h4>Base Figure 474 · Asynchronous Event Configuration – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-474-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-1">Base474-1</span><span class="paragraph-text">Asynchronous Event Configuration 各 bit 選擇對應的通知類別。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.6</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-2">Base474-2</span><span class="paragraph-text">主機啟用本篇需要的通知時，只設定對應的事件 bit；一種通知已啟用，不會自動啟用其他通知。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base474-3">Base474-3</span><span class="paragraph-text">事件種類與事件啟用是兩份不同資訊。先以通知種類找到本篇使用的事件，再看相應啟用位；取得通知後仍需讀對應狀態或 log，通知本身不包含完整結果。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TTHRY</li><li>SHCW</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-events">欄位、條件與相關細節：事件通知指出要重新讀哪份狀態 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-hctm-control-loop"><summary>圖表組 05 · HCTM 的兩級熱管理 · 2 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">將 TMT1、TMT2 放在同一條溫度軸，再用 MNTMT、MXTMT 檢查允許範圍。SMART 中的次數和時間對應控制活動的累計紀錄，不與門檻設定值混讀。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.13">06.13.</span><span class="paragraph-text">將 TMT1、TMT2 放在同一條溫度軸，再用 MNTMT、MXTMT 檢查允許範圍。SMART 中的次數和時間對應控制活動的累計紀錄，不與門檻設定值混讀。</span></p>
 <a class="reading-link" href="#module-hctm-control-loop">回到本節的解釋與範例</a>
+
 <!-- figure-table:BASEPOWER-FIG-482 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-482"><h4>Base Figure 482 · Host Controlled Thermal Management – Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-482-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base482-1">Base482-1</span><span class="paragraph-text">HCTM 用 TMT1 與 TMT2 指定兩個熱管理門檻。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.10, Figure 482, 文件頁 472, PDF 頁 498</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base482-2">Base482-2</span><span class="paragraph-text">先標出兩個門檻在溫度軸上的順序，再看進入與解除條件；不能把 TMT2 當成第二個感測器編號。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base482-3">Base482-3</span><span class="paragraph-text">TMT1 與 TMT2 是兩級熱管理門檻，須符合控制器允許範圍及彼此關係。圖中的控制活動與門檻設定分開閱讀；降溫後的解除條件也不等於將兩個門檻設成同一值。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TMT1</li><li>TMT2</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-thermal">欄位、條件與相關細節：溫度觀察、事件門檻與熱管理控制 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEPOWER-FIG-741 -->
 <article class="field-note" id="figure-BASEPOWER-FIG-741"><h4>Base Figure 741 · Host Controlled Thermal Management</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEPOWER-FIG-741-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base741-1">Base741-1</span><span class="paragraph-text">熱管理圖用溫度門檻與遲滯解釋限速的進出。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.19.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.19.5, Figure 741, 文件頁 671, PDF 頁 697</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base741-2">Base741-2</span><span class="paragraph-text">溫度剛從門檻上方降回附近時，不一定立刻解除限制；沿遲滯區間讀圖可理解為何狀態不反覆抖動。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEPOWER-FIG-482">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TMT1</li><li>TMT2</li><li>hysteresis</li><li>thermal throttling</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-thermal">欄位、條件與相關細節：溫度觀察、事件門檻與熱管理控制 →</a></div></article>
 </details>
 <!-- claim:BASEPOWER-GET-SAVED -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">若要求 保存值，但 controller 不支援 保存值 或尚無 保存值，controller 會以 預設值 運作。這不是『讀取成功就代表曾經儲存』。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 210, PDF 頁 236</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.14">06.14.</span><span class="paragraph-text">若要求 保存值，但 controller 不支援 保存值 或尚無 保存值，controller 會以 預設值 運作。這不是『讀取成功就代表曾經儲存』。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 210, PDF 頁 236</p></details>
 <!-- claim:BASEPOWER-GET-UIDX -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.08">06.08.</span><span class="paragraph-text">CDW14.UIDX 只有在 controller 支援 UUID List 且該 Feature 需要 UUID 關聯時才有意義；未使用時保留為 0。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 210, PDF 頁 236</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.15">06.15.</span><span class="paragraph-text">CDW14.UIDX 只有在 controller 支援 UUID List 且該 Feature 需要 UUID 關聯時才有意義；未使用時保留為 0。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 210, PDF 頁 236</p></details>
 <!-- claim:BASEPOWER-FID-SCOPE -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.09">06.09.</span><span class="paragraph-text">本報告五個 FID 的 scope 都是 Controller。FID 02h、04h、0Ch、11h 不支援 save；FID 10h 支援 save。只有 FID 0Ch 需要 256-byte data structure。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457-459, PDF 頁 483-485</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.16">06.16.</span><span class="paragraph-text">本報告五個 FID 的 scope 都是 Controller。FID 02h、04h、0Ch、11h 不支援 save；FID 10h 支援 save。只有 FID 0Ch 需要 256-byte data structure。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 457-459, PDF 頁 483-485</p></details>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
 <!-- qa:base-power-features-feature-values -->

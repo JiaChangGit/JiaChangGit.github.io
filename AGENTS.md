@@ -56,3 +56,6 @@ workflow，不得把單一 Pages 成功或網站 HTTP 200 當作 CI 全數成功
 
 
 2026-09-11：兩篇合輯拆為 Self-test、Namespace Management、Boot Partitions、Telemetry、Sanitize。原 HMB 合輯的完整 Self-test 集中至專篇。每張範圍內圖表須有獨立的一句話重點、具體案例、必要細節與來源；共用規則只解釋一次，其餘連回，禁止同段套給所有 Figure。APST 2000 ms、PS3 的低 Dword 正確值是 0007D018h，須以位移運算驗證，不得只用預期字串測試。英文片語替換須有單字邊界，active NSID 不得匹配 inactive NSID。
+
+
+2026-09-13：全部 13 篇中文 HTML 採獨立課程編排，先情境與全貌，再逐步推理、欄位關係及完整案例。五篇精確主範圍見 scope.json 的 primary_scope；必要引用單獨說明用途。範圍內及必要引用圖表均須教會欄位如何一起決定操作或結果，不能只列欄名。Reserved 依該處規則交代，不逐列湊字。必要解釋預設顯示，共同定義只解釋一次並可就近連回。狀態與事件用有條件的轉移圖，延遲用時間軸；不得把適用配置放進重設結果欄。

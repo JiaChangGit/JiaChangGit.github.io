@@ -135,6 +135,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
   .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
   .edition-tutorial main { max-width: none; }
 }
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
 <div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-layers">01 NVMe 如何使用 PCIe</a><a href="#module-mmio-doorbell">02 BAR、MMIO 與 Doorbell 位址</a><a href="#module-command">03 Host 與 Controller 的命令交換</a><a href="#module-interrupts">04 Interrupt 模式與通知行為</a><a href="#module-config-error">05 Configuration Space 與 PCIe 錯誤回報</a><a href="#module-eom">06 接收端眼圖量測資料的結構</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
@@ -159,6 +170,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">命令要做什麼仍由 Base 或對應 Command Set 定義。PCIe 的錯誤狀態、組態能力和中斷格式則屬於另一層資訊。閱讀時要分開辨認操作結果和傳輸環境，才不會把某個 PCIe 狀態直接翻成 NVMe 命令狀態碼。</span></p>
 <details class="source-note"><summary>來源：PCIe Transport 1.4 §1.2 · PCIe Transport 1.4 §1.3 · PCIe Transport 1.4 §2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.3, 文件頁 6-7, PDF 頁 6-7</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, 文件頁 8, PDF 頁 8</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:PCIE14-SCOPE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">PCIe Transport 補充 Base Specification，定義 PCIe 專屬資料結構、延伸、要求與行為；通用 NVMe 行為仍由 Base 定義。規格衝突時 Base 的優先序高於 Transport。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §1.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, 文件頁 6, PDF 頁 6</p></details>
 <!-- claim:PCIE14-CONVENTION -->
@@ -171,16 +183,19 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-mmio-doorbell"><h2 id="heading-mmio-doorbell"><span class="section-number">02</span> BAR、MMIO 與 Doorbell 位址</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">BAR 讓主機找到裝置的記憶體映射空間，Doorbell 則位於其中的指定 offset。每組佇列有 SQ Tail 和 CQ Head 的 Doorbell，它們交錯排列；DSTRD 決定相鄰 Doorbell 的間距。因此 queue ID 與 SQ／CQ 的種類都參與位址計算。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">DSTRD=1 時，間距是 4×2^1=8 bytes。Queue 3 的 SQ Tail 使用第 6 個間距，CQ Head 使用第 7 個間距，所以 offset 分別是 1030h 和 1038h。寫入 Doorbell 的數值是新的佇列位置，不是這個 offset，也不是 SQE 或 CQE 的資料內容。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
+<div class="course-walkthrough"><h3>把 queue 2 的通知寫到正確位置</h3>
+<h4>由 BAR 取得 NVMe MMIO 基底</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">假設 BAR 配置出的 register base 是 A，Doorbell 區從 A+1000h 開始。A 是系統配置的地址，1000h 是規格 offset，不能把兩者當成同一個值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<h4>由 DSTRD 與 y 選位置</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">若 DSTRD=1，間距是 8 bytes。y=2 的 SQ Tail offset=1000h+4×8=1020h，CQ Head offset=1000h+5×8=1028h。這裡的 4、5 來自交錯排列的 2y 與 2y+1。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl>
+<h4>寫入索引，而非 command address</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">假設新的 SQ Tail 是 3，主機把 3 寫到 A+1020h。SQE 已在 SQ 記憶體，Doorbell 不再攜帶整份命令，也不攜帶 SQE 的地址。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">位址選 Doorbell，寫入值選佇列位置；這兩種數字在任何範例中都要分開。</span></p></aside></div>
 <details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1 · PCIe Transport 1.4 §3.1.2.1-3.1.2.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:PCIE14-MMIO -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">NVMe controller registers 位於 BAR0／BAR1 所指定的 memory space。host 必須（shall）使用 native width 或 aligned 32-bit access，不得發出 locked access；違反時行為未定義。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">NVMe controller registers 位於 BAR0／BAR1 所指定的 memory space。host 必須（shall）使用 native width 或 aligned 32-bit access，不得發出 locked access；違反時行為未定義。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, 文件頁 9-10, PDF 頁 9-10</p></details>
 <!-- claim:PCIE14-DOORBELL -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">SQ tail 與 CQ head doorbell 從 offset 1000h 起，實際 stride 由 CAP.DSTRD 決定；queue identifier y 參與 offset 計算。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1.2.1-3.1.2.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11</p></details>
-<div class="table-wrap"><table><caption>BAR、MMIO 與 Doorbell 位址</caption><thead><tr><th scope="col">Doorbell 或寫入值</th><th scope="col">位址或內容如何計算</th><th scope="col">主機用它通知什麼</th></tr></thead><tbody><tr><td>SQ y tail</td><td>1000h + (2y) × (4 &lt;&lt; DSTRD)</td><td>host 公布新 SQ tail</td></tr><tr><td>CQ y head</td><td>1000h + (2y+1) × (4 &lt;&lt; DSTRD)</td><td>host 公布已消費 CQ head</td></tr><tr><td>doorbell value</td><td>queue pointer</td><td>不含 SQE/CQE 本體</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">說明性範例：DSTRD=1，stride=4&lt;&lt;1=8 bytes。queue 3 的 SQ tail offset =1000h+(6×8)=1030h；CQ head offset =1000h+(7×8)=1038h。兩者只差一個 stride。若把 DSTRD 當成 byte count，所有非零 DSTRD 的 doorbell 位址都會錯。</span></p></aside>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">SQ tail 與 CQ head doorbell 從 offset 1000h 起，實際 stride 由 CAP.DSTRD 決定；queue identifier y 參與 offset 計算。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1.2.1-3.1.2.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1-3.1.2.2, 文件頁 10-11, PDF 頁 10-11</p></details>
+<div class="table-wrap"><table><caption>BAR、MMIO 與 Doorbell 位址</caption><thead><tr><th scope="col">Doorbell 或寫入值</th><th scope="col">位址或內容如何計算</th><th scope="col">主機用它通知什麼</th></tr></thead><tbody><tr><td>SQ y tail</td><td>1000h + (2y) × (4 &lt;&lt; DSTRD)</td><td>host 公布新 SQ tail</td></tr><tr><td>CQ y head</td><td>1000h + (2y+1) × (4 &lt;&lt; DSTRD)</td><td>host 公布已消費 CQ head</td></tr><tr><td>doorbell value</td><td>queue pointer</td><td>不含 SQE/CQE 本體</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
 <a class="reading-link" href="#reading-mmio-doorbell">閱讀相關規格圖表 → BAR、MMIO 與 Doorbell 位址</a>
 </section>
 <section class="lesson" id="module-command"><h2 id="heading-command"><span class="section-number">03</span> Host 與 Controller 的命令交換</h2>
@@ -191,6 +206,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </div>
 <figure><figcaption><strong>一筆命令如何往返</strong></figcaption><ol class="flow-steps"><li>Host 將命令寫入 SQ（提交佇列）。</li><li>Host 更新 SQ Tail Doorbell，通知 Controller 有新命令。</li><li>Controller 取出並執行命令，將結果寫入 CQ（完成佇列）。</li><li>Host 讀取 CQE，再更新 CQ Head Doorbell，交還已讀取的位置。</li></ol><figcaption>命令與結果放在佇列；Doorbell 傳達佇列位置的更新。</figcaption></figure>
 
+<h3>把流程對回規格條件</h3>
 <!-- claim:PCIE14-COMMAND -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">command flow 是：寫 SQE、更新 SQ tail doorbell、controller 取走與執行、寫 CQE、發出 interrupt（若啟用）、host 處理 CQE、更新 CQ head doorbell。doorbell 只通告 pointer，不攜帶 command 本體。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4, 文件頁 12-13, PDF 頁 12-13</p></details>
 <!-- claim:PCIE14-QUEUE -->
@@ -201,24 +217,28 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-interrupts"><h2 id="heading-interrupts"><span class="section-number">04</span> Interrupt 模式與通知行為</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">中斷通知主機有工作需要處理，完成資料本身仍在 CQ 中。一個中斷向量可能對應多個 CQ，所以收到通知後要查看相關佇列，而不是假設一個通知一定只代表一筆命令。主機也可以在適用安排下輪詢 CQ，通知方式與結果存放位置是不同問題。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">中斷合併可以減少通知次數，但也可能讓已產生的完成項目等待較久才被通知。這是通知成本與回應時間之間的取捨。比較 MSI、MSI-X 等方式時，應看向量配置、共享及遮罩如何管理，不以名稱判斷命令執行速度。</span></p>
+<div class="course-walkthrough"><h3>收到通知後，主機還需要做什麼</h3>
+<h4>中斷向量指出服務入口</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">控制器依 CQ 設定使用選定的向量通知主機。多個 CQ 可以有相同或不同通知安排，因此收到向量不一定只對應一筆命令。</span></p>
+<h4>到 CQ 查找真正的完成項目</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">主機用 Phase 判斷可消費的新項目，再由 SQID、CID 對回原命令。SCT、SC 才提供 NVMe 結果；MSI 或 MSI-X 的訊息資料不是命令 status。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
+<h4>消費後交還 CQ 空間</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">主機完成必要讀取，再更新 CQ Head Doorbell。通知、讀取 CQE 與交還位置是三個時刻，不能只收到中斷便視為 CQ 空間已釋放。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">中斷幫助主機找到工作，CQE 才是命令完成的資料來源。</span></p></aside></div>
 <details class="source-note"><summary>來源：PCIe Transport 1.4 §3.5 · PCIe Transport 1.4 §3.2 · PCIe Transport 1.4 §Annex A</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, 文件頁 11, PDF 頁 11</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:PCIE14-INTERRUPT -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">可用模式為 pin-based、single-message MSI、multiple-message MSI 與 MSI-X。規格建議 MSI-X；coalescing 可降低 interrupt rate，但通常增加 latency。Admin CQ 的 interrupt 不宜（should not）延遲。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">可用模式為 pin-based、single-message MSI、multiple-message MSI 與 MSI-X。規格建議 MSI-X；coalescing 可降低 interrupt rate，但通常增加 latency。Admin CQ 的 interrupt 不宜（should not）延遲。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5, 文件頁 13-16, PDF 頁 13-16</p></details>
 <!-- claim:PCIE14-HOST -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">Annex A 是 informative host checklist：提交時先寫 SQE 再 doorbell；完成時以 phase 判斷新 CQE，完成讀取後再推進 CQ head；interrupt handler 要處理同 vector 的所有相關 CQ。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §Annex A</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">Annex A 是 informative host checklist：提交時先寫 SQE 再 doorbell；完成時以 phase 判斷新 CQE，完成讀取後再推進 CQ head；interrupt handler 要處理同 vector 的所有相關 CQ。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §Annex A</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48</p></details>
 <div class="table-wrap"><table><caption>Interrupt 模式與通知行為</caption><thead><tr><th scope="col">中斷方式</th><th scope="col">通知與遮罩如何安排</th><th scope="col">影響的資源或限制</th></tr></thead><tbody><tr><td>pin-based</td><td>傳統共享線路</td><td>共享與 masking 行為不同</td></tr><tr><td>single MSI</td><td>單一 message/vector</td><td>多個 CQ 可能共享服務路徑</td></tr><tr><td>multiple MSI</td><td>一組連續 messages</td><td>受 MME/MMC 等能力限制</td></tr><tr><td>MSI-X</td><td>table-based 多 vectors、獨立 mask</td><td>規格建議優先使用</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">說明性範例：CQ 1 與 CQ 2 共用 vector 5。收到 vector 5 時，handler 不能只檢查 CQ 1；它必須處理所有映射到該 vector 的相關 CQs。提高 coalescing threshold 可減少 interrupts，但可能增加 CQE 等待時間。</span></p></aside>
 <a class="reading-link" href="#reading-interrupts">閱讀相關規格圖表 → Interrupt 模式與通知行為</a>
 </section>
 <section class="lesson" id="module-config-error"><h2 id="heading-config-error"><span class="section-number">05</span> Configuration Space 與 PCIe 錯誤回報</h2>
 <div class="lesson-explanation">
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">Configuration Space 描述 PCIe 裝置呈現的能力與設定。它與 NVMe 的命令結構不同：CQE 回報某筆命令的結果，PCIe 狀態描述連接或 Function 的事件。遇到一個錯誤位時，要先確認它來自哪一層，才能找到正確的解釋。</span></p>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">錯誤紀錄中的狀態、遮罩、嚴重程度與相關交易資訊各有用途。某個狀態位被設起來，不會自動決定是否已通知主機，或對應哪個 NVMe SC。裝置介面回報結構則描述另一種配置資訊，也必須以自己的長度與欄位格式閱讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">錯誤紀錄中的狀態、遮罩、嚴重程度與相關交易資訊各有用途。某個狀態位被設起來，不會自動決定是否已通知主機，或對應哪個 NVMe SC。裝置介面回報結構則描述另一種配置資訊，也必須以自己的長度與欄位格式閱讀。</span></p>
 <details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1-3.8.7 · PCIe Transport 1.4 §3.7 · PCIe Transport 1.4 §3.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.7, 文件頁 16, PDF 頁 16</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.6, 文件頁 16, PDF 頁 16</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:PCIE14-CONFIG -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">§3.8 逐欄定義 NVMe controller 的 PCI header、Power Management、MSI／MSI-X、PCIe capability 與 AER 額外要求。PCI／PCIe 原始欄位語意仍以 PCI-SIG 規格為準。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AER</dt><dd>Advanced Error Reporting，PCIe 用來分類、遮罩與記錄 link／transaction error 的 capability。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1-3.8.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1-3.8.7, 文件頁 16-35, PDF 頁 16-35</p></details>
 <!-- claim:PCIE14-ERROR -->
@@ -235,6 +255,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">Header 描述整體長度與布局，lane descriptor 再帶到個別 lane 的結果。Printable Eye 是可供人閱讀的一種呈現方式，不是另一條實體 lane，也不能把字元數當成品質分數。要比較兩條 lanes，先確認量測條件與座標尺度相同。</span></p>
 <details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9 · PCIe Transport 1.4 §Annex A</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §Annex A, 文件頁 47-48, PDF 頁 47-48</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:PCIE14-EOM -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">Physical Interface Receiver Eye Opening Measurement log page 以 header、lane descriptor 與 EOM data 回報量測；host 先查支援與大小，再依 lane／parameter 解析。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>EOM</dt><dd>Eye Opening Measurement，量測 PCIe receiver eye opening 的程序與 log data。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, 文件頁 39-46, PDF 頁 39-46</p></details>
 <div class="table-wrap"><table><caption>接收端眼圖量測資料的結構</caption><thead><tr><th scope="col">量測資料區域</th><th scope="col">描述的量測與位置</th><th scope="col">比較前須先確認什麼</th></tr></thead><tbody><tr><td>specific parameter</td><td>選量測動作與品質/狀態</td><td>先決定 request context</td></tr><tr><td>specific identifier</td><td>選 lane/test context</td><td>避免把不同量測混在一起</td></tr><tr><td>header</td><td>全域長度與配置</td><td>所有後續 offset 的基準</td></tr><tr><td>lane descriptor</td><td>每 lane 邊界/狀態</td><td>只在 buffer 內走訪</td></tr></tbody></table></div>
@@ -246,803 +267,617 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details open class="figure-reading-group" id="reading-layers"><summary>圖表組 01 · NVMe 如何使用 PCIe · 2 張圖表</summary>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">層次圖先區分命令語意、NVMe 在 PCIe 上的綁定及 PCIe 原生能力。用一筆命令依次找出 SQE、主機 buffer、Doorbell 和中斷的位置，而不是把三份規格當成依序執行的程式。</span></p>
 <a class="reading-link" href="#module-layers">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-pcie-transport"><h4 id="fields-heading-pcie-transport">從命令的意思走到 PCIe 上的實際傳送</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">命令集決定 Read 要做什麼，Base 定義 SQE、CQE 等共同結構；PCIe Transport 再把佇列、MMIO 與中斷接起來。讀分層圖時，沿一筆命令穿過各層，便能看出每層負責的工作。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-transport"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>SQE／DMA／CQE</td><td>主機先在可供控制器存取的記憶體放好命令，控制器取走命令並搬運資料，最後寫回完成項目。</td><td>Read 的資料進入 DPTR 指向的 buffer；CQE 則回到 CQ，兩者不是同一份資料。</td></tr><tr><td>Controller Properties／PCI Configuration Space</td><td>PCI 組態空間負責辨識與配置裝置，BAR 指向 NVMe 暫存器所在的 MMIO 空間。</td><td>先從組態空間取得 BAR，再以該基底加上 NVMe property offset 找到暫存器。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-001">PCIe 1</a><a href="#figure-PCIE14-FIG-002">PCIe 2</a><a href="#figure-PCIE14-FIG-003">PCIe 3</a><a href="#figure-PCIE14-FIG-004">PCIe 4</a><a href="#figure-PCIE14-FIG-008">PCIe 8</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §1.2 · PCIe Transport 1.4 §2 · PCIe Transport 1.4 §3.1 · PCIe Transport 1.4 §3.4.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, Figure 1, 文件頁 6, PDF 頁 6</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, Figure 2, 文件頁 8, PDF 頁 8</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 3, 文件頁 9, PDF 頁 9</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 4, 文件頁 9-10, PDF 頁 9-10</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4.1, Figure 8, 文件頁 13, PDF 頁 13</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-001 -->
 <article class="field-note" id="figure-PCIE14-FIG-001"><h4>PCIe Figure 1 · NVMe Family of Specifications</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-001-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe1-1">PCIe1-1</span><span class="paragraph-text">PCIe Transport 補充 NVMe 共通機制在 PCIe 上的存取方式。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §1.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §1.2, Figure 1, 文件頁 6, PDF 頁 6</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe1-2">PCIe1-2</span><span class="paragraph-text">解釋 CC、CSTS 的狀態含義時看 Base；說明主機如何透過 PCIe 映射位置存取它們時看 Transport。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe1-3">PCIe1-3</span><span class="paragraph-text">層次圖區分 NVMe 命令機制與 PCIe 的實際交換方式。資料指標、佇列記憶體及 Doorbell 共同完成操作，但命令的區塊行為仍由相應 NVMe 規格定義。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NVMe Family</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-transport">欄位、條件與相關細節：從命令的意思走到 PCIe 上的實際傳送 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-002 -->
 <article class="field-note" id="figure-PCIE14-FIG-002"><h4>PCIe Figure 2 · Example of Transport Protocol Layers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-002-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe2-1">PCIe2-1</span><span class="paragraph-text">傳輸層次圖把 NVMe 操作與承載它的 PCIe 機制分開。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §2, Figure 2, 文件頁 8, PDF 頁 8</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe2-2">PCIe2-2</span><span class="paragraph-text">同一個 NVMe Read 可能涉及多次 PCIe 交易；不能把一個 TLP 直接當成一筆完整 NVMe 命令。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TLP</dt><dd>Transaction Layer Packet，PCIe transaction layer 傳送的 packet。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-001">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Transport Protocol Layers</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-transport">欄位、條件與相關細節：從命令的意思走到 PCIe 上的實際傳送 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-mmio-doorbell"><summary>圖表組 02 · BAR、MMIO 與 Doorbell 位址 · 4 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">位址表把 BAR 基底、1000h 起點、queue ID 和 stride 分開計算。先找對暫存器，再解讀寫入的 head／tail 值，避免混淆暫存器位址與暫存器內容。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">位址表把 BAR 基底、1000h 起點、queue ID 和 stride 分開計算。先找對暫存器，再解讀寫入的 head／tail 值，避免混淆暫存器位址與暫存器內容。</span></p>
 <a class="reading-link" href="#module-mmio-doorbell">回到本節的解釋與範例</a>
+
 <!-- figure-table:PCIE14-FIG-003 -->
 <article class="field-note" id="figure-PCIE14-FIG-003"><h4>PCIe Figure 3 · PCI Express Registers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-003-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe3-1">PCIe3-1</span><span class="paragraph-text">PCIe 暫存器總覽把組態資訊、中斷能力與錯誤回報放在不同區域。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 3, 文件頁 9, PDF 頁 9</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe3-2">PCIe3-2</span><span class="paragraph-text">初始化時先找 BAR 與 capability list；讀 NVMe controller property 則走映射後的記憶體空間，兩者不是同一套 offset。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe3-3">PCIe3-3</span><span class="paragraph-text">先由 Configuration Space 找到 BAR 及 capabilities，再進入記憶體映射的控制器空間。Configuration Space 的 offset 與 BAR 內的 offset 使用不同起點，兩種地址不能直接互換。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PMCAP</li><li>MSICAP</li><li>MSIXCAP</li><li>MSIX</li><li>PXCAP</li><li>AERCAP</li><li>MSI</li><li>MLBAR</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>MSIXCAP</dt><dd>MSI-X Capability，MSI-X capability 結構的基底位置。</dd></div><div><dt>AERCAP</dt><dd>Advanced Error Reporting Capability，AER extended capability 結構的基底位置。</dd></div><div><dt>MSICAP</dt><dd>MSI Capability，MSI capability 結構的基底位置。</dd></div><div><dt>PMCAP</dt><dd>Power Management Capability，PCI power-management capability 結構的基底位置。</dd></div><div><dt>PXCAP</dt><dd>PCI Express Capability，PCIe capability 結構的基底位置。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-transport">欄位、條件與相關細節：從命令的意思走到 PCIe 上的實際傳送 →</a></div></article>
+
 <!-- figure-table:PCIE14-FIG-004 -->
 <article class="field-note" id="figure-PCIE14-FIG-004"><h4>PCIe Figure 4 · PCI Express Specific Controller Property Definitions</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-004-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe4-1">PCIe4-1</span><span class="paragraph-text">Doorbell 依 queue 編號與 DSTRD 交錯排列。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1, Figure 4, 文件頁 9-10, PDF 頁 9-10</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe4-2">PCIe4-2</span><span class="paragraph-text">先找 SQ0 Tail、CQ0 Head，再按 stride 找 SQ1 Tail、CQ1 Head；queue 編號每加 1 會跨過兩個 doorbell 位置。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-003">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SQ0TDBL</li><li>CAP.DSTRD</li><li>CQ0HDBL</li><li>SQ1TDBL</li><li>CQ1HDBL</li><li>SQ2TDBL</li><li>CQ2HDBL</li><li>Controller</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-transport">欄位、條件與相關細節：從命令的意思走到 PCIe 上的實際傳送 →</a></div></article>
+<section class="field-guide" id="fields-pcie-doorbell"><h4 id="fields-heading-pcie-doorbell">由佇列編號算出 Doorbell 位址</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">SQ Tail 與 CQ Head Doorbell 交錯排列。CAP.DSTRD 決定相鄰 Doorbell 的 byte 距離，佇列編號 y 決定要選哪一對；寫入值則是新的佇列索引。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-doorbell"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CAP.DSTRD／y</td><td>間距是 4 &lt;&lt; DSTRD bytes，SQ 使用 2y，CQ 使用 2y+1。</td><td>DSTRD=0、y=2：SQ offset=1000h+4×4=1010h，CQ offset=1014h。</td></tr><tr><td>SQT／CQH</td><td>SQT 通告已提交到哪裡；CQH 通告主機已消費到哪裡。</td><td>寫入 Doorbell 的 3 是佇列索引 3，不是要控制器移動 3 bytes，也不是命令完成碼。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-005">PCIe 5</a><a href="#figure-PCIE14-FIG-006">PCIe 6</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 5, 文件頁 10, PDF 頁 10</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, 文件頁 10-11, PDF 頁 10-11</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-005 -->
 <article class="field-note" id="figure-PCIE14-FIG-005"><h4>PCIe Figure 5 · Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL - Submission Queue y Tail</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-005-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe5-1">PCIe5-1</span><span class="paragraph-text">SQ Tail Doorbell 通知控制器主機已提交到哪個位置。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 5, 文件頁 10, PDF 頁 10</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe5-2">PCIe5-2</span><span class="paragraph-text">DSTRD＝0 時 stride＝4 bytes，SQ1 Tail offset＝1000h＋2×4＝1008h；寫入的是 tail index，不是命令 buffer 位址。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe5-3">PCIe5-3</span><span class="paragraph-text">SQ Tail 與 CQ Head 的位置由 queue ID 和 4×2^DSTRD 的間距計算。兩個 Doorbell 交錯排列，寫入內容是佇列位置；位置通知本身不包含命令或完成資料。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SQT</li><li>CAP.DSTRD</li><li>Submission Queue</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-doorbell">欄位、條件與相關細節：由佇列編號算出 Doorbell 位址 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-006 -->
 <article class="field-note" id="figure-PCIE14-FIG-006"><h4>PCIe Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL - Completion Queue y Head</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-006-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe6-1">PCIe6-1</span><span class="paragraph-text">CQ Head Doorbell 通知控制器哪些完成項目已被主機消耗。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.1.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.1.2.1, Figure 6, 文件頁 10-11, PDF 頁 10-11</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe6-2">PCIe6-2</span><span class="paragraph-text">DSTRD＝0 時 CQ1 Head offset＝1000h＋3×4＝100Ch；主機讀完 CQE 後推進 head，讓相應位置可再次使用。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-005">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CQH</li><li>CAP.DSTRD</li><li>CC.PI</li><li>Completion Queue</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-doorbell">欄位、條件與相關細節：由佇列編號算出 Doorbell 位址 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-command"><summary>圖表組 03 · Host 與 Controller 的命令交換 · 2 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">交換流程分三條線看：SQE 的發布與取得、data buffer 的使用、CQE 的寫入與釋放。SQHD 協助追蹤 SQ 消費位置，SQID／CID 辨認完成命令，CQ Head 則釋放完成位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">交換流程分三條線看：SQE 的發布與取得、data buffer 的使用、CQE 的寫入與釋放。SQHD 協助追蹤 SQ 消費位置，SQID／CID 辨認完成命令，CQ Head 則釋放完成位置。</span></p>
 <a class="reading-link" href="#module-command">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-pcie-interrupts"><h4 id="fields-heading-pcie-interrupts">從 CQ 找到中斷向量與訊息</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">先選中斷機制，再由 Create I/O CQ 的 IV 連到向量。MSI 的訊息設定位於 capability；MSI-X 用表格保存各向量的位址、資料及遮罩。向量是通知路徑，CQE 才保存命令結果。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>IV</dt><dd>Interrupt Vector，Completion Queue 指定的 interrupt vector 編號。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-interrupts"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>IV／MME／MMC</td><td>MSI 的 MMC 回報能力、MME 選已啟用向量數；IV 不能超出實際可用範圍。</td><td>裝置能支援多個向量，不表示驅動程式已啟用全部向量。</td></tr><tr><td>MA／MUA／MD／C64</td><td>MA 與必要的 MUA 組合訊息目的位址，MD 是寫往該位址的資料；C64 決定位址結構。</td><td>控制器以訊息寫入觸發中斷，主機再讀 CQ；不能把 MD 當成 NVMe status。</td></tr><tr><td>PVM／MMASK／MPEND</td><td>能力決定是否有逐向量遮罩；MASK 控制通知，PEND 表示被遮罩期間待處理的通知。</td><td>解除遮罩前仍需按照所用機制處理 pending，不能假設遮罩會清除 CQE。</td></tr><tr><td>MXE／FM／TS</td><td>MSI-X enable、整體遮罩與表格大小共同決定哪些向量可使用；TS 是從 0 起算的大小編碼。</td><td>TS=3 對應 4 個 table entries；其中某筆仍可能被單獨遮罩。</td></tr><tr><td>TBIR／TO／PBIR／PBAO</td><td>BIR 選 BAR，offset 選該 BAR 空間中的 Table 或 Pending Bit Array。</td><td>若 Table 與 PBA 選不同 BAR，必須分別加到各自基底，不能沿用同一個地址。</td></tr><tr><td>IPIN／ILINE／NEXT／CID</td><td>傳統中斷資訊與 capability 串列提供不同機制的入口；NEXT 串起 capability，CID 辨識類型。</td><td>先沿 capability 串列確認 MSI-X 是否存在，再讀它的 MXC；不要依固定絕對 offset 猜位置。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PBAO</dt><dd>Page Base Address and Offset，第一個 PRP entry 中同時包含 page base 與 page 內 offset 的配置。</dd></div><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div><div><dt>PBA</dt><dd>Pending Bit Array，MSI-X 中記錄尚待處理 vector 的 bit array。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-007">PCIe 7</a><a href="#figure-PCIE14-FIG-009">PCIe 9</a><a href="#figure-PCIE14-FIG-027">PCIe 27</a><a href="#figure-PCIE14-FIG-034">PCIe 34</a><a href="#figure-PCIE14-FIG-035">PCIe 35</a><a href="#figure-PCIE14-FIG-036">PCIe 36</a><a href="#figure-PCIE14-FIG-037">PCIe 37</a><a href="#figure-PCIE14-FIG-038">PCIe 38</a><a href="#figure-PCIE14-FIG-039">PCIe 39</a><a href="#figure-PCIE14-FIG-040">PCIe 40</a><a href="#figure-PCIE14-FIG-041">PCIe 41</a><a href="#figure-PCIE14-FIG-042">PCIe 42</a><a href="#figure-PCIE14-FIG-043">PCIe 43</a><a href="#figure-PCIE14-FIG-044">PCIe 44</a><a href="#figure-PCIE14-FIG-045">PCIe 45</a><a href="#figure-PCIE14-FIG-046">PCIe 46</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.2 · PCIe Transport 1.4 §3.5.1 · PCIe Transport 1.4 §3.8.1.20 · PCIe Transport 1.4 §3.8.2.3 · PCIe Transport 1.4 §3.8.3.1 · PCIe Transport 1.4 §3.8.3.2 · PCIe Transport 1.4 §3.8.3.3 · PCIe Transport 1.4 §3.8.3.4 · PCIe Transport 1.4 §3.8.3.5 · PCIe Transport 1.4 §3.8.3.6 · PCIe Transport 1.4 §3.8.3.7 · PCIe Transport 1.4 §3.8.4.1 · PCIe Transport 1.4 §3.8.4.2 · PCIe Transport 1.4 §3.8.4.3 · PCIe Transport 1.4 §3.8.4.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, 文件頁 11, PDF 頁 11</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5.1, Figure 9, 文件頁 15, PDF 頁 15</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, 文件頁 21, PDF 頁 21</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 34, 文件頁 22, PDF 頁 22</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, 文件頁 23, PDF 頁 23</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, 文件頁 23, PDF 頁 23</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, 文件頁 23, PDF 頁 23</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, 文件頁 23, PDF 頁 23</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, 文件頁 23, PDF 頁 23</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, 文件頁 24, PDF 頁 24</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, 文件頁 24, PDF 頁 24</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 42, 文件頁 24, PDF 頁 24</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, 文件頁 24, PDF 頁 24</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, 文件頁 24-25, PDF 頁 24-25</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-007 -->
 <article class="field-note" id="figure-PCIE14-FIG-007"><h4>PCIe Figure 7 · Create I/O Completion Queue - Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-007-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe7-1">PCIe7-1</span><span class="paragraph-text">建立 CQ 時選擇其中斷向量，還要符合目前中斷模式能力。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.2, Figure 7, 文件頁 11, PDF 頁 11</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe7-2">PCIe7-2</span><span class="paragraph-text">IV＝3 指向量 3；若目前只啟用不足的向量數，不能只因欄位放得下 3 就認定有效。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>IV</dt><dd>Interrupt Vector，Completion Queue 指定的 interrupt vector 編號。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe7-3">PCIe7-3</span><span class="paragraph-text">Create CQ 的 IV 把完成佇列連到中斷向量。控制器先完成相應的 CQ 更新，再依中斷方式通知；多個 CQ 共享向量時，主機仍需檢查所有對應 CQ。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IV</li><li>MSI</li><li>MSICAP.MC.MME</li><li>MSIXCAP.MXC.TS</li><li>Completion Queue</li><li>Command</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe7-2">PCIe7-2</span><span class="paragraph-text">IV＝3 指向量 3；若目前只啟用不足的向量數，不能只因欄位放得下 3 就認定有效。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-008 -->
 <article class="field-note" id="figure-PCIE14-FIG-008"><h4>PCIe Figure 8 · Command Processing</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-008-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe8-1">PCIe8-1</span><span class="paragraph-text">命令處理圖分開 SQ 取命令、資料交換與 CQ 回報結果。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.4.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.4.1, Figure 8, 文件頁 13, PDF 頁 13</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe8-2">PCIe8-2</span><span class="paragraph-text">追一次 Write：主機提交 SQE、控制器取得資料並處理、最後寫 CQE；doorbell 更新只代表提交位置改變。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-007">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Command</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-transport">欄位、條件與相關細節：從命令的意思走到 PCIe 上的實際傳送 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-interrupts"><summary>圖表組 04 · Interrupt 模式與通知行為 · 14 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">先把 CQ 連到使用的 vector，再讀該中斷方式的 enable、mask 與 table。收到共用向量時沿所有相關連線查 CQ；合併門檻改變的是通知時機，不是 CQE 的狀態意義。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.08">07.08.</span><span class="paragraph-text">先把 CQ 連到使用的 vector，再讀該中斷方式的 enable、mask 與 table。收到共用向量時沿所有相關連線查 CQ；合併門檻改變的是通知時機，不是 CQE 的狀態意義。</span></p>
 <a class="reading-link" href="#module-interrupts">回到本節的解釋與範例</a>
+
 <!-- figure-table:PCIE14-FIG-009 -->
 <article class="field-note" id="figure-PCIE14-FIG-009"><h4>PCIe Figure 9 · Pin Based, Single MSI, and Multiple MSI Behavior</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-009-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe9-1">PCIe9-1</span><span class="paragraph-text">Pin、MSI 與多 MSI 模式的通知行為需要分別理解。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.5.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.5.1, Figure 9, 文件頁 15, PDF 頁 15</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe9-2">PCIe9-2</span><span class="paragraph-text">多個 CQ 共用一個通知來源時，主機可能需要檢查多個 CQ；中斷本身不攜帶每一筆 NVMe 完成結果。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-007">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MSI</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-034 -->
 <article class="field-note" id="figure-PCIE14-FIG-034"><h4>PCIe Figure 34 · Message Signaled Interrupt Capability (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-034-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe34-1">PCIe34-1</span><span class="paragraph-text">MSI capability 把向量控制、通知位址與資料組在一起。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 34, 文件頁 22, PDF 頁 22</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe34-2">PCIe34-2</span><span class="paragraph-text">主機配置一組 MSI，既要決定啟用數量，也要提供訊息目的位址與資料；只設 enable 不足以描述完整通知。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe34-3">PCIe34-3</span><span class="paragraph-text">MSI 以 message address 與 data 傳遞中斷，Message Control 決定啟用及訊息數相關設定。Mask 控制回報，Pending 記錄待處理通知；它們都不是 CQ 的命令完成內容。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MSICAP</li><li>MID</li><li>ID</li><li>MC</li><li>MA</li><li>MUA</li><li>MD</li><li>MMASK</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-035 -->
 <article class="field-note" id="figure-PCIE14-FIG-035"><h4>PCIe Figure 35 · Offset MSICAP: MID - Message Signaled Interrupt Identifiers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-035-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe35-1">PCIe35-1</span><span class="paragraph-text">MSI 識別 header 讓主機在 capability list 中找到 MSI。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.1, Figure 35, 文件頁 23, PDF 頁 23</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe35-2">PCIe35-2</span><span class="paragraph-text">由 NEXT 串列定位 MSI 後，其他欄位位置才以 MSICAP 為基底計算，不是永遠從 configuration offset 0 開始。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NEXT</li><li>CID</li><li>MSICAP</li><li>MID</li><li>ID</li><li>MSI</li><li>Interrupt</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe35-2">PCIe35-2</span><span class="paragraph-text">由 NEXT 串列定位 MSI 後，其他欄位位置才以 MSICAP 為基底計算，不是永遠從 configuration offset 0 開始。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MSICAP</dt><dd>MSI Capability，MSI capability 結構的基底位置。</dd></div></dl></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-036 -->
 <article class="field-note" id="figure-PCIE14-FIG-036"><h4>PCIe Figure 36 · Offset MSICAP + 2h: MC - Message Signaled Interrupt Message Control</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-036-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe36-1">PCIe36-1</span><span class="paragraph-text">MSI Message Control 區分支援的訊息數與實際啟用數。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.2, Figure 36, 文件頁 23, PDF 頁 23</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe36-2">PCIe36-2</span><span class="paragraph-text">裝置最多支援 8 個向量，主機仍可只啟用較少數量；讀 MMC 與 MME 時不要混為一個數字。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PVM</li><li>C64</li><li>MME</li><li>MMC</li><li>MSIE</li><li>MSICAP</li><li>MC</li><li>MSI</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-037 -->
 <article class="field-note" id="figure-PCIE14-FIG-037"><h4>PCIe Figure 37 · Offset MSICAP + 4h: MA - Message Signaled Interrupt Message Address</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-037-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe37-1">PCIe37-1</span><span class="paragraph-text">MSI Message Address 指定中斷訊息寫到的目的位址。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.3, Figure 37, 文件頁 23, PDF 頁 23</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe37-2">PCIe37-2</span><span class="paragraph-text">它不是 CQ buffer 位址；CQ 保存完成內容，MSI 位址用於送出通知，兩條資料流分開。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ADDR</li><li>MSICAP</li><li>MA</li><li>SIG</li><li>Interrupt</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-038 -->
 <article class="field-note" id="figure-PCIE14-FIG-038"><h4>PCIe Figure 38 · Offset MSICAP + 8h: MUA - Message Signaled Interrupt Upper Address</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-038-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe38-1">PCIe38-1</span><span class="paragraph-text">64-bit MSI 位址需要 Upper Address 補齊高部。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.4, Figure 38, 文件頁 23, PDF 頁 23</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe38-2">PCIe38-2</span><span class="paragraph-text">啟用 64-bit 位址格式時，把 MA 與 MUA 合併後才是完整目的位置；不能在所有格式都假設 MUA 有效。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>UADDR</li><li>MSICAP</li><li>MUA</li><li>MSI</li><li>Interrupt</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-039 -->
 <article class="field-note" id="figure-PCIE14-FIG-039"><h4>PCIe Figure 39 · Offset MSICAP + Ch: MD - Message Signaled Interrupt Message Data</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-039-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe39-1">PCIe39-1</span><span class="paragraph-text">MSI Message Data 是中斷訊息攜帶的資料值。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.5, Figure 39, 文件頁 23, PDF 頁 23</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe39-2">PCIe39-2</span><span class="paragraph-text">DATA 與 Message Address 一起描述通知；它不是 NVMe CQE 的 CID，不能直接用來配對完成命令。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DATA</li><li>MSICAP</li><li>MD</li><li>MSI</li><li>AD</li><li>Interrupt</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-040 -->
 <article class="field-note" id="figure-PCIE14-FIG-040"><h4>PCIe Figure 40 · Offset MSICAP + 10h: MMASK - Message Signaled Interrupt Mask Bits (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-040-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe40-1">PCIe40-1</span><span class="paragraph-text">MSI Mask Bits 可以遮罩相應訊息。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.6, Figure 40, 文件頁 24, PDF 頁 24</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe40-2">PCIe40-2</span><span class="paragraph-text">遮罩某個向量後，裝置仍可能產生待處理狀態；遮罩通知不等於讓 CQ 裡的完成項目消失。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MASK</li><li>MSICAP</li><li>MMASK</li><li>Interrupt</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-041 -->
 <article class="field-note" id="figure-PCIE14-FIG-041"><h4>PCIe Figure 41 · Offset MSICAP + 14h: MPEND - Message Signaled Interrupt Pending Bits (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-041-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe41-1">PCIe41-1</span><span class="paragraph-text">MSI Pending Bits 記錄相應的待處理訊息狀態。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 41, 文件頁 24, PDF 頁 24</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe41-2">PCIe41-2</span><span class="paragraph-text">向量被遮罩期間有事件，pending 可反映待處理情況；主機仍需到 CQ 取得實際命令結果。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-034">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PEND</li><li>MSICAP</li><li>MPEND</li><li>MSIX</li><li>Interrupt</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-042 -->
 <article class="field-note" id="figure-PCIE14-FIG-042"><h4>PCIe Figure 42 · MSI-X Capability (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-042-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe42-1">PCIe42-1</span><span class="paragraph-text">MSI-X 把向量表與 pending bitmap 放到指定記憶體區域。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.3.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.3.7, Figure 42, 文件頁 24, PDF 頁 24</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe42-2">PCIe42-2</span><span class="paragraph-text">先定位 Table 與 PBA，才能理解每個向量的設定及待處理狀態；兩者不一定位於同一個 BAR 區段。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PBA</dt><dd>Pending Bit Array，MSI-X 中記錄尚待處理 vector 的 bit array。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe42-3">PCIe42-3</span><span class="paragraph-text">MSI-X 的控制欄位描述啟用、Function Mask 與表大小；MTAB、MPBA 分別用 BIR 與 offset 找到 Table 和 Pending Bit Array。BIR 先選 BAR，再加位移，不能把整個欄位當成絕對位址。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BIR</dt><dd>BAR Indicator Register，指出某個記憶體結構位於哪一個 PCIe BAR。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MSIX</li><li>MSIXCAP</li><li>MXID</li><li>ID</li><li>MXC</li><li>MTAB</li><li>BIR</li><li>MPBA</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe42-2">PCIe42-2</span><span class="paragraph-text">先定位 Table 與 PBA，才能理解每個向量的設定及待處理狀態；兩者不一定位於同一個 BAR 區段。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-043 -->
 <article class="field-note" id="figure-PCIE14-FIG-043"><h4>PCIe Figure 43 · Offset MSIXCAP: MXID - MSI-X Identifiers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-043-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe43-1">PCIe43-1</span><span class="paragraph-text">MSI-X capability header 用於識別與串接能力清單。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.1, Figure 43, 文件頁 24, PDF 頁 24</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe43-2">PCIe43-2</span><span class="paragraph-text">找到 MSI-X 的 CID 後，再以 MSIXCAP 加上相對 offset 讀 MXC、MTAB，避免使用另一個 capability 的基底。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-042">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NEXT</li><li>CID</li><li>MSIXCAP</li><li>MXID</li><li>MSIX</li><li>ID</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe43-2">PCIe43-2</span><span class="paragraph-text">找到 MSI-X 的 CID 後，再以 MSIXCAP 加上相對 offset 讀 MXC、MTAB，避免使用另一個 capability 的基底。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MSIXCAP</dt><dd>MSI-X Capability，MSI-X capability 結構的基底位置。</dd></div></dl></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-044 -->
 <article class="field-note" id="figure-PCIE14-FIG-044"><h4>PCIe Figure 44 · Offset MSIXCAP + 2h: MXC - MSI-X Message Control</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-044-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe44-1">PCIe44-1</span><span class="paragraph-text">MSI-X 控制欄位區分啟用、整體遮罩與表格大小。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.2, Figure 44, 文件頁 24-25, PDF 頁 24-25</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe44-2">PCIe44-2</span><span class="paragraph-text">TS 原始值 7 表示 8 個 table entries；Function Mask 控制整體通知，不等於刪除向量表內容。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-042">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MXE</li><li>FM</li><li>TS</li><li>MSIXCAP</li><li>MXC</li><li>MSIX</li><li>MSI</li><li>SIG</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-045 -->
 <article class="field-note" id="figure-PCIE14-FIG-045"><h4>PCIe Figure 45 · Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-045-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe45-1">PCIe45-1</span><span class="paragraph-text">MSI-X Table 的 BIR 選 BAR，offset 選 BAR 內位置。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.3, Figure 45, 文件頁 25, PDF 頁 25</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe45-2">PCIe45-2</span><span class="paragraph-text">TBIR 指 BAR2、TO 指該 BAR 內的表格起點；不能把 TO 單獨當成主機實體位址。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-042">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TO</li><li>TBIR</li><li>MSIXCAP</li><li>MTAB</li><li>MSIX</li><li>BIR</li><li>MSI</li><li>BAR</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-046 -->
 <article class="field-note" id="figure-PCIE14-FIG-046"><h4>PCIe Figure 46 · Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-046-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe46-1">PCIe46-1</span><span class="paragraph-text">PBA 有自己的 BAR 選擇與 offset。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.4.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.4.4, Figure 46, 文件頁 25, PDF 頁 25</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe46-2">PCIe46-2</span><span class="paragraph-text">Table 在 BAR0、PBA 在 BAR2 的配置需要分別定位；不能從 Table 地址加固定距離猜 PBA 在哪裡。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-042">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PBAO</li><li>PBIR</li><li>MSIXCAP</li><li>MPBA</li><li>MSIX</li><li>PBA</li><li>BIR</li><li>MSI</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>PBAO</dt><dd>Page Base Address and Offset，第一個 PRP entry 中同時包含 page base 與 page 內 offset 的配置。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-config-error"><summary>圖表組 05 · Configuration Space 與 PCIe 錯誤回報 · 46 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">先辨認 PCIe capability 的種類，再將 status、mask、severity 和 header log 配對。TDISP 的 DEVICE_INTERFACE_REPORT 依其欄位布局閱讀，不能套用錯誤 log 或 NVMe CQE 的解讀方式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TDISP</dt><dd>TEE Device Interface Security Protocol，平台隔離與裝置介面狀態相關的 PCIe 安全協定。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.09">07.09.</span><span class="paragraph-text">先辨認 PCIe capability 的種類，再將 status、mask、severity 和 header log 配對。TDISP 的 DEVICE_INTERFACE_REPORT 依其欄位布局閱讀，不能套用錯誤 log 或 NVMe CQE 的解讀方式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TDISP</dt><dd>TEE Device Interface Security Protocol，平台隔離與裝置介面狀態相關的 PCIe 安全協定。</dd></div></dl>
 <a class="reading-link" href="#module-config-error">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-pcie-configuration"><h4 id="fields-heading-pcie-configuration">先辨識裝置，再配置可存取的資源</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.10">07.10.</span><span class="paragraph-text">組態空間圖是一張地圖：識別欄位讓軟體選擇驅動程式，BAR 描述 MMIO 資源，Command 控制存取方式，Status 記錄裝置狀況。舊式 PCI 相容欄位仍在版面中，但不代表 NVMe 要用它們處理 I/O。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-configuration"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>VID／DID／RID／SSVID／SSID</td><td>廠商、裝置、revision 與 subsystem 識別分別描述不同層次。</td><td>同樣的 DID 可以出現在不同板卡配置；不能只由它推論 firmware 版本。</td></tr><tr><td>BCC／SCC／PI／HTYPE</td><td>Class Code 辨識裝置類別及介面，Header Type 決定後續組態版面。</td><td>這裡的 PI 是 Programming Interface，不是資料保護資訊 Protection Information。</td></tr><tr><td>CMD／STS</td><td>Command 中的存取控制與 bus mastering 等位元決定裝置可以採取的動作；Status 記錄條件及錯誤。</td><td>改變控制位元與清除可寫 1 清除的狀態位元是不同操作，不能對整個區塊任意回寫讀值。</td></tr><tr><td>MLBAR／MUBAR／BA／TP／PF／RTE</td><td>64-bit 記憶體 BAR 由高低部分組合，低位的型別屬性不屬於基底地址。</td><td>先遮去 BAR0 的屬性位元，再與 BAR1 組成基底，最後加上 NVMe register offset。</td></tr><tr><td>BAR2／EROM／RBA／CAP.CP</td><td>其他 BAR、選用 ROM 與 capability pointer 各有自己的用途及存在條件。</td><td>CAP.CP 指向 capability 串列，與 NVMe CAP controller property 是兩個不同位置。</td></tr><tr><td>BIST／CLS／MLT／CCPTR／MGNT／MLAT</td><td>依各圖的固定值、選用性及存取屬性讀取相容欄位；PCI BIST 與 NVMe Device Self-test 不是同一個命令機制。</td><td>欄位存在於 PCI header，不足以證明控制器支援 NVMe 延伸自我測試。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Protection Information</dt><dd>資料保護資訊，縮寫 PI；包含 Guard 與 tags，用來檢查資料及其關聯資訊。</dd></div><div><dt>SSVID</dt><dd>Subsystem Vendor ID，辨識 subsystem vendor 的 PCI identifier。</dd></div><div><dt>DID</dt><dd>Domain Identifier，辨識 NVM subsystem 內 domain 的 identifier。</dd></div><div><dt>VID</dt><dd>Vendor ID，由 PCI-SIG 配置、辨識 vendor 的 identifier。</dd></div><div><dt>PF</dt><dd>Physical Function，具有完整 PCIe 設定能力、可管理相關 VF 的實體功能。</dd></div><div><dt>PI</dt><dd>Protection Information；用 Guard 與 tags 檢查資料及其關聯資訊的保護欄位。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-010">PCIe 10</a><a href="#figure-PCIE14-FIG-011">PCIe 11</a><a href="#figure-PCIE14-FIG-012">PCIe 12</a><a href="#figure-PCIE14-FIG-013">PCIe 13</a><a href="#figure-PCIE14-FIG-014">PCIe 14</a><a href="#figure-PCIE14-FIG-015">PCIe 15</a><a href="#figure-PCIE14-FIG-016">PCIe 16</a><a href="#figure-PCIE14-FIG-017">PCIe 17</a><a href="#figure-PCIE14-FIG-018">PCIe 18</a><a href="#figure-PCIE14-FIG-019">PCIe 19</a><a href="#figure-PCIE14-FIG-020">PCIe 20</a><a href="#figure-PCIE14-FIG-021">PCIe 21</a><a href="#figure-PCIE14-FIG-022">PCIe 22</a><a href="#figure-PCIE14-FIG-023">PCIe 23</a><a href="#figure-PCIE14-FIG-024">PCIe 24</a><a href="#figure-PCIE14-FIG-025">PCIe 25</a><a href="#figure-PCIE14-FIG-026">PCIe 26</a><a href="#figure-PCIE14-FIG-028">PCIe 28</a><a href="#figure-PCIE14-FIG-029">PCIe 29</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8 · PCIe Transport 1.4 §3.8.1.1 · PCIe Transport 1.4 §3.8.1.2 · PCIe Transport 1.4 §3.8.1.3 · PCIe Transport 1.4 §3.8.1.4 · PCIe Transport 1.4 §3.8.1.5 · PCIe Transport 1.4 §3.8.1.6 · PCIe Transport 1.4 §3.8.1.7 · PCIe Transport 1.4 §3.8.1.8 · PCIe Transport 1.4 §3.8.1.9 · PCIe Transport 1.4 §3.8.1.10 · PCIe Transport 1.4 §3.8.1.11 · PCIe Transport 1.4 §3.8.1.12 · PCIe Transport 1.4 §3.8.1.16 · PCIe Transport 1.4 §3.8.1.17 · PCIe Transport 1.4 §3.8.1.18 · PCIe Transport 1.4 §3.8.1.19 · PCIe Transport 1.4 §3.8.1.21 · PCIe Transport 1.4 §3.8.1.22</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8, Figure 10, 文件頁 16-17, PDF 頁 16-17</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, 文件頁 17, PDF 頁 17</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, 文件頁 18, PDF 頁 18</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, 文件頁 18, PDF 頁 18</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, 文件頁 18, PDF 頁 18</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, 文件頁 18, PDF 頁 18</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, 文件頁 18, PDF 頁 18</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, 文件頁 19, PDF 頁 19</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, 文件頁 19, PDF 頁 19</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.10, Figure 20, 文件頁 19, PDF 頁 19</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.11, Figure 21, 文件頁 19, PDF 頁 19</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, 文件頁 20, PDF 頁 20</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, 文件頁 20, PDF 頁 20</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, 文件頁 20, PDF 頁 20</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, 文件頁 20, PDF 頁 20</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, 文件頁 21, PDF 頁 21</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, 文件頁 21, PDF 頁 21</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, 文件頁 21, PDF 頁 21</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-010 -->
 <article class="field-note" id="figure-PCIE14-FIG-010"><h4>PCIe Figure 10 · PCI Express Type 0/1 Common Configuration Space</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-010-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe10-1">PCIe10-1</span><span class="paragraph-text">PCIe configuration header 是尋找識別碼、BAR 與 capabilities 的入口。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8, Figure 10, 文件頁 16-17, PDF 頁 16-17</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe10-2">PCIe10-2</span><span class="paragraph-text">從 offset 10h 讀 BAR 資訊，與在映射記憶體 offset 1000h 寫 doorbell，是兩個不同位址空間的操作。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-003">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PCI Express Type 0/1 Common Configuration Space</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-011 -->
 <article class="field-note" id="figure-PCIE14-FIG-011"><h4>PCIe Figure 11 · Offset 00h: ID - Identifiers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-011-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe11-1">PCIe11-1</span><span class="paragraph-text">VID 與 DID 識別 PCIe 廠商與裝置類型。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DID</dt><dd>Domain Identifier，辨識 NVM subsystem 內 domain 的 identifier。</dd></div><div><dt>VID</dt><dd>Vendor ID，由 PCI-SIG 配置、辨識 vendor 的 identifier。</dd></div></dl><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17</p></details></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe11-1">PCIe11-1</span><span class="paragraph-text">VID 與 DID 識別 PCIe 廠商與裝置類型。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.1, Figure 11, 文件頁 17, PDF 頁 17</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe11-2">PCIe11-2</span><span class="paragraph-text">同一 DID 的兩張卡仍可有不同 serial number；這裡不是替每個 namespace 分配唯一 ID。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe11-3">PCIe11-3</span><span class="paragraph-text">裝置識別、revision、class code、header type 與 subsystem 識別描述不同屬性。先按 Configuration Space 的欄位定位，再解釋該類數值；PCIe Class Code 的 PI 不是 NVM 資料保護資訊的 PI。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ID</li><li>DID</li><li>VID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-012 -->
 <article class="field-note" id="figure-PCIE14-FIG-012"><h4>PCIe Figure 12 · Offset 04h: CMD - Command</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-012-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe12-1">PCIe12-1</span><span class="paragraph-text">PCI Command register 控制 PCIe Function 的基本存取能力。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.2, Figure 12, 文件頁 17, PDF 頁 17</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe12-2">PCIe12-2</span><span class="paragraph-text">啟用相應記憶體與 bus-master 能力，和啟用 NVMe 的 CC.EN，是不同層的設定，不能互相取代。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe12-3">PCIe12-3</span><span class="paragraph-text">這組共同 Configuration Space 欄位包含控制、狀態及相容性欄位。以 Transport 規格指定的存取方式和固定值閱讀；PCIe BIST 也不等同 NVMe Device Self-test 命令，不能共用其結果格式。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CMD</li><li>SIG</li><li>ID</li><li>FBE</li><li>SERR</li><li>SEE</li><li>IDSEL</li><li>ISWCC</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-013 -->
 <article class="field-note" id="figure-PCIE14-FIG-013"><h4>PCIe Figure 13 · Offset 06h: STS - Device Status</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-013-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe13-1">PCIe13-1</span><span class="paragraph-text">PCI Device Status 回報 PCI 層的狀態資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.3, Figure 13, 文件頁 18, PDF 頁 18</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe13-2">PCIe13-2</span><span class="paragraph-text">此處的狀態不是 NVMe CQE 的 SCT／SC；收到傳輸層問題時，要先辨識是哪一套回報。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>STS</li><li>DPE</li><li>SSE</li><li>RMA</li><li>RTA</li><li>STA</li><li>DEVSEL</li><li>DEVT</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe13-2">PCIe13-2</span><span class="paragraph-text">此處的狀態不是 NVMe CQE 的 SCT／SC；收到傳輸層問題時，要先辨識是哪一套回報。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-014 -->
 <article class="field-note" id="figure-PCIE14-FIG-014"><h4>PCIe Figure 14 · Offset 08h: RID - Revision ID</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-014-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe14-1">PCIe14-1</span><span class="paragraph-text">Revision ID 表示 PCI 裝置修訂識別。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.4, Figure 14, 文件頁 18, PDF 頁 18</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe14-2">PCIe14-2</span><span class="paragraph-text">RID 改變不必然等於 NVMe 規格版本改變；規格版本另看對應 Version 欄位。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-011">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>RID</li><li>ID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-015 -->
 <article class="field-note" id="figure-PCIE14-FIG-015"><h4>PCIe Figure 15 · Offset 09h: CC - Class Code</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-015-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe15-1">PCIe15-1</span><span class="paragraph-text">Class Code 以類別、子類別與程式介面識別裝置功能。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.5, Figure 15, 文件頁 18, PDF 頁 18</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe15-2">PCIe15-2</span><span class="paragraph-text">此處 CC 是 PCI Class Code，Base 的 CC 是 Controller Configuration；兩個同名縮寫出現在不同空間，用途完全不同。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-011">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CC</li><li>BCC</li><li>SCC</li><li>PI</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-016 -->
 <article class="field-note" id="figure-PCIE14-FIG-016"><h4>PCIe Figure 16 · Offset 0Ch: CLS - Cache Line Size</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-016-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe16-1">PCIe16-1</span><span class="paragraph-text">Cache Line Size 欄位依 PCIe 綁定規則解釋。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.6, Figure 16, 文件頁 18, PDF 頁 18</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe16-2">PCIe16-2</span><span class="paragraph-text">不要把 CLS 當成 SSD 內部快取大小；即使欄位名稱有 Cache，也不提供 NAND 或 DRAM 容量資訊。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CLS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-017 -->
 <article class="field-note" id="figure-PCIE14-FIG-017"><h4>PCIe Figure 17 · Offset 0Dh: MLT - Master Latency Timer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-017-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe17-1">PCIe17-1</span><span class="paragraph-text">Master Latency Timer 是組態 header 中的既定欄位。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.7, Figure 17, 文件頁 18, PDF 頁 18</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe17-2">PCIe17-2</span><span class="paragraph-text">讀到此欄位時依本綁定的規則處理，不以名稱推論它限制每筆 NVMe Read 的完成時間。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MLT</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-018 -->
 <article class="field-note" id="figure-PCIE14-FIG-018"><h4>PCIe Figure 18 · Offset 0Eh: HTYPE - Header Type</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-018-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe18-1">PCIe18-1</span><span class="paragraph-text">Header Type 說明組態 header 類型及多功能資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.8, Figure 18, 文件頁 19, PDF 頁 19</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe18-2">PCIe18-2</span><span class="paragraph-text">發現 multi-function 標記後，枚舉各 Function；不能把同一裝置的所有 Functions 只當成一個 NVMe queue。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-011">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HTYPE</li><li>MFD</li><li>HL</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-019 -->
 <article class="field-note" id="figure-PCIE14-FIG-019"><h4>PCIe Figure 19 · Offset 0Fh: BIST - Built-In Self Test (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-019-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe19-1">PCIe19-1</span><span class="paragraph-text">PCI BIST 是 PCI 組態機制中的自我測試欄位。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.9, Figure 19, 文件頁 19, PDF 頁 19</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe19-2">PCIe19-2</span><span class="paragraph-text">它與 NVMe Device Self-test 命令不同，不能把 PCI BIST 的完成碼拿去查 NVMe 的 Self-test Result 格式。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BIST</li><li>BC</li><li>SB</li><li>SIG</li><li>CC</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-020 -->
 <article class="field-note" id="figure-PCIE14-FIG-020"><h4>PCIe Figure 20 · Offset 10h: MLBAR (BAR0) - Memory Register Base Address, lower 32-bits</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-020-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe20-1">PCIe20-1</span><span class="paragraph-text">BAR0 包含記憶體映射基底的低部與屬性位元。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.10, Figure 20, 文件頁 19, PDF 頁 19</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe20-2">PCIe20-2</span><span class="paragraph-text">取 BA 前先去除屬性 bits，再與 BAR1 組合；直接把 BAR0 原值當完整主機位址會混入型別資訊。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe20-3">PCIe20-3</span><span class="paragraph-text">BAR0／BAR1 的低高部分共同描述控制器記憶體基底，其他 BAR、Expansion ROM 與 Capabilities Pointer 各有不同用途。組合位址時保留地址位與屬性位的區別，不把 capabilities 清單指標當成 MMIO 資料位址。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BA</li><li>PF</li><li>TP</li><li>RTE</li><li>MLBAR</li><li>BAR0</li><li>SIG</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>PF</dt><dd>Physical Function，具有完整 PCIe 設定能力、可管理相關 VF 的實體功能。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
+
 <!-- figure-table:PCIE14-FIG-021 -->
 <article class="field-note" id="figure-PCIE14-FIG-021"><h4>PCIe Figure 21 · Offset 14h: MUBAR (BAR1) - Memory Register Base Address, upper 32-bits</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-021-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe21-1">PCIe21-1</span><span class="paragraph-text">BAR1 補上 64-bit 記憶體 BAR 的高位元。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.11</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.11, Figure 21, 文件頁 19, PDF 頁 19</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe21-2">PCIe21-2</span><span class="paragraph-text">基底高部非零時，漏掉 BAR1 會把裝置映射到低 4 GiB 的另一個位置；低部相同不代表同一位址。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-020">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BA</li><li>MUBAR</li><li>BAR1</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-022 -->
 <article class="field-note" id="figure-PCIE14-FIG-022"><h4>PCIe Figure 22 · Offset 18h: BAR2 - Index/Data Pair Register Base Address or Vendor Specific</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-022-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe22-1">PCIe22-1</span><span class="paragraph-text">BAR2 的用途依裝置採用的配置解釋。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.12</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.12, Figure 22, 文件頁 20, PDF 頁 20</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe22-2">PCIe22-2</span><span class="paragraph-text">先確認這是 Index／Data Pair 還是廠商用途，再讀其欄位；不能假設所有 BAR 都指向同一套 NVMe properties。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-020">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BA</li><li>RTE</li><li>BAR2</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-023 -->
 <article class="field-note" id="figure-PCIE14-FIG-023"><h4>PCIe Figure 23 · Offset 28h: CCPTR - CardBus CIS Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-023-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe23-1">PCIe23-1</span><span class="paragraph-text">CardBus CIS Pointer 是組態 header 中保留的既定位置。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.16</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.16, Figure 23, 文件頁 20, PDF 頁 20</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe23-2">PCIe23-2</span><span class="paragraph-text">看到 CCPTR 不代表 NVMe 裝置真的提供 CardBus 功能；依此 transport 的適用規則解釋它。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CCPTR</li><li>CIS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-024 -->
 <article class="field-note" id="figure-PCIE14-FIG-024"><h4>PCIe Figure 24 · Offset 2Ch: SS - Subsystem Identifiers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-024-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe24-1">PCIe24-1</span><span class="paragraph-text">Subsystem Identifiers 識別產品或 subsystem 的廠商與型號資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.17</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.17, Figure 24, 文件頁 20, PDF 頁 20</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe24-2">PCIe24-2</span><span class="paragraph-text">同一 VID／DID 的產品可能有不同 SSVID／SSID；兩組 ID 不應只保留其中一組就認為資訊完全等同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SSVID</dt><dd>Subsystem Vendor ID，辨識 subsystem vendor 的 PCI identifier。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-011">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SSID</li><li>SSVID</li><li>SS</li><li>ID</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe24-2">PCIe24-2</span><span class="paragraph-text">同一 VID／DID 的產品可能有不同 SSVID／SSID；兩組 ID 不應只保留其中一組就認為資訊完全等同。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-025 -->
 <article class="field-note" id="figure-PCIE14-FIG-025"><h4>PCIe Figure 25 · Offset 30h: EROM - Expansion ROM (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-025-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe25-1">PCIe25-1</span><span class="paragraph-text">Expansion ROM 欄位描述選用的 ROM 映射資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.18</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.18, Figure 25, 文件頁 20, PDF 頁 20</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe25-2">PCIe25-2</span><span class="paragraph-text">裝置是否提供 ROM 與是否有 NVMe Boot Partitions 是不同能力，不能因 EROM 不存在就推論沒有 Boot Partition。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-020">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>RBA</li><li>EROM</li><li>ROM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-026 -->
 <article class="field-note" id="figure-PCIE14-FIG-026"><h4>PCIe Figure 26 · Offset 34h: CAP - Capabilities Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-026-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe26-1">PCIe26-1</span><span class="paragraph-text">Capabilities Pointer 指向 PCI capability 串列的入口。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.19</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.19, Figure 26, 文件頁 21, PDF 頁 21</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe26-2">PCIe26-2</span><span class="paragraph-text">先讀 CP 找第一個 capability，再沿 NEXT 找其他項目；不要把每個能力都假設固定出現在相同 offset。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-020">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CP</li><li>CAP</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-027 -->
 <article class="field-note" id="figure-PCIE14-FIG-027"><h4>PCIe Figure 27 · Offset 3Ch: INTR - Interrupt Information</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-027-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe27-1">PCIe27-1</span><span class="paragraph-text">Interrupt Information 描述傳統中斷相關組態。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.20</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.20, Figure 27, 文件頁 21, PDF 頁 21</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe27-2">PCIe27-2</span><span class="paragraph-text">使用 MSI-X 時，通知位址与資料來自相應機制，不能只讀 IPIN／ILINE 就說明所有中斷路由。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe27-3">PCIe27-3</span><span class="paragraph-text">Interrupt Information 描述傳統中斷資訊，Power Management capability 則描述 PCIe 電源能力與狀態。PCIe 電源狀態和 NVMe Power State 是不同層次，不能因數值相同就視為同一設定。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IPIN</li><li>ILINE</li><li>INTR</li><li>Interrupt</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interrupts">欄位、條件與相關細節：從 CQ 找到中斷向量與訊息 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-028 -->
 <article class="field-note" id="figure-PCIE14-FIG-028"><h4>PCIe Figure 28 · Offset 3Eh: MGNT - Minimum Grant</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-028-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe28-1">PCIe28-1</span><span class="paragraph-text">Minimum Grant 是既定 PCI header 欄位，不是 NVMe 佇列保證。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.21</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.21, Figure 28, 文件頁 21, PDF 頁 21</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe28-2">PCIe28-2</span><span class="paragraph-text">不能把 GNT 值解釋成 SQ 每輪保證取得的命令數；NVMe 仲裁參數在不同機制中定義。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>GNT</li><li>MGNT</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-029 -->
 <article class="field-note" id="figure-PCIE14-FIG-029"><h4>PCIe Figure 29 · Offset 3Fh: MLAT - Maximum Latency</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-029-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe29-1">PCIe29-1</span><span class="paragraph-text">Maximum Latency 欄位不等於每筆儲存 I/O 的延遲上限。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.22</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 29, 文件頁 21, PDF 頁 21</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe29-2">PCIe29-2</span><span class="paragraph-text">想比較讀取延遲時，不能拿 MLAT 原值當微秒；先按本欄位在 PCIe 綁定中的規則閱讀。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-012">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>LAT</li><li>MLAT</li><li>CC</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-configuration">欄位、條件與相關細節：先辨識裝置，再配置可存取的資源 →</a></div></article>
+<section class="field-guide" id="fields-pcie-pci-power"><h4 id="fields-heading-pcie-pci-power">PCI 電源狀態與 NVMe Power State 分開讀</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.11">07.11.</span><span class="paragraph-text">PCI Power Management capability 先回報支援哪些 PCI D-states，再透過 PMCS 控制狀態及喚醒事件；NVMe 的 PS0、PS1 則由另一組命令與描述子管理。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-pci-power"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>PC.D1S／D2S／PSUP／PMCS.PS</td><td>能力與要求狀態要配合，不能選未支援的狀態。</td><td>PMCS.PS 的 D3 編碼不是 NVMe PS3；兩者的數字碰巧相同不代表同一層。</td></tr><tr><td>PMEE／PMES／NSFRST</td><td>PME Enable 控制事件通知，PME Status 記錄事件，重設相關欄位補充狀態轉移後的行為。</td><td>通知被停用不表示事件狀態從來沒有成立；讀值與清除規則分別查表。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PS</dt><dd>Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-030">PCIe 30</a><a href="#figure-PCIE14-FIG-031">PCIe 31</a><a href="#figure-PCIE14-FIG-032">PCIe 32</a><a href="#figure-PCIE14-FIG-033">PCIe 33</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.22 · PCIe Transport 1.4 §3.8.2.1 · PCIe Transport 1.4 §3.8.2.2 · PCIe Transport 1.4 §3.8.2.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 30, 文件頁 21, PDF 頁 21</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, 文件頁 21, PDF 頁 21</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, 文件頁 22, PDF 頁 22</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, 文件頁 22, PDF 頁 22</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-030 -->
 <article class="field-note" id="figure-PCIE14-FIG-030"><h4>PCIe Figure 30 · PCI Power Management Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-030-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe30-1">PCIe30-1</span><span class="paragraph-text">Power Management capability 將能力與目前控制狀態分開。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.1.22</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.1.22, Figure 30, 文件頁 21, PDF 頁 21</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe30-2">PCIe30-2</span><span class="paragraph-text">先讀 PC 看支援，再讀 PMCS 看目前設定；能進入某個狀態，和目前已在該狀態，是兩個資訊。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-027">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PMCAP</li><li>PID</li><li>ID</li><li>PC</li><li>PMCS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-pci-power">欄位、條件與相關細節：PCI 電源狀態與 NVMe Power State 分開讀 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-031 -->
 <article class="field-note" id="figure-PCIE14-FIG-031"><h4>PCIe Figure 31 · Offset PMCAP: PID - PCI Power Management Capability ID</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-031-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe31-1">PCIe31-1</span><span class="paragraph-text">Power Management 的 capability header 同時提供識別碼與下一項位置。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.1, Figure 31, 文件頁 21, PDF 頁 21</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe31-2">PCIe31-2</span><span class="paragraph-text">確認 CID 後沿 NEXT 找下一個 capability，不能把 NEXT 當成某個電源狀態的值。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-027">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NEXT</li><li>CID</li><li>PMCAP</li><li>PID</li><li>ID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-pci-power">欄位、條件與相關細節：PCI 電源狀態與 NVMe Power State 分開讀 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-032 -->
 <article class="field-note" id="figure-PCIE14-FIG-032"><h4>PCIe Figure 32 · Offset PMCAP + 2h: PC - PCI Power Management Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-032-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe32-1">PCIe32-1</span><span class="paragraph-text">Power Management 能力 bits 描述可用電源狀態與相關事件能力。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.2, Figure 32, 文件頁 22, PDF 頁 22</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe32-2">PCIe32-2</span><span class="paragraph-text">裝置宣告某狀態支援後，主機才依規則選擇；不能只因 PS 欄位有該編碼就假設裝置支援。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PS</dt><dd>Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-027">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PSUP</li><li>D2S</li><li>D1S</li><li>AUXC</li><li>DSI</li><li>PMEC</li><li>VS</li><li>PMCAP</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe32-2">PCIe32-2</span><span class="paragraph-text">裝置宣告某狀態支援後，主機才依規則選擇；不能只因 PS 欄位有該編碼就假設裝置支援。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-pci-power">欄位、條件與相關細節：PCI 電源狀態與 NVMe Power State 分開讀 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-033 -->
 <article class="field-note" id="figure-PCIE14-FIG-033"><h4>PCIe Figure 33 · Offset PMCAP + 4h: PMCS - PCI Power Management Control and Status</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-033-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe33-1">PCIe33-1</span><span class="paragraph-text">PMCS 的 PS 與事件 bits 控制、回報 PCI 電源管理。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.2.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.2.3, Figure 33, 文件頁 22, PDF 頁 22</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe33-2">PCIe33-2</span><span class="paragraph-text">PCI 電源狀態與 NVMe Power State 是不同層；把 PS 改變後，還要依相應轉換規則理解控制器可用性。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-027">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PMES</li><li>DSC</li><li>DSE</li><li>PMEE</li><li>NSFRST</li><li>PS</li><li>PMCAP</li><li>PMCS</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-pci-power">欄位、條件與相關細節：PCI 電源狀態與 NVMe Power State 分開讀 →</a></div></article>
+<section class="field-guide" id="fields-pcie-link-device"><h4 id="fields-heading-pcie-link-device">支援上限、要求設定與實際鏈路結果</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.12">07.12.</span><span class="paragraph-text">Capability 說明能做什麼，Control 說明軟體選了什麼，Status 說明目前發生什麼。把三者並排，就能避免用宣告上限代替實際速度或寬度。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-link-device"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>PFS／MPS／MRRS</td><td>支援的 payload 上限、選定 payload 大小及最大 read request 大小影響不同交易。</td><td>MRRS 的 read request 大小不等於每一個返回 completion 都有同樣大小。</td></tr><tr><td>FLRC／IFLR／TP</td><td>能力決定能否發動 Function Level Reset，控制位元提出要求，Transaction Pending 補充未完成交易狀態。</td><td>支援 FLR 與目前已執行過 FLR 是不同結論。</td></tr><tr><td>PXLCAP／PXLC／PXLS.NLW／CLS</td><td>鏈路能力、ASPM 等控制及協商出的寬度速度需要一起看。</td><td>支援 x4 的裝置目前 NLW=x2 時，要以 x2 說明此次連線。</td></tr><tr><td>L0SL／L1L／L0SEL／L1EL／ASPMC</td><td>裝置可接受延遲與鏈路退出延遲配合省電狀態控制。</td><td>較深省電狀態要計入退出時間，不能只比較活動功耗。</td></tr><tr><td>PXDS.CED／NFED／FED／URD</td><td>狀態分開記錄可修正、非致命、致命及不支援要求等情況，完整原因可再對照 AER。</td><td>PCIe 錯誤狀態不會直接等同 CQE 的 SC。</td></tr><tr><td>PXDCAP2／PXDC2：LTR、OBFF、Completion Timeout</td><td>第 2 組能力與控制延續相同配對：先確認支援，再解讀啟用及數值選擇。</td><td>有 LTRS 才能依對應條件使用 LTRME；不能看到控制位元就省略能力檢查。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>MRRS</dt><dd>Max Read Request Size，PCIe Function 可發出之 read request 的最大大小設定。</dd></div><div><dt>FLR</dt><dd>Function Level Reset，只重設一個 PCIe Function 的 reset 方法。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-047">PCIe 47</a><a href="#figure-PCIE14-FIG-048">PCIe 48</a><a href="#figure-PCIE14-FIG-049">PCIe 49</a><a href="#figure-PCIE14-FIG-050">PCIe 50</a><a href="#figure-PCIE14-FIG-051">PCIe 51</a><a href="#figure-PCIE14-FIG-052">PCIe 52</a><a href="#figure-PCIE14-FIG-053">PCIe 53</a><a href="#figure-PCIE14-FIG-054">PCIe 54</a><a href="#figure-PCIE14-FIG-055">PCIe 55</a><a href="#figure-PCIE14-FIG-056">PCIe 56</a><a href="#figure-PCIE14-FIG-057">PCIe 57</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5 · PCIe Transport 1.4 §3.8.5.1 · PCIe Transport 1.4 §3.8.5.2 · PCIe Transport 1.4 §3.8.5.3 · PCIe Transport 1.4 §3.8.5.4 · PCIe Transport 1.4 §3.8.5.5 · PCIe Transport 1.4 §3.8.5.6 · PCIe Transport 1.4 §3.8.5.7 · PCIe Transport 1.4 §3.8.5.8 · PCIe Transport 1.4 §3.8.5.9 · PCIe Transport 1.4 §3.8.5.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5, Figure 47, 文件頁 26, PDF 頁 26</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, 文件頁 26, PDF 頁 26</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, 文件頁 26, PDF 頁 26</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, 文件頁 26-27, PDF 頁 26-27</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, 文件頁 27-28, PDF 頁 27-28</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, 文件頁 28, PDF 頁 28</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, 文件頁 28-29, PDF 頁 28-29</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, 文件頁 29, PDF 頁 29</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, 文件頁 29, PDF 頁 29</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, 文件頁 30, PDF 頁 30</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, 文件頁 30-31, PDF 頁 30-31</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-047 -->
 <article class="field-note" id="figure-PCIE14-FIG-047"><h4>PCIe Figure 47 · PCI Express Capability</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-047-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe47-1">PCIe47-1</span><span class="paragraph-text">PCI Express capability 將裝置能力、控制與連線資訊分組。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5, Figure 47, 文件頁 26, PDF 頁 26</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe47-2">PCIe47-2</span><span class="paragraph-text">先辨識這些欄位屬於 device 還是 link，再把能力值與目前狀態比較，避免把最大能力當實際連線結果。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe47-3">PCIe47-3</span><span class="paragraph-text">PCIe capabilities、control、status 分別描述能做什麼、主機設定及目前結果。Link Capabilities 的上限與 Link Status 的實際協商值要分開；Device Control 的傳輸設定也不能直接當成 NVMe 的最大 I/O 長度。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PXCAP</li><li>PXID</li><li>ID</li><li>PXDCAP</li><li>PXDC</li><li>PXDS</li><li>PXLCAP</li><li>PXLC</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-048 -->
 <article class="field-note" id="figure-PCIE14-FIG-048"><h4>PCIe Figure 48 · Offset PXCAP: PXID - PCI Express Capability ID</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-048-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe48-1">PCIe48-1</span><span class="paragraph-text">PCIe capability header 提供識別與下一項能力位置。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.1, Figure 48, 文件頁 26, PDF 頁 26</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe48-2">PCIe48-2</span><span class="paragraph-text">由 capability list 找到此項後，再讀相對位置的 Device Control；不要把 capability 的 CID 當 NVMe 命令 CID。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NEXT</li><li>CID</li><li>PXCAP</li><li>PXID</li><li>ID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-049 -->
 <article class="field-note" id="figure-PCIE14-FIG-049"><h4>PCIe Figure 49 · Offset PXCAP + 2h: PXCAP - PCI Express Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-049-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe49-1">PCIe49-1</span><span class="paragraph-text">PCIe Capabilities 欄位描述 port 類型、版本等能力資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.2, Figure 49, 文件頁 26, PDF 頁 26</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe49-2">PCIe49-2</span><span class="paragraph-text">判斷裝置角色時讀 DPT；VER 是這個 capability 的版本，不是 NVMe Base Specification 版本。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IMN</li><li>SI</li><li>DPT</li><li>VER</li><li>PXCAP</li><li>SIG</li><li>MSI</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-050 -->
 <article class="field-note" id="figure-PCIE14-FIG-050"><h4>PCIe Figure 50 · Offset PXCAP + 4h: PXDCAP - PCI Express Device Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-050-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe50-1">PCIe50-1</span><span class="paragraph-text">Device Capabilities 描述 Function Level Reset 等硬體能力。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.3, Figure 50, 文件頁 26-27, PDF 頁 26-27</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe50-2">PCIe50-2</span><span class="paragraph-text">控制器要採用 FLR 前，先確認 FLRC；不能因 NVMe 支援重設，就假設每一種 PCIe 重設方式都可用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FLR</dt><dd>Function Level Reset，只重設一個 PCIe Function 的 reset 方法。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FLRC</li><li>CSPLS</li><li>CSPLV</li><li>RER</li><li>L1L</li><li>L0SL</li><li>ETFS</li><li>PFS</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe50-2">PCIe50-2</span><span class="paragraph-text">控制器要採用 FLR 前，先確認 FLRC；不能因 NVMe 支援重設，就假設每一種 PCIe 重設方式都可用。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-051 -->
 <article class="field-note" id="figure-PCIE14-FIG-051"><h4>PCIe Figure 51 · Offset PXCAP + 8h: PXDC - PCI Express Device Control</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-051-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe51-1">PCIe51-1</span><span class="paragraph-text">Device Control 設定 payload、read request 大小與相關行為。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.4, Figure 51, 文件頁 27-28, PDF 頁 27-28</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe51-2">PCIe51-2</span><span class="paragraph-text">MPS 限制 PCIe payload 大小，與 NVMe CC.MPS 的記憶體頁大小不同；兩個 MPS 必須先看所在暫存器。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>IFLR</li><li>MRRS</li><li>ENS</li><li>APPME</li><li>PFE</li><li>ETE</li><li>MPS</li><li>ERO</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>MRRS</dt><dd>Max Read Request Size，PCIe Function 可發出之 read request 的最大大小設定。</dd></div></dl>
-</details></article>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe51-2">PCIe51-2</span><span class="paragraph-text">MPS 限制 PCIe payload 大小，與 NVMe CC.MPS 的記憶體頁大小不同；兩個 MPS 必須先看所在暫存器。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
+
 <!-- figure-table:PCIE14-FIG-052 -->
 <article class="field-note" id="figure-PCIE14-FIG-052"><h4>PCIe Figure 52 · Offset PXCAP + Ah: PXDS - PCI Express Device Status</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-052-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe52-1">PCIe52-1</span><span class="paragraph-text">Device Status 回報 PCIe 交易相關狀態。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.5, Figure 52, 文件頁 28, PDF 頁 28</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe52-2">PCIe52-2</span><span class="paragraph-text">TP 表示交易仍有待處理情況時，不應把它當成 SQ 是否為空的直接判斷；兩個狀態來自不同層。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TP</li><li>APD</li><li>URD</li><li>FED</li><li>NFED</li><li>CED</li><li>PXCAP</li><li>PXDS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-053 -->
 <article class="field-note" id="figure-PCIE14-FIG-053"><h4>PCIe Figure 53 · Offset PXCAP + Ch: PXLCAP - PCI Express Link Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-053-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe53-1">PCIe53-1</span><span class="paragraph-text">Link Capabilities 描述連線能支援的速度、寬度與省電能力。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.6, Figure 53, 文件頁 28-29, PDF 頁 28-29</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe53-2">PCIe53-2</span><span class="paragraph-text">支援 x4 不代表目前一定協商為 x4；實際結果到 Link Status 看，不能只讀能力表。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>PN</li><li>AOC</li><li>LBNC</li><li>DLLLA</li><li>SDERC</li><li>CPM</li><li>L1EL</li><li>L0SEL</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-054 -->
 <article class="field-note" id="figure-PCIE14-FIG-054"><h4>PCIe Figure 54 · Offset PXCAP + 10h: PXLC - PCI Express Link Control</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-054-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe54-1">PCIe54-1</span><span class="paragraph-text">Link Control 設定連線層的控制選項。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.7, Figure 54, 文件頁 29, PDF 頁 29</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe54-2">PCIe54-2</span><span class="paragraph-text">改變 ASPM 相關設定時，影響的是 PCIe link 行為，不等於直接選擇 NVMe 的某個 power state。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HAWD</li><li>ECPM</li><li>ES</li><li>CCC</li><li>RCB</li><li>ASPMC</li><li>PXCAP</li><li>PXLC</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-055 -->
 <article class="field-note" id="figure-PCIE14-FIG-055"><h4>PCIe Figure 55 · Offset PXCAP + 12h: PXLS - PCI Express Link Status</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-055-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe55-1">PCIe55-1</span><span class="paragraph-text">Link Status 回報目前協商的連線速度與寬度。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.8, Figure 55, 文件頁 29, PDF 頁 29</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe55-2">PCIe55-2</span><span class="paragraph-text">能力支援 x4，但 NLW 回報 x2 時，報告實際連線應寫 x2，並將能力與現況分開呈現。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SCC</li><li>NLW</li><li>CLS</li><li>PXCAP</li><li>PXLS</li><li>SIG</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-056 -->
 <article class="field-note" id="figure-PCIE14-FIG-056"><h4>PCIe Figure 56 · Offset PXCAP + 24h: PXDCAP2 - PCI Express Device Capabilities 2</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-056-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe56-1">PCIe56-1</span><span class="paragraph-text">Device Capabilities 2 補充 LTR 等延伸能力。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.9, Figure 56, 文件頁 30, PDF 頁 30</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe56-2">PCIe56-2</span><span class="paragraph-text">主機希望使用 LTR 時先看 LTRS，再看控制欄位是否啟用；能力宣告不會自動替主機設定控制 bit。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MEETP</li><li>EETPS</li><li>EFFS</li><li>OBFFS</li><li>TPHCS</li><li>LTRS</li><li>NPRPR</li><li>AORS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-057 -->
 <article class="field-note" id="figure-PCIE14-FIG-057"><h4>PCIe Figure 57 · Offset PXCAP + 28h: PXDC2 - PCI Express Device Control 2</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-057-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe57-1">PCIe57-1</span><span class="paragraph-text">Device Control 2 啟用相應延伸行為及 timeout 設定。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 57, 文件頁 30-31, PDF 頁 30-31</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe57-2">PCIe57-2</span><span class="paragraph-text">LTRME 與 LTRS 分別是啟用與支援資訊；前者不可脫離後者單獨解釋。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-047">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OBFFE</li><li>LTRME</li><li>CTD</li><li>CTV</li><li>PXCAP</li><li>PXDC2</li><li>SIG</li><li>OBFF</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-link-device">欄位、條件與相關細節：支援上限、要求設定與實際鏈路結果 →</a></div></article>
+<section class="field-guide" id="fields-pcie-aer"><h4 id="fields-heading-pcie-aer">把錯誤是否發生、是否通報與嚴重程度分開</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.13">07.13.</span><span class="paragraph-text">AER 用相同錯誤類型在多張暫存器表中對齊。Status 記錄發生，Mask 決定通報，Severity 決定不可修正錯誤的分類；Header Log 則保留相關交易的內容。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-aer"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>AERUCES／AERUCEM／AERUCESEV</td><td>以同一個錯誤位元位置讀 status、mask、severity，不能把三張表當成三種獨立錯誤。</td><td>例如 Completion Timeout：先查是否發生，再查是否被遮罩，最後查 fatal／non-fatal 分類。</td></tr><tr><td>AERCES／AERCEM</td><td>可修正錯誤也把記錄與遮罩分開，清除 status 要遵循 RWC 等存取屬性。</td><td>遮罩一種錯誤不代表從硬體上消除造成錯誤的條件。</td></tr><tr><td>FEP／MHRC／MHRE／ECC／ECE／EGC／EGE</td><td>第一筆錯誤指標、多重 header 記錄，以及 ECRC 檢查／產生的能力和啟用位元補充診斷關係。</td><td>先有對應 capability，再解讀 enable；不能把 enable=0 當作不支援。</td></tr><tr><td>HB0–HB7／TPL prefix</td><td>Header Log 與選用 Prefix Log 保存封包相關片段，需按有效性及 log 格式重組。</td><td>這是 PCIe 交易資訊，不是 NVMe Error Information Log 的一筆紀錄。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-058">PCIe 58</a><a href="#figure-PCIE14-FIG-059">PCIe 59</a><a href="#figure-PCIE14-FIG-060">PCIe 60</a><a href="#figure-PCIE14-FIG-061">PCIe 61</a><a href="#figure-PCIE14-FIG-062">PCIe 62</a><a href="#figure-PCIE14-FIG-063">PCIe 63</a><a href="#figure-PCIE14-FIG-064">PCIe 64</a><a href="#figure-PCIE14-FIG-065">PCIe 65</a><a href="#figure-PCIE14-FIG-066">PCIe 66</a><a href="#figure-PCIE14-FIG-067">PCIe 67</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.10 · PCIe Transport 1.4 §3.8.6.1 · PCIe Transport 1.4 §3.8.6.2 · PCIe Transport 1.4 §3.8.6.3 · PCIe Transport 1.4 §3.8.6.4 · PCIe Transport 1.4 §3.8.6.5 · PCIe Transport 1.4 §3.8.6.6 · PCIe Transport 1.4 §3.8.6.7 · PCIe Transport 1.4 §3.8.6.8 · PCIe Transport 1.4 §3.8.6.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 58, 文件頁 31, PDF 頁 31</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, 文件頁 31, PDF 頁 31</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, 文件頁 31-32, PDF 頁 31-32</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, 文件頁 32, PDF 頁 32</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, 文件頁 32-33, PDF 頁 32-33</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, 文件頁 33, PDF 頁 33</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, 文件頁 33, PDF 頁 33</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, 文件頁 34, PDF 頁 34</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, 文件頁 34, PDF 頁 34</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, 文件頁 35, PDF 頁 35</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-058 -->
 <article class="field-note" id="figure-PCIE14-FIG-058"><h4>PCIe Figure 58 · Advanced Error Reporting Capability (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-058-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe58-1">PCIe58-1</span><span class="paragraph-text">AER 把錯誤狀態、遮罩、嚴重度與記錄內容分開。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.5.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.5.10, Figure 58, 文件頁 31, PDF 頁 31</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe58-2">PCIe58-2</span><span class="paragraph-text">同一錯誤可以已發生但其回報被遮罩；不能只用遮罩值推論裝置從未出錯。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe58-3">PCIe58-3</span><span class="paragraph-text">AER 的 Status 回報錯誤，Mask 決定回報遮罩，Severity 分類不可修正錯誤的嚴重程度，Header／Prefix Log 提供相關交易資訊。先辨認可修正或不可修正類別，再將同一錯誤的各欄位配對。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>AERCAP</li><li>AERID</li><li>AER</li><li>ID</li><li>AERUCES</li><li>AERUCEM</li><li>AERUCESEV</li><li>AERCES</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-059 -->
 <article class="field-note" id="figure-PCIE14-FIG-059"><h4>PCIe Figure 59 · Offset AERCAP: AERID - AER Capability ID</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-059-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe59-1">PCIe59-1</span><span class="paragraph-text">AER extended capability header 提供 ID、版本及下一項位置。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.1, Figure 59, 文件頁 31, PDF 頁 31</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe59-2">PCIe59-2</span><span class="paragraph-text">從 extended capability 串列定位 AER 後，再以 AERCAP 計算各狀態暫存器位置；它與一般 capability list 的基底規則不同。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NEXT</li><li>CVER</li><li>CID</li><li>AERCAP</li><li>AERID</li><li>AER</li><li>ID</li></ul></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe59-2">PCIe59-2</span><span class="paragraph-text">從 extended capability 串列定位 AER 後，再以 AERCAP 計算各狀態暫存器位置；它與一般 capability list 的基底規則不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AERCAP</dt><dd>Advanced Error Reporting Capability，AER extended capability 結構的基底位置。</dd></div></dl></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-060 -->
 <article class="field-note" id="figure-PCIE14-FIG-060"><h4>PCIe Figure 60 · Offset AERCAP + 4: AERUCES - AER Uncorrectable Error Status Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-060-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe60-1">PCIe60-1</span><span class="paragraph-text">Uncorrectable Error Status 記錄不可修正錯誤類型。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.2</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.2, Figure 60, 文件頁 31-32, PDF 頁 31-32</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe60-2">PCIe60-2</span><span class="paragraph-text">看到某個 status bit 後，連同 severity 與 header log 閱讀，不能只記一個「PCIe error」就省略類型。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TPBES</li><li>AOEBS</li><li>MCBTS</li><li>UIES</li><li>ACSVS</li><li>ECRCES</li><li>ROS</li><li>CAS</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-061 -->
 <article class="field-note" id="figure-PCIE14-FIG-061"><h4>PCIe Figure 61 · Offset AERCAP + 8: AERUCEM - AER Uncorrectable Error Mask Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-061-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe61-1">PCIe61-1</span><span class="paragraph-text">Uncorrectable Error Mask 控制對應錯誤的回報遮罩。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.3, Figure 61, 文件頁 32, PDF 頁 32</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe61-2">PCIe61-2</span><span class="paragraph-text">把 mask 設定後不會修好已存在的傳輸問題；它改的是回報處理，不是錯誤原因。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TPBEM</li><li>AOEBM</li><li>MCBTM</li><li>UIEM</li><li>ACSVM</li><li>ECRCEM</li><li>ROM</li><li>CAM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-062 -->
 <article class="field-note" id="figure-PCIE14-FIG-062"><h4>PCIe Figure 62 · Offset AERCAP + Ch: AERUCESEV - AER Uncorrectable Error Severity Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-062-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe62-1">PCIe62-1</span><span class="paragraph-text">Uncorrectable Error Severity 區分對應錯誤的嚴重度。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.4</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.4, Figure 62, 文件頁 32-33, PDF 頁 32-33</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe62-2">PCIe62-2</span><span class="paragraph-text">同一類錯誤是否視為 fatal，要看相應 severity 設定，而不是從 status bit 編號大小猜嚴重程度。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TPBESEV</li><li>AOEBSEV</li><li>MCBTSEV</li><li>UIESEV</li><li>ACSVSEV</li><li>ECRCESEV</li><li>ROSEV</li><li>CASEV</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-063 -->
 <article class="field-note" id="figure-PCIE14-FIG-063"><h4>PCIe Figure 63 · Offset AERCAP + 10h: AERCES - AER Correctable Error Status Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-063-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe63-1">PCIe63-1</span><span class="paragraph-text">Correctable Error Status 記錄可修正錯誤事件。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.5</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.5, Figure 63, 文件頁 33, PDF 頁 33</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe63-2">PCIe63-2</span><span class="paragraph-text">錯誤已被底層修正，仍可能留下記錄；有 status 不代表某筆 NVMe 資料命令一定失敗。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HLOS</li><li>CIES</li><li>AERCAP</li><li>AERCES</li><li>AER</li><li>SIG</li><li>RWC</li><li>ANFES</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-064 -->
 <article class="field-note" id="figure-PCIE14-FIG-064"><h4>PCIe Figure 64 · Offset AERCAP + 14h: AERCEM - AER Correctable Error Mask Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-064-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe64-1">PCIe64-1</span><span class="paragraph-text">Correctable Error Mask 控制可修正錯誤的回報。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.6</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.6, Figure 64, 文件頁 33, PDF 頁 33</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe64-2">PCIe64-2</span><span class="paragraph-text">主機調整回報頻率相關策略時要辨識 mask 語意；遮罩可修正錯誤不表示停止底層修正機制。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HLOM</li><li>CIEM</li><li>AERCAP</li><li>AERCEM</li><li>AER</li><li>SIG</li><li>ANFEM</li><li>RTM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-065 -->
 <article class="field-note" id="figure-PCIE14-FIG-065"><h4>PCIe Figure 65 · Offset AERCAP + 18h: AERCC - AER Capabilities and Control Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-065-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe65-1">PCIe65-1</span><span class="paragraph-text">AER Capabilities and Control 描述記錄與檢查功能的能力及設定。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.7</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.7, Figure 65, 文件頁 34, PDF 頁 34</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe65-2">PCIe65-2</span><span class="paragraph-text">First Error Pointer 用來協助找最先記錄的錯誤；它不是完整事件時間戳，不能直接推算所有錯誤的精確時間差。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TPLP</li><li>MHRE</li><li>MHRC</li><li>ECE</li><li>ECC</li><li>EGE</li><li>EGC</li><li>FEP</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-066 -->
 <article class="field-note" id="figure-PCIE14-FIG-066"><h4>PCIe Figure 66 · Offset AERCAP + 1Ch: AERHL - AER Header Log Register</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-066-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe66-1">PCIe66-1</span><span class="paragraph-text">Header Log 保存出錯交易的標頭資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.8</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.8, Figure 66, 文件頁 34, PDF 頁 34</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe66-2">PCIe66-2</span><span class="paragraph-text">要理解是哪種 PCIe 交易出問題，先按 HB 欄位重組 header；這裡不是 NVMe SQE 的另一份完整副本。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>AERCAP</li><li>AERHL</li><li>AER</li><li>HB3</li><li>HB2</li><li>HB1</li><li>HB0</li><li>HB7</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-067 -->
 <article class="field-note" id="figure-PCIE14-FIG-067"><h4>PCIe Figure 67 · Offset AERCAP + 38h: AERTLP - AER TLP Prefix Log Register (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-067-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe67-1">PCIe67-1</span><span class="paragraph-text">TLP Prefix Log 補充交易前綴資料。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.6.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.6.9, Figure 67, 文件頁 35, PDF 頁 35</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe67-2">PCIe67-2</span><span class="paragraph-text">若相關交易使用 prefix，將這份記錄與 Header Log 合讀；單靠前綴不能重建所有使用者資料內容。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-058">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>AERCAP</li><li>AERTLP</li><li>AER</li><li>TLP</li><li>TPL1B3</li><li>TPL1B2</li><li>TPL1B1</li><li>TPL1B0</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-aer">欄位、條件與相關細節：把錯誤是否發生、是否通報與嚴重程度分開 →</a></div></article>
+<section class="field-guide" id="fields-pcie-interface-report"><h4 id="fields-heading-pcie-interface-report">裝置介面回報中的範圍與內容</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.14">07.14.</span><span class="paragraph-text">這份報告把處理當時的 NVMe 控制器設定與狀態記錄下來，並提供佇列狀態的雜湊。先確認格式版本，再將每個快照欄位連回它所代表的 property。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-interface-report"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>TNI／TI.VER</td><td>TNI 固定為 4E564D65h，VER=1h 辨認此資料結構版本。</td><td>先確認識別值與版本，再讀後面的位元配置；版本不是 firmware revision。</td></tr><tr><td>IOCQESV／IOSQESV／MPSV／CSSV</td><td>保存當時佇列項目大小、記憶體頁大小與命令集選擇欄位的值，需按各原始欄位編碼換算。</td><td>IOSQESV=6 表示項目大小編碼對應 64 bytes，不是 6 bytes。</td></tr><tr><td>STV／SHSTV／SHNV／ENV／ACPS</td><td>前四者保存關機與啟用狀態；ACPS 另描述從最近 controller reset 到 CONFIG_LOCKED 之間的 Admin 命令處理狀況。</td><td>ACPS=1 包含未處理 Admin 命令及相應 head／tail 為 0 的條件，不能只讀 ENV 就代替這段歷史。</td></tr><tr><td>AQV／ASV／ACV／CV／PMV／PCV</td><td>分別對回 AQA、ASQ、ACQ、CMBMSC、PMRMSC、PMRCTL 的回報值。</td><td>以報告規定的欄位寬度及版本讀取快照，不將整段 bytes 直接當作一般 MMIO 空間重新映射。</td></tr><tr><td>CU／VU／QH</td><td>CU、VU 指出產生 Queue Hash 所採用的 Controller State 格式；QH 對依序串接的相關欄位計算 SHA-384。</td><td>比較兩個 QH 前先確認它們使用的狀態格式及時點；QH 不會直接列出哪筆命令完成。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-069">PCIe 69</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.10, Figure 69, 文件頁 38-39, PDF 頁 38-39</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-069 -->
 <article class="field-note" id="figure-PCIE14-FIG-069"><h4>PCIe Figure 69 · NVMe TDISP DEVICE_INTERFACE_REPORT Reporting Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-069-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe69-1">PCIe69-1</span><span class="paragraph-text">DEVICE_INTERFACE_REPORT 結構描述裝置介面的相應回報資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.10, Figure 69, 文件頁 38-39, PDF 頁 38-39</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe69-2">PCIe69-2</span><span class="paragraph-text">閱讀介面報告時按欄位區分描述與範圍，不把它當成一般 NVMe namespace 的 Identify buffer。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe69-3">PCIe69-3</span><span class="paragraph-text">DEVICE_INTERFACE_REPORT 描述裝置介面的回報結構。依各區域的長度及定義閱讀，並將其中介面資訊與一般 PCIe error log 分開；它不是 CQE 的另一種排列。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TDISP</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-interface-report">欄位、條件與相關細節：裝置介面回報中的範圍與內容 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-eom"><summary>圖表組 06 · 接收端眼圖量測資料的結構 · 9 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">從 header 讀出結果布局，再循 lane descriptor 到量測資料。眼圖先看量測尺度和圖例，確認每個位置表示什麼；Printable Eye 與數值結果對應閱讀，不以圖上開口的像素寬度推論未定義的效能。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.15">07.15.</span><span class="paragraph-text">從 header 讀出結果布局，再循 lane descriptor 到量測資料。眼圖先看量測尺度和圖例，確認每個位置表示什麼；Printable Eye 與數值結果對應閱讀，不以圖上開口的像素寬度推論未定義的效能。</span></p>
 <a class="reading-link" href="#module-eom">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-pcie-eye"><h4 id="fields-heading-pcie-eye">從量測要求走到每條 Lane 的眼圖</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.16">07.16.</span><span class="paragraph-text">先送出量測動作，再讀表頭確認結果與總長度，最後依 descriptor 大小逐條讀 Lane。眼圖代表接收端訊號餘裕；有效狀態與量測條件必須和圖一起保存。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-pcie-eye"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>ACT／MQUAL／TC／EOMIP</td><td>動作、品質與目標控制量測；進行中狀態決定結果是否已可使用。</td><td>發動量測後，先確認完成，再使用本次 lane descriptors；不能把舊結果當成新量測。</td></tr><tr><td>Header／descriptor count／descriptor size</td><td>表頭給出解析整份 log 所需的大小與數量；Get Log offset 指向 log 內位置。</td><td>取得表頭後計算下一段的 offset 與長度，避免把 Printable Eye 區誤認成下一個 descriptor。</td></tr><tr><td>LN／MSTAT／MSCS／TOP／BTM／LFT／RGT</td><td>Lane number 指定對象，狀態與量測步數影響數值是否可用，四個方向描述開口邊界。</td><td>比較兩條 lane 前先確認量測成功及相同條件，再比較上下左右的餘裕。</td></tr><tr><td>EYE／Printable Eye</td><td>圖形是量測資料的呈現；座標、字元格式與縮放需依來源說明讀取。</td><td>圖看起來較寬不一定代表不同測試條件下的訊號更好，先核對量測尺度。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-PCIE14-FIG-068">PCIe 68</a><a href="#figure-PCIE14-FIG-070">PCIe 70</a><a href="#figure-PCIE14-FIG-071">PCIe 71</a><a href="#figure-PCIE14-FIG-072">PCIe 72</a><a href="#figure-PCIE14-FIG-073">PCIe 73</a><a href="#figure-PCIE14-FIG-074">PCIe 74</a><a href="#figure-PCIE14-FIG-075">PCIe 75</a><a href="#figure-PCIE14-FIG-076">PCIe 76</a><a href="#figure-PCIE14-FIG-077">PCIe 77</a></nav>
+<details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.9 · PCIe Transport 1.4 §3.9 · PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.9, Figure 68, 文件頁 37, PDF 頁 37</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, 文件頁 39, PDF 頁 39</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 71, 文件頁 40, PDF 頁 40</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 72, 文件頁 40-41, PDF 頁 40-41</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 73, 文件頁 41, PDF 頁 41</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 74, 文件頁 41, PDF 頁 41</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 75, 文件頁 42-43, PDF 頁 42-43</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 76, 文件頁 43-45, PDF 頁 43-45</p><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 77, 文件頁 46, PDF 頁 46</p></details>
+</section>
 <!-- figure-table:PCIE14-FIG-070 -->
 <article class="field-note" id="figure-PCIE14-FIG-070"><h4>PCIe Figure 70 · Get Log Page - Log Page Identifiers</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-070-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe70-1">PCIe70-1</span><span class="paragraph-text">PCIe 專屬 log 清單提供接收端眼圖量測的入口。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9, Figure 70, 文件頁 39, PDF 頁 39</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe70-2">PCIe70-2</span><span class="paragraph-text">先由 LID 確定要讀 EOM log，再看它的參數及資料格式，不能拿 SMART log 的欄位解釋同樣大小的回覆。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe70-3">PCIe70-3</span><span class="paragraph-text">眼圖量測 log 先用參數及識別值選擇要求，再從 header 取得資料布局，沿 lane descriptors 找個別結果。總長度、lane 數與量測狀態是不同資訊，不能由資料項目數推論量測品質。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CSI1</li><li>CSI</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
+
 <!-- figure-table:PCIE14-FIG-071 -->
 <article class="field-note" id="figure-PCIE14-FIG-071"><h4>PCIe Figure 71 · Size of Physical Interface Receiver Eye Opening Measurement Log Page</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-071-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe71-1">PCIe71-1</span><span class="paragraph-text">EOM log 大小由 header 與實際描述子內容共同決定。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 71, 文件頁 40, PDF 頁 40</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe71-2">PCIe71-2</span><span class="paragraph-text">多一條 lane 或較多量測資料時，回覆長度可能增加；不要永遠用只容納一條 lane 的固定 buffer。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-070">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Size of Physical Interface Receiver Eye Opening Measurement Log Page</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-072 -->
 <article class="field-note" id="figure-PCIE14-FIG-072"><h4>PCIe Figure 72 · Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-072-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe72-1">PCIe72-1</span><span class="paragraph-text">EOM 的 ACT 與 MQUAL 分別指定量測動作與品質要求。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 72, 文件頁 40-41, PDF 頁 40-41</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe72-2">PCIe72-2</span><span class="paragraph-text">要讀既有量測結果與要求開始新量測，是不同 ACT 情境；分段讀取時不要意外重啟量測。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-070">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>ACT</li><li>MQUAL</li><li>LPOU</li><li>LPOL</li><li>EOM</li><li>EOMIP</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>LPOL</dt><dd>Log Page Offset Lower，Get Log Page byte offset 的低 32 bits。</dd></div><div><dt>LPOU</dt><dd>Log Page Offset Upper，Get Log Page byte offset 的高 32 bits。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
+
 <!-- figure-table:PCIE14-FIG-073 -->
 <article class="field-note" id="figure-PCIE14-FIG-073"><h4>PCIe Figure 73 · Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-073-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe73-1">PCIe73-1</span><span class="paragraph-text">EOM 的識別參數選擇此次量測相關的目標。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 73, 文件頁 41, PDF 頁 41</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe73-2">PCIe73-2</span><span class="paragraph-text">先選定控制器／實體介面相關 ID，再比較回覆；不同目標的眼圖不能只因 lane number 相同就直接合併。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-070">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TC</li><li>ID</li><li>EOM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-074 -->
 <article class="field-note" id="figure-PCIE14-FIG-074"><h4>PCIe Figure 74 · Physical Interface Receiver Eye Opening Measurement Log Page</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-074-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe74-1">PCIe74-1</span><span class="paragraph-text">EOM log 將整體 header 與各 lane 量測分開。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 74, 文件頁 41, PDF 頁 41</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe74-2">PCIe74-2</span><span class="paragraph-text">先讀整體資訊確認回覆範圍，再走各 lane descriptor；不能把第一條 lane 的狀態當成全部 lanes 都完成。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-070">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Physical Interface Receiver Eye Opening Measurement Log Page</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-075 -->
 <article class="field-note" id="figure-PCIE14-FIG-075"><h4>PCIe Figure 75 · EOM Header</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-075-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe75-1">PCIe75-1</span><span class="paragraph-text">EOM Header 提供解讀整份量測結果所需的基本資訊。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 75, 文件頁 42-43, PDF 頁 42-43</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe75-2">PCIe75-2</span><span class="paragraph-text">主機先核對量測狀態與資料長度，再解析後續項目；取得一個有效 header 不等於每條 lane 都有有效結果。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-070">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>EOM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-076 -->
 <article class="field-note" id="figure-PCIE14-FIG-076"><h4>PCIe Figure 76 · EOM Lane Descriptor</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-076-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe76-1">PCIe76-1</span><span class="paragraph-text">Lane Descriptor 把 lane 編號、狀態與眼圖邊界放在一起。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 76, 文件頁 43-45, PDF 頁 43-45</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe76-2">PCIe76-2</span><span class="paragraph-text">LN＝2 的 TOP／BTM／LFT／RGT 應與 lane 2 的量測狀態一起看，不能沿用 lane 1 的成功狀態替它背書。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-070">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>MSTAT</li><li>MSCS</li><li>LN</li><li>EYE</li><li>TOP</li><li>BTM</li><li>LFT</li><li>RGT</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-077 -->
 <article class="field-note" id="figure-PCIE14-FIG-077"><h4>PCIe Figure 77 · Example of an Eve Diagram in the Printable Eye Field</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-077-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe77-1">PCIe77-1</span><span class="paragraph-text">眼圖範例協助把數值邊界連回可視的開口形狀。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.9.1.1</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.9.1.1, Figure 77, 文件頁 46, PDF 頁 46</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe77-2">PCIe77-2</span><span class="paragraph-text">把 Lane Descriptor 的四個方向對到圖上，觀察哪個方向開口較小；不能把這張接收端量測圖直接當成 SSD IOPS 圖。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe77-3">PCIe77-3</span><span class="paragraph-text">Printable Eye 把量測結果轉成可讀的眼圖。比較前先確認量測條件和座標尺度，不能把字元或像素的寬度當成規格沒有定義的 I/O 效能數字。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>Example of an Eve Diagram in the Printable Eye Field</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 
-</details></article>
 <!-- figure-table:PCIE14-FIG-068 -->
 <article class="field-note" id="figure-PCIE14-FIG-068"><h4>PCIe Figure 68 · Example of an Eve Diagram in the Printable Eye Field</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:PCIE14-FIG-068-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe68-1">PCIe68-1</span><span class="paragraph-text">Printable Eye 範例用字元排列呈現接收端眼圖。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.9</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.9, Figure 68, 文件頁 37, PDF 頁 37</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="PCIe68-2">PCIe68-2</span><span class="paragraph-text">先辨識水平與垂直方向，再看開口範圍；字元畫出的寬度是量測呈現，不能直接把字元數當吞吐量。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-PCIE14-FIG-077">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>TEE</li><li>VM</li><li>OS</li><li>TDISP</li><li>SR</li><li>IOV</li><li>SIOV</li><li>MI</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-pcie-eye">欄位、條件與相關細節：從量測要求走到每條 Lane 的眼圖 →</a></div></article>
 </details>
 <!-- claim:PCIE14-KEYWORDS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.08">07.08.</span><span class="paragraph-text">shall、may 與 should 的語氣仍由 Base 2.4 定義；Transport 摘要不得自行提高或降低規範強度。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.1, 文件頁 2-3, PDF 頁 28-29</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.17">07.17.</span><span class="paragraph-text">shall、may 與 should 的語氣仍由 Base 2.4 定義；Transport 摘要不得自行提高或降低規範強度。</span></p><details class="source-note"><summary>來源：Base 2.4 §1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §1.4.1, 文件頁 2-3, PDF 頁 28-29</p></details>
 <!-- claim:PCIE14-RESET -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.09">07.09.</span><span class="paragraph-text">PCIe reset 來源包含 Base 定義的 controller/reset 流程與 PCIe 層級 reset。Recovery 設計要以 reset 類型判斷 controller property、queue 與 PCI configuration state。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.3, 文件頁 11-12, PDF 頁 11-12</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.18">07.18.</span><span class="paragraph-text">PCIe reset 來源包含 Base 定義的 controller/reset 流程與 PCIe 層級 reset。Recovery 設計要以 reset 類型判斷 controller property、queue 與 PCI configuration state。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.3</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.3, 文件頁 11-12, PDF 頁 11-12</p></details>
 <!-- claim:PCIE14-SECURITY -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.10">07.10.</span><span class="paragraph-text">power-loss signaling、confidential computing 與 TDISP 把平台事件或隔離狀態映射到 NVMe controller 行為；實作仍需要本次未提供的外部 PCIe／TDISP 規格。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.8-3.8.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.8-3.8.10, 文件頁 35-39, PDF 頁 35-39</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.19">07.19.</span><span class="paragraph-text">power-loss signaling、confidential computing 與 TDISP 把平台事件或隔離狀態映射到 NVMe controller 行為；實作仍需要本次未提供的外部 PCIe／TDISP 規格。</span></p><details class="source-note"><summary>來源：PCIe Transport 1.4 §3.8.8-3.8.10</summary><p>來源：NVME-PCIE-TRANSPORT-1.4, Rev. 1.4, §3.8.8-3.8.10, 文件頁 35-39, PDF 頁 35-39</p></details>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
 <!-- qa:pcie-transport-1.4-memory-mmio -->

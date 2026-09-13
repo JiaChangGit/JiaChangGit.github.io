@@ -46,6 +46,7 @@ class Reading:
         self.by_id = {c["id"]: c for c in claims}
         self.used_claims, self.used_figures = set(), set()
         self.detail_homes = {}
+        self.used_guides = set()
         self.figure_label = None
         self.figure_paragraph_no = 0
         # Define each term once per document, including hidden field sections.
@@ -151,10 +152,10 @@ class Reading:
         self.used_claims.add(c["id"])
         return f'<!-- claim:{c["id"]} -->\n' + self.paragraph(c[text_key(self.lang)]) + self.source([c])
 
-    def table(self, headers, rows, caption=""):
+    def table(self, headers, rows, caption="", labelledby=""):
         if not rows:
             return ""
-        out = ['<div class="table-wrap"><table>']
+        out = ['<div class="table-wrap"><table'+(' aria-labelledby="'+esc(labelledby)+'"' if labelledby else '')+'>']
         if caption:
             out.append('<caption>' + esc(caption) + '</caption>')
         out += ['<thead><tr>' + ''.join('<th scope="col">' + esc(c) + '</th>' for c in headers) + '</tr></thead><tbody>']
@@ -170,28 +171,32 @@ class Reading:
         label = {'NVME-BASE-2.4': 'Base', 'NVME-NVM-CS-1.3': 'NVM', 'NVME-PCIE-TRANSPORT-1.4': 'PCIe'}[f['source_id']]
         self.figure_label = label+f['number']
         self.figure_paragraph_no = 0
-        from scripts.nvme_figure_lessons import lesson, detail
+        from scripts.nvme_figure_lessons import lesson
+        from scripts.nvme_field_guides import get
         teaching = lesson(f)
         out = [f'<!-- figure-table:{f["id"]} -->', f'<article class="field-note" id="figure-{f["id"]}"><h4>{label} Figure {f["number"]} · {esc(f["title"])}</h4>']
         out.append('<div class="figure-takeaway"><h5>一句話重點</h5>'+self.claim(c)+'</div>')
         out.append('<div class="figure-example"><h5>用例子讀懂</h5>'+self.paragraph(teaching['example'])+'</div>')
-        explanation=detail(f)
-        out.append('<details class="figure-detail"><summary>欄位、條件與相關細節</summary>')
-        # A shared rule has one home; each Figure still has its own takeaway
-        # and example above. Do not paste the group introduction into every card.
-        if explanation:
-            key=re.sub(r'\s+','',explanation)
-            if key in self.detail_homes:
-                out.append('<a class="reading-link" href="#figure-'+self.detail_homes[key]+'">共用規則已在前面的相關圖表說明，點此對照。</a>')
-            else:
-                self.detail_homes[key]=f['id']
-                if not similar(explanation,teaching['takeaway']) and not similar(explanation,teaching['example']):
-                    out.append(self.paragraph(explanation))
-        items=f.get('key_items',[])
-        out.append('<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul>'+''.join('<li>'+esc(x)+'</li>' for x in items)+'</ul></div>')
-        out.append(self.terms(' '.join(items)))
-        out.append('</details></article>')
+        guide = get(f)
+        out.append('<div class="figure-detail"><a class="reading-link" href="#fields-'+guide['id']+'">欄位、條件與相關細節：'+esc(guide['title'])+' →</a></div></article>')
         self.figure_label = None
+        return '\n'.join(out)
+
+    def field_guide(self, f):
+        from scripts.nvme_field_guides import get
+        guide = get(f)
+        if guide['id'] in self.used_guides:
+            return ''
+        self.used_guides.add(guide['id'])
+        related = [item for item in self.figures if get(item)['id'] == guide['id']]
+        labels = {'NVME-BASE-2.4':'Base','NVME-NVM-CS-1.3':'NVM','NVME-PCIE-TRANSPORT-1.4':'PCIe'}
+        heading_id = 'fields-heading-'+guide['id']
+        out = ['<section class="field-guide" id="fields-'+guide['id']+'"><h4 id="'+heading_id+'">'+esc(guide['title'])+'</h4>']
+        out.append(self.paragraph(guide['relation']))
+        out.append(self.table(['一起判讀的欄位或標示','如何共同決定操作或結果','帶入情境後怎麼讀'], guide['rows'], labelledby=heading_id))
+        out.append('<nav class="figure-crossrefs" aria-label="對照本組規格圖表">'+''.join('<a href="#figure-'+item['id']+'">'+labels[item['source_id']]+' '+item['number']+'</a>' for item in related)+'</nav>')
+        out.append(self.source([self.by_id[item['id']+'-CLAIM'] for item in related]))
+        out.append('</section>')
         return '\n'.join(out)
 
     def assigned_figures(self):
@@ -230,6 +235,10 @@ class Reading:
         if self.id in {'base-device-self-test','base-hmb-emulation','base-namespace-management','base-boot-partitions','base-telemetry','base-sanitize'}:
             from scripts.nvme_report_split import EXTRA
             extra.update({str(n):self.modules[0]['id'] for n in EXTRA[self.id]})
+        if self.id == 'base-boot-partitions':
+            extra.update({str(n):'boot-protection' for n in (188,189,190,191,192,193,198,199,464,465,466,757,758,760,761,762,338)})
+        if self.id == 'base-telemetry':
+            extra.update({str(n):'telemetry-capture' for n in (203,205,206,207,208,209)})
         unassigned = []
         for f in remainder:
             target = extra.get(f['number'])
@@ -277,21 +286,32 @@ class Reading:
             if not self.tutorial and not any(similar(module['lead'][lang], c[text_key(lang)]) for c in fresh for lang in ('zh', 'en')):
                 out.append(self.paragraph(lead))
             if self.tutorial:
+                from scripts.nvme_course_walkthroughs import COURSES
+                course = COURSES.get(module['id'])
                 out.append('<div class="lesson-explanation">')
-                out.extend(self.paragraph(p) for p in lesson['teaching'])
+                if course:
+                    out.append('<div class="course-walkthrough"><h3>'+esc(course['title'])+'</h3>')
+                    for title, passage in course['steps']:
+                        out.append('<h4>'+esc(title)+'</h4>'+self.paragraph(passage))
+                    out.append('<aside class="course-outcome">'+self.paragraph(course['outcome'])+'</aside></div>')
+                else:
+                    out.extend(self.paragraph(p) for p in lesson['teaching'])
                 out.append(self.source(sources))
                 out.append('</div>')
-            illustration = module_illustration(self.id, module, self.lang)
+            from scripts.nvme_course_visuals import course_illustration
+            illustration = (course_illustration(module['id']) if self.tutorial else '') or module_illustration(self.id, module, self.lang)
             if illustration:
                 out.append(illustration)
                 out.append(self.terms(re.sub('<[^>]+>', ' ', illustration)))
+            if self.tutorial and fresh:
+                out.append('<h3>把流程對回規格條件</h3>')
             out.extend(self.claim(c) for c in fresh)
             rows = module['rows'][self.lang]
             headers = lesson['headers'][self.lang]
             if rows:
                 out.append(self.table(headers[:len(rows[0])], rows, module['title'][self.lang]))
             example = module['example'][self.lang]
-            if example and not any(similar(module['example'][lang], c[text_key(lang)]) for c in sources for lang in ('zh', 'en')):
+            if example and not (self.tutorial and course) and not any(similar(module['example'][lang], c[text_key(lang)]) for c in sources for lang in ('zh', 'en')):
                 out.append('<aside class="worked-example"><h3>' + pair(self.lang, '說明性範例', 'Illustrative example') + '</h3>' + self.paragraph(example) + '</aside>')
             # Normative exceptions live in the claim; simulated debugging is omitted.
             if groups[module['id']]:
@@ -323,7 +343,9 @@ class Reading:
             out.append('<details open class="figure-reading-group" id="reading-' + module['id'] + '"><summary>' + pair(self.lang, '圖表組 ', 'Figure group ') + f'{index:02d} · ' + esc(module['title'][self.lang]) + f' · {len(groups[module["id"]])} 張圖表</summary>')
             out.append(self.paragraph(LESSONS[module['id']]['reading'][self.lang]))
             out.append('<a class="reading-link" href="#module-' + module['id'] + '">' + pair(self.lang, '回到本節的解釋與範例', 'Return to the explanation and example') + '</a>')
-            out.extend(self.figure(f) for f in groups[module['id']])
+            for f in groups[module['id']]:
+                out.append(self.field_guide(f))
+                out.append(self.figure(f))
             out.append('</details>')
         out.extend(self.claim(c) for c in remaining_claims)
         out.append('</section>')

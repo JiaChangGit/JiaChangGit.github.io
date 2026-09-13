@@ -2017,7 +2017,7 @@
       "pdf_pages": "45",
       "normative_keyword": "none",
       "zh_tw": "每個 Dataset Management 描述子都有自己的起點、長度與屬性。",
-      "en": "Figure 47, \"Dataset Management – Range Definition\": Each 16-byte entry contains CATTR, one-based LLB, and 64-bit SLBA; 256 entries require 4096 bytes. Do not apply NLB’s add-one reading the fields.",
+      "en": "Figure 47, \"Dataset Management – Range Definition\": Each 16-byte entry contains CATTR, one-based LLB, and 64-bit SLBA; 256 entries require 4096 bytes. Do not apply NLB’s add-one decoding.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "should",
@@ -3638,7 +3638,7 @@
       "pdf_pages": "73",
       "normative_keyword": "none",
       "zh_tw": "廠商效能屬性需要自己的識別碼及資料長度。",
-      "en": "Figure 105, \"Performance Characteristics – Vendor Specific Performance Attribute\": PAID identifies the vendor payload definition and ATTRL bounds valid VS bytes, at most FE0h. Do not invent a standard reading the fields for an unknown PAID.",
+      "en": "Figure 105, \"Performance Characteristics – Vendor Specific Performance Attribute\": PAID identifies the vendor payload definition and ATTRL bounds valid VS bytes, at most FE0h. Do not invent a standard decoding for an unknown PAID.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall",
@@ -4051,7 +4051,7 @@
       "pdf_pages": "81",
       "normative_keyword": "none",
       "zh_tw": "Controller Descriptor 連到該控制器能使用的儲存媒體資源。",
-      "en": "Figure 119, \"Rate Limiting Controller Descriptor\": A controller descriptor gives the actual access-descriptor count in NNSMAD. It does not use NP/NC add-one reading the fields.",
+      "en": "Figure 119, \"Rate Limiting Controller Descriptor\": A controller descriptor gives the actual access-descriptor count in NNSMAD. It does not use NP/NC add-one decoding.",
       "scope_entry_id": "NVMCS13-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -7047,8 +7047,8 @@
       "printed_pages": "589-594",
       "pdf_pages": "615-620",
       "normative_keyword": "none",
-      "zh_tw": "Set Features 的 unlocked 狀態跨 Controller Level Reset 保留，但 power cycle 後回到 locked；locked-until-power-cycle 也不能用一般 Set 解開。RPMB 保護啟用後，unlocked 遇 power cycle 或 Controller Level Reset 會回到 locked，且啟用本身不可撤回。",
-      "en": "Set Features unlocked state survives a Controller Level Reset but returns to locked after a power cycle; ordinary Set cannot escape locked-until-power-cycle. With RPMB protection enabled, either a power cycle or Controller Level Reset relocks an unlocked partition, and enabling protection is irreversible.",
+      "zh_tw": "Set Features 的 unlocked 狀態跨 Controller Level Reset 保留，但 power cycle 後回到 locked；目前為 locked-until-power-cycle 時，Set Features 變更要求會以 Feature Not Changeable 結束；power cycle 後回到 locked，仍需明確解鎖才能寫入。RPMB 保護啟用後，unlocked 遇 power cycle 或 Controller Level Reset 會回到 locked，且啟用本身不可撤回。",
+      "en": "Set Features unlocked state survives a Controller Level Reset but returns to locked after a power cycle; a Set Features change to locked-until-power-cycle returns Feature Not Changeable; a power cycle returns it to locked, so writing still requires an explicit unlock. With RPMB protection enabled, either a power cycle or Controller Level Reset relocks an unlocked partition, and enabling protection is irreversible.",
       "scope_entry_id": "BASE-BTS-INCLUDE",
       "heading_zh_tw": "兩套保護的 reset 差異",
       "heading_en": "Reset differences between protection mechanisms",
@@ -7824,7 +7824,7 @@
       "pdf_pages": "240-241",
       "normative_keyword": "none",
       "zh_tw": "CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。",
-      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common reading the fields context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
+      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall",
@@ -7860,10 +7860,9 @@
         "reserved"
       ],
       "key_items": [
-        "LID 07h",
-        "LID 08h",
         "LID 15h",
-        "LID 81h"
+        "CSI",
+        "scope"
       ],
       "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242",
@@ -7895,8 +7894,7 @@
       "key_items": [
         "BPCAP",
         "LPA",
-        "SANICAP",
-        "CTRATT"
+        "CTRATT.MDS"
       ],
       "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408",
@@ -7978,9 +7976,8 @@
       ],
       "key_items": [
         "FID 85h",
-        "FID 17h",
-        "FID 0Bh",
-        "FID 16h"
+        "saveable",
+        "namespace specific"
       ],
       "evidence_digest": "63fd6ea122a83192f4ac50be6063d40f41d308d87550239c7a7bc82e899dd617",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485",
@@ -8761,7 +8758,7 @@
       "pdf_pages": "240-241",
       "normative_keyword": "none",
       "zh_tw": "CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。",
-      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common reading the fields context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
+      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall",
@@ -8799,8 +8796,8 @@
       "key_items": [
         "LID 07h",
         "LID 08h",
-        "LID 15h",
-        "LID 81h"
+        "CSI",
+        "scope"
       ],
       "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242",
@@ -8845,7 +8842,7 @@
       "pdf_pages": "243-244",
       "normative_keyword": "none",
       "zh_tw": "每個 LID 的支援與效果描述子補上紀錄特性。",
-      "en": "Figure 211, \"LID Supported and Effects Data Structure\": Check LSUPP before reading the fields that LID's specific parameter. MCDAS bit 0 belongs to this parameter, not to CTHID.",
+      "en": "Figure 211, \"LID Supported and Effects Data Structure\": Check LSUPP before decoding that LID's specific parameter. MCDAS bit 0 belongs to this parameter, not to CTHID.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall",
@@ -8885,10 +8882,8 @@
         "reserved"
       ],
       "key_items": [
-        "BPCAP",
-        "LPA",
-        "SANICAP",
-        "CTRATT"
+        "LPA.Telemetry support",
+        "LPA.DA4S"
       ],
       "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408",
@@ -9425,7 +9420,7 @@
       "pdf_pages": "476-477",
       "normative_keyword": "none",
       "zh_tw": "Sanitize 的 SANACT 決定方法，其他參數依方法才有意義。",
-      "en": "Figure 451, \"Sanitize - Command Dword 10\": Select the action with SANACT before reading the fields method-dependent bits. OWPASS=0 means 16, and EMVS cannot combine with Overwrite/NDAS=1. PREQ bit 11 differs from the namespace command.",
+      "en": "Figure 451, \"Sanitize - Command Dword 10\": Select the action with SANACT before decoding method-dependent bits. OWPASS=0 means 16, and EMVS cannot combine with Overwrite/NDAS=1. PREQ bit 11 differs from the namespace command.",
       "scope_entry_id": "BASE-BTS-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -10210,7 +10205,7 @@
       "pdf_pages": "240-241",
       "normative_keyword": "none",
       "zh_tw": "CDW14 的 CSI、OT、UIDX 決定命令集、offset 模式與相關選擇。",
-      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common reading the fields context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
+      "en": "Figure 208, \"Get Log Page - Command Dword 14\": CSI/OT/UUID Index in CDW14 provide common decoding context. Apply the LID's offset semantics rather than mistaking a byte offset for an index.",
       "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
       "source_keywords": [
         "shall",
@@ -10246,10 +10241,9 @@
         "reserved"
       ],
       "key_items": [
-        "LID 07h",
-        "LID 08h",
-        "LID 15h",
-        "LID 81h"
+        "LID 81h",
+        "CSI",
+        "scope"
       ],
       "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-216, PDF 頁 241-242",
@@ -10307,10 +10301,7 @@
         "reserved"
       ],
       "key_items": [
-        "BPCAP",
-        "LPA",
-        "SANICAP",
-        "CTRATT"
+        "SANICAP"
       ],
       "evidence_digest": "4c0c8ff21cfe488fc8e777e2874c7cd4a2426839baf0ddab85784672757625f0",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-382, PDF 頁 366-408",
@@ -10346,34 +10337,6 @@
       "evidence_digest": "46c14c5a8f8569e681fa3de77123b14d3777e656c94b0d83ea2465204aabd7cf",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.27, Figure 454, 文件頁 453, PDF 頁 479",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.27, Figure 454, printed pages 453, PDF pages 479"
-    },
-    {
-      "id": "BASESANITIZE-BASE-FIG-474-CLAIM",
-      "report_id": "base-sanitize",
-      "source_id": "NVME-BASE-2.4",
-      "revision": "2.4",
-      "section": "5.2.30.1.6",
-      "figure": "474",
-      "table": null,
-      "printed_pages": "466-468",
-      "pdf_pages": "492-494",
-      "normative_keyword": "none",
-      "zh_tw": "Asynchronous Event Configuration 各 bit 選擇對應的通知類別。",
-      "en": "Figure 474, \"Asynchronous Event Configuration - Command Dword 11\": Use TLN bit 10: when TCDA changes from 0h to 1h with TLN enabled, Telemetry Log Changed is reported. This table belongs to 5.2.30.1.6.",
-      "scope_entry_id": "BASE-BTS-DEPENDENCY-INCLUDE",
-      "source_keywords": [
-        "shall not",
-        "shall",
-        "may",
-        "optional",
-        "reserved"
-      ],
-      "key_items": [
-        "TLN"
-      ],
-      "evidence_digest": "723ed76572e27f182ec05f128c095940d1666c4a1785ba635eb7e7dadfdc9b53",
-      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, 文件頁 466-468, PDF 頁 492-494",
-      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.6, Figure 474, printed pages 466-468, PDF pages 492-494"
     },
     {
       "id": "BASENAMESPACE-CAPACITY-MODEL",
@@ -11309,9 +11272,6 @@
         "reserved"
       ],
       "key_items": [
-        "OACS.DSTS",
-        "EDSTT",
-        "DSTO.SDSO",
         "OACS.NMS",
         "RDNCS",
         "MAXDNA",
@@ -12069,9 +12029,6 @@
         "reserved"
       ],
       "key_items": [
-        "OACS.DSTS",
-        "EDSTT",
-        "DSTO.SDSO",
         "HMPRE",
         "HMMIN",
         "HMMINDS",
@@ -12715,36 +12672,6 @@
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.8.1-8.1.8.2, Figure 701, printed pages 616, PDF pages 642"
     },
     {
-      "id": "BASESELFTEST-FIG-036-CLAIM",
-      "report_id": "base-device-self-test",
-      "source_id": "NVME-BASE-2.4",
-      "revision": "2.4",
-      "section": "3.1.4.1",
-      "figure": "36",
-      "table": null,
-      "printed_pages": "55-58",
-      "pdf_pages": "81-84",
-      "normative_keyword": "none",
-      "zh_tw": "CAP 描述控制器能力，主機設定必須落在其支援範圍。",
-      "en": "Figure 36, \"Offset 0h: CAP - Controller Capabilities\": CAP reports capabilities, size limits, and timing limits used to choose valid settings. A support bit does not establish enablement or readiness; read configuration and current-status fields separately.",
-      "scope_entry_id": "BASE-DIAGMEM-DEPENDENCY-INCLUDE",
-      "source_keywords": [
-        "shall not",
-        "shall",
-        "should",
-        "may",
-        "optional",
-        "reserved"
-      ],
-      "key_items": [
-        "DSTRD",
-        "2^(2+DSTRD) bytes"
-      ],
-      "evidence_digest": "232faae6b72aeb960edcd68bc90f40b267e55e98b70898e5a9c28c84d8d15465",
-      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84",
-      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, printed pages 55-58, PDF pages 81-84"
-    },
-    {
       "id": "BASESELFTEST-FIG-093-CLAIM",
       "report_id": "base-device-self-test",
       "source_id": "NVME-BASE-2.4",
@@ -12981,14 +12908,7 @@
       "key_items": [
         "OACS.DSTS",
         "EDSTT",
-        "DSTO.SDSO",
-        "HMPRE",
-        "HMMIN",
-        "HMMINDS",
-        "HMMAXD",
-        "CTRATT.HMBR",
-        "AVSCC.VSCF",
-        "ICSVSCC.SNVSCF"
+        "DSTO.SDSO"
       ],
       "evidence_digest": "b3145c76cc5651b27f67563198febfe881a4c0b93475f4c2bd16068a63529a43",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-364, PDF 頁 366-390",
@@ -13354,7 +13274,7 @@
       "pdf_pages": "9",
       "normative_keyword": "none",
       "zh_tw": "PCIe 暫存器總覽把組態資訊、中斷能力與錯誤回報放在不同區域。",
-      "en": "Figure 3, \"PCI Express Registers\": Use Configuration Space to find BARs and capabilities before entering memory-mapped controller space. Configuration offsets and offsets within a BAR have different origins and are not interchangeable.",
+      "en": "Figure 3, \"PCI Express Registers\": Use Configuration Space to locate BARs and capabilities before entering memory-mapped controller space. Configuration offsets and offsets within a BAR have different origins and are not interchangeable.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -13389,7 +13309,7 @@
       "pdf_pages": "9-10",
       "normative_keyword": "none",
       "zh_tw": "Doorbell 依 queue 編號與 DSTRD 交錯排列。",
-      "en": "Figure 4, \"PCI Express Specific Controller Property Definitions\": Use Configuration Space to find BARs and capabilities before entering memory-mapped controller space. Configuration offsets and offsets within a BAR have different origins and are not interchangeable.",
+      "en": "Figure 4, \"PCI Express Specific Controller Property Definitions\": Use Configuration Space to locate BARs and capabilities before entering memory-mapped controller space. Configuration offsets and offsets within a BAR have different origins and are not interchangeable.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "optional",
@@ -13551,7 +13471,7 @@
       "pdf_pages": "16-17",
       "normative_keyword": "none",
       "zh_tw": "PCIe configuration header 是尋找識別碼、BAR 與 capabilities 的入口。",
-      "en": "Figure 10, \"PCI Express Type 0/1 Common Configuration Space\": Use Configuration Space to find BARs and capabilities before entering memory-mapped controller space. Configuration offsets and offsets within a BAR have different origins and are not interchangeable.",
+      "en": "Figure 10, \"PCI Express Type 0/1 Common Configuration Space\": Use Configuration Space to locate BARs and capabilities before entering memory-mapped controller space. Configuration offsets and offsets within a BAR have different origins and are not interchangeable.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -13573,7 +13493,7 @@
       "pdf_pages": "17",
       "normative_keyword": "none",
       "zh_tw": "VID 與 DID 識別 PCIe 廠商與裝置類型。",
-      "en": "Figure 11, \"Offset 00h: ID - Identifiers\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Find each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
+      "en": "Figure 11, \"Offset 00h: ID - Identifiers\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Locate each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -13659,7 +13579,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Revision ID 表示 PCI 裝置修訂識別。",
-      "en": "Figure 14, \"Offset 08h: RID - Revision ID\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Find each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
+      "en": "Figure 14, \"Offset 08h: RID - Revision ID\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Locate each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -13682,7 +13602,7 @@
       "pdf_pages": "18",
       "normative_keyword": "none",
       "zh_tw": "Class Code 以類別、子類別與程式介面識別裝置功能。",
-      "en": "Figure 15, \"Offset 09h: CC - Class Code\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Find each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
+      "en": "Figure 15, \"Offset 09h: CC - Class Code\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Locate each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -13751,7 +13671,7 @@
       "pdf_pages": "19",
       "normative_keyword": "none",
       "zh_tw": "Header Type 說明組態 header 類型及多功能資訊。",
-      "en": "Figure 18, \"Offset 0Eh: HTYPE - Header Type\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Find each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
+      "en": "Figure 18, \"Offset 0Eh: HTYPE - Header Type\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Locate each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -13913,7 +13833,7 @@
       "pdf_pages": "20",
       "normative_keyword": "none",
       "zh_tw": "Subsystem Identifiers 識別產品或 subsystem 的廠商與型號資訊。",
-      "en": "Figure 24, \"Offset 2Ch: SS - Subsystem Identifiers\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Find each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
+      "en": "Figure 24, \"Offset 2Ch: SS - Subsystem Identifiers\": Device identity, revision, class code, header type, and subsystem identity describe different attributes. Locate each Configuration Space field before interpretation. PI in PCIe Class Code is not NVM Protection Information.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -14403,7 +14323,7 @@
       "pdf_pages": "24",
       "normative_keyword": "none",
       "zh_tw": "MSI-X 把向量表與 pending bitmap 放到指定記憶體區域。",
-      "en": "Figure 42, \"MSI-X Capability (Optional)\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA find the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
+      "en": "Figure 42, \"MSI-X Capability (Optional)\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA locate the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall not",
@@ -14437,7 +14357,7 @@
       "pdf_pages": "24",
       "normative_keyword": "none",
       "zh_tw": "MSI-X capability header 用於識別與串接能力清單。",
-      "en": "Figure 43, \"Offset MSIXCAP: MXID - MSI-X Identifiers\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA find the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
+      "en": "Figure 43, \"Offset MSIXCAP: MXID - MSI-X Identifiers\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA locate the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may"
@@ -14466,7 +14386,7 @@
       "pdf_pages": "24-25",
       "normative_keyword": "none",
       "zh_tw": "MSI-X 控制欄位區分啟用、整體遮罩與表格大小。",
-      "en": "Figure 44, \"Offset MSIXCAP + 2h: MXC - MSI-X Message Control\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA find the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
+      "en": "Figure 44, \"Offset MSIXCAP + 2h: MXC - MSI-X Message Control\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA locate the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -14497,7 +14417,7 @@
       "pdf_pages": "25",
       "normative_keyword": "none",
       "zh_tw": "MSI-X Table 的 BIR 選 BAR，offset 選 BAR 內位置。",
-      "en": "Figure 45, \"Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA find the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
+      "en": "Figure 45, \"Offset MSIXCAP + 4h: MTAB - MSI-X Table Offset / Table BIR\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA locate the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -14528,7 +14448,7 @@
       "pdf_pages": "25",
       "normative_keyword": "none",
       "zh_tw": "PBA 有自己的 BAR 選擇與 offset。",
-      "en": "Figure 46, \"Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA find the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
+      "en": "Figure 46, \"Offset MSIXCAP + 8h: MPBA - MSI-X PBA Offset / PBA BIR\": MSI-X control describes enablement, Function Mask, and table size. MTAB/MPBA locate the Table and Pending Bit Array with a BIR and offset. Select the BAR using BIR before adding the offset; the whole field is not an absolute address.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "may",
@@ -15276,7 +15196,7 @@
       "pdf_pages": "39",
       "normative_keyword": "none",
       "zh_tw": "PCIe 專屬 log 清單提供接收端眼圖量測的入口。",
-      "en": "Figure 70, \"Get Log Page - Log Page Identifiers\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 70, \"Get Log Page - Log Page Identifiers\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -15299,7 +15219,7 @@
       "pdf_pages": "40",
       "normative_keyword": "none",
       "zh_tw": "EOM log 大小由 header 與實際描述子內容共同決定。",
-      "en": "Figure 71, \"Size of Physical Interface Receiver Eye Opening Measurement Log Page\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 71, \"Size of Physical Interface Receiver Eye Opening Measurement Log Page\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -15321,7 +15241,7 @@
       "pdf_pages": "40-41",
       "normative_keyword": "none",
       "zh_tw": "EOM 的 ACT 與 MQUAL 分別指定量測動作與品質要求。",
-      "en": "Figure 72, \"Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 72, \"Physical Interface Receiver Eye Opening Measurement Log Specific Parameter Field\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -15352,7 +15272,7 @@
       "pdf_pages": "41",
       "normative_keyword": "none",
       "zh_tw": "EOM 的識別參數選擇此次量測相關的目標。",
-      "en": "Figure 73, \"Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 73, \"Physical Interface Receiver Eye Opening Measurement Log Specific Identifier Field\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall"
@@ -15378,7 +15298,7 @@
       "pdf_pages": "41",
       "normative_keyword": "none",
       "zh_tw": "EOM log 將整體 header 與各 lane 量測分開。",
-      "en": "Figure 74, \"Physical Interface Receiver Eye Opening Measurement Log Page\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 74, \"Physical Interface Receiver Eye Opening Measurement Log Page\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -15400,7 +15320,7 @@
       "pdf_pages": "42-43",
       "normative_keyword": "none",
       "zh_tw": "EOM Header 提供解讀整份量測結果所需的基本資訊。",
-      "en": "Figure 75, \"EOM Header\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 75, \"EOM Header\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [],
       "key_items": [
@@ -15422,7 +15342,7 @@
       "pdf_pages": "43-45",
       "normative_keyword": "none",
       "zh_tw": "Lane Descriptor 把 lane 編號、狀態與眼圖邊界放在一起。",
-      "en": "Figure 76, \"EOM Lane Descriptor\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to find results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
+      "en": "Figure 76, \"EOM Lane Descriptor\": Eye-measurement logs use parameters and identifiers to select requests, a header to describe layout, and lane descriptors to locate results. Total length, lane count, and measurement status are separate; entry count does not establish measurement quality.",
       "scope_entry_id": "PCIE14-INCLUDE",
       "source_keywords": [
         "shall",
@@ -15553,7 +15473,7 @@
       "pdf_pages": "237-238",
       "normative_keyword": "none",
       "zh_tw": "SEL=011b 時，CQE.DW0 以 CHANG、NSSPEC、SVBL 回報是否可變更、是否 namespace-specific、是否可 save。這三個 capability bits 與 Feature value 是兩種不同資料，不能混解。",
-      "en": "With SEL=011b, CQE.DW0 reports CHANG, NSSPEC, and SVBL: changeable, namespace-specific, and saveable. These capability bits are distinct from the Feature value and must not be interpreted values as one.",
+      "en": "With SEL=011b, CQE.DW0 reports CHANG, NSSPEC, and SVBL: changeable, namespace-specific, and saveable. These capability bits are distinct from the Feature value and must not be decoded as one.",
       "scope_entry_id": "BASE-POWER-INCLUDE",
       "heading_zh_tw": "CHANG／NSSPEC／SVBL",
       "heading_en": "CHANG/NSSPEC/SVBL",
@@ -18007,7 +17927,7 @@
       "pdf_pages": "171-181",
       "normative_keyword": "none",
       "zh_tw": "status 要先解 Status Code Type（SCT），再解 Status Code（SC），同時檢查 Do Not Retry（DNR）等控制 bit；數值不能脫離 SCT 單獨解讀。",
-      "en": "Status reading the fields starts with Status Code Type (SCT), then Status Code (SC), together with control bits such as Do Not Retry (DNR). An SC value is not interpreted without its SCT.",
+      "en": "Status decoding starts with Status Code Type (SCT), then Status Code (SC), together with control bits such as Do Not Retry (DNR). An SC value is not interpreted without its SCT.",
       "scope_entry_id": "BASE4-INCLUDE",
       "heading_zh_tw": "SCT、SC 與 DNR",
       "heading_en": "SCT, SC, and DNR",
@@ -20133,7 +20053,7 @@
       "pdf_pages": "92",
       "normative_keyword": "none",
       "zh_tw": "AQA 分別設定 Admin SQ 與 CQ 的項目數。",
-      "en": "Figure 44, \"Offset 24h: AQA - Admin Queue Attributes\": AQA describes Admin SQ/CQ sizes; ASQ and ACQ provide their base addresses. Read the fields queue counts under their field rules and align addresses to the selected page size. Correct size does not establish correct alignment.",
+      "en": "Figure 44, \"Offset 24h: AQA - Admin Queue Attributes\": AQA describes Admin SQ/CQ sizes; ASQ and ACQ provide their base addresses. Decode queue counts under their field rules and align addresses to the selected page size. Correct size does not establish correct alignment.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "reserved"
@@ -20159,7 +20079,7 @@
       "pdf_pages": "92",
       "normative_keyword": "none",
       "zh_tw": "ASQ 保存 Admin Submission Queue 的主機記憶體基底位址。",
-      "en": "Figure 45, \"Offset 28h: ASQ - Admin Submission Queue Base Address\": AQA describes Admin SQ/CQ sizes; ASQ and ACQ provide their base addresses. Read the fields queue counts under their field rules and align addresses to the selected page size. Correct size does not establish correct alignment.",
+      "en": "Figure 45, \"Offset 28h: ASQ - Admin Submission Queue Base Address\": AQA describes Admin SQ/CQ sizes; ASQ and ACQ provide their base addresses. Decode queue counts under their field rules and align addresses to the selected page size. Correct size does not establish correct alignment.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -20187,7 +20107,7 @@
       "pdf_pages": "93",
       "normative_keyword": "none",
       "zh_tw": "ACQ 保存 Admin Completion Queue 的主機記憶體基底位址。",
-      "en": "Figure 46, \"Offset 30h: ACQ - Admin Completion Queue Base Address\": AQA describes Admin SQ/CQ sizes; ASQ and ACQ provide their base addresses. Read the fields queue counts under their field rules and align addresses to the selected page size. Correct size does not establish correct alignment.",
+      "en": "Figure 46, \"Offset 30h: ACQ - Admin Completion Queue Base Address\": AQA describes Admin SQ/CQ sizes; ASQ and ACQ provide their base addresses. Decode queue counts under their field rules and align addresses to the selected page size. Correct size does not establish correct alignment.",
       "scope_entry_id": "BASE3-INCLUDE",
       "source_keywords": [
         "shall",
@@ -21246,7 +21166,7 @@
       "pdf_pages": "31",
       "normative_keyword": "none",
       "zh_tw": "NVMe 以 byte、word、dword 表示欄位位置；一個 word 為 2 bytes，一個 dword 為 4 bytes。解欄位時先確認 byte 與 bit 編號。",
-      "en": "NVMe expresses field locations in bytes, words, and dwords. A word is two bytes and a dword is four bytes; field reading the fields starts by confirming byte and bit numbering.",
+      "en": "NVMe expresses field locations in bytes, words, and dwords. A word is two bytes and a dword is four bytes; field decoding starts by confirming byte and bit numbering.",
       "scope_entry_id": "BASE12-INCLUDE",
       "heading_zh_tw": "byte、word 與 dword",
       "heading_en": "Byte, word, and dword relationships",

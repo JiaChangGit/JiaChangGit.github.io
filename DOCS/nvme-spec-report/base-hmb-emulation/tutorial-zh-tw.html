@@ -135,6 +135,17 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
   .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
   .edition-tutorial main { max-width: none; }
 }
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
 <div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-hmb-ownership-lifecycle">01 HMB 記憶體的提供、使用與收回</a><a href="#module-hmb-command-math">02 HMB 的描述子、大小與位址</a><a href="#module-hmb-reset-power">03 HMB 在電源轉換與 Reset 後的狀態</a><a href="#module-encoded-boundary-safety">04 DSTRD、NDT 與 NDM 的單位</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
@@ -159,6 +170,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </div>
 <figure><figcaption><strong>Host Memory Buffer 的使用期間</strong></figcaption><ol class="flow-steps"><li>Host 配置記憶體，建立 descriptor list。</li><li>Host 透過 HMB Feature 將記憶體範圍提供給 controller。</li><li>啟用期間，host 維持描述的記憶體範圍有效。</li><li>停用並完成規格要求的交接後，host 才能回收記憶體。</li></ol><figcaption>記憶體屬於 host，但不能在 controller 仍可使用時提前回收。</figcaption></figure>
 <dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEHMB-HMB-CAPABILITY -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">HMPRE=0 表示 HMB 不支援；非零時以 4 KiB units 表示 preferred size，HMMIN 表示 minimum request。HMMINDS 與 HMMAXD 是 descriptor 限制。即使 host 無法提供 HMB，controller 仍必須（shall）正常運作。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HMMINDS</dt><dd>Host Memory Buffer Minimum Descriptor Entry Size，每個可用 descriptor 的最低 4 KiB-unit 大小。</dd></div><div><dt>HMMAXD</dt><dd>Host Memory Maximum Descriptor Entries，controller 可使用的 descriptor entry 上限。</dd></div><div><dt>HMMIN</dt><dd>Host Memory Buffer Minimum Size，以 4 KiB units 回報 controller 要求的最低大小。</dd></div><div><dt>HMPRE</dt><dd>Host Memory Buffer Preferred Size，以 4 KiB units 回報 controller 偏好的配置大小。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1, 8.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.2.4, 文件頁 357, 362, 744, PDF 頁 383, 388, 770</p></details>
 <!-- claim:BASEHMB-HMB-OWNERSHIP -->
@@ -173,20 +185,23 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-hmb-command-math"><h2 id="heading-hmb-command-math"><span class="section-number">02</span> HMB 的描述子、大小與位址</h2>
 <div class="lesson-explanation">
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">HMB 的能力值與實際配置值不是全部使用同一單位。HMPRE、HMMIN 使用 4 KiB 單位；HSIZE、BSIZE 使用 CC.MPS 所指定的記憶體頁大小。計算總量時，先把每種欄位換成 bytes，再比較建議值、下限及實際提供量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BSIZE</dt><dd>Buffer Size，HMB descriptor 中以 CC.MPS pages 表示的連續範圍長度。</dd></div><div><dt>HSIZE</dt><dd>Host Memory Buffer Size，以 CC.MPS memory-page units 表示的 HMB 總大小。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">描述子清單列出每個區域的起點與大小。清單本身有自己的位址及對齊要求，清單內的記憶體區域也有另外的對齊要求。兩個 BSIZE=32 的區域，在 page size=4096 bytes 時各有 128 KiB，合計 256 KiB；這個加總再與 HSIZE 對照。</span></p>
+<div class="course-walkthrough"><h3>由兩個區域算出完整 HMB</h3>
+<h4>列出每份資料的單位</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">假設 CC.MPS 對應 8 KiB page，兩個 descriptor 的 BSIZE 都是 16，則各提供 128 KiB，合計 256 KiB。這個例子刻意不用 4 KiB page，讓固定單位與目前頁單位的差別看得出來。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BSIZE</dt><dd>Buffer Size，HMB descriptor 中以 CC.MPS pages 表示的連續範圍長度。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
+<h4>將清單加總對回 HSIZE</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">合計 32 個目前 page，因此 HSIZE=32。若 HMPRE=64，它使用固定 4 KiB 單位，也代表 256 KiB。HSIZE 與 HMPRE 原值不同，換成 bytes 後卻可能相同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HSIZE</dt><dd>Host Memory Buffer Size，以 CC.MPS memory-page units 表示的 HMB 總大小。</dd></div></dl>
+<h4>再檢查位置與生命週期</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">HMDLAL、HMDLAU 指清單，BADD 指每個區域。主機不只要確保數量加總正確，也要讓清單與區域在控制器可使用期間保持有效，停用交接完成後才收回。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BADD</dt><dd>Buffer Address，HMB descriptor 中依 CC.MPS 對齊的 memory-page address。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">數量相等不等於配置相同；容量、地址及可使用期間都要成立。</span></p></aside></div>
 <details class="source-note"><summary>來源：Base 2.4 §5.2.30, 5.2.30.2.3 · Base 2.4 §5.2.30.2.3 · Base 2.4 §5.2.12, 5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEHMB-HMB-SET-COMMAND -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">Set Features 使用 FID=0Dh；CDW11 放 EHM、MR、HMNARE，CDW12 放 HSIZE，CDW13／14 組成 64-bit HMDL address，CDW15 是 HMDLEC。HMDL address 必須 16-byte aligned；HMDLEC=0 必須回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HMDLEC</dt><dd>Host Memory Descriptor List Entry Count，HMDL 中有效 entries 的數量。</dd></div><div><dt>HMNARE</dt><dd>Host Memory Non-operational Access Restriction Enable，配置 non-operational HMB access policy 的 bit。</dd></div><div><dt>HMDL</dt><dd>Host Memory Descriptor List，連續存放 16-byte HMB descriptors 的 host-memory array。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div><div><dt>MR</dt><dd>Memory Return，表示 host 歸還完全相同的舊 HMB size、addresses、descriptors 與 contents。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30, 5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">Set Features 使用 FID=0Dh；CDW11 放 EHM、MR、HMNARE，CDW12 放 HSIZE，CDW13／14 組成 64-bit HMDL address，CDW15 是 HMDLEC。HMDL address 必須 16-byte aligned；HMDLEC=0 必須回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HMDLEC</dt><dd>Host Memory Descriptor List Entry Count，HMDL 中有效 entries 的數量。</dd></div><div><dt>HMNARE</dt><dd>Host Memory Non-operational Access Restriction Enable，配置 non-operational HMB access policy 的 bit。</dd></div><div><dt>HMDL</dt><dd>Host Memory Descriptor List，連續存放 16-byte HMB descriptors 的 host-memory array。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div><div><dt>MR</dt><dd>Memory Return，表示 host 歸還完全相同的舊 HMB size、addresses、descriptors 與 contents。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30, 5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 5.2.30.2.3, 文件頁 456-459, 516-518, PDF 頁 482-485, 542-544</p></details>
 <!-- claim:BASEHMB-HMB-DESCRIPTORS -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">HMDL 是連續的 16-byte descriptor array；每個 entry 的 BADD 必須依 CC.MPS memory page size 對齊，BSIZE 以相同 page units 表示連續長度。BSIZE=0 的 entry 由 controller 忽略；HSIZE 應與可用 descriptors 的 page 數相符。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BADD</dt><dd>Buffer Address，HMB descriptor 中依 CC.MPS 對齊的 memory-page address。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">HMDL 是連續的 16-byte descriptor array；每個 entry 的 BADD 必須依 CC.MPS memory page size 對齊，BSIZE 以相同 page units 表示連續長度。BSIZE=0 的 entry 由 controller 忽略；HSIZE 應與可用 descriptors 的 page 數相符。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 517-518, PDF 頁 543-544</p></details>
 <!-- claim:BASEHMB-HMB-NUMERIC -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">說明性範例：CC.MPS=0 代表 4 KiB page；HSIZE=64 代表 256 KiB。若 HMDL=00000012_34567000h、HMDLEC=2，CDW13=34567000h、CDW14=00000012h、CDW15=00000002h。兩個 descriptor 各 BSIZE=32 pages 時，合計正好 64 pages。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">說明性範例：CC.MPS=0 代表 4 KiB page；HSIZE=64 代表 256 KiB。若 HMDL=00000012_34567000h、HMDLEC=2，CDW13=34567000h、CDW14=00000012h、CDW15=00000002h。兩個 descriptor 各 BSIZE=32 pages 時，合計正好 64 pages。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-518, PDF 頁 542-544</p></details>
 <!-- claim:BASEHMB-HMB-GET -->
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">Get Features 使用 FID=0Dh；SEL≠supported-capabilities 成功時，CQE.DW0 回 EHM、HMNARE、HMNAR，data buffer 回 4 KiB Attributes data structure，包括 HSIZE、HMDL address 與 HMDLEC。『已啟用』與『目前正在限制 access』是不同狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HMNAR</dt><dd>Host Memory Non-operational Access Restricted，回報 restriction 此刻是否實際生效的 state bit。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12, 5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545</p></details>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">Get Features 使用 FID=0Dh；SEL≠supported-capabilities 成功時，CQE.DW0 回 EHM、HMNARE、HMNAR，data buffer 回 4 KiB Attributes data structure，包括 HSIZE、HMDL address 與 HMDLEC。『已啟用』與『目前正在限制 access』是不同狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HMNAR</dt><dd>Host Memory Non-operational Access Restricted，回報 restriction 此刻是否實際生效的 state bit。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12, 5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 5.2.30.2.3, 文件頁 209-212, 518-519, PDF 頁 235-238, 544-545</p></details>
 <div class="table-wrap"><table><caption>HMB 的描述子、大小與位址</caption><thead><tr><th scope="col">大小或位址欄位</th><th scope="col">使用的單位或對齊</th><th scope="col">描述的資源</th></tr></thead><tbody><tr><td>HMPRE/HMMIN</td><td>4 KiB units</td><td>capability request</td></tr><tr><td>HSIZE/BSIZE</td><td>CC.MPS units</td><td>configured memory</td></tr><tr><td>HMDL address</td><td>16-byte aligned</td><td>CDW13 low + CDW14 high</td></tr><tr><td>BADD</td><td>CC.MPS aligned</td><td>BSIZE=0 entry ignored</td></tr></tbody></table></div>
-<aside class="worked-example"><h3>說明性範例</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">CC.MPS=0、HSIZE=64 時是 256 KiB。HMDL=00000012_34567000h、HMDLEC=2，故 CDW13=34567000h、CDW14=00000012h、CDW15=2。兩個 BSIZE=32 的 ranges 各 128 KiB，合計 256 KiB。</span></p></aside>
 <a class="reading-link" href="#reading-hmb-command-math">閱讀相關規格圖表 → HMB 的描述子、大小與位址</a>
 </section>
 <section class="lesson" id="module-hmb-reset-power"><h2 id="heading-hmb-reset-power"><span class="section-number">03</span> HMB 在電源轉換與 Reset 後的狀態</h2>
@@ -195,6 +210,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">MR=1 表示交回符合規格要求的原有 HMB，不只是「容量一樣」。記憶體範圍、描述子清單位置和內容等都要符合相同條件。若提供了一份新配置，即使大小相等，也不能直接用原有記憶體的方式宣告，因為控制器需要重新建立對其內容的理解。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3 · Base 2.4 §8.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-519, PDF 頁 542-545</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.2.4, 文件頁 744, PDF 頁 770</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEHMB-HMB-NONOP -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">HMNARE 只有 Identify.CTRATT.HMBR=1 時可啟用。HMNARE 是 policy，HMNAR 是 controller 此刻是否真的因 non-operational state 而被限制；Admin commands 與其啟動的 background operations 有明文例外。NOPPME 不改變這項 HMB restriction。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NOPPME</dt><dd>Non-Operational Power State Permissive Mode Enable，控制 controller background work 能否暫時超過 non-operational power limit。</dd></div><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, 文件頁 516-519, PDF 頁 542-545</p></details>
 <!-- claim:BASEHMB-HMB-RESET-RTD3 -->
@@ -208,6 +224,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">例如 DSTRD=4 得到 4×2^4=64 bytes 的間距。NDT=0100h 則是 256 Dwords，也就是 1024 bytes，沒有加 1。廠商自訂命令還要先確認採用哪種標準格式及適用能力；長度欄位只描述傳輸量，不能據此猜測廠商資料的內容。</span></p>
 <details class="source-note"><summary>來源：Base 2.4 §3.1.4.1, 8.2.3 · Base 2.4 §5.2.14.2.1, 8.1.29 · Base 2.4 §4.1.1, 8.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 8.1.29, 文件頁 356, 374, 733, PDF 頁 382, 400, 759</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, 8.1.29, 文件頁 143, 733, PDF 頁 169, 759</p></details>
 </div>
+<h3>把流程對回規格條件</h3>
 <!-- claim:BASEHMB-DOORBELL-STRIDE -->
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">CAP.DSTRD 的實際間距是 2^(2+DSTRD) bytes。DSTRD=0／2／4 分別得到 4／16／64 bytes；software emulation 可用 64-byte stride 把 doorbells 分散到 cacheline，硬體 NVMe interface 的 expected value 是 0h。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1, 8.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, 8.2.3, 文件頁 56, 744, PDF 頁 82, 770</p></details>
 <!-- claim:BASEHMB-VENDOR-GATE -->
@@ -225,204 +242,172 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <details open class="figure-reading-group" id="reading-hmb-ownership-lifecycle"><summary>圖表組 01 · HMB 記憶體的提供、使用與收回 · 4 張圖表</summary>
 <p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">沿時間線標出 enable 完成、disable 提交與 disable 完成，對每個區間註明主機和控制器的使用權限。描述子中的位址在整個使用期間都必須保持有效，而不是只在送命令時有效。</span></p>
 <a class="reading-link" href="#module-hmb-ownership-lifecycle">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-hmb"><h4 id="fields-heading-base-hmb">描述記憶體清單與交接使用權</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">主機配置記憶體、建立描述子，再以 HMB Feature 提供清單。總容量、描述子數量、每段位址與每段大小都要互相一致。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-hmb"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>EHM／MR／CTZ／HMNARE</td><td>啟用、記憶體返回及相關可選行為需依各 bit 的條件配合使用。</td><td>重新提供原記憶體與提供新記憶體是不同情境，不能一概保留原內容假設。</td></tr><tr><td>HSIZE／HMDLEC</td><td>總容量依 CC.MPS 的 page 單位解讀；HMDLEC 是清單中的描述子數。</td><td>總容量為 16 pages，不代表必須有 16 個描述子；一個描述子可以描述多個 pages。</td></tr><tr><td>HMDLUA／HMDLLA；BADD／BSIZE</td><td>高低欄位組成清單位址；每個描述子的 BADD 與 BSIZE 再給出實際記憶體段。</td><td>清單位址要求與資料區域 page 對齊分別檢查，不能用其中一個通過替代另一個。</td></tr><tr><td>HMNAR 與主機回收</td><td>完成回覆的相關狀態與使用權交接連在一起。</td><td>控制器仍可使用記憶體時，主機不能提前把相同範圍拿去保存其他資料。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEHMB-FIG-545">Base 545</a><a href="#figure-BASEHMB-FIG-546">Base 546</a><a href="#figure-BASEHMB-FIG-547">Base 547</a><a href="#figure-BASEHMB-FIG-548">Base 548</a><a href="#figure-BASEHMB-FIG-549">Base 549</a><a href="#figure-BASEHMB-FIG-550">Base 550</a><a href="#figure-BASEHMB-FIG-551">Base 551</a><a href="#figure-BASEHMB-FIG-552">Base 552</a><a href="#figure-BASEHMB-FIG-553">Base 553</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 545, 文件頁 516-517, PDF 頁 542-543</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 546, 文件頁 517, PDF 頁 543</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 547, 文件頁 517, PDF 頁 543</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 548, 文件頁 517, PDF 頁 543</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 549, 文件頁 518, PDF 頁 544</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 550, 文件頁 518, PDF 頁 544</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 551, 文件頁 518, PDF 頁 544</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 552, 文件頁 518-519, PDF 頁 544-545</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 553, 文件頁 519, PDF 頁 545</p></details>
+</section>
 <!-- figure-table:BASEHMB-FIG-545 -->
 <article class="field-note" id="figure-BASEHMB-FIG-545"><h4>Base Figure 545 · Host Memory Buffer - Command Dword 11</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-545-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base545-1">Base545-1</span><span class="paragraph-text">HMB 控制欄位分別表示啟用、記憶體返回及相關要求。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 545, 文件頁 516-517, PDF 頁 542-543</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base545-2">Base545-2</span><span class="paragraph-text">EHM 啟用 HMB，MR 涉及先前記憶體返回的情境；兩個 bit 不是「新記憶體地址」與「舊地址」的編碼。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base545-3">Base545-3</span><span class="paragraph-text">HMB 命令先用 EHM、MR 等選擇啟用及記憶體處理方式，再提供 HSIZE、描述子清單位址與 HMDLEC。HSIZE 以 CC.MPS 頁計算，清單位址低／高部分要組合為完整位址。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>CTZ</li><li>HMNARE</li><li>MR</li><li>EHM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-552 -->
 <article class="field-note" id="figure-BASEHMB-FIG-552"><h4>Base Figure 552 · Host Memory Buffer - Completion Queue Entry Dword 0</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-552-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base552-1">Base552-1</span><span class="paragraph-text">HMB 完成回覆中的 HMNAR 要連回此次要求的條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 552, 文件頁 518-519, PDF 頁 544-545</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base552-2">Base552-2</span><span class="paragraph-text">收到非零回覆前先確認 HMNARE 與 EHM 的設定；不能把任意 DW0 值都當成實際配置頁數。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base552-3">Base552-3</span><span class="paragraph-text">HMB 完成欄位中的 HMNAR 描述目前限制狀態，Attributes 結構回報已提供的大小與描述子清單資訊。設定 HMNARE 與目前 HMNAR 可能不同；取得相同大小也不能證明地址與內容全相同。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HMNAR</li><li>HMNARE</li><li>EHM</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-553 -->
 <article class="field-note" id="figure-BASEHMB-FIG-553"><h4>Base Figure 553 · Host Memory Buffer - Attributes Data Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-553-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base553-1">Base553-1</span><span class="paragraph-text">HMB Attributes 回報目前採用的大小及描述子清單資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 553, 文件頁 519, PDF 頁 545</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base553-2">Base553-2</span><span class="paragraph-text">讀回 HSIZE、HMDLAL／HMDLAU、HMDLEC 後，可與先前設定分別對照；成功設定命令的 CQE 不包含這份完整屬性表。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-552">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HSIZE</li><li>HMDLAL</li><li>HMDLAU</li><li>HMDLEC</li><li>4096 bytes</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
+<section class="field-guide" id="fields-base-hmb-capability"><h4 id="fields-heading-base-hmb-capability">記憶體建議、最小要求與描述子限制</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">Identify 提供主機規劃 HMB 所需的大小與描述子限制；AVSCC 與 ICSVSCC 則是本篇另一主題的廠商命令格式能力，不能當成 HMB 啟用條件。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-hmb-capability"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>HMPRE／HMMIN</td><td>偏好與最小容量使用固定 4 KiB 單位；實際 HSIZE 使用 CC.MPS 指定的頁大小。</td><td>HMPRE=64 是 256 KiB；若 page 是 8 KiB，提供同樣容量的 HSIZE 是 32。</td></tr><tr><td>HMMINDS／HMMAXD</td><td>分別限制描述子所描述區域的最小大小與清單描述子數量；仍需按各欄位的零值及有效性規則使用。</td><td>總容量已達要求，但被切成過多小區域，仍可能不符合描述子限制。</td></tr><tr><td>CTRATT.HMBR／HMNARE／HMNAR</td><td>能力決定是否支援 non-operational 狀態下的 HMB 存取限制；設定政策與目前限制狀態分別觀察。</td><td>能力存在不等於目前限制已生效；也不能把主機發起的 Admin 作業與控制器自主活動混為一類。</td></tr><tr><td>AVSCC.VSCF／ICSVSCC.SNVSCF</td><td>分別描述 Admin 與 I/O 廠商命令採用的格式約定。</td><td>先辨認命令種類和支援格式，再使用對應長度欄位；不能因 Admin 有標準格式就推論 I/O 廠商命令相同。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEHMB-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-364, PDF 頁 366-390</p></details>
+</section>
 <!-- figure-table:BASEHMB-FIG-338 -->
 <article class="field-note" id="figure-BASEHMB-FIG-338"><h4>Base Figure 338 · Identify Controller Data Structure</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-338-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">Identify Controller 先告知能力與限制，主機再決定可使用的操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 340-364, PDF 頁 366-390</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">規格列出某選用命令時，先查相應支援欄位再發出要求；「命令有定義」與「這台控制器支援」是不同證據。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-3">Base338-3</span><span class="paragraph-text">Identify Controller 的欄位分別描述能力、限制、身分與目前資訊。依本篇主題選出需要的欄位後，再連到相應命令；支援位和大小上限必須一起用，不能以單一旗標推論所有參數都有效。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OACS.DSTS</li><li>EDSTT</li><li>DSTO.SDSO</li><li>HMPRE</li><li>HMMIN</li><li>HMMINDS</li><li>HMMAXD</li><li>CTRATT.HMBR</li><li>AVSCC.VSCF</li><li>ICSVSCC.SNVSCF</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>OACS.DSTS</dt><dd>Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。</dd></div><div><dt>EDSTT</dt><dd>Extended Device Self-test Time，在 power state 0 下的 extended test 名目完成分鐘數。</dd></div><div><dt>DSTO</dt><dd>Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。</dd></div><div><dt>SDSO</dt><dd>Single Device Self-test Operation，選擇 subsystem-wide 單一 operation 或 per-controller operation 的 bit。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb-capability">欄位、條件與相關細節：記憶體建議、最小要求與描述子限制 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-hmb-command-math"><summary>圖表組 02 · HMB 的描述子、大小與位址 · 12 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">命令圖先組合清單的高低位址及 HMDLEC，再讀每個 BADD／BSIZE。把 4 KiB 單位和 CC.MPS 頁單位分兩欄列出，確認換成 bytes 後總量一致。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">命令圖先組合清單的高低位址及 HMDLEC，再讀每個 BADD／BSIZE。把 4 KiB 單位和 CC.MPS 頁單位分兩欄列出，確認換成 bytes 後總量一致。</span></p>
 <a class="reading-link" href="#module-hmb-command-math">回到本節的解釋與範例</a>
+
 <!-- figure-table:BASEHMB-FIG-546 -->
 <article class="field-note" id="figure-BASEHMB-FIG-546"><h4>Base Figure 546 · Host Memory Buffer - Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-546-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base546-1">Base546-1</span><span class="paragraph-text">HMB 的 HSIZE 以控制器設定的記憶體頁大小計算。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 546, 文件頁 517, PDF 頁 543</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base546-2">Base546-2</span><span class="paragraph-text">CC.MPS 對應 4096 bytes、HSIZE＝16 時，提供 65536 bytes；HSIZE 不是描述子數量。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-545">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HSIZE</li><li>CC.MPS units</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-547 -->
 <article class="field-note" id="figure-BASEHMB-FIG-547"><h4>Base Figure 547 · Host Memory Buffer - Command Dword 13</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-547-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base547-1">Base547-1</span><span class="paragraph-text">HMDLLA 提供 HMB 描述子清單位址的低部。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 547, 文件頁 517, PDF 頁 543</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base547-2">Base547-2</span><span class="paragraph-text">16-byte 對齊的清單位址，其低 4 bits 必為零；這是清單的對齊，不代表每個資料 buffer 只需 16-byte 對齊。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-545">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HMDLLA</li><li>16-byte alignment</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-548 -->
 <article class="field-note" id="figure-BASEHMB-FIG-548"><h4>Base Figure 548 · Host Memory Buffer - Command Dword 14</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-548-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base548-1">Base548-1</span><span class="paragraph-text">HMDLUA 補齊描述子清單位址的高部。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 548, 文件頁 517, PDF 頁 543</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base548-2">Base548-2</span><span class="paragraph-text">清單位址＝00000001_00001000h 時，高部為 1、低部為 1000h；只設定低部會指到不同記憶體。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-545">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HMDLUA</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-549 -->
 <article class="field-note" id="figure-BASEHMB-FIG-549"><h4>Base Figure 549 · Host Memory Buffer - Command Dword 15</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-549-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base549-1">Base549-1</span><span class="paragraph-text">HMDLEC 指定 HMB 描述子清單包含多少項目。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 549, 文件頁 518, PDF 頁 544</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base549-2">Base549-2</span><span class="paragraph-text">HMDLEC＝2 表示清單有 2 個 entries；它不直接表示只有 2 個資料頁，因每個 entry 可以描述多頁。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-545">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>HMDLEC</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-550 -->
 <article class="field-note" id="figure-BASEHMB-FIG-550"><h4>Base Figure 550 · Host Memory Buffer - Host Memory Descriptor List</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-550-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base550-1">Base550-1</span><span class="paragraph-text">HMB Descriptor List 由固定大小 entries 組成。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 550, 文件頁 518, PDF 頁 544</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base550-2">Base550-2</span><span class="paragraph-text">2 個 16-byte entries 共占 32 bytes；清單本身的大小與它們描述的 HMB 總容量是不同數量。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base550-3">Base550-3</span><span class="paragraph-text">每個 HMB 描述子占 16 bytes，BADD 指向記憶體區域，BSIZE 以 CC.MPS 頁表示大小。HMDLEC 計描述子數，不是總頁數；應將各有效 BSIZE 加總後與 HSIZE 對照。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>16-byte descriptor entries</li><li>HMDLEC</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-551 -->
 <article class="field-note" id="figure-BASEHMB-FIG-551"><h4>Base Figure 551 · Host Memory Buffer - Host Memory Buffer Descriptor Entry</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-551-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base551-1">Base551-1</span><span class="paragraph-text">每個 HMB 描述子用基底位址和頁數描述一段記憶體。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.2.3, Figure 551, 文件頁 518, PDF 頁 544</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base551-2">Base551-2</span><span class="paragraph-text">BSIZE＝8、頁大小 4 KiB 時，該項描述 32 KiB；BADD 指起點，不能把 BSIZE 當成 byte 長度。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-550">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>BADD</li><li>BSIZE</li><li>CC.MPS alignment</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-hmb">欄位、條件與相關細節：描述記憶體清單與交接使用權 →</a></div></article>
+<section class="field-guide" id="fields-base-features"><h4 id="fields-heading-base-features">查能力、讀取值與寫入值的區別</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">FID 指功能，Get 的 SEL 指要查哪一種資訊，Set 的 SV 指是否要求保存。支援能力回覆的 bits 與功能值是不同結構。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SV</dt><dd>Save，Set Features 要求 controller 同時保存所設定 value 的 bit。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-features"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>FID／UIDX／DPTR</td><td>FID 選功能，必要時 UIDX 協助選 UUID，DPTR 傳輸該功能所需的資料結構。</td><td>不是每個 Feature 都只靠 CQE DW0 回覆；有 buffer 的功能還需讀其資料格式。</td></tr><tr><td>SEL=000b／001b／010b／011b</td><td>分別要求目前值、預設值、保存值、支援能力。</td><td>要確認裝置現在採用什麼值，應讀目前值；保存值不等於正在使用的值。</td></tr><tr><td>CHANG／NSSPEC／SVBL → SV</td><td>能力分別指出可變更、是否與 namespace 有關、可否保存；SV 是主機的保存要求。</td><td>SVBL=0 時提出保存要求可能被拒絕；Set 成功也不能一律推論跨 power cycle 保留。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEHMB-FIG-197">Base 197</a><a href="#figure-BASEHMB-FIG-198">Base 198</a><a href="#figure-BASEHMB-FIG-200">Base 200</a><a href="#figure-BASEHMB-FIG-463">Base 463</a><a href="#figure-BASEHMB-FIG-464">Base 464</a><a href="#figure-BASEHMB-FIG-466">Base 466</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 200, 文件頁 210-211, PDF 頁 236-237</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details>
+</section>
 <!-- figure-table:BASEHMB-FIG-197 -->
 <article class="field-note" id="figure-BASEHMB-FIG-197"><h4>Base Figure 197 · Get Features - Data Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-197-CLAIM -->
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-1">Base197-1</span><span class="paragraph-text">Get Features 的 DPTR 是需要資料結構時的回傳位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p></details></div>
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-1">Base197-1</span><span class="paragraph-text">Get Features 的 DPTR 是需要資料結構時的回傳位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-2">Base197-2</span><span class="paragraph-text">查詢一個會回傳資料 buffer 的 Feature，先準備相應大小的目的空間；不是每個 Feature 都只靠 CQE DW0 回傳全部內容。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-3">Base197-3</span><span class="paragraph-text">Get／Set Features 共用命令外框，但 Get 的 SEL 選擇要讀哪種值，Set 的 SV 決定是否要求保存。CHANG、NSSPEC、SVBL 描述使用能力，資料指標和 UIDX 則按所選 Feature 的要求使用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>SV</dt><dd>Save，Set Features 要求 controller 同時保存所設定 value 的 bit。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li><li>PRP1</li><li>PRP2</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-198 -->
 <article class="field-note" id="figure-BASEHMB-FIG-198"><h4>Base Figure 198 · Get Features - Command Dword 10</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-198-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">Get Features 的 FID 選功能，SEL 選要查目前值、預設值等資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">查 current 與查 saved 可以回不同內容；兩次 FID 相同不表示查詢完全相同。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SEL</li><li>FID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-200 -->
 <article class="field-note" id="figure-BASEHMB-FIG-200"><h4>Base Figure 200 · Feature Identifiers for Get Features</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-200-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base200-1">Base200-1</span><span class="paragraph-text">Get Features 清單列出 FID 與該功能回傳形式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 200, 文件頁 210-211, PDF 頁 236-237</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base200-2">Base200-2</span><span class="paragraph-text">先由想查的功能找到 FID，再看需要 CQE 結果還是資料結構；不能用上一個 Feature 的接收格式讀下一個。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID 0Dh</li><li>Controller scope</li><li>data buffer</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-463 -->
 <article class="field-note" id="figure-BASEHMB-FIG-463"><h4>Base Figure 463 · Set Features - Data Pointer</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-463-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-1">Base463-1</span><span class="paragraph-text">Set Features 的 DPTR 提供需要傳入的功能資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-2">Base463-2</span><span class="paragraph-text">設定 HMB 時傳入描述子相關資料，與單純只在 CDW11 放一個開關不同；先看該 Feature 是否使用資料 buffer。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DPTR</li><li>PRP1</li><li>PRP2</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-464 -->
 <article class="field-note" id="figure-BASEHMB-FIG-464"><h4>Base Figure 464 · Set Features - Command Dword 10</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-464-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">Set Features 的 FID 選功能，SV 表示是否要求保存。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">主機要求 SV＝1 前先確認 Feature 可保存；設定成功與重設後仍保留，是需要分別核對的行為。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>SV</li><li>FID</li></ul></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 
-</details></article>
 <!-- figure-table:BASEHMB-FIG-466 -->
 <article class="field-note" id="figure-BASEHMB-FIG-466"><h4>Base Figure 466 · Feature Identifiers for Set Features</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-466-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-1">Base466-1</span><span class="paragraph-text">Set Features 的識別碼清單指引每種功能的專屬欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 457-459, PDF 頁 483-485</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-2">Base466-2</span><span class="paragraph-text">FID 02h 的 CDW11 是 Power Management，FID 0Ch 的相同位置是 APST；欄位位置相同不表示內容相同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>APST</dt><dd>Autonomous Power State Transition；依設定的閒置條件自動轉換電源狀態。</dd></div></dl></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<a class="reading-link" href="#figure-BASEHMB-FIG-197">共用規則已在前面的相關圖表說明，點此對照。</a>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>FID 0Dh</li><li>Controller scope</li><li>saveable</li><li>changeable</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-features">欄位、條件與相關細節：查能力、讀取值與寫入值的區別 →</a></div></article>
 </details>
 <details open class="figure-reading-group" id="reading-encoded-boundary-safety"><summary>圖表組 04 · DSTRD、NDT 與 NDM 的單位 · 3 張圖表</summary>
-<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">換算表逐列寫出欄位原始值、公式和 bytes。DSTRD 連回 Doorbell 位址，NDT／NDM 分別連回 data／metadata buffer；VSCF／SNVSCF 先決定適用的命令格式。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">換算表逐列寫出欄位原始值、公式和 bytes。DSTRD 連回 Doorbell 位址，NDT／NDM 分別連回 data／metadata buffer；VSCF／SNVSCF 先決定適用的命令格式。</span></p>
 <a class="reading-link" href="#module-encoded-boundary-safety">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-base-initialization"><h4 id="fields-heading-base-initialization">能力、主機設定與控制器狀態的往返</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.08">05.08.</span><span class="paragraph-text">主機先讀 CAP 選合法設定，建立 Admin 佇列，再寫 CC 啟用；控制器以 CSTS 回報結果。CAP 是可選範圍，CC 是要求值，CSTS 是實際狀態，三者不能互相代替。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-initialization"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CAP.MPSMIN／MPSMAX → CC.MPS</td><td>能力給可支援的記憶體 page 範圍，主機選其中一個 page 大小。</td><td>後續 ASQ、ACQ 與資料指標的對齊都要使用選定的 page 大小。</td></tr><tr><td>AQA.ASQS／ACQS → ASQ.ASQB／ACQ.ACQB</td><td>AQA 設定兩個 Admin 佇列的大小；ASQ、ACQ 給它們在主機記憶體的位置。</td><td>大小編碼與基底位址分別設定，不能只配置 buffer 就認為控制器已知道位置。</td></tr><tr><td>CC.EN／CSS／AMS → CSTS.RDY／CFS</td><td>主機選命令集、仲裁方式並要求啟用，控制器回報就緒或致命狀態。</td><td>CC.EN=1 是要求，仍需等待符合規則的 RDY，才能進入下一階段。</td></tr><tr><td>CRMS／CRIME／CRTO；SHN／SHST</td><td>前一組連接就緒模式與逾時；後一組連接關機要求與進度。</td><td>寫入關機要求後依 SHST 確認處理，不能把要求值当作完成結果。</td></tr><tr><td>CAP.BPS／DSTRD／CMBS／PMRS；NSSR／NSSD</td><td>分別用於 Boot 支援、doorbell 間距、記憶體能力與 subsystem 層級控制。</td><td>Doorbell 間距由 DSTRD 推算；不使用 doorbell 的教學步驟無須把它當成前提。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CRTO</dt><dd>Controller Ready Timeouts，回報特定 ready mode 所需等待時間的 property。</dd></div><div><dt>NSSD</dt><dd>NVM Subsystem Shutdown，控制較大範圍 subsystem shutdown 的 property。</dd></div><div><dt>NSSR</dt><dd>NVM Subsystem Reset，觸發 NVM subsystem reset 的 property。</dd></div><div><dt>SHST</dt><dd>Shutdown Status，CSTS 中由 controller 回報 shutdown 進度的欄位。</dd></div><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div><div><dt>RDY</dt><dd>Ready，CSTS 中表示 controller 是否已準備正常處理 command 的 bit。</dd></div><div><dt>SHN</dt><dd>Shutdown Notification，CC 中由 host 宣告 shutdown 類型的欄位。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEHMB-FIG-036">Base 36</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details>
+</section>
 <!-- figure-table:BASEHMB-FIG-036 -->
 <article class="field-note" id="figure-BASEHMB-FIG-036"><h4>Base Figure 36 · Offset 0h: CAP - Controller Capabilities</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-036-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-1">Base36-1</span><span class="paragraph-text">CAP 描述控制器能力，主機設定必須落在其支援範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-2">Base36-2</span><span class="paragraph-text">設定記憶體頁大小前，先比對 MPSMIN 與 MPSMAX；主機偏好的頁大小不一定就是控制器接受的大小。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-3">Base36-3</span><span class="paragraph-text">CAP 回報支援能力、大小與時間限制，主機以這些資訊選擇可用設定。讀到支援位並不表示對應功能已啟用或控制器已就緒；設定與目前狀態要再讀各自的欄位。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>DSTRD</li><li>2^(2+DSTRD) bytes</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-initialization">欄位、條件與相關細節：能力、主機設定與控制器狀態的往返 →</a></div></article>
+<section class="field-guide" id="fields-base-sqe"><h4 id="fields-heading-base-sqe">同一筆命令的身分、對象與資料方向</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.09">05.09.</span><span class="paragraph-text">CDW0 先選操作與資料指標格式；NSID 選操作對象；DPTR／MPTR 再指向資料。命令專屬 Dwords 的含義由 OPC 與命令集決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-base-sqe"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>OPC／FUSE／CID</td><td>OPC 選操作，FUSE 說明融合操作角色，CID 讓完成項目找回原命令。</td><td>相同的 CDW10 數值放在 Read 與 Set Features 中，可能完全不是同一種意思。</td></tr><tr><td>PSDT → DPTR／MPTR</td><td>PSDT 決定指標依 PRP 或 SGL 等格式解讀；指標內的數值不可在未選格式時直接當成長度。</td><td>主機先選指標格式，再按該格式準備 buffer 描述，最後由命令語意判斷資料方向。</td></tr><tr><td>NSID／CDW2–CDW15</td><td>NSID 與命令專屬欄位共同決定對象、範圍及選項。</td><td>Create 的 DPTR 指向建立參數；它不是新 namespace 的實體儲存位址。</td></tr><tr><td>NDT／NDM／MDPTR</td><td>廠商命令使用共同格式時，資料與 metadata 長度各有自己的欄位及指標。</td><td>先看廠商命令格式支援宣告，再依長度定義換算，不能把欄位上限直接加 1 後存回同寬整數。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-BASEHMB-FIG-093">Base 93</a><a href="#figure-BASEHMB-FIG-094">Base 94</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169</p></details>
+</section>
 <!-- figure-table:BASEHMB-FIG-093 -->
 <article class="field-note" id="figure-BASEHMB-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-093-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共通 SQE 固定各命令共用欄位的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">同樣在 CDW10，Read 與管理命令可以有完全不同含義；先依 OPC 選命令，再查專屬欄位表。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-3">Base93-3</span><span class="paragraph-text">共同 SQE 先以 CDW0 描述 opcode、命令識別與資料指標選擇，再以 NSID 選對象、MPTR／DPTR 指向資料。CDW10–15 的意義由個別命令決定，不能跨 opcode 沿用。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MPTR</dt><dd>Metadata Pointer，SQE 中指出獨立 metadata buffer 的欄位。</dd></div></dl>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>OPC</li><li>CID</li><li>NSID</li><li>DPTR</li><li>CDW10-CDW15</li></ul></div>
-<dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-sqe">欄位、條件與相關細節：同一筆命令的身分、對象與資料方向 →</a></div></article>
+
 <!-- figure-table:BASEHMB-FIG-094 -->
 <article class="field-note" id="figure-BASEHMB-FIG-094"><h4>Base Figure 94 · Common Command Format - Vendor Specific Commands (Optional)</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEHMB-FIG-094-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base94-1">Base94-1</span><span class="paragraph-text">廠商命令格式另以 NDT、NDM 表達傳輸長度資訊。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 94, 文件頁 143, PDF 頁 169</p></details></div>
 <div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base94-2">Base94-2</span><span class="paragraph-text">若依欄位定義 NDT＝16 個 Dwords，資料長度為 64 bytes；此值不能套用別的命令從零起算的加 1 規則。</span></p></div>
-<details class="figure-detail"><summary>欄位、條件與相關細節</summary>
-<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base94-3">Base94-3</span><span class="paragraph-text">廠商自訂命令的標準格式以 NDT 和 NDM 分別描述 data 與 metadata 的 Dword 數量，兩者是直接計數。先確認 VSCF／SNVSCF 對應的格式支援，再解讀指標和長度；格式本身不定義廠商 payload。</span></p>
-<div class="field-index"><strong>對照 Spec 的欄位與標示</strong><ul><li>NSID</li><li>MDPTR</li><li>NDT</li><li>NDM</li><li>CDW12-CDW15</li></ul></div>
-
-</details></article>
+<div class="figure-detail"><a class="reading-link" href="#fields-base-sqe">欄位、條件與相關細節：同一筆命令的身分、對象與資料方向 →</a></div></article>
 </details>
 </section>
 <section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>

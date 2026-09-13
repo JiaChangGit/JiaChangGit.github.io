@@ -241,7 +241,7 @@ add('boot-read', '讀取路徑或欄位|從哪裡取得資料或狀態|操作環
     'Properties 路徑依序連接 CAP.BPS、BPINFO、BPRSEL、BPMBL：支援能力、狀態、讀取選擇、主機緩衝區。LID 15h 則分開讀 header 與 data，並以 Admin CQE 解讀這筆命令的結果。',
     'For the property path, connect CAP.BPS, BPINFO, BPRSEL, and BPMBL as support, status, read selection, and host buffer. For LID 15h, distinguish header from data and use the Admin CQE for the command result.')
 
-add('boot-protection', '保護機制與狀態|哪種操作能改變狀態|重設或斷電後的結果', 'Protection mechanism and state|Operations changing it|Result of reset or power cycling',
+add('boot-protection', '目前的控制機制與狀態|Controller Level Reset 後|Power cycle 後', 'Current mechanism and state|After Controller Level Reset|After power cycle',
     '更新開機映像同時涉及內容更新及寫入保護。Download 傳送資料，Commit 選擇保存與啟用行為，保護設定則決定哪些修改被允許。把這些動作畫在同一條時間線上，才能看出「已下載」「已寫入 partition」「已被選為 active」不是同一個時刻。',
     'FID 85h 與 RPMB 控制的保護機制，具有不同的解鎖方式及狀態保留規則。主機不能把其中一套的重設行為套到另一套。RPMB 訊息還包含驗證和計數相關欄位，用來確認要求是否符合該機制；這些欄位不是一般 Boot data 的一部分。',
     '保護狀態表先選定 FID 85h 或 RPMB 控制，再沿「目前狀態→允許的操作→重設／斷電後狀態」閱讀。RPMB frame 與訊息流程應配對看，分清要求、回應、計數器和驗證資料各自的位置。',

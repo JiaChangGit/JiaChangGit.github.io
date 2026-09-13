@@ -1369,19 +1369,7 @@ def clean_public_language(content: str) -> str:
         (r"\bDebugging\b", "Evidence review"),
         (r"\bdebug\b", "diagnostic review"),
         (r"\bDebug\b", "Evidence review"),
-        (r"\bdecoded\b", "interpreted values"),
-        (r"\bDecoded\b", "Interpreted values"),
-        (r"\bdecoding\b", "reading the fields"),
-        (r"\bDecoding\b", "Reading the fields"),
-        (r"\bdecode\b", "read the fields"),
-        (r"\bDecode\b", "Read the fields"),
-        (r"\blocated\b", "found"),
-        (r"\bLocated\b", "Found"),
-        (r"\blocating\b", "finding"),
-        (r"\bLocating\b", "Finding"),
-        (r"\blocate\b", "find"),
-        (r"\bLocate\b", "Find"),
-        ("解碼", "依欄位換算"),
+
     )
     for old, new in replacements:
         if old.startswith(r"\b"):
