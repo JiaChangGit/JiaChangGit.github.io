@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -187,7 +194,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-fw-download-geometry"><h2 id="heading-fw-download-geometry"><span class="section-number">02</span> Download 的長度、偏移與分段</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>完整映像與每次傳輸使用不同座標</h3>
+<div class="course-walkthrough">
+<h3>完整映像與每次傳輸使用不同座標</h3>
 <h4>先排好映像中的區段</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">以 16 KiB 映像、每次 4 KiB 傳輸為例，需要 4 次 Download。每次 DPTR 指向這次可讀的主機 buffer；OFST 則始終相對完整映像的起點。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl>
 <h4>分開換算位置與數量</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">每段長度 4096 bytes 等於 1024 Dwords，因此 NUMD=1023；四段 OFST 依序是 0、1024、2048、3072。OFST 沒有減 1，不能照 NUMD 的數量編碼方式計算。</span></p>
 <h4>把粒度及命令大小限制套回計畫</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">實際分段還要符合 FWUG、最大傳輸量與來源規定的順序及不重疊條件。分段成功只證明這些資料已傳入，下一步仍需 Commit 決定保存及啟用。</span></p>
@@ -225,7 +233,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-fw-lid03-proof"><h2 id="heading-fw-lid03-proof"><span class="section-number">04</span> LID 03h 的目前與待啟用版本</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>用兩次觀察辨認「已保存」與「正在執行」</h3>
+<div class="course-walkthrough">
+<h3>用兩次觀察辨認「已保存」與「正在執行」</h3>
 <h4>先保留目前版本所在的 slot</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">更新前讀 AFI 與各 FRS，記下目前 active slot。不要只保存某個非空版本字串，因為非 active slot 也可能早已放著另一個映像。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AFI</dt><dd>Active Firmware Info，LID 03h 中同時包含目前 active slot 與下一次 reset 後預定 active slot 的 byte。</dd></div><div><dt>FRS</dt><dd>Firmware Revision for Slot，LID 03h 中每個 slot 的八-byte revision 字串欄位。</dd></div></dl>
 <h4>Commit 後依回覆辨認啟用時機</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">若所選動作需要 reset，這時新映像已保存也可能仍執行原版本。回覆指出的 reset 類型決定切換事件，不能把任何 reset 都當成等價。</span></p>
 <h4>切換後再核對 active 與版本</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">重新查詢 AFI，找到真正 active slot，再讀該 slot 的 FRS。這種對照才能回答新版本是否已在執行，而不只是映像是否已存在。</span></p>
@@ -386,7 +395,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <article class="field-note" id="figure-BASEFWLOG-FIG-206"><h4>Base Figure 206 · Get Log Page – Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEFWLOG-FIG-206-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如從 0 起算的 Format Index=2 選第 3 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
 <!-- figure-table:BASEFWLOG-FIG-207 -->

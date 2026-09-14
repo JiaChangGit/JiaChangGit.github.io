@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -164,7 +171,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-boot-read"><h2 id="heading-boot-read"><span class="section-number">01</span> Boot 的兩條讀取路徑</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>將開機映像讀進主機記憶體</h3>
+<div class="course-walkthrough">
+<h3>將開機映像讀進主機記憶體</h3>
 <h4>先認出讀取對象</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Boot Partition 是開機映像的儲存空間，不是一般 I/O 命令用 NSID 選取的 namespace。讀取前要知道控制器支援的路徑、目標分割區及大小；目前啟用的分割區編號與這次想讀的目標編號可以不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
 <h4>沿 Properties 路徑組合要求</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">CAP.BPS 用於確認支援，BPINFO 提供大小、啟用資訊及讀取狀態。BPRSEL 的 BPID、BPROF、BPRSZ 分別選目標、起點及長度；BPMBL 的 BMBBA 指向主機接收記憶體。把來源範圍與目的位址分開畫，才不會把映像 offset 填到主機位址欄位。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>BMBBA</dt><dd>Boot Memory Buffer Base Address；BPMBL bits 63:12，低 12 bits 保留。</dd></div><div><dt>BPROF</dt><dd>Boot Partition Read Offset；BPRSEL bits 29:10，以 4 KiB 為單位；bit 30 保留。</dd></div><div><dt>BPRSZ</dt><dd>Boot Partition Read Size；以 4 KiB 為單位，不能套用 BPSZ 的單位。</dd></div><div><dt>BPID</dt><dd>Boot Partition Identifier；選取 0 或 1，與目前 active partition 分開。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl>
 <h4>沿 log 路徑先讀表頭</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">使用 LID 15h 時，先以對應的 BPID 選分割區，再讀 header 中的 BPINFO。Boot Partition Data 接在 log 的表頭後面；log 內的位移與映像本身的位移有不同起點。計畫分段讀取時，先把兩個起點標在同一張資料配置圖上。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl>
@@ -186,7 +194,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-boot-protection"><h2 id="heading-boot-protection"><span class="section-number">02</span> 映像更新、啟用與寫入保護</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>更新 BP1 時，同時追蹤內容與保護狀態</h3>
+<div class="course-walkthrough">
+<h3>更新 BP1 時，同時追蹤內容與保護狀態</h3>
 <h4>把四件事分開記錄</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">假設目前使用 BP0，準備更新 BP1。下載新映像只把映像交給控制器；Firmware Commit 才依動作與 BPID 寫入目標；選擇 active partition 又是另一個動作。寫入保護決定目標是否允許被修改，並不直接表示哪個映像正在啟用。</span></p>
 <h4>用 FID 85h 只解鎖目標</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">假設目前由 Set Features 控制保護，且 BP1 的狀態允許變更。BP1WPS 在 bits 5:3，填 001b 要求解鎖；BP0WPS 填 000b 表示不要求改變 BP0。CDW11=(1&lt;&lt;3)=08h。Get Features 回覆 BP0 時會給真實狀態，不會回傳這個「不改變」要求值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BP0WPS</dt><dd>Boot Partition 0 Write Protection State；FID 85h 的 bits 2:0。</dd></div><div><dt>BP1WPS</dt><dd>Boot Partition 1 Write Protection State；FID 85h 的 bits 5:3。</dd></div></dl>
 <h4>比較重設與斷電</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">在這套機制下，解鎖狀態可跨 Controller Level Reset 保留，power cycle 後回到 Write Locked。若先前設成 Write Locked Until Power Cycle，要求改變保護狀態的 Set Features 命令會被拒絕；要等 power cycle 才離開該狀態，重新上電後仍是鎖定，還需要明確解鎖才能改寫。</span></p>
@@ -308,7 +317,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <article class="field-note" id="figure-BASEBOOT-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASEBOOT-BASE-FIG-206-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如從 0 起算的 Format Index=2 選第 3 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
 <!-- figure-table:BASEBOOT-BASE-FIG-207 -->

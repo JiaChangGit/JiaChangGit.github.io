@@ -24,6 +24,72 @@ SPEC.loader.exec_module(VALIDATOR)
 
 
 class NvmeReportContractTest(unittest.TestCase):
+    def test_admin_io_overloaded_terms_use_command_context(self):
+        from scripts.nvme_reader_terms import definitions
+        for lang in ['zh','en']:
+            terms=definitions('admin-io-spec-walkthrough',lang)
+            self.assertIn('Asynchronous Event Request',terms['AER'])
+            self.assertNotIn('Advanced Error Reporting',terms['AER'])
+            self.assertIn('Storage Tag Check',terms['STC'])
+            self.assertNotIn('Self-test',terms['STC'])
+            self.assertIn('Max Power Scale',terms['MPS'])
+        for artifact in VALIDATOR.load_json('output-contract.json')['artifacts']:
+            if artifact['report_id']=='admin-io-spec-walkthrough':
+                text=(ROOT/artifact['path']).read_text()
+                self.assertNotIn('Advanced Error Reporting',text)
+                self.assertNotIn('Self-test Code',text)
+
+    def test_admin_io_exclusions_apply_to_descendants_and_selectors(self):
+        from scripts.nvme_admin_io_scope import BASE,NVM,included,within
+        self.assertFalse(within('5.2.10','5.2.1'))
+        for section in ['5.1.2','5.2.6','5.2.13.1.7','5.2.13.1.8','5.2.13.1.9',
+                        '5.2.13.1.21','5.2.13.1.38','5.2.24','5.2.25','5.2.26',
+                        '5.2.30.1.16','5.2.30.1.39','5.4','7.1','7.8',
+                        '8.1.17.3','8.1.27.6']:
+            self.assertFalse(included(BASE,section+'.1'),section)
+        for key,section,excluded,kept in [('fid','5.2.30',0x22,0x19),('lid','5.2.13',0x25,0x24),('cns','5.2.14',0x17,0x19)]:
+            self.assertFalse(included(BASE,section,**{key:excluded}))
+            self.assertTrue(included(BASE,section,**{key:kept}))
+        self.assertTrue(included(BASE,'7.2.1'))
+        for section in ['3.3.8.1','4.1.3.4','4.1.4.2','4.1.5.8','5.6']:
+            self.assertTrue(included(NVM,section))
+        for section in ['3.3.9','4.1.3.3','4.1.4.3','4.1.6','5.8']:
+            self.assertFalse(included(NVM,section))
+
+    def test_admin_io_route_rejects_backward_pages_and_excluded_rows(self):
+        from copy import deepcopy
+        from scripts.nvme_admin_io_scope import validate_manifest,REPORT_ID
+        manifest=VALIDATOR.load_json('admin-io-route.json')
+        figures=VALIDATOR.load_json('figure-table-register.json')['entries']
+        outputs={a['id']:(ROOT/a['path']).read_text() for a in VALIDATOR.load_json('output-contract.json')['artifacts'] if a['report_id']==REPORT_ID}
+        self.assertFalse(validate_manifest(manifest,figures,outputs))
+        self.assertEqual(len(manifest['included_figures']),221)
+        self.assertEqual(len(manifest['routes']),24)
+        # Verified PDF destinations include two different sections on the same page.
+        routes={r['id']:r for r in manifest['routes']}
+        self.assertEqual((routes['B13']['start_pdf_page'],routes['B13']['start_section']),(540,'5.2.30.2'))
+        self.assertEqual((routes['N05']['start_pdf_page'],routes['N05']['stop_before_section']),(76,'4.1.4.3'))
+        self.assertIn('19h',manifest['included_selectors']['cns'])
+        broken=deepcopy(manifest);broken['routes'][2]['start_pdf_page']=200
+        self.assertTrue(any('backwards' in e for e in validate_manifest(broken,figures,outputs)))
+        broken=deepcopy(manifest);broken['routes'][0]['sections'][0]['fid']=0x22
+        self.assertTrue(any('excluded section/selector' in e for e in validate_manifest(broken,figures,outputs)))
+        artifact=next(iter(outputs));outputs[artifact]=outputs[artifact].replace('id="route-N05"','id="route-missing"')
+        self.assertTrue(any('published PDF route' in e for e in validate_manifest(manifest,figures,outputs)))
+
+    def test_admin_io_count_examples_do_not_mix_field_encodings(self):
+        from scripts.nvme_admin_io_figures import NVM_EXAMPLES,NVM_GUIDES
+        from scripts.nvme_admin_io_content import UNITS
+        units={u['key']:u for u in UNITS}
+        blocks=8
+        self.assertIn(f'NLB={blocks-1}',units['read']['example']['zh'])
+        self.assertIn(f'LLB={blocks}',str(units['dataset']))
+        common_raw,unique_count=2,2
+        total=(common_raw+1)+unique_count
+        self.assertIn(f'3+2={total}',NVM_EXAMPLES[192]['example'])
+        self.assertIn(f'index={total-1}',str(NVM_GUIDES[192]))
+        self.assertIn('Get 不使用請求中的 NUM',str(NVM_GUIDES[94]))
+
     def test_inactive_term_is_not_corrupted_by_active_replacement(self):
         from scripts.nvme_plain_language import chinese
         self.assertEqual(chinese('inactive NSID'), 'inactive NSID')
@@ -319,15 +385,15 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_thirteen_reports_and_thirty_nine_artifacts(self):
+    def test_contract_has_fourteen_reports_and_forty_two_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 39)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 13)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 26)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 13)
+        self.assertEqual(len(artifacts), 42)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 14)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 28)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 14)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -339,7 +405,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 "basepower-bilingual",
                 "baseselftest-bilingual", "basehmb-bilingual", "basenamespace-bilingual",
                 "baseboot-bilingual", "basetelemetry-bilingual", "basesanitize-bilingual",
-                "nvmcs13-bilingual",
+                "nvmcs13-bilingual", "adminio-bilingual",
             },
         )
 
@@ -537,7 +603,7 @@ class NvmeReportContractTest(unittest.TestCase):
     def test_html_has_responsive_accessible_reading_structure(self):
         contract = VALIDATOR.load_json("output-contract.json")
         artifacts = [a for a in contract["artifacts"] if a["format"] == "html"]
-        self.assertEqual(len(artifacts), 13)
+        self.assertEqual(len(artifacts), 14)
         for artifact in artifacts:
             with self.subTest(artifact=artifact["id"]):
                 self.assertFalse(VALIDATOR.validate_html(ROOT / artifact["path"]))

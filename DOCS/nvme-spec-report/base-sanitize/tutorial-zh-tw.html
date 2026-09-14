@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -165,7 +172,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-sanitize-scope"><h2 id="heading-sanitize-scope"><span class="section-number">01</span> 清除會涵蓋哪些資料</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>先說清楚這次清除的對象</h3>
+<div class="course-walkthrough">
+<h3>先說清楚這次清除的對象</h3>
 <h4>由命令分辨作用範圍</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Sanitize 與 Sanitize Namespace 的目標不同。先選定整個 subsystem 或指定 namespace，再逐類確認 user data、快取及其他儲存區是否在該操作的範圍內；不能只看它們都叫「清除」就套用相同結論。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div></dl>
 <h4>把可用方法與資料保證連起來</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">SANICAP 回報支援哪些清除方法。Block Erase、Overwrite、Crypto Erase 採用不同機制；主機選擇方法前先確認支援與目標，之後才有意義討論清除完成時對原資料的保證。</span></p>
 <h4>區分格式改變、解除配置與清除</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">解除配置可能改變後續讀取行為；Format 可能改變資料格式；Sanitize 則按其範圍與方法完成資料清除。讀回全零本身無法說明先前究竟執行了哪種操作，仍要看命令、狀態與適用規則。</span></p>
@@ -186,7 +194,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-sanitize-command"><h2 id="heading-sanitize-command"><span class="section-number">02</span> 清除方法、支援能力與命令參數</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>參數必須跟著所選方法解釋</h3>
+<div class="course-walkthrough">
+<h3>參數必須跟著所選方法解釋</h3>
 <h4>先解讀 SANACT</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">SANACT 決定要求執行哪一種動作。Overwrite 使用的覆寫樣式與次數，不能拿來解釋 Crypto Erase；Exit Failure Mode 等控制動作也不能當成又一次資料清除。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SANACT</dt><dd>Sanitize Action；決定實際方法、退出 Failure 或退出 Media Verification。</dd></div></dl>
 <h4>再解讀覆寫參數</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">選 Overwrite 時，OVRPAT 提供 32-bit 樣式，OWPASS 決定 pass 數，OIPBP 決定 pass 之間是否反相。OWPASS=0 有特別定義，不能套用一般數量加 1 的規則。先把每個 pass 寫下來，才能說明某個位置預期會被覆寫什麼。</span></p>
 <h4>清除後的處理也需要選擇</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">NDAS 與 NODRM 影響清除後的解除配置行為；EMVS 影響是否進入媒體驗證。它們不是清除進度。設定命令前，先決定希望清除後直接回到正常狀態，還是需要依支援能力進行驗證。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NODRM</dt><dd>No-Deallocate Response Mode；FID 17h bit 0，選擇受抑制 NDAS 的 error 或 warning 回應。</dd></div><div><dt>EMVS</dt><dd>Enter Media Verification State；成功 processing 後要求進入驗證，受方法與 capability 限制。</dd></div><div><dt>NDAS</dt><dd>No-Deallocate After Sanitize；命令要求，需與 SANICAP.NDI 及 NODRM 一起解讀。</dd></div></dl>
@@ -212,7 +221,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-sanitize-state"><h2 id="heading-sanitize-state"><span class="section-number">03</span> 背景 Sanitize 的狀態與進度</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>用狀態決定進度值的意義</h3>
+<div class="course-walkthrough">
+<h3>用狀態決定進度值的意義</h3>
 <h4>先讀作業狀態</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">LID 81h 的 SSTAT 告訴主機清除作業的結果狀態；SPROG 提供進度，但必須在其適用條件下使用。不要先把 SPROG 換成百分比，再假定控制器仍在執行。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SPROG</dt><dd>Sanitize Progress；raw/65536，僅表示目前量測階段的進度。</dd></div></dl>
 <h4>讓紀錄對回啟動要求</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">SCDW10 保存相關命令設定，可協助辨認狀態對應的操作。若涉及 namespace 作業，再用 STNSID 確認目標；MNSOIP 說明允許同時執行的 namespace 作業數上限，並不回報目前作業數；不能把一份 subsystem 層級紀錄直接解釋成任意 namespace 的獨立完成證明。</span></p>
 <h4>失敗時先分辨目前允許的操作</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">Restricted 與 Unrestricted 的差別會影響控制器在處理或失敗狀態下接受哪些命令。狀態圖的箭頭必須同時讀起點、觸發動作與條件；同樣是重新提出清除要求，適用條件可能因目前狀態而不同。</span></p>
@@ -238,7 +248,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-sanitize-read"><h2 id="heading-sanitize-read"><span class="section-number">04</span> 操作限制與驗證讀取</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>清除後讀回來的資料可以證明什麼</h3>
+<div class="course-walkthrough">
+<h3>清除後讀回來的資料可以證明什麼</h3>
 <h4>先確定讀取所處階段</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">在媒體驗證狀態執行的讀取，與恢復正常狀態後的 Read 有不同使用條件。先確認控制器狀態及可接受的命令，再讀資料內容。</span></p>
 <h4>把方法、配置狀態與格式連起來</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">Block Erase、Crypto Erase、Overwrite 後的讀取規則，還要結合 logical block 是否被解除配置及所選格式。某次讀取回全零，不會單獨證明使用了哪一種清除方法。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div></dl>
 <h4>資料保護欄位也要配合解讀</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">若格式含 PI，PRACT、PRCHK 與 Storage Tag 檢查選擇會影響此次讀取和檢查。先依 NVM Command Set 的清除後規則判斷資料與 metadata，再解釋檢查結果；不能用清除前的 tag 假設去替清除後資料下結論。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>PRCHK</dt><dd>Protection Information Check；三個 bits 分別要求 guard、application tag、reference tag 檢查；驗證讀取設 000b。</dd></div></dl>
@@ -353,7 +364,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <article class="field-note" id="figure-BASESANITIZE-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESANITIZE-BASE-FIG-206-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如從 0 起算的 Format Index=2 選第 3 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
 <!-- figure-table:BASESANITIZE-BASE-FIG-207 -->

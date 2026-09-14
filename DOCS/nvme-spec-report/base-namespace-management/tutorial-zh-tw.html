@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -165,7 +172,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-capacity-granularity-math"><h2 id="heading-capacity-granularity-math"><span class="section-number">01</span> 容量數值與配置粒度</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>先統一單位，再判斷容量配置</h3>
+<div class="course-walkthrough">
+<h3>先統一單位，再判斷容量配置</h3>
 <h4>畫出主機能使用的位址範圍</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">假設建立時選用每個 logical block 有 4096 bytes 資料的格式，NSZE=250 表示 LBA 0 到 249。可定址資料量是 250×4096=1,024,000 bytes，也就是 1000 KiB；最後一個 LBA 是 249，與總數 250 要分開。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div><div><dt>NSZE</dt><dd>Namespace Size，namespace 的總 logical block 數，LBA 範圍為 0 到 NSZE−1。</dd></div></dl>
 <h4>把容量與使用量放回各自的位置</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">NCAP 表示可配置的 logical blocks 數；NUSE 是建立後查詢到的使用量。主機建立 namespace 時提出 NSZE 與 NCAP，不能把 NUSE 當成另一個要指定的容量要求。若使用精簡配置，再依相關能力理解 NCAP 可以如何小於 NSZE。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NCAP</dt><dd>Namespace Capacity，任一時點最多可配置給 namespace 的 logical blocks。</dd></div><div><dt>NUSE</dt><dd>Namespace Utilization，目前已配置給 namespace 的 logical blocks。</dd></div></dl>
 <h4>找到這個格式對應的粒度</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">讀 Namespace Granularity List 時，先以 NGA.GDM 決定描述子如何對應到格式，再用 ND 得到有效描述子的數量。選對描述子後，NSG 與 NCG 才是此次 size 與 capacity 要比較的建議粒度；它們的單位是 bytes。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NCG</dt><dd>Namespace Capacity Granularity，以 bytes 表示 controller 偏好的 NCAP allocation granularity。</dd></div><div><dt>NSG</dt><dd>Namespace Size Granularity，以 bytes 表示 controller 偏好的 NSZE allocation granularity。</dd></div></dl>
@@ -191,7 +199,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-namespace-create-payload"><h2 id="heading-namespace-create-payload"><span class="section-number">02</span> 建立 Namespace 所需的資料</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>把一份建立資料串成相容的設定</h3>
+<div class="course-walkthrough">
+<h3>把一份建立資料串成相容的設定</h3>
 <h4>先選命令集，再選資料結構</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Namespace Management 的 SEL 選 Create，CSI 選 NVM Command Set，DPTR 提供建立資料的位置。Base 的命令與 NVM Command Set 的 Host Specified Fields 要配合閱讀：前者決定操作與資料解讀方式，後者決定新 namespace 的格式及容量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div><div><dt>SEL</dt><dd>Select；Namespace Management 的 create/delete/restore selector，與 Get Features 的 SEL 不同。</dd></div></dl>
 <h4>用同一個格式檢查相關欄位</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">NSZE、NCAP 的 byte 容量取決於 FLBAS 選中的格式。DPS 與 LBSTM 又必須符合該格式的保護資訊能力。不能先用一種格式計算容量，再把另一種格式的保護設定填進同一份資料。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FLBAS</dt><dd>Formatted LBA Size，選擇 namespace 使用的 LBA format，並包含 metadata placement 相關控制。</dd></div><div><dt>LBSTM</dt><dd>Logical Block Storage Tag Mask，create 時指定哪些 Storage Tag bits 被 mask 的 64-bit 欄位。</dd></div><div><dt>DPS</dt><dd>End-to-end Data Protection Type Settings，create 時選擇 Protection Information type 與位置的欄位。</dd></div></dl>
 <h4>沿著能力欄位確認設定是否成立</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">使用需要延伸格式支援的保護配置時，要查 Host Behavior Support 的 LBAFEE；Storage Tag 的遮罩則還要對照 Identify 的允許遮罩及遮罩層級。建立命令中的選擇值與 Identify 的支援值，是一組需要互相核對的資料。</span></p>
@@ -215,7 +224,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-namespace-lifecycle"><h2 id="heading-namespace-lifecycle"><span class="section-number">03</span> 建立、連接與使用 Namespace</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>用兩個控制器追蹤同一個 namespace</h3>
+<div class="course-walkthrough">
+<h3>用兩個控制器追蹤同一個 namespace</h3>
 <h4>建立物件</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">主機要求建立 namespace，成功 CQE 的 DW0 回傳 NSID=7。此時記錄的是「儲存物件已存在」，還不能推論控制器 A、B 都能對它執行 I/O。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
 <h4>建立存取關係</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">主機在 Controller List 中列出 A、B 的 Controller Identifier，NUMCIDS 記錄有效項目數，並以 Namespace Attachment 的 SEL 選 Attach。這份清單選控制器；命令的 NSID 選要附加的 namespace。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMCIDS</dt><dd>Number of Controller Identifiers；Controller List 中有效 controller IDs 的數量。</dd></div></dl>
 <h4>只移除其中一條關係</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">若對控制器 A 執行 Detach，NSID=7 在 A 上不再是可存取的 namespace；在 B 上的附加關係仍可保留。namespace 本身沒有因此被刪除，配置給它的容量也不是由這個 Detach 動作釋放。</span></p>
@@ -241,7 +251,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-delete-restore-state"><h2 id="heading-delete-restore-state"><span class="section-number">04</span> 刪除與恢復預設配置</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>刪除所有 namespace 與還原預設配置</h3>
+<div class="course-walkthrough">
+<h3>刪除所有 namespace 與還原預設配置</h3>
 <h4>先列出兩個動作的目的</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">Delete All 的結果是移除現有 namespace；Restore Default 的結果是套用目前啟用韌體所定義的預設 namespace 配置。兩者即使都在調整配置，完成後的 namespace 數量也不必相同。</span></p>
 <h4>檢查還原的前提</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">Restore Default 必須有對應支援能力，並符合尚無已配置 namespace 等要求。若仍有 namespace 存在，不能把 Restore 當成順便刪掉它們的捷徑。先處理現有配置，再提出還原要求。</span></p>
 <h4>用狀態與重新識別確認結果</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">還原成功後，DNCS 表示配置符合目前韌體的預設設定。實際建立了哪些 namespace、各自容量與格式為何，仍需重新 Identify；不要把先前韌體版本的預設值當成這次結果。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DNCS</dt><dd>Default Namespace Configuration Status，表示目前 namespace configuration 是否等於 active firmware image defaults 的 status bit。</dd></div></dl>
@@ -260,7 +271,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-namespace-events"><h2 id="heading-namespace-events"><span class="section-number">05</span> Namespace 變更通知與重新辨識</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>配置改了，哪些控制器需要更新認識</h3>
+<div class="course-walkthrough">
+<h3>配置改了，哪些控制器需要更新認識</h3>
 <h4>分清已配置與已附加兩種變動</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">新增或移除 namespace 會影響已配置清單；改變附加關係則影響特定控制器可存取的清單。Attached 與 Allocated 兩類通知對應不同觀察角度，不能只保留一個「namespace changed」旗標。</span></p>
 <h4>把事件設定、通知與查詢連起來</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">控制器是否發出相應通知，要結合事件啟用設定及操作來源。收到通知後，主機再讀相應的 Identify 清單與資料結構，重建目前狀態；通知本身不提供完整新配置。</span></p>
 <h4>追蹤刪除由誰發起</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">假設 A 收到 Admin 命令並處理刪除，B 也附加了該 namespace。對 B 的通知規則需檢查其啟用設定；處理命令的 A 已透過自己的命令流程知道變動。若變動由管理端點等其他途徑引起，適用的通知對象又要依該分支判斷。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>

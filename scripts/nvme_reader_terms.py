@@ -31,7 +31,7 @@ COMMON = {
  'CDW': b('CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。','CDW (Command Dword): a 32-bit command field. In CDW10, 10 is the field index, not a byte offset.'),
  'index': b('index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。','index: selects an item or format in a list. It answers “which one,” not “how far from the start.”'),
  'offset': b('offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。','offset: a displacement measured from a stated start. It answers “how far from the start,” unlike an index.'),
- 'index-offset': b('index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。','index-offset contrast: an index selects an item, while an offset measures a position. For example, Format Index=2 selects a format, while OFST=256 is a 256-Dword displacement from the image start.'),
+ 'index-offset': b('index-offset 對比；index 選取項目，offset 計算位置。例如從 0 起算的 Format Index=2 選第 3 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。','index-offset contrast: an index selects an item, while an offset measures a position. Zero-based Format Index=2 selects the third format; OFST=256 is a 256-Dword displacement from the image start.'),
  'zero-based': b('zero-based；數值從 0 開始計算，因此 raw=3 代表第 4 個項目或 4 個單位，實際含義仍要看欄位定義。','zero-based: numbering starts at zero, so raw=3 can mean the fourth item or four units; the field definition still decides which.'),
  'word': b('word；16 bits，也就是 2 bytes。它比 Dword 小一半；欄位長度不能只看數字，還要看單位。','word: 16 bits, or 2 bytes. It is half a Dword; a field length must be read with its unit.'),
  'page offset': b('page offset；資料在第一個記憶體 page 內的起始位移；跨過 page boundary 後，位置由下一個 page pointer 決定。','page offset: the starting displacement inside the first memory page; after a page boundary, the next page pointer determines the location.'),
@@ -104,6 +104,9 @@ for term, full, zh, en in [
 
 def definitions(report_id, language):
     selected = dict(COMMON)
-    if report_id == 'nvm-command-set-1.3':
+    if report_id in {'nvm-command-set-1.3','admin-io-spec-walkthrough'}:
         selected.update(NVM)
+    if report_id == 'admin-io-spec-walkthrough':
+        from scripts.nvme_admin_io_terms import TERMS
+        selected.update({term:b(*values) for term,values in TERMS.items()})
     return {term: value[language] for term, value in selected.items()}

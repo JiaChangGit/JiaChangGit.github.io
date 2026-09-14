@@ -38,6 +38,9 @@ def steps(title, values, caption):
 
 def module_illustration(report_id, module, language):
     key = module['id']
+    if report_id == 'admin-io-spec-walkthrough':
+        from scripts.nvme_admin_io import illustration
+        return illustration(key, language)
     en = language == 'en'
     if key in {'nvmcs-capacity', 'capacity-granularity-math'}:
         title = bi(language, '可定址、可配置、已配置是 3 個不同的量', 'Addressable, allocatable, and allocated are distinct')

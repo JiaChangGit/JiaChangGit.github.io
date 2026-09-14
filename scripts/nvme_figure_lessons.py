@@ -6,6 +6,9 @@ from scripts.nvme_figure_examples_pcie import LESSONS as PCIE
 CATALOG = {'NVME-BASE-2.4':BASE,'NVME-NVM-CS-1.3':NVM,'NVME-PCIE-TRANSPORT-1.4':PCIE}
 
 def lesson(figure):
+    if figure['report_id'] == 'admin-io-spec-walkthrough':
+        from scripts.nvme_admin_io_figures import lesson as selected_lesson
+        return selected_lesson(figure)
     # Deliberately no caption-based fallback: missing examples stop publication.
     return CATALOG[figure['source_id']][int(figure['number'])]
 

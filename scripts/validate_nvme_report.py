@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""驗證 NVMe 10 份報告、30 個交付檔、教學完整性、來源定位與離線 HTML。"""
+"""驗證 NVMe 報告契約、教學完整性、來源定位與離線 HTML。"""
 
 from __future__ import annotations
 
@@ -358,12 +358,13 @@ def validate_setup(source_dir: Path | None) -> list[str]:
 
     artifacts = contract.get("artifacts", [])
     formats = [item.get("format") for item in artifacts]
-    if len(artifacts) != 39 or formats.count("html") != 13 or formats.count("markdown") != 26:
-        errors.append("輸出契約必須為 13 份 HTML 與 26 份 Markdown")
+    expected_count = contract.get('report_count', 13)
+    if len(artifacts) != expected_count * 3 or formats.count("html") != expected_count or formats.count("markdown") != expected_count * 2:
+        errors.append(f"輸出契約必須為 {expected_count} 份 HTML 與 {expected_count * 2} 份 Markdown")
     report_ids = {item.get("id") for item in scope.get("reports", [])}
     artifact_report_ids = {item.get("report_id") for item in artifacts}
-    if len(report_ids) != 13 or artifact_report_ids != report_ids:
-        errors.append("輸出契約必須完整對應 scope.json 的 13 份報告")
+    if len(report_ids) != expected_count or artifact_report_ids != report_ids:
+        errors.append(f"輸出契約必須完整對應 scope.json 的 {expected_count} 份報告")
     for report_id in report_ids:
         editions = [item for item in artifacts if item.get("report_id") == report_id]
         if {(item.get("format"), item.get("language")) for item in editions} != {
@@ -574,6 +575,10 @@ def validate_publish() -> list[str]:
                 errors.append(
                     f"{artifact['path']} front matter lang 應為 {expected_lang}"
                 )
+
+    from scripts.nvme_admin_io_scope import REPORT_ID, validate_manifest
+    route_outputs = {a['id']:artifact_texts.get(a['id'],'') for a in contract['artifacts'] if a['report_id']==REPORT_ID}
+    errors.extend(validate_manifest(load_json('admin-io-route.json'),figure_entries,route_outputs))
 
     parity_groups: dict[str, list[tuple[set[str], list[str]]]] = {}
     for artifact in contract.get("artifacts", []):

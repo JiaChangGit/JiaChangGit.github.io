@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -187,7 +194,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-power-state-mental-model"><h2 id="heading-power-state-mental-model"><span class="section-number">02</span> Power State 的功率、延遲與效能</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>由一次閒置間隔估算省電代價</h3>
+<div class="course-walkthrough">
+<h3>由一次閒置間隔估算省電代價</h3>
 <h4>先查它能否處理 I/O</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">讀 Power State Descriptor 的 NOPS，確認狀態屬 operational 或 non-operational。數字較大的 PS 不代表一定不能處理 I/O；分類應由描述子決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NOPS</dt><dd>Non-Operational State，Power State Descriptor 中指出該 state 不處理 I/O commands 的 bit。</dd></div><div><dt>PS</dt><dd>Power State，controller 的功耗／效能 operating point；PS0 是最高 maximum-power state。</dd></div></dl>
 <h4>把進出延遲放在同一條時間線</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">假設 PS0 到 PS3，PS0 的 EXLAT=0、PS3 的 ENLAT=100 μs；喚回 PS0 時，PS3 的 EXLAT=500 μs、PS0 的 ENLAT=0。這是一組說明性數值，進入與退出各使用來源狀態的 EXLAT 加目標狀態的 ENLAT。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ENLAT</dt><dd>Entry Latency，進入該 power state 的 maximum latency，單位為 microseconds。</dd></div><div><dt>EXLAT</dt><dd>Exit Latency，離開該 power state 的 maximum latency，單位為 microseconds。</dd></div></dl>
 <h4>比較長閒置與短間隔</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">若下一筆 I/O 很快到達，500 μs 的喚醒成本可能成為明顯等待；長時間閒置才有較多時間享受低功耗。比較時同時保留時間與功率，不能只找最小的 MP 值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MP</dt><dd>Maximum Power，一個 power state 的 sustained maximum power。</dd></div></dl>
@@ -216,7 +224,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-apst-state-machine"><h2 id="heading-apst-state-machine"><span class="section-number">03</span> APST 的閒置條件與自動轉換</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>為 PS0 設定一條可檢查的自動轉移規則</h3>
+<div class="course-walkthrough">
+<h3>為 PS0 設定一條可檢查的自動轉移規則</h3>
 <h4>找到屬於目前狀態的 entry</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">假設控制器目前處於 operational PS0，支援 non-operational PS3。PS0 的 entry 選 ITPS=3、ITPT=2000 ms；這份 entry 放在表格的 PS0 位置，並不是放到目標 PS3 的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ITPS</dt><dd>Idle Transition Power State，APST entry 選擇的目標 non-operational power state。</dd></div><div><dt>ITPT</dt><dd>Idle Time Prior to Transition，APST entry 的 idle threshold，單位為 milliseconds。</dd></div></dl>
 <h4>把兩個欄位各自移到正確位置</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">低 Dword=(2000&lt;&lt;8)|(3&lt;&lt;3)=0007D018h。bits 31:8 保存時間，bits 7:3 保存狀態編號。兩者相鄰但單位不同，不能把整個 Dword 轉成一個毫秒數。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div></dl>
 <h4>沿箭頭看閒置與新 I/O</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">APSTE=1 且在目前狀態連續閒置超過 ITPT 時，依這筆 entry 轉入 PS3。新的 I/O 到來後，先回到適用的 operational state 再處理；進出延遲因此影響這筆 I/O 的等待。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>APSTE</dt><dd>Autonomous Power State Transition Enable，啟用 APST table timer 判斷的 bit。</dd></div></dl>
@@ -259,7 +268,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-hctm-control-loop"><h2 id="heading-hctm-control-loop"><span class="section-number">05</span> HCTM 的兩級熱管理</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>同一個溫度，觀察、告警與控制各做什麼</h3>
+<div class="course-walkthrough">
+<h3>同一個溫度，觀察、告警與控制各做什麼</h3>
 <h4>先讀溫度來源及單位</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">SMART 的 Composite Temperature 是觀察值；Temperature Threshold 選感測來源與門檻。設定前先將 Celsius 與 Kelvin 換成同一單位，不要把常見的攝氏數字直接填入要求 Kelvin 的欄位。</span></p>
 <h4>再決定溫度升高時的處理</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">HCTM 的 TMT1 與 TMT2 描述主機的熱管理要求。例如支援範圍為 273–373 K，TMT1=343 K、TMT2=353 K，CDW11=(343&lt;&lt;16)|353=01570161h。到達較高門檻時，控制器的規範義務與較低門檻不同；其實際調整功耗狀態或採用其他方式仍有實作空間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>TMT1</dt><dd>Thermal Management Temperature 1，較輕度 thermal-management threshold，單位 Kelvin。</dd></div><div><dt>TMT2</dt><dd>Thermal Management Temperature 2，較強 thermal-management threshold，單位 Kelvin。</dd></div></dl>
 <h4>下降時讀回復條件</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">升溫時觸發某個動作，不表示剛降回同一數字就立即恢復。回復行為涉及 hysteresis；它讓控制不會在門檻附近反覆切換。觀察曲線時要把升溫與降溫路徑分開看。</span></p>

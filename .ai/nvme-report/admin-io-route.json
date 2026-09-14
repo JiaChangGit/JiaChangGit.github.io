@@ -1,0 +1,3276 @@
+{
+  "schema_version": 1,
+  "report_id": "admin-io-spec-walkthrough",
+  "source_ids": [
+    "NVME-BASE-2.4",
+    "NVME-NVM-CS-1.3"
+  ],
+  "selection": {
+    "base_roots": [
+      "5",
+      "7"
+    ],
+    "nvm_roots": [
+      "3.3.1",
+      "3.3.2",
+      "3.3.3",
+      "3.3.4",
+      "3.3.5",
+      "3.3.6",
+      "3.3.7",
+      "3.3.8",
+      "4.1.1",
+      "4.1.2",
+      "4.1.3.1",
+      "4.1.3.2",
+      "4.1.3.4",
+      "4.1.4.1",
+      "4.1.4.2",
+      "4.1.5",
+      "5.6"
+    ],
+    "special_topic_sections": {
+      "NVME-BASE-2.4": [
+        "8.1.8",
+        "5.2.6",
+        "5.2.13.1.7",
+        "8.1.17",
+        "5.2.24",
+        "5.2.25",
+        "8.1.3",
+        "5.2.13.1.21",
+        "5.2.30.1.39",
+        "8.1.30",
+        "5.2.13.1.8",
+        "5.2.13.1.9",
+        "8.1.27",
+        "5.2.13.1.38",
+        "5.2.26",
+        "5.2.30.1.16"
+      ],
+      "NVME-NVM-CS-1.3": [
+        "4.1.4.3",
+        "2.1.1",
+        "4.1.6",
+        "5.8",
+        "4.1.7",
+        "5.12"
+      ]
+    },
+    "excluded_base_sections": [
+      "8.1.17.3",
+      "8.1.27.6",
+      "5.1.2",
+      "5.2.3",
+      "5.2.4",
+      "5.2.5",
+      "5.2.7",
+      "5.2.8",
+      "5.2.13.3",
+      "5.2.14.4",
+      "5.2.15",
+      "5.2.16",
+      "5.2.17",
+      "5.2.18",
+      "5.2.19",
+      "5.2.20",
+      "5.2.21",
+      "5.2.22",
+      "5.2.23",
+      "5.2.27",
+      "5.2.30.3",
+      "5.2.31",
+      "5.2.32",
+      "5.3.5",
+      "5.3.6",
+      "5.4",
+      "7.1",
+      "7.3",
+      "7.4",
+      "7.5",
+      "7.6",
+      "7.7",
+      "7.8"
+    ],
+    "excluded_fids": [
+      "0Fh",
+      "12h",
+      "13h",
+      "14h",
+      "16h",
+      "18h",
+      "1Ah",
+      "1Bh",
+      "1Dh",
+      "1Eh",
+      "1Fh",
+      "21h",
+      "22h",
+      "23h",
+      "24h",
+      "25h",
+      "26h",
+      "27h",
+      "78h",
+      "79h",
+      "7Dh",
+      "7Eh",
+      "7Fh",
+      "81h",
+      "82h",
+      "83h",
+      "84h"
+    ],
+    "excluded_lids": [
+      "09h",
+      "0Ah",
+      "0Bh",
+      "0Ch",
+      "0Dh",
+      "0Fh",
+      "10h",
+      "11h",
+      "13h",
+      "14h",
+      "16h",
+      "17h",
+      "18h",
+      "1Ah",
+      "1Bh",
+      "1Ch",
+      "1Dh",
+      "20h",
+      "21h",
+      "22h",
+      "23h",
+      "25h",
+      "27h",
+      "7Fh",
+      "80h"
+    ],
+    "excluded_cns": [
+      "14h",
+      "15h",
+      "17h",
+      "21h",
+      "22h"
+    ]
+  },
+  "included_selectors": {
+    "fid": [
+      "01h",
+      "02h",
+      "03h",
+      "04h",
+      "06h",
+      "07h",
+      "08h",
+      "09h",
+      "0Ah",
+      "0Bh",
+      "0Ch",
+      "0Dh",
+      "0Eh",
+      "10h",
+      "11h",
+      "19h",
+      "80h"
+    ],
+    "lid": [
+      "00h",
+      "01h",
+      "02h",
+      "03h",
+      "04h",
+      "05h",
+      "12h",
+      "24h"
+    ],
+    "cns": [
+      "00h",
+      "01h",
+      "02h",
+      "03h",
+      "04h",
+      "05h",
+      "06h",
+      "07h",
+      "08h",
+      "09h",
+      "0Ah",
+      "10h",
+      "11h",
+      "12h",
+      "13h",
+      "16h",
+      "18h",
+      "19h",
+      "1Ah",
+      "1Bh",
+      "1Ch",
+      "1Dh",
+      "1Fh",
+      "20h"
+    ]
+  },
+  "route_policy": {
+    "source_switches": 1,
+    "forward_only_within_each_pdf": true,
+    "base_printed_page_offset": 26,
+    "page_numbers": "actual PDF destinations; stop before excluded headings on shared pages",
+    "empty_headings_without_stop": [
+      "5.2.13.2",
+      "5.2.14.3"
+    ]
+  },
+  "routes": [
+    {
+      "id": "B01",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 202,
+      "end_pdf_page": 205,
+      "start_section": "5",
+      "stop_before_section": "5.1.2",
+      "sections": [
+        {
+          "section": "5",
+          "title": "Admin Command Set",
+          "pdf_page": 202,
+          "printed_page": 176,
+          "top": 720.0
+        },
+        {
+          "section": "5.1",
+          "title": "Admin Command Processing Restrictions",
+          "pdf_page": 204,
+          "printed_page": 178,
+          "top": 720.0
+        },
+        {
+          "section": "5.1.1",
+          "title": "NVM Subsystem Sanitize Operation and Format NVM Admin Command Processing Restrictions",
+          "pdf_page": 204,
+          "printed_page": 178,
+          "top": 699.0
+        }
+      ]
+    },
+    {
+      "id": "B02",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 207,
+      "end_pdf_page": 217,
+      "start_section": "5.2",
+      "stop_before_section": "5.2.3",
+      "sections": [
+        {
+          "section": "5.2",
+          "title": "Common Admin Commands",
+          "pdf_page": 207,
+          "printed_page": 181,
+          "top": 590.0
+        },
+        {
+          "section": "5.2.1",
+          "title": "Abort command",
+          "pdf_page": 207,
+          "printed_page": 181,
+          "top": 549.0
+        },
+        {
+          "section": "5.2.1.1",
+          "title": "Immediate Abort requirements",
+          "pdf_page": 208,
+          "printed_page": 182,
+          "top": 635.0
+        },
+        {
+          "section": "5.2.1.2",
+          "title": "Command Completion",
+          "pdf_page": 208,
+          "printed_page": 182,
+          "top": 409.0
+        },
+        {
+          "section": "5.2.2",
+          "title": "Asynchronous Event Request command",
+          "pdf_page": 209,
+          "printed_page": 183,
+          "top": 720.0
+        },
+        {
+          "section": "5.2.2.1",
+          "title": "Command Completion",
+          "pdf_page": 210,
+          "printed_page": 184,
+          "top": 391.0
+        }
+      ]
+    },
+    {
+      "id": "B03",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 228,
+      "end_pdf_page": 255,
+      "start_section": "5.2.9",
+      "stop_before_section": "5.2.13.1.7",
+      "sections": [
+        {
+          "section": "5.2.9",
+          "title": "Firmware Commit command",
+          "pdf_page": 228,
+          "printed_page": 202,
+          "top": 374.0
+        },
+        {
+          "section": "5.2.9.1",
+          "title": "Command Completion",
+          "pdf_page": 229,
+          "printed_page": 203,
+          "top": 332.0
+        },
+        {
+          "section": "5.2.10",
+          "title": "Firmware Image Download command",
+          "pdf_page": 231,
+          "printed_page": 205,
+          "top": 614.0
+        },
+        {
+          "section": "5.2.10.1",
+          "title": "Command Completion",
+          "pdf_page": 232,
+          "printed_page": 206,
+          "top": 614.0
+        },
+        {
+          "section": "5.2.11",
+          "title": "Format NVM command",
+          "pdf_page": 232,
+          "printed_page": 206,
+          "top": 398.0
+        },
+        {
+          "section": "5.2.11.1",
+          "title": "Command Completion",
+          "pdf_page": 235,
+          "printed_page": 209,
+          "top": 566.0
+        },
+        {
+          "section": "5.2.12",
+          "title": "Get Features command",
+          "pdf_page": 235,
+          "printed_page": 209,
+          "top": 424.0
+        },
+        {
+          "section": "5.2.12.1",
+          "title": "Select field",
+          "pdf_page": 237,
+          "printed_page": 211,
+          "top": 162.0
+        },
+        {
+          "section": "5.2.12.2",
+          "title": "Command Completion",
+          "pdf_page": 238,
+          "printed_page": 212,
+          "top": 645.0
+        },
+        {
+          "section": "5.2.13",
+          "title": "Get Log Page command",
+          "pdf_page": 238,
+          "printed_page": 212,
+          "top": 161.0
+        },
+        {
+          "section": "5.2.13.1",
+          "title": "Common Log Specific Information",
+          "pdf_page": 242,
+          "printed_page": 216,
+          "top": 190.0
+        },
+        {
+          "section": "5.2.13.1.1",
+          "title": "Supported Log Pages (Log Page Identifier 00h)",
+          "pdf_page": 243,
+          "printed_page": 217,
+          "top": 622.0,
+          "lid": 0
+        },
+        {
+          "section": "5.2.13.1.2",
+          "title": "Error Information (Log Page Identifier 01h)",
+          "pdf_page": 244,
+          "printed_page": 218,
+          "top": 511.0,
+          "lid": 1
+        },
+        {
+          "section": "5.2.13.1.3",
+          "title": "SMART / Health Information (Log Page Identifier 02h)",
+          "pdf_page": 246,
+          "printed_page": 220,
+          "top": 549.0,
+          "lid": 2
+        },
+        {
+          "section": "5.2.13.1.4",
+          "title": "Firmware Slot Information (Log Page Identifier 03h)",
+          "pdf_page": 251,
+          "printed_page": 225,
+          "top": 280.0,
+          "lid": 3
+        },
+        {
+          "section": "5.2.13.1.5",
+          "title": "Changed Attached Namespace List (Log Page Identifier 04h)",
+          "pdf_page": 252,
+          "printed_page": 226,
+          "top": 299.0,
+          "lid": 4
+        },
+        {
+          "section": "5.2.13.1.6",
+          "title": "Commands Supported and Effects (Log Page Identifier 05h)",
+          "pdf_page": 252,
+          "printed_page": 226,
+          "top": 135.0,
+          "lid": 5
+        }
+      ]
+    },
+    {
+      "id": "B04",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 302,
+      "end_pdf_page": 304,
+      "start_section": "5.2.13.1.18",
+      "stop_before_section": "5.2.13.1.19",
+      "sections": [
+        {
+          "section": "5.2.13.1.18",
+          "title": "Feature Identifiers Supported and Effects (Log Page Identifier 12h)",
+          "pdf_page": 302,
+          "printed_page": 276,
+          "top": 607.0,
+          "lid": 18
+        }
+      ]
+    },
+    {
+      "id": "B05",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 327,
+      "end_pdf_page": 328,
+      "start_section": "5.2.13.1.33",
+      "stop_before_section": "5.2.13.1.34",
+      "sections": [
+        {
+          "section": "5.2.13.1.33",
+          "title": "Manufacturer Default Configuration Status (Log Page Identifier 24h)",
+          "pdf_page": 327,
+          "printed_page": 301,
+          "top": 666.0,
+          "lid": 36
+        }
+      ]
+    },
+    {
+      "id": "B06",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 362,
+      "end_pdf_page": 421,
+      "start_section": "5.2.13.4",
+      "stop_before_section": "5.2.14.2.14",
+      "sections": [
+        {
+          "section": "5.2.13.4",
+          "title": "Command Completion",
+          "pdf_page": 362,
+          "printed_page": 336,
+          "top": 483.0
+        },
+        {
+          "section": "5.2.14",
+          "title": "Identify command",
+          "pdf_page": 362,
+          "printed_page": 336,
+          "top": 316.0
+        },
+        {
+          "section": "5.2.14.1",
+          "title": "Identify command overview",
+          "pdf_page": 362,
+          "printed_page": 336,
+          "top": 288.0
+        },
+        {
+          "section": "5.2.14.2",
+          "title": "Common Identify Data Structures",
+          "pdf_page": 366,
+          "printed_page": 340,
+          "top": 510.0
+        },
+        {
+          "section": "5.2.14.2.1",
+          "title": "Identify Controller Data Structure (CNS 01h)",
+          "pdf_page": 366,
+          "printed_page": 340,
+          "top": 479.0,
+          "cns": 1
+        },
+        {
+          "section": "5.2.14.2.2",
+          "title": "Active Namespace ID list (CNS 02h)",
+          "pdf_page": 413,
+          "printed_page": 387,
+          "top": 479.0,
+          "cns": 2
+        },
+        {
+          "section": "5.2.14.2.3",
+          "title": "Namespace Identification Descriptor list (CNS 03h)",
+          "pdf_page": 413,
+          "printed_page": 387,
+          "top": 383.0,
+          "cns": 3
+        },
+        {
+          "section": "5.2.14.2.4",
+          "title": "NVM Set List (CNS 04h)",
+          "pdf_page": 414,
+          "printed_page": 388,
+          "top": 268.0,
+          "cns": 4
+        },
+        {
+          "section": "5.2.14.2.5",
+          "title": "I/O Command Set specific Identify Namespace data structure (CNS 05h)",
+          "pdf_page": 415,
+          "printed_page": 389,
+          "top": 319.0,
+          "cns": 5
+        },
+        {
+          "section": "5.2.14.2.6",
+          "title": "I/O Command Set specific Identify Controller data structure (CNS 06h)",
+          "pdf_page": 416,
+          "printed_page": 390,
+          "top": 645.0,
+          "cns": 6
+        },
+        {
+          "section": "5.2.14.2.7",
+          "title": "I/O Command Set specific Active Namespace ID list (CNS 07h)",
+          "pdf_page": 416,
+          "printed_page": 390,
+          "top": 525.0,
+          "cns": 7
+        },
+        {
+          "section": "5.2.14.2.8",
+          "title": "I/O Command Set Independent Identify Namespace data structure (CNS 08h)",
+          "pdf_page": 416,
+          "printed_page": 390,
+          "top": 388.0,
+          "cns": 8
+        },
+        {
+          "section": "5.2.14.2.9",
+          "title": "Allocated Namespace ID list (CNS 10h)",
+          "pdf_page": 421,
+          "printed_page": 395,
+          "top": 720.0,
+          "cns": 16
+        },
+        {
+          "section": "5.2.14.2.10",
+          "title": "Identify Namespace data structure for an Allocated Namespace ID (CNS 11h)",
+          "pdf_page": 421,
+          "printed_page": 395,
+          "top": 625.0,
+          "cns": 17
+        },
+        {
+          "section": "5.2.14.2.11",
+          "title": "Namespace Attached Controller list (CNS 12h)",
+          "pdf_page": 421,
+          "printed_page": 395,
+          "top": 488.0,
+          "cns": 18
+        },
+        {
+          "section": "5.2.14.2.12",
+          "title": "Controller list (CNS 13h)",
+          "pdf_page": 421,
+          "printed_page": 395,
+          "top": 403.0,
+          "cns": 19
+        },
+        {
+          "section": "5.2.14.2.13",
+          "title": "Namespace Granularity List (CNS 16h)",
+          "pdf_page": 421,
+          "printed_page": 395,
+          "top": 341.0,
+          "cns": 22
+        }
+      ]
+    },
+    {
+      "id": "B07",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 422,
+      "end_pdf_page": 427,
+      "start_section": "5.2.14.2.15",
+      "stop_before_section": "5.2.14.2.23",
+      "sections": [
+        {
+          "section": "5.2.14.2.15",
+          "title": "Domain List (CNS 18h)",
+          "pdf_page": 422,
+          "printed_page": 396,
+          "top": 331.0,
+          "cns": 24
+        },
+        {
+          "section": "5.2.14.2.16",
+          "title": "Endurance Group List (19h)",
+          "pdf_page": 423,
+          "printed_page": 397,
+          "top": 441.0,
+          "cns": 25
+        },
+        {
+          "section": "5.2.14.2.17",
+          "title": "I/O Command Set specific Allocated Namespace ID list (CNS 1Ah)",
+          "pdf_page": 424,
+          "printed_page": 398,
+          "top": 720.0,
+          "cns": 26
+        },
+        {
+          "section": "5.2.14.2.18",
+          "title": "I/O Command Set specific Identify Namespace data structure for an Allocated Namespace ID (CNS 1Bh)",
+          "pdf_page": 424,
+          "printed_page": 398,
+          "top": 591.0,
+          "cns": 27
+        },
+        {
+          "section": "5.2.14.2.19",
+          "title": "Identify I/O Command Set data structure (CNS 1Ch)",
+          "pdf_page": 424,
+          "printed_page": 398,
+          "top": 402.0,
+          "cns": 28
+        },
+        {
+          "section": "5.2.14.2.20",
+          "title": "Get Underlying Namespace List (CNS 1Dh)",
+          "pdf_page": 425,
+          "printed_page": 399,
+          "top": 379.0,
+          "cns": 29
+        },
+        {
+          "section": "5.2.14.2.21",
+          "title": "I/O Command Set Independent Identify Namespace data structure for an Allocated Namespace ID (CNS 1Fh)",
+          "pdf_page": 426,
+          "printed_page": 400,
+          "top": 419.0,
+          "cns": 31
+        },
+        {
+          "section": "5.2.14.2.22",
+          "title": "Supported Controller State Formats (CNS 20h)",
+          "pdf_page": 426,
+          "printed_page": 400,
+          "top": 305.0,
+          "cns": 32
+        }
+      ]
+    },
+    {
+      "id": "B08",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 431,
+      "end_pdf_page": 431,
+      "start_section": "5.2.14.5",
+      "stop_before_section": "5.2.15",
+      "sections": [
+        {
+          "section": "5.2.14.5",
+          "title": "Command Completion",
+          "pdf_page": 431,
+          "printed_page": 405,
+          "top": 518.0
+        }
+      ]
+    },
+    {
+      "id": "B09",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 480,
+      "end_pdf_page": 497,
+      "start_section": "5.2.28",
+      "stop_before_section": "5.2.30.1.9",
+      "sections": [
+        {
+          "section": "5.2.28",
+          "title": "Security Receive command",
+          "pdf_page": 480,
+          "printed_page": 454,
+          "top": 442.0
+        },
+        {
+          "section": "5.2.28.1",
+          "title": "Command Completion",
+          "pdf_page": 481,
+          "printed_page": 455,
+          "top": 564.0
+        },
+        {
+          "section": "5.2.28.2",
+          "title": "Security Protocol 00h",
+          "pdf_page": 481,
+          "printed_page": 455,
+          "top": 513.0
+        },
+        {
+          "section": "5.2.28.3",
+          "title": "Security Protocol EAh",
+          "pdf_page": 481,
+          "printed_page": 455,
+          "top": 440.0
+        },
+        {
+          "section": "5.2.29",
+          "title": "Security Send command",
+          "pdf_page": 481,
+          "printed_page": 455,
+          "top": 292.0
+        },
+        {
+          "section": "5.2.29.1",
+          "title": "Command Completion",
+          "pdf_page": 482,
+          "printed_page": 456,
+          "top": 446.0
+        },
+        {
+          "section": "5.2.30",
+          "title": "Set Features command",
+          "pdf_page": 482,
+          "printed_page": 456,
+          "top": 395.0
+        },
+        {
+          "section": "5.2.30.1",
+          "title": "Common Feature Specific Information",
+          "pdf_page": 485,
+          "printed_page": 459,
+          "top": 292.0
+        },
+        {
+          "section": "5.2.30.1.1",
+          "title": "Arbitration (Feature Identifier 01h)",
+          "pdf_page": 486,
+          "printed_page": 460,
+          "top": 597.0,
+          "fid": 1
+        },
+        {
+          "section": "5.2.30.1.2",
+          "title": "Power Management (Feature Identifier 02h)",
+          "pdf_page": 486,
+          "printed_page": 460,
+          "top": 357.0,
+          "fid": 2
+        },
+        {
+          "section": "5.2.30.1.2.1",
+          "title": "Idle I/O Exit Latency Limit Attribute",
+          "pdf_page": 487,
+          "printed_page": 461,
+          "top": 394.0
+        },
+        {
+          "section": "5.2.30.1.3",
+          "title": "Temperature Threshold (Feature Identifier 04h)",
+          "pdf_page": 488,
+          "printed_page": 462,
+          "top": 384.0,
+          "fid": 4
+        },
+        {
+          "section": "5.2.30.1.3.1",
+          "title": "Temperature Threshold Hysteresis",
+          "pdf_page": 489,
+          "printed_page": 463,
+          "top": 685.0
+        },
+        {
+          "section": "5.2.30.1.4",
+          "title": "Volatile Write Cache (Feature Identifier 06h)",
+          "pdf_page": 490,
+          "printed_page": 464,
+          "top": 396.0,
+          "fid": 6
+        },
+        {
+          "section": "5.2.30.1.5",
+          "title": "Number of Queues (Feature Identifier 07h)",
+          "pdf_page": 491,
+          "printed_page": 465,
+          "top": 656.0,
+          "fid": 7
+        },
+        {
+          "section": "5.2.30.1.6",
+          "title": "Asynchronous Event Configuration (Feature Identifier 0Bh)",
+          "pdf_page": 492,
+          "printed_page": 466,
+          "top": 593.0,
+          "fid": 11
+        },
+        {
+          "section": "5.2.30.1.7",
+          "title": "Autonomous Power State Transition (Feature Identifier 0Ch)",
+          "pdf_page": 494,
+          "printed_page": 468,
+          "top": 436.0,
+          "fid": 12
+        },
+        {
+          "section": "5.2.30.1.8",
+          "title": "Timestamp (Feature Identifier 0Eh)",
+          "pdf_page": 495,
+          "printed_page": 469,
+          "top": 236.0,
+          "fid": 14
+        }
+      ]
+    },
+    {
+      "id": "B10",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 497,
+      "end_pdf_page": 499,
+      "start_section": "5.2.30.1.10",
+      "stop_before_section": "5.2.30.1.12",
+      "sections": [
+        {
+          "section": "5.2.30.1.10",
+          "title": "Host Controlled Thermal Management (Feature Identifier 10h)",
+          "pdf_page": 497,
+          "printed_page": 471,
+          "top": 249.0,
+          "fid": 16
+        },
+        {
+          "section": "5.2.30.1.11",
+          "title": "Non-Operational Power State Config (Feature Identifier 11h)",
+          "pdf_page": 498,
+          "printed_page": 472,
+          "top": 317.0,
+          "fid": 17
+        }
+      ]
+    },
+    {
+      "id": "B11",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 504,
+      "end_pdf_page": 505,
+      "start_section": "5.2.30.1.18",
+      "stop_before_section": "5.2.30.1.19",
+      "sections": [
+        {
+          "section": "5.2.30.1.18",
+          "title": "I/O Command Set Profile (Feature Identifier 19h)",
+          "pdf_page": 504,
+          "printed_page": 478,
+          "top": 133.0,
+          "fid": 25
+        }
+      ]
+    },
+    {
+      "id": "B12",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 534,
+      "end_pdf_page": 534,
+      "start_section": "5.2.30.1.34",
+      "stop_before_section": "5.2.30.1.35",
+      "sections": [
+        {
+          "section": "5.2.30.1.34",
+          "title": "Software Progress Marker (Feature Identifier 80h)",
+          "pdf_page": 534,
+          "printed_page": 508,
+          "top": 424.0,
+          "fid": 128
+        }
+      ]
+    },
+    {
+      "id": "B13",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 540,
+      "end_pdf_page": 545,
+      "start_section": "5.2.30.2",
+      "stop_before_section": "5.2.30.3",
+      "sections": [
+        {
+          "section": "5.2.30.2",
+          "title": "Memory-Based Transport Feature Specific Information (PCIe)",
+          "pdf_page": 540,
+          "printed_page": 514,
+          "top": 330.0
+        },
+        {
+          "section": "5.2.30.2.1",
+          "title": "Interrupt Coalescing (Feature Identifier 08h)",
+          "pdf_page": 540,
+          "printed_page": 514,
+          "top": 303.0,
+          "fid": 8
+        },
+        {
+          "section": "5.2.30.2.2",
+          "title": "Interrupt Vector Configuration (Feature Identifier 09h)",
+          "pdf_page": 541,
+          "printed_page": 515,
+          "top": 558.0,
+          "fid": 9
+        },
+        {
+          "section": "5.2.30.2.3",
+          "title": "Host Memory Buffer (Feature Identifier 0Dh)",
+          "pdf_page": 541,
+          "printed_page": 515,
+          "top": 290.0,
+          "fid": 13
+        }
+      ]
+    },
+    {
+      "id": "B14",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 545,
+      "end_pdf_page": 546,
+      "start_section": "5.2.30.4",
+      "stop_before_section": "5.2.31",
+      "sections": [
+        {
+          "section": "5.2.30.4",
+          "title": "Command Completion",
+          "pdf_page": 545,
+          "printed_page": 519,
+          "top": 375.0
+        }
+      ]
+    },
+    {
+      "id": "B15",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 553,
+      "end_pdf_page": 558,
+      "start_section": "5.3",
+      "stop_before_section": "5.3.5",
+      "sections": [
+        {
+          "section": "5.3",
+          "title": "Memory-Based Transport Admin Commands (PCIe)",
+          "pdf_page": 553,
+          "printed_page": 527,
+          "top": 442.0
+        },
+        {
+          "section": "5.3.1",
+          "title": "Create I/O Completion Queue command",
+          "pdf_page": 553,
+          "printed_page": 527,
+          "top": 401.0
+        },
+        {
+          "section": "5.3.1.1",
+          "title": "Command Completion",
+          "pdf_page": 554,
+          "printed_page": 528,
+          "top": 301.0
+        },
+        {
+          "section": "5.3.2",
+          "title": "Create I/O Submission Queue command",
+          "pdf_page": 555,
+          "printed_page": 529,
+          "top": 720.0
+        },
+        {
+          "section": "5.3.2.1",
+          "title": "Command Completion",
+          "pdf_page": 556,
+          "printed_page": 530,
+          "top": 284.0
+        },
+        {
+          "section": "5.3.3",
+          "title": "Delete I/O Completion Queue command",
+          "pdf_page": 557,
+          "printed_page": 531,
+          "top": 628.0
+        },
+        {
+          "section": "5.3.3.1",
+          "title": "Command Completion",
+          "pdf_page": 557,
+          "printed_page": 531,
+          "top": 422.0
+        },
+        {
+          "section": "5.3.4",
+          "title": "Delete I/O Submission Queue command",
+          "pdf_page": 557,
+          "printed_page": 531,
+          "top": 264.0
+        },
+        {
+          "section": "5.3.4.1",
+          "title": "Command Completion",
+          "pdf_page": 558,
+          "printed_page": 532,
+          "top": 604.0
+        }
+      ]
+    },
+    {
+      "id": "B16",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 590,
+      "end_pdf_page": 590,
+      "start_section": "7",
+      "stop_before_section": "7.1",
+      "sections": [
+        {
+          "section": "7",
+          "title": "I/O Commands",
+          "pdf_page": 590,
+          "printed_page": 564,
+          "top": 720.0
+        }
+      ]
+    },
+    {
+      "id": "B17",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 593,
+      "end_pdf_page": 594,
+      "start_section": "7.2",
+      "stop_before_section": "7.3",
+      "sections": [
+        {
+          "section": "7.2",
+          "title": "Flush command",
+          "pdf_page": 593,
+          "printed_page": 567,
+          "top": 531.0
+        },
+        {
+          "section": "7.2.1",
+          "title": "Command Completion",
+          "pdf_page": 593,
+          "printed_page": 567,
+          "top": 162.0
+        }
+      ]
+    },
+    {
+      "id": "N01",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 27,
+      "end_pdf_page": 62,
+      "start_section": "3.3.1",
+      "stop_before_section": "4",
+      "sections": [
+        {
+          "section": "3.3.1",
+          "title": "Compare command",
+          "pdf_page": 27,
+          "printed_page": 27,
+          "top": 167.0
+        },
+        {
+          "section": "3.3.1.1",
+          "title": "Command Completion",
+          "pdf_page": 29,
+          "printed_page": 29,
+          "top": 262.0
+        },
+        {
+          "section": "3.3.2",
+          "title": "Copy command",
+          "pdf_page": 30,
+          "printed_page": 30,
+          "top": 637.0
+        },
+        {
+          "section": "3.3.2.1",
+          "title": "Fast copy operations",
+          "pdf_page": 38,
+          "printed_page": 38,
+          "top": 295.0
+        },
+        {
+          "section": "3.3.2.2",
+          "title": "Copy atomicity",
+          "pdf_page": 39,
+          "printed_page": 39,
+          "top": 616.0
+        },
+        {
+          "section": "3.3.2.3",
+          "title": "Copy within a Single Namespace",
+          "pdf_page": 40,
+          "printed_page": 40,
+          "top": 627.0
+        },
+        {
+          "section": "3.3.2.4",
+          "title": "Copy across Multiple Namespaces",
+          "pdf_page": 40,
+          "printed_page": 40,
+          "top": 408.0
+        },
+        {
+          "section": "3.3.2.4.1",
+          "title": "Matching and Corresponding Formats",
+          "pdf_page": 40,
+          "printed_page": 40,
+          "top": 305.0
+        },
+        {
+          "section": "3.3.2.4.2",
+          "title": "Handling of Protection Information",
+          "pdf_page": 41,
+          "printed_page": 41,
+          "top": 153.0
+        },
+        {
+          "section": "3.3.2.5",
+          "title": "Command Completion",
+          "pdf_page": 43,
+          "printed_page": 43,
+          "top": 493.0
+        },
+        {
+          "section": "3.3.3",
+          "title": "Dataset Management command",
+          "pdf_page": 44,
+          "printed_page": 44,
+          "top": 531.0
+        },
+        {
+          "section": "3.3.3.1",
+          "title": "Dataset Management Processing Limits",
+          "pdf_page": 45,
+          "printed_page": 45,
+          "top": 346.0
+        },
+        {
+          "section": "3.3.3.1.1",
+          "title": "Dataset Management Processing Limits Example",
+          "pdf_page": 46,
+          "printed_page": 46,
+          "top": 147.0
+        },
+        {
+          "section": "3.3.3.2",
+          "title": "Context Attributes",
+          "pdf_page": 47,
+          "printed_page": 47,
+          "top": 599.0
+        },
+        {
+          "section": "3.3.3.2.1",
+          "title": "Deallocated or Unwritten Logical Blocks",
+          "pdf_page": 47,
+          "printed_page": 47,
+          "top": 166.0
+        },
+        {
+          "section": "3.3.3.3",
+          "title": "Command Completion",
+          "pdf_page": 48,
+          "printed_page": 48,
+          "top": 352.0
+        },
+        {
+          "section": "3.3.4",
+          "title": "Read command",
+          "pdf_page": 48,
+          "printed_page": 48,
+          "top": 138.0
+        },
+        {
+          "section": "3.3.4.1",
+          "title": "Command Completion",
+          "pdf_page": 51,
+          "printed_page": 51,
+          "top": 615.0
+        },
+        {
+          "section": "3.3.5",
+          "title": "Verify command",
+          "pdf_page": 51,
+          "printed_page": 51,
+          "top": 447.0
+        },
+        {
+          "section": "3.3.5.1",
+          "title": "Command Completion",
+          "pdf_page": 53,
+          "printed_page": 53,
+          "top": 524.0
+        },
+        {
+          "section": "3.3.6",
+          "title": "Write command",
+          "pdf_page": 53,
+          "printed_page": 53,
+          "top": 332.0
+        },
+        {
+          "section": "3.3.6.1",
+          "title": "Command Completion",
+          "pdf_page": 56,
+          "printed_page": 56,
+          "top": 720.0
+        },
+        {
+          "section": "3.3.7",
+          "title": "Write Uncorrectable command",
+          "pdf_page": 56,
+          "printed_page": 56,
+          "top": 518.0
+        },
+        {
+          "section": "3.3.7.1",
+          "title": "Command Completion",
+          "pdf_page": 57,
+          "printed_page": 57,
+          "top": 646.0
+        },
+        {
+          "section": "3.3.8",
+          "title": "Write Zeroes command",
+          "pdf_page": 57,
+          "printed_page": 57,
+          "top": 488.0
+        },
+        {
+          "section": "3.3.8.1",
+          "title": "Command Completion",
+          "pdf_page": 61,
+          "printed_page": 61,
+          "top": 720.0
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 62,
+      "end_pdf_page": 63,
+      "start_section": "4.1.1",
+      "stop_before_section": "4.1.3",
+      "sections": [
+        {
+          "section": "4.1.1",
+          "title": "Asynchronous Event Request command",
+          "pdf_page": 62,
+          "printed_page": 62,
+          "top": 642.0
+        },
+        {
+          "section": "4.1.2",
+          "title": "Format NVM command",
+          "pdf_page": 62,
+          "printed_page": 62,
+          "top": 247.0
+        }
+      ]
+    },
+    {
+      "id": "N03",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 64,
+      "end_pdf_page": 66,
+      "start_section": "4.1.3.1",
+      "stop_before_section": "4.1.3.3",
+      "sections": [
+        {
+          "section": "4.1.3.1",
+          "title": "Power Management (Feature Identifier 02h)",
+          "pdf_page": 64,
+          "printed_page": 64,
+          "top": 408.0,
+          "fid": 2
+        },
+        {
+          "section": "4.1.3.2",
+          "title": "LBA Range Type (Feature Identifier 03h)",
+          "pdf_page": 64,
+          "printed_page": 64,
+          "top": 230.0,
+          "fid": 3
+        }
+      ]
+    },
+    {
+      "id": "N04",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 66,
+      "end_pdf_page": 67,
+      "start_section": "4.1.3.4",
+      "stop_before_section": "4.1.3.5",
+      "sections": [
+        {
+          "section": "4.1.3.4",
+          "title": "Write Atomicity Normal (Feature Identifier 0Ah)",
+          "pdf_page": 66,
+          "printed_page": 66,
+          "top": 228.0,
+          "fid": 10
+        }
+      ]
+    },
+    {
+      "id": "N05",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 76,
+      "end_pdf_page": 76,
+      "start_section": "4.1.4.1",
+      "stop_before_section": "4.1.4.3",
+      "sections": [
+        {
+          "section": "4.1.4.1",
+          "title": "Error Information (Log Page Identifier 01h)",
+          "pdf_page": 76,
+          "printed_page": 76,
+          "top": 512.0,
+          "lid": 1
+        },
+        {
+          "section": "4.1.4.2",
+          "title": "SMART / Health Information (Log Page Identifier 02h)",
+          "pdf_page": 76,
+          "printed_page": 76,
+          "top": 393.0,
+          "lid": 2
+        }
+      ]
+    },
+    {
+      "id": "N06",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 83,
+      "end_pdf_page": 110,
+      "start_section": "4.1.5",
+      "stop_before_section": "4.1.6",
+      "sections": [
+        {
+          "section": "4.1.5",
+          "title": "Identify Command",
+          "pdf_page": 83,
+          "printed_page": 83,
+          "top": 595.0
+        },
+        {
+          "section": "4.1.5.1",
+          "title": "NVM Command Set Identify Namespace Data Structure (CNS 00h)",
+          "pdf_page": 84,
+          "printed_page": 84,
+          "top": 529.0,
+          "cns": 0
+        },
+        {
+          "section": "4.1.5.2",
+          "title": "I/O Command Set specific fields within Identify Controller data structure (CNS 01h)",
+          "pdf_page": 94,
+          "printed_page": 94,
+          "top": 292.0,
+          "cns": 1
+        },
+        {
+          "section": "4.1.5.3",
+          "title": "I/O Command Set Specific Identify Namespace Data Structure (CNS 05h)",
+          "pdf_page": 96,
+          "printed_page": 96,
+          "top": 510.0,
+          "cns": 5
+        },
+        {
+          "section": "4.1.5.4",
+          "title": "I/O Command Set Specific Identify Controller Data Structure (CNS 06h, CSI 00h)",
+          "pdf_page": 102,
+          "printed_page": 102,
+          "top": 316.0,
+          "cns": 6
+        },
+        {
+          "section": "4.1.5.5",
+          "title": "NVM Command Set Identify Namespace Data Structure (CNS 09h, CSI 00h)",
+          "pdf_page": 107,
+          "printed_page": 107,
+          "top": 578.0,
+          "cns": 9
+        },
+        {
+          "section": "4.1.5.6",
+          "title": "Identify I/O Command Set specific Namespace data structure (CNS 0Ah, CSI 00h)",
+          "pdf_page": 107,
+          "printed_page": 107,
+          "top": 382.0,
+          "cns": 10
+        },
+        {
+          "section": "4.1.5.7",
+          "title": "Identify Namespace data structure for an Allocated Namespace ID (CNS 11h)",
+          "pdf_page": 107,
+          "printed_page": 107,
+          "top": 238.0,
+          "cns": 17
+        },
+        {
+          "section": "4.1.5.8",
+          "title": "Namespace Granularity List (CNS 16h)",
+          "pdf_page": 108,
+          "printed_page": 108,
+          "top": 720.0,
+          "cns": 22
+        },
+        {
+          "section": "4.1.5.9",
+          "title": "I/O Command Set specific Identify Namespace data structure for an Allocated Namespace ID (CNS 1Bh)",
+          "pdf_page": 108,
+          "printed_page": 108,
+          "top": 152.0,
+          "cns": 27
+        },
+        {
+          "section": "4.1.5.10",
+          "title": "Command Set Index Usage for the NVM Command Set",
+          "pdf_page": 109,
+          "printed_page": 109,
+          "top": 691.0
+        },
+        {
+          "section": "4.1.5.10.1",
+          "title": "Determining the Identify Command Information Associated with a Namespace",
+          "pdf_page": 109,
+          "printed_page": 109,
+          "top": 640.0
+        },
+        {
+          "section": "4.1.5.10.2",
+          "title": "Determining the Identify Command Information Associated with a Format Index",
+          "pdf_page": 109,
+          "printed_page": 109,
+          "top": 364.0
+        }
+      ]
+    },
+    {
+      "id": "N07",
+      "source_id": "NVME-NVM-CS-1.3",
+      "start_pdf_page": 160,
+      "end_pdf_page": 162,
+      "start_section": "5.6",
+      "stop_before_section": "5.7",
+      "sections": [
+        {
+          "section": "5.6",
+          "title": "LBA Format List Structure",
+          "pdf_page": 160,
+          "printed_page": 160,
+          "top": 209.0
+        }
+      ]
+    }
+  ],
+  "included_figures": [
+    {
+      "id": "ADMINIO-BASE-FIG-143",
+      "source_id": "NVME-BASE-2.4",
+      "number": "143",
+      "section": "5",
+      "pdf_pages": "202-203",
+      "module": "adminio-command-map"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-144",
+      "source_id": "NVME-BASE-2.4",
+      "number": "144",
+      "section": "5.1.1",
+      "pdf_pages": "204-205",
+      "module": "adminio-command-map"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-147",
+      "source_id": "NVME-BASE-2.4",
+      "number": "147",
+      "section": "5.2.1",
+      "pdf_pages": "208",
+      "module": "adminio-abort"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-148",
+      "source_id": "NVME-BASE-2.4",
+      "number": "148",
+      "section": "5.2.1.2",
+      "pdf_pages": "208",
+      "module": "adminio-abort"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-149",
+      "source_id": "NVME-BASE-2.4",
+      "number": "149",
+      "section": "5.2.1.2",
+      "pdf_pages": "208",
+      "module": "adminio-abort"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-150",
+      "source_id": "NVME-BASE-2.4",
+      "number": "150",
+      "section": "5.2.2.1",
+      "pdf_pages": "210",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-151",
+      "source_id": "NVME-BASE-2.4",
+      "number": "151",
+      "section": "5.2.2.1",
+      "pdf_pages": "210-211",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-152",
+      "source_id": "NVME-BASE-2.4",
+      "number": "152",
+      "section": "5.2.2.1",
+      "pdf_pages": "211",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-153",
+      "source_id": "NVME-BASE-2.4",
+      "number": "153",
+      "section": "5.2.2.1",
+      "pdf_pages": "211",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-154",
+      "source_id": "NVME-BASE-2.4",
+      "number": "154",
+      "section": "5.2.2.1",
+      "pdf_pages": "211",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-155",
+      "source_id": "NVME-BASE-2.4",
+      "number": "155",
+      "section": "5.2.2.1",
+      "pdf_pages": "212-215",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-156",
+      "source_id": "NVME-BASE-2.4",
+      "number": "156",
+      "section": "5.2.2.1",
+      "pdf_pages": "215-216",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-157",
+      "source_id": "NVME-BASE-2.4",
+      "number": "157",
+      "section": "5.2.2.1",
+      "pdf_pages": "216",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-158",
+      "source_id": "NVME-BASE-2.4",
+      "number": "158",
+      "section": "5.2.2.1",
+      "pdf_pages": "216",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-159",
+      "source_id": "NVME-BASE-2.4",
+      "number": "159",
+      "section": "5.2.2.1",
+      "pdf_pages": "216-217",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-160",
+      "source_id": "NVME-BASE-2.4",
+      "number": "160",
+      "section": "5.2.2.1",
+      "pdf_pages": "217",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-161",
+      "source_id": "NVME-BASE-2.4",
+      "number": "161",
+      "section": "5.2.2.1",
+      "pdf_pages": "217",
+      "module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-187",
+      "source_id": "NVME-BASE-2.4",
+      "number": "187",
+      "section": "5.2.9",
+      "pdf_pages": "229",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-188",
+      "source_id": "NVME-BASE-2.4",
+      "number": "188",
+      "section": "5.2.9.1",
+      "pdf_pages": "230",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-189",
+      "source_id": "NVME-BASE-2.4",
+      "number": "189",
+      "section": "5.2.9.1",
+      "pdf_pages": "230-231",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-190",
+      "source_id": "NVME-BASE-2.4",
+      "number": "190",
+      "section": "5.2.10",
+      "pdf_pages": "231",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-191",
+      "source_id": "NVME-BASE-2.4",
+      "number": "191",
+      "section": "5.2.10",
+      "pdf_pages": "231",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-192",
+      "source_id": "NVME-BASE-2.4",
+      "number": "192",
+      "section": "5.2.10",
+      "pdf_pages": "232",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-193",
+      "source_id": "NVME-BASE-2.4",
+      "number": "193",
+      "section": "5.2.10.1",
+      "pdf_pages": "232",
+      "module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-194",
+      "source_id": "NVME-BASE-2.4",
+      "number": "194",
+      "section": "5.2.11",
+      "pdf_pages": "233",
+      "module": "adminio-format"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-195",
+      "source_id": "NVME-BASE-2.4",
+      "number": "195",
+      "section": "5.2.11",
+      "pdf_pages": "234-235",
+      "module": "adminio-format"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-196",
+      "source_id": "NVME-BASE-2.4",
+      "number": "196",
+      "section": "5.2.11.1",
+      "pdf_pages": "235",
+      "module": "adminio-format"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-197",
+      "source_id": "NVME-BASE-2.4",
+      "number": "197",
+      "section": "5.2.12",
+      "pdf_pages": "235",
+      "module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-198",
+      "source_id": "NVME-BASE-2.4",
+      "number": "198",
+      "section": "5.2.12",
+      "pdf_pages": "235-236",
+      "module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-199",
+      "source_id": "NVME-BASE-2.4",
+      "number": "199",
+      "section": "5.2.12",
+      "pdf_pages": "236",
+      "module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-200",
+      "source_id": "NVME-BASE-2.4",
+      "number": "200",
+      "section": "5.2.12",
+      "pdf_pages": "236-237",
+      "module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-201",
+      "source_id": "NVME-BASE-2.4",
+      "number": "201",
+      "section": "5.2.12.2",
+      "pdf_pages": "238",
+      "module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-202",
+      "source_id": "NVME-BASE-2.4",
+      "number": "202",
+      "section": "5.2.12.2",
+      "pdf_pages": "238",
+      "module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-203",
+      "source_id": "NVME-BASE-2.4",
+      "number": "203",
+      "section": "5.2.13",
+      "pdf_pages": "239",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-204",
+      "source_id": "NVME-BASE-2.4",
+      "number": "204",
+      "section": "5.2.13",
+      "pdf_pages": "239",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-205",
+      "source_id": "NVME-BASE-2.4",
+      "number": "205",
+      "section": "5.2.13",
+      "pdf_pages": "240",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-206",
+      "source_id": "NVME-BASE-2.4",
+      "number": "206",
+      "section": "5.2.13",
+      "pdf_pages": "240",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-207",
+      "source_id": "NVME-BASE-2.4",
+      "number": "207",
+      "section": "5.2.13",
+      "pdf_pages": "240",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-208",
+      "source_id": "NVME-BASE-2.4",
+      "number": "208",
+      "section": "5.2.13",
+      "pdf_pages": "240-241",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-209",
+      "source_id": "NVME-BASE-2.4",
+      "number": "209",
+      "section": "5.2.13",
+      "pdf_pages": "241-242",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-210",
+      "source_id": "NVME-BASE-2.4",
+      "number": "210",
+      "section": "5.2.13.1.1",
+      "pdf_pages": "243",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-211",
+      "source_id": "NVME-BASE-2.4",
+      "number": "211",
+      "section": "5.2.13.1.1",
+      "pdf_pages": "243-244",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-212",
+      "source_id": "NVME-BASE-2.4",
+      "number": "212",
+      "section": "5.2.13.1.2",
+      "pdf_pages": "244-246",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-213",
+      "source_id": "NVME-BASE-2.4",
+      "number": "213",
+      "section": "5.2.13.1.3",
+      "pdf_pages": "247-251",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-214",
+      "source_id": "NVME-BASE-2.4",
+      "number": "214",
+      "section": "5.2.13.1.3",
+      "pdf_pages": "251",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-215",
+      "source_id": "NVME-BASE-2.4",
+      "number": "215",
+      "section": "5.2.13.1.4",
+      "pdf_pages": "252",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-216",
+      "source_id": "NVME-BASE-2.4",
+      "number": "216",
+      "section": "5.2.13.1.6",
+      "pdf_pages": "253",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-217",
+      "source_id": "NVME-BASE-2.4",
+      "number": "217",
+      "section": "5.2.13.1.6",
+      "pdf_pages": "254-255",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-270",
+      "source_id": "NVME-BASE-2.4",
+      "number": "270",
+      "section": "5.2.13.1.18",
+      "pdf_pages": "302",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-271",
+      "source_id": "NVME-BASE-2.4",
+      "number": "271",
+      "section": "5.2.13.1.18",
+      "pdf_pages": "303-304",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-304",
+      "source_id": "NVME-BASE-2.4",
+      "number": "304",
+      "section": "5.2.13.1.33",
+      "pdf_pages": "327-328",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-331",
+      "source_id": "NVME-BASE-2.4",
+      "number": "331",
+      "section": "5.2.13.4",
+      "pdf_pages": "362",
+      "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-332",
+      "source_id": "NVME-BASE-2.4",
+      "number": "332",
+      "section": "5.2.14.1",
+      "pdf_pages": "362",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-333",
+      "source_id": "NVME-BASE-2.4",
+      "number": "333",
+      "section": "5.2.14.1",
+      "pdf_pages": "363",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-334",
+      "source_id": "NVME-BASE-2.4",
+      "number": "334",
+      "section": "5.2.14.1",
+      "pdf_pages": "363",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-335",
+      "source_id": "NVME-BASE-2.4",
+      "number": "335",
+      "section": "5.2.14.1",
+      "pdf_pages": "363",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-336",
+      "source_id": "NVME-BASE-2.4",
+      "number": "336",
+      "section": "5.2.14.1",
+      "pdf_pages": "364-365",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-337",
+      "source_id": "NVME-BASE-2.4",
+      "number": "337",
+      "section": "5.2.14.1",
+      "pdf_pages": "366",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-338",
+      "source_id": "NVME-BASE-2.4",
+      "number": "338",
+      "section": "5.2.14.2.1",
+      "pdf_pages": "366-408",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-339",
+      "source_id": "NVME-BASE-2.4",
+      "number": "339",
+      "section": "5.2.14.2.1",
+      "pdf_pages": "409",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-340",
+      "source_id": "NVME-BASE-2.4",
+      "number": "340",
+      "section": "5.2.14.2.1",
+      "pdf_pages": "410-412",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-341",
+      "source_id": "NVME-BASE-2.4",
+      "number": "341",
+      "section": "5.2.14.2.1",
+      "pdf_pages": "413",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-342",
+      "source_id": "NVME-BASE-2.4",
+      "number": "342",
+      "section": "5.2.14.2.3",
+      "pdf_pages": "414",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-343",
+      "source_id": "NVME-BASE-2.4",
+      "number": "343",
+      "section": "5.2.14.2.4",
+      "pdf_pages": "414",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-344",
+      "source_id": "NVME-BASE-2.4",
+      "number": "344",
+      "section": "5.2.14.2.4",
+      "pdf_pages": "415",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-345",
+      "source_id": "NVME-BASE-2.4",
+      "number": "345",
+      "section": "5.2.14.2.4",
+      "pdf_pages": "415",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-346",
+      "source_id": "NVME-BASE-2.4",
+      "number": "346",
+      "section": "5.2.14.2.8",
+      "pdf_pages": "417-420",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-349",
+      "source_id": "NVME-BASE-2.4",
+      "number": "349",
+      "section": "5.2.14.2.15",
+      "pdf_pages": "422",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-350",
+      "source_id": "NVME-BASE-2.4",
+      "number": "350",
+      "section": "5.2.14.2.15",
+      "pdf_pages": "422-423",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-351",
+      "source_id": "NVME-BASE-2.4",
+      "number": "351",
+      "section": "5.2.14.2.15",
+      "pdf_pages": "423",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-352",
+      "source_id": "NVME-BASE-2.4",
+      "number": "352",
+      "section": "5.2.14.2.16",
+      "pdf_pages": "423",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-353",
+      "source_id": "NVME-BASE-2.4",
+      "number": "353",
+      "section": "5.2.14.2.16",
+      "pdf_pages": "423",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-354",
+      "source_id": "NVME-BASE-2.4",
+      "number": "354",
+      "section": "5.2.14.2.19",
+      "pdf_pages": "424-425",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-355",
+      "source_id": "NVME-BASE-2.4",
+      "number": "355",
+      "section": "5.2.14.2.19",
+      "pdf_pages": "425",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-356",
+      "source_id": "NVME-BASE-2.4",
+      "number": "356",
+      "section": "5.2.14.2.20",
+      "pdf_pages": "425-426",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-357",
+      "source_id": "NVME-BASE-2.4",
+      "number": "357",
+      "section": "5.2.14.2.20",
+      "pdf_pages": "426",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-358",
+      "source_id": "NVME-BASE-2.4",
+      "number": "358",
+      "section": "5.2.14.2.22",
+      "pdf_pages": "426-427",
+      "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-456",
+      "source_id": "NVME-BASE-2.4",
+      "number": "456",
+      "section": "5.2.28",
+      "pdf_pages": "480",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-457",
+      "source_id": "NVME-BASE-2.4",
+      "number": "457",
+      "section": "5.2.28",
+      "pdf_pages": "480-481",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-458",
+      "source_id": "NVME-BASE-2.4",
+      "number": "458",
+      "section": "5.2.28",
+      "pdf_pages": "481",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-459",
+      "source_id": "NVME-BASE-2.4",
+      "number": "459",
+      "section": "5.2.28.3",
+      "pdf_pages": "481",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-460",
+      "source_id": "NVME-BASE-2.4",
+      "number": "460",
+      "section": "5.2.29",
+      "pdf_pages": "482",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-461",
+      "source_id": "NVME-BASE-2.4",
+      "number": "461",
+      "section": "5.2.29",
+      "pdf_pages": "482",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-462",
+      "source_id": "NVME-BASE-2.4",
+      "number": "462",
+      "section": "5.2.29",
+      "pdf_pages": "482",
+      "module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-463",
+      "source_id": "NVME-BASE-2.4",
+      "number": "463",
+      "section": "5.2.30",
+      "pdf_pages": "482",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-464",
+      "source_id": "NVME-BASE-2.4",
+      "number": "464",
+      "section": "5.2.30",
+      "pdf_pages": "483",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-465",
+      "source_id": "NVME-BASE-2.4",
+      "number": "465",
+      "section": "5.2.30",
+      "pdf_pages": "483",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-466",
+      "source_id": "NVME-BASE-2.4",
+      "number": "466",
+      "section": "5.2.30",
+      "pdf_pages": "483-485",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-467",
+      "source_id": "NVME-BASE-2.4",
+      "number": "467",
+      "section": "5.2.30.1.1",
+      "pdf_pages": "486",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-468",
+      "source_id": "NVME-BASE-2.4",
+      "number": "468",
+      "section": "5.2.30.1.2",
+      "pdf_pages": "487",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-469",
+      "source_id": "NVME-BASE-2.4",
+      "number": "469",
+      "section": "5.2.30.1.2.1",
+      "pdf_pages": "488",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-470",
+      "source_id": "NVME-BASE-2.4",
+      "number": "470",
+      "section": "5.2.30.1.3.1",
+      "pdf_pages": "489-490",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-471",
+      "source_id": "NVME-BASE-2.4",
+      "number": "471",
+      "section": "5.2.30.1.4",
+      "pdf_pages": "490-491",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-472",
+      "source_id": "NVME-BASE-2.4",
+      "number": "472",
+      "section": "5.2.30.1.5",
+      "pdf_pages": "491",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-473",
+      "source_id": "NVME-BASE-2.4",
+      "number": "473",
+      "section": "5.2.30.1.5",
+      "pdf_pages": "492",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-474",
+      "source_id": "NVME-BASE-2.4",
+      "number": "474",
+      "section": "5.2.30.1.6",
+      "pdf_pages": "492-494",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-475",
+      "source_id": "NVME-BASE-2.4",
+      "number": "475",
+      "section": "5.2.30.1.7",
+      "pdf_pages": "494",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-476",
+      "source_id": "NVME-BASE-2.4",
+      "number": "476",
+      "section": "5.2.30.1.7",
+      "pdf_pages": "495",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-477",
+      "source_id": "NVME-BASE-2.4",
+      "number": "477",
+      "section": "5.2.30.1.7",
+      "pdf_pages": "495",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-478",
+      "source_id": "NVME-BASE-2.4",
+      "number": "478",
+      "section": "5.2.30.1.7",
+      "pdf_pages": "495",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-479",
+      "source_id": "NVME-BASE-2.4",
+      "number": "479",
+      "section": "5.2.30.1.8",
+      "pdf_pages": "496",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-480",
+      "source_id": "NVME-BASE-2.4",
+      "number": "480",
+      "section": "5.2.30.1.8",
+      "pdf_pages": "496-497",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-482",
+      "source_id": "NVME-BASE-2.4",
+      "number": "482",
+      "section": "5.2.30.1.10",
+      "pdf_pages": "498",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-483",
+      "source_id": "NVME-BASE-2.4",
+      "number": "483",
+      "section": "5.2.30.1.11",
+      "pdf_pages": "498-499",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-494",
+      "source_id": "NVME-BASE-2.4",
+      "number": "494",
+      "section": "5.2.30.1.18",
+      "pdf_pages": "505",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-495",
+      "source_id": "NVME-BASE-2.4",
+      "number": "495",
+      "section": "5.2.30.1.18",
+      "pdf_pages": "505",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-536",
+      "source_id": "NVME-BASE-2.4",
+      "number": "536",
+      "section": "5.2.30.1.34",
+      "pdf_pages": "534",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-543",
+      "source_id": "NVME-BASE-2.4",
+      "number": "543",
+      "section": "5.2.30.2.1",
+      "pdf_pages": "541",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-544",
+      "source_id": "NVME-BASE-2.4",
+      "number": "544",
+      "section": "5.2.30.2.2",
+      "pdf_pages": "541",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-545",
+      "source_id": "NVME-BASE-2.4",
+      "number": "545",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "542-543",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-546",
+      "source_id": "NVME-BASE-2.4",
+      "number": "546",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "543",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-547",
+      "source_id": "NVME-BASE-2.4",
+      "number": "547",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "543",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-548",
+      "source_id": "NVME-BASE-2.4",
+      "number": "548",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "543",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-549",
+      "source_id": "NVME-BASE-2.4",
+      "number": "549",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "544",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-550",
+      "source_id": "NVME-BASE-2.4",
+      "number": "550",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "544",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-551",
+      "source_id": "NVME-BASE-2.4",
+      "number": "551",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "544",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-552",
+      "source_id": "NVME-BASE-2.4",
+      "number": "552",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "544-545",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-553",
+      "source_id": "NVME-BASE-2.4",
+      "number": "553",
+      "section": "5.2.30.2.3",
+      "pdf_pages": "545",
+      "module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-554",
+      "source_id": "NVME-BASE-2.4",
+      "number": "554",
+      "section": "5.2.30.4",
+      "pdf_pages": "545",
+      "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-571",
+      "source_id": "NVME-BASE-2.4",
+      "number": "571",
+      "section": "5.3.1",
+      "pdf_pages": "553",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-572",
+      "source_id": "NVME-BASE-2.4",
+      "number": "572",
+      "section": "5.3.1",
+      "pdf_pages": "554",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-573",
+      "source_id": "NVME-BASE-2.4",
+      "number": "573",
+      "section": "5.3.1",
+      "pdf_pages": "554",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-574",
+      "source_id": "NVME-BASE-2.4",
+      "number": "574",
+      "section": "5.3.1.1",
+      "pdf_pages": "554",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-575",
+      "source_id": "NVME-BASE-2.4",
+      "number": "575",
+      "section": "5.3.2",
+      "pdf_pages": "555",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-576",
+      "source_id": "NVME-BASE-2.4",
+      "number": "576",
+      "section": "5.3.2",
+      "pdf_pages": "555",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-577",
+      "source_id": "NVME-BASE-2.4",
+      "number": "577",
+      "section": "5.3.2",
+      "pdf_pages": "555-556",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-578",
+      "source_id": "NVME-BASE-2.4",
+      "number": "578",
+      "section": "5.3.2",
+      "pdf_pages": "556",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-579",
+      "source_id": "NVME-BASE-2.4",
+      "number": "579",
+      "section": "5.3.2.1",
+      "pdf_pages": "556-557",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-580",
+      "source_id": "NVME-BASE-2.4",
+      "number": "580",
+      "section": "5.3.3",
+      "pdf_pages": "557",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-581",
+      "source_id": "NVME-BASE-2.4",
+      "number": "581",
+      "section": "5.3.3.1",
+      "pdf_pages": "557",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-582",
+      "source_id": "NVME-BASE-2.4",
+      "number": "582",
+      "section": "5.3.4",
+      "pdf_pages": "558",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-583",
+      "source_id": "NVME-BASE-2.4",
+      "number": "583",
+      "section": "5.3.4.1",
+      "pdf_pages": "558",
+      "module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-645",
+      "source_id": "NVME-BASE-2.4",
+      "number": "645",
+      "section": "7",
+      "pdf_pages": "590",
+      "module": "adminio-flush"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-023",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "23",
+      "section": "3.3.1",
+      "pdf_pages": "28",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-024",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "24",
+      "section": "3.3.1",
+      "pdf_pages": "28",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-025",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "25",
+      "section": "3.3.1",
+      "pdf_pages": "28",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-026",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "26",
+      "section": "3.3.1",
+      "pdf_pages": "28",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-027",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "27",
+      "section": "3.3.1",
+      "pdf_pages": "28-29",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-028",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "28",
+      "section": "3.3.1",
+      "pdf_pages": "29",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-029",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "29",
+      "section": "3.3.1",
+      "pdf_pages": "29",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-030",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "30",
+      "section": "3.3.1",
+      "pdf_pages": "29",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-031",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "31",
+      "section": "3.3.1.1",
+      "pdf_pages": "30",
+      "module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-032",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "32",
+      "section": "3.3.2",
+      "pdf_pages": "30",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-033",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "33",
+      "section": "3.3.2",
+      "pdf_pages": "30",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-034",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "34",
+      "section": "3.3.2",
+      "pdf_pages": "30",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-035",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "35",
+      "section": "3.3.2",
+      "pdf_pages": "30-31",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-036",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "36",
+      "section": "3.3.2",
+      "pdf_pages": "31",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-037",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "37",
+      "section": "3.3.2",
+      "pdf_pages": "31",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-038",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "38",
+      "section": "3.3.2",
+      "pdf_pages": "32",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-039",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "39",
+      "section": "3.3.2",
+      "pdf_pages": "32",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-040",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "40",
+      "section": "3.3.2",
+      "pdf_pages": "33-34",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-041",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "41",
+      "section": "3.3.2",
+      "pdf_pages": "35-36",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-042",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "42",
+      "section": "3.3.2",
+      "pdf_pages": "38",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-043",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "43",
+      "section": "3.3.2.5",
+      "pdf_pages": "43-44",
+      "module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-044",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "44",
+      "section": "3.3.3",
+      "pdf_pages": "44",
+      "module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-045",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "45",
+      "section": "3.3.3",
+      "pdf_pages": "44",
+      "module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-046",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "46",
+      "section": "3.3.3",
+      "pdf_pages": "44-45",
+      "module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-047",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "47",
+      "section": "3.3.3",
+      "pdf_pages": "45",
+      "module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-048",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "48",
+      "section": "3.3.3.2",
+      "pdf_pages": "47",
+      "module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-049",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "49",
+      "section": "3.3.3.3",
+      "pdf_pages": "48",
+      "module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-050",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "50",
+      "section": "3.3.4",
+      "pdf_pages": "49",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-051",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "51",
+      "section": "3.3.4",
+      "pdf_pages": "49",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-052",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "52",
+      "section": "3.3.4",
+      "pdf_pages": "49",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-053",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "53",
+      "section": "3.3.4",
+      "pdf_pages": "49",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-054",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "54",
+      "section": "3.3.4",
+      "pdf_pages": "49",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-055",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "55",
+      "section": "3.3.4",
+      "pdf_pages": "50",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-056",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "56",
+      "section": "3.3.4",
+      "pdf_pages": "50",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-057",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "57",
+      "section": "3.3.4",
+      "pdf_pages": "50",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-058",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "58",
+      "section": "3.3.4",
+      "pdf_pages": "51",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-059",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "59",
+      "section": "3.3.4.1",
+      "pdf_pages": "51",
+      "module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-060",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "60",
+      "section": "3.3.5",
+      "pdf_pages": "52",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-061",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "61",
+      "section": "3.3.5",
+      "pdf_pages": "52",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-062",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "62",
+      "section": "3.3.5",
+      "pdf_pages": "52",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-063",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "63",
+      "section": "3.3.5",
+      "pdf_pages": "52",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-064",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "64",
+      "section": "3.3.5",
+      "pdf_pages": "53",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-065",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "65",
+      "section": "3.3.5",
+      "pdf_pages": "53",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-066",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "66",
+      "section": "3.3.5.1",
+      "pdf_pages": "53",
+      "module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-067",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "67",
+      "section": "3.3.6",
+      "pdf_pages": "53",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-068",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "68",
+      "section": "3.3.6",
+      "pdf_pages": "54",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-069",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "69",
+      "section": "3.3.6",
+      "pdf_pages": "54",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-070",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "70",
+      "section": "3.3.6",
+      "pdf_pages": "54",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-071",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "71",
+      "section": "3.3.6",
+      "pdf_pages": "54",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-072",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "72",
+      "section": "3.3.6",
+      "pdf_pages": "54-55",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-073",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "73",
+      "section": "3.3.6",
+      "pdf_pages": "55",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-074",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "74",
+      "section": "3.3.6",
+      "pdf_pages": "55",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-075",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "75",
+      "section": "3.3.6",
+      "pdf_pages": "55",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-076",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "76",
+      "section": "3.3.6.1",
+      "pdf_pages": "56",
+      "module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-077",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "77",
+      "section": "3.3.7",
+      "pdf_pages": "56",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-078",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "78",
+      "section": "3.3.7",
+      "pdf_pages": "56",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-079",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "79",
+      "section": "3.3.7",
+      "pdf_pages": "57",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-080",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "80",
+      "section": "3.3.7.1",
+      "pdf_pages": "57",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-081",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "81",
+      "section": "3.3.8",
+      "pdf_pages": "59",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-082",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "82",
+      "section": "3.3.8",
+      "pdf_pages": "59",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-083",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "83",
+      "section": "3.3.8",
+      "pdf_pages": "59-60",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-084",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "84",
+      "section": "3.3.8",
+      "pdf_pages": "60",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-085",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "85",
+      "section": "3.3.8",
+      "pdf_pages": "60",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-086",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "86",
+      "section": "3.3.8",
+      "pdf_pages": "60",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-087",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "87",
+      "section": "3.3.8",
+      "pdf_pages": "60",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-088",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "88",
+      "section": "3.3.8.1",
+      "pdf_pages": "61",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-089",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "89",
+      "section": "3.3.8.1",
+      "pdf_pages": "61",
+      "module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-090",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "90",
+      "section": "4.1.1",
+      "pdf_pages": "62",
+      "module": "adminio-nvm-admin"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-091",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "91",
+      "section": "4.1.2",
+      "pdf_pages": "63",
+      "module": "adminio-nvm-admin"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-094",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "94",
+      "section": "4.1.3.2",
+      "pdf_pages": "65",
+      "module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-095",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "95",
+      "section": "4.1.3.2",
+      "pdf_pages": "65",
+      "module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-096",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "96",
+      "section": "4.1.3.2",
+      "pdf_pages": "65-66",
+      "module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-098",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "98",
+      "section": "4.1.3.4",
+      "pdf_pages": "66-67",
+      "module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-110",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "110",
+      "section": "4.1.4.1",
+      "pdf_pages": "76",
+      "module": "adminio-nvm-logs"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-122",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "122",
+      "section": "4.1.5",
+      "pdf_pages": "83-84",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-123",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "123",
+      "section": "4.1.5.1",
+      "pdf_pages": "85-93",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-124",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "124",
+      "section": "4.1.5.1",
+      "pdf_pages": "94",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-125",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "125",
+      "section": "4.1.5.1",
+      "pdf_pages": "94",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-126",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "126",
+      "section": "4.1.5.2",
+      "pdf_pages": "94-96",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-127",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "127",
+      "section": "4.1.5.3",
+      "pdf_pages": "97-101",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-128",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "128",
+      "section": "4.1.5.3",
+      "pdf_pages": "101-102",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-129",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "129",
+      "section": "4.1.5.4",
+      "pdf_pages": "103",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-130",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "130",
+      "section": "4.1.5.4",
+      "pdf_pages": "107",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-131",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "131",
+      "section": "4.1.5.5",
+      "pdf_pages": "107",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-132",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "132",
+      "section": "4.1.5.8",
+      "pdf_pages": "108",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-133",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "133",
+      "section": "4.1.5.8",
+      "pdf_pages": "108",
+      "module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-192",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "192",
+      "section": "5.6",
+      "pdf_pages": "161",
+      "module": "adminio-format-list"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-193",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "193",
+      "section": "5.6",
+      "pdf_pages": "162",
+      "module": "adminio-format-list"
+    }
+  ]
+}

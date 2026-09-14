@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -164,7 +171,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-selftest-command-state-machine"><h2 id="heading-selftest-command-state-machine"><span class="section-number">01</span> Device Self-test 的啟動與執行</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>從「收到要求」走到「開始測試」</h3>
+<div class="course-walkthrough">
+<h3>從「收到要求」走到「開始測試」</h3>
 <h4>先確認裝置願意提供什麼</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">從 Identify 的 OACS.DSTS 確認 Device Self-test 支援，再讀 DSTO 與 EDSTT，理解同時執行作業的限制及延伸測試時間。EDSTT 是預估時間資訊，不能當成到點就宣告測試通過的計時器。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>OACS.DSTS</dt><dd>Optional Admin Command Support 的 Device Self-test Supported bit，判斷 command 是否可用。</dd></div><div><dt>EDSTT</dt><dd>Extended Device Self-test Time，在 power state 0 下的 extended test 名目完成分鐘數。</dd></div><div><dt>DSTO</dt><dd>Device Self-test Options，Identify Controller 中回報 refresh 與 concurrency 選項的欄位。</dd></div></dl>
 <h4>指定種類，也指定對象</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">以測試 NSID=7 為例，STC 選擇測試種類，NSID 選擇納入的 namespace。兩個欄位回答不同問題。先確認 NSID=7 是有效且可透過收到命令的控制器存取的 namespace，才能把後面的結果與預期對象連起來。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>STC</dt><dd>Self-test Code 是 Device Self-test CDW10 的動作 nibble；result entry 的 STC 則是 Status Code，須依 SCVLD 判斷有效。</dd></div></dl>
 <h4>把命令完成與背景作業分開記錄</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">送出命令後，主機先收到這筆命令的 CQE。成功代表要求已被接受；測試本身可能仍在執行。接著讀 LID 06h 的目前作業與進度，才能回答「現在是否正在測試」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID 06h</dt><dd>Device Self-test Log Page 的 identifier 06h；同時包含 current operation 與 20 筆歷史結果。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl>
@@ -190,7 +198,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-selftest-observe-results"><h2 id="heading-selftest-observe-results"><span class="section-number">02</span> LID 06h 的目前進度與歷史結果</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>讀懂一筆測試紀錄，而非只找「成功」兩個字</h3>
+<div class="course-walkthrough">
+<h3>讀懂一筆測試紀錄，而非只找「成功」兩個字</h3>
 <h4>先看現在，再看歷史</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">LID 06h 前面的 DSTOS、DSTCS 描述目前作業及完成百分比；後面的結果項目保存已結束作業。假設目前進度是 50%，第一筆歷史紀錄仍可能是上一次測試結果，不能拿來宣告這次測試已成功或失敗。</span></p>
 <h4>辨認是哪種測試、怎麼結束</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">在同一筆結果內，DSTC 說明測試種類，DSTR 說明結束結果，SEGN 在適用時指出發生失敗的測試區段。把種類、結果及區段放在一起，才知道後面的失敗資訊是在描述哪一次作業。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SEGN</dt><dd>Segment Number，只有 DSTR=7h 時指出第一個失敗 diagnostic segment。</dd></div></dl>
 <h4>先讀有效性，再讀數值</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">VDINFO 的有效性旗標決定 NSID、FLBA 及狀態碼能否使用。例如 FLBA 的記憶體內容即使是 123，只要 FLBA Valid 沒有成立，123 就不能用來指出故障位置。有效旗標成立後，才以 namespace 的格式解釋這個 LBA。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>VDINFO</dt><dd>Valid Diagnostic Information，分別 gate NSID、FLBA、SCT 與 SC 的 validity bitmap。</dd></div><div><dt>FLBA</dt><dd>Failing LBA，NVM Command Set 定義為造成 self-test failure 的其中一個 logical block address。</dd></div></dl>
@@ -368,7 +377,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <article class="field-note" id="figure-BASESELFTEST-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASESELFTEST-FIG-206-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如從 0 起算的 Format Index=2 選第 3 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
 <!-- figure-table:BASESELFTEST-FIG-207 -->

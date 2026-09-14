@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -183,7 +190,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-properties-init"><h2 id="heading-properties-init"><span class="section-number">02</span> 從設定到 CSTS.RDY：初始化流程</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>主機與控制器交替完成初始化</h3>
+<div class="course-walkthrough">
+<h3>主機與控制器交替完成初始化</h3>
 <h4>先查限制，再配置記憶體</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">主機讀 CAP 的 page-size 範圍及佇列限制，選定符合要求的 CC.MPS，再準備 Admin SQ、CQ。ASQ、ACQ 是起點，AQA 是深度編碼；只有位址沒有足夠的記憶體範圍，仍不是完整配置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ACQ</dt><dd>Admin Completion Queue Base Address，Admin CQ 在可定址記憶體中的基底位址。</dd></div><div><dt>AQA</dt><dd>Admin Queue Attributes，描述 Admin SQ 與 Admin CQ 大小的 property。</dd></div><div><dt>ASQ</dt><dd>Admin Submission Queue Base Address，Admin SQ 在可定址記憶體中的基底位址。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
 <h4>主機提出啟用，控制器回報就緒</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">主機設定必要欄位後寫 CC.EN=1，接著等待 CSTS.RDY=1。這兩個位元分屬要求與回覆，不能把寫入 EN 的瞬間當成控制器已可處理全部命令。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSTS</dt><dd>Controller Status，controller 回報 ready、fatal status 與 shutdown 狀態的 property。</dd></div><div><dt>RDY</dt><dd>Ready，CSTS 中表示 controller 是否已準備正常處理 command 的 bit。</dd></div><div><dt>EN</dt><dd>Enable，CC 中控制 controller enable state 的 bit。</dd></div></dl>
 <h4>由 Admin 命令建立後續環境</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">Admin 路徑就緒後才能查詢 Identify、建立 I/O CQ 與 SQ。建立 SQ 時指定它使用的 CQ，所以要先讓被引用的 CQ 存在。初始化的順序來自資源依賴，不是單純按照暫存器 offset 遞增寫入。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
@@ -200,7 +208,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-queue-arbitration"><h2 id="heading-queue-arbitration"><span class="section-number">03</span> Queue 位置與命令選取</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>兩個 SQ 共用一個 CQ 時如何追蹤命令</h3>
+<div class="course-walkthrough">
+<h3>兩個 SQ 共用一個 CQ 時如何追蹤命令</h3>
 <h4>先畫佇列關係</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">假設 SQ1 與 SQ2 都指向 CQ1。SQ 決定命令從哪裡來，CQ 決定完成項目往哪裡放；這不代表兩個 SQ 的命令會合併成單一 FIFO 執行順序。</span></p>
 <h4>再看控制器如何選下一份工作</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">Arbitration 規則在有多個待處理 SQ 時選取工作，priority 或 weight 影響服務分配。它不會把任意兩筆命令建立成資料相依關係，也不保證完成順序與提交順序完全相同。</span></p>
 <h4>用識別資訊把完成對回來源</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">主機讀 CQE 的 SQID 與 CID，分別找到來源 SQ 與其中的命令。只保留 CID 而忽略 SQID，在不同 SQ 使用相同 CID 時就無法唯一辨認。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
@@ -217,7 +226,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-memory-capacity"><h2 id="heading-memory-capacity"><span class="section-number">04</span> Namespace、CMB、PMR 與容量</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>先分辨記憶體的位置，再比較它的用途</h3>
+<div class="course-walkthrough">
+<h3>先分辨記憶體的位置，再比較它的用途</h3>
 <h4>以一般 I/O buffer 作起點</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">主機配置接收 Read 資料的 buffer，透過 DPTR 告訴控制器可使用的地址。這份記憶體是本次資料傳輸的目的地，不是 namespace 容量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl>
 <h4>換成控制器上的記憶體</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">CMB 位於控制器，支援哪些佇列或資料用途要讀各能力位元；PMR 另有持久性與啟用規則。它們能由主機定址，不代表任何資料放進去都自動具有相同保留保證。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CMB</dt><dd>Controller Memory Buffer，controller 提供、可放置部分 queue 或資料結構的記憶體區域。</dd></div><div><dt>PMR</dt><dd>Persistent Memory Region，由 controller 暴露、具有持久性語意的記憶體區域。</dd></div></dl>
 <h4>把範圍和啟用條件一起畫出來</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">對每個記憶體區域列出 base、size、enabled 與可用用途，再檢查地址範圍是否符合規則。地址落在某區間內，只有該映射有效時才能按那種記憶體解讀。</span></p>

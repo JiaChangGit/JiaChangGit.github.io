@@ -637,6 +637,8 @@ apply_plain_language(REPORT_MODULES)
 sys.path.insert(0, str(ROOT))
 from scripts.nvme_report_split import install as install_split, SPLITS
 install_split(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES)
+from scripts.nvme_admin_io import install as install_admin_io
+install_admin_io(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
 for new_id, (old_id, *_) in SPLITS.items():
     POST_IMAGES[new_id] = POST_IMAGES[old_id]
     REPORTS[new_id]['date'] = '2026-09-11'
@@ -647,6 +649,8 @@ except ModuleNotFoundError:
 
 
 def artifact_ids(report_id: str) -> list[str]:
+    if report_id == 'admin-io-spec-walkthrough':
+        return ['adminio-tutorial-html', 'adminio-zh-md', 'adminio-en-md']
     if report_id in SPLITS:
         key = REPORTS[report_id]['prefix'].lower()
         return [key+'-tutorial-html', key+'-zh-md', key+'-en-md']
@@ -1331,6 +1335,7 @@ def frontmatter(
     image = POST_IMAGES[report_id][language]
     report_date = REPORTS[report_id].get("date", "2026-08-28")
     slugs = {'base-boot-telemetry-sanitize': 'boot-telemetry-sanitize', 'nvm-command-set-1.3': 'nvm-command-set-1-3'}
+    slugs['admin-io-spec-walkthrough'] = 'admin-io-spec-walkthrough'
     slugs.update({rid:rid.removeprefix('base-') for rid in SPLITS})
     permalink = f"permalink: /nvme/{slugs[report_id]}-{'en' if language == 'en' else 'zh-tw'}/\n" if report_id in slugs else ""
     return f"""---
@@ -1435,7 +1440,7 @@ def main() -> int:
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
 
-    priority = ['nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
+    priority = ['admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
     order = priority + [key for key in reversed(REPORTS) if key not in priority]
     for report_id in order:
         report = REPORTS[report_id]

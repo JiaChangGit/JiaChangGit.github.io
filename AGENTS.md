@@ -6,9 +6,10 @@
 
 - 中文 HTML：學過 OS、Computer Organization，聽過 SSD 基本概念的大學畢業生。從用途、元件關係、運作流程逐步深入欄位、條件與例子，讓讀者從新手一路讀到進階。
 - 中文與英文 post：用於向主管報告，內容對等；先講主題與重要性，再說關鍵機制、條件及代表性例子。每篇均須獨立可讀。
-- 13 份報告各保留 3 版：1 份 iPad／電腦共用的中文教學 HTML 加上中英文 GitHub Pages post，共 39 個交付檔。取消詳細版 HTML，不保留副本或導覽連結。
+- 14 份報告各保留 3 版：1 份 iPad／電腦共用的中文教學 HTML 加上中英文 GitHub Pages post，共 42 個交付檔。取消詳細版 HTML，不保留副本或導覽連結。
 - 中文 HTML 涵蓋該篇全部已核准 claim 與全部範圍內圖表；中英文 Pages 以全局觀念、流程及代表案例銜接 Spec，不重複完整技術附錄。中英文 post 的 claim、主軸、例子、限制與問題順序一致；HTML 可以採不同的漸進教學順序。
 - 路徑與契約見 `.ai/nvme-report/output-contract.json`。先更新規則與產生程式，再處理 NVM Command Set、Boot／Telemetry／Sanitize，最後改其餘舊篇。
+- Admin／I/O 整合篇另有 `admin-io-route.json`：按實際 PDF 頁與章節標題規劃順向報告路徑，Base → NVM 只切換一次；共用頁必須標停止標題，不能整頁納入。維護紀錄見 `docs/nvme-admin-io-scope-and-route.md`。
 
 ## 來源與範圍
 

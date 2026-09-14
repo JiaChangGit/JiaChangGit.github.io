@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -185,7 +192,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-hmb-command-math"><h2 id="heading-hmb-command-math"><span class="section-number">02</span> HMB 的描述子、大小與位址</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>由兩個區域算出完整 HMB</h3>
+<div class="course-walkthrough">
+<h3>由兩個區域算出完整 HMB</h3>
 <h4>列出每份資料的單位</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">假設 CC.MPS 對應 8 KiB page，兩個 descriptor 的 BSIZE 都是 16，則各提供 128 KiB，合計 256 KiB。這個例子刻意不用 4 KiB page，讓固定單位與目前頁單位的差別看得出來。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BSIZE</dt><dd>Buffer Size，HMB descriptor 中以 CC.MPS pages 表示的連續範圍長度。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
 <h4>將清單加總對回 HSIZE</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">合計 32 個目前 page，因此 HSIZE=32。若 HMPRE=64，它使用固定 4 KiB 單位，也代表 256 KiB。HSIZE 與 HMPRE 原值不同，換成 bytes 後卻可能相同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HSIZE</dt><dd>Host Memory Buffer Size，以 CC.MPS memory-page units 表示的 HMB 總大小。</dd></div></dl>
 <h4>再檢查位置與生命週期</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">HMDLAL、HMDLAU 指清單，BADD 指每個區域。主機不只要確保數量加總正確，也要讓清單與區域在控制器可使用期間保持有效，停用交接完成後才收回。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>BADD</dt><dd>Buffer Address，HMB descriptor 中依 CC.MPS 對齊的 memory-page address。</dd></div></dl>

@@ -22205,6 +22205,6738 @@
       ],
       "evidence_digest": "7492c9f5b19333a23cbfca7c21376445d33d15c84c854daf1da578a454063640",
       "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-143",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "143",
+      "title": "Opcodes for Admin Commands",
+      "section": "5",
+      "printed_pages": "176-177",
+      "pdf_pages": "202-203",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "56063f6a1d513b89be1db412f8143198a779db178be23636bd651c47d74da6ec",
+      "teaching_module": "adminio-command-map"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-144",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "144",
+      "title": "NVM Subsystem Sanitize Operations and Format NVM Command – Admin",
+      "section": "5.1.1",
+      "printed_pages": "178-179",
+      "pdf_pages": "204-205",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NVM Subsystem Sanitize Operations and Format NVM Command – Admin"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "ac40dbedef8fcb525b17fa79897f8459735bc86f2868a5228385503c1aa3a386",
+      "teaching_module": "adminio-command-map"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-147",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "147",
+      "title": "Abort – Command Dword 10",
+      "section": "5.2.1",
+      "printed_pages": "182",
+      "pdf_pages": "208",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CID",
+        "SQID"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not"
+      ],
+      "evidence_digest": "fc640f0555627e1de28f799d02f8c2f9c99a74c50fd3f83ecb14fbc1ba7ad99d",
+      "teaching_module": "adminio-abort"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-148",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "148",
+      "title": "Abort Command – Completion Queue Entry Dword 0",
+      "section": "5.2.1.2",
+      "printed_pages": "182",
+      "pdf_pages": "208",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IANP"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "589ff22845fb2f7cb2354e8bc2f3b39f3cc1bcc5682f965562a124be35200619",
+      "teaching_module": "adminio-abort"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-149",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "149",
+      "title": "Abort – Command Specific Status Values",
+      "section": "5.2.1.2",
+      "printed_pages": "182",
+      "pdf_pages": "208",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Abort – Command Specific Status Values"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f5465b5b6e5085f6646ffc0d15ae94bfc240c4f03338a585e9612335fa0565bc",
+      "teaching_module": "adminio-abort"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-150",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "150",
+      "title": "Status Code – Command Specific Status Values",
+      "section": "5.2.2.1",
+      "printed_pages": "184",
+      "pdf_pages": "210",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Status Code – Command Specific Status Values"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "7541aeda9a283960810930961a566dda665e801db6913fea358b2bb52b502b4d",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-151",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "151",
+      "title": "Asynchronous Event Request – Completion Queue Entry Dword 0",
+      "section": "5.2.2.1",
+      "printed_pages": "184-185",
+      "pdf_pages": "210-211",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LID",
+        "AEI",
+        "AET"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "d50c4570eec904027e982c054423ba90cf67caee3460831376ca234f56b9fe22",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-152",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "152",
+      "title": "Asynchronous Event Request – Completion Queue Entry Dword 1",
+      "section": "5.2.2.1",
+      "printed_pages": "185",
+      "pdf_pages": "211",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "EVNTSP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "847dc0a70eab14f8d29712e6a96fc4394fbde26830329f7d802208a7d45341f6",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-153",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "153",
+      "title": "Asynchronous Event Information – Error Status",
+      "section": "5.2.2.1",
+      "printed_pages": "185",
+      "pdf_pages": "211",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Asynchronous Event Information – Error Status"
+      ],
+      "source_keywords": [
+        "may",
+        "should"
+      ],
+      "evidence_digest": "7bda0e07400756eba9dc7a21d9c6cb05dbcd51ae04dd43d06d205448c2b05283",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-154",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "154",
+      "title": "Asynchronous Event Information – SMART / Health Status",
+      "section": "5.2.2.1",
+      "printed_pages": "185",
+      "pdf_pages": "211",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Asynchronous Event Information – SMART / Health Status"
+      ],
+      "source_keywords": [
+        "may",
+        "shall not"
+      ],
+      "evidence_digest": "3e80300c8d9c184c75e25f6830fc687b599f173d2106020d4f4fef540fc4c4b9",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-155",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "155",
+      "title": "Asynchronous Event Information – Notice",
+      "section": "5.2.2.1",
+      "printed_pages": "186-189",
+      "pdf_pages": "212-215",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FPI",
+        "RFNVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "shall not",
+        "should"
+      ],
+      "evidence_digest": "f7ddb76a1128caa874eb628acf905a4c98b03c420b3bd58081a4ebe1cbb7bafc",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-156",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "156",
+      "title": "Asynchronous Event Information – I/O Command Specific Status",
+      "section": "5.2.2.1",
+      "printed_pages": "189-190",
+      "pdf_pages": "215-216",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Asynchronous Event Information – I/O Command Specific Status"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "ca3aa913144d987d39fc9161d1dddaeb880f16cb69c2cd38e88b1414e2d97323",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-157",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "157",
+      "title": "Asynchronous Event Information – Immediate",
+      "section": "5.2.2.1",
+      "printed_pages": "190",
+      "pdf_pages": "216",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Asynchronous Event Information – Immediate"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1da43954d8d82a6045298bacdc3cad987f34d77ebc7acc445e280ef171d27dca",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-158",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "158",
+      "title": "Asynchronous Event Information – One Shot",
+      "section": "5.2.2.1",
+      "printed_pages": "190",
+      "pdf_pages": "216",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Asynchronous Event Information – One Shot"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "cfb262b5c68e586f67bdaed59c9c7e387712238c829ecb565b1505e7f474c7b9",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-159",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "159",
+      "title": "Voltage Threshold Event – Event Specific Parameter",
+      "section": "5.2.2.1",
+      "printed_pages": "190-191",
+      "pdf_pages": "216-217",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "VSENT",
+        "VTHT",
+        "IVM",
+        "VOLSS",
+        "VSENS"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "13c29f3ce89e080f7f38597e4c94718cedabc8235c1ab35efb98fbb9953b4190",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-160",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "160",
+      "title": "Power Threshold Exceeded – Event Specific Parameter",
+      "section": "5.2.2.1",
+      "printed_pages": "191",
+      "pdf_pages": "217",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PMT",
+        "IPM",
+        "IPS",
+        "IPV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2b58f88fe5d6ff8936fa99cbef338383ca8b9ece24ee9d92a71a72e44c4aa996",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-161",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "161",
+      "title": "Controller Data Queue Tail Pointer – Event Specific Parameter",
+      "section": "5.2.2.1",
+      "printed_pages": "191",
+      "pdf_pages": "217",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CDQID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "0b736e1ff86b30eaf18891956f9f3c18105406e175350e8c674a53c6541ec281",
+      "teaching_module": "adminio-aer"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-187",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "187",
+      "title": "Firmware Commit – Command Dword 10",
+      "section": "5.2.9",
+      "printed_pages": "203",
+      "pdf_pages": "229",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "BPID",
+        "CA",
+        "FS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "77e778602146ebccc8c46d8d327f1ef9856c80ff8da0f5fe3215fceab68a4acc",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-188",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "188",
+      "title": "Firmware Commit – Completion Queue Entry Dword 0",
+      "section": "5.2.9.1",
+      "printed_pages": "204",
+      "pdf_pages": "230",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MUD",
+        "MEFWO",
+        "ASQFWO"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "1a480fc97d6a06de9cf2f892c10247bc6186897febf06e2188d15210db2de78f",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-189",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "189",
+      "title": "Firmware Commit – Command Specific Status Values",
+      "section": "5.2.9.1",
+      "printed_pages": "204-205",
+      "pdf_pages": "230-231",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MTFA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "should not"
+      ],
+      "evidence_digest": "357d8a89fa5d519236a298ccadef91ff8a7769eaac7b6affbcb1c9b748e84657",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-190",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "190",
+      "title": "Firmware Image Download – Data Pointer",
+      "section": "5.2.10",
+      "printed_pages": "205",
+      "pdf_pages": "231",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "should"
+      ],
+      "evidence_digest": "68021a52e8dc8a08ec8165fb49f15a68e9afc4b4d37b59c033a1af6514bda615",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-191",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "191",
+      "title": "Firmware Image Download – Command Dword 10",
+      "section": "5.2.10",
+      "printed_pages": "205",
+      "pdf_pages": "231",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUMD"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "15665c68bd98aa51dbb542dbc840efe195b3a25609ac5a195a26b1a833990b2b",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-192",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "192",
+      "title": "Firmware Image Download – Command Dword 11",
+      "section": "5.2.10",
+      "printed_pages": "206",
+      "pdf_pages": "232",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "OFST"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f022bcb33f1a6d108263bb073eaf8c043f67c736b399d7ffe83321df4ffeeab9",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-193",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "193",
+      "title": "Firmware Image Download – Command Specific Status Values",
+      "section": "5.2.10.1",
+      "printed_pages": "206",
+      "pdf_pages": "232",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FNS",
+        "SENS"
+      ],
+      "source_keywords": [
+        "may",
+        "shall not"
+      ],
+      "evidence_digest": "1517a1e7fc84fedcadfbbe8957f31976a5121411138be05a41ab7f0c0df27823",
+      "teaching_module": "adminio-firmware"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-194",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "194",
+      "title": "Format NVM – Operation Scope",
+      "section": "5.2.11",
+      "printed_pages": "207",
+      "pdf_pages": "233",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FNVMBS",
+        "SENS",
+        "FNS",
+        "LBAFEE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f6723f6ad04ce7571bcb899666133651a71a3b72af86082257cc74e7d37b8640",
+      "teaching_module": "adminio-format"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-195",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "195",
+      "title": "Format NVM – Command Dword 10",
+      "section": "5.2.11",
+      "printed_pages": "208-209",
+      "pdf_pages": "234-235",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBAFU",
+        "LBAFEE",
+        "SES",
+        "PIL",
+        "PI",
+        "MSET",
+        "LBAFL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "9cfce11c4212903a98b355782b12e86861b1d491865ba36d4b4ad78808fab2dd",
+      "teaching_module": "adminio-format"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-196",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "196",
+      "title": "Format NVM – Command Specific Status Values",
+      "section": "5.2.11.1",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Format NVM – Command Specific Status Values"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "fce139e0c46e8c5aa703da54eb5e28b25410b587aa774e2edaaf4514d8c822e3",
+      "teaching_module": "adminio-format"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-197",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "197",
+      "title": "Get Features – Data Pointer",
+      "section": "5.2.12",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "42ad2a125363d3905b0c99826d21c7d02a26cc20c1a07b8ef750e7571adb1396",
+      "teaching_module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-198",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SEL",
+        "SSFS",
+        "FID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a26fedad3e68576ea96ee1906237849d2e6e2e100baebd527d89009701d32220",
+      "teaching_module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-199",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "199",
+      "title": "Get Features – Command Dword 14",
+      "section": "5.2.12",
+      "printed_pages": "210",
+      "pdf_pages": "236",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "474514248909e64dc5a88fb1d9bf55ad289bd264f61a272a97cd36d5a282a883",
+      "teaching_module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-200",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "200",
+      "title": "Get Features – Feature Identifiers",
+      "section": "5.2.12",
+      "printed_pages": "210-211",
+      "pdf_pages": "236-237",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Get Features – Feature Identifiers"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "5a3c00b644f572b42d76fa93ddf72b1bd9c948bc7904ad544ed71c3637c66b29",
+      "teaching_module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-201",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "fcc1aa6db6702e65ccb3956bc0ecc7dc8a4655f3abfd23d36331ed2c325ac970",
+      "teaching_module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-202",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "202",
+      "title": "Get Features – Command Specific Status Values",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Get Features – Command Specific Status Values"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "15cedee633da1863477da97242cf561c3a2f3cb5d1c7909f2442d03c05ba13de",
+      "teaching_module": "adminio-get-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-203",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page – Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c9b7badb662104ae233551a78e94633837d908d574b4be9cfe6000f95573bbc0",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-204",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "1bb0c606074b48dff90f9620e3a909f3fc6ed3a120cc7f1c953dd652e6f22658",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-205",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LSI",
+        "NUMDU"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "21a63ecd356ac5c4cb2aecf7ba291e1745cdc12a4cbdf813be4a26a2460a3b77",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-206",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page – Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LPOL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "ca5dde86f4d3743e451e62784170fa534bc7467da7bd424e1a33fbf7a460e91f",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-207",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page – Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LPOU"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "4b63eee455e62ab9d0764b730ee313835c44bda04a9467f4227effb055c3585f",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-208",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CSI",
+        "OT",
+        "UIDX"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "d7d23cccbae08072f55fcea7998a7daa9144d60f42b4a7ce8b9eae3a7b4afa34",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-209",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page – Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-216",
+      "pdf_pages": "241-242",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SDSO"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "59d0bb7c2645f1d7939f7a709528f6f927a4ac9fda27a0cad110124cdf05129c",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-210",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "210",
+      "title": "Supported Log Pages Log Page",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217",
+      "pdf_pages": "243",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LIDS0",
+        "LIDS1",
+        "LIDS254",
+        "LIDS255"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "b7a3bafcf354fc206fe93df5155541090bded6e3066fc97e2793b035067b6f4c",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-211",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "211",
+      "title": "LID Supported and Effects Data Structure",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217-218",
+      "pdf_pages": "243-244",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LIDSP",
+        "IOS",
+        "SPEDS",
+        "LSUPP"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "b82aa5205b4ea0e7bd0c73945ac83150ca40ea5956a7e6cf5c70b8a121ea11d1",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-212",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "212",
+      "title": "Error Information Log Entry Data Structure",
+      "section": "5.2.13.1.2",
+      "printed_pages": "218-220",
+      "pdf_pages": "244-246",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ECNT",
+        "SQID",
+        "CID",
+        "STS",
+        "STATUS",
+        "PEL",
+        "BITLOC",
+        "BYTLOC",
+        "LBA",
+        "NSID",
+        "VSIA",
+        "TRTYPE",
+        "CSI",
+        "OPC",
+        "CSINFO",
+        "TTSI",
+        "LPVER"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "should"
+      ],
+      "evidence_digest": "df3cdbb3d89941f9eac4d0daea5680983bddf8eaa447c0536e24f82c52c92516",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-213",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "213",
+      "title": "SMART / Health Information Log Page",
+      "section": "5.2.13.1.3",
+      "printed_pages": "221-225",
+      "pdf_pages": "247-251",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CW",
+        "IPS",
+        "PMRRO",
+        "VMBF",
+        "AMRO",
+        "NDR",
+        "TTC",
+        "ASCBT",
+        "CTEMP",
+        "AVSP",
+        "AVSPT",
+        "PUSED",
+        "EGCWS",
+        "EGRO",
+        "EGDR",
+        "EGASCBT",
+        "INFW",
+        "VLTHW",
+        "OVV",
+        "UVV",
+        "DUR",
+        "DUW",
+        "HRC",
+        "HWC",
+        "CBT",
+        "PWRC",
+        "POH",
+        "UPL",
+        "MDIE",
+        "NEILE"
+      ],
+      "source_keywords": [
+        "may",
+        "shall not",
+        "shall"
+      ],
+      "evidence_digest": "9f5f89ec95c6839225c982a527638504544d0c252bdedcddbae56495b8974315",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-214",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "214",
+      "title": "Temperature Sensor Data Structure",
+      "section": "5.2.13.1.3",
+      "printed_pages": "225",
+      "pdf_pages": "251",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TST"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "a22ba90e52ce451e1985a8b422d62703613661b244c13061faeb7f0053658c2d",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-215",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "215",
+      "title": "Firmware Slot Information Log Page",
+      "section": "5.2.13.1.4",
+      "printed_pages": "226",
+      "pdf_pages": "252",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "AFI",
+        "NAFS",
+        "CLR",
+        "CAFS",
+        "FRS1",
+        "FRS2",
+        "FRS3",
+        "FRS4",
+        "FRS5",
+        "FRS6",
+        "FRS7"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "bac167c67c4ce1a696cc3a5f1a1cda15f46e8a4f8fa40045534b0ad5a20ba6e8",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-216",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "216",
+      "title": "Commands Supported and Effects Log Page",
+      "section": "5.2.13.1.6",
+      "printed_pages": "227",
+      "pdf_pages": "253",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ACS0",
+        "ACS1",
+        "ACS254",
+        "ACS255",
+        "IOCS0",
+        "IOCS1",
+        "IOCS254",
+        "IOCS255"
+      ],
+      "source_keywords": [
+        "may",
+        "should"
+      ],
+      "evidence_digest": "0263189017524377604018032c46289e99f2d65666758a260cb1fc1993fa8505",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-217",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "217",
+      "title": "Commands Supported and Effects Data Structure",
+      "section": "5.2.13.1.6",
+      "printed_pages": "228-229",
+      "pdf_pages": "254-255",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CSP",
+        "NSSCPE",
+        "DSCPE",
+        "EGSCPE",
+        "NSETSCPE",
+        "CSCPE",
+        "NSCPE",
+        "USS",
+        "CSE",
+        "CSER",
+        "CCC",
+        "NIC",
+        "NCC",
+        "LBCC",
+        "CSUPP"
+      ],
+      "source_keywords": [
+        "may",
+        "should",
+        "shall",
+        "should not"
+      ],
+      "evidence_digest": "e4d5987442dbf54f8c5a023543bbc15d941c6f93f09fad21a88ffb43f5758447",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-270",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "270",
+      "title": "Feature Identifiers Effects Log Page",
+      "section": "5.2.13.1.18",
+      "printed_pages": "276",
+      "pdf_pages": "302",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FIS0",
+        "FIS1",
+        "FIS254",
+        "FIS255"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "7b1ee16c97b1ab8afd845cd1e9983b39c623707469460474c1404d10086adada",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-271",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "271",
+      "title": "FID Supported and Effects Data Structure",
+      "section": "5.2.13.1.18",
+      "printed_pages": "277-278",
+      "pdf_pages": "303-304",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FSP",
+        "RUHS",
+        "CDQSCP",
+        "NSSCPE",
+        "DSCPE",
+        "EGSCPE",
+        "NSETSCPE",
+        "CSCPE",
+        "NSCPE",
+        "USS",
+        "CCC",
+        "NIC",
+        "NCC",
+        "UDCC",
+        "FSUPP"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8c7dad1ac3b936ffa362a5d12fb45b30d583ce3188474ddf6f4782c64810b2e8",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-304",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "304",
+      "title": "Manufacturer Default Configuration Status Log Page",
+      "section": "5.2.13.1.33",
+      "printed_pages": "301-302",
+      "pdf_pages": "327-328",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MDCSV",
+        "MDCS",
+        "DCCS",
+        "RDCCS",
+        "DNCS",
+        "RDNCS",
+        "DSCS",
+        "RDSCS",
+        "PHBLT",
+        "PMC",
+        "NPHDS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "84e23b0d6c0cc7ed1c4a7bad0c393684fbaf16a69807bf9de6d80ea7ecfb5338",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-331",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "331",
+      "title": "Get Log Page – Command Specific Status Values",
+      "section": "5.2.13.4",
+      "printed_pages": "336",
+      "pdf_pages": "362",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Get Log Page – Command Specific Status Values"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "d2df9cc21bb7e6ddb321ac7a44fe064ce6f629f9d00a96f2069fe3d27b118b61",
+      "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-332",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "332",
+      "title": "Identify – Data Pointer",
+      "section": "5.2.14.1",
+      "printed_pages": "336",
+      "pdf_pages": "362",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "50d13fcf0b616c95f76f0c7bf254dbb842d0dad3cd144f746a4cc255038e8d72",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-333",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "333",
+      "title": "Identify – Command Dword 10",
+      "section": "5.2.14.1",
+      "printed_pages": "337",
+      "pdf_pages": "363",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CNTID",
+        "CNS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c97a8e97a722fbaf72afb889fa1b05b43c96028840b67983d783be54fa45a910",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-334",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "334",
+      "title": "Identify – Command Dword 11",
+      "section": "5.2.14.1",
+      "printed_pages": "337",
+      "pdf_pages": "363",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CSI",
+        "CNSSID"
+      ],
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "evidence_digest": "91c14f0ba87d0c0fdfe888ee6328878986c5cb0789642bf46ab6c27470333de3",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-335",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "335",
+      "title": "Identify – Command Dword 14",
+      "section": "5.2.14.1",
+      "printed_pages": "337",
+      "pdf_pages": "363",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX",
+        "CNS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "343d68aa0d46c1b85760ab107da3423161d85004a4046019a286828b6fa61582",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-336",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "336",
+      "title": "Identify – CNS Values",
+      "section": "5.2.14.1",
+      "printed_pages": "338-339",
+      "pdf_pages": "364-365",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Identify – CNS Values"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "b55779fe5ea906c592b47624ab19168306500dda4e74485c898d84ef38a2fa85",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-337",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "337",
+      "title": "Command Set Identifiers",
+      "section": "5.2.14.1",
+      "printed_pages": "340",
+      "pdf_pages": "366",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Command Set Identifiers"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1d352755d4cc02b8d53f1d1a79531405bc1e0f7180ebda498651d68a5594fe7e",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-338",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "340-382",
+      "pdf_pages": "366-408",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "VID",
+        "SSVID",
+        "SN",
+        "MN",
+        "FR",
+        "RAB",
+        "IEEE",
+        "OUI",
+        "CMIC",
+        "ANARS",
+        "FT",
+        "MCTRS",
+        "MPORTS",
+        "MDTS",
+        "CNTLID",
+        "VER",
+        "RTD3R",
+        "RTD3",
+        "RTD3E",
+        "OAES",
+        "DLPCN",
+        "ZDCN",
+        "RLCC",
+        "LHCN",
+        "CCRCN",
+        "ANSAN",
+        "RGCNS",
+        "TTHR",
+        "NNSS",
+        "EGEAN"
+      ],
+      "source_keywords": [
+        "should not",
+        "may",
+        "shall",
+        "shall not",
+        "should"
+      ],
+      "evidence_digest": "fb5c91d7bdaebd1ff5b5b8913e7adb0b7b658731685775a7bfdfd2d55973f659",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-339",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "339",
+      "title": "Identify – Voltage Sensor Data Structure",
+      "section": "5.2.14.2.1",
+      "printed_pages": "383",
+      "pdf_pages": "409",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IVMSR",
+        "VSRV",
+        "VSRS",
+        "VOLSS",
+        "PIT",
+        "PISL",
+        "PISV"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "26e73bcc799bd1394f168f5a1e58bff217d65fc4e0ba2ff26136af1359cad1f9",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-340",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "340",
+      "title": "Identify – Power State Descriptor Data Structure",
+      "section": "5.2.14.2.1",
+      "printed_pages": "384-386",
+      "pdf_pages": "410-412",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MIIELL",
+        "IIELLSS",
+        "MBWS",
+        "MBW",
+        "EPFVTS",
+        "FQVTS",
+        "EPFRTS",
+        "EPFVT",
+        "FQVT",
+        "EPFRT",
+        "APS",
+        "APW",
+        "ACTP",
+        "IPS",
+        "IDLP",
+        "RWL",
+        "RWT",
+        "RRL",
+        "RRT",
+        "EXLAT",
+        "ENLAT",
+        "NOPS",
+        "MXPS",
+        "MP"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "b1b5962f08db2e41f446300369cc19da18b3a35af37d4f6f980cfa47a552e5aa",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-341",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "341",
+      "title": "Time Scale Values",
+      "section": "5.2.14.2.1",
+      "printed_pages": "387",
+      "pdf_pages": "413",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "NID",
+        "NIDT",
+        "NIDL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "should",
+        "shall not"
+      ],
+      "evidence_digest": "95dd46d82a6c73ef8e6ce4142f0b3d3f0e84e9dd7432a5642873dc882173b034",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-342",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "342",
+      "title": "Identify – Namespace Identification Descriptor",
+      "section": "5.2.14.2.3",
+      "printed_pages": "388",
+      "pdf_pages": "414",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NIDT",
+        "NIDL",
+        "IEUID",
+        "NGUID",
+        "NUUID",
+        "UUID",
+        "CSI",
+        "NID"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall"
+      ],
+      "evidence_digest": "219dc03774f3631e44c2d0d63eeca27d65d665baa857ddbaca225de1e66bf2be",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-343",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "343",
+      "title": "Command Dword 11 - CNS Specific Identifier",
+      "section": "5.2.14.2.4",
+      "printed_pages": "388",
+      "pdf_pages": "414",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NVMSETID"
+      ],
+      "source_keywords": [
+        "shall not"
+      ],
+      "evidence_digest": "c6d76c186689aca44cf6b0142112f578ceedf2eb7e3e126c7c4fdf179637519a",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-344",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "344",
+      "title": "NVM Set List",
+      "section": "5.2.14.2.4",
+      "printed_pages": "389",
+      "pdf_pages": "415",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUMENT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "55a7c6120f3d3bf0e720ea3c709896aa3fc4768b8b97f5c32342e6653dc79396",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-345",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "345",
+      "title": "NVM Set Attributes Entry",
+      "section": "5.2.14.2.4",
+      "printed_pages": "389",
+      "pdf_pages": "415",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSETID",
+        "ENDGID",
+        "R4KRT",
+        "OWS",
+        "TNVMSC",
+        "UNVMSC",
+        "NSID",
+        "CSI"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "ea20925f46f0ae4ec49508fcc126d90b41cec90dc580fa2cce4b0403228affc9",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-346",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "346",
+      "title": "Identify – I/O Command Set Independent Identify Namespace Data Structure",
+      "section": "5.2.14.2.8",
+      "printed_pages": "391-394",
+      "pdf_pages": "417-420",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSFEAT",
+        "VWCNP",
+        "RMEDIA",
+        "UIDREUSE",
+        "NMIC",
+        "DISNS",
+        "SHRNS",
+        "RESCAP",
+        "IEKS",
+        "EAARS",
+        "WEARS",
+        "EAROS",
+        "WEROS",
+        "EAS",
+        "WES",
+        "PTPLS",
+        "FPI",
+        "FPIS",
+        "RFNVM",
+        "ANAGRPID",
+        "NSATTR",
+        "CWP",
+        "NVMSETID",
+        "ENDGID",
+        "NSTAT",
+        "IOI",
+        "NRDY",
+        "KPIOS",
+        "KPIOSNS",
+        "KPIOENS"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "815d6afed8b9fe6d290f0b04e86b78e9a942cfff462bd2a50fe7ba521b19b249",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-349",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "349",
+      "title": "Command Dword 11 - CNS Specific Identifier",
+      "section": "5.2.14.2.15",
+      "printed_pages": "396",
+      "pdf_pages": "422",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f7ab0d357c9b6eda62f607b076bd2568abde5a61493a0701a5c5122640db13da",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-350",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "350",
+      "title": "Domain List",
+      "section": "5.2.14.2.15",
+      "printed_pages": "396-397",
+      "pdf_pages": "422-423",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUMENT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e9b9b83f45992dab830e0aa553dc35a322b63cad7e983c02c133484eec7d1cf2",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-351",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "351",
+      "title": "Domain Attributes Entry",
+      "section": "5.2.14.2.15",
+      "printed_pages": "397",
+      "pdf_pages": "423",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DID",
+        "TDC",
+        "UDC",
+        "MEGDC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "6feaffef57ac7757fd14e9c796bac0f3369149079a59f9c0f36426132b4c10d0",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-352",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "352",
+      "title": "Command Dword 11 - CNS Specific Identifier",
+      "section": "5.2.14.2.16",
+      "printed_pages": "397",
+      "pdf_pages": "423",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ENGGID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "cac5408aae9eb80a33dbe3dfc71ae93f1ec3a5c85608ba2f4868de3d0146f6fa",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-353",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "353",
+      "title": "Endurance Group List",
+      "section": "5.2.14.2.16",
+      "printed_pages": "397",
+      "pdf_pages": "423",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NEGIDS"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "e5d0bdc39fa940c49b0c92630a2b527c50d2f110df3c16109a0acca722254268",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-354",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "354",
+      "title": "Identify I/O Command Set Data Structure",
+      "section": "5.2.14.2.19",
+      "printed_pages": "398-399",
+      "pdf_pages": "424-425",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IOCSC0",
+        "IOCSC1",
+        "IOCSC511"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "7ce54fa587041a144bfe51d9b94671f361f4841aed6813e1316a2a7fc08d7a5d",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-355",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "355",
+      "title": "I/O Command Set Vector",
+      "section": "5.2.14.2.19",
+      "printed_pages": "399",
+      "pdf_pages": "425",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CPNCS",
+        "SLMCS",
+        "ZNSCS",
+        "KVCS",
+        "NVMCS",
+        "CNSSID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "fc1c5b7a7ea2caa2d80481986e4c0a301dc394282e4f34174a0d8e2b58e2bf2c",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-356",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "356",
+      "title": "Underlying Namespace List Data Structure",
+      "section": "5.2.14.2.20",
+      "printed_pages": "399-400",
+      "pdf_pages": "425-426",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "GENCTR",
+        "NUMENT"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "da1fc9057aeefdacac3aaaa2297bf2a87663092d9cea955341a639e2a95ce5f0",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-357",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "357",
+      "title": "Underlying Namespace Entry Data Structure",
+      "section": "5.2.14.2.20",
+      "printed_pages": "400",
+      "pdf_pages": "426",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "UNSNQN",
+        "NSID",
+        "CNTLID",
+        "IDX"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "f94b859c3df56d9d0ef3cf6667c6948e960dd93da69ca9a17d53888ed0a5cfd7",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-358",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "358",
+      "title": "Supported Controller State Formats Data Structure",
+      "section": "5.2.14.2.22",
+      "printed_pages": "400-401",
+      "pdf_pages": "426-427",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NV",
+        "NUUID",
+        "UUID",
+        "ENSTS",
+        "ENSA",
+        "ENST1"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "5cc580a7cf85f391997a827ee55b01922abf4bc2d7b5013f15fb61423e7ea057",
+      "teaching_module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-456",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "456",
+      "title": "Security Receive – Data Pointer",
+      "section": "5.2.28",
+      "printed_pages": "454",
+      "pdf_pages": "480",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "deb07a164ce03738dcbfdd309c519b68918a766374b03ec4cadd22e2f8cfe06b",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-457",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "457",
+      "title": "Security Receive – Command Dword 10",
+      "section": "5.2.28",
+      "printed_pages": "454-455",
+      "pdf_pages": "480-481",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SECP",
+        "SPSP1",
+        "SPSP0",
+        "NSSF"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "19f434aeff8a9684932907f5abdc614c64b8b4bca287fdd28844eebe2fc3b33d",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-458",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "458",
+      "title": "Security Receive – Command Dword 11",
+      "section": "5.2.28",
+      "printed_pages": "455",
+      "pdf_pages": "481",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "AL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "805ed16acb557038e1a2b70f3febda0bab13f2ca968642edd2a9ae9575d3bd71",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-459",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "459",
+      "title": "Security Protocol EAh – Security Protocol Specific Field Values",
+      "section": "5.2.28.3",
+      "printed_pages": "455",
+      "pdf_pages": "481",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SPSP",
+        "NSSF"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "6152922464468339d57e6f687f19a250e321f38974984adfdc5427db22aa6b2d",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-460",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "460",
+      "title": "Security Send – Data Pointer",
+      "section": "5.2.29",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "69166068161feb17507018f609ea788abf7249920e5a076eec574bcfa24cee7c",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-461",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "461",
+      "title": "Security Send – Command Dword 10",
+      "section": "5.2.29",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SECP",
+        "SPSP1",
+        "SPSP0",
+        "NSSF"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "4057f3a15205f2bcc8e896262551c927e45b58c41ee70144222fea13b425f3ea",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-462",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "462",
+      "title": "Security Send – Command Dword 11",
+      "section": "5.2.29",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a09ac5d399778bb07b1940ce0b017523829f5a952100462fddfbd2cc9f6326b9",
+      "teaching_module": "adminio-security"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-463",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "463",
+      "title": "Set Features – Data Pointer",
+      "section": "5.2.30",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "1a49951e3f6c5970aa9866da961e0eb763faf4a8fd4090e24ca581af66c24103",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-464",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SV",
+        "SSFS",
+        "FID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a4da378da4bc1259150a5f0ba542647a192ce240bb749c26391f405baeef3df3",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-465",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "465",
+      "title": "Set Features – Command Dword 14",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "02035f552f3d99e1d313c3f0e7215c7ff6dc9381cde9d6233a23c2e93e7a432f",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-466",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Set Features – Feature Identifiers",
+      "section": "5.2.30",
+      "printed_pages": "457-459",
+      "pdf_pages": "483-485",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Set Features – Feature Identifiers"
+      ],
+      "source_keywords": [
+        "may",
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "f24a55ab1c657a93a3f23b280f7b1b774f027d4349fcf707c35a31d6fbecc106",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-467",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "467",
+      "title": "Arbitration & Command Processing – Command Dword 11",
+      "section": "5.2.30.1.1",
+      "printed_pages": "460",
+      "pdf_pages": "486",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HPW",
+        "MPW",
+        "LPW",
+        "AB",
+        "IIELL",
+        "MIIELL",
+        "PSD0"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "e0c8b0970f06f8cc0202ce475ca96471f8d136f3718187569178e2f8e48e74aa",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-468",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "468",
+      "title": "Power Management – Command Dword 11",
+      "section": "5.2.30.1.2",
+      "printed_pages": "461",
+      "pdf_pages": "487",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IIELL",
+        "IIELLSS",
+        "WH",
+        "PS",
+        "NPSS"
+      ],
+      "source_keywords": [
+        "should",
+        "shall",
+        "may",
+        "shall not"
+      ],
+      "evidence_digest": "24d3e4412555dcceebf2446c8bd418c6797eb590b2a2a9f89f42ce94d57468ac",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-469",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "469",
+      "title": "Power Management – Completion Queue Entry Dword 0",
+      "section": "5.2.30.1.2.1",
+      "printed_pages": "462",
+      "pdf_pages": "488",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IIELL",
+        "WH",
+        "PS",
+        "TTC",
+        "WCTEMP"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "5fe82342cec17f2c139e1959465b0dfcea849724b3466851346a535a1003a6c2",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-470",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "470",
+      "title": "Temperature Threshold – Command Dword 11",
+      "section": "5.2.30.1.3.1",
+      "printed_pages": "463-464",
+      "pdf_pages": "489-490",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TMPTHH",
+        "TMPTHMH",
+        "THSEL",
+        "TMPSEL",
+        "TMPTH"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "cbf2c212c6c57d5a1d6f16ecf8015209d7f8d808e24065ce6364fc36ef94b344",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-471",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "471",
+      "title": "Volatile Write Cache – Command Dword 11",
+      "section": "5.2.30.1.4",
+      "printed_pages": "464-465",
+      "pdf_pages": "490-491",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "WCE",
+        "CLR"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "b70106975d358578a2b94b1876b8442b7c9c6503e183a763ea9e8974118f507d",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-472",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "472",
+      "title": "Number of Queues – Command Dword 11",
+      "section": "5.2.30.1.5",
+      "printed_pages": "465",
+      "pdf_pages": "491",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NCQR",
+        "NSQR"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "should"
+      ],
+      "evidence_digest": "214fd7dea468be7210366a0adca364b17946fbfda2cbbd2f95523a46a26657fb",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-473",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "473",
+      "title": "Number of Queues – Completion Queue Entry Dword 0",
+      "section": "5.2.30.1.5",
+      "printed_pages": "466",
+      "pdf_pages": "492",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NCQA",
+        "NSQA",
+        "OAES"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4bbf683e2a8d2b14aa60bc45b1e8e7a7b8b978adf473ebd0ba9b1849d46ef43e",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-474",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "474",
+      "title": "Asynchronous Event Configuration – Command Dword 11",
+      "section": "5.2.30.1.6",
+      "printed_pages": "466-468",
+      "pdf_pages": "492-494",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DLPCN",
+        "HDLPCN",
+        "ADLPCN",
+        "PMDRLPCN",
+        "ZDCN",
+        "RLCCN",
+        "ANSAN",
+        "RGRP0",
+        "RASSN",
+        "TTHRY",
+        "NNSSHDN",
+        "EGEALCN",
+        "LSIAN",
+        "PLEALCN",
+        "ANACN",
+        "TLN",
+        "FAN",
+        "NAN",
+        "SHCW"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not"
+      ],
+      "evidence_digest": "ed238dbb03ed48442e9374fae38b0b31f3d1604973838b6a5a7a50c486aee70a",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-475",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "475",
+      "title": "Autonomous Power State Transition – Command Dword 11",
+      "section": "5.2.30.1.7",
+      "printed_pages": "468",
+      "pdf_pages": "494",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "APSTE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "431d38a8ba330153e124c42b6b1fc51071719286e2b600c177cea8407cbd4d19",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-476",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "476",
+      "title": "Autonomous Power State Transition Data Structure",
+      "section": "5.2.30.1.7",
+      "printed_pages": "469",
+      "pdf_pages": "495",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PS0",
+        "PS1",
+        "PS31"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "bd263d339126085dec55242b28aeb310f95548acb824710603c4c35638c5f3be",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-477",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "477",
+      "title": "Autonomous Power State Transition Data Structure Entry",
+      "section": "5.2.30.1.7",
+      "printed_pages": "469",
+      "pdf_pages": "495",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ITPT",
+        "ITPS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should not",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "344c81037853fac0728be3b2cd4c7079255e010cf5462b73e6dac9dac04acfe1",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-478",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "478",
+      "title": "Interactions between APSTE and NOPPME",
+      "section": "5.2.30.1.7",
+      "printed_pages": "469",
+      "pdf_pages": "495",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ONCS"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "f5a1c392cb55e2aa830bb3381532c53a16a93f5724e2b1631c127ac1958809ae",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-479",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "479",
+      "title": "Timestamp – Data Structure for Set Features",
+      "section": "5.2.30.1.8",
+      "printed_pages": "470",
+      "pdf_pages": "496",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TSTMP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "66a75ba7de442d2e1de4553950619a971f52ff177f784fca802be5fbd5e2f0bd",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-480",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "480",
+      "title": "Timestamp – Data Structure for Get Features",
+      "section": "5.2.30.1.8",
+      "printed_pages": "470-471",
+      "pdf_pages": "496-497",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TSTMP",
+        "TSTMPS",
+        "TSTMPO",
+        "SYNC"
+      ],
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "evidence_digest": "f526661ceec2875197207084db9e128b43662118803ca6744a33e16661c27f8c",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-482",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "482",
+      "title": "HCTM – Command Dword 11",
+      "section": "5.2.30.1.10",
+      "printed_pages": "472",
+      "pdf_pages": "498",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TMT1",
+        "TMT2"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "fa4412fd02e7f32444435d210e7bb8088252673f4908d0b680891c03317e146d",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-483",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "483",
+      "title": "Non-Operational Power State Config – Command Dword 11",
+      "section": "5.2.30.1.11",
+      "printed_pages": "472-473",
+      "pdf_pages": "498-499",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NOPPME",
+        "CTRATT"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "5da9aed622deeb9a6872c2783ef4b3261d45a1052eb8bfc0f62b21326687dba3",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-494",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "494",
+      "title": "I/O Command Set Profile – Command Dword 11",
+      "section": "5.2.30.1.18",
+      "printed_pages": "479",
+      "pdf_pages": "505",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IOCSCI"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "e880827cd85ce71b50c32af6df9328ff8501bc539880586f04bfde7f4d47779e",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-495",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "495",
+      "title": "I/O Command Set Profile – Completion Queue Entry Dword 0",
+      "section": "5.2.30.1.18",
+      "printed_pages": "479",
+      "pdf_pages": "505",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IOCSCI"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "32e380225f6847e61354c0f9b51af11bda8b226d0d6547c75a03c8d5b7632c7d",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-536",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "536",
+      "title": "Software Progress Marker – Command Dword 11",
+      "section": "5.2.30.1.34",
+      "printed_pages": "508",
+      "pdf_pages": "534",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PBSLC"
+      ],
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "evidence_digest": "27043e808f4b5afed30f22d5543ed625187e1bc92ab93d43bffd72bebbeb0bd2",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-543",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "543",
+      "title": "Interrupt Coalescing – Command Dword 11",
+      "section": "5.2.30.2.1",
+      "printed_pages": "515",
+      "pdf_pages": "541",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "TIME",
+        "THR"
+      ],
+      "source_keywords": [
+        "may",
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "bca33b93c24a06fa99e05f7b860b88a07ed7b4e77ae5342fb906ee7588c83d19",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-544",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "544",
+      "title": "Interrupt Vector Configuration – Command Dword 11",
+      "section": "5.2.30.2.2",
+      "printed_pages": "515",
+      "pdf_pages": "541",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CD",
+        "IV"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall"
+      ],
+      "evidence_digest": "580ab558c775ca5f830cfcdb20464a61fe5b01b93a2b8c6b72d2bf9d621e2caa",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-545",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "545",
+      "title": "Host Memory Buffer – Command Dword 11",
+      "section": "5.2.30.2.3",
+      "printed_pages": "516-517",
+      "pdf_pages": "542-543",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CTZ",
+        "HMNARE",
+        "CTRATT",
+        "MR",
+        "HMB",
+        "EHM"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "6db929e7b2f6f9a94a4ddab527e100d54c9d282301d0e1f33747f9e94969a99b",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-546",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "546",
+      "title": "Host Memory Buffer – Command Dword 12",
+      "section": "5.2.30.2.3",
+      "printed_pages": "517",
+      "pdf_pages": "543",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HSIZE"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8504a546fd7da46ae4a1e04ca75697d3ecd4ee51c4f8514b4068ef652bf9d80a",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-547",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "547",
+      "title": "Host Memory Buffer– Command Dword 13",
+      "section": "5.2.30.2.3",
+      "printed_pages": "517",
+      "pdf_pages": "543",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HMDLLA"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "37034e9a2c0b14f33b80557b4ff0b918370188df6cd8d56f9c2b7004ec5a6f04",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-548",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "548",
+      "title": "Host Memory Buffer – Command Dword 14",
+      "section": "5.2.30.2.3",
+      "printed_pages": "517",
+      "pdf_pages": "543",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HMDLUA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "a093bbd65a5f893587d74755dd006226dd3fe395ec2d370ea44f10ecda1f6bb3",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-549",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "549",
+      "title": "Host Memory Buffer – Command Dword 15",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518",
+      "pdf_pages": "544",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HMDLEC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "df6b76455b0071023b59c3479a5a18944518c8c35407f9c1c578b6b65a05fa5a",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-550",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "550",
+      "title": "Host Memory Buffer – Host Memory Descriptor List",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518",
+      "pdf_pages": "544",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Host Memory Buffer – Host Memory Descriptor List"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "5c2dcbb253e440a81425b1e55712793d44e5a44ac566aa672367c9dfccf9d978",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-551",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "551",
+      "title": "Host Memory Buffer – Host Memory Buffer Descriptor Entry",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518",
+      "pdf_pages": "544",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "BSIZE",
+        "BADD"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "62b2b7a6c502e19342db2eec58b809abf81eb476fb2e7c021899dfad58fc69aa",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-552",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "552",
+      "title": "Host Memory Buffer – Completion Queue Entry Dword 0",
+      "section": "5.2.30.2.3",
+      "printed_pages": "518-519",
+      "pdf_pages": "544-545",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HMNAR",
+        "HMNARE",
+        "NUSED",
+        "EHM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "9af6de84bd8b2eb95aeaa05df6caf76e01130afc7cf87cff35afd58a610f6799",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-553",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "553",
+      "title": "Host Memory Buffer – Attributes Data Structure",
+      "section": "5.2.30.2.3",
+      "printed_pages": "519",
+      "pdf_pages": "545",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "HSIZE",
+        "HMDLAL",
+        "HMDLAU",
+        "HMDLEC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "526a7a4ba86008f798b18c836e5c44b3c95d5b3ac7beb5225fb3fb1f343ec36f",
+      "teaching_module": "adminio-pcie-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-554",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "554",
+      "title": "Set Features – Command Specific Status Values",
+      "section": "5.2.30.4",
+      "printed_pages": "519",
+      "pdf_pages": "545",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Set Features – Command Specific Status Values"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8749bd7872c3fa612823a46f5cca27fe9a54404e10744cdeaeff0b4c4b83aecf",
+      "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-571",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "571",
+      "title": "Create I/O Completion Queue – PRP Entry 1",
+      "section": "5.3.1",
+      "printed_pages": "527",
+      "pdf_pages": "553",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "c0b937c64ac942031466f98bb3fe00b582570a9dbf78e05b25a5b752cf741121",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-572",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "572",
+      "title": "Create I/O Completion Queue – Command Dword 10",
+      "section": "5.3.1",
+      "printed_pages": "528",
+      "pdf_pages": "554",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "QSIZE",
+        "QID"
+      ],
+      "source_keywords": [
+        "should",
+        "shall not"
+      ],
+      "evidence_digest": "6b4a7c056ca6f630f559be4926773ae0a111c7765fb9467570cf930ffd17858e",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-573",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "573",
+      "title": "Create I/O Completion Queue – Command Dword 11",
+      "section": "5.3.1",
+      "printed_pages": "528",
+      "pdf_pages": "554",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "IV",
+        "IEN",
+        "PC",
+        "PRP1"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "cef06c373b18d0c4321223c010e9620298342643bf433a6ff58c1a1905ccc4c2",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-574",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "574",
+      "title": "Create I/O Completion Queue – Command Specific Status Values",
+      "section": "5.3.1.1",
+      "printed_pages": "528",
+      "pdf_pages": "554",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Create I/O Completion Queue – Command Specific Status Values"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "16f9174b6e4c5050a322c36c4346c1bf05823e5146776f10edb157ba8bb27bf9",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-575",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "575",
+      "title": "Create I/O Submission Queue – PRP Entry 1",
+      "section": "5.3.2",
+      "printed_pages": "529",
+      "pdf_pages": "555",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "bed45595d8a7426a014ffa1c00fb172ca84a49a57c2df824b412bc7722e0c4f1",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-576",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "576",
+      "title": "Create I/O Submission Queue – Command Dword 10",
+      "section": "5.3.2",
+      "printed_pages": "529",
+      "pdf_pages": "555",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "QSIZE",
+        "QID"
+      ],
+      "source_keywords": [
+        "should",
+        "shall not"
+      ],
+      "evidence_digest": "6b2cf0abe79218b6577e112033c9fe594a5ced10335c3dad099622380a21dd23",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-577",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "577",
+      "title": "Create I/O Submission Queue – Command Dword 11",
+      "section": "5.3.2",
+      "printed_pages": "529-530",
+      "pdf_pages": "555-556",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CQID",
+        "QPRIO",
+        "PC",
+        "PRP1"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "2d5d736c1bb897ad99f9c15f0cc95b80bd42c68b4a87c42a19458cb21b286616",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-578",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "578",
+      "title": "Create I/O Submission Queue – Command Dword 12",
+      "section": "5.3.2",
+      "printed_pages": "530",
+      "pdf_pages": "556",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NVMSETID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should not"
+      ],
+      "evidence_digest": "0c56056751cb6ac82ed2e1bd8b830e6783e73d0a297f9cdb60c9b907fdae5abe",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-579",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "579",
+      "title": "Create I/O Submission Queue – Command Specific Status Values",
+      "section": "5.3.2.1",
+      "printed_pages": "530-531",
+      "pdf_pages": "556-557",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Create I/O Submission Queue – Command Specific Status Values"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "bfe819902a3bd9313004b6468bda8353edaefc3ff44b07db40cf83b6aaf58243",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-580",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "580",
+      "title": "Delete I/O Completion Queue – Command Dword 10",
+      "section": "5.3.3",
+      "printed_pages": "531",
+      "pdf_pages": "557",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "QID"
+      ],
+      "source_keywords": [
+        "shall not"
+      ],
+      "evidence_digest": "1abd064f71f905efef25470799cfb282405ec6bee8c3cc0be0174bdefe7e4b0a",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-581",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "581",
+      "title": "Delete I/O Completion Queue – Command Specific Status Values",
+      "section": "5.3.3.1",
+      "printed_pages": "531",
+      "pdf_pages": "557",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Delete I/O Completion Queue – Command Specific Status Values"
+      ],
+      "source_keywords": [
+        "may",
+        "shall",
+        "shall not"
+      ],
+      "evidence_digest": "dd5c436b428d3772ab5ae191e1001066c2113504a01d341ddc68131077897968",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-582",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "582",
+      "title": "Delete I/O Submission Queue – Command Dword 10",
+      "section": "5.3.4",
+      "printed_pages": "532",
+      "pdf_pages": "558",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "QID"
+      ],
+      "source_keywords": [
+        "shall not"
+      ],
+      "evidence_digest": "2f12f46a810432f5d431fd8e048837301ee01c8b89a3b07c475730e243ec8d5b",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-583",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "583",
+      "title": "Delete I/O Submission Queue – Command Specific Status Values",
+      "section": "5.3.4.1",
+      "printed_pages": "532",
+      "pdf_pages": "558",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Delete I/O Submission Queue – Command Specific Status Values"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "636f34d586dcde31e2613517922d98dfd475245a8e07ab4d75536e786b737e2a",
+      "teaching_module": "adminio-queues"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-645",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "645",
+      "title": "Opcodes for I/O Commands",
+      "section": "7",
+      "printed_pages": "564",
+      "pdf_pages": "590",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSID"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "3157d149aa04ef270c2759dda24696bad2bf21bdc688c7469bd56e8d2f468f5a",
+      "teaching_module": "adminio-flush"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-023",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "23",
+      "title": "Compare – Metadata Pointer",
+      "section": "3.3.1",
+      "printed_pages": "28",
+      "pdf_pages": "28",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "cf52e759af569ffcfe79c5e582699f8633b6cbbb9c5462167fd1ecd0ccef9d7a",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-024",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "24",
+      "title": "Compare – Data Pointer",
+      "section": "3.3.1",
+      "printed_pages": "28",
+      "pdf_pages": "28",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ea1248de7fffe99378dd584214f3826155849d9c1487c4fa63870d7fafb82dd8",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-025",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "25",
+      "title": "Compare – Command Dword 2 and Dword 3",
+      "section": "3.3.1",
+      "printed_pages": "28",
+      "pdf_pages": "28",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBTU",
+        "ELBST",
+        "EILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "accca556b9c57f2083098725236f2f98fda793d2d35e215d06a3bc0a5c79be8c",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-026",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "26",
+      "title": "Compare – Command Dword 10 and Command Dword 11",
+      "section": "3.3.1",
+      "printed_pages": "28",
+      "pdf_pages": "28",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "a6ec6bc02d623591875256ea5f7f6cd4a96d628e82ac270f39d4a405d6222c4b",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-027",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "27",
+      "title": "Compare – Command Dword 12",
+      "section": "3.3.1",
+      "printed_pages": "28-29",
+      "pdf_pages": "28-29",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LR",
+        "FUA",
+        "PRINFO",
+        "PRACT",
+        "PRCHK",
+        "STC",
+        "CETYPE",
+        "NLB"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "3333d59a35118c917c19a6860d87086de8fd1631a7373ed2e18bb88958d60f1f",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-028",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "28",
+      "title": "Compare - Command Dword 13 if CETYPE is non-zero",
+      "section": "3.3.1",
+      "printed_pages": "29",
+      "pdf_pages": "29",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CEV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "119344e6e6fa8d65b2602129ef895f01f53be55297a95f9f660967021b8e3344",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-029",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "29",
+      "title": "Compare – Command Dword 14",
+      "section": "3.3.1",
+      "printed_pages": "29",
+      "pdf_pages": "29",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBTL",
+        "ELBST",
+        "EILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e82b7e3573ccf363ebb1997a9b48b3560337eda7e7a14eacc1d637d219cf582d",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-030",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "30",
+      "title": "Compare – Command Dword 15",
+      "section": "3.3.1",
+      "printed_pages": "29",
+      "pdf_pages": "29",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBATM",
+        "ELBAT"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9c3b40475333964726adc04f26bec5e04ddd9edd4a02937ed9743d823251fad5",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-031",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "31",
+      "title": "Compare – Command Specific Status Values",
+      "section": "3.3.1.1",
+      "printed_pages": "30",
+      "pdf_pages": "30",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRINFO"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "06abcb47533019e22804a9331de8641888bad1241f6b7a5318c046c32b471f3c",
+      "teaching_module": "adminio-compare"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-032",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "32",
+      "title": "Copy – Data Pointer",
+      "section": "3.3.2",
+      "printed_pages": "30",
+      "pdf_pages": "30",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c4e804dd676cbe087ebe4749b1c0a0f9e7fd80f6acd0741691f63cbffc6a8ae3",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-033",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "33",
+      "title": "Copy – Command Dword 2 and Dword 3",
+      "section": "3.3.2",
+      "printed_pages": "30",
+      "pdf_pages": "30",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBTU",
+        "LBST",
+        "ILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6a9771ab47d5cb9a0307bb419eac9019e729726b7255d89b14a634f8aa9cd6f2",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-034",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "34",
+      "title": "Copy – Command Dword 10 and Command Dword 11",
+      "section": "3.3.2",
+      "printed_pages": "30",
+      "pdf_pages": "30",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SDLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "5b7826f7c145a07674eb50e6fc32016052348d5bb43862a84f3eb16555c6d378",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-035",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "35",
+      "title": "Copy – Command Dword 12",
+      "section": "3.3.2",
+      "printed_pages": "30-31",
+      "pdf_pages": "30-31",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LR",
+        "FUA",
+        "PRINFOW",
+        "STCR",
+        "STCRS",
+        "STCW",
+        "DTYPE",
+        "CETYPE",
+        "PRINFOR",
+        "DESFMT",
+        "NR"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "c9790713f73dc22fac8dbf088fb895cc76d84b6e9a7e39780a9db215efe20031",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-036",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "36",
+      "title": "Copy – Command Dword 13",
+      "section": "3.3.2",
+      "printed_pages": "31",
+      "pdf_pages": "31",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "CEV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "9e918d51524753e58d24c8a1b8490a252e89db15f18d47018a385747766cae17",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-037",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "37",
+      "title": "Copy – Command Dword 14",
+      "section": "3.3.2",
+      "printed_pages": "31",
+      "pdf_pages": "31",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBTL",
+        "LBST",
+        "ILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "151344217e12619d745a99f758dc8b2571e475b586883b738803e9023947419d",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-038",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "38",
+      "title": "Copy – Command Dword 15",
+      "section": "3.3.2",
+      "printed_pages": "32",
+      "pdf_pages": "32",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBATM",
+        "LBAT",
+        "SNSID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "bf1bf9596063a29c373a0194cacff14f4bd8e0e8091e9f662c83959d31d18080",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-039",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "39",
+      "title": "Copy – Copy Descriptor Formats",
+      "section": "3.3.2",
+      "printed_pages": "32",
+      "pdf_pages": "32",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLM"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "5e81c9e5d9ae6bdd7a84d182d3b4d4a4dc23177403fcbe52e762edf4615a6af7",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-040",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "40",
+      "title": "Copy – Source Range Entries Copy Descriptor Format 0h and Format 2h",
+      "section": "3.3.2",
+      "printed_pages": "33-34",
+      "pdf_pages": "33-34",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SPARS",
+        "SNSID",
+        "SLBA",
+        "RPARS",
+        "CETYPE",
+        "NLB",
+        "CEV",
+        "SOPT",
+        "FCO",
+        "ELBT",
+        "ELBST",
+        "EILBRT",
+        "ELBAT",
+        "ELBATM"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "1a4c12144150220ecb9f39bc5bd27f91ca6ebc2db4fd7a6ec0b342d2c14d405e",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-041",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "41",
+      "title": "Copy – Source Range Entries Copy Descriptor Format 1h and Format 3h",
+      "section": "3.3.2",
+      "printed_pages": "35-36",
+      "pdf_pages": "35-36",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SPARS",
+        "SNSID",
+        "SLBA",
+        "RPARS",
+        "CETYPE",
+        "NLB",
+        "CEV",
+        "SOPT",
+        "FCO",
+        "ELBT",
+        "ELBST",
+        "EILBRT",
+        "ELBAT",
+        "ELBATM"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "7633a455b13159e1ac8218ff2fb159cccaeedfb244704e5429e1435847fe25b1",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-042",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "42",
+      "title": "Source LBA and Destination LBA Relationship Example",
+      "section": "3.3.2",
+      "printed_pages": "38",
+      "pdf_pages": "38",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FCO",
+        "DNR"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "1acc1aa4d574083749a769adf8a543d355c3fc85d26500b175a07e5be9340efa",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-043",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "43",
+      "title": "Copy – Command Specific Status Values",
+      "section": "3.3.2.5",
+      "printed_pages": "43-44",
+      "pdf_pages": "43-44",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRINFOR",
+        "PRINFOW",
+        "FCO"
+      ],
+      "source_keywords": [
+        "shall not",
+        "should not",
+        "may"
+      ],
+      "evidence_digest": "271dc7b31b1e37272240745b3e3479e9e8dcf336dbff4b10c57b773618786419",
+      "teaching_module": "adminio-copy"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-044",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "44",
+      "title": "Dataset Management – Data Pointer",
+      "section": "3.3.3",
+      "printed_pages": "44",
+      "pdf_pages": "44",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c1d640c64a063272c226d25b4b1c54a0448318af98c365c7a95fca10480adeb5",
+      "teaching_module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-045",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "45",
+      "title": "Dataset Management – Command Dword 10",
+      "section": "3.3.3",
+      "printed_pages": "44",
+      "pdf_pages": "44",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "44955d3ba7c882fde3aaf3eafddb675235a3ac08c4445adbedab6ec66c57c1e9",
+      "teaching_module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-046",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "46",
+      "title": "Dataset Management – Command Dword 11",
+      "section": "3.3.3",
+      "printed_pages": "44-45",
+      "pdf_pages": "44-45",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "AD",
+        "IDW",
+        "IDR"
+      ],
+      "source_keywords": [
+        "may",
+        "should"
+      ],
+      "evidence_digest": "6897e6efdeb27c15138b585bfb64440b9efde3b50f594d6a5c78686dacfd249d",
+      "teaching_module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-047",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "47",
+      "title": "Dataset Management – Range Definition",
+      "section": "3.3.3",
+      "printed_pages": "45",
+      "pdf_pages": "45",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CATTR",
+        "LLB",
+        "SLBA",
+        "DMRL",
+        "DMRSL",
+        "DMSL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ab0211323ffa58ff25d9c4c605b797296cf15bad0621c3a2748dad7ecb394363",
+      "teaching_module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-048",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "48",
+      "title": "Dataset Management – Context Attributes",
+      "section": "3.3.3.2",
+      "printed_pages": "47",
+      "pdf_pages": "47",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CASZE",
+        "WPREP",
+        "SWR",
+        "SRR",
+        "AL",
+        "AF"
+      ],
+      "source_keywords": [
+        "should"
+      ],
+      "evidence_digest": "e7f6c957376277846a210808e066ce8fc45d58ea43193c1b71984a3f5a3a30a0",
+      "teaching_module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-049",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "49",
+      "title": "Dataset Management – Command Specific Status Values",
+      "section": "3.3.3.3",
+      "printed_pages": "48",
+      "pdf_pages": "48",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NVMDSMSV"
+      ],
+      "source_keywords": [
+        "may",
+        "shall not"
+      ],
+      "evidence_digest": "e3b4993d233e21be6729dcf416ae9243d78242e1a4245c84e2bcc453f8c1f95f",
+      "teaching_module": "adminio-dataset"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-050",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "50",
+      "title": "Read – Metadata Pointer",
+      "section": "3.3.4",
+      "printed_pages": "49",
+      "pdf_pages": "49",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "516cd7be6bfa2e84d0bfd5851a1badaaecbeba435516c3be077f3869b1357361",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-051",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "51",
+      "title": "Read – Data Pointer",
+      "section": "3.3.4",
+      "printed_pages": "49",
+      "pdf_pages": "49",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2a53d21bd5b9cc9dfc350987ed3550dd062de9febb79ab140213035a341bfc81",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-052",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "52",
+      "title": "Read – Command Dword 2 and Dword 3",
+      "section": "3.3.4",
+      "printed_pages": "49",
+      "pdf_pages": "49",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBTU",
+        "ELBST",
+        "EILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6f731e5152926dda68210da84d347f54d8cc8e7f6a75a66e75297fe362763e3e",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-053",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "53",
+      "title": "Read – Command Dword 10 and Command Dword 11",
+      "section": "3.3.4",
+      "printed_pages": "49",
+      "pdf_pages": "49",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "faf87a61f0c66839dd9b009a4a3b19e05f16edc2f0f194215d151bdcf992d496",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-054",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "54",
+      "title": "Read – Command Dword 12",
+      "section": "3.3.4",
+      "printed_pages": "49",
+      "pdf_pages": "49",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LR",
+        "FUA",
+        "PRINFO",
+        "STC",
+        "CETYPE",
+        "NLB"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "276e4937b1406bb16528ec88b323dc3df71b1b66a9ae7c9de130b00e568f8961",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-055",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "55",
+      "title": "Read – Command Dword 13 if CETYPE is cleared to 0h",
+      "section": "3.3.4",
+      "printed_pages": "50",
+      "pdf_pages": "50",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSM",
+        "INCPRS",
+        "SEQREQ",
+        "AL",
+        "AF"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "b6f90947d621912dbb63986b286b66c9c66dc58c5e6ae23e1ceb8e7a3a86a695",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-056",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "56",
+      "title": "Read - Command Dword 13 if CETYPE is non-zero",
+      "section": "3.3.4",
+      "printed_pages": "50",
+      "pdf_pages": "50",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CEV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "590fd12f2e7611dee65b63b78d7668c939f53862f444f58611e7408f3f6502c8",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-057",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "57",
+      "title": "Read – Command Dword 14",
+      "section": "3.3.4",
+      "printed_pages": "50",
+      "pdf_pages": "50",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBTL",
+        "ELBST",
+        "EILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ced3d8d447b13677d2758568a8e29fdeaf40c264f4079881b6268c838df9d21f",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-058",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "58",
+      "title": "Read – Command Dword 15",
+      "section": "3.3.4",
+      "printed_pages": "51",
+      "pdf_pages": "51",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBATM",
+        "ELBAT"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "1a767d0d68a38350307e97be6cf60b67383b915210ad11e7df2b4c9960b07466",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-059",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "59",
+      "title": "Read – Command Specific Status Values",
+      "section": "3.3.4.1",
+      "printed_pages": "51",
+      "pdf_pages": "51",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRINFO",
+        "LR",
+        "VSL",
+        "NVMVFYS"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "983b76f592fe5d9ae23d3970a5490430423babcaac2cd9176301fc65d7a8161e",
+      "teaching_module": "adminio-read"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-060",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "60",
+      "title": "Verify – Command Dword 2 and Dword 3",
+      "section": "3.3.5",
+      "printed_pages": "52",
+      "pdf_pages": "52",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBTU",
+        "ELBST",
+        "EILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ed56180fea4d199194df8a83ebbfc8ebc241b166eecffc06682c11edaf61adf8",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-061",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "61",
+      "title": "Verify – Command Dword 10 and Command Dword 11",
+      "section": "3.3.5",
+      "printed_pages": "52",
+      "pdf_pages": "52",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "10e011547abfae2fca5c9f72918a2390edeaa4b074d1acc479a8cc68e6f0135d",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-062",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "62",
+      "title": "Verify – Command Dword 12",
+      "section": "3.3.5",
+      "printed_pages": "52",
+      "pdf_pages": "52",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LR",
+        "FUA",
+        "PRINFO",
+        "PRCHK",
+        "PRACT",
+        "STC",
+        "CETYPE",
+        "NLB"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "4575cdabf4111d54e4e57616311ec1976c2cfb68dbc45204a00874fbf51fc5c6",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-063",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "63",
+      "title": "Verify - Command Dword 13 if CETYPE is non-zero",
+      "section": "3.3.5",
+      "printed_pages": "52",
+      "pdf_pages": "52",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CEV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "4921bbd761ec198aa98fbf7f52d4b8eb3dbe6f84bbfef0241e9aeacfe3251801",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-064",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "64",
+      "title": "Verify – Command Dword 14",
+      "section": "3.3.5",
+      "printed_pages": "53",
+      "pdf_pages": "53",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBTL",
+        "ELBST",
+        "EILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "63b269fd5ae773126db9eb7e4f9e4db1b5a3f5dc450a052b473a8711a05baffc",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-065",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "65",
+      "title": "Verify – Command Dword 15",
+      "section": "3.3.5",
+      "printed_pages": "53",
+      "pdf_pages": "53",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ELBATM",
+        "ELBAT",
+        "CQE"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "7116de587f2384b10c73cdcd3b9fb945d74cb00e7b310f1e694d6b30c6ec0c73",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-066",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "66",
+      "title": "Verify – Command Specific Status Values",
+      "section": "3.3.5.1",
+      "printed_pages": "53",
+      "pdf_pages": "53",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRINFO"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "700f01d7fba7fc9250c77b031a52513ce5522c6fb2892f2db850f6d77c1afb36",
+      "teaching_module": "adminio-verify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-067",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "67",
+      "title": "Write – Metadata Pointer",
+      "section": "3.3.6",
+      "printed_pages": "53",
+      "pdf_pages": "53",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "3cfc2c336f6286ea628a7e12ee58cb10479d6cc7885fe60f1fb67f3b8b786e76",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-068",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "68",
+      "title": "Write – Data Pointer",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "bae6ed548283558c82c19fce55eafb67289fa30f3881725de7b22a13ae855072",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-069",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "69",
+      "title": "Write – Command Dword 2 and Dword 3",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBTU",
+        "LBST",
+        "ILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "e7b9fb40d0581fde0714beea1be4cbb70c1a36ed7e779d92632add16bcef1973",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-070",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "70",
+      "title": "Write – Command Dword 10 and Command Dword 11",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "51a696190f810ac9a30eaea1073ae4915df7bb3af169cff36caa4c71aa9e5512",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-071",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "71",
+      "title": "Write – Command Dword 12",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LR",
+        "FUA",
+        "PRINFO",
+        "STC",
+        "DTYPE",
+        "CETYPE",
+        "NLB"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "1cbb820e7f82a8b51046b15483f96198c9a5513b87a9498103cf49fd2d9323c1",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-072",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "72",
+      "title": "Write – Command Dword 13 if CETYPE is cleared to 0h",
+      "section": "3.3.6",
+      "printed_pages": "54-55",
+      "pdf_pages": "54-55",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DSM",
+        "INCPRS",
+        "SEQREQ",
+        "AL",
+        "AF"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "d0b9e29bea6cda4f9ebe04175d32143822b40f19998eab702c2dd7ee5a16054a",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-073",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "73",
+      "title": "Write - Command Dword 13 if CETYPE is non-zero",
+      "section": "3.3.6",
+      "printed_pages": "55",
+      "pdf_pages": "55",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "CEV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c41580a2f4356ef2ac3a6dbc0fcde3c48b73d227fa739ef336bd6929712bf345",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-074",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "74",
+      "title": "Write – Command Dword 14",
+      "section": "3.3.6",
+      "printed_pages": "55",
+      "pdf_pages": "55",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBTL",
+        "LBST",
+        "ILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "14ef4ec10996d2eebfbfb96d669200819da77f9510f6c7f32c746fc37d9c59bc",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-075",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "75",
+      "title": "Write – Command Dword 15",
+      "section": "3.3.6",
+      "printed_pages": "55",
+      "pdf_pages": "55",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBATM",
+        "LBAT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "5a8d5c5d3d4a82f3a9aba802d7e373a29597efecd81098dc5445d52971dece82",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-076",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "76",
+      "title": "Write – Command Specific Status Values",
+      "section": "3.3.6.1",
+      "printed_pages": "56",
+      "pdf_pages": "56",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRINFO",
+        "WUSL",
+        "NVMWUSV"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "41990c4121d09c034938b005e9289adc410ed1b460788c86059827102166668e",
+      "teaching_module": "adminio-write"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-077",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "77",
+      "title": "Write Uncorrectable – Command Dword 10 and Command Dword 11",
+      "section": "3.3.7",
+      "printed_pages": "56",
+      "pdf_pages": "56",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "cab92377f0163c708269b6c1146304f02b2072633f8e5e2f08780ded92b09add",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-078",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "78",
+      "title": "Write Uncorrectable – Command Dword 12",
+      "section": "3.3.7",
+      "printed_pages": "56",
+      "pdf_pages": "56",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DTYPE",
+        "NLB"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "76491745708a12a16cb87e474f916e62a09065f4d3044ec77c905dce5dd70fe2",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-079",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "79",
+      "title": "Write Uncorrectable – Command Dword 13",
+      "section": "3.3.7",
+      "printed_pages": "57",
+      "pdf_pages": "57",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9615c3edd52eb1437acf0d409114ed2628e61e7423afca85e161c126dcc2a9d4",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-080",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "80",
+      "title": "Write Uncorrectable – Command Specific Status Values",
+      "section": "3.3.7.1",
+      "printed_pages": "57",
+      "pdf_pages": "57",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRACT",
+        "DPS",
+        "DRB"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "cb272643f07d4317e1db5f660b776a172c718af71266c6fdadaab014747ad7ac",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-081",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "81",
+      "title": "Write Zeroes – Command Dword 2 and Dword 3",
+      "section": "3.3.8",
+      "printed_pages": "59",
+      "pdf_pages": "59",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBTU",
+        "LBST",
+        "ILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "4cd4ade587682202732fe978d9969b0416ca59b2ac9e52576003914d8613f67f",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-082",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "82",
+      "title": "Write Zeroes – Command Dword 10 and Command Dword 11",
+      "section": "3.3.8",
+      "printed_pages": "59",
+      "pdf_pages": "59",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA",
+        "ONCS"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "b001dc3eaa0f18e18ecd8c0dacf6a29b962abb881f4752867e60ccaa4690f67e",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-083",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "83",
+      "title": "Write Zeroes – Command Dword 12",
+      "section": "3.3.8",
+      "printed_pages": "59-60",
+      "pdf_pages": "59-60",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LR",
+        "FUA",
+        "PRINFO",
+        "PRCHK",
+        "DEAC",
+        "STC",
+        "NSZ",
+        "ONCS",
+        "DTYPE",
+        "CETYPE",
+        "NLB"
+      ],
+      "source_keywords": [
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "1faf429164098a375f78af9d427efc150f86e24aebc294fb177ac4e08d89fafb",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-084",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "84",
+      "title": "Write Zeroes – Command Dword 13 if CETYPE is cleared to 0h",
+      "section": "3.3.8",
+      "printed_pages": "60",
+      "pdf_pages": "60",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "809f6fbdc3789a7dc0af0ca5e4c7de8d5681f3842f14483f9e398e909d683723",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-085",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "85",
+      "title": "Write Zeroes – Command Dword 13 if CETYPE is non-zero",
+      "section": "3.3.8",
+      "printed_pages": "60",
+      "pdf_pages": "60",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "CEV"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2b6fd52b6b6881a1fd095b64212990f20f2a7d42875d84cec2270ef2c04cd130",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-086",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "86",
+      "title": "Write Zeroes – Command Dword 14",
+      "section": "3.3.8",
+      "printed_pages": "60",
+      "pdf_pages": "60",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBTL",
+        "LBST",
+        "ILBRT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "cd1d77738abac0407bd5772f23a8d34bf89831ae784d710cb8c3fe45cf122e37",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-087",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "87",
+      "title": "Write Zeroes – Command Dword 15",
+      "section": "3.3.8",
+      "printed_pages": "60",
+      "pdf_pages": "60",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBATM",
+        "LBAT"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "ef48daadadf905ccafc367f3f244fb07f7d62664612bc79f327b985ed9ba5581",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-088",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "88",
+      "title": "Write Zeroes – Completion Queue Entry Dword 0",
+      "section": "3.3.8.1",
+      "printed_pages": "61",
+      "pdf_pages": "61",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBACZ",
+        "NSZ",
+        "NLB"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "09478953ee27d873050aaefae3cf001c3405c47935344ac3682d3afdee4c0894",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-089",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "89",
+      "title": "Write Zeroes – Command Specific Status Values",
+      "section": "3.3.8.1",
+      "printed_pages": "61",
+      "pdf_pages": "61",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PRINFO"
+      ],
+      "source_keywords": [
+        "shall not"
+      ],
+      "evidence_digest": "b78878f73e758c82d8dba4d8a88eaa204b08021e093f9ca0bcdebf3db632d558",
+      "teaching_module": "adminio-zeroes"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-090",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "90",
+      "title": "Asynchronous Event Information – Notice",
+      "section": "4.1.1",
+      "printed_pages": "62",
+      "pdf_pages": "62",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Asynchronous Event Information – Notice"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "0ed70675b4fcb1b7e452d3cb745e9d3fb72dc8a24ca03aa9edfad5438262798c",
+      "teaching_module": "adminio-nvm-admin"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-091",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "91",
+      "title": "Format NVM – Command Dword 10 – NVM Command Set Specific Fields",
+      "section": "4.1.2",
+      "printed_pages": "63",
+      "pdf_pages": "63",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PIL",
+        "DPS",
+        "DPC",
+        "PI",
+        "MSET"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "6bcfc5a538c744cb8b54a0d45a5caa8df4f3f9896ab03612f84985ccff0a6c5f",
+      "teaching_module": "adminio-nvm-admin"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-094",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "94",
+      "title": "LBA Range Type – Command Dword 11",
+      "section": "4.1.3.2",
+      "printed_pages": "65",
+      "pdf_pages": "65",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUM"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8110af57f559c682e1c0636c1124f526a7302d15e99b09c5e6c06984427d5156",
+      "teaching_module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-095",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "95",
+      "title": "LBA Range Type – Completion Queue Entry Dword 0",
+      "section": "4.1.3.2",
+      "printed_pages": "65",
+      "pdf_pages": "65",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUM"
+      ],
+      "source_keywords": [
+        "should not",
+        "may",
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "2f7468f42e4390fef85457090755afb97026bcd77fa64c65fe0de27272539f52",
+      "teaching_module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-096",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "96",
+      "title": "LBA Range Type – Data Structure Entry",
+      "section": "4.1.3.2",
+      "printed_pages": "65-66",
+      "pdf_pages": "65-66",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ATTRB",
+        "HLBAR",
+        "LBARO",
+        "SLBA",
+        "NLB",
+        "GUID"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "should not"
+      ],
+      "evidence_digest": "e66e142782717b1dc1316052ca3b17f7424feb823232fd772606efdbafbfc1ef",
+      "teaching_module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-098",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "98",
+      "title": "Write Atomicity Normal – Command Dword 11",
+      "section": "4.1.3.4",
+      "printed_pages": "66-67",
+      "pdf_pages": "66-67",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DN"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "84c04c022ba86381e4947ff0086f014094efd93786fa13fcd51a90d501a44f0c",
+      "teaching_module": "adminio-nvm-features"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-110",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "110",
+      "title": "Error Information Log Entry Data Structure – User Data",
+      "section": "4.1.4.1",
+      "printed_pages": "76",
+      "pdf_pages": "76",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBA"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "f44343dd174a3eded1b8f2a8a5b85a2d05c6c11ae2f680766fce2b3005825bcb",
+      "teaching_module": "adminio-nvm-logs"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-122",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "122",
+      "title": "CNS Values",
+      "section": "4.1.5",
+      "printed_pages": "83-84",
+      "pdf_pages": "83-84",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "NLBAF",
+        "NULBAF"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "c9710ee2c850991f151b2b56e50d191d0182fdc4eaa5fef732eb28a81a027511",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-123",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "123",
+      "title": "Identify – Identify Namespace Data Structure, NVM Command Set",
+      "section": "4.1.5.1",
+      "printed_pages": "85-93",
+      "pdf_pages": "85-93",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSZE",
+        "NCAP",
+        "NUSE",
+        "NSFEAT",
+        "OPTRPERF",
+        "MAM",
+        "OPTPERF",
+        "UIDREUSE",
+        "DAE",
+        "NSABP",
+        "THINP",
+        "NLBAF",
+        "LBAF0",
+        "FLBAS",
+        "FIDXU",
+        "MTELBA",
+        "FIDXL",
+        "MC",
+        "MTSBS",
+        "MTELBAS",
+        "DPC",
+        "PIILB",
+        "PIIFB",
+        "PIT3S",
+        "PIT2S",
+        "PIT1S",
+        "DPS",
+        "PIP",
+        "PIT",
+        "NMIC"
+      ],
+      "source_keywords": [
+        "may",
+        "should",
+        "shall",
+        "shall not"
+      ],
+      "evidence_digest": "54ff5dcb8a9e4b37c29fc677d6b3347a1ab3496d635aa673d579bf76d25d3199",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-124",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "124",
+      "title": "Namespace Alignment and Granularity Attributes",
+      "section": "4.1.5.1",
+      "printed_pages": "94",
+      "pdf_pages": "94",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Namespace Alignment and Granularity Attributes"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "43e307c23bdc2e780276041868f835d3f0642d6c48d024354860f36dd68e186e",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-125",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "125",
+      "title": "LBA Format Data Structure, NVM Command Set Specific",
+      "section": "4.1.5.1",
+      "printed_pages": "94",
+      "pdf_pages": "94",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "RP",
+        "LBADS",
+        "MS"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "9394faa8939e92907f753ba33c960b8a0cfe8dfc27968b233b14d23e6ea1d39d",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-126",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "126",
+      "title": "Identify – Identify Controller data structure, NVM Command Set Specific Fields",
+      "section": "4.1.5.2",
+      "printed_pages": "94-96",
+      "pdf_pages": "94-96",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "AWUN",
+        "AWUPF",
+        "ACWU",
+        "NLBAF",
+        "NULBAF"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "63c10c7e70f1f795b388bfaf07705217c75ddf56517cdbdad7917020e3edbe15",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-127",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "127",
+      "title": "NVM Command Set I/O Command Set Specific Identify Namespace Data Structure",
+      "section": "4.1.5.3",
+      "printed_pages": "97-101",
+      "pdf_pages": "97-101",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBSTM",
+        "PIC",
+        "QPIFS",
+        "STCRS",
+        "STCR",
+        "PISTS16B",
+        "PISTM16B",
+        "PIFA",
+        "STMLA",
+        "ELBAF0",
+        "LBAF0",
+        "ELBAF1",
+        "LBAF1",
+        "ELBAF63",
+        "LBAF63",
+        "NPDGL",
+        "NPDAL",
+        "NPDA",
+        "NPRG",
+        "MDTS",
+        "NPRA",
+        "NORS",
+        "LBAPSS",
+        "TLBAAG"
+      ],
+      "source_keywords": [
+        "should",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8c65adfcfbf07fd9f41c56c8427a41ae81ed0193dc33854c7ea7413e3dea3dc5",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-128",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "128",
+      "title": "Extended LBA Format Data Structure, NVM Command Set Specific",
+      "section": "4.1.5.3",
+      "printed_pages": "101-102",
+      "pdf_pages": "101-102",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "QPIF",
+        "PIF",
+        "QTYPE",
+        "STS"
+      ],
+      "source_keywords": [
+        "should",
+        "shall not"
+      ],
+      "evidence_digest": "b68b221342b3978a4607992e827029f0bb2cb6f57b0b7f06f58248c95a072567",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-129",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "129",
+      "title": "I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set",
+      "section": "4.1.5.4",
+      "printed_pages": "103",
+      "pdf_pages": "103",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "VSL",
+        "NVMVFYS",
+        "ONCS",
+        "WZSL",
+        "NVMWZSV",
+        "WZDSL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "e94b0876fcb82b37f9893458edccc2d3b91597d5ab6aac186e11a2a875ecbd99",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-130",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "130",
+      "title": "NVM Command Set Specification Version Descriptor Field Values",
+      "section": "4.1.5.4",
+      "printed_pages": "107",
+      "pdf_pages": "107",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NVM Command Set Specification Version Descriptor Field Values"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "2dd4b635137fc05d8305dcec98e40750a711e105984b74576802dccb0e7bfe95",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-131",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "131",
+      "title": "Command Dword 11 - CNS Specific Identifiers",
+      "section": "4.1.5.5",
+      "printed_pages": "107",
+      "pdf_pages": "107",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "FIDX",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "2343efd1ebe383a2fdf8250824811a22df9b8d6a78e530e9fc9f6c9dee7b18c8",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-132",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "132",
+      "title": "Namespace Granularity List",
+      "section": "4.1.5.8",
+      "printed_pages": "108",
+      "pdf_pages": "108",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NGA",
+        "GDM",
+        "ND",
+        "NGD0",
+        "NGD1",
+        "NGD63"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "02e8aa75bb8fdb40766fdb5e34702da5b301bb763c88aca74d85e7d7c98469dd",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-133",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "133",
+      "title": "Namespace Granularity Descriptor",
+      "section": "4.1.5.8",
+      "printed_pages": "108",
+      "pdf_pages": "108",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSG",
+        "NCG"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "b76a24c37c1a9b4313ac31af928664b4be53ed74eba8d304d655ef7d49ef2003",
+      "teaching_module": "adminio-nvm-identify"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-192",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "192",
+      "title": "LBA Format List Structure",
+      "section": "5.6",
+      "printed_pages": "161",
+      "pdf_pages": "161",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBA Format List Structure"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f180708271ddf2ca58d3f8a4699c2fdc3e6240f194febcf129260c0efebbadf1",
+      "teaching_module": "adminio-format-list"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-193",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "193",
+      "title": "LBA Format List Entries Applicability to Identify Command CNS Value",
+      "section": "5.6",
+      "printed_pages": "162",
+      "pdf_pages": "162",
+      "scope_entry_id": "ADMINIO-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LBAMQF"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "76d5a7fba9e10c7bb2b3316c47251b44d815f4ce8d5d9e328ebc0045845271fe",
+      "teaching_module": "adminio-format-list"
     }
   ]
 }

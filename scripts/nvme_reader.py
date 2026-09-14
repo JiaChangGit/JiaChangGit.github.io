@@ -204,7 +204,9 @@ class Reading:
         remainder = []
         for f in self.figures:
             module = None
-            if self.id == 'nvm-command-set-1.3':
+            if f.get('teaching_module'):
+                module = f['teaching_module']
+            elif self.id == 'nvm-command-set-1.3':
                 from scripts.nvme_nvmcs_figures import lesson_for
                 module = lesson_for(f)['id']
             else:
@@ -270,6 +272,9 @@ class Reading:
             out.append(self.paragraph(passage))
         out.append('</div>')
         out.append('</section>')
+        if self.id == 'admin-io-spec-walkthrough':
+            from scripts.nvme_admin_io import render_route
+            out.append(render_route(self))
         groups, remainder = self.assigned_figures() if self.tutorial else ({m['id']:[] for m in self.modules}, [])
         for index, module in enumerate(self.modules, 1):
             lesson = LESSONS[module['id']]
@@ -290,9 +295,13 @@ class Reading:
                 course = COURSES.get(module['id'])
                 out.append('<div class="lesson-explanation">')
                 if course:
-                    out.append('<div class="course-walkthrough"><h3>'+esc(course['title'])+'</h3>')
+                    repeats_title = course['title'] == module['title'][self.lang]
+                    out.append('<div class="course-walkthrough">')
+                    if not repeats_title:
+                        out.append('<h3>'+esc(course['title'])+'</h3>')
+                    step_heading = 'h3' if repeats_title else 'h4'
                     for title, passage in course['steps']:
-                        out.append('<h4>'+esc(title)+'</h4>'+self.paragraph(passage))
+                        out.append('<'+step_heading+'>'+esc(title)+'</'+step_heading+'>'+self.paragraph(passage))
                     out.append('<aside class="course-outcome">'+self.paragraph(course['outcome'])+'</aside></div>')
                 else:
                     out.extend(self.paragraph(p) for p in lesson['teaching'])
@@ -323,7 +332,9 @@ class Reading:
         self.begin_section(len(self.modules) + 1)
         if not self.tutorial:
             out.append('<section id="spec-reading"><h2>' + pair(self.lang, '接著打開 Spec 看什麼', 'Where to continue in the specification') + '</h2>')
-            out.append(self.paragraph(pair(self.lang, '以下按概念列出閱讀位置。報告時先用上面的流程說明問題，再打開對應章節看欄位與完整條件。中文教學 HTML 另有本篇全部圖表的逐圖重點、案例與細節。', 'Use the flow above to frame the problem, then open the corresponding sections for fields and full conditions. The Chinese tutorial also explains every in-scope figure with its takeaway, example, and details.')))
+            out.append(self.paragraph(pair(self.lang,
+                '正式報告時使用開頭的 B01–B17、N01–N07 順向路徑；以下僅供按觀念查找，不需要逐列重新翻一次 Spec。' if self.id == 'admin-io-spec-walkthrough' else '以下按概念列出閱讀位置。報告時先用上面的流程說明問題，再打開對應章節看欄位與完整條件。中文教學 HTML 另有本篇全部圖表的逐圖重點、案例與細節。',
+                'Use the opening B01–B17 and N01–N07 route for the live report. The following is a conceptual lookup index, not another pass through the specification.' if self.id == 'admin-io-spec-walkthrough' else 'Use the flow above to frame the problem, then open the corresponding sections for fields and full conditions. The Chinese tutorial also explains every in-scope figure with its takeaway, example, and details.')))
             rows=[]
             for module in self.all_modules:
                 references=list(dict.fromkeys({'NVME-BASE-2.4':'Base 2.4','NVME-NVM-CS-1.3':'NVM 1.3','NVME-PCIE-TRANSPORT-1.4':'PCIe Transport 1.4'}[self.by_id[s]['source_id']]+' §'+self.by_id[s]['section'] for s in module['sources']))
@@ -358,6 +369,7 @@ class Reading:
 
 
 POST_MODULES = {
+ 'admin-io-spec-walkthrough': {'adminio-command-map','adminio-abort','adminio-aer','adminio-firmware','adminio-format','adminio-logs','adminio-identify','adminio-security','adminio-features','adminio-queues','adminio-flush','adminio-copy','adminio-read','adminio-write','adminio-nvm-identify'},
  'nvm-command-set-1.3': {'nvmcs-capacity','nvmcs-metadata','nvmcs-read-write','nvmcs-compare-verify','nvmcs-copy','nvmcs-atomic','nvmcs-pi-checking','nvmcs-rate-modes'},
 }
 
@@ -365,6 +377,7 @@ POST_MODULES = {
 def render(report_id, report, claims, figures, modules, language, tutorial, api):
     reading = Reading(report_id, report, claims, figures, modules, language, tutorial, api)
     body = reading.body()
+    route_link = '<a href="#spec-route">Spec 報告路徑：B01–B17 → N01–N07</a>' if report_id == 'admin-io-spec-walkthrough' else ''
     title = report['title_en'] if language == 'en' else report['title_zh']
     sources = '\n'.join(api.SOURCES[s]['marker'] for s in dict.fromkeys(c['source_id'] for c in claims))
     footer = '<footer class="reference-editions"><details class="source-note"><summary>' + pair(language, '採用的規格版本', 'Specification editions') + '</summary>' + ''.join('<p>' + esc(s) + '</p>' for s in sources.splitlines()) + '</details></footer>'
@@ -383,7 +396,7 @@ def render(report_id, report, claims, figures, modules, language, tutorial, api)
 <meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
 <title>{esc(title)}</title><style>{css}</style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
-<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a>{toc}<a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a>{route_link}{toc}<a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
 <main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>{esc(title)}</h1></header>
 {body}
 {footer}</main></div></body></html>'''

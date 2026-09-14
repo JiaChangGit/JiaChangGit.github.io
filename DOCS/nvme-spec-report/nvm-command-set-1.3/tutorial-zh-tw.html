@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -275,7 +282,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-nvmcs-read-write"><h2 id="heading-nvmcs-read-write"><span class="section-number">09</span> Read／Write 的資料與完成條件</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>用一個四區塊要求連接格式、地址與資料量</h3>
+<div class="course-walkthrough">
+<h3>用一個四區塊要求連接格式、地址與資料量</h3>
 <h4>先從格式得知每個 LBA 的資料量</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.01">09.01.</span><span class="paragraph-text">假設 namespace 使用每 block 4096 bytes、沒有獨立 metadata 的格式。要讀 LBA 100 到 103，共 4 blocks，因此 SLBA=100，NLB=3。NLB 是數量減 1，SLBA 是起點，兩者不能套同一換算。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SLBA</dt><dd>Starting LBA；指定命令範圍的起點。</dd></div><div><dt>NLB</dt><dd>Number of Logical Blocks；本報告命令／status descriptors 的該欄為 0-based。DSM 的 LLB 另為1-based。</dd></div></dl>
 <h4>再準備與要求相符的 buffer</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.02">09.02.</span><span class="paragraph-text">資料總量是 4×4096=16384 bytes。DPTR 應描述這份量所需的主機記憶體；若資料跨 memory pages，再用 PRP 或 SGL 的規則組合。LBA 大小與 memory page 大小即使這次恰好相同，仍是不同概念。</span></p>
 <h4>最後解讀成功的含義</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.03">09.03.</span><span class="paragraph-text">Read 成功表示完成這次資料讀取。Write 還要配合 cache、FUA 與 Flush 等規則討論持久性；不能把任一成功 CQE 都直接翻成所有資料已永久保存。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>FUA</dt><dd>Force Unit Access；要求 nonvolatile-media 語意，不自動建立其他命令的順序。</dd></div></dl>
@@ -329,7 +337,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-nvmcs-copy"><h2 id="heading-nvmcs-copy"><span class="section-number">13</span> Copy：描述來源、連續目的與部分失敗</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>把多個來源範圍接到一個目的範圍</h3>
+<div class="course-walkthrough">
+<h3>把多個來源範圍接到一個目的範圍</h3>
 <h4>先描述資料排列</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.01">13.01.</span><span class="paragraph-text">假設來源是同一 namespace 的 LBA 10–11 與 30–32，目的從 LBA 100 開始。目的接收到 5 個 blocks，依描述子順序對應到 100–104；來源之間不需要連續。</span></p>
 <h4>分別編碼來源與目的</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.02">13.02.</span><span class="paragraph-text">每個來源 descriptor 有自己的起點及長度，命令的 destination 起點只有一個。NR 決定有效來源描述子數，不能把它當成總 blocks；總量要逐筆計算後加總。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NR</dt><dd>Range count 的 0-based 欄位；實際 descriptors 數為 NR+1。</dd></div></dl>
 <h4>把格式與保護要求套回每一段</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.03">13.03.</span><span class="paragraph-text">描述子格式、控制器支援的數量和長度限制，以及來源與目的保護資訊的處理都要成立。命令縮短主機搬資料的流程，並沒有取消各範圍的格式與權限檢查。</span></p>
@@ -434,7 +443,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-nvmcs-pi-checking"><h2 id="heading-nvmcs-pi-checking"><span class="section-number">21</span> PRACT 與 PRCHK／STC 的組合</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>把保護資訊看成與資料一起核對的證據</h3>
+<div class="course-walkthrough">
+<h3>把保護資訊看成與資料一起核對的證據</h3>
 <h4>先確定資料格式容納哪些欄位</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="21.01">21.01.</span><span class="paragraph-text">PI 格式決定 Guard 與各 tag 的大小、位置及使用方式。Storage Tag 與 Reference Tag 的分界還可能由格式設定決定，不能以固定切半的方式解讀每種格式。</span></p>
 <h4>再選這次命令要檢查什麼</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="21.02">21.02.</span><span class="paragraph-text">PRCHK 中的檢查選擇與 PRACT 的插入／移除行為影響此次操作。格式有某個 tag，與本次命令要求檢查它，是兩個層次；其他有效性與不檢查的特殊條件仍要一起看。</span></p>
 <h4>用預期值與實際值說明結果</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="21.03">21.03.</span><span class="paragraph-text">Guard 檢查資料內容，tag 檢查相應識別或位置資訊。若 Guard 正確而 Reference Tag 不符合預期，不能說「資料 bytes 正確所以整筆必定成功」；選中的檢查仍可能指出錯置。</span></p>
@@ -540,7 +550,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-nvmcs-rate-modes"><h2 id="heading-nvmcs-rate-modes"><span class="section-number">29</span> Hard／Soft 與 token-bucket 算例</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>用時間解釋速率限制，而非只看一個速率數字</h3>
+<div class="course-walkthrough">
+<h3>用時間解釋速率限制，而非只看一個速率數字</h3>
 <h4>先選受限制的對象</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="29.01">29.01.</span><span class="paragraph-text">一個 namespace、一組資源或不同存取類型可能有不同設定。先由 Scope 與 Scope Identifier 找到對象，再理解對應速率及模式，不能拿一個 controller 級數值直接套到所有 I/O。</span></p>
 <h4>區分長期速率與短期累積</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="29.02">29.02.</span><span class="paragraph-text">Token bucket 以隨時間補充的額度控制工作，bucket 大小決定可累積多少短期額度。相同補充速率而容量不同的 bucket，面對瞬間一批要求可能有不同等待時間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>token bucket</dt><dd>權杖桶；以累積的額度限制操作速率，執行操作時扣除所需額度。</dd></div></dl>
 <h4>按每段時間追蹤可用額度</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="29.03">29.03.</span><span class="paragraph-text">以教學例說明：每秒補 100 單位、最多累積 200 單位，空閒後可有 200 單位供突發使用；持續工作仍受每秒補充量限制。實際命令使用的單位與扣除規則須再對照設定格式，不能直接把此例當成固定 IOPS 規則。</span></p>

@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -164,7 +171,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-telemetry-layout"><h2 id="heading-telemetry-layout"><span class="section-number">01</span> 資料區如何排列與計算大小</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>用 Last Block 安排分段讀取</h3>
+<div class="course-walkthrough">
+<h3>用 Last Block 安排分段讀取</h3>
 <h4>先建立共同座標</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Telemetry 以 512 bytes 為一個 block，header 在 block 0。每個 Data Area 都從 block 1 開始，所以 Area 2 是較大的累積範圍；不能把它想成只放在 Area 1 後面的另一段資料。</span></p>
 <h4>從終點算出長度</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">假設 Area 1 的 Last Block=65，該 Area 的資料是 block 1 到 65，共 65×512=33,280 bytes。連同 header 讀取則是 66×512=33,792 bytes。數量差 1 來自有沒有包含 block 0，並非 Last Block 又套了一次從 0 起算的數量編碼。</span></p>
 <h4>選擇要讀的集合</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">若 Area 2 的 Last Block=1000，它包含 block 1 到 1000，已包含前面 65 個 blocks。若主機已取得 Area 1，只想補上到 Area 2 的資料，新增部分才是 block 66 到 1000。比較兩個終點，可以分清完整集合與新增區段。</span></p>
@@ -186,7 +194,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-telemetry-capture"><h2 id="heading-telemetry-capture"><span class="section-number">02</span> 建立快照、分段讀取與確認完成</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>取回同一個時間點的紀錄</h3>
+<div class="course-walkthrough">
+<h3>取回同一個時間點的紀錄</h3>
 <h4>決定這次要建立還是讀取</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">LID 07h 的 CTHID 決定是否要求建立新的 Host-Initiated capture。需要新紀錄時提出建立要求；後面的分段讀取沿用既有紀錄。若每段都要求重新建立，取得的資料就可能分屬不同時間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CTHID</dt><dd>Create Telemetry Host-Initiated Data；07h 的 capture 要求，後續分段讀同一快照要清為 0。</dd></div></dl>
 <h4>先取得可比對的識別資訊</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">讀取 header 並保留相應 generation number，再依 Last Block 計畫每段長度和位置。Get Log Page 的 NUMD 決定本次回傳量，LPO 決定從哪個位置取；兩者與整份 capture 的大小不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMD</dt><dd>Number of Dwords，0's-based transfer dword count；實際 bytes = (NUMD + 1) × 4。</dd></div></dl>
 <h4>讀完後確認紀錄沒有被換掉</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">假設第一次 header 的 generation 是 7，資料取完後再讀 header 卻得到 8。這時不能把剛才各段當成一份完整的一致紀錄；應依該類 log 的規則重新取得相符的資料。兩次值相同也必須搭配正確的建立、保留及確認流程，而非任意跨時間拼接。</span></p>
@@ -363,7 +372,7 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 <article class="field-note" id="figure-BASETELEMETRY-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page - Command Dword 12</h4>
 <div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:BASETELEMETRY-BASE-FIG-206-CLAIM -->
 <p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 是 log offset 的低 32 bits，單位還要看 offset 模式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
-<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如 Format Index=2 選第 2 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">byte-offset 模式下讀下一段 512 bytes，LPOL 設 512；index-offset 模式則以項目索引解釋，數字 512 不再表示相同位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>index-offset 對比；index 選取項目，offset 計算位置。例如從 0 起算的 Format Index=2 選第 3 個格式，而 OFST=256 表示從 image 起點位移 256 個 Dwords。</dd></div></dl></div>
 <div class="figure-detail"><a class="reading-link" href="#fields-base-get-log">欄位、條件與相關細節：同一筆 Get Log Page 的目標、範圍與資料位置 →</a></div></article>
 
 <!-- figure-table:BASETELEMETRY-BASE-FIG-207 -->

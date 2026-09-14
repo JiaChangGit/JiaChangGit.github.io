@@ -1,15 +1,16 @@
 # NVMe 報告控制資料
 
-此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 39 個輸出的契約。
+此目錄保存來源身分、核准範圍、claim、Figure／Table coverage 與 42 個輸出的契約。
 它不保存 PDF 原文。一般重建只讀取此目錄中的追蹤資料，不需要 PDF，也不會把規格原文
 帶進 GitHub Pages。
 
 ## 唯一資料來源與重建流程
 
-- `scope.json`：13 份報告與排除範圍的唯一資料來源；主題與必要背景都需來源登記。
+- `scope.json`：14 份報告與排除範圍的唯一資料來源；主題與必要背景都需來源登記。
 - `figure-table-register.json`：Figure 編號、標題、頁碼、範圍狀態與精簡證據索引的唯一資料來源。報告若在 `scope.json` 宣告 `included_figure_ids`，該 allowlist 是實際發布集合；清冊中其他舊證據列只供追溯，不得出現在輸出。
 - `claims.json`：由產生器重建；不手動維護。
-- `output-contract.json`：39 個輸出路徑與格式要求。
+- `output-contract.json`：42 個輸出路徑與格式要求。
+- `admin-io-route.json`：整合篇的精確 selector／章節排除清單、24 個 PDF 報告停留點與 221 張 Figure。路徑依實際 PDF 書籤核對，原始 PDF 不公開。
 
 一般內容更新後，依序執行：
 
@@ -40,8 +41,8 @@ python3 -B scripts/build_nvme_reports.py
 
 ## 執行階段
 
-1. `setup`：驗證來源登記、13 份報告、39 個輸出路徑與規則骨架。
-2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、39 個輸出存在且通過檢查。
+1. `setup`：驗證來源登記、14 份報告、42 個輸出路徑與規則骨架。
+2. `publish`：要求範圍已核准、claim 與 Figure／Table 清冊完整、42 個輸出存在且通過檢查。
 3. `auto`：`scope.json` 的 `production_status` 為 `ready_for_publish` 時執行
    `publish`，否則執行 `setup`。
 

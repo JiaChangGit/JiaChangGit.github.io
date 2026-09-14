@@ -514,6 +514,47 @@
         "NVME-NVM-CS-1.3"
       ],
       "parity_group": "basesanitize-bilingual"
+    },
+    {
+      "id": "adminio-tutorial-html",
+      "report_id": "admin-io-spec-walkthrough",
+      "path": "DOCS/nvme-spec-report/admin-io-spec-walkthrough/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "purpose": "中文逐步教學、逐圖說明與順向 Spec 報告路徑"
+    },
+    {
+      "id": "adminio-zh-md",
+      "report_id": "admin-io-spec-walkthrough",
+      "path": "_posts/2026-09-13-nvme-admin-io-spec-walkthrough-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "purpose": "全局講解、代表案例與順向 Spec 報告路徑；中英文對等",
+      "parity_group": "adminio-bilingual"
+    },
+    {
+      "id": "adminio-en-md",
+      "report_id": "admin-io-spec-walkthrough",
+      "path": "_posts/2026-09-13-nvme-admin-io-spec-walkthrough-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "purpose": "全局講解、代表案例與順向 Spec 報告路徑；中英文對等",
+      "parity_group": "adminio-bilingual"
     }
   ],
   "source_markers": {
@@ -565,44 +606,19 @@
   ],
   "full_coverage_artifact_ids": [
     "base12-tutorial-html",
-    "base12-zh-md",
-    "base12-en-md",
     "base3-tutorial-html",
-    "base3-zh-md",
-    "base3-en-md",
     "base4-tutorial-html",
-    "base4-zh-md",
-    "base4-en-md",
     "pcie14-tutorial-html",
-    "pcie14-zh-md",
-    "pcie14-en-md",
     "basefwlog-tutorial-html",
-    "basefwlog-zh-md",
-    "basefwlog-en-md",
     "basepower-tutorial-html",
-    "basepower-zh-md",
-    "basepower-en-md",
     "nvmcs13-tutorial-html",
-    "nvmcs13-zh-md",
-    "nvmcs13-en-md",
     "baseselftest-tutorial-html",
-    "baseselftest-zh-md",
-    "baseselftest-en-md",
     "basehmb-tutorial-html",
-    "basehmb-zh-md",
-    "basehmb-en-md",
     "basenamespace-tutorial-html",
-    "basenamespace-zh-md",
-    "basenamespace-en-md",
     "baseboot-tutorial-html",
-    "baseboot-zh-md",
-    "baseboot-en-md",
     "basetelemetry-tutorial-html",
-    "basetelemetry-zh-md",
-    "basetelemetry-en-md",
     "basesanitize-tutorial-html",
-    "basesanitize-zh-md",
-    "basesanitize-en-md"
+    "adminio-tutorial-html"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -625,5 +641,6 @@
     "numerals": "preserve Arabic numerals, encodings and units",
     "per_figure_takeaway_example_details": true,
     "post_purpose": "global view before opening the specification"
-  }
+  },
+  "report_count": 14
 }

@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -166,7 +173,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-family"><h2 id="heading-family"><span class="section-number">01</span> Base、Command Set 與 Transport 的分工</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>以「讀出 4 KiB」串起三份規格</h3>
+<div class="course-walkthrough">
+<h3>以「讀出 4 KiB」串起三份規格</h3>
 <h4>先確定想做的工作</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">應用程式要讀檔案，作業系統把需求轉成儲存區塊的讀取。NVMe 規格描述的是後面的裝置介面，不會直接接收檔名。這是從 OS 知識進入 NVMe 時要先跨過的界線。</span></p>
 <h4>把工作交給正確的命令集</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">NVM Command Set 的 Read 以 NSID、SLBA 與區塊數指出讀取對象。4 KiB 是資料量；實際需要幾個 logical blocks，要先從 namespace 格式得知每個 block 的大小。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
 <h4>讓共同命令結構經 PCIe 往返</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">主機將 Read 放進 Base 定義的 SQE，以資料指標給出目的 buffer，再依 PCIe 的 Doorbell 與記憶體存取流程交給控制器。資料回到 buffer，命令結果回到 CQ；中斷只負責提醒主機查看。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div><div><dt>CQ</dt><dd>Completion Queue，controller 放入完成結果的完成佇列。</dd></div></dl>
@@ -183,7 +191,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-objects"><h2 id="heading-objects"><span class="section-number">02</span> Namespace、Controller 與存取路徑</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>一個裝置裡，哪些物件是主機真正看得到的</h3>
+<div class="course-walkthrough">
+<h3>一個裝置裡，哪些物件是主機真正看得到的</h3>
 <h4>由 controller 找到管理入口</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">主機經 controller 提交命令、查能力和接收結果。controller 是這條命令路徑的端點，不等同 NAND die，也不能直接由控制器數目推論實體 flash 數。</span></p>
 <h4>由 namespace 找到資料範圍</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">假設同一 controller 能存取 NSID 1 和 NSID 2，兩者各自有容量與格式。對 NSID 1 的 LBA 0 寫入，不會因地址也是 0 就等同對 NSID 2 的 LBA 0 寫入。</span></p>
 <h4>再看共享與資源歸屬</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">namespace 可能經不只一個 controller 存取，Endurance Group 與 NVM Set 則描述資源組織。先畫出「誰能存取誰」，再補資源歸屬，會比把所有名詞排成一條上下層清單準確。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Endurance Group</dt><dd>Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。</dd></div><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div></dl>

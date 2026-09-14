@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -183,7 +190,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-mmio-doorbell"><h2 id="heading-mmio-doorbell"><span class="section-number">02</span> BAR、MMIO 與 Doorbell 位址</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>把 queue 2 的通知寫到正確位置</h3>
+<div class="course-walkthrough">
+<h3>把 queue 2 的通知寫到正確位置</h3>
 <h4>由 BAR 取得 NVMe MMIO 基底</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">假設 BAR 配置出的 register base 是 A，Doorbell 區從 A+1000h 開始。A 是系統配置的地址，1000h 是規格 offset，不能把兩者當成同一個值。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
 <h4>由 DSTRD 與 y 選位置</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">若 DSTRD=1，間距是 8 bytes。y=2 的 SQ Tail offset=1000h+4×8=1020h，CQ Head offset=1000h+5×8=1028h。這裡的 4、5 來自交錯排列的 2y 與 2y+1。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSTRD</dt><dd>Doorbell Stride，CAP 中決定相鄰 doorbell register 間距的欄位。</dd></div></dl>
 <h4>寫入索引，而非 command address</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">假設新的 SQ Tail 是 3，主機把 3 寫到 A+1020h。SQE 已在 SQ 記憶體，Doorbell 不再攜帶整份命令，也不攜帶 SQE 的地址。</span></p>
@@ -217,7 +225,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-interrupts"><h2 id="heading-interrupts"><span class="section-number">04</span> Interrupt 模式與通知行為</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>收到通知後，主機還需要做什麼</h3>
+<div class="course-walkthrough">
+<h3>收到通知後，主機還需要做什麼</h3>
 <h4>中斷向量指出服務入口</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">控制器依 CQ 設定使用選定的向量通知主機。多個 CQ 可以有相同或不同通知安排，因此收到向量不一定只對應一筆命令。</span></p>
 <h4>到 CQ 查找真正的完成項目</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">主機用 Phase 判斷可消費的新項目，再由 SQID、CID 對回原命令。SCT、SC 才提供 NVMe 結果；MSI 或 MSI-X 的訊息資料不是命令 status。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
 <h4>消費後交還 CQ 空間</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">主機完成必要讀取，再更新 CQ Head Doorbell。通知、讀取 CQE 與交還位置是三個時刻，不能只收到中斷便視為 CQ 空間已釋放。</span></p>

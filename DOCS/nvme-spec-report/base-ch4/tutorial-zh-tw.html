@@ -145,6 +145,13 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 .nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
 .nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
 .nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
 @media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
 </style></head>
 <body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
@@ -167,7 +174,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-sqe"><h2 id="heading-sqe"><span class="section-number">01</span> SQE 的共用格式與命令欄位</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>將一筆讀取要求拆成三組資訊</h3>
+<div class="course-walkthrough">
+<h3>將一筆讀取要求拆成三組資訊</h3>
 <h4>操作與對象</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">OPC 說要做什麼，NSID 說對哪個 namespace 做，命令專屬 Dwords 再描述其地址範圍。CID 則是主機日後辨識這筆命令的識別碼；CID 不是資料的起始 LBA。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
 <h4>資料要放在哪裡</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">DPTR 可能以 PRP 或 SGL 描述資料位置，PSDT 決定解讀方式。控制器先按 PSDT 選結構，再解釋 DPTR 內的 bit；不能只看某個值很像地址就直接作為連續 buffer。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer，CDW0 中決定 DPTR 應按 PRP 或 SGL 解讀的欄位。</dd></div></dl>
 <h4>把回覆對回原要求</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">完成後以 CQE 的 SQID 與 CID 對回這筆 SQE，再以 SCT、SC 判斷結果。原 SQE 的參數提供上下文，CQE 的狀態才知道這組要求被如何處理。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQID</dt><dd>Submission Queue Identifier，辨識 command 所屬 SQ 的數值。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
@@ -205,7 +213,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-prp"><h2 id="heading-prp"><span class="section-number">03</span> PRP 如何描述跨頁資料</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>一個 buffer 跨頁時，PRP2 的意思會改變</h3>
+<div class="course-walkthrough">
+<h3>一個 buffer 跨頁時，PRP2 的意思會改變</h3>
 <h4>先算第一頁還剩多少</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">假設 memory page 是 4096 bytes，PRP1 指到頁內 offset 3072，第一頁可承載 1024 bytes。需要傳輸 6144 bytes 時，第一頁之後還剩 5120 bytes。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
 <h4>判斷剩餘資料需要幾頁</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">5120 bytes 超過一個完整 page，因此後面至少需要兩個資料頁。此時 PRP2 應按 PRP List 的規則解讀，而不是直接當成第二個資料頁地址。</span></p>
 <h4>沿清單逐頁配置資料</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">清單的第一個資料頁承接 4096 bytes，下一頁承接最後 1024 bytes。主機的虛擬地址可以連續，控制器可見的資料頁地址不必因此連續；PRP List 就是在描述這些實際頁位置。</span></p>
@@ -220,7 +229,8 @@ html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial 
 </section>
 <section class="lesson" id="module-sgl"><h2 id="heading-sgl"><span class="section-number">04</span> SGL 的資料與串接描述子</h2>
 <div class="lesson-explanation">
-<div class="course-walkthrough"><h3>同樣是 16-byte 描述子，也要先看型別</h3>
+<div class="course-walkthrough">
+<h3>同樣是 16-byte 描述子，也要先看型別</h3>
 <h4>用型別決定箭頭指向什麼</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">Data Block descriptor 描述一段資料，Segment descriptor 指向下一組描述子。兩者都可能含地址和長度，但長度指的是資料或描述子集合，不能交叉解讀。</span></p>
 <h4>把分散區域接成傳輸順序</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">若兩個 Data Block 分別有 1024 與 3072 bytes，它們可共同描述一筆 4096-byte 傳輸。控制器沿描述子順序使用資料；兩個地址不必相鄰。</span></p>
 <h4>先檢查支援，再選進階型別</h4><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">Identify 回報支援哪些 SGL 能力，命令格式也限制可以採用的 descriptor。圖中出現某種型別，不表示任何控制器、任何命令都能使用。</span></p>

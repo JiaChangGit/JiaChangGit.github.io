@@ -19,6 +19,11 @@ def guide(source, numbers, key, title, relation, rows):
 
 
 def get(figure):
+    if figure['report_id'] == 'admin-io-spec-walkthrough':
+        from scripts.nvme_admin_io_figures import guide as selected_guide
+        selected = selected_guide(figure)
+        if selected:
+            return selected
     source = {'NVME-BASE-2.4':'base','NVME-NVM-CS-1.3':'nvm','NVME-PCIE-TRANSPORT-1.4':'pcie'}[figure['source_id']]
     from scripts.nvme_field_guides_context import OVERRIDES
     selected = OVERRIDES.get((figure['report_id'], source, int(figure['number'])))
