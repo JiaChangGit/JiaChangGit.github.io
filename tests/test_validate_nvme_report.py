@@ -31,26 +31,25 @@ class NvmeReportContractTest(unittest.TestCase):
             self.assertIn('Asynchronous Event Request',terms['AER'])
             self.assertNotIn('Advanced Error Reporting',terms['AER'])
             self.assertIn('Storage Tag Check',terms['STC'])
-            self.assertNotIn('Self-test',terms['STC'])
+            self.assertIn('Self-test Code',terms['STC'])
             self.assertIn('Max Power Scale',terms['MPS'])
         for artifact in VALIDATOR.load_json('output-contract.json')['artifacts']:
             if artifact['report_id']=='admin-io-spec-walkthrough':
                 text=(ROOT/artifact['path']).read_text()
                 self.assertNotIn('Advanced Error Reporting',text)
-                self.assertNotIn('Self-test Code',text)
+                self.assertIn('Self-test Code',text)
 
     def test_admin_io_exclusions_apply_to_descendants_and_selectors(self):
         from scripts.nvme_admin_io_scope import BASE,NVM,included,within
         self.assertFalse(within('5.2.10','5.2.1'))
-        for section in ['5.1.2','5.2.6','5.2.13.1.7','5.2.13.1.8','5.2.13.1.9',
-                        '5.2.13.1.21','5.2.13.1.38','5.2.24','5.2.25','5.2.26',
-                        '5.2.30.1.16','5.2.30.1.39','5.4','7.1','7.8',
+        for section in ['5.1.2','5.2.3','5.2.27','5.4','7.1','7.8',
                         '8.1.17.3','8.1.27.6']:
             self.assertFalse(included(BASE,section+'.1'),section)
         for key,section,excluded,kept in [('fid','5.2.30',0x22,0x19),('lid','5.2.13',0x25,0x24),('cns','5.2.14',0x17,0x19)]:
             self.assertFalse(included(BASE,section,**{key:excluded}))
             self.assertTrue(included(BASE,section,**{key:kept}))
-        self.assertTrue(included(BASE,'7.2.1'))
+        for section in ['5.2.6','5.2.13.1.7','5.2.13.1.8','5.2.13.1.9','5.2.13.1.21','5.2.13.1.38','5.2.24','5.2.25','5.2.26','5.2.30.1.16','5.2.30.1.39','7.2.1']:
+            self.assertTrue(included(BASE,section),section)
         for section in ['3.3.8.1','4.1.3.4','4.1.4.2','4.1.5.8','5.6']:
             self.assertTrue(included(NVM,section))
         for section in ['3.3.9','4.1.3.3','4.1.4.3','4.1.6','5.8']:
@@ -63,18 +62,18 @@ class NvmeReportContractTest(unittest.TestCase):
         figures=VALIDATOR.load_json('figure-table-register.json')['entries']
         outputs={a['id']:(ROOT/a['path']).read_text() for a in VALIDATOR.load_json('output-contract.json')['artifacts'] if a['report_id']==REPORT_ID}
         self.assertFalse(validate_manifest(manifest,figures,outputs))
-        self.assertEqual(len(manifest['included_figures']),221)
-        self.assertEqual(len(manifest['routes']),24)
+        self.assertEqual(len(manifest['included_figures']),250)
+        self.assertEqual(len(manifest['routes']),29)
         # Verified PDF destinations include two different sections on the same page.
         routes={r['id']:r for r in manifest['routes']}
-        self.assertEqual((routes['B13']['start_pdf_page'],routes['B13']['start_section']),(540,'5.2.30.2'))
+        self.assertEqual((routes['B18']['start_pdf_page'],routes['B18']['start_section']),(539,'5.2.30.1.39'))
         self.assertEqual((routes['N05']['start_pdf_page'],routes['N05']['stop_before_section']),(76,'4.1.4.3'))
         self.assertIn('19h',manifest['included_selectors']['cns'])
         broken=deepcopy(manifest);broken['routes'][2]['start_pdf_page']=200
         self.assertTrue(any('backwards' in e for e in validate_manifest(broken,figures,outputs)))
         broken=deepcopy(manifest);broken['routes'][0]['sections'][0]['fid']=0x22
         self.assertTrue(any('excluded section/selector' in e for e in validate_manifest(broken,figures,outputs)))
-        artifact=next(iter(outputs));outputs[artifact]=outputs[artifact].replace('id="route-N05"','id="route-missing"')
+        artifact=next(k for k in outputs if k.endswith('-zh-md'));outputs[artifact]=outputs[artifact].replace('id="route-N05"','id="route-missing"')
         self.assertTrue(any('published PDF route' in e for e in validate_manifest(manifest,figures,outputs)))
 
     def test_admin_io_count_examples_do_not_mix_field_encodings(self):
@@ -89,6 +88,33 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertIn(f'3+2={total}',NVM_EXAMPLES[192]['example'])
         self.assertIn(f'index={total-1}',str(NVM_GUIDES[192]))
         self.assertIn('Get 不使用請求中的 NUM',str(NVM_GUIDES[94]))
+
+    def test_admin_io_tutorial_has_its_own_sequence_and_no_pdf_route(self):
+        text=(ROOT/'DOCS/nvme-spec-report/admin-io-spec-walkthrough/tutorial-zh-tw.html').read_text()
+        self.assertNotIn('id="spec-route"',text)
+        sections=re.findall(r'<section class="lesson" id="([^"]+)"',text)
+        nav=re.search(r'<nav aria-label="章節目錄">(.*?)</nav>',text,re.S).group(1)
+        links=re.findall(r'href="#(module-[^"]+)"',nav)
+        self.assertEqual(links,sections)
+        self.assertLess(sections.index('module-adminio-identify'),sections.index('module-adminio-read'))
+        self.assertLess(sections.index('module-adminio-namespace'),sections.index('module-adminio-format'))
+        for phrase in ['本篇只教列表與欄位意義','都要依協定與本節條件判斷','要按本節與其引用的 queue lifetime','各自不是另一個長度','五篇既有專題維持獨立，本篇不重講']:
+            self.assertNotIn(phrase,text)
+        for key in ['identify','queues','dataset','selftest','namespace','boot','telemetry','sanitize']:
+            self.assertIn('module-adminio-'+key,sections)
+
+    def test_admin_io_new_examples_keep_offsets_and_counts_distinct(self):
+        from scripts.nvme_admin_io_visuals import illustration
+        image_offset,header,byte_count=4096,16,4096
+        self.assertIn(str(image_offset+header),illustration('adminio-boot'))
+        self.assertIn(str(byte_count//4-1),illustration('adminio-boot'))
+        last_block=65
+        from scripts.nvme_admin_io_content import UNITS
+        telemetry=next(u for u in UNITS if u['key']=='telemetry')
+        self.assertIn(str((last_block+1)*512),telemetry['example']['zh'])
+        self.assertIn('LLB = 4',illustration('adminio-dataset'))
+        self.assertIn('LLB = 6',illustration('adminio-dataset'))
+        self.assertIn('NR=1',illustration('adminio-dataset'))
 
     def test_inactive_term_is_not_corrupted_by_active_replacement(self):
         from scripts.nvme_plain_language import chinese

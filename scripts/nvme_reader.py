@@ -42,6 +42,9 @@ class Reading:
         if not tutorial:
             selected = POST_MODULES.get(report_id)
             self.modules = [m for m in modules if not selected or m['id'] in selected]
+        if tutorial and report_id == 'admin-io-spec-walkthrough':
+            from scripts.nvme_admin_io_deep_course import ORDER
+            self.modules = sorted(modules,key=lambda m: ORDER.index(m['id'].removeprefix('adminio-')))
         self.lang, self.tutorial, self.api = language, tutorial, api
         self.by_id = {c["id"]: c for c in claims}
         self.used_claims, self.used_figures = set(), set()
@@ -254,6 +257,9 @@ class Reading:
         from scripts.nvme_reader_context import REPORT_CONTEXT
         from scripts.nvme_reader_visuals import module_illustration
         context = REPORT_CONTEXT[self.id]
+        if self.tutorial and self.id == 'admin-io-spec-walkthrough':
+            from scripts.nvme_admin_io_deep_course import INTRO, BACKGROUND
+            context = dict(context, intro={'zh':INTRO}, background={'zh':BACKGROUND})
         self.begin_section(0)
         out = ['<section id="topic-overview" class="topic-overview">']
         out.append(self.paragraph(context['intro'][self.lang], css='opening'))
@@ -267,12 +273,15 @@ class Reading:
             out.append(self.paragraph(paragraph))
         from scripts.nvme_overviews import OVERVIEWS
         overview = OVERVIEWS[self.id]
+        if self.tutorial and self.id == 'admin-io-spec-walkthrough':
+            from scripts.nvme_admin_io_deep_course import CONNECTIONS
+            overview = {'zh':CONNECTIONS}
         out.append('<div class="overview-connections"><h3>' + pair(self.lang, '把主軸連起來', 'Connecting the main ideas') + '</h3>')
         for passage in overview[self.lang]:
             out.append(self.paragraph(passage))
         out.append('</div>')
         out.append('</section>')
-        if self.id == 'admin-io-spec-walkthrough':
+        if self.id == 'admin-io-spec-walkthrough' and not self.tutorial:
             from scripts.nvme_admin_io import render_route
             out.append(render_route(self))
         groups, remainder = self.assigned_figures() if self.tutorial else ({m['id']:[] for m in self.modules}, [])
@@ -290,6 +299,13 @@ class Reading:
             lead = module['lead'][self.lang]
             if not self.tutorial and not any(similar(module['lead'][lang], c[text_key(lang)]) for c in fresh for lang in ('zh', 'en')):
                 out.append(self.paragraph(lead))
+            if self.tutorial and self.id == 'admin-io-spec-walkthrough':
+                out.extend(self.claim(c) for c in fresh)
+                fresh = []
+            early_illustration = ''
+            if self.tutorial and self.id == 'admin-io-spec-walkthrough':
+                from scripts.nvme_course_visuals import course_illustration
+                early_illustration = course_illustration(module['id'])
             if self.tutorial:
                 from scripts.nvme_course_walkthroughs import COURSES
                 course = COURSES.get(module['id'])
@@ -300,16 +316,20 @@ class Reading:
                     if not repeats_title:
                         out.append('<h3>'+esc(course['title'])+'</h3>')
                     step_heading = 'h3' if repeats_title else 'h4'
-                    for title, passage in course['steps']:
+                    for step_index, (title, passage) in enumerate(course['steps']):
                         out.append('<'+step_heading+'>'+esc(title)+'</'+step_heading+'>'+self.paragraph(passage))
+                        if early_illustration and step_index == 1:
+                            out.append(early_illustration)
+                            out.append(self.terms(re.sub('<[^>]+>', ' ', early_illustration)))
                     out.append('<aside class="course-outcome">'+self.paragraph(course['outcome'])+'</aside></div>')
                 else:
                     out.extend(self.paragraph(p) for p in lesson['teaching'])
-                out.append(self.source(sources))
+                if self.id != 'admin-io-spec-walkthrough':
+                    out.append(self.source(sources))
                 out.append('</div>')
             from scripts.nvme_course_visuals import course_illustration
             illustration = (course_illustration(module['id']) if self.tutorial else '') or module_illustration(self.id, module, self.lang)
-            if illustration:
+            if illustration and not early_illustration:
                 out.append(illustration)
                 out.append(self.terms(re.sub('<[^>]+>', ' ', illustration)))
             if self.tutorial and fresh:
@@ -333,8 +353,8 @@ class Reading:
         if not self.tutorial:
             out.append('<section id="spec-reading"><h2>' + pair(self.lang, '接著打開 Spec 看什麼', 'Where to continue in the specification') + '</h2>')
             out.append(self.paragraph(pair(self.lang,
-                '正式報告時使用開頭的 B01–B17、N01–N07 順向路徑；以下僅供按觀念查找，不需要逐列重新翻一次 Spec。' if self.id == 'admin-io-spec-walkthrough' else '以下按概念列出閱讀位置。報告時先用上面的流程說明問題，再打開對應章節看欄位與完整條件。中文教學 HTML 另有本篇全部圖表的逐圖重點、案例與細節。',
-                'Use the opening B01–B17 and N01–N07 route for the live report. The following is a conceptual lookup index, not another pass through the specification.' if self.id == 'admin-io-spec-walkthrough' else 'Use the flow above to frame the problem, then open the corresponding sections for fields and full conditions. The Chinese tutorial also explains every in-scope figure with its takeaway, example, and details.')))
+                '正式報告時使用開頭的 B01–B22、N01–N07 順向路徑；以下僅供按觀念查找，不需要逐列重新翻一次 Spec。' if self.id == 'admin-io-spec-walkthrough' else '以下按概念列出閱讀位置。報告時先用上面的流程說明問題，再打開對應章節看欄位與完整條件。中文教學 HTML 另有本篇全部圖表的逐圖重點、案例與細節。',
+                'Use the opening B01–B22 and N01–N07 route for the live report. The following is a conceptual lookup index, not another pass through the specification.' if self.id == 'admin-io-spec-walkthrough' else 'Use the flow above to frame the problem, then open the corresponding sections for fields and full conditions. The Chinese tutorial also explains every in-scope figure with its takeaway, example, and details.')))
             rows=[]
             for module in self.all_modules:
                 references=list(dict.fromkeys({'NVME-BASE-2.4':'Base 2.4','NVME-NVM-CS-1.3':'NVM 1.3','NVME-PCIE-TRANSPORT-1.4':'PCIe Transport 1.4'}[self.by_id[s]['source_id']]+' §'+self.by_id[s]['section'] for s in module['sources']))
@@ -369,7 +389,7 @@ class Reading:
 
 
 POST_MODULES = {
- 'admin-io-spec-walkthrough': {'adminio-command-map','adminio-abort','adminio-aer','adminio-firmware','adminio-format','adminio-logs','adminio-identify','adminio-security','adminio-features','adminio-queues','adminio-flush','adminio-copy','adminio-read','adminio-write','adminio-nvm-identify'},
+ 'admin-io-spec-walkthrough': {'adminio-command-map','adminio-abort','adminio-aer','adminio-firmware','adminio-format','adminio-logs','adminio-identify','adminio-security','adminio-features','adminio-queues','adminio-flush','adminio-copy','adminio-read','adminio-write','adminio-nvm-identify','adminio-selftest','adminio-namespace','adminio-boot','adminio-telemetry','adminio-sanitize'},
  'nvm-command-set-1.3': {'nvmcs-capacity','nvmcs-metadata','nvmcs-read-write','nvmcs-compare-verify','nvmcs-copy','nvmcs-atomic','nvmcs-pi-checking','nvmcs-rate-modes'},
 }
 
@@ -377,8 +397,8 @@ POST_MODULES = {
 def render(report_id, report, claims, figures, modules, language, tutorial, api):
     reading = Reading(report_id, report, claims, figures, modules, language, tutorial, api)
     body = reading.body()
-    route_link = '<a href="#spec-route">Spec 報告路徑：B01–B17 → N01–N07</a>' if report_id == 'admin-io-spec-walkthrough' else ''
-    title = report['title_en'] if language == 'en' else report['title_zh']
+    route_link = ''
+    title = report['title_en'] if language == 'en' else (report.get('title_tutorial_zh',report['title_zh']) if tutorial else report['title_zh'])
     sources = '\n'.join(api.SOURCES[s]['marker'] for s in dict.fromkeys(c['source_id'] for c in claims))
     footer = '<footer class="reference-editions"><details class="source-note"><summary>' + pair(language, '採用的規格版本', 'Specification editions') + '</summary>' + ''.join('<p>' + esc(s) + '</p>' for s in sources.splitlines()) + '</details></footer>'
     if not tutorial:
@@ -387,7 +407,7 @@ def render(report_id, report, claims, figures, modules, language, tutorial, api)
         frontmatter = frontmatter.replace('toc: yes', 'toc: yes\nnvme_notes: true')
         return frontmatter + '\n<div class="nvme-note">\n' + body + '\n' + footer + '\n</div>\n'
     css = (ROOT / 'assets/css/nvme-reader.css').read_text(encoding='utf-8')
-    toc = ''.join(f'<a href="#module-{m["id"]}">{index:02d} {esc(m["title"]["zh"])}</a>' for index, m in enumerate(modules, 1))
+    toc = ''.join(f'<a href="#module-{m["id"]}">{index:02d} {esc(m["title"]["zh"])}</a>' for index, m in enumerate(reading.modules, 1))
     return f'''<!DOCTYPE html>
 <html lang="zh-Hant-TW"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">

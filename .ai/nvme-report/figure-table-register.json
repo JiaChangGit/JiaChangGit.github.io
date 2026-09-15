@@ -22685,6 +22685,144 @@
       "teaching_module": "adminio-aer"
     },
     {
+      "id": "ADMINIO-BASE-FIG-176",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "176",
+      "title": "Device Self-test Namespace Test Action",
+      "section": "5.2.6",
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Device Self-test Namespace Test Action"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall"
+      ],
+      "evidence_digest": "c5e9d45e19d9e0958032d36247b2e46312942c05122ca4315aed5ce08e0838bd",
+      "teaching_module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-177",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "177",
+      "title": "Device Self-test – Command Dword 10",
+      "section": "5.2.6",
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "STC"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "3436f01185d43ead087c6c39b731e6a4db82b39add021a8b5a745926995f71e2",
+      "teaching_module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-178",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "178",
+      "title": "Device Self-test – Command Dword 15",
+      "section": "5.2.6",
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSTP"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "2120d9f364de4f2bd5a3bc0ea54ffa84c61e14ce4aa7791368eb2c1acd1695e1",
+      "teaching_module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-179",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "179",
+      "title": "Device Self-test – Command Processing",
+      "section": "5.2.6",
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SDSO",
+        "DSTO"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "a3a8d8dbd598e943dee2759ef310a4b6453356cb314040580f8a8533fc7629b6",
+      "teaching_module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-180",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "180",
+      "title": "Device Self-test – Command Specific Status Values",
+      "section": "5.2.6.1",
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NUMD"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "62c051721cf19976ef44af8f608ba872128a7131f0ce9a9c2d453461cf57097f",
+      "teaching_module": "adminio-selftest"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-187",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -23667,6 +23805,236 @@
       "teaching_module": "adminio-logs"
     },
     {
+      "id": "ADMINIO-BASE-FIG-218",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "218",
+      "title": "Device Self-test Log Page",
+      "section": "5.2.13.1.7",
+      "printed_pages": "230",
+      "pdf_pages": "256",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CDSTO",
+        "DSTOS",
+        "CDSTC",
+        "DSTCS",
+        "RDS1",
+        "RDS2",
+        "RDS19",
+        "RDS20"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "08be6a7983cdaa61fb79c941c6c741d1b5209989c317891d5ef613f4c13b0d43",
+      "teaching_module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-219",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "219",
+      "title": "Self-test Result Data Structure",
+      "section": "5.2.13.1.7",
+      "printed_pages": "231-232",
+      "pdf_pages": "257-258",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DSTS",
+        "DSTC",
+        "DSTR",
+        "SEGN",
+        "VDINFO",
+        "SCVLD",
+        "SCTVLD",
+        "FVLD",
+        "NSIDVLD",
+        "POH",
+        "NSID",
+        "FLBA",
+        "STCT",
+        "ASTCI",
+        "STC",
+        "VS"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "7196562a3056eb23a29344a7ea44faaa1d5b7375190b24ee9483056268d001b7",
+      "teaching_module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-220",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "220",
+      "title": "Telemetry Host-Initiated Log Specific Parameter Field",
+      "section": "5.2.13.1.8",
+      "printed_pages": "232-233",
+      "pdf_pages": "258-259",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MCDA",
+        "CTHID",
+        "DA4S",
+        "ETDAS"
+      ],
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "9fbc5ec493968235582cec840d55a0170e4f2790a0a74e51eb9fdad24b0f4df4",
+      "teaching_module": "adminio-telemetry"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-221",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "221",
+      "title": "Telemetry Host-Initiated Log Page",
+      "section": "5.2.13.1.8",
+      "printed_pages": "234-235",
+      "pdf_pages": "260-261",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LID",
+        "IEEE",
+        "OUI",
+        "THDA1LB",
+        "THDA2LB",
+        "THDA3LB",
+        "THDA4LB",
+        "DA4S",
+        "THS",
+        "THDGN",
+        "TCDA",
+        "TCDGN",
+        "RID"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "should"
+      ],
+      "evidence_digest": "aec13c1bab2277a57b18f234bac1e060479084bba0aa4367422b79a34cc7ded1",
+      "teaching_module": "adminio-telemetry"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-222",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "222",
+      "title": "Telemetry Host-Initiated Log Page - LID Specific Parameter Field",
+      "section": "5.2.13.1.8.1",
+      "printed_pages": "235",
+      "pdf_pages": "261",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "MCDAS",
+        "DA4S",
+        "ETDAS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d36e5e536f4278f5c1420a0bc8bb1941fe3a0561f09f8320d5f6dc45e14e9e85",
+      "teaching_module": "adminio-telemetry"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-223",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "223",
+      "title": "Telemetry Controller-Initiated Log Page",
+      "section": "5.2.13.1.9",
+      "printed_pages": "236-237",
+      "pdf_pages": "262-263",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LID",
+        "IEEE",
+        "OUI",
+        "TCDA1LB",
+        "TCDA2LB",
+        "TCDA3LB",
+        "TCDA4LB",
+        "TCS",
+        "TCDA",
+        "RAE",
+        "TCDGN",
+        "RID"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "db28eb3a2d152da6c123ea9f0e8b63e8545419b050bc541aa766380248c64a9d",
+      "teaching_module": "adminio-telemetry"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-270",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -23739,6 +24107,65 @@
       "teaching_module": "adminio-logs"
     },
     {
+      "id": "ADMINIO-BASE-FIG-279",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "279",
+      "title": "Boot Partition Log Specific Parameter Field",
+      "section": "5.2.13.1.21",
+      "printed_pages": "283",
+      "pdf_pages": "309",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "BPID"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "056e6c014744faf3ad6047498794f1b42250e80e63b5dab2b291c593ca3d7960",
+      "teaching_module": "adminio-boot"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-280",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "280",
+      "title": "Boot Partition Log Page",
+      "section": "5.2.13.1.21",
+      "printed_pages": "284",
+      "pdf_pages": "310",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "LID",
+        "BPINFO",
+        "ABPID",
+        "BPSZ",
+        "BPD"
+      ],
+      "source_keywords": [
+        "shall",
+        "should not"
+      ],
+      "evidence_digest": "d37548302f140f7ef8ab09cc1136bcfe86517fe7a15da1f5cca539ff2876ec07",
+      "teaching_module": "adminio-boot"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-304",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -23776,6 +24203,49 @@
       ],
       "evidence_digest": "84e23b0d6c0cc7ed1c4a7bad0c393684fbaf16a69807bf9de6d80ea7ecfb5338",
       "teaching_module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-312",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "312",
+      "title": "Sanitize Status Log Page",
+      "section": "5.2.13.1.38",
+      "printed_pages": "314-319",
+      "pdf_pages": "340-345",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SPROG",
+        "SOS",
+        "OPC",
+        "SCDW10",
+        "ETO",
+        "ETBE",
+        "ETCE",
+        "ETODMM",
+        "ETBENMM",
+        "ETCENMM",
+        "ETPVDS",
+        "SSI",
+        "FAILS",
+        "SANS",
+        "MNSOIP",
+        "STNSID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "aad0b0b7c2f9e97eff513d8597cd174656b6dd963fcebe4bf11d8f1defb26a20",
+      "teaching_module": "adminio-sanitize"
     },
     {
       "id": "ADMINIO-BASE-FIG-331",
@@ -24637,6 +25107,349 @@
       "teaching_module": "adminio-identify"
     },
     {
+      "id": "ADMINIO-BASE-FIG-442",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "442",
+      "title": "Namespace Attachment – Data Pointer",
+      "section": "5.2.24",
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "884b7a839cca53234635b9c4f094217cc0d3a5e25b0ac06f1c829d73e5ec8202",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-443",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "443",
+      "title": "Namespace Attachment – Command Dword 10",
+      "section": "5.2.24",
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SEL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "c949eb5aedc37cec985eb24b1389a26ceed9676426223ae2640a5de1469a00b5",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-444",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "444",
+      "title": "Namespace Attachment – Command Specific Status Values",
+      "section": "5.2.24.1",
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Namespace Attachment – Command Specific Status Values"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "fe6983a2f573fa2378b9ae3dc00b6b471ca9be72d0930a6305f8ec36fc218ee3",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-445",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "445",
+      "title": "Namespace Management – Data Pointer",
+      "section": "5.2.25",
+      "printed_pages": "446",
+      "pdf_pages": "472",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "936fbc70c23f423d5c3f7bdd2fbb39fda15c691dfcec199426a0e48be387b8b6",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-446",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "446",
+      "title": "Namespace Management – Command Dword 10",
+      "section": "5.2.25",
+      "printed_pages": "446-447",
+      "pdf_pages": "472-473",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SEL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8736a8f1bf3ee0a7fed8379dc273ad8b13c236a55eaa27d9ea92f0f3ec990af5",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-447",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "447",
+      "title": "Namespace Management – Command Dword 11",
+      "section": "5.2.25",
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "CSI"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "874393d25159fe7285c6473ff63311608ede2c728f298823739a20f0f4b7132c",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-448",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "448",
+      "title": "Namespace Management – Data Structure for Create",
+      "section": "5.2.25",
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "SIOCS",
+        "VS",
+        "RDNCS",
+        "CSS",
+        "DNCS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "7bd53f03626eeb9e951fa8fbd0f252fa5167b362a9c85693594017acb35b6e23",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-449",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "449",
+      "title": "Namespace Management – Command Specific Status Values",
+      "section": "5.2.25.2",
+      "printed_pages": "448",
+      "pdf_pages": "474",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "ANAGRPID",
+        "ANAGIDS"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "af6b40781b495f759b767005dd774caf272c1cb94bf4349d426efa006a69b694",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-450",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "450",
+      "title": "Namespace Management – Completion Queue Entry Dword 0",
+      "section": "5.2.25.2",
+      "printed_pages": "448",
+      "pdf_pages": "474",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSID"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "feb24c24d6281e97167ee66e57c49193166db51139235ded41d7b7a685d7c268",
+      "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-451",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "451",
+      "title": "Sanitize – Command Dword 10",
+      "section": "5.2.26",
+      "printed_pages": "450-451",
+      "pdf_pages": "476-477",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "PREQ",
+        "SPRRS",
+        "EMVS",
+        "GDE",
+        "NDAS",
+        "OIPBP",
+        "OWPASS",
+        "AUSE",
+        "SANACT"
+      ],
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "should"
+      ],
+      "evidence_digest": "4190a56644cd0601ab0e07d4e398c1701444f02e293dc41470a7d75d54108554",
+      "teaching_module": "adminio-sanitize"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-452",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "452",
+      "title": "Sanitize – Command Dword 11",
+      "section": "5.2.26",
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "OVRPAT"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "3ea08d34a587381ed9c3567838923b39ea26c1cf214c1a0550cc3ec13005e553",
+      "teaching_module": "adminio-sanitize"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-453",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "453",
+      "title": "Sanitize – Command Specific Status Values",
+      "section": "5.2.26.1",
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "Sanitize – Command Specific Status Values"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "f353f419d1bbeb7887b80bf97e4136ed8cb1e50bb9d95535bc778fa7ccb6620e",
+      "teaching_module": "adminio-sanitize"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-456",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -25460,6 +26273,36 @@
       "teaching_module": "adminio-features"
     },
     {
+      "id": "ADMINIO-BASE-FIG-492",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "492",
+      "title": "Sanitize Config – Command Dword 11",
+      "section": "5.2.30.1.16",
+      "printed_pages": "477-478",
+      "pdf_pages": "503-504",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NODRM",
+        "NDAS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "63427e3e89ea68a5b35b4b80dc8616320ea7ccbfff007a27e8920b651b21c569",
+      "teaching_module": "adminio-sanitize"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-494",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -25543,6 +26386,37 @@
       ],
       "evidence_digest": "27043e808f4b5afed30f22d5543ed625187e1bc92ab93d43bffd72bebbeb0bd2",
       "teaching_module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-542",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "542",
+      "title": "Boot Partition Write Protection Config - Command Dword 11",
+      "section": "5.2.30.1.39",
+      "printed_pages": "513-514",
+      "pdf_pages": "539-540",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "BP1WPS",
+        "BP0WPS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "a1a723f26b0698f1a0b614a142add823b847bbaeebbfc4d6b205dbb9daa46607",
+      "teaching_module": "adminio-boot"
     },
     {
       "id": "ADMINIO-BASE-FIG-543",
@@ -28937,6 +29811,55 @@
       ],
       "evidence_digest": "76d5a7fba9e10c7bb2b3316c47251b44d815f4ce8d5d9e328ebc0045845271fe",
       "teaching_module": "adminio-format-list"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-134",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "134",
+      "title": "Namespace Management - Host Specified Fields",
+      "section": "4.1.6.4",
+      "printed_pages": "112-113",
+      "pdf_pages": "112-113",
+      "scope_entry_id": "ADMINIO-NVM-CREATE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": true,
+      "role": "referenced_dependency",
+      "referenced_from": [
+        "NVME-BASE-2.4 §5.2.25 Figure 448"
+      ],
+      "dependency_focus": {
+        "zh": "補足 Base Create 輸入資料所引用的 NVM 主機指定欄位，包括有條件使用的 placement 清單。",
+        "en": "NVM host-specified fields referenced by the Base Create payload, including conditional placement fields."
+      },
+      "required_artifact_ids": [
+        "adminio-tutorial-html"
+      ],
+      "introduced_in": [
+        "adminio-tutorial-html"
+      ],
+      "key_items": [
+        "NSZE",
+        "NCAP",
+        "FLBAS",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID",
+        "ENDGID",
+        "LBSTM",
+        "NPHNDLS",
+        "Placement Handle List"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c850eeedd5a4fe45d32d7037b0d3a2e6ccecbe88b89a4b14455215ca6e6b6aec",
+      "teaching_module": "adminio-namespace"
     }
   ]
 }

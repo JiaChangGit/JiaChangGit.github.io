@@ -10,6 +10,7 @@
 - 中文 HTML 涵蓋該篇全部已核准 claim 與全部範圍內圖表；中英文 Pages 以全局觀念、流程及代表案例銜接 Spec，不重複完整技術附錄。中英文 post 的 claim、主軸、例子、限制與問題順序一致；HTML 可以採不同的漸進教學順序。
 - 路徑與契約見 `.ai/nvme-report/output-contract.json`。先更新規則與產生程式，再處理 NVM Command Set、Boot／Telemetry／Sanitize，最後改其餘舊篇。
 - Admin／I/O 整合篇另有 `admin-io-route.json`：按實際 PDF 頁與章節標題規劃順向報告路徑，Base → NVM 只切換一次；共用頁必須標停止標題，不能整頁納入。維護紀錄見 `docs/nvme-admin-io-scope-and-route.md`。
+- 2026-09-14：Admin／I/O 範圍不再扣除以前報過的專題或其舊 except；使用者括號內列出的 Base 章節及 FID／LID／CNS 仍全部排除。Spec 報告路徑僅屬中英文 post；中文教學 HTML 按理解順序獨立編排，不含翻頁路徑，也不得用「依本節條件」取代條件、欄位與例子的解釋。
 
 ## 來源與範圍
 

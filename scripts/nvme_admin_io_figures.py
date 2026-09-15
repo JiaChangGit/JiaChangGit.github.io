@@ -303,3 +303,6 @@ nvm_fields([192,193],'format-list','格式清單的分組、個數與查詢入�
  ('CNS 00h／05h／08h 與 09h／0Ah','前三者只涉及共用能力群；後兩者可查兩群，以指定 Format Index 取得需要的結構。','index 3 屬非共用群時，選 09h／0Ah；不要以 NSID=FFFFFFFFh 的共用資料代替。'),
  ('LBADS／格式目前可用性','支援但目前不可用的格式以 LBADS=0h 表示；先確認有效，才以 2 的次方計算大小。','LBADS=0Ch 可表示 4096 bytes；不可把此處 LBADS=0h 解成可用的 1 byte。'),
  ('LBAFEE／最大格式數','主機未啟用格式延伸時至多 16 個，啟用時至多 64 個；本篇只交代引用前提。','索引在 0–63 之內仍不充分，還必須小於該裝置實際格式總數。'))
+
+from scripts.nvme_admin_io_figure_revision import apply
+apply(EXAMPLES, GUIDES, NVM_EXAMPLES, NVM_GUIDES)

@@ -29,37 +29,7 @@
       "4.1.5",
       "5.6"
     ],
-    "special_topic_sections": {
-      "NVME-BASE-2.4": [
-        "8.1.8",
-        "5.2.6",
-        "5.2.13.1.7",
-        "8.1.17",
-        "5.2.24",
-        "5.2.25",
-        "8.1.3",
-        "5.2.13.1.21",
-        "5.2.30.1.39",
-        "8.1.30",
-        "5.2.13.1.8",
-        "5.2.13.1.9",
-        "8.1.27",
-        "5.2.13.1.38",
-        "5.2.26",
-        "5.2.30.1.16"
-      ],
-      "NVME-NVM-CS-1.3": [
-        "4.1.4.3",
-        "2.1.1",
-        "4.1.6",
-        "5.8",
-        "4.1.7",
-        "5.12"
-      ]
-    },
     "excluded_base_sections": [
-      "8.1.17.3",
-      "8.1.27.6",
       "5.1.2",
       "5.2.3",
       "5.2.4",
@@ -173,8 +143,10 @@
       "0Eh",
       "10h",
       "11h",
+      "17h",
       "19h",
-      "80h"
+      "80h",
+      "85h"
     ],
     "lid": [
       "00h",
@@ -183,8 +155,13 @@
       "03h",
       "04h",
       "05h",
+      "06h",
+      "07h",
+      "08h",
       "12h",
-      "24h"
+      "15h",
+      "24h",
+      "81h"
     ],
     "cns": [
       "00h",
@@ -310,10 +287,34 @@
     {
       "id": "B03",
       "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 225,
+      "end_pdf_page": 227,
+      "start_section": "5.2.6",
+      "stop_before_section": "5.2.7",
+      "sections": [
+        {
+          "section": "5.2.6",
+          "title": "Device Self-test command",
+          "pdf_page": 225,
+          "printed_page": 199,
+          "top": 633.0
+        },
+        {
+          "section": "5.2.6.1",
+          "title": "Command Completion",
+          "pdf_page": 227,
+          "printed_page": 201,
+          "top": 720.0
+        }
+      ]
+    },
+    {
+      "id": "B04",
+      "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 228,
-      "end_pdf_page": 255,
+      "end_pdf_page": 263,
       "start_section": "5.2.9",
-      "stop_before_section": "5.2.13.1.7",
+      "stop_before_section": "5.2.13.1.10",
       "sections": [
         {
           "section": "5.2.9",
@@ -439,11 +440,42 @@
           "printed_page": 226,
           "top": 135.0,
           "lid": 5
+        },
+        {
+          "section": "5.2.13.1.7",
+          "title": "Device Self-test (Log Page Identifier 06h)",
+          "pdf_page": 255,
+          "printed_page": 229,
+          "top": 199.0,
+          "lid": 6
+        },
+        {
+          "section": "5.2.13.1.8",
+          "title": "Telemetry Host-Initiated (Log Page Identifier 07h)",
+          "pdf_page": 258,
+          "printed_page": 232,
+          "top": 450.0,
+          "lid": 7
+        },
+        {
+          "section": "5.2.13.1.8.1",
+          "title": "Telemetry Host-Initiated LID Specific Parameter Field",
+          "pdf_page": 261,
+          "printed_page": 235,
+          "top": 645.0
+        },
+        {
+          "section": "5.2.13.1.9",
+          "title": "Telemetry Controller-Initiated (Log Page Identifier 08h)",
+          "pdf_page": 261,
+          "printed_page": 235,
+          "top": 499.0,
+          "lid": 8
         }
       ]
     },
     {
-      "id": "B04",
+      "id": "B05",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 302,
       "end_pdf_page": 304,
@@ -461,7 +493,25 @@
       ]
     },
     {
-      "id": "B05",
+      "id": "B06",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 309,
+      "end_pdf_page": 310,
+      "start_section": "5.2.13.1.21",
+      "stop_before_section": "5.2.13.1.22",
+      "sections": [
+        {
+          "section": "5.2.13.1.21",
+          "title": "Boot Partition (Log Page Identifier 15h)",
+          "pdf_page": 309,
+          "printed_page": 283,
+          "top": 318.0,
+          "lid": 21
+        }
+      ]
+    },
+    {
+      "id": "B07",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 327,
       "end_pdf_page": 328,
@@ -479,7 +529,25 @@
       ]
     },
     {
-      "id": "B06",
+      "id": "B08",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 339,
+      "end_pdf_page": 345,
+      "start_section": "5.2.13.1.38",
+      "stop_before_section": "5.2.13.2",
+      "sections": [
+        {
+          "section": "5.2.13.1.38",
+          "title": "Sanitize Status (Log Page Identifier 81h)",
+          "pdf_page": 339,
+          "printed_page": 313,
+          "top": 261.0,
+          "lid": 129
+        }
+      ]
+    },
+    {
+      "id": "B09",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 362,
       "end_pdf_page": 421,
@@ -621,7 +689,7 @@
       ]
     },
     {
-      "id": "B07",
+      "id": "B10",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 422,
       "end_pdf_page": 427,
@@ -695,7 +763,7 @@
       ]
     },
     {
-      "id": "B08",
+      "id": "B11",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 431,
       "end_pdf_page": 431,
@@ -712,7 +780,66 @@
       ]
     },
     {
-      "id": "B09",
+      "id": "B12",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 470,
+      "end_pdf_page": 478,
+      "start_section": "5.2.24",
+      "stop_before_section": "5.2.27",
+      "sections": [
+        {
+          "section": "5.2.24",
+          "title": "Namespace Attachment command",
+          "pdf_page": 470,
+          "printed_page": 444,
+          "top": 555.0
+        },
+        {
+          "section": "5.2.24.1",
+          "title": "Command Completion",
+          "pdf_page": 471,
+          "printed_page": 445,
+          "top": 460.0
+        },
+        {
+          "section": "5.2.25",
+          "title": "Namespace Management command",
+          "pdf_page": 472,
+          "printed_page": 446,
+          "top": 720.0
+        },
+        {
+          "section": "5.2.25.1",
+          "title": "Restore Default Namespace Configuration Operation",
+          "pdf_page": 473,
+          "printed_page": 447,
+          "top": 413.0
+        },
+        {
+          "section": "5.2.25.2",
+          "title": "Command Completion",
+          "pdf_page": 474,
+          "printed_page": 448,
+          "top": 720.0
+        },
+        {
+          "section": "5.2.26",
+          "title": "Sanitize command",
+          "pdf_page": 474,
+          "printed_page": 448,
+          "top": 237.0
+        },
+        {
+          "section": "5.2.26.1",
+          "title": "Command Completion",
+          "pdf_page": 477,
+          "printed_page": 451,
+          "top": 368.0
+        }
+      ]
+    },
+    {
+      "id": "B13",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 480,
       "end_pdf_page": 497,
@@ -856,7 +983,7 @@
       ]
     },
     {
-      "id": "B10",
+      "id": "B14",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 497,
       "end_pdf_page": 499,
@@ -882,7 +1009,25 @@
       ]
     },
     {
-      "id": "B11",
+      "id": "B15",
+      "source_id": "NVME-BASE-2.4",
+      "start_pdf_page": 503,
+      "end_pdf_page": 504,
+      "start_section": "5.2.30.1.16",
+      "stop_before_section": "5.2.30.1.17",
+      "sections": [
+        {
+          "section": "5.2.30.1.16",
+          "title": "Sanitize Config (Feature Identifier 17h)",
+          "pdf_page": 503,
+          "printed_page": 477,
+          "top": 424.0,
+          "fid": 23
+        }
+      ]
+    },
+    {
+      "id": "B16",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 504,
       "end_pdf_page": 505,
@@ -900,7 +1045,7 @@
       ]
     },
     {
-      "id": "B12",
+      "id": "B17",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 534,
       "end_pdf_page": 534,
@@ -918,13 +1063,21 @@
       ]
     },
     {
-      "id": "B13",
+      "id": "B18",
       "source_id": "NVME-BASE-2.4",
-      "start_pdf_page": 540,
+      "start_pdf_page": 539,
       "end_pdf_page": 545,
-      "start_section": "5.2.30.2",
+      "start_section": "5.2.30.1.39",
       "stop_before_section": "5.2.30.3",
       "sections": [
+        {
+          "section": "5.2.30.1.39",
+          "title": "Boot Partition Write Protection Config (Feature Identifier 85h)",
+          "pdf_page": 539,
+          "printed_page": 513,
+          "top": 656.0,
+          "fid": 133
+        },
         {
           "section": "5.2.30.2",
           "title": "Memory-Based Transport Feature Specific Information (PCIe)",
@@ -959,7 +1112,7 @@
       ]
     },
     {
-      "id": "B14",
+      "id": "B19",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 545,
       "end_pdf_page": 546,
@@ -976,7 +1129,7 @@
       ]
     },
     {
-      "id": "B15",
+      "id": "B20",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 553,
       "end_pdf_page": 558,
@@ -1049,7 +1202,7 @@
       ]
     },
     {
-      "id": "B16",
+      "id": "B21",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 590,
       "end_pdf_page": 590,
@@ -1066,7 +1219,7 @@
       ]
     },
     {
-      "id": "B17",
+      "id": "B22",
       "source_id": "NVME-BASE-2.4",
       "start_pdf_page": 593,
       "end_pdf_page": 594,
@@ -1641,6 +1794,46 @@
       "module": "adminio-aer"
     },
     {
+      "id": "ADMINIO-BASE-FIG-176",
+      "source_id": "NVME-BASE-2.4",
+      "number": "176",
+      "section": "5.2.6",
+      "pdf_pages": "225",
+      "module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-177",
+      "source_id": "NVME-BASE-2.4",
+      "number": "177",
+      "section": "5.2.6",
+      "pdf_pages": "225",
+      "module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-178",
+      "source_id": "NVME-BASE-2.4",
+      "number": "178",
+      "section": "5.2.6",
+      "pdf_pages": "226",
+      "module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-179",
+      "source_id": "NVME-BASE-2.4",
+      "number": "179",
+      "section": "5.2.6",
+      "pdf_pages": "226",
+      "module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-180",
+      "source_id": "NVME-BASE-2.4",
+      "number": "180",
+      "section": "5.2.6.1",
+      "pdf_pages": "227",
+      "module": "adminio-selftest"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-187",
       "source_id": "NVME-BASE-2.4",
       "number": "187",
@@ -1889,6 +2082,54 @@
       "module": "adminio-logs"
     },
     {
+      "id": "ADMINIO-BASE-FIG-218",
+      "source_id": "NVME-BASE-2.4",
+      "number": "218",
+      "section": "5.2.13.1.7",
+      "pdf_pages": "256",
+      "module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-219",
+      "source_id": "NVME-BASE-2.4",
+      "number": "219",
+      "section": "5.2.13.1.7",
+      "pdf_pages": "257-258",
+      "module": "adminio-selftest"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-220",
+      "source_id": "NVME-BASE-2.4",
+      "number": "220",
+      "section": "5.2.13.1.8",
+      "pdf_pages": "258-259",
+      "module": "adminio-telemetry"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-221",
+      "source_id": "NVME-BASE-2.4",
+      "number": "221",
+      "section": "5.2.13.1.8",
+      "pdf_pages": "260-261",
+      "module": "adminio-telemetry"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-222",
+      "source_id": "NVME-BASE-2.4",
+      "number": "222",
+      "section": "5.2.13.1.8.1",
+      "pdf_pages": "261",
+      "module": "adminio-telemetry"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-223",
+      "source_id": "NVME-BASE-2.4",
+      "number": "223",
+      "section": "5.2.13.1.9",
+      "pdf_pages": "262-263",
+      "module": "adminio-telemetry"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-270",
       "source_id": "NVME-BASE-2.4",
       "number": "270",
@@ -1905,12 +2146,36 @@
       "module": "adminio-logs"
     },
     {
+      "id": "ADMINIO-BASE-FIG-279",
+      "source_id": "NVME-BASE-2.4",
+      "number": "279",
+      "section": "5.2.13.1.21",
+      "pdf_pages": "309",
+      "module": "adminio-boot"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-280",
+      "source_id": "NVME-BASE-2.4",
+      "number": "280",
+      "section": "5.2.13.1.21",
+      "pdf_pages": "310",
+      "module": "adminio-boot"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-304",
       "source_id": "NVME-BASE-2.4",
       "number": "304",
       "section": "5.2.13.1.33",
       "pdf_pages": "327-328",
       "module": "adminio-logs"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-312",
+      "source_id": "NVME-BASE-2.4",
+      "number": "312",
+      "section": "5.2.13.1.38",
+      "pdf_pages": "340-345",
+      "module": "adminio-sanitize"
     },
     {
       "id": "ADMINIO-BASE-FIG-331",
@@ -2119,6 +2384,102 @@
       "section": "5.2.14.2.22",
       "pdf_pages": "426-427",
       "module": "adminio-identify"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-442",
+      "source_id": "NVME-BASE-2.4",
+      "number": "442",
+      "section": "5.2.24",
+      "pdf_pages": "471",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-443",
+      "source_id": "NVME-BASE-2.4",
+      "number": "443",
+      "section": "5.2.24",
+      "pdf_pages": "471",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-444",
+      "source_id": "NVME-BASE-2.4",
+      "number": "444",
+      "section": "5.2.24.1",
+      "pdf_pages": "471",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-445",
+      "source_id": "NVME-BASE-2.4",
+      "number": "445",
+      "section": "5.2.25",
+      "pdf_pages": "472",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-446",
+      "source_id": "NVME-BASE-2.4",
+      "number": "446",
+      "section": "5.2.25",
+      "pdf_pages": "472-473",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-447",
+      "source_id": "NVME-BASE-2.4",
+      "number": "447",
+      "section": "5.2.25",
+      "pdf_pages": "473",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-448",
+      "source_id": "NVME-BASE-2.4",
+      "number": "448",
+      "section": "5.2.25",
+      "pdf_pages": "473",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-449",
+      "source_id": "NVME-BASE-2.4",
+      "number": "449",
+      "section": "5.2.25.2",
+      "pdf_pages": "474",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-450",
+      "source_id": "NVME-BASE-2.4",
+      "number": "450",
+      "section": "5.2.25.2",
+      "pdf_pages": "474",
+      "module": "adminio-namespace"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-451",
+      "source_id": "NVME-BASE-2.4",
+      "number": "451",
+      "section": "5.2.26",
+      "pdf_pages": "476-477",
+      "module": "adminio-sanitize"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-452",
+      "source_id": "NVME-BASE-2.4",
+      "number": "452",
+      "section": "5.2.26",
+      "pdf_pages": "477",
+      "module": "adminio-sanitize"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-453",
+      "source_id": "NVME-BASE-2.4",
+      "number": "453",
+      "section": "5.2.26.1",
+      "pdf_pages": "477",
+      "module": "adminio-sanitize"
     },
     {
       "id": "ADMINIO-BASE-FIG-456",
@@ -2337,6 +2698,14 @@
       "module": "adminio-features"
     },
     {
+      "id": "ADMINIO-BASE-FIG-492",
+      "source_id": "NVME-BASE-2.4",
+      "number": "492",
+      "section": "5.2.30.1.16",
+      "pdf_pages": "503-504",
+      "module": "adminio-sanitize"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-494",
       "source_id": "NVME-BASE-2.4",
       "number": "494",
@@ -2359,6 +2728,14 @@
       "section": "5.2.30.1.34",
       "pdf_pages": "534",
       "module": "adminio-features"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-542",
+      "source_id": "NVME-BASE-2.4",
+      "number": "542",
+      "section": "5.2.30.1.39",
+      "pdf_pages": "539-540",
+      "module": "adminio-boot"
     },
     {
       "id": "ADMINIO-BASE-FIG-543",
@@ -3271,6 +3648,14 @@
       "section": "5.6",
       "pdf_pages": "162",
       "module": "adminio-format-list"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-134",
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": "134",
+      "section": "4.1.6.4",
+      "pdf_pages": "112-113",
+      "module": "adminio-namespace"
     }
   ]
 }

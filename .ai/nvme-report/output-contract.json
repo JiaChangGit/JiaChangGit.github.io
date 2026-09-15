@@ -526,7 +526,7 @@
         "NVME-BASE-2.4",
         "NVME-NVM-CS-1.3"
       ],
-      "purpose": "中文逐步教學、逐圖說明與順向 Spec 報告路徑"
+      "purpose": "中文獨立課程：漸進教學、完整案例、逐圖欄位說明；不含 Spec 報告路徑"
     },
     {
       "id": "adminio-zh-md",

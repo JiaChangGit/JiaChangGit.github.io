@@ -18,6 +18,9 @@ def route(points, label='', label_at=None):
 
 
 def course_illustration(key):
+    if key.startswith('adminio-'):
+        from scripts.nvme_admin_io_visuals import illustration
+        return illustration(key)
     if key == 'apst-state-machine':
         return diagram('APST：閒置條件與 I/O 觸發的兩條路徑',
           '說明性情境：目前是 operational PS0，目標是已支援的 non-operational PS3；PS0 entry 設 ITPT=2000 ms、ITPS=3。APSTE 啟用且連續閒置超過門檻時轉入 PS3；有未完成 I/O 時不符合閒置定義。若進行中作業會使功率超過目標狀態宣告值，規格建議控制器不要自動轉入。新的 I/O 到達後，控制器返回最近的 operational state，本例是 PS0。箭頭代表事件與轉移，並非等比例時間。', [

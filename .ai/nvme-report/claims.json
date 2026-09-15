@@ -138,8 +138,8 @@
       "printed_pages": "212-229,276-278,301-302,319,336",
       "pdf_pages": "238-255,302-304,327-328,345,362",
       "normative_keyword": "none",
-      "zh_tw": "本篇保留 LID 00h、01h、02h、03h、04h、05h、12h、24h。Get Log Page 的長度、位移與事件保留是共同機制；各 Log 的範圍、單位與有效條件由其資料結構決定。",
-      "en": "This report retains LIDs 00h, 01h, 02h, 03h, 04h, 05h, 12h, and 24h. Transfer length, offset, and event retention are common mechanisms; each log defines its scope, units, and validity conditions.",
+      "zh_tw": "本單元整理 LID 00h、01h、02h、03h、04h、05h、12h、24h；06h、07h、08h、15h、81h 配合相應作業另行教學。Get Log Page 的長度、位移與事件保留是共同機制；各 Log 的範圍、單位與有效條件由其資料結構決定。",
+      "en": "This unit groups LIDs 00h, 01h, 02h, 03h, 04h, 05h, 12h, and 24h; LIDs 06h, 07h, 08h, 15h, and 81h are explained with their corresponding operations. Transfer length, offset, and event retention are common mechanisms; each log defines its scope, units, and validity conditions.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "heading_zh_tw": "Log：先定位紀錄，再解讀紀錄裡的證據",
       "heading_en": "Logs: select a record, then interpret its evidence",
@@ -426,8 +426,8 @@
       "zh_tw": "本篇只補充 FID 02h、03h、0Ah：Power Management 的 NVM 行為、LBA Range Type 及 Write Atomicity Normal。LBA 用途描述不會自行建立分割區，DN 不會放大掉電原子性保證。",
       "en": "This report adds only FIDs 02h, 03h, and 0Ah: NVM Power Management behavior, LBA Range Type, and Write Atomicity Normal. LBA usage descriptions do not create partitions, and DN does not enlarge power-failure atomicity guarantees.",
       "scope_entry_id": "ADMINIO-NVM-INCLUDE",
-      "heading_zh_tw": "NVM 功能補充：工作負載、LBA 用途與原子性",
-      "heading_en": "NVM features: workload, LBA usage, and atomicity",
+      "heading_zh_tw": "NVM 功能補充：閒置退出延遲、LBA 用途與原子性",
+      "heading_en": "NVM features: idle exit latency, LBA usage, and atomicity",
       "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.1, 4.1.3.2, 4.1.3.4, 文件頁 64-67, PDF 頁 64-67",
       "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.3.1, 4.1.3.2, 4.1.3.4, printed pages 64-67, PDF pages 64-67"
     },
@@ -483,10 +483,105 @@
       "zh_tw": "LBA Format List 分成共用能力的格式與具有不同能力的格式。NLBAF、NULBAF 決定數量，CNS 決定能查到哪一群；Format Index 則選定這次要解讀的格式。",
       "en": "The LBA Format List separates formats with common capabilities from formats with distinct capabilities. NLBAF and NULBAF determine counts, CNS determines which groups are accessible, and Format Index selects the format to interpret.",
       "scope_entry_id": "ADMINIO-NVM-INCLUDE",
-      "heading_zh_tw": "用 LBA Format List 收尾：相同欄位位置不代表同一筆格式",
-      "heading_en": "Finish with LBA Format List interpretation",
+      "heading_zh_tw": "LBA Format List：選定同一筆格式才能配對能力",
+      "heading_en": "LBA Format List: match capabilities to one format",
       "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.6, 文件頁 160-162, PDF 頁 160-162",
       "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.6, printed pages 160-162, PDF pages 160-162"
+    },
+    {
+      "id": "ADMINIO-SELFTEST",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.6, 5.2.13.1.7",
+      "figure": null,
+      "table": null,
+      "printed_pages": "199-201,230-232",
+      "pdf_pages": "225-227,256-258",
+      "normative_keyword": "none",
+      "zh_tw": "Device Self-test 的命令完成表示已處理啟動或中止要求；背景作業進度與結果要從 LID 06h 分別讀取。STC 選動作，NSID 選測試對象，結果欄位的有效旗標決定哪些資訊可用。",
+      "en": "Device Self-test command completion acknowledges the start or abort request. LID 06h separately reports background progress and results. STC selects the action, NSID the target, and validity flags qualify result fields.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "heading_zh_tw": "Device Self-test：從啟動要求到檢查結果",
+      "heading_en": "Device Self-test: from request to result",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.13.1.7, 文件頁 199-201,230-232, PDF 頁 225-227,256-258",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, 5.2.13.1.7, printed pages 199-201,230-232, PDF pages 225-227,256-258"
+    },
+    {
+      "id": "ADMINIO-NAMESPACE",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.24, 5.2.25",
+      "figure": null,
+      "table": null,
+      "printed_pages": "445-448",
+      "pdf_pages": "471-474",
+      "normative_keyword": "none",
+      "zh_tw": "Namespace Management 建立或刪除 namespace；Namespace Attachment 改變 controller 與 namespace 的連接關係。Create 成功回傳 NSID，不代表已附加；Detach 移除存取關係，不等於刪除資料對象。",
+      "en": "Namespace Management creates or deletes namespaces; Namespace Attachment changes controller associations. Create returns an NSID without automatically attaching it. Detach removes access rather than deleting the namespace object.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "heading_zh_tw": "Namespace：建立儲存空間，再建立存取關係",
+      "heading_en": "Namespaces: create storage, then attach access",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, 5.2.25, 文件頁 445-448, PDF 頁 471-474",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, 5.2.25, printed pages 445-448, PDF pages 471-474"
+    },
+    {
+      "id": "ADMINIO-BOOT",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.9, 5.2.13.1.21, 5.2.30.1.39",
+      "figure": null,
+      "table": null,
+      "printed_pages": "202-204,283-284,513-514",
+      "pdf_pages": "228-230,309-310,539-540",
+      "normative_keyword": "none",
+      "zh_tw": "Boot Partition 與一般 namespace 是不同對象。LID 15h 讀取所選 partition 的資訊與內容；Firmware Commit CA=6 寫入映像、CA=7 選啟動來源；FID 85h 管理寫入保護。",
+      "en": "Boot partitions are distinct from ordinary namespaces. LID 15h reads a selected partition, Firmware Commit CA=6 writes its image and CA=7 selects the boot source, and FID 85h controls write protection.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "heading_zh_tw": "Boot Partition：讀映像、寫映像與切換啟動來源",
+      "heading_en": "Boot partitions: read, update, and select an image",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, 5.2.13.1.21, 5.2.30.1.39, 文件頁 202-204,283-284,513-514, PDF 頁 228-230,309-310,539-540",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, 5.2.13.1.21, 5.2.30.1.39, printed pages 202-204,283-284,513-514, PDF pages 228-230,309-310,539-540"
+    },
+    {
+      "id": "ADMINIO-TELEMETRY",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.8, 5.2.13.1.9",
+      "figure": null,
+      "table": null,
+      "printed_pages": "232-237",
+      "pdf_pages": "258-263",
+      "normative_keyword": "none",
+      "zh_tw": "LID 07h 由主機要求建立 Telemetry，LID 08h 回報控制器建立的資料。讀取時要同時處理 512-byte block 邊界、累積 Data Area 範圍與 generation，避免拼接不同次擷取。",
+      "en": "LID 07h supports host-initiated telemetry; LID 08h reports controller-initiated data. Retrieval combines 512-byte block boundaries, cumulative data areas, and generation checks to avoid mixing captures.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "heading_zh_tw": "Telemetry：完整取得同一次診斷資料",
+      "heading_en": "Telemetry: retrieve one consistent capture",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, 5.2.13.1.9, 文件頁 232-237, PDF 頁 258-263",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, 5.2.13.1.9, printed pages 232-237, PDF pages 258-263"
+    },
+    {
+      "id": "ADMINIO-SANITIZE",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.1.1, 5.2.26, 5.2.13.1.38, 5.2.30.1.16",
+      "figure": null,
+      "table": null,
+      "printed_pages": "178-179,314-319,449-451,477-478",
+      "pdf_pages": "204-205,340-345,475-477,503-504",
+      "normative_keyword": "none",
+      "zh_tw": "Sanitize 依支援能力選 Block Erase、Overwrite 或 Crypto Erase；命令成功不表示背景清除已完成。LID 81h 回報狀態、進度與估計時間；FID 17h 的設定會影響要求不解除配置時的處理方式。",
+      "en": "Sanitize selects supported Block Erase, Overwrite, or Crypto Erase actions. Command success is not completion of background sanitization. LID 81h supplies state, progress, and estimates; FID 17h affects handling of no-deallocation requests.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "heading_zh_tw": "Sanitize：清除要求、背景進度與最終狀態",
+      "heading_en": "Sanitize: request, background progress, and final state",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.1.1, 5.2.26, 5.2.13.1.38, 5.2.30.1.16, 文件頁 178-179,314-319,449-451,477-478, PDF 頁 204-205,340-345,475-477,503-504",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.1.1, 5.2.26, 5.2.13.1.38, 5.2.30.1.16, printed pages 178-179,314-319,449-451,477-478, PDF pages 204-205,340-345,475-477,503-504"
     },
     {
       "id": "ADMINIO-NVM-FIG-023-CLAIM",
@@ -2138,7 +2233,7 @@
       "printed_pages": "61",
       "pdf_pages": "61",
       "normative_keyword": "none",
-      "zh_tw": "Write Zeroes 的完成資訊可回報實際清零的 LBA 數量。",
+      "zh_tw": "NSZ=1 的成功回覆以 LBACZ 區分整個 namespace 與原本指定範圍。",
       "en": "Figure 88, \"Write Zeroes – Completion Queue Entry Dword 0\": Shows the queue or command relationship expressed by Write Zeroes – Completion Queue Entry Dword 0.",
       "scope_entry_id": "ADMINIO-NVM-INCLUDE",
       "source_keywords": [],
@@ -2186,7 +2281,7 @@
       "printed_pages": "62",
       "pdf_pages": "62",
       "normative_keyword": "none",
-      "zh_tw": "NVM 的 Notice 表補充命令集特定事件，仍使用 Base AER 的 AET／AEI 格式。",
+      "zh_tw": "NVM Notice 補充 namespace 屬性變化、LBA 狀態及 rate limit 變動；一般使用量變動不一定觸發通知。",
       "en": "Figure 90, \"Asynchronous Event Information – Notice\": Defines the concrete layout or value relationships for Asynchronous Event Information – Notice.",
       "scope_entry_id": "ADMINIO-NVM-INCLUDE",
       "source_keywords": [
@@ -2758,7 +2853,7 @@
       "printed_pages": "178-179",
       "pdf_pages": "204-205",
       "normative_keyword": "none",
-      "zh_tw": "本篇使用 Format 欄判斷進行格式化時仍可處理哪些管理要求及其限制。",
+      "zh_tw": "同一命令在 Format、Sanitize 各作業狀態下，可能有不同執行限制。",
       "en": "Figure 144, \"NVM Subsystem Sanitize Operations and Format NVM Command – Admin\": Defines the concrete layout or value relationships for NVM Subsystem Sanitize Operations and Format NVM Command – Admin.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -3136,6 +3231,124 @@
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.2.1, Figure 161, printed pages 191, PDF pages 217"
     },
     {
+      "id": "ADMINIO-BASE-FIG-176-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.6",
+      "figure": "176",
+      "table": null,
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "normative_keyword": "none",
+      "zh_tw": "Self-test 的 NSID 分清控制器本身、指定 namespace 與目前可存取的全體。",
+      "en": "Figure 176, \"Device Self-test Namespace Test Action\": Self-test NSID selects scope, STC selects the action, and DSTP follows the applicable test format. The processing flow distinguishes starting, already-running, and abort cases; start-command completion does not establish that the test passed.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall not",
+        "shall"
+      ],
+      "key_items": [
+        "Device Self-test Namespace Test Action"
+      ],
+      "evidence_digest": "c5e9d45e19d9e0958032d36247b2e46312942c05122ca4315aed5ce08e0838bd",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 176, 文件頁 199, PDF 頁 225",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 176, printed pages 199, PDF pages 225"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-177-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.6",
+      "figure": "177",
+      "table": null,
+      "printed_pages": "199",
+      "pdf_pages": "225",
+      "normative_keyword": "none",
+      "zh_tw": "STC 選擇短測試、延伸測試、Refresh、廠商測試或中止。",
+      "en": "Figure 177, \"Device Self-test – Command Dword 10\": Self-test NSID selects scope, STC selects the action, and DSTP follows the applicable test format. The processing flow distinguishes starting, already-running, and abort cases; start-command completion does not establish that the test passed.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "may"
+      ],
+      "key_items": [
+        "STC"
+      ],
+      "evidence_digest": "3436f01185d43ead087c6c39b731e6a4db82b39add021a8b5a745926995f71e2",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 177, 文件頁 199, PDF 頁 225",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 177, printed pages 199, PDF pages 225"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-178-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.6",
+      "figure": "178",
+      "table": null,
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "normative_keyword": "none",
+      "zh_tw": "DSTP 只在廠商自訂 Self-test 情境提供參數。",
+      "en": "Figure 178, \"Device Self-test – Command Dword 15\": Self-test NSID selects scope, STC selects the action, and DSTP follows the applicable test format. The processing flow distinguishes starting, already-running, and abort cases; start-command completion does not establish that the test passed.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "DSTP"
+      ],
+      "evidence_digest": "2120d9f364de4f2bd5a3bc0ea54ffa84c61e14ce4aa7791368eb2c1acd1695e1",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 178, 文件頁 200, PDF 頁 226",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 178, printed pages 200, PDF pages 226"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-179-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.6",
+      "figure": "179",
+      "table": null,
+      "printed_pages": "200",
+      "pdf_pages": "226",
+      "normative_keyword": "none",
+      "zh_tw": "Self-test 命令處理取決於是否已有測試在執行。",
+      "en": "Figure 179, \"Device Self-test – Command Processing\": Self-test NSID selects scope, STC selects the action, and DSTP follows the applicable test format. The processing flow distinguishes starting, already-running, and abort cases; start-command completion does not establish that the test passed.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "SDSO",
+        "DSTO"
+      ],
+      "evidence_digest": "a3a8d8dbd598e943dee2759ef310a4b6453356cb314040580f8a8533fc7629b6",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 179, 文件頁 200, PDF 頁 226",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6, Figure 179, printed pages 200, PDF pages 226"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-180-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.6.1",
+      "figure": "180",
+      "table": null,
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "normative_keyword": "none",
+      "zh_tw": "Device Self-test in Progress 表示已有測試，新的要求未能開始。",
+      "en": "Figure 180, \"Device Self-test – Command Specific Status Values\": Self-test NSID selects scope, STC selects the action, and DSTP follows the applicable test format. The processing flow distinguishes starting, already-running, and abort cases; start-command completion does not establish that the test passed.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "may"
+      ],
+      "key_items": [
+        "NUMD"
+      ],
+      "evidence_digest": "62c051721cf19976ef44af8f608ba872128a7131f0ce9a9c2d453461cf57097f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.6.1, Figure 180, 文件頁 201, PDF 頁 227",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.6.1, Figure 180, printed pages 201, PDF pages 227"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-187-CLAIM",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -3146,7 +3359,7 @@
       "printed_pages": "203",
       "pdf_pages": "229",
       "normative_keyword": "none",
-      "zh_tw": "本篇讀 firmware 的 CA 與 FS：先選保存或啟用動作，再指定 slot，Boot 專用 CA 不展開。",
+      "zh_tw": "CA 決定 firmware 或 Boot 映像的保存及啟用動作，FS 和 BPID 各有自己的對象。",
       "en": "Figure 187, \"Firmware Commit – Command Dword 10\": Firmware Commit CA selects storage/activation behavior, FS selects a slot, and completion fields report results and overlapping-update information. Pair the selected activation method with capabilities and reset-required statuses.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -4041,6 +4254,212 @@
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.6, Figure 217, printed pages 228-229, PDF pages 254-255"
     },
     {
+      "id": "ADMINIO-BASE-FIG-218-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.7",
+      "figure": "218",
+      "table": null,
+      "printed_pages": "230",
+      "pdf_pages": "256",
+      "normative_keyword": "none",
+      "zh_tw": "Self-test log 同時保存目前作業狀態與歷史結果。",
+      "en": "Figure 218, \"Device Self-test Log Page\": The Self-test log separates current operation from up to twenty historical results. Read test type and result code before using validity bits for NSID, FLBA, or status; a nonzero value does not establish validity.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "CDSTO",
+        "DSTOS",
+        "CDSTC",
+        "DSTCS",
+        "RDS1",
+        "RDS2",
+        "RDS19",
+        "RDS20"
+      ],
+      "evidence_digest": "08be6a7983cdaa61fb79c941c6c741d1b5209989c317891d5ef613f4c13b0d43",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, Figure 218, 文件頁 230, PDF 頁 256",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, Figure 218, printed pages 230, PDF pages 256"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-219-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.7",
+      "figure": "219",
+      "table": null,
+      "printed_pages": "231-232",
+      "pdf_pages": "257-258",
+      "normative_keyword": "none",
+      "zh_tw": "Self-test Result 的有效標記決定哪些失敗欄位可以解讀。",
+      "en": "Figure 219, \"Self-test Result Data Structure\": The Self-test log separates current operation from up to twenty historical results. Read test type and result code before using validity bits for NSID, FLBA, or status; a nonzero value does not establish validity.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "should",
+        "may",
+        "shall"
+      ],
+      "key_items": [
+        "DSTS",
+        "DSTC",
+        "DSTR",
+        "SEGN",
+        "VDINFO",
+        "SCVLD",
+        "SCTVLD",
+        "FVLD",
+        "NSIDVLD",
+        "POH",
+        "NSID",
+        "FLBA",
+        "STCT",
+        "ASTCI",
+        "STC",
+        "VS"
+      ],
+      "evidence_digest": "7196562a3056eb23a29344a7ea44faaa1d5b7375190b24ee9483056268d001b7",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, Figure 219, 文件頁 231-232, PDF 頁 257-258",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.7, Figure 219, printed pages 231-232, PDF pages 257-258"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-220-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.8",
+      "figure": "220",
+      "table": null,
+      "printed_pages": "232-233",
+      "pdf_pages": "258-259",
+      "normative_keyword": "none",
+      "zh_tw": "Host-Initiated Telemetry 的參數選擇是否建立新資料及收集範圍。",
+      "en": "Figure 220, \"Telemetry Host-Initiated Log Specific Parameter Field\": Defines the concrete layout or value relationships for Telemetry Host-Initiated Log Specific Parameter Field.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall not",
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "MCDA",
+        "CTHID",
+        "DA4S",
+        "ETDAS"
+      ],
+      "evidence_digest": "9fbc5ec493968235582cec840d55a0170e4f2790a0a74e51eb9fdad24b0f4df4",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 220, 文件頁 232-233, PDF 頁 258-259",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 220, printed pages 232-233, PDF pages 258-259"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-221-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.8",
+      "figure": "221",
+      "table": null,
+      "printed_pages": "234-235",
+      "pdf_pages": "260-261",
+      "normative_keyword": "none",
+      "zh_tw": "Host-Initiated Telemetry header 給出各資料區終點與紀錄版本。",
+      "en": "Figure 221, \"Telemetry Host-Initiated Log Page\": Explains the specific relationship or example named Telemetry Host-Initiated Log Page.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "should"
+      ],
+      "key_items": [
+        "LID",
+        "IEEE",
+        "OUI",
+        "THDA1LB",
+        "THDA2LB",
+        "THDA3LB",
+        "THDA4LB",
+        "DA4S",
+        "THS",
+        "THDGN",
+        "TCDA",
+        "TCDGN",
+        "RID"
+      ],
+      "evidence_digest": "aec13c1bab2277a57b18f234bac1e060479084bba0aa4367422b79a34cc7ded1",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, 文件頁 234-235, PDF 頁 260-261",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, printed pages 234-235, PDF pages 260-261"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-222-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.8.1",
+      "figure": "222",
+      "table": null,
+      "printed_pages": "235",
+      "pdf_pages": "261",
+      "normative_keyword": "none",
+      "zh_tw": "MCDAS 回報主機發起 Telemetry 支援的收集資料區能力。",
+      "en": "Figure 222, \"Telemetry Host-Initiated Log Page - LID Specific Parameter Field\": Defines the concrete layout or value relationships for Telemetry Host-Initiated Log Page - LID Specific Parameter Field.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "MCDAS",
+        "DA4S",
+        "ETDAS"
+      ],
+      "evidence_digest": "d36e5e536f4278f5c1420a0bc8bb1941fe3a0561f09f8320d5f6dc45e14e9e85",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8.1, Figure 222, 文件頁 235, PDF 頁 261",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8.1, Figure 222, printed pages 235, PDF pages 261"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-223-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.9",
+      "figure": "223",
+      "table": null,
+      "printed_pages": "236-237",
+      "pdf_pages": "262-263",
+      "normative_keyword": "none",
+      "zh_tw": "Controller-Initiated Telemetry 由控制器建立並回報可讀取狀態。",
+      "en": "Figure 223, \"Telemetry Controller-Initiated Log Page\": Explains the specific relationship or example named Telemetry Controller-Initiated Log Page.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "LID",
+        "IEEE",
+        "OUI",
+        "TCDA1LB",
+        "TCDA2LB",
+        "TCDA3LB",
+        "TCDA4LB",
+        "TCS",
+        "TCDA",
+        "RAE",
+        "TCDGN",
+        "RID"
+      ],
+      "evidence_digest": "db28eb3a2d152da6c123ea9f0e8b63e8545419b050bc541aa766380248c64a9d",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, Figure 223, 文件頁 236-237, PDF 頁 262-263",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, Figure 223, printed pages 236-237, PDF pages 262-263"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-270-CLAIM",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -4105,6 +4524,57 @@
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.18, Figure 271, printed pages 277-278, PDF pages 303-304"
     },
     {
+      "id": "ADMINIO-BASE-FIG-279-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.21",
+      "figure": "279",
+      "table": null,
+      "printed_pages": "283",
+      "pdf_pages": "309",
+      "normative_keyword": "none",
+      "zh_tw": "Boot Partition log 的參數用 BPID 選要讀的分割區。",
+      "en": "Figure 279, \"Boot Partition Log Specific Parameter Field\": Defines the concrete layout or value relationships for Boot Partition Log Specific Parameter Field.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "BPID"
+      ],
+      "evidence_digest": "056e6c014744faf3ad6047498794f1b42250e80e63b5dab2b291c593ca3d7960",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 279, 文件頁 283, PDF 頁 309",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 279, printed pages 283, PDF pages 309"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-280-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.21",
+      "figure": "280",
+      "table": null,
+      "printed_pages": "284",
+      "pdf_pages": "310",
+      "normative_keyword": "none",
+      "zh_tw": "Boot Partition log 先回報 header，再提供分割區資料。",
+      "en": "Figure 280, \"Boot Partition Log Page\": Explains the specific relationship or example named Boot Partition Log Page.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should not"
+      ],
+      "key_items": [
+        "LID",
+        "BPINFO",
+        "ABPID",
+        "BPSZ",
+        "BPD"
+      ],
+      "evidence_digest": "d37548302f140f7ef8ab09cc1136bcfe86517fe7a15da1f5cca539ff2876ec07",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 280, 文件頁 284, PDF 頁 310",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.21, Figure 280, printed pages 284, PDF pages 310"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-304-CLAIM",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -4138,6 +4608,45 @@
       "evidence_digest": "84e23b0d6c0cc7ed1c4a7bad0c393684fbaf16a69807bf9de6d80ea7ecfb5338",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.33, Figure 304, 文件頁 301-302, PDF 頁 327-328",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.33, Figure 304, printed pages 301-302, PDF pages 327-328"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-312-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.38",
+      "figure": "312",
+      "table": null,
+      "printed_pages": "314-319",
+      "pdf_pages": "340-345",
+      "normative_keyword": "none",
+      "zh_tw": "Sanitize Status 將進度、狀態與啟動命令資訊放在同一份紀錄。",
+      "en": "Figure 312, \"Sanitize Status Log Page\": Explains the specific relationship or example named Sanitize Status Log Page.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "SPROG",
+        "SOS",
+        "OPC",
+        "SCDW10",
+        "ETO",
+        "ETBE",
+        "ETCE",
+        "ETODMM",
+        "ETBENMM",
+        "ETCENMM",
+        "ETPVDS",
+        "SSI",
+        "FAILS",
+        "SANS",
+        "MNSOIP",
+        "STNSID"
+      ],
+      "evidence_digest": "aad0b0b7c2f9e97eff513d8597cd174656b6dd963fcebe4bf11d8f1defb26a20",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, Figure 312, 文件頁 314-319, PDF 頁 340-345",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, Figure 312, printed pages 314-319, PDF pages 340-345"
     },
     {
       "id": "ADMINIO-BASE-FIG-331-CLAIM",
@@ -4823,7 +5332,7 @@
       "printed_pages": "399-400",
       "pdf_pages": "425-426",
       "normative_keyword": "none",
-      "zh_tw": "Underlying Namespace List 的 GENCTR 辨識清單版本，NUMENT 界定有效的對應項目數。",
+      "zh_tw": "GENCTR、NUMENT 與起始 CNSSID 讓主機分批列舉同一版底層 namespace 清單。",
       "en": "Figure 356, \"Underlying Namespace List Data Structure\": Defines the concrete layout or value relationships for Underlying Namespace List Data Structure.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -4848,7 +5357,7 @@
       "printed_pages": "400",
       "pdf_pages": "426",
       "normative_keyword": "none",
-      "zh_tw": "每筆 Underlying Namespace 項目把底層 namespace 的 NSID 與 controller 對應連起來。",
+      "zh_tw": "每筆 320-byte entry 以 NSID 識別底層 namespace，以 IDX 標示清單索引。",
       "en": "Figure 357, \"Underlying Namespace Entry Data Structure\": Defines the concrete layout or value relationships for Underlying Namespace Entry Data Structure.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -4876,7 +5385,7 @@
       "printed_pages": "400-401",
       "pdf_pages": "426-427",
       "normative_keyword": "none",
-      "zh_tw": "Supported Controller State Formats 分開列出 NVMe state format 版本與廠商格式 UUID。",
+      "zh_tw": "NV 和 NUUID 分別決定 2-byte 版本項目與 16-byte UUID 項目的有效數量。",
       "en": "Figure 358, \"Supported Controller State Formats Data Structure\": Defines the concrete layout or value relationships for Supported Controller State Formats Data Structure.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -4893,6 +5402,301 @@
       "evidence_digest": "5cc580a7cf85f391997a827ee55b01922abf4bc2d7b5013f15fb61423e7ea057",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.22, Figure 358, 文件頁 400-401, PDF 頁 426-427",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.22, Figure 358, printed pages 400-401, PDF pages 426-427"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-442-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.24",
+      "figure": "442",
+      "table": null,
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "normative_keyword": "none",
+      "zh_tw": "Attachment 的 DPTR 指向要附加或分離的控制器清單。",
+      "en": "Figure 442, \"Namespace Attachment – Data Pointer\": Namespace Attachment DPTR points to a Controller List and SEL selects Attach or Detach. The command changes relationships between specified controllers and the namespace. Interpret already/not-attached and invalid-list results in that context.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "evidence_digest": "884b7a839cca53234635b9c4f094217cc0d3a5e25b0ac06f1c829d73e5ec8202",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 442, 文件頁 445, PDF 頁 471",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 442, printed pages 445, PDF pages 471"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-443-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.24",
+      "figure": "443",
+      "table": null,
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "normative_keyword": "none",
+      "zh_tw": "Attachment 的 SEL 選擇 Attach 或 Detach。",
+      "en": "Figure 443, \"Namespace Attachment – Command Dword 10\": Namespace Attachment DPTR points to a Controller List and SEL selects Attach or Detach. The command changes relationships between specified controllers and the namespace. Interpret already/not-attached and invalid-list results in that context.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "SEL"
+      ],
+      "evidence_digest": "c949eb5aedc37cec985eb24b1389a26ceed9676426223ae2640a5de1469a00b5",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 443, 文件頁 445, PDF 頁 471",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24, Figure 443, printed pages 445, PDF pages 471"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-444-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.24.1",
+      "figure": "444",
+      "table": null,
+      "printed_pages": "445",
+      "pdf_pages": "471",
+      "normative_keyword": "none",
+      "zh_tw": "Attachment 狀態描述附加關係、控制器清單與限制是否成立。",
+      "en": "Figure 444, \"Namespace Attachment – Command Specific Status Values\": Namespace Attachment DPTR points to a Controller List and SEL selects Attach or Detach. The command changes relationships between specified controllers and the namespace. Interpret already/not-attached and invalid-list results in that context.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "Namespace Attachment – Command Specific Status Values"
+      ],
+      "evidence_digest": "fe6983a2f573fa2378b9ae3dc00b6b471ca9be72d0930a6305f8ec36fc218ee3",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.24.1, Figure 444, 文件頁 445, PDF 頁 471",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.24.1, Figure 444, printed pages 445, PDF pages 471"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-445-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25",
+      "figure": "445",
+      "table": null,
+      "printed_pages": "446",
+      "pdf_pages": "472",
+      "normative_keyword": "none",
+      "zh_tw": "Namespace Create 的 DPTR 指向 4096-byte 建立資料。",
+      "en": "Figure 445, \"Namespace Management – Data Pointer\": Namespace Management uses SEL for Create, Delete, or Restore; CSI selects the interpretation of creation data. Successful creation returns NSID in CQE DW0, establishing object creation rather than automatic Attachment.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "evidence_digest": "936fbc70c23f423d5c3f7bdd2fbb39fda15c691dfcec199426a0e48be387b8b6",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 445, 文件頁 446, PDF 頁 472",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 445, printed pages 446, PDF pages 472"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-446-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25",
+      "figure": "446",
+      "table": null,
+      "printed_pages": "446-447",
+      "pdf_pages": "472-473",
+      "normative_keyword": "none",
+      "zh_tw": "CDW10 的 SEL 選擇建立、刪除或還原預設 namespace 配置。",
+      "en": "Figure 446, \"Namespace Management – Command Dword 10\": Namespace Management uses SEL for Create, Delete, or Restore; CSI selects the interpretation of creation data. Successful creation returns NSID in CQE DW0, establishing object creation rather than automatic Attachment.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "SEL"
+      ],
+      "evidence_digest": "8736a8f1bf3ee0a7fed8379dc273ad8b13c236a55eaa27d9ea92f0f3ec990af5",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 446, 文件頁 446-447, PDF 頁 472-473",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 446, printed pages 446-447, PDF pages 472-473"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-447-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25",
+      "figure": "447",
+      "table": null,
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "normative_keyword": "none",
+      "zh_tw": "CDW11 的 CSI 只在 Create 時指定新 namespace 的命令集。",
+      "en": "Figure 447, \"Namespace Management – Command Dword 11\": Namespace Management uses SEL for Create, Delete, or Restore; CSI selects the interpretation of creation data. Successful creation returns NSID in CQE DW0, establishing object creation rather than automatic Attachment.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "CSI"
+      ],
+      "evidence_digest": "874393d25159fe7285c6473ff63311608ede2c728f298823739a20f0f4b7132c",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 447, 文件頁 447, PDF 頁 473",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 447, printed pages 447, PDF pages 473"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-448-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25",
+      "figure": "448",
+      "table": null,
+      "printed_pages": "447",
+      "pdf_pages": "473",
+      "normative_keyword": "none",
+      "zh_tw": "Create buffer 的實際欄位由 CSI 所選的命令集補充，不能只按 Base 共同布局解讀。",
+      "en": "Figure 448, \"Namespace Management – Data Structure for Create\": Namespace Management uses SEL for Create, Delete, or Restore; CSI selects the interpretation of creation data. Successful creation returns NSID in CQE DW0, establishing object creation rather than automatic Attachment.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "SIOCS",
+        "VS",
+        "RDNCS",
+        "CSS",
+        "DNCS"
+      ],
+      "evidence_digest": "7bd53f03626eeb9e951fa8fbd0f252fa5167b362a9c85693594017acb35b6e23",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 448, 文件頁 447, PDF 頁 473",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 448, printed pages 447, PDF pages 473"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-449-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25.2",
+      "figure": "449",
+      "table": null,
+      "printed_pages": "448",
+      "pdf_pages": "474",
+      "normative_keyword": "none",
+      "zh_tw": "Create 失敗原因可能是格式、容量或識別碼資源，而非同一種空間不足。",
+      "en": "Figure 449, \"Namespace Management – Command Specific Status Values\": Namespace Management uses SEL for Create, Delete, or Restore; CSI selects the interpretation of creation data. Successful creation returns NSID in CQE DW0, establishing object creation rather than automatic Attachment.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "may"
+      ],
+      "key_items": [
+        "ANAGRPID",
+        "ANAGIDS"
+      ],
+      "evidence_digest": "af6b40781b495f759b767005dd774caf272c1cb94bf4349d426efa006a69b694",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.2, Figure 449, 文件頁 448, PDF 頁 474",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25.2, Figure 449, printed pages 448, PDF pages 474"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-450-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25.2",
+      "figure": "450",
+      "table": null,
+      "printed_pages": "448",
+      "pdf_pages": "474",
+      "normative_keyword": "none",
+      "zh_tw": "Create 成功後 CQE DW0 回傳控制器分配的新 NSID。",
+      "en": "Figure 450, \"Namespace Management – Completion Queue Entry Dword 0\": Namespace Management uses SEL for Create, Delete, or Restore; CSI selects the interpretation of creation data. Successful creation returns NSID in CQE DW0, establishing object creation rather than automatic Attachment.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "may"
+      ],
+      "key_items": [
+        "NSID"
+      ],
+      "evidence_digest": "feb24c24d6281e97167ee66e57c49193166db51139235ded41d7b7a685d7c268",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25.2, Figure 450, 文件頁 448, PDF 頁 474",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25.2, Figure 450, printed pages 448, PDF pages 474"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-451-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.26",
+      "figure": "451",
+      "table": null,
+      "printed_pages": "450-451",
+      "pdf_pages": "476-477",
+      "normative_keyword": "none",
+      "zh_tw": "Sanitize 的 SANACT 決定方法，其他參數依方法才有意義。",
+      "en": "Figure 451, \"Sanitize – Command Dword 10\": Defines the concrete layout or value relationships for Sanitize – Command Dword 10.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "shall not",
+        "should"
+      ],
+      "key_items": [
+        "PREQ",
+        "SPRRS",
+        "EMVS",
+        "GDE",
+        "NDAS",
+        "OIPBP",
+        "OWPASS",
+        "AUSE",
+        "SANACT"
+      ],
+      "evidence_digest": "4190a56644cd0601ab0e07d4e398c1701444f02e293dc41470a7d75d54108554",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450-451, PDF 頁 476-477",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, printed pages 450-451, PDF pages 476-477"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-452-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.26",
+      "figure": "452",
+      "table": null,
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "normative_keyword": "none",
+      "zh_tw": "OVRPAT 指定 Overwrite 使用的 32-bit pattern。",
+      "en": "Figure 452, \"Sanitize – Command Dword 11\": Defines the concrete layout or value relationships for Sanitize – Command Dword 11.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "OVRPAT"
+      ],
+      "evidence_digest": "3ea08d34a587381ed9c3567838923b39ea26c1cf214c1a0550cc3ec13005e553",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 452, 文件頁 451, PDF 頁 477",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 452, printed pages 451, PDF pages 477"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-453-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.26.1",
+      "figure": "453",
+      "table": null,
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "normative_keyword": "none",
+      "zh_tw": "啟動 Sanitize 的命令失敗與背景清除失敗是不同階段。",
+      "en": "Figure 453, \"Sanitize – Command Specific Status Values\": Defines the concrete layout or value relationships for Sanitize – Command Specific Status Values.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "Sanitize – Command Specific Status Values"
+      ],
+      "evidence_digest": "f353f419d1bbeb7887b80bf97e4136ed8cb1e50bb9d95535bc778fa7ccb6620e",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26.1, Figure 453, 文件頁 451, PDF 頁 477",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.26.1, Figure 453, printed pages 451, PDF pages 477"
     },
     {
       "id": "ADMINIO-BASE-FIG-456-CLAIM",
@@ -4954,7 +5758,7 @@
       "printed_pages": "455",
       "pdf_pages": "481",
       "normative_keyword": "none",
-      "zh_tw": "AL 使用 Security Protocol In 的配置長度規則，不是零起算的 Dword 數。",
+      "zh_tw": "AL 直接給 Security Receive 的 byte 配置長度，沒有 NUMD 的加 1 換算。",
       "en": "Figure 458, \"Security Receive – Command Dword 11\": Defines the concrete layout or value relationships for Security Receive – Command Dword 11.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -5610,6 +6414,32 @@
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.11, Figure 483, printed pages 472-473, PDF pages 498-499"
     },
     {
+      "id": "ADMINIO-BASE-FIG-492-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30.1.16",
+      "figure": "492",
+      "table": null,
+      "printed_pages": "477-478",
+      "pdf_pages": "503-504",
+      "normative_keyword": "none",
+      "zh_tw": "NODRM 只在 NDI=1 且要求 NDAS=1 時，選擇拒絕或以警告模式處理。",
+      "en": "Figure 492, \"Sanitize Config – Command Dword 11\": Defines the concrete layout or value relationships for Sanitize Config – Command Dword 11.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NODRM",
+        "NDAS"
+      ],
+      "evidence_digest": "63427e3e89ea68a5b35b4b80dc8616320ea7ccbfff007a27e8920b651b21c569",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.16, Figure 492, 文件頁 477-478, PDF 頁 503-504",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.16, Figure 492, printed pages 477-478, PDF pages 503-504"
+    },
+    {
       "id": "ADMINIO-BASE-FIG-494-CLAIM",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
@@ -5681,6 +6511,33 @@
       "evidence_digest": "27043e808f4b5afed30f22d5543ed625187e1bc92ab93d43bffd72bebbeb0bd2",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.34, Figure 536, 文件頁 508, PDF 頁 534",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.34, Figure 536, printed pages 508, PDF pages 534"
+    },
+    {
+      "id": "ADMINIO-BASE-FIG-542-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30.1.39",
+      "figure": "542",
+      "table": null,
+      "printed_pages": "513-514",
+      "pdf_pages": "539-540",
+      "normative_keyword": "none",
+      "zh_tw": "Boot Partition Write Protection Config 分別設定兩個分割區的保護狀態。",
+      "en": "Figure 542, \"Boot Partition Write Protection Config - Command Dword 11\": Defines command-specific fields in CDW11 for Boot Partition Write Protection Config.",
+      "scope_entry_id": "ADMINIO-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "BP1WPS",
+        "BP0WPS"
+      ],
+      "evidence_digest": "a1a723f26b0698f1a0b614a142add823b847bbaeebbfc4d6b205dbb9daa46607",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, Figure 542, 文件頁 513-514, PDF 頁 539-540",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.39, Figure 542, printed pages 513-514, PDF pages 539-540"
     },
     {
       "id": "ADMINIO-BASE-FIG-543-CLAIM",
@@ -6274,7 +7131,7 @@
       "printed_pages": "532",
       "pdf_pages": "558",
       "normative_keyword": "none",
-      "zh_tw": "Delete SQ 用 QID 指定要移除的提交佇列，不是用 CID 中止其中某一筆命令。",
+      "zh_tw": "Delete SQ 成功表示所有舊命令已明確或隱含完成，之後不再送出其完成狀態。",
       "en": "Figure 582, \"Delete I/O Submission Queue – Command Dword 10\": Defines the concrete layout or value relationships for Delete I/O Submission Queue – Command Dword 10.",
       "scope_entry_id": "ADMINIO-BASE-INCLUDE",
       "source_keywords": [
@@ -6335,6 +7192,42 @@
       "evidence_digest": "3157d149aa04ef270c2759dda24696bad2bf21bdc688c7469bd56e8d2f468f5a",
       "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §7, Figure 645, 文件頁 564, PDF 頁 590",
       "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §7, Figure 645, printed pages 564, PDF pages 590"
+    },
+    {
+      "id": "ADMINIO-NVM-FIG-134-CLAIM",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.6.4",
+      "figure": "134",
+      "table": null,
+      "printed_pages": "112-113",
+      "pdf_pages": "112-113",
+      "normative_keyword": "none",
+      "zh_tw": "Create payload 把主機選擇的容量、格式與放置參數交給控制器。",
+      "en": "Figure 134, \"Namespace Management - Host Specified Fields\": Defines the concrete layout or value relationships for Namespace Management - Host Specified Fields.",
+      "scope_entry_id": "ADMINIO-NVM-CREATE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "key_items": [
+        "NSZE",
+        "NCAP",
+        "FLBAS",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID",
+        "ENDGID",
+        "LBSTM",
+        "NPHNDLS",
+        "Placement Handle List"
+      ],
+      "evidence_digest": "c850eeedd5a4fe45d32d7037b0d3a2e6ccecbe88b89a4b14455215ca6e6b6aec",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, Figure 134, 文件頁 112-113, PDF 頁 112-113",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, Figure 134, printed pages 112-113, PDF pages 112-113"
     },
     {
       "id": "NVMCS13-FOUNDATION",

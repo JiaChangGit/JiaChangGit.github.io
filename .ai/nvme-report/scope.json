@@ -1150,37 +1150,7 @@
           "4.1.5",
           "5.6"
         ],
-        "special_topic_sections": {
-          "NVME-BASE-2.4": [
-            "8.1.8",
-            "5.2.6",
-            "5.2.13.1.7",
-            "8.1.17",
-            "5.2.24",
-            "5.2.25",
-            "8.1.3",
-            "5.2.13.1.21",
-            "5.2.30.1.39",
-            "8.1.30",
-            "5.2.13.1.8",
-            "5.2.13.1.9",
-            "8.1.27",
-            "5.2.13.1.38",
-            "5.2.26",
-            "5.2.30.1.16"
-          ],
-          "NVME-NVM-CS-1.3": [
-            "4.1.4.3",
-            "2.1.1",
-            "4.1.6",
-            "5.8",
-            "4.1.7",
-            "5.12"
-          ]
-        },
         "excluded_base_sections": [
-          "8.1.17.3",
-          "8.1.27.6",
           "5.1.2",
           "5.2.3",
           "5.2.4",
@@ -1298,6 +1268,11 @@
         "ADMINIO-BASE-FIG-159",
         "ADMINIO-BASE-FIG-160",
         "ADMINIO-BASE-FIG-161",
+        "ADMINIO-BASE-FIG-176",
+        "ADMINIO-BASE-FIG-177",
+        "ADMINIO-BASE-FIG-178",
+        "ADMINIO-BASE-FIG-179",
+        "ADMINIO-BASE-FIG-180",
         "ADMINIO-BASE-FIG-187",
         "ADMINIO-BASE-FIG-188",
         "ADMINIO-BASE-FIG-189",
@@ -1329,9 +1304,18 @@
         "ADMINIO-BASE-FIG-215",
         "ADMINIO-BASE-FIG-216",
         "ADMINIO-BASE-FIG-217",
+        "ADMINIO-BASE-FIG-218",
+        "ADMINIO-BASE-FIG-219",
+        "ADMINIO-BASE-FIG-220",
+        "ADMINIO-BASE-FIG-221",
+        "ADMINIO-BASE-FIG-222",
+        "ADMINIO-BASE-FIG-223",
         "ADMINIO-BASE-FIG-270",
         "ADMINIO-BASE-FIG-271",
+        "ADMINIO-BASE-FIG-279",
+        "ADMINIO-BASE-FIG-280",
         "ADMINIO-BASE-FIG-304",
+        "ADMINIO-BASE-FIG-312",
         "ADMINIO-BASE-FIG-331",
         "ADMINIO-BASE-FIG-332",
         "ADMINIO-BASE-FIG-333",
@@ -1358,6 +1342,18 @@
         "ADMINIO-BASE-FIG-356",
         "ADMINIO-BASE-FIG-357",
         "ADMINIO-BASE-FIG-358",
+        "ADMINIO-BASE-FIG-442",
+        "ADMINIO-BASE-FIG-443",
+        "ADMINIO-BASE-FIG-444",
+        "ADMINIO-BASE-FIG-445",
+        "ADMINIO-BASE-FIG-446",
+        "ADMINIO-BASE-FIG-447",
+        "ADMINIO-BASE-FIG-448",
+        "ADMINIO-BASE-FIG-449",
+        "ADMINIO-BASE-FIG-450",
+        "ADMINIO-BASE-FIG-451",
+        "ADMINIO-BASE-FIG-452",
+        "ADMINIO-BASE-FIG-453",
         "ADMINIO-BASE-FIG-456",
         "ADMINIO-BASE-FIG-457",
         "ADMINIO-BASE-FIG-458",
@@ -1385,9 +1381,11 @@
         "ADMINIO-BASE-FIG-480",
         "ADMINIO-BASE-FIG-482",
         "ADMINIO-BASE-FIG-483",
+        "ADMINIO-BASE-FIG-492",
         "ADMINIO-BASE-FIG-494",
         "ADMINIO-BASE-FIG-495",
         "ADMINIO-BASE-FIG-536",
+        "ADMINIO-BASE-FIG-542",
         "ADMINIO-BASE-FIG-543",
         "ADMINIO-BASE-FIG-544",
         "ADMINIO-BASE-FIG-545",
@@ -1501,7 +1499,8 @@
         "ADMINIO-NVM-FIG-132",
         "ADMINIO-NVM-FIG-133",
         "ADMINIO-NVM-FIG-192",
-        "ADMINIO-NVM-FIG-193"
+        "ADMINIO-NVM-FIG-193",
+        "ADMINIO-NVM-FIG-134"
       ],
       "reference_teaching_policy": "Shared tables retain their identity but only selected rows are taught. Referenced fields receive local explanations; excluded workflows are not reopened."
     }
@@ -2151,6 +2150,11 @@
         "159",
         "160",
         "161",
+        "176",
+        "177",
+        "178",
+        "179",
+        "180",
         "187",
         "188",
         "189",
@@ -2182,9 +2186,18 @@
         "215",
         "216",
         "217",
+        "218",
+        "219",
+        "220",
+        "221",
+        "222",
+        "223",
         "270",
         "271",
+        "279",
+        "280",
         "304",
+        "312",
         "331",
         "332",
         "333",
@@ -2211,6 +2224,18 @@
         "356",
         "357",
         "358",
+        "442",
+        "443",
+        "444",
+        "445",
+        "446",
+        "447",
+        "448",
+        "449",
+        "450",
+        "451",
+        "452",
+        "453",
         "456",
         "457",
         "458",
@@ -2238,9 +2263,11 @@
         "480",
         "482",
         "483",
+        "492",
         "494",
         "495",
         "536",
+        "542",
         "543",
         "544",
         "545",
@@ -2268,7 +2295,7 @@
         "583",
         "645"
       ],
-      "note": "Scope is the selected roots minus all section, specialist-topic, and FID/LID/CNS exclusions in the manifest; shared tables are taught only for retained rows."
+      "note": "Scope is the selected roots minus all section and FID/LID/CNS exclusions in the manifest; shared tables are taught only for retained rows."
     },
     {
       "id": "ADMINIO-NVM-INCLUDE",
@@ -2383,9 +2410,10 @@
         "132",
         "133",
         "192",
-        "193"
+        "193",
+        "134"
       ],
-      "note": "Scope is the selected roots minus all section, specialist-topic, and FID/LID/CNS exclusions in the manifest; shared tables are taught only for retained rows."
+      "note": "Scope is the selected roots minus all section and FID/LID/CNS exclusions in the manifest; shared tables are taught only for retained rows."
     },
     {
       "id": "ADMINIO-BASE-PREREQUISITES",
@@ -2399,7 +2427,12 @@
         "4.3.1",
         "4.6.1",
         "4.6.2",
-        "8.1.19 (power-state transition terms only)"
+        "8.1.19 (power-state transition terms only)",
+        "8.1.3 (partition access and protection only)",
+        "8.1.8 (background test and result interpretation only)",
+        "8.1.17 (namespace object and attachment relationships only)",
+        "8.1.27 (sanitize states and deallocation conditions only)",
+        "8.1.30 (telemetry capture lifetime only)"
       ],
       "teaching_necessity": "Explain queue IDs, data pointers, list boundaries, units and power-state transitions at first use without adding PDF detours.",
       "supports_topic": "Admin commands, Identify lists, I/O queue lifetime, power settings and buffer examples",
@@ -2414,10 +2447,25 @@
       "status": "PREREQUISITE_ONLY",
       "sections": [
         "2.1.2 (PI and atomicity terms used by the selected commands only)",
-        "5.3 (tag-width explanation only)"
+        "5.3 (tag-width explanation only)",
+        "4.1.4.3 (Self-test failing LBA only)",
+        "4.1.6.4 (Host Specified Fields for NVM Create payload only)"
       ],
       "teaching_necessity": "The selected I/O command fields require a minimal explanation of data/metadata, protection checks and atomic-write boundaries.",
       "supports_topic": "Selected Read/Write/Compare/Verify/Copy fields and Identify format examples"
+    },
+    {
+      "id": "ADMINIO-NVM-CREATE-DEPENDENCY",
+      "report_id": "admin-io-spec-walkthrough",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": [
+        "4.1.6.4"
+      ],
+      "figures": [
+        "134"
+      ],
+      "note": "Referenced NVM Create payload only; not an extension of the primary NVM route."
     }
   ],
   "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",
