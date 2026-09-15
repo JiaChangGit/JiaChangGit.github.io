@@ -40,7 +40,7 @@ jobs:
           python3 -B scripts/build_nvme_reports.py
           git diff --exit-code -- .ai/nvme-report DOCS/nvme-spec-report _posts _pages scripts
           python3 -B scripts/validate_nvme_report.py --phase publish
-          python3 -B -m unittest discover -s tests -p 'test_validate_nvme_report.py' -v
+          python3 -B -m unittest discover -s tests -v
 
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"

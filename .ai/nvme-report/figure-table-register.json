@@ -29860,6 +29860,1336 @@
       ],
       "evidence_digest": "c850eeedd5a4fe45d32d7037b0d3a2e6ccecbe88b89a4b14455215ca6e6b6aec",
       "teaching_module": "adminio-namespace"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-093",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "OPC",
+        "CID",
+        "NSID",
+        "DPTR",
+        "CDW10-CDW13"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "2646ac7e445140352902aeb4a261afc24b64df0487985cae0bba4def0fef99ff",
+      "teaching_module": "streams-commands",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 OPC, CID, NSID, DPTR, CDW10-CDW13 與本篇操作的連接。",
+        "en": "Only OPC, CID, NSID, DPTR, CDW10-CDW13 and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-143",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "143",
+      "title": "Opcodes for Admin Commands",
+      "section": "5",
+      "printed_pages": "176-177",
+      "pdf_pages": "202-203",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "Directive Send",
+        "Directive Receive",
+        "NSID"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "56063f6a1d513b89be1db412f8143198a779db178be23636bd651c47d74da6ec",
+      "teaching_module": "streams-commands",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 Directive Send, Directive Receive, NSID 與本篇操作的連接。",
+        "en": "Only Directive Send, Directive Receive, NSID and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-181",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "181",
+      "title": "Directive Receive – Data Pointer",
+      "section": "5.2.7",
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1cd54fe7befaf6b3a03a28eb57d477fe626c63e63acc8e490848a5dec3d7d894",
+      "teaching_module": "streams-commands"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-182",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "182",
+      "title": "Directive Receive – Command Dword 10",
+      "section": "5.2.7",
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "NUMD"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "51633f740178102684b105eefad39af28277da6f9a6263ef4a9b4398445b7122",
+      "teaching_module": "streams-commands"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-183",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "183",
+      "title": "Directive Receive – Command Dword 11",
+      "section": "5.2.7",
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DTYPE",
+        "DOPER"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "752a221102552d2dc227078b1669e9354e94c02562b2598770ead135e7c75c2d",
+      "teaching_module": "streams-commands"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-184",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "184",
+      "title": "Directive Send – Data Pointer",
+      "section": "5.2.8",
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "8b0ba74003398ef1a0dc275ef22f911cd99d36421c4da60474c33ee46c52af00",
+      "teaching_module": "streams-commands"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-185",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "185",
+      "title": "Directive Send – Command Dword 10",
+      "section": "5.2.8",
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "NUMD"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "cdbfad3292818f74d79923ff7d04cf814aa6b3b6f4c3137d01ccd88a169c112f",
+      "teaching_module": "streams-commands"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-186",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "186",
+      "title": "Directive Send – Command Dword 11",
+      "section": "5.2.8",
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DTYPE",
+        "DOPER"
+      ],
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "evidence_digest": "49bfce106b31cea1f50ec9ba0545ae34a7b6302a0766b1dda791984e84676bbf",
+      "teaching_module": "streams-commands"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-197",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "197",
+      "title": "Get Features – Data Pointer",
+      "section": "5.2.12",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "42ad2a125363d3905b0c99826d21c7d02a26cc20c1a07b8ef750e7571adb1396",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 DPTR 與本篇操作的連接。",
+        "en": "Only DPTR and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-198",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "FID",
+        "SEL"
+      ],
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "evidence_digest": "a26fedad3e68576ea96ee1906237849d2e6e2e100baebd527d89009701d32220",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 FID, SEL 與本篇操作的連接。",
+        "en": "Only FID, SEL and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-199",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "199",
+      "title": "Get Features – Command Dword 14",
+      "section": "5.2.12",
+      "printed_pages": "210",
+      "pdf_pages": "236",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "source_keywords": [
+        "reserved",
+        "may"
+      ],
+      "evidence_digest": "474514248909e64dc5a88fb1d9bf55ad289bd264f61a272a97cd36d5a282a883",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 UIDX 與本篇操作的連接。",
+        "en": "Only UIDX and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-201",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "fcc1aa6db6702e65ccb3956bc0ecc7dc8a4655f3abfd23d36331ed2c325ac970",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 CHANG, NSSPEC, SVBL 與本篇操作的連接。",
+        "en": "Only CHANG, NSSPEC, SVBL and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-463",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "463",
+      "title": "Set Features – Data Pointer",
+      "section": "5.2.30",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "evidence_digest": "1a49951e3f6c5970aa9866da961e0eb763faf4a8fd4090e24ca581af66c24103",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 DPTR 與本篇操作的連接。",
+        "en": "Only DPTR and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-464",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "FID",
+        "SV"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "a4da378da4bc1259150a5f0ba542647a192ce240bb749c26391f405baeef3df3",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 FID, SV 與本篇操作的連接。",
+        "en": "Only FID, SV and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-465",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "465",
+      "title": "Set Features – Command Dword 14",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "02035f552f3d99e1d313c3f0e7215c7ff6dc9381cde9d6233a23c2e93e7a432f",
+      "teaching_module": "streams-host",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 UIDX 與本篇操作的連接。",
+        "en": "Only UIDX and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-537",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "537",
+      "title": "Host Identifier – Command Dword 11",
+      "section": "5.2.30.1.35",
+      "printed_pages": "509",
+      "pdf_pages": "535",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": true,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "EXHID",
+        "HOSTID"
+      ],
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "evidence_digest": "df74b5e0073dee01f64fc5075c59bbda5874d3434c3594c51000934418a376d9",
+      "teaching_module": "streams-host"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-538",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "538",
+      "title": "Host Identifier – Data Structure Entry",
+      "section": "5.2.30.1.35",
+      "printed_pages": "510",
+      "pdf_pages": "536",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": true,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "HOSTID",
+        "EXHID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved",
+        "may",
+        "shall not"
+      ],
+      "evidence_digest": "e8fb96abf998e6746fb6d71e166d7916a80f6980d0042e71ad696c2c25124010",
+      "teaching_module": "streams-host"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-338",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.1",
+      "printed_pages": "342, 345, 347, 353",
+      "pdf_pages": "368, 371, 373, 379",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "OACS.DIRS",
+        "CTRATT.HIDS",
+        "MDTS",
+        "CTRATT.RHII"
+      ],
+      "source_keywords": [
+        "should not",
+        "shall",
+        "shall not",
+        "reserved",
+        "may"
+      ],
+      "evidence_digest": "3c2eff29be10ee9d192ffb8997c582a496e118e363cb96fdb5df59a409292b55",
+      "teaching_module": "streams-enable",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 OACS.DIRS, CTRATT.HIDS, MDTS 與本篇操作的連接。",
+        "en": "Only OACS.DIRS, CTRATT.HIDS, MDTS and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-702",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "702",
+      "title": "Directive Types",
+      "section": "8.1.9",
+      "printed_pages": "617",
+      "pdf_pages": "643",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": true,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "Identify",
+        "Streams",
+        "Directive Type"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "should"
+      ],
+      "evidence_digest": "4fa5b4081b3a98e3abd7a43b30296bd55a8913e15727af998e2d175c9eced2b2",
+      "teaching_module": "streams-model"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-703",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "703",
+      "title": "Directive Specific Field Interpretation",
+      "section": "8.1.9.1",
+      "printed_pages": "617",
+      "pdf_pages": "643",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": true,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DTYPE",
+        "DSPEC"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "d9e1d0faf0e7549077d7d63057a9c9438b513d7274eb9fd1a5d37ea2a4ce648f",
+      "teaching_module": "streams-model"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-704",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "704",
+      "title": "Identify Directive – Directive Operations",
+      "section": "8.1.9.2",
+      "printed_pages": "618",
+      "pdf_pages": "644",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "Identify Directive – Directive Operations"
+      ],
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "evidence_digest": "cb4452ccb64c39aaf63b2c3fbe1257a8378a3cecc200fd88586bd8d460bdf208",
+      "teaching_module": "streams-enable"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-705",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "705",
+      "title": "Identify Directive – Return Parameters Data Structure",
+      "section": "8.1.9.2.1.1",
+      "printed_pages": "618-619",
+      "pdf_pages": "644-645",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": true,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "SDIRS",
+        "SDIRE",
+        "SDIRCLR",
+        "IDIRS",
+        "IDIRE",
+        "IDIRCLR"
+      ],
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "evidence_digest": "0727e50c0ac66e9d683589d50e838b2a2f1d61d9203e18aed61db4714a6f020b",
+      "teaching_module": "streams-enable"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-706",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "706",
+      "title": "Enable Directive – Command Dword 12",
+      "section": "8.1.9.2.2.1",
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DTYPE",
+        "ENDIR"
+      ],
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "evidence_digest": "514a7c7c01209d837ca725f390fc202946f393684c322fcd2f1d3dcd8af332d5",
+      "teaching_module": "streams-enable"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-707",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "707",
+      "title": "Enable Directive – Command Specific Status Values",
+      "section": "8.1.9.2.2.1",
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "SWS",
+        "SGS"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "4a1a0779cd6a8f4143cbebd83d72fa3f90c0df5e56ca5fbc657cc02e53559f88",
+      "teaching_module": "streams-enable"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-708",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "708",
+      "title": "Directive Streams – Stream Alignment and Granularity",
+      "section": "8.1.9.3",
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "SWS",
+        "SGS"
+      ],
+      "source_keywords": [
+        "should"
+      ],
+      "evidence_digest": "caeb4abc2a2b03fb45df20495bb9c95eaf127cd73839828b157373d26e29d0a7",
+      "teaching_module": "streams-sizes"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-709",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "709",
+      "title": "Streams – Directive Operations",
+      "section": "8.1.9.3",
+      "printed_pages": "621",
+      "pdf_pages": "647",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "Streams – Directive Operations"
+      ],
+      "source_keywords": [
+        "reserved",
+        "may"
+      ],
+      "evidence_digest": "9eaa54e5edb8b3f5ec6b1d214e0c5b62637a7d87bbe95f054383c53260750c6f",
+      "teaching_module": "streams-resources"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-711",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "711",
+      "title": "Streams Directive – Command Specific Status Values",
+      "section": "8.1.9.3",
+      "printed_pages": "623",
+      "pdf_pages": "649",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "Stream Resource Allocation Failed"
+      ],
+      "source_keywords": [
+        "shall not"
+      ],
+      "evidence_digest": "628247a0a7cdbe4e1d60584919bdbe045557586977d1c1ec762daa88f8bbf9d0",
+      "teaching_module": "streams-resources"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-712",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "712",
+      "title": "Streams Directive – Return Parameters Data Structure",
+      "section": "8.1.9.3.1.1",
+      "printed_pages": "624-625",
+      "pdf_pages": "650-651",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "MSL",
+        "NSSA",
+        "NSSO",
+        "NSSC",
+        "SRNZID",
+        "SSID",
+        "SWS",
+        "MDTS",
+        "SGS",
+        "NSA",
+        "NSO"
+      ],
+      "source_keywords": [
+        "reserved",
+        "may",
+        "should",
+        "shall"
+      ],
+      "evidence_digest": "ded916fae1c7879e7e97e74801ee4b1838fb20947e0ed5efbb01c082d9e40372",
+      "teaching_module": "streams-resources"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-714",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "714",
+      "title": "Allocate Resources – Command Dword 12",
+      "section": "8.1.9.3.1.3",
+      "printed_pages": "626",
+      "pdf_pages": "652",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "NSR"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "3b779a5437812e03e4fc28e9636b48489ce0adae40910c6b7cf860822cc17fd2",
+      "teaching_module": "streams-resources"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-715",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "715",
+      "title": "Allocate Resources – Completion Queue Entry Dword 0",
+      "section": "8.1.9.3.1.3",
+      "printed_pages": "626",
+      "pdf_pages": "652",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "NSA"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "8024be97dec0dd1061f7c54d7797f0e9f4f6817997ded6a5200d5c6e697a086e",
+      "teaching_module": "streams-resources"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-710",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "710",
+      "title": "Example Multi-Stream and NSSC",
+      "section": "8.1.9.3",
+      "printed_pages": "622",
+      "pdf_pages": "648",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "Host Identifier",
+        "SSID",
+        "NSID",
+        "Stream Identifier"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "1f26cfe3598476f4d244333cd96bab3bba41a67958da30cd06a1d851c270d94f",
+      "teaching_module": "streams-sharing"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-713",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "713",
+      "title": "Streams Directive – Get Status Data Structure",
+      "section": "8.1.9.3.1.2",
+      "printed_pages": "626",
+      "pdf_pages": "652",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "main",
+      "scope_reduced": false,
+      "role": "primary",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "OSC",
+        "SID1",
+        "SID2",
+        "SID65535"
+      ],
+      "source_keywords": [
+        "may",
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "9b46c4314c636e3de922c8fb611d1b0f693c258f461353fdeadd7ac352b2796c",
+      "teaching_module": "streams-lifetime"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-036",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "36",
+      "title": "Offset 0h: CAP – Controller Capabilities",
+      "section": "3.1.4.1",
+      "printed_pages": "55-58",
+      "pdf_pages": "81-84",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "MPSMIN"
+      ],
+      "source_keywords": [
+        "reserved",
+        "shall",
+        "shall not",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "f15f0948bdc2faed0c9e87e8348c3e165684478bbfd6e5bc627e885f1f4dbb17",
+      "teaching_module": "streams-sizes",
+      "referenced_from": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 MPSMIN 與本篇操作的連接。",
+        "en": "Only MPSMIN and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-NVM-FIG-070",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "70",
+      "title": "Write – Command Dword 10 and Command Dword 11",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "STREAMS-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "51a696190f810ac9a30eaea1073ae4915df7bb3af169cff36caa4c71aa9e5512",
+      "teaching_module": "streams-write",
+      "referenced_from": [
+        "8.1.9.1",
+        "5.13"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 SLBA 與本篇操作的連接。",
+        "en": "Only SLBA and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-NVM-FIG-071",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "71",
+      "title": "Write – Command Dword 12",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "STREAMS-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DTYPE",
+        "CETYPE",
+        "NLB",
+        "FUA"
+      ],
+      "source_keywords": [
+        "should",
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "1cbb820e7f82a8b51046b15483f96198c9a5513b87a9498103cf49fd2d9323c1",
+      "teaching_module": "streams-write",
+      "referenced_from": [
+        "8.1.9.1",
+        "5.13"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 DTYPE, CETYPE, NLB, FUA 與本篇操作的連接。",
+        "en": "Only DTYPE, CETYPE, NLB, FUA and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-NVM-FIG-072",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "72",
+      "title": "Write – Command Dword 13 if CETYPE is cleared to 0h",
+      "section": "3.3.6",
+      "printed_pages": "54-55",
+      "pdf_pages": "54-55",
+      "scope_entry_id": "STREAMS-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "scope_reduced": false,
+      "role": "referenced_dependency",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DSM",
+        "INCPRS",
+        "SEQREQ",
+        "AL",
+        "AF"
+      ],
+      "source_keywords": [
+        "reserved"
+      ],
+      "evidence_digest": "d0b9e29bea6cda4f9ebe04175d32143822b40f19998eab702c2dd7ee5a16054a",
+      "teaching_module": "streams-write",
+      "referenced_from": [
+        "8.1.9.1",
+        "5.13"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只教 DSPEC, DSM, INCPRS, SEQREQ, AL, AF 與本篇操作的連接。",
+        "en": "Only DSPEC, DSM, INCPRS, SEQREQ, AL, AF and their relationships needed for this report."
+      }
+    },
+    {
+      "id": "STREAMS-BASE-FIG-212",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "212",
+      "title": "Error Information Log Entry Data Structure",
+      "section": "5.2.13.1.2",
+      "printed_pages": "218-220",
+      "pdf_pages": "244-246",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "streams-tutorial-html"
+      ],
+      "introduced_in": [
+        "streams-tutorial-html"
+      ],
+      "key_items": [
+        "PEL",
+        "BYTLOC",
+        "BITLOC"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "should"
+      ],
+      "evidence_digest": "df3cdbb3d89941f9eac4d0daea5680983bddf8eaa447c0536e24f82c52c92516",
+      "teaching_module": "streams-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.9.3"
+      ],
+      "dependency_focus": {
+        "zh_tw": "僅 PEL 將 Streams 拒絕條件對回命令欄位。",
+        "en": "Only PEL linking a Streams rejection to command-field location."
+      }
     }
   ]
 }

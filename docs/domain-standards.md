@@ -16,7 +16,7 @@ PCI Express Base Specification 或 controller vendor 行為。
 
 目前沒有其他適用的 Errata、Engineering Change Notice (ECN)、Technical Proposal 或
 controller vendor 文件。若之後新增，必須先更新來源登記、範圍與所有受影響 claim，
-再更新 14 份報告中受影響的輸出（每篇 3 版，共 42 個交付檔）。
+再更新 15 份報告中受影響的輸出（每篇 3 版，共 45 個交付檔）。
 
 ## 規範性用語
 

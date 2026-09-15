@@ -18,6 +18,9 @@ def route(points, label='', label_at=None):
 
 
 def course_illustration(key):
+    if key.startswith('streams-'):
+        from scripts.nvme_directives_visuals import illustration
+        return illustration(key)
     if key.startswith('adminio-'):
         from scripts.nvme_admin_io_visuals import illustration
         return illustration(key)

@@ -284,6 +284,9 @@ class Reading:
         if self.id == 'admin-io-spec-walkthrough' and not self.tutorial:
             from scripts.nvme_admin_io import render_route
             out.append(render_route(self))
+        if self.id == 'base-directives-streams' and not self.tutorial:
+            from scripts.nvme_directives import render_route
+            out.append(render_route(self))
         groups, remainder = self.assigned_figures() if self.tutorial else ({m['id']:[] for m in self.modules}, [])
         for index, module in enumerate(self.modules, 1):
             lesson = LESSONS[module['id']]
@@ -299,11 +302,11 @@ class Reading:
             lead = module['lead'][self.lang]
             if not self.tutorial and not any(similar(module['lead'][lang], c[text_key(lang)]) for c in fresh for lang in ('zh', 'en')):
                 out.append(self.paragraph(lead))
-            if self.tutorial and self.id == 'admin-io-spec-walkthrough':
+            if self.tutorial and (self.id == 'admin-io-spec-walkthrough' or self.report.get('course_claim_first')):
                 out.extend(self.claim(c) for c in fresh)
                 fresh = []
             early_illustration = ''
-            if self.tutorial and self.id == 'admin-io-spec-walkthrough':
+            if self.tutorial and (self.id == 'admin-io-spec-walkthrough' or self.report.get('course_claim_first')):
                 from scripts.nvme_course_visuals import course_illustration
                 early_illustration = course_illustration(module['id'])
             if self.tutorial:
@@ -324,7 +327,7 @@ class Reading:
                     out.append('<aside class="course-outcome">'+self.paragraph(course['outcome'])+'</aside></div>')
                 else:
                     out.extend(self.paragraph(p) for p in lesson['teaching'])
-                if self.id != 'admin-io-spec-walkthrough':
+                if self.id != 'admin-io-spec-walkthrough' and not self.report.get('course_claim_first'):
                     out.append(self.source(sources))
                 out.append('</div>')
             from scripts.nvme_course_visuals import course_illustration

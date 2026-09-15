@@ -104,6 +104,9 @@ for term, full, zh, en in [
 
 def definitions(report_id, language):
     selected = dict(COMMON)
+    if report_id == 'base-directives-streams':
+        from scripts.nvme_directives import TERMS
+        selected.update({term:b(*values) for term,values in TERMS.items()})
     if report_id in {'nvm-command-set-1.3','admin-io-spec-walkthrough'}:
         selected.update(NVM)
     if report_id == 'admin-io-spec-walkthrough':

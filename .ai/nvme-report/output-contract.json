@@ -555,6 +555,47 @@
       ],
       "purpose": "全局講解、代表案例與順向 Spec 報告路徑；中英文對等",
       "parity_group": "adminio-bilingual"
+    },
+    {
+      "id": "streams-tutorial-html",
+      "report_id": "base-directives-streams",
+      "path": "DOCS/nvme-spec-report/base-directives-streams/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文漸進教學與完整逐圖解釋",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "streams-zh-md",
+      "report_id": "base-directives-streams",
+      "path": "_posts/2026-09-15-nvme-directives-streams-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "streams-bilingual"
+    },
+    {
+      "id": "streams-en-md",
+      "report_id": "base-directives-streams",
+      "path": "_posts/2026-09-15-nvme-directives-streams-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；接續閱讀 Spec；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "streams-bilingual"
     }
   ],
   "source_markers": {
@@ -618,7 +659,8 @@
     "baseboot-tutorial-html",
     "basetelemetry-tutorial-html",
     "basesanitize-tutorial-html",
-    "adminio-tutorial-html"
+    "adminio-tutorial-html",
+    "streams-tutorial-html"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -642,5 +684,5 @@
     "per_figure_takeaway_example_details": true,
     "post_purpose": "global view before opening the specification"
   },
-  "report_count": 14
+  "report_count": 15
 }

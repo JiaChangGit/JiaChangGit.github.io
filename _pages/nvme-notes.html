@@ -6,6 +6,11 @@ nvme_notes: true
 ---
 <div class="nvme-note">
 <h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>
+<section><h2>NVMe Directives 與 Streams：從主機分組到寫入與資源管理</h2><p>這篇說明主機如何把「哪些資料屬於同一組」告訴 SSD。先建立主機、控制器、namespace 與串流的關係，再走過能力查詢、啟用、資源配置、Write 與釋放；最後看相同編號在不同路徑下的含義，以及 SWS／SGS 如何影響資料安排。</p><ul>
+<li><a href="/DOCS/nvme-spec-report/base-directives-streams/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
+<li><a href="{% post_url 2026-09-15-nvme-directives-streams-zh-tw %}">中文全局報告</a></li>
+<li><a href="{% post_url 2026-09-15-nvme-directives-streams-en %}">English overview</a></li>
+</ul></section>
 <section><h2>NVMe 管理與資料命令：沿著 Spec 講解</h2><p>這份報告串起主機管理 SSD 與執行資料操作所需的介面：如何確認能力、調整運作方式、接收狀態，再把 Read／Write 等命令的範圍與完成保證講清楚。先看全貌，接著真的打開 Base 與 NVM Command Set，依頁碼往後讀。</p><ul>
 <li><a href="/DOCS/nvme-spec-report/admin-io-spec-walkthrough/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
 <li><a href="{% post_url 2026-09-13-nvme-admin-io-spec-walkthrough-zh-tw %}">中文全局報告</a></li>

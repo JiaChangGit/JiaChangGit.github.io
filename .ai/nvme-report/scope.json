@@ -1503,6 +1503,94 @@
         "ADMINIO-NVM-FIG-134"
       ],
       "reference_teaching_policy": "Shared tables retain their identity but only selected rows are taught. Referenced fields receive local explanations; excluded workflows are not reopened."
+    },
+    {
+      "id": "base-directives-streams",
+      "title_zh_tw": "NVMe Directives 與 Streams",
+      "title_en": "NVMe Directives and Streams",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "Base §8.1.9 except §8.1.9.4",
+        "Base §5.2.7",
+        "Base §5.2.8",
+        "Base §5.2.30.1.35 (PCIe)",
+        "NVM §5.13"
+      ],
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.9",
+          "5.2.7",
+          "5.2.8",
+          "5.2.30.1.35"
+        ],
+        "NVME-NVM-CS-1.3": [
+          "5.13"
+        ]
+      },
+      "excluded_sections": [
+        "8.1.9.4",
+        "5.2.30.1.35.2"
+      ],
+      "printed_pages": "Base 201-202, 508-510, 616-627; NVM 175",
+      "pdf_pages": "Base 227-228, 534-536, 642-653; NVM 175",
+      "included_figure_ids": [
+        "STREAMS-BASE-FIG-093",
+        "STREAMS-BASE-FIG-143",
+        "STREAMS-BASE-FIG-181",
+        "STREAMS-BASE-FIG-182",
+        "STREAMS-BASE-FIG-183",
+        "STREAMS-BASE-FIG-184",
+        "STREAMS-BASE-FIG-185",
+        "STREAMS-BASE-FIG-186",
+        "STREAMS-BASE-FIG-197",
+        "STREAMS-BASE-FIG-198",
+        "STREAMS-BASE-FIG-199",
+        "STREAMS-BASE-FIG-201",
+        "STREAMS-BASE-FIG-463",
+        "STREAMS-BASE-FIG-464",
+        "STREAMS-BASE-FIG-465",
+        "STREAMS-BASE-FIG-537",
+        "STREAMS-BASE-FIG-538",
+        "STREAMS-BASE-FIG-338",
+        "STREAMS-BASE-FIG-702",
+        "STREAMS-BASE-FIG-703",
+        "STREAMS-BASE-FIG-704",
+        "STREAMS-BASE-FIG-705",
+        "STREAMS-BASE-FIG-706",
+        "STREAMS-BASE-FIG-707",
+        "STREAMS-BASE-FIG-708",
+        "STREAMS-BASE-FIG-709",
+        "STREAMS-BASE-FIG-711",
+        "STREAMS-BASE-FIG-712",
+        "STREAMS-BASE-FIG-714",
+        "STREAMS-BASE-FIG-715",
+        "STREAMS-BASE-FIG-710",
+        "STREAMS-BASE-FIG-713",
+        "STREAMS-BASE-FIG-036",
+        "STREAMS-NVM-FIG-070",
+        "STREAMS-NVM-FIG-071",
+        "STREAMS-NVM-FIG-072",
+        "STREAMS-BASE-FIG-212"
+      ],
+      "dependency_figures": [
+        "STREAMS-BASE-FIG-093",
+        "STREAMS-BASE-FIG-143",
+        "STREAMS-BASE-FIG-197",
+        "STREAMS-BASE-FIG-198",
+        "STREAMS-BASE-FIG-199",
+        "STREAMS-BASE-FIG-201",
+        "STREAMS-BASE-FIG-463",
+        "STREAMS-BASE-FIG-464",
+        "STREAMS-BASE-FIG-465",
+        "STREAMS-BASE-FIG-338",
+        "STREAMS-BASE-FIG-036",
+        "STREAMS-NVM-FIG-070",
+        "STREAMS-NVM-FIG-071",
+        "STREAMS-NVM-FIG-072",
+        "STREAMS-BASE-FIG-212"
+      ],
+      "approval_note": "2026-09-15 使用者指定主範圍，沿用已授權的三版交付、必要背景教學與驗證後 push。",
+      "reference_teaching_policy": "必要引用逐圖教學，只取本篇所需欄位與條件；Fabrics、Discovery、NQN 排除。"
     }
   ],
   "interpretation_sources": [
@@ -2466,6 +2554,138 @@
         "134"
       ],
       "note": "Referenced NVM Create payload only; not an extension of the primary NVM route."
+    },
+    {
+      "id": "STREAMS-BASE-INCLUDE",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "8.1.9",
+        "5.2.7",
+        "5.2.8",
+        "5.2.30.1.35"
+      ],
+      "figures": [
+        "181",
+        "182",
+        "183",
+        "184",
+        "185",
+        "186",
+        "537",
+        "538",
+        "702",
+        "703",
+        "704",
+        "705",
+        "706",
+        "707",
+        "708",
+        "709",
+        "711",
+        "712",
+        "714",
+        "715",
+        "710",
+        "713"
+      ]
+    },
+    {
+      "id": "STREAMS-BASE-DEPENDENCY",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "4.1.1",
+        "5",
+        "5.2.12",
+        "5.2.12.2",
+        "5.2.30",
+        "5.2.14.1",
+        "3.1.4.1",
+        "5.2.13.1.1"
+      ],
+      "figures": [
+        "93",
+        "143",
+        "197",
+        "198",
+        "199",
+        "201",
+        "463",
+        "464",
+        "465",
+        "338",
+        "36",
+        "212"
+      ],
+      "note": "Minimum field slices only; primary scope is unchanged."
+    },
+    {
+      "id": "STREAMS-BASE-PREREQUISITES",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "status": "PREREQUISITE_ONLY",
+      "sections": [
+        "4.1.1",
+        "5",
+        "5.2.12",
+        "5.2.12.2",
+        "5.2.30",
+        "5.2.14.1",
+        "3.1.4.1",
+        "5.2.13.1.1"
+      ],
+      "teaching_necessity": "Explain capability checks, field positions, Feature requests, or the Write/Streams connection without requiring another report.",
+      "supports_topic": "Directives, Host Identifier, Streams commands, sizing and lifetime."
+    },
+    {
+      "id": "STREAMS-NVM-INCLUDE",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": [
+        "5.13"
+      ],
+      "figures": []
+    },
+    {
+      "id": "STREAMS-NVM-DEPENDENCY",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "INCLUDE",
+      "sections": [
+        "3.3.6"
+      ],
+      "figures": [
+        "70",
+        "71",
+        "72"
+      ],
+      "note": "Minimum field slices only; primary scope is unchanged."
+    },
+    {
+      "id": "STREAMS-NVM-PREREQUISITES",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "status": "PREREQUISITE_ONLY",
+      "sections": [
+        "3.3.6"
+      ],
+      "teaching_necessity": "Explain capability checks, field positions, Feature requests, or the Write/Streams connection without requiring another report.",
+      "supports_topic": "Directives, Host Identifier, Streams commands, sizing and lifetime."
+    },
+    {
+      "id": "STREAMS-EXCLUDE",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "status": "EXCLUDE",
+      "sections": [
+        "8.1.9.4",
+        "5.2.30.1.35.2"
+      ],
+      "note": "Data Placement operations and Fabrics excluded; shared tables retain only the necessary type labels and Streams constraint."
     }
   ],
   "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",

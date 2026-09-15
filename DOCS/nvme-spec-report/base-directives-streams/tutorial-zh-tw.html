@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Directives 與 Streams：從主機分組到寫入與資源管理</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-streams-model">01 先理解 Streams 要解決什麼問題</a><a href="#module-streams-host">02 先讓控制器知道哪些路徑屬於同一主機</a><a href="#module-streams-enable">03 查支援、登記身分，再啟用 Streams</a><a href="#module-streams-commands">04 讀懂 Directive 命令的欄位與資料方向</a><a href="#module-streams-resources">05 配置多少資源，與開了幾條串流分開看</a><a href="#module-streams-sharing">06 同一個 Stream Identifier，到底是不是同一條串流</a><a href="#module-streams-write">07 把一筆 Write 接到串流</a><a href="#module-streams-sizes">08 把 SWS／SGS 換成實際的資料量</a><a href="#module-streams-lifetime">09 觀察串流、結束使用與處理狀態變更</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Directives 與 Streams：從主機分組到寫入與資源管理</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">這篇說明主機如何把「哪些資料屬於同一組」告訴 SSD。先建立主機、控制器、namespace 與串流的關係，再走過能力查詢、啟用、資源配置、Write 與釋放；最後看相同編號在不同路徑下的含義，以及 SWS／SGS 如何影響資料安排。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>SGS</dt><dd>Stream Granularity Size；以 SWS 為單位表示媒體配置的粒度大小。</dd></div><div><dt>SWS</dt><dd>Stream Write Size；在 NVM Command Set 以 logical blocks 表示最佳寫入的對齊與大小單位。</dd></div></dl>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>資料分組的目的</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">Stream Identifier 為寫入補上資料關聯，LBA 仍決定寫入位置。先理解這個分工，才不會把串流當成另一個 namespace。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Stream Identifier</dt><dd>串流編號；主機選擇的 16-bit 標記，其意義還取決於 namespace、主機身分與共享設定。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>管理流程與資料流</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">查能力、登記身分、啟用功能與配置資源是準備工作；真正使用串流的是帶標記的 Write。管理命令不必跟每一筆資料同步重送。</span></p></article>
+<article><span class="axis-number">03</span><h3>身分與資源的共享範圍</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">Host Identifier 與 SSID 決定哪些路徑共用串流；NSA、NSSA、NSO 則區分容量、資源池與目前使用狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host Identifier</dt><dd>主機識別值；用來判斷不同控制器是否服務同一主機，與串流編號不同。</dd></div><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div><div><dt>NSSA</dt><dd>NVM Subsystem Streams Available；未分配成 namespace 專用的資源池大小，不等於其中完全閒置的數量。</dd></div><div><dt>SSID</dt><dd>Shared Stream Identifiers；決定不同非零主機身分是否可共享同一 namespace 的同號串流。</dd></div><div><dt>NSA</dt><dd>Namespace Streams Allocated；指定 namespace 與可見主機關聯下的專用配置數，也用於 Allocate 的完成回覆。</dd></div><div><dt>NSO</dt><dd>Namespace Streams Open；指定 namespace 與可見主機關聯下的開啟串流數。</dd></div></dl></article>
+<article><span class="axis-number">04</span><h3>大小安排與生命週期</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">SWS／SGS 協助安排寫入與解除配置；Release、停用及 reset 決定追蹤狀態何時結束，這和使用者資料是否仍存在不同。</span></p></article>
+</div>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">讀者只需有 OS、Computer Organization 與 SSD 基本概念。本文以 PCIe 控制器為情境，完整涵蓋指定 Directives／Streams 範圍；Data Placement §8.1.9.4 不展開。例子的數量、LBA 與主機 A／B 是說明性設定，實際能力以裝置回覆為準。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Directives</dt><dd>主機與控制器交換附加資訊的機制；依類型定義查詢、設定與 I/O 附加資訊。</dd></div><div><dt>Streams</dt><dd>以串流編號標示相關寫入資料的 Directive；不直接指定 NAND 實體位置。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">可以把這篇想成一次完整的資料使用週期：先決定哪幾筆資料有關，再確認控制器支援、各路徑的主機身分與啟用狀態，接著選擇資源來源。Write 帶入編號時才產生串流活動；資料不再屬於這次群組時，再結束編號的使用。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">兩個數字相同不一定代表同一件事：相同 Stream Identifier 可能屬於不同主機，SWS=8 與 NSA=8 更分別是資料大小和資源個數。後面的例子會逐步固定其他條件，只改一項設定，觀察意義如何變化。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-streams-model"><h2 id="heading-streams-model"><span class="section-number">01</span> 先理解 Streams 要解決什麼問題</h2>
+<!-- claim:STREAMS-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Directives 讓主機與控制器交換額外資訊。Streams 用主機指定的 Stream Identifier，指出哪些寫入資料屬於同一組；控制器可利用分組改善資料配置或效能，但這個編號不直接指定 NAND 的實體位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9, 8.1.9.1, 8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.1, 8.1.9.3, 文件頁 616-623, PDF 頁 642-649</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先看主機知道、SSD 未必知道的資訊</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">作業系統送出 Write 時，控制器能看到要寫的 LBA 範圍與資料，卻不一定知道這些資料屬於哪個應用用途。例如兩筆相隔很遠的 LBA，都可能是同一批短期暫存資料。Streams 讓主機額外標出這個關係。控制器可以依此安排相關資料，但規格沒有承諾某個編號會對應固定的 NAND block，也沒有保證每種工作負載都會加速。</span></p>
+<h3>分清管理操作與實際寫入</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Directive Send／Receive 是 Admin 命令，用來查能力、啟用功能、取得狀態或管理資源。真正把使用者資料寫入 namespace 的仍是 Write；Write 內的 DTYPE 與 DSPEC 才把本次資料連到某個串流。主機不需要每寫一筆資料就先送一次 Directive Send。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div><div><dt>DSPEC</dt><dd>Directive Specific；含義由類型和操作決定，在 Streams 的 I/O 中放串流編號。</dd></div><div><dt>DTYPE</dt><dd>Directive Type；選 Directive 類型。Enable 的外層操作類型與內層目標類型必須分開讀。</dd></div></dl>
+<figure><figcaption><strong>從準備到資料使用</strong></figcaption><ol class="flow-steps"><li>查 Directives／Streams 支援；先登記適用的非零 Host Identifier。</li><li>透過 Identify Directive 啟用 Streams；確認狀態與參數。</li><li>選擇專用或 subsystem 資源；需要專用容量時請求配置並讀實際授予數。</li><li>Write 帶 Stream Identifier；第一筆使用未開啟編號的寫入會開啟串流。</li><li>Get Status 看開啟編號；用 Release Identifier 結束分組，用 Release Resources 歸還專用配置。</li></ol><figcaption>Allocate Resources 是選擇專用容量的操作，不是每個使用 Streams 的主機都必須先配置。來源：Base §8.1.9.2–§8.1.9.3。</figcaption></figure>
+
+<h3>同一個 00h，要看它出現在哪裡</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">在 Directive Send／Receive 的 DTYPE 中，00h 選擇 Identify Directive，這是一套查詢與啟用 Directives 的操作。在 I/O 命令的 DTYPE 中，00h 表示本次不使用 Directive。Identify Directive 也不是一般的 Identify Admin 命令：前者查 Directives，後者可查控制器與 namespace 的整體能力。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
+<h3>把本篇的邊界放在流程旁邊</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">本篇完整說明 Identify Directive、Streams、Directive Send／Receive、Host Identifier FID 81h 的共同與 PCIe 規則，以及 NVM Command Set 對 Streams 的大小單位。Data Placement 的 §8.1.9.4 不展開；只有 Streams 本身明定的互斥啟用限制會在相關段落說明。廠商專屬 Directive 的編碼僅供辨認，不能替廠商推定其行為。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">說明性情境：應用程式把短期暫存資料標成 stream 7，把長期保留資料標成 stream 40。兩組仍寫入各自指定的 LBA；stream 只補充分組資訊，不取代 LBA。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-model">閱讀相關規格圖表 → 先理解 Streams 要解決什麼問題</a>
+</section>
+<section class="lesson" id="module-streams-host"><h2 id="heading-streams-host"><span class="section-number">02</span> 先讓控制器知道哪些路徑屬於同一主機</h2>
+<!-- claim:STREAMS-HOST -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">FID 81h 登記 Host Identifier，讓同一 NVM subsystem 內的控制器辨認共同主機。相同非零值可建立共同身分；0h 則表示不與其他控制器建立這種關聯。PCIe 的預設值為 0h，此 Feature 不可保存。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVM subsystem，包含 controller、port、namespace 與非揮發性儲存資源的 NVMe 系統邊界。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.35, 5.2.30.1.35.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, 5.2.30.1.35.1, 文件頁 508-510, PDF 頁 534-536</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>為什麼不能只看控制器編號</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">同一台主機可能經兩個控制器存取同一個 namespace。Streams 需要知道這兩條路徑是不是同一主機，否則無法正確判斷是否共享啟用狀態、串流編號或專用資源。Host Identifier 的用途就是建立這種關聯；它不是 NSID，也不是 Stream Identifier。選值與確保唯一性的方式由主機環境決定，規格沒有指定產生演算法。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl>
+<h3>選 64-bit 或 128-bit 時，要連同能力一起讀</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">FID 81h 的 CDW11.EXHID=0 選 64-bit，EXHID=1 選 128-bit；Identify Controller 的 CTRATT.HIDS 表示是否支援 128-bit。PCIe 可以支援其中一種或兩種，不能看到 PCIe 就假設兩種都可用。若所選長度不支援，回 Invalid Field in Command；若 subsystem 同時支援兩種長度，卻偵測到另一控制器已用不同長度的非零識別值，回 Host Identifier Inconsistent Format。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>EXHID</dt><dd>Enable Extended Host Identifier；0 選 64-bit，1 選 128-bit 身分格式。</dd></div><div><dt>HIDS</dt><dd>Host Identifier Support；CTRATT 中表示支援 128-bit 身分的位元。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl>
+<h3>資料 buffer 和控制位元各司其職</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">Set Features 用 FID=81h、SV=0，CDW11 選長度，DPTR 指向 HOSTID 資料。Get Features 的 SEL=0 查目前值，回覆也要看資料 buffer；SEL=3 查的是 Feature 支援能力，不能把它的 CQE DW0 當成 Host Identifier。64-bit 格式用 HOSTID 的 bytes 7:0，bytes 15:8 是保留區；128-bit 格式則使用 bytes 15:0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>HOSTID</dt><dd>Host Identifier 資料結構中的實際身分值。</dd></div><div><dt>buffer</dt><dd>記憶體緩衝區；主機準備用來提供或接收資料的空間。</dd></div><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>SEL</dt><dd>Select，Get Features 用來選 current、default、saved 或 supported-capabilities view 的欄位。</dd></div><div><dt>SV</dt><dd>Save，Set Features 要求 controller 同時保存所設定 value 的 bit。</dd></div></dl>
+<h3>0h 改成非零值，並不是把舊串流一起搬過去</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">目前 Host Identifier 為 0h 時，可以登記 HOSTID；目前已是非零值時，再要求設定會回 Command Sequence Error。若先以 0h 開始使用 Streams，之後才改成非零值，原有串流資訊與配置資源仍屬於舊的 0h 身分，不會自動轉給新身分。因此規格建議先登記非零值，再使用 Streams；若 SRNZID=1，這更是啟用 Streams 的必要條件。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SRNZID</dt><dd>Streams Require Non-Zero Host Identifier；1 表示啟用前必須先登記非零主機身分。</dd></div></dl>
+<h3>不要把非零身分當成可保存的設定</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">PCIe 的 Host Identifier 預設是 0h，沒有 保存值。主機在重新建立控制器的使用狀態時，需要確認目前身分與其他路徑的關係。0h 也可能用於部分裝置的 reservation，但它不代表跨控制器的同一主機，相關 registration／reservation 不跨 Controller Level Reset 保留；CTRATT.RHII=1 表示使用 reservations 前要求非零身分，0 表示未回報；Streams 的對應要求則看 SRNZID。本篇只用這個限制理解身分，不展開 reservation 操作。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">控制器 C1、C2 都服務主機 A 時，在使用 Streams 前登記相同的非零 Host Identifier。若兩者都保留 0h，即使數值相同，也不能據此當作同一主機。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-host">閱讀相關規格圖表 → 先讓控制器知道哪些路徑屬於同一主機</a>
+</section>
+<section class="lesson" id="module-streams-enable"><h2 id="heading-streams-enable"><span class="section-number">03</span> 查支援、登記身分，再啟用 Streams</h2>
+<!-- claim:STREAMS-ENABLE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">先由 OACS.DIRS 確認 Directives，再用 Identify Directive 查 Streams 是否支援與啟用。Enable Directive 的 CDW11 選 Identify 操作，CDW12 才選要啟用的 Streams；namespace 與 Host Identifier 一起決定共享的啟用狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DIRS</dt><dd>Directives Supported；OACS 中的 Directives 整體支援位元。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.9, 8.1.9.2, 8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.2, 8.1.9.3, 文件頁 616-624, PDF 頁 642-650</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>第一層查詢：控制器是否提供 Directives</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">OACS.DIRS=1 表示控制器支援 Directives；此時必須支援 Directive Send、Directive Receive 以及 Identify Directive。它沒有直接保證 Streams 一定支援。下一步要用 Directive Receive、DTYPE=00h、DOPER=01h 取得 Identify Directive 的 Return Parameters；對這個查詢使用 NSID=FFFFFFFFh 會回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DOPER</dt><dd>Directive Operation；在所選類型與命令方向下，指定要執行的操作。</dd></div></dl>
+<h3>第二層查詢：分開看支援、啟用與重設保留</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">4096-byte 回覆的前 3 組 32-byte 位元向量，分別位於 bytes 31:0、63:32、95:64。第一組的 SDIRS 說控制器是否支援 Streams，第二組的 SDIRE 說指定 namespace 是否已啟用，第三組的 SDIRCLR 說狀態能否跨 Controller Level Reset 保留。Streams 的 SDIRCLR 固定是 0；後文會說明多控制器仍有活動路徑時的例外，不能只憑這個 bit 推論所有路徑一起失去狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SDIRCLR</dt><dd>Streams Directive Persistent Across Controller Level Resets；Streams 此位元為 0，仍須讀多控制器的保留例外。</dd></div><div><dt>SDIRE</dt><dd>Streams Directive Enabled；指定 namespace 目前是否已啟用 Streams。</dd></div><div><dt>SDIRS</dt><dd>Streams Directive Supported；控制器是否支援 Streams。</dd></div></dl>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 250" role="img"><title>Enable 的外層操作與內層目標</title><desc>外層 DTYPE=0 選 Identify；內層 DTYPE=1 才指要啟用的 Streams。圖塊寬度為閱讀調整，以標示的 bits 為準。來源：Base Figures 186、706。</desc><rect x="20" y="25" width="210" height="70" rx="6" class="v-object"/><text x="125.0" y="53.5" text-anchor="middle" font-size="17">CDW11</text><text x="125.0" y="78.5" text-anchor="middle" font-size="17">00000001h</text><rect x="250" y="25" width="230" height="70" rx="6" class="v-command"/><text x="365.0" y="53.5" text-anchor="middle" font-size="17">DTYPE[15:8] = 0</text><text x="365.0" y="78.5" text-anchor="middle" font-size="17">Identify</text><rect x="500" y="25" width="240" height="70" rx="6" class="v-command"/><text x="620.0" y="53.5" text-anchor="middle" font-size="17">DOPER[7:0] = 1</text><text x="620.0" y="78.5" text-anchor="middle" font-size="17">Enable Directive</text><rect x="20" y="150" width="210" height="70" rx="6" class="v-object"/><text x="125.0" y="178.5" text-anchor="middle" font-size="17">CDW12</text><text x="125.0" y="203.5" text-anchor="middle" font-size="17">00000101h</text><rect x="250" y="150" width="230" height="70" rx="6" class="v-success"/><text x="365.0" y="178.5" text-anchor="middle" font-size="17">DTYPE[15:8] = 1</text><text x="365.0" y="203.5" text-anchor="middle" font-size="17">Streams</text><rect x="500" y="150" width="240" height="70" rx="6" class="v-success"/><text x="620.0" y="178.5" text-anchor="middle" font-size="17">ENDIR[0] = 1</text><text x="620.0" y="203.5" text-anchor="middle" font-size="17">啟用</text><path d="M365,95 L365,150" class="v-line"/><path d="M361,143 L365,150 L369,143" class="v-line"/></svg></div><figcaption>外層 DTYPE=0 選 Identify；內層 DTYPE=1 才指要啟用的 Streams。圖塊寬度為閱讀調整，以標示的 bits 為準。來源：Base Figures 186、706。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>ENDIR</dt><dd>Enable Directive；1 要求啟用，0 要求停用 CDW12 選定的類型。</dd></div></dl>
+<h3>啟用要求裡有兩個 DTYPE，但用途不同</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">外層 CDW11.DTYPE=00h 選 Identify Directive，DOPER=01h 選 Enable Directive。內層 CDW12.DTYPE=01h 才指向 Streams；ENDIR=1 啟用、0 停用。DSPEC 在這個操作不使用，也沒有資料傳輸。把 CDW11.DTYPE 直接填成 01h，會變成 Streams 的操作空間，並不是正確選到 Identify 的 Enable。Identify Directive 永遠啟用，不能用這個操作改變它，目標 DTYPE=00h 會被拒絕。</span></p>
+<h3>作用對象不是單一開關而已</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">一般以 NSID 選 namespace；同一非零 Host Identifier 下，已啟用控制器所附加的共同 namespace 必須維持相同 Directive 啟用狀態。對 Streams 使用 NSID=FFFFFFFFh 啟用／停用，作用於整個 NVM subsystem 的 namespaces 與 controllers。因此同樣的 FFFFFFFFh，在 Identify Return Parameters 是非法值，在 Enable Streams 卻有整體範圍，必須依操作判斷。</span></p>
+<h3>哪些情況不能啟用</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">SRNZID=1 而 Host Identifier 仍為 0h 時，啟用會回 Host Identifier Not Initialized。要求啟用不支援的類型會回 Invalid Field in Command；資源不足則可能回 Stream Resource Allocation Failed。另一個明確限制是：namespace 所屬 Endurance Group 若已啟用 Flexible Data Placement，就不能啟用 Streams。這裡只說明兩者不能同時用在該 namespace，不展開被排除的 Data Placement 操作。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Flexible Data Placement</dt><dd>另一種資料配置能力；本篇只使用「已啟用它的 Endurance Group 內不能啟用 Streams」這項限制。</dd></div><div><dt>Endurance Group</dt><dd>耐久度群組；namespace 所屬的媒體管理範圍，本篇只用它判斷 Streams 的啟用限制。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">對 NSID=1 啟用 Streams：Directive Send 的 CDW11=00000001h，CDW12=00000101h。前者是 DTYPE=00h、DOPER=01h；後者是目標 DTYPE=01h、ENDIR=1。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-enable">閱讀相關規格圖表 → 查支援、登記身分，再啟用 Streams</a>
+</section>
+<section class="lesson" id="module-streams-commands"><h2 id="heading-streams-commands"><span class="section-number">04</span> 讀懂 Directive 命令的欄位與資料方向</h2>
+<!-- claim:STREAMS-COMMANDS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">Directive Receive 的資料由控制器送往主機，Directive Send 則相反；實際是否有資料傳輸取決於操作。CDW11 用 DTYPE／DOPER 選操作，DSPEC 的含義由類型決定；需要 buffer 時，NUMD 是 Dword 數量減 1。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>NUMD</dt><dd>Number of Dwords；有資料傳輸時，欄位保存 4-byte 單位的數量減 1。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.7, 5.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, 5.2.8, 文件頁 201-202, PDF 頁 227-228</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先定位命令，再定位操作</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">Directive Receive 的 Admin opcode 是 1Ah，Directive Send 是 19h。共同格式中的 NSID 指目標 namespace，DPTR 指主機資料 buffer；CDW11[31:16] 是 DSPEC，[15:8] 是 DTYPE，[7:0] 是 DOPER。要辨認一次操作，至少連同命令方向、DTYPE 與 DOPER 一起讀，不能只看 DOPER=01h。若某類型不支援，或雖支援但未啟用，指定該 DTYPE 的 Directive Send／Receive 都會以 Invalid Field in Command 中止；這和 I/O 命令在未啟用任何 Directive 時忽略附加欄位的規則不同。</span></p>
+<h3>同一個操作值在不同命令下會變義</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">DTYPE=01h 表示 Streams：Receive 的 DOPER=01h、02h、03h 依序是 Return Parameters、Get Status、Allocate Resources；Send 的 DOPER=01h、02h 是 Release Identifier、Release Resources。因為類型與方向都參與解讀，Receive 01h 不是 Send 01h 的反向版本，它們處理的事情不同。</span></p>
+<h3>不要把 NUMD 當成 byte 長度，也不要把 0 當成無資料</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">若操作有資料傳輸，CDW10.NUMD 以 32-bit Dword 為單位，而且保存數量減 1。因此 bytes=(NUMD+1)×4；NUMD=0 代表 4 bytes。4096-byte Identify Directive 回覆使用 NUMD=1023，32-byte Streams 回覆使用 NUMD=7。Enable Directive、Allocate Resources 與兩個 Release 操作明定無資料傳輸，不能套這條公式替它們創造一個 4-byte payload。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>payload</dt><dd>命令伴隨傳輸的資料內容；命令欄位與 CQE 回覆不因此都算作 payload。</dd></div></dl>
+<h3>請求大小與結構大小不同時，Receive 如何回傳</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">如果 NUMD 對應長度小於回覆結構，控制器只傳所要求的那一部分；如果大於結構，控制器只傳整個結構，不額外補資料。例如對 32-byte Return Parameters 要求 16 bytes，只能取得 subsystem 欄位，讀不到 byte 16 起的 SWS；要求 64 bytes，後半 buffer 也不能當作控制器回傳的參數。這個介面沒有一般化的分頁 offset 欄位，不能把 DSPEC 想成「從第幾個 byte 繼續讀」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<h3>命令完成和回覆資料要一起確認</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">命令執行結果由 Admin CQE 回報。若操作有資料 buffer，先確認狀態成功與取得的有效長度，再讀對應結構；若是 Allocate Resources，讀 CQE DW0 的 NSA。CDW12／CDW13 是否使用由該操作定義，其他未使用的命令專屬欄位是保留欄位；PCIe 的 Admin 資料指標使用 PRP，不使用 SGL。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List，以 descriptor 與 segment 描述一段或多段 data buffer 的格式。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">讀 32-byte Streams Return Parameters 時，NUMD=32÷4−1=7。Allocate Resources 雖然也是 Directive Receive，卻沒有資料傳輸；配置數量由 CQE DW0 回來。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-commands">閱讀相關規格圖表 → 讀懂 Directive 命令的欄位與資料方向</a>
+</section>
+<section class="lesson" id="module-streams-resources"><h2 id="heading-streams-resources"><span class="section-number">05</span> 配置多少資源，與開了幾條串流分開看</h2>
+<!-- claim:STREAMS-RESOURCES -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">Streams 可使用 namespace 的專用資源，或使用尚未專用配置的 subsystem 資源。Allocate Resources 要求的是可同時追蹤的數量，回覆 NSA 可以小於 NSR；真正開啟串流，是後續 Write 使用尚未開啟的編號時。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSR</dt><dd>Namespace Streams Requested；主機要求的專用資源數，直接計數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3, 文件頁 621-626, PDF 頁 647-652</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>資源的用途是保存正在使用的串流資訊</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">串流資源讓控制器追蹤某個開啟中的 Stream Identifier，例如維持資料關聯所需的狀態或 buffer。它不是分配給使用者資料的 LBA 容量。MSL 表示 subsystem 最多同時支援多少開啟的串流；NSSA 表示尚未分配成 namespace 專用的資源數。NSSA 不是「現在還沒開串流的空閒數」，因為這一池中的部分資源可能正被共用串流使用，這部分另由 NSSO 計數。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSO</dt><dd>NVM Subsystem Streams Open；使用非專用資源池的開啟串流數。</dd></div><div><dt>MSL</dt><dd>Max Streams Limit；整個 NVM subsystem 同時開啟串流的上限。</dd></div></dl>
+<h3>先看兩條資源來源，再看計數</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">若指定 namespace／主機關聯的 NSA 非零，這個關聯使用專用資源，可同時開啟最多 NSA 條串流；若 NSA=0，就依條件使用 subsystem 資源。NSO 是這個查詢身分可見的 namespace 開啟數。NSSO 則只計算使用非專用資源的開啟串流，不含其他 namespace 已配置專用資源中的串流。把 NSSO 當成整台 SSD 的總開啟數，會漏算專用部分。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 345" role="img"><title>8 個資源：專用配置與共用池分開計算</title><desc>說明性快照：無其他專用配置。MSL=8，專用配置 NSA=3、其中 NSO=1；非專用池 NSSA=5、其中 NSSO=2。開啟數與池的總容量不是同一個計數。來源：Base Figure 712。</desc><rect x="20" y="20" width="720" height="65" rx="6" class="v-object"/><text x="380.0" y="58.5" text-anchor="middle" font-size="17">MSL = 8</text><rect x="20" y="130" width="280" height="80" rx="6" class="v-command"/><text x="160.0" y="163.5" text-anchor="middle" font-size="17">NSA = 3</text><text x="160.0" y="188.5" text-anchor="middle" font-size="17">本例 namespace 專用</text><rect x="320" y="130" width="420" height="80" rx="6" class="v-object"/><text x="530.0" y="163.5" text-anchor="middle" font-size="17">NSSA = 5</text><text x="530.0" y="188.5" text-anchor="middle" font-size="17">未專用配置的 subsystem 池</text><path d="M160,85 L160,130" class="v-line"/><path d="M156,123 L160,130 L164,123" class="v-line"/><path d="M530,85 L530,130" class="v-line"/><path d="M526,123 L530,130 L534,123" class="v-line"/><rect x="20" y="250" width="280" height="65" rx="6" class="v-success"/><text x="160.0" y="276.0" text-anchor="middle" font-size="17">NSO = 1</text><text x="160.0" y="301.0" text-anchor="middle" font-size="17">專用部分開啟 1 條</text><rect x="320" y="250" width="420" height="65" rx="6" class="v-success"/><text x="530.0" y="276.0" text-anchor="middle" font-size="17">NSSO = 2</text><text x="530.0" y="301.0" text-anchor="middle" font-size="17">池中開啟 2 條</text></svg></div><figcaption>說明性快照：無其他專用配置。MSL=8，專用配置 NSA=3、其中 NSO=1；非專用池 NSSA=5、其中 NSSO=2。開啟數與池的總容量不是同一個計數。來源：Base Figure 712。</figcaption></figure>
+
+<h3>要求 4，不一定拿到 4</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">Allocate Resources 用 CDW12[15:0].NSR 直接表示要求數量，不是數量減 1；CQE DW0[15:0].NSA 回實際配置數量。控制器可以配置小於或等於要求的數量，主機必須按回覆安排並行串流，而不是按 NSR 假設成功數。若無法配置專用資源，可能回 Stream Resource Allocation Failed；若還有 subsystem 資源，也可以成功回 NSA=0，讓主機使用共用資源。</span></p>
+<h3>想增加資源，不能把第二次 Allocate 當成加法</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">若這個 namespace 已有該主機的專用資源，再送 Allocate Resources 會回 Invalid Field in Command。要從 3 改成 5，先 Release Resources，再要求完整的 5；不是再申請 2。中間會經過沒有專用資源的狀態，因此它不是一個保證立即擴容成功的原子操作。其他主機是否共享這些專用資源，還要看 SSID。</span></p>
+<h3>資源用滿後，Write 不必然失敗</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">NSA 非零且新編號需要資源時，若專用資源已用滿，控制器會在該 namespace 任選一個既有編號釋放，再給新串流使用。NSA=0 且 subsystem 共用資源已忙滿時，可以從使用共用資源的任意 namespace 釋放任一串流；若所有資源都已分配為專用，則把這筆 Write 當作沒有指定串流的寫入。不要把「沒有新的追蹤資源」直接翻成「寫入資料被丟棄」。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">假設 MSL=8，原本 NSSA=8，主機要求 NSR=4、實際得到 NSA=3，則 NSSA 變成 5。還沒寫入時 NSO 可以是 0；接著以編號 7、40 寫入，才會開啟兩條串流。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-resources">閱讀相關規格圖表 → 配置多少資源，與開了幾條串流分開看</a>
+</section>
+<section class="lesson" id="module-streams-sharing"><h2 id="heading-streams-sharing"><span class="section-number">06</span> 同一個 Stream Identifier，到底是不是同一條串流</h2>
+<!-- claim:STREAMS-SHARING -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">Stream Identifier 的意義要連同 namespace、Host Identifier 與 NSSC.SSID 判斷。SSID=0 時，不同非零主機身分的同號串流彼此獨立；SSID=1 時，同一 namespace 的同號串流可由不同非零主機身分共享。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSC</dt><dd>NVM Subsystem Stream Capability；包含主機身分要求與串流共享能力。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.2, 文件頁 621-626, PDF 頁 647-652</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先用 namespace 畫出邊界</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">Stream Identifier 只是一個 16-bit 編號，主機可選 0001h–FFFFh，且可以使用稀疏集合，例如 7、40、1000，不必連續。不同 namespace 上的相同編號不能只因數字相同就視為同一串流。先固定 namespace，再用 Host Identifier 與 SSID 比較各控制器看到的資料關聯。</span></p>
+<h3>SSID=0：同一主機的多條路徑共享，其他主機各自使用</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">主機 A 在 C1、C2 登記同一非零值，兩條路徑對 namespace 1 的 stream 7 指向同一串流。主機 B 使用另一非零值時，它在同一 namespace 使用 stream 7，代表 B 自己的另一條串流。此時 NSA／NSO 與 Get Status 的可見內容，也按相同非零 Host Identifier 的關聯來算，不能用 A 的查詢推論 B 配置了多少。</span></p>
+<figure><figcaption><strong>固定同一 namespace、同一編號 7</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">控制器路徑</th><th scope="col">非零 Host Identifier</th><th scope="col">SSID=0 的串流分組</th><th scope="col">SSID=1 的串流分組</th></tr></thead><tbody><tr><td>C1</td><td>A</td><td>A / 7</td><td>7</td></tr><tr><td>C2</td><td>A</td><td>A / 7</td><td>7</td></tr><tr><td>C3</td><td>B</td><td>B / 7</td><td>7</td></tr><tr><td>C4</td><td>C</td><td>C / 7</td><td>7</td></tr></tbody></table></div><figcaption>分組欄的 A / 7 是本表的身分對照寫法，不是命令編碼。SSID=0 有 3 組；SSID=1 有 1 組。此表的所有 Host Identifier 都非零。來源：Base Figure 710 的關係，改用編號 7 說明。</figcaption></figure>
+
+<h3>SSID=1：把共享範圍擴到不同非零主機身分</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">所有控制器回報相同的 NSSC。當 SSID=1，對同一 namespace 而言，不同非零 Host Identifier 使用相同 Stream Identifier，指向同一串流；專用資源與 Get Status 的可見範圍也包含這些非零主機身分。這表示主機間需要協調編號的用途，不能一邊把 stream 7 當暫存資料，另一邊假設它完全是自己的獨立群組。</span></p>
+<h3>0h 不加入上述非零身分共享</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">即使 SSID=1，Host Identifier=0h 仍表示一個獨立主機關聯，不會因為其他控制器也填 0h 就共享串流意義。這也是為什麼先初始化 Host Identifier 很重要。Figure 710 用 A、B、C 等標籤表達身分關係；圖中的 1-a、1-b 等尾碼是區分路徑的圖示標籤，不是要求主機把字串寫入 DSPEC。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">C1、C2 的 Host Identifier 都是 A，C3 是 B，C4 是 C；都存取 NSID=1、stream 7。SSID=0 時是 3 條串流，SSID=1 時是 1 條。A、B、C 在例子中都代表不同的非零識別值。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-sharing">閱讀相關規格圖表 → 同一個 Stream Identifier，到底是不是同一條串流</a>
+</section>
+<section class="lesson" id="module-streams-write"><h2 id="heading-streams-write"><span class="section-number">07</span> 把一筆 Write 接到串流</h2>
+<!-- claim:STREAMS-WRITE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">使用 Streams 的 Write 指定 DTYPE=1、DSPEC=非零 Stream Identifier；首次使用尚未開啟的編號時，控制器開啟串流。DTYPE=0 或 Streams 的 DSPEC=0 不使用串流分組；未啟用類型的處理還要看是否已有任何 I/O Directive 啟用。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.1, 8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, 8.1.9.3, 文件頁 617-623, PDF 頁 643-649</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>Write 才是串流開始被使用的時刻</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">Enable Streams 是讓功能可用，Allocate Resources 是取得追蹤容量，都還沒把使用者資料寫入串流。Write 第一次指定某個尚未開啟的編號，控制器才開啟它；之後再用相同編號，沿用同一開啟中的串流。主機沒有另外一個必須先送的 Open Stream 命令。</span></p>
+<h3>用一個完整欄位例子對照 Admin 命令</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">以 NVM Write、CETYPE=0 為例，CDW12[23:20] 的 DTYPE 是 4 bits，填 1 表示 Streams；CDW13[31:16] 的 DSPEC 填 stream 7。CDW12[15:0] 的 NLB=7 代表 8 logical blocks。Admin Directive 的 DTYPE 位於 CDW11 且寬度是 8 bits，不能把整個 Admin CDW11 複製到 Write 的 CDW12。CETYPE 決定 CDW13 的下半部格式，本例固定 0，不延伸到其他命令擴充。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CETYPE</dt><dd>Command Extension Type；決定 Write 的命令擴充與 CDW13 格式，本篇例子使用 0。</dd></div><div><dt>NLB</dt><dd>Number of Logical Blocks；Write 的區塊數量減 1。</dd></div></dl>
+<h3>LBA、數量、串流編號是三個獨立問題</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">假設起點 LBA=128、數量 8 blocks、stream=7，這筆 Write 改寫 LBA 128–135，並告訴控制器它們屬於 stream 7。把 stream 改成 40，不會把資料搬到 LBA 40；把 NLB 改成 15，才會變成寫 16 blocks。資料本身仍由 Write 的 DPTR 提供，DSPEC 不包含使用者資料。</span></p>
+<h3>忽略與拒絕的條件要分開</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">沒有任何 I/O Directive 啟用時，I/O 命令的 DTYPE 與 DSPEC 都會被忽略；DTYPE=0 也會讓這兩個欄位不參與 Directive 處理。若已啟用一個以上 I/O Directive，卻指定不支援或未啟用的非零類型，控制器必須回 Invalid Field in Command。Streams 已適用而 DSPEC=0 時，這筆命令仍正常處理，如同未指定 Directive，不會開啟一條名為 stream 0 的串流。</span></p>
+<h3>串流標記沒有改寫一般 Write 的資料保證</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">Stream Identifier 補充資料關聯，並沒有自動提供排序、原子寫入或持久保存保證。這些仍由 Write 的其他欄位與原有規則決定。例如本例把 FUA 留 0，不能因為使用 stream 7，就宣稱 CQE 成功時一定已寫到非揮發媒體；需要這種保證時要依既有 Write／Flush 的語意安排。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">CETYPE=0 的簡化例子：寫 8 blocks、stream 7，其他本例控制位元為 0，則 CDW12=(1&lt;&lt;20)|7=00100007h，CDW13=7&lt;&lt;16=00070000h。LBA 起點另在 CDW10／11。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-write">閱讀相關規格圖表 → 把一筆 Write 接到串流</a>
+</section>
+<section class="lesson" id="module-streams-sizes"><h2 id="heading-streams-sizes"><span class="section-number">08</span> 把 SWS／SGS 換成實際的資料量</h2>
+<!-- claim:STREAMS-SIZES -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.01">08.01.</span><span class="paragraph-text">NVM Command Set 的 SWS 以 logical blocks 為單位；SGS 則以 SWS 為單位。先用 namespace 的 logical block 大小換成 bytes，才能比較寫入對齊、傳輸長度與整組資料的解除配置範圍。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §5.13</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.13, 文件頁 175, PDF 頁 175</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先讀欄位單位，不能先比數字大小</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.02">08.02.</span><span class="paragraph-text">SWS=8 不是 8 bytes，也不是 8 條串流；它在 NVM Command Set 表示 8 logical blocks。若 namespace 使用 4096-byte logical block，就相當於 32768 bytes。SGS=4 表示 4 個 SWS，所以先算 4×8=32 logical blocks，再乘每個 block 的 bytes。這兩個欄位提供寫入與媒體配置的粒度提示，和 MSL／NSA 的資源個數是不同維度。</span></p>
+<h3>大小正確還不夠，起點也要對齊</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.03">08.03.</span><span class="paragraph-text">以上例而言，LBA 128 起寫 16 blocks，同時滿足起點是 8 的倍數、長度也是 8 的倍數。LBA 130 起寫 16 blocks，雖然長度正確，起點卻沒有對齊。規格用這些條件描述最佳化效能的寫入方式，沒有把每一筆未對齊 SWS 的有效 Write 都改成必須拒絕的命令。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 335" role="img"><title>SGS 乘上 SWS，再乘 block 大小</title><desc>4 個 32 KiB 的 SWS 組成 128 KiB 的 granularity 單位；圖是大小組成，不是 4 筆命令的執行順序。來源：Base Figure 708／712、NVM §5.13。</desc><rect x="20" y="15" width="720" height="55" rx="6" class="v-object"/><text x="380.0" y="48.5" text-anchor="middle" font-size="17">每個 logical block = 4096 bytes</text><rect x="20" y="110" width="174" height="80" rx="6" class="v-command"/><text x="107.0" y="143.5" text-anchor="middle" font-size="17">SWS = 8 blocks</text><text x="107.0" y="168.5" text-anchor="middle" font-size="17">32 KiB</text><rect x="200" y="110" width="174" height="80" rx="6" class="v-command"/><text x="287.0" y="143.5" text-anchor="middle" font-size="17">SWS = 8 blocks</text><text x="287.0" y="168.5" text-anchor="middle" font-size="17">32 KiB</text><rect x="380" y="110" width="174" height="80" rx="6" class="v-command"/><text x="467.0" y="143.5" text-anchor="middle" font-size="17">SWS = 8 blocks</text><text x="467.0" y="168.5" text-anchor="middle" font-size="17">32 KiB</text><rect x="560" y="110" width="174" height="80" rx="6" class="v-command"/><text x="647.0" y="143.5" text-anchor="middle" font-size="17">SWS = 8 blocks</text><text x="647.0" y="168.5" text-anchor="middle" font-size="17">32 KiB</text><rect x="20" y="235" width="720" height="70" rx="6" class="v-success"/><text x="380.0" y="276.0" text-anchor="middle" font-size="17">SGS = 4 SWS = 32 blocks = 128 KiB</text><path d="M380,190 L380,235" class="v-line"/><path d="M376,228 L380,235 L384,228" class="v-line"/></svg></div><figcaption>4 個 32 KiB 的 SWS 組成 128 KiB 的 granularity 單位；圖是大小組成，不是 4 筆命令的執行順序。來源：Base Figure 708／712、NVM §5.13。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>granularity</dt><dd>粒度；用來安排寫入或配置的一個大小單位，不是資源個數。</dd></div></dl>
+<h3>Figure 708 的上下兩層在講大小如何組成</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.04">08.04.</span><span class="paragraph-text">上層以多個 SWS 組成一個 Stream Granularity，下層以多個 Stream Granularity 組成完整串流。它不是把主機命令排成必須依序執行的流程，也不是指定 NAND 的實際地址。控制器可以用 SGS 單位準備媒體並組織資料；主機看到的是能協助安排工作負載的大小資訊。</span></p>
+<h3>解除配置時，比對的是 SGS 的換算結果</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.05">08.05.</span><span class="paragraph-text">若用 Dataset Management 解除配置與某串流相關的 logical blocks，規格建議起點和長度符合 Stream Granularity 的對齊與倍數。以上例，LBA 128 起的 64 blocks 是 2 個 32-block 單位，符合這個建議；LBA 136 起的 64 blocks 雖然符合 SWS，卻沒有對齊 32-block 單位。解除配置處理 LBA 的資料配置，Release Identifier 處理串流追蹤狀態，兩者不是同一操作。</span></p>
+<h3>還要檢查傳輸上限與格式變更</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.06">08.06.</span><span class="paragraph-text">SWS 對應的資料大小建議不超過 MDTS。MDTS 的非零值以最小記憶體頁大小乘 2 的冪表示，0h 表示沒有這項最大傳輸限制。例如最小頁 4096 bytes、MDTS=5，上限是 128 KiB，本例 32 KiB 的 SWS 在此範圍內。namespace 換成不同 User Data Format 後，SWS 可能改變；不要永久沿用先前格式的 byte 換算。用 NSID=FFFFFFFFh 查 Streams 參數時，無法統一表示的 namespace 欄位可為 0，這也不能直接當成某個 namespace 的最佳寫入大小。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MDTS</dt><dd>Maximum Data Transfer Size；非零時以最小記憶體頁大小乘 2 的冪表示最大傳輸量。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.07">08.07.</span><span class="paragraph-text">假設每個 logical block 是 4096 bytes、SWS=8、SGS=4：理想寫入單位為 8×4096=32 KiB；一個 stream granularity 單位為 4×8=32 blocks，也就是 128 KiB。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-sizes">閱讀相關規格圖表 → 把 SWS／SGS 換成實際的資料量</a>
+</section>
+<section class="lesson" id="module-streams-lifetime"><h2 id="heading-streams-lifetime"><span class="section-number">09</span> 觀察串流、結束使用與處理狀態變更</h2>
+<!-- claim:STREAMS-LIFETIME -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="09.01">09.01.</span><span class="paragraph-text">Get Status 回報目前開啟的編號。Release Identifier 結束一個編號的本次串流關聯，專用資源仍可保留；Release Resources 歸還 namespace 的專用配置。停用、Format、刪除、寫入保護與 reset 則各有不同的狀態影響。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2, 文件頁 619-627, PDF 頁 645-653</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>讀狀態時先分清數量與編號</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.02">09.02.</span><span class="paragraph-text">Get Status 的 bytes 1:0 是 OSC，表示開啟數量；其後每個 2-byte 欄位是一個編號，依數值遞增。若 OSC=3，後續值是 7、40、1000，表示 3 條串流，不是編號 1、2、3。主機指定的 NUMD 也會限制實際傳回多少資料；只讀到前幾個編號時，不能把未取得的欄位當成 0，或宣稱已列出全部串流。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>OSC</dt><dd>Open Stream Count；Get Status 清單中的開啟數量，後面才是各串流編號。</dd></div></dl>
+<h3>對整個 subsystem 查詢，不等於列出所有專用串流</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.03">09.03.</span><span class="paragraph-text">Get Status 使用 NSID=FFFFFFFFh 時，回覆的是使用非專用 subsystem 資源的開啟串流；不是把每個 namespace 的專用串流全部加進來。同一編號若在不同 namespace 使用，只回一次。因此這份列表沒有附上逐筆 NSID，不能靠它還原每個 namespace 的完整串流清單；需要 namespace 明細時，逐一查詢對象。</span></p>
+<figure><figcaption><strong>哪些操作結束編號，哪些操作歸還資源</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">事件或操作</th><th scope="col">編號／開啟狀態</th><th scope="col">專用配置</th><th scope="col">資料本身</th></tr></thead><tbody><tr><td>Release Identifier</td><td>結束指定編號的本次串流</td><td>保留給 namespace 重用</td><td>此操作不刪除資料</td></tr><tr><td>Release Resources</td><td>不可只用 NSA=0 推論全部編號狀態</td><td>歸還，NSA 清 0</td><td>此操作不刪除資料</td></tr><tr><td>停用 Streams</td><td>釋放受影響主機的所有編號</td><td>釋放其資源</td><td>停用不是安全清除</td></tr><tr><td>Format NVM</td><td>釋放受影響 namespace 的開啟編號</td><td>不能從這條規則推論全部歸還</td><td>資料效果依 Format 操作</td></tr><tr><td>刪除／變成寫入保護</td><td>釋放 namespace 的全部編號</td><td>釋放全部串流資源</td><td>不能把追蹤清除等同媒體清除</td></tr></tbody></table></div><figcaption>Reset 另依「是否仍有同一主機的已啟用控制器」判斷，不能與停用操作合併。來源：Base §8.1.9.2.2.1、§8.1.9.3、§8.1.9.3.2。</figcaption></figure>
+
+<h3>釋放一個編號，與歸還配置分開操作</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.04">09.04.</span><span class="paragraph-text">Release Identifier 用 Directive Send、DTYPE=01h、DOPER=01h，DSPEC 填要結束的編號；沒有資料傳輸。若使用專用資源，結束的追蹤資源仍保留給這個 namespace 使用；若用共用資源，就回到 subsystem 資源池。指定未開啟的編號不宜僅因此失敗，但 NSID=FFFFFFFFh 明確非法。Release Resources 則用 DOPER=02h，成功後 NSA=0；原本沒有專用配置時不做動作，也不能只因沒有配置就失敗。主機若要有明確的單一串流結束點，應使用 Release Identifier，不把 NSA=0 當成所有資料或編號均已清除的證據。</span></p>
+<h3>停用或改變 namespace 時，觀察不同的清除對象</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.05">09.05.</span><span class="paragraph-text">停用 Streams 會釋放該主機在受影響 namespace 的所有串流資源與編號；Format NVM 會釋放受影響 namespace 的所有開啟編號，不能擅自把這句擴成一定歸還所有專用配置。刪除 namespace 或把 namespace 變成寫入保護時，則必須釋放其全部串流資源與編號。這些是狀態與資源生命週期，不能拿來推論媒體上的使用者資料已安全清除。</span></p>
+<h3>reset 要一起看仍啟用的其他控制器</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.06">09.06.</span><span class="paragraph-text">Streams 不宣告跨 Controller Level Reset 保留；reset 時通常會對該控制器停用。然而，若同一 Host Identifier 還有已啟用的控制器，對這些活動控制器所附加的 namespace，Directive 不會被停用。之後設定相同非零 Host Identifier，或啟用屬於該身分的控制器時，共享 namespace 的 Directive 狀態要與既有路徑一致。這條例外依賴實際的主機關聯與附加關係，不能只看「某一個控制器 reset」就把整個 subsystem 的 Streams 狀態清空。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.07">09.07.</span><span class="paragraph-text">NSA=3、開啟編號為 7 與 40 時，釋放 7 之後專用配置仍是 3，40 仍可繼續使用。之後再用 7 寫入，代表新的一條串流，不能假設接回之前已結束的那一條。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-streams-lifetime">閱讀相關規格圖表 → 觀察串流、結束使用與處理狀態變更</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">10</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.01">10.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-streams-model"><summary>圖表組 01 · 先理解 Streams 要解決什麼問題 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.02">10.02.</span><span class="paragraph-text">Figure 702 先分 Directive 類型，Figure 703 再問 I/O 的 DSPEC 在所選類型下代表什麼。先辨認管理命令和 I/O 的語境，才解讀 00h。</span></p>
+<a class="reading-link" href="#module-streams-model">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-types"><h4 id="fields-heading-streams-types">先決定類型，再解讀同一個值</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.03">10.03.</span><span class="paragraph-text">兩張表建立類型與欄位的對應；它們不是命令執行順序，也不是裝置的實際能力清單。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-types"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>管理 DTYPE：00h／01h</td><td>00h 選 Identify Directive，01h 選 Streams；DSPEC 與 DOPER 的含義依類型決定。</td><td>Receive 00h/01h 查支援；Receive 01h/01h 查 Streams 參數。</td></tr><tr><td>I/O DTYPE：4 bits；00h／01h</td><td>I/O 只容納 00h–0Fh，上方 4 bits 視為 0；00h 不使用 Directive，01h 使用 Streams。</td><td>Admin 8-bit 類型欄與 Write 4-bit 類型欄不能直接當作相同位置。</td></tr><tr><td>I/O DSPEC：01h 類型下的編號</td><td>0001h–FFFFh 是可用串流編號，0h 使該 I/O 如同沒有 Directive。</td><td>stream 1000 是一個編號，和要寫 1000 blocks 不同。</td></tr><tr><td>02h／03h–0Eh／0Fh</td><td>02h 是本篇不展開的 Data Placement；03h–0Eh 保留；0Fh 的行為由廠商定義。</td><td>辨認這些值是為了讀懂表的邊界，不據此推論其操作或支援狀態。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-702">Base 702</a><a href="#figure-STREAMS-BASE-FIG-703">Base 703</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.9 · Base 2.4 §8.1.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, Figure 702, 文件頁 617, PDF 頁 643</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, Figure 703, 文件頁 617, PDF 頁 643</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-702 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-702"><h4>Base Figure 702 · Directive Types</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-702-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base702-1">Base702-1</span><span class="paragraph-text">Directive Type 選資訊交換的類型；Identify=00h 和 Streams=01h 在本篇分別負責管理與分組。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, Figure 702, 文件頁 617, PDF 頁 643</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base702-2">Base702-2</span><span class="paragraph-text">主機要查 Streams 是否支援時，先選 Identify 的 00h；不能因為想查 Streams 就直接跳過 Identify 的支援位元向量。表中的 I/O Command Directive 欄表示是否能隨 I/O 命令使用，不代表目前已啟用。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-types">欄位、條件與相關細節：先決定類型，再解讀同一個值 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-703 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-703"><h4>Base Figure 703 · Directive Specific Field Interpretation</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-703-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base703-1">Base703-1</span><span class="paragraph-text">I/O 的 DSPEC 必須由 DTYPE 解讀：Streams 下是串流編號，未使用 Directive 時沒有這個作用。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, Figure 703, 文件頁 617, PDF 頁 643</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base703-2">Base703-2</span><span class="paragraph-text">Write 的 DTYPE=1、DSPEC=40，表示使用 stream 40；DTYPE=0、DSPEC=40 則不會因為 DSPEC 非零而自動建立 stream 40。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-types">欄位、條件與相關細節：先決定類型，再解讀同一個值 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-host"><summary>圖表組 02 · 先讓控制器知道哪些路徑屬於同一主機 · 9 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.04">10.04.</span><span class="paragraph-text">Figure 537 選長度，Figure 538 給實際識別值；必要引用的 Get／Set Features 表用來分清 FID、SEL、SV、DPTR 與 HOSTID。</span></p>
+<a class="reading-link" href="#module-streams-host">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-hostid"><h4 id="fields-heading-streams-hostid">一筆 FID 81h 請求：選功能、選長度、提供身分</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.05">10.05.</span><span class="paragraph-text">Get／Set Features 共通圖只取本篇需要的欄位。Host Identifier 的值、格式與目前狀態共同決定是否可登記。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-hostid"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>FID：CDW10[7:0]；Get SEL：[10:8]</td><td>FID=81h；SEL=0／1／2／3 分別選目前／預設／保存／支援能力。FID 81h 不存在可保存值。</td><td>讀目前 HOSTID 選 SEL=0；查功能能力才選 SEL=3。</td></tr><tr><td>Set SV：CDW10[31]；UIDX：CDW14[6:0]</td><td>SV 表示保存要求；本例 SV=0。UIDX=0 不選 UUID，與 HOSTID 無關。其餘保留位元不可當作附加識別值。</td><td>FID 81h 的基本 Set CDW10=00000081h；HOSTID 不放進 CDW10。</td></tr><tr><td>SEL=3 CQE DW0：CHANG[2]、NSSPEC[1]、SVBL[0]</td><td>三個 bit 分別說功能是否可改、是否 namespace 特定、是否可保存。Feature 能力不是 Feature 的目前值。</td><td>SVBL=0 只表示不可保存，不能據此判斷目前 HOSTID 是否已初始化。</td></tr><tr><td>EXHID：CDW11[0]；[31:1] 保留</td><td>0 選 64-bit；1 選 128-bit。須符合裝置支援及已有非零 Host Identifier 的一致格式要求。</td><td>主機要用 128-bit，先確認 CTRATT.HIDS=1；不能靠把 buffer 加長就略過能力檢查。</td></tr><tr><td>HOSTID：bytes 15:0</td><td>64-bit 用 bytes 7:0，其餘保留；128-bit 用整欄。非零目前值不能以另一筆 Set 直接覆寫。</td><td>目前為非零 A，再 Set 成 B，回 Command Sequence Error。</td></tr><tr><td>0h、相同非零值、saved value</td><td>0h 不關聯其他控制器；相同非零值代表共同主機；PCIe 預設 0h 且此 Feature 不可保存。</td><td>先用 0h 配置資源，再登記 A，不會自動讓那些資源變成 A 的配置。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>Namespace Specific，指出 Feature 是否具有 per-namespace scope 的 capability bit。</dd></div><div><dt>CHANG</dt><dd>Changeable，指出 Feature value 是否可由 Set Features 變更的 capability bit。</dd></div><div><dt>SVBL</dt><dd>Saveable，supported-capabilities result 中指出 Feature 是否可保存的 bit。</dd></div><div><dt>UIDX</dt><dd>UUID Index，指向 UUID List 位置的 index；0 表示未指定 UUID。</dd></div><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-537">Base 537</a><a href="#figure-STREAMS-BASE-FIG-538">Base 538</a><a href="#figure-STREAMS-BASE-FIG-197">Base 197</a><a href="#figure-STREAMS-BASE-FIG-198">Base 198</a><a href="#figure-STREAMS-BASE-FIG-199">Base 199</a><a href="#figure-STREAMS-BASE-FIG-201">Base 201</a><a href="#figure-STREAMS-BASE-FIG-463">Base 463</a><a href="#figure-STREAMS-BASE-FIG-464">Base 464</a><a href="#figure-STREAMS-BASE-FIG-465">Base 465</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.35 · Base 2.4 §5.2.12 · Base 2.4 §5.2.12.2 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 537, 文件頁 509, PDF 頁 535</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 538, 文件頁 510, PDF 頁 536</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-537 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-537"><h4>Base Figure 537 · Host Identifier – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-537-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base537-1">Base537-1</span><span class="paragraph-text">EXHID 選 Host Identifier 的長度，支援能力與其他控制器的非零格式會限制這個選擇。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.35</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 537, 文件頁 509, PDF 頁 535</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base537-2">Base537-2</span><span class="paragraph-text">HIDS=0 卻送 EXHID=1 會被拒絕。若兩種長度皆支援，C1 已使用非零 64-bit 值，C2 要登記 128-bit 值還需通過一致格式檢查。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-538 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-538"><h4>Base Figure 538 · Host Identifier – Data Structure Entry</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-538-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base538-1">Base538-1</span><span class="paragraph-text">HOSTID 是身分資料；64-bit 模式只使用低 8 bytes，128-bit 模式使用全部 16 bytes。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.35</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 538, 文件頁 510, PDF 頁 536</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base538-2">Base538-2</span><span class="paragraph-text">例示識別值 1122334455667788h 在 64-bit 模式佔 bytes 7:0；bytes 15:8 保留。C1、C2 使用相同非零值才建立同一主機的關聯，兩個 0h 不會。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-197 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-197"><h4>Base Figure 197 · Get Features – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-197-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-1">Base197-1</span><span class="paragraph-text">Get Features 的 DPTR 是接收 HOSTID 結構的位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-2">Base197-2</span><span class="paragraph-text">讀 FID 81h 的目前值時，不只看 CQE DW0，還要讀 DPTR 指向的 HOSTID buffer；SEL=3 的支援能力查詢則是另一種回覆。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-198 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-198"><h4>Base Figure 198 · Get Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-198-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">Get Features CDW10 用 FID 選功能、SEL 選查詢種類。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">FID=81h、SEL=0 查目前識別值；SEL=3 查可變更、scope 與可保存能力，不能把兩者的 DW0 當成同一結構。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-199 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-199"><h4>Base Figure 199 · Get Features – Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-199-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-1">Base199-1</span><span class="paragraph-text">UIDX 是選擇相關 UUID 的索引，不能拿來存 Host Identifier。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base199-2">Base199-2</span><span class="paragraph-text">本篇一般 FID 81h 例子不使用 UUID 選擇，UIDX=0；真正的非零 HOSTID 放在資料 buffer。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-201 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-201"><h4>Base Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-201-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-1">Base201-1</span><span class="paragraph-text">SEL=3 的 CQE DW0 回覆 Feature 能力位元，不回覆 HOSTID 的數值。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-2">Base201-2</span><span class="paragraph-text">讀到 SVBL=0 表示不支援保存；它不是 Host Identifier=0h。CHANG 與 NSSPEC 分別回答可變更與 namespace 特定性，也不是串流數量。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-463 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-463"><h4>Base Figure 463 · Set Features – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-463-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-1">Base463-1</span><span class="paragraph-text">Set Features 的 DPTR 指向主機提供的 HOSTID。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-2">Base463-2</span><span class="paragraph-text">要登記主機 A，先準備符合 EXHID 長度的身分資料，再由 DPTR 指向該 buffer；FID 81h 的控制值和身分值分開傳遞。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-464 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-464"><h4>Base Figure 464 · Set Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-464-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">Set Features 的 SV 控制保存要求，但 FID 81h 本身不允許保存。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">本篇用 FID=81h、SV=0；即使 Set 成功，也不能因為它是 Feature 就推論 power cycle 後還有同一值。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-465 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-465"><h4>Base Figure 465 · Set Features – Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-465-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-1">Base465-1</span><span class="paragraph-text">Set Features 的 UIDX 選 UUID 關聯，與 CDW11.EXHID 的長度選擇不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base465-2">Base465-2</span><span class="paragraph-text">UIDX=0、EXHID=1 分別表示不選 UUID 與使用 128-bit HOSTID；兩個值位於不同 CDW，不能互換。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-hostid">欄位、條件與相關細節：一筆 FID 81h 請求：選功能、選長度、提供身分 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-enable"><summary>圖表組 03 · 查支援、登記身分，再啟用 Streams · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.06">10.06.</span><span class="paragraph-text">Figure 704 選操作、705 看能力與狀態、706 組啟用要求、707 看資源不足的結果。Figure 338 只取 DIRS／HIDS／MDTS 等本篇所需能力。</span></p>
+<a class="reading-link" href="#module-streams-enable">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-enable"><h4 id="fields-heading-streams-enable">能力位元如何連到啟用要求</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.07">10.07.</span><span class="paragraph-text">先讀能力，再發正確的 Identify 操作；位元位置從各向量起點計算，不是全部從結構 byte 0 計算。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-enable"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>4096-byte 回覆：bytes 31:0／63:32／95:64</td><td>依序是 Supported、Enabled、Persistent Across Controller Level Resets；bytes 4095:96 保留。</td><td>讀 64 bytes 只有前兩組，尚未取得第三組。</td></tr><tr><td>各向量 bit 0／1</td><td>bit 0 是 Identify，bit 1 是 Streams。Identify 的支援與啟用位元固定 1；Streams 的支援／啟用分開回報，跨 reset 保留狀態的 SDIRCLR 固定 0。</td><td>SDIRE 位於 byte 32 的 bit 1；SDIRCLR 位於 byte 64 的 bit 1。</td></tr><tr><td>各向量 bit 2／15；其他保留</td><td>bit 2 描述本篇不展開的 Data Placement，bit 15 描述廠商類型。支援／啟用／保留使用相同 bit 位置，意義由向量決定。</td><td>VSDIRCLR 表示廠商類型是否跨 reset 保留，不能把廠商結論套到 Streams；DPDIRCLR 在支援該類型時為 1。</td></tr><tr><td>Identify 的 IDIRCLR bit 0</td><td>主機不能改變 Identify 的啟用狀態，因此其保留位元為 0；不是 reset 後不再支援 Identify。</td><td>重設後仍從 Identify Directive 查詢其餘類型。</td></tr><tr><td>CDW11 DTYPE=00h／DOPER=01h；CDW12 DTYPE[15:8]／ENDIR[0]</td><td>外層選 Identify 的 Enable；內層 01h 選 Streams。CDW12[31:16] 與 [7:1] 保留。</td><td>啟用：CDW11=00000001h，CDW12=00000101h；沒有資料 buffer。</td></tr><tr><td>NSID／Host Identifier／SRNZID</td><td>啟用狀態跟 namespace 與主機關聯；SRNZID=1 時，Host Identifier 必須先非零。</td><td>單一 namespace 使用其 NSID；Streams 啟用的 FFFFFFFFh 是 subsystem 範圍，不能誤當為查詢的通用值。</td></tr><tr><td>失敗條件與狀態</td><td>不支援的類型或非法目標為 Invalid Field in Command；未初始化的必要身分為 Host Identifier Not Initialized；資源不足可為 command-specific 7Fh。</td><td>先確認哪一個操作失敗，再解釋 status，不能只讀數值 7Fh。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-704">Base 704</a><a href="#figure-STREAMS-BASE-FIG-705">Base 705</a><a href="#figure-STREAMS-BASE-FIG-706">Base 706</a><a href="#figure-STREAMS-BASE-FIG-707">Base 707</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.9.2 · Base 2.4 §8.1.9.2.1.1 · Base 2.4 §8.1.9.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2, Figure 704, 文件頁 618, PDF 頁 644</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.1.1, Figure 705, 文件頁 618-619, PDF 頁 644-645</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 706, 文件頁 620, PDF 頁 646</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 707, 文件頁 620, PDF 頁 646</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-704 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-704"><h4>Base Figure 704 · Identify Directive – Directive Operations</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-704-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base704-1">Base704-1</span><span class="paragraph-text">Identify Directive 的 DOPER=01h，在 Receive 是查參數，在 Send 是啟用或停用。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2, Figure 704, 文件頁 618, PDF 頁 644</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base704-2">Base704-2</span><span class="paragraph-text">讀能力用 Receive 00h/01h；啟用 Streams 用 Send 00h/01h，然後以 CDW12 選 Streams。操作碼相同不表示動作相同。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-enable">欄位、條件與相關細節：能力位元如何連到啟用要求 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-705 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-705"><h4>Base Figure 705 · Identify Directive – Return Parameters Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-705-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base705-1">Base705-1</span><span class="paragraph-text">Supported、Enabled、跨 reset 保留是三份獨立的位元向量。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.1.1, Figure 705, 文件頁 618-619, PDF 頁 644-645</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base705-2">Base705-2</span><span class="paragraph-text">SDIRS=1、SDIRE=0 表示裝置有能力但這個 namespace 還沒啟用；SDIRCLR=0 又是另一個問題，不能把它當成不支援。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-enable">欄位、條件與相關細節：能力位元如何連到啟用要求 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-706 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-706"><h4>Base Figure 706 · Enable Directive – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-706-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base706-1">Base706-1</span><span class="paragraph-text">Enable 的 CDW12 選目標 Directive 與開關，外層仍由 Identify Directive 承接。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 706, 文件頁 620, PDF 頁 646</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base706-2">Base706-2</span><span class="paragraph-text">CDW12=00000101h 是 target DTYPE=1、ENDIR=1；00000100h 是停用同一類型；00000001h 不是「啟用第一種類型」，而是非法地要求改變 Identify。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-enable">欄位、條件與相關細節：能力位元如何連到啟用要求 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-707 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-707"><h4>Base Figure 707 · Enable Directive – Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-707-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base707-1">Base707-1</span><span class="paragraph-text">Enable 可能因為沒有足夠資源而回 Stream Resource Allocation Failed。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 707, 文件頁 620, PDF 頁 646</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base707-2">Base707-2</span><span class="paragraph-text">SDIRS=1 只能證明支援，不能保證此刻啟用一定成功。收到 command-specific status 7Fh，要按「啟用 Streams 的資源不足」理解，不是 NUMD=7Fh。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-enable">欄位、條件與相關細節：能力位元如何連到啟用要求 →</a></div></article>
+<section class="field-guide" id="fields-streams-error-location"><h4 id="fields-heading-streams-error-location">把錯誤位置對回原命令欄位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.08">10.08.</span><span class="paragraph-text">本篇只取 Figure 212 的 PEL。它是 §8.1.9.3 對特定拒絕情境的必要引用，不展開其他 Error Information 欄位或額外錯誤排查流程。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-error-location"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>PEL：Error Entry bytes 15:14</td><td>適用時指向出錯參數的最低有效 byte／bit；不是特定命令的錯誤時，必須設為 FFFFh。</td><td>先確認紀錄確實對應此筆命令，才對回原 SQE。</td></tr><tr><td>PEL.BYTLOC[7:0]／BITLOC[10:8]</td><td>前者是命令內 byte offset，後者是該 byte 中的 bit offset；PEL[15:11] 保留。</td><td>CDW11 的位置是 11×4=44；DOPER 從 bit 0 開始，因此 PEL=44=002Ch。</td></tr><tr><td>啟用限制與欄位編碼</td><td>若 namespace 所屬群組已啟用 Flexible Data Placement，Streams 不得啟用；若因該拒絕建立紀錄，規則要求指出 DOPER。</td><td>這項錯誤定位要求不改變 Figures 704／706 的 Enable 編碼：外層仍是 Identify，CDW12 才選 Streams。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-212">Base 212</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.2, Figure 212, 文件頁 218-220, PDF 頁 244-246</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-212 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-212"><h4>Base Figure 212 · Error Information Log Entry Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-212-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base212-1">Base212-1</span><span class="paragraph-text">Parameter Error Location 指命令參數的 byte／bit 位置，不是資料 LBA。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.2, Figure 212, 文件頁 218-220, PDF 頁 244-246</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base212-2">Base212-2</span><span class="paragraph-text">Streams 的互斥啟用限制若產生 Error Information 紀錄，§8.1.9.3 指定 PEL 指向 DOPER。DOPER 位於 CDW11 的低 byte，因此 byte offset=44、bit offset=0，PEL=002Ch。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-error-location">欄位、條件與相關細節：把錯誤位置對回原命令欄位 →</a></div></article>
+<section class="field-guide" id="fields-streams-capabilities"><h4 id="fields-heading-streams-capabilities">從 Identify Controller 只取會影響本篇判斷的能力</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.09">10.09.</span><span class="paragraph-text">Figure 338 是很長的結構；本篇只追蹤下列欄位，不要求讀者把整張表一次背完。文件頁 342、345、347、353 提供本篇所用欄位。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-capabilities"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>OACS：bytes 257:256，DIRS bit 5</td><td>1 表示支援 Directives，並伴隨 Send／Receive／Identify Directive 的支援。</td><td>DIRS=1 不代表 SDIRS=1，仍要查 Streams 的個別支援。</td></tr><tr><td>CTRATT：bytes 99:96，HIDS bit 0</td><td>1 表示支援 128-bit Host Identifier。它不是目前 EXHID 或 HOSTID 的值。</td><td>能力支援 128-bit，不等於主機已登記一個 128-bit 非零身分。</td></tr><tr><td>CTRATT.RHII bit 18</td><td>1 表示使用 reservations 需要非零 Host Identifier；0 表示未回報這項要求，不能直接推論所有零值情境都支援。</td><td>RHII 是 reservation 的身分要求；Streams 使用自己的 NSSC.SRNZID，不能把兩個 bit 互換。</td></tr><tr><td>MDTS：byte 77</td><td>非零值表示最小頁大小×2^MDTS；0h 表示沒有此最大值限制。頁大小另由 CAP.MPSMIN 定義。</td><td>最小頁 4 KiB、MDTS=5 → 128 KiB；和換成 bytes 後的 SWS 比較。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, Figure 338, 文件頁 342, 345, 347, 353, PDF 頁 368, 371, 373, 379</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-338 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-338"><h4>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">DIRS、HIDS 與 MDTS 分別回答 Directives 支援、128-bit 身分支援、傳輸上限。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, Figure 338, 文件頁 342, 345, 347, 353, PDF 頁 368, 371, 373, 379</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">DIRS=1 還需要 Identify Directive 查 SDIRS；HIDS=1 才支援 EXHID=1；MDTS=5、最小頁 4 KiB 時，最大傳輸為 128 KiB。三者不能相互推論。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-capabilities">欄位、條件與相關細節：從 Identify Controller 只取會影響本篇判斷的能力 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-commands"><summary>圖表組 04 · 讀懂 Directive 命令的欄位與資料方向 · 8 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.10">10.10.</span><span class="paragraph-text">Figure 181–186 分成 Receive／Send 兩組：DPTR 是位置、NUMD 是量、CDW11 是操作選擇。對照共同格式 Figure 93，注意 buffer 地址與命令欄位位置不同。</span></p>
+<a class="reading-link" href="#module-streams-commands">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-envelope"><h4 id="fields-heading-streams-envelope">命令裡的位置、資料的位置、資料的長度</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.11">10.11.</span><span class="paragraph-text">這組圖只定義共用容器，實際 buffer 結構與有無傳輸仍由後面的操作定義決定。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-envelope"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>OPC／CID／NSID</td><td>OPC 位於 CDW0[7:0]，CID 在 [31:16]，NSID 在 CDW1；命令身分與 namespace 對象分開。</td><td>Admin OPC=1Ah 表示 Receive，19h 表示 Send；同一個 NSID 可有多筆不同 CID 的要求。</td></tr><tr><td>DPTR：CDW6–9，128 bits</td><td>使用資料 buffer 時指定主機記憶體；PCIe Admin 用 PRP。它與命令內的欄位 offset 不同。</td><td>接收 32 bytes 時，先準備足夠記憶體，再設定 NUMD=7；兩者共同限制安全的資料範圍。</td></tr><tr><td>CDW10[31:0] NUMD</td><td>有傳輸時，bytes=(NUMD+1)×4；Receive 超過結構大小不會得到額外資料。</td><td>NUMD=3 對應 16 bytes；對 32-byte 參數只能讀出前半部。</td></tr><tr><td>CDW11[31:16] DSPEC／[15:8] DTYPE／[7:0] DOPER</td><td>CDW11=(DSPEC&lt;&lt;16)|(DTYPE&lt;&lt;8)|DOPER。DSPEC 不使用時不要把它解成長度或位移。</td><td>釋放 stream 7：00070101h；查狀態：00000102h。</td></tr><tr><td>CDW12／CDW13；其餘保留</td><td>只有所選操作定義的欄位才使用；Enable 的 CDW12 和 Allocate 的 CDW12 是不同格式。</td><td>Enable CDW12=00000101h；要求 3 個資源的 Allocate CDW12=00000003h。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier，與 SQ identifier 合用以辨識 outstanding command。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-181">Base 181</a><a href="#figure-STREAMS-BASE-FIG-182">Base 182</a><a href="#figure-STREAMS-BASE-FIG-183">Base 183</a><a href="#figure-STREAMS-BASE-FIG-184">Base 184</a><a href="#figure-STREAMS-BASE-FIG-185">Base 185</a><a href="#figure-STREAMS-BASE-FIG-186">Base 186</a><a href="#figure-STREAMS-BASE-FIG-093">Base 93</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.7 · Base 2.4 §5.2.8 · Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 181, 文件頁 201, PDF 頁 227</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 182, 文件頁 201, PDF 頁 227</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 183, 文件頁 201, PDF 頁 227</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 184, 文件頁 202, PDF 頁 228</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 185, 文件頁 202, PDF 頁 228</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 186, 文件頁 202, PDF 頁 228</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-181 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-181"><h4>Base Figure 181 · Directive Receive – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-181-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base181-1">Base181-1</span><span class="paragraph-text">Receive 的 DPTR 指主機用來接收回覆資料的記憶體。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 181, 文件頁 201, PDF 頁 227</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base181-2">Base181-2</span><span class="paragraph-text">讀 Streams 參數前準備 32-byte 有效接收區，DPTR 指向它；成功後從該區讀 MSL／NSSA 等欄位。DPTR 本身不含這些參數。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-182 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-182"><h4>Base Figure 182 · Directive Receive – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-182-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base182-1">Base182-1</span><span class="paragraph-text">Receive 的 NUMD 用傳輸 Dword 數量減 1 表示長度。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 182, 文件頁 201, PDF 頁 227</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base182-2">Base182-2</span><span class="paragraph-text">要讀完整的 4096-byte Identify Directive 結構，NUMD=1023；只讀 32 bytes 則是 7，只能取得開頭的 Supported 向量，讀不到 Enabled 向量。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-183 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-183"><h4>Base Figure 183 · Directive Receive – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-183-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base183-1">Base183-1</span><span class="paragraph-text">Receive CDW11 的 DTYPE／DOPER 選回覆種類，DSPEC 依該操作決定是否使用。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.7</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 183, 文件頁 201, PDF 頁 227</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base183-2">Base183-2</span><span class="paragraph-text">Streams Get Status 使用 DTYPE=1、DOPER=2、DSPEC=0，即 CDW11=00000102h；不能把 DSPEC 填成要從第幾條串流繼續讀。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-184 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-184"><h4>Base Figure 184 · Directive Send – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-184-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base184-1">Base184-1</span><span class="paragraph-text">Send 的 DPTR 只在操作需要傳送資料時，指出主機來源 buffer。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 184, 文件頁 202, PDF 頁 228</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base184-2">Base184-2</span><span class="paragraph-text">本篇的 Enable Directive 與兩個 Streams Release 操作都沒有資料傳輸。不能因為 Send 命令格式畫有 DPTR，就額外製造一份串流資料 payload。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-185 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-185"><h4>Base Figure 185 · Directive Send – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-185-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base185-1">Base185-1</span><span class="paragraph-text">Send 的 NUMD 是有資料傳輸時的長度格式，不是所有 Send 操作都要搬資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 185, 文件頁 202, PDF 頁 228</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base185-2">Base185-2</span><span class="paragraph-text">若某個已定義的操作要送 16 bytes，格式上 NUMD=3；這是長度換算例，不是說本篇的 Release Identifier 需要送 16 bytes。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-186 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-186"><h4>Base Figure 186 · Directive Send – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-186-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base186-1">Base186-1</span><span class="paragraph-text">Send CDW11 同時選 Directive、動作與必要的特定參數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 186, 文件頁 202, PDF 頁 228</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base186-2">Base186-2</span><span class="paragraph-text">Release Identifier 7 使用 DSPEC=7、DTYPE=1、DOPER=1，CDW11=00070101h；Release Resources 用 DOPER=2，不靠 DSPEC 指定要歸還幾個資源。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-093 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共同格式把命令識別、namespace、資料地址與命令專屬控制欄位分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">CDW11 的 byte offset 是 11×4=44；這是命令內位置。DPTR 裡的 PRP 地址則指向主機 buffer；它不是「第 44 個 byte 的資料」。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-envelope">欄位、條件與相關細節：命令裡的位置、資料的位置、資料的長度 →</a></div></article>
+<section class="field-guide" id="fields-streams-opcodes"><h4 id="fields-heading-streams-opcodes">從 Admin 命令入口接到 Directive 操作</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.12">10.12.</span><span class="paragraph-text">這裡只讀 Directive Send 與 Directive Receive 兩列；不把整個 Admin 命令表納入本篇。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-opcodes"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>19h／1Ah</td><td>分別是 Directive Send／Directive Receive；opcode 低 bits 的資料方向不保證每個操作實際都有 buffer 傳輸。</td><td>Allocate Resources 位於 Receive，但實際沒有資料傳輸，結果在 CQE DW0。</td></tr><tr><td>NSID Used 與支援欄</td><td>兩者使用 NSID；實際合法值依操作定義。是否實作須看 Directives 支援，不能只因表列出 opcode 就假設可用。</td><td>Identify Return Parameters 不接受 FFFFFFFFh；Enable Streams 對它另有整體範圍。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-143">Base 143</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5, Figure 143, 文件頁 176-177, PDF 頁 202-203</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-143 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-143"><h4>Base Figure 143 · Opcodes for Admin Commands</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-143-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base143-1">Base143-1</span><span class="paragraph-text">Admin opcode 表用來辨認 Directive Send／Receive，不是用來選某個 Streams 操作。</span></p><details class="source-note"><summary>來源：Base 2.4 §5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5, Figure 143, 文件頁 176-177, PDF 頁 202-203</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base143-2">Base143-2</span><span class="paragraph-text">19h 選 Send、1Ah 選 Receive；接著還要讀 CDW11 的 DTYPE／DOPER，才能知道是 Release、查參數或配置資源。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-opcodes">欄位、條件與相關細節：從 Admin 命令入口接到 Directive 操作 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-resources"><summary>圖表組 05 · 配置多少資源，與開了幾條串流分開看 · 5 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.13">10.13.</span><span class="paragraph-text">Figure 712 先分 subsystem、namespace、namespace 加主機三種欄位。Figure 714／715 比較要求與實際配置；Figure 711 說明無法配置時的結果。</span></p>
+<a class="reading-link" href="#module-streams-resources">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-resources"><h4 id="fields-heading-streams-resources">五個數量欄位，分別在數什麼</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.14">10.14.</span><span class="paragraph-text">Return Parameters 是 32 bytes。先分欄位的作用範圍，再比較數值；不能把同名的 NSA 回覆與請求 NSR 混為一個值。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-resources"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>MSL bytes 1:0／NSSA 3:2／NSSO 5:4</td><td>MSL 是 subsystem 同時開啟上限；NSSA 是未專用配置的資源池大小；NSSO 是使用該池的開啟串流數。</td><td>MSL=8，專用配置總數為 3，則池有 5；其中用掉 2 時，NSSA 仍是 5、NSSO 是 2。</td></tr><tr><td>NSSC byte 6：SRNZID[1]／SSID[0]</td><td>SRNZID 決定啟用前是否必須有非零主機身分；SSID 決定不同非零主機是否可共享編號。</td><td>SRNZID=1、SSID=0 同時表示必須初始化身分、不同主機的同號串流分開。</td></tr><tr><td>SWS bytes 19:16／SGS 21:20</td><td>SWS 在 NVM 以 logical blocks 計；SGS 以 SWS 計。SWS 可能因重新格式化改變。</td><td>SWS=8、SGS=4 → 32 blocks；不是 8+4，也不是 4 bytes。</td></tr><tr><td>NSA bytes 23:22／NSO 25:24</td><td>NSA 是指定 namespace 在本次主機關聯下的專用配置數；NSO 是同一可見範圍的開啟數。SSID 影響可見的主機集合。</td><td>先配置 3 尚未寫入時，NSA=3、NSO=0 完全合理。</td></tr><tr><td>NSID=FFFFFFFFh 的 Return Parameters</td><td>subsystem 欄位仍回覆；共同適用的 namespace 值可回覆，其他 namespace 特定欄位清 0；SWS 無法單一表示時可為 0、SGS 可為 0。</td><td>此時 NSA=0 不足以證明每一個 namespace 都沒有專用配置；需要查特定 NSID。</td></tr><tr><td>NSR：CDW12[15:0] → NSA：CQE DW0[15:0]</td><td>兩者都是直接計數，實際授予可小於要求。兩個 Dword 的高 16 bits 保留；本操作沒有資料傳輸。</td><td>NSR=4 得 NSA=3 時，之後以 3 安排追蹤容量。</td></tr><tr><td>既有專用配置／配置失敗</td><td>已有配置再申請會回 Invalid Field in Command；要改數量先全部釋放，再請求完整新數量。</td><td>從 3 改 5 不能只再送 NSR=2；也不能把 7Fh 失敗當成成功取得 0 個的分支。</td></tr><tr><td>保留區 bytes 15:7、31:26；NSSC[7:2]</td><td>這些位置不提供本篇定義的參數；不要拿殘留 buffer 值當成更多資源欄位。</td><td>從 32-byte 結構外讀到舊的非零資料，不是額外的 Streams 能力。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-709">Base 709</a><a href="#figure-STREAMS-BASE-FIG-711">Base 711</a><a href="#figure-STREAMS-BASE-FIG-712">Base 712</a><a href="#figure-STREAMS-BASE-FIG-714">Base 714</a><a href="#figure-STREAMS-BASE-FIG-715">Base 715</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.9.3 · Base 2.4 §8.1.9.3.1.1 · Base 2.4 §8.1.9.3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 709, 文件頁 621, PDF 頁 647</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 711, 文件頁 623, PDF 頁 649</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.1, Figure 712, 文件頁 624-625, PDF 頁 650-651</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 714, 文件頁 626, PDF 頁 652</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 715, 文件頁 626, PDF 頁 652</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-709 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-709"><h4>Base Figure 709 · Streams – Directive Operations</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-709-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base709-1">Base709-1</span><span class="paragraph-text">Streams 的五種管理操作，依命令方向和 DOPER 選擇，各自回答不同問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 709, 文件頁 621, PDF 頁 647</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base709-2">Base709-2</span><span class="paragraph-text">想知道開了哪些編號用 Receive/02h；想取得專用容量用 Receive/03h；兩者都不是 Send/01h 的結束單一編號。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-resources">欄位、條件與相關細節：五個數量欄位，分別在數什麼 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-711 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-711"><h4>Base Figure 711 · Streams Directive – Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-711-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base711-1">Base711-1</span><span class="paragraph-text">Streams 的 7Fh 表示無法提供專用資源且沒有可用的 subsystem 資源。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 711, 文件頁 623, PDF 頁 649</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base711-2">Base711-2</span><span class="paragraph-text">要求專用資源沒拿到時，要分清：可能失敗回 7Fh，也可能因仍有共用資源而成功回 NSA=0。兩者不是同一結果。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-resources">欄位、條件與相關細節：五個數量欄位，分別在數什麼 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-712 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-712"><h4>Base Figure 712 · Streams Directive – Return Parameters Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-712-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base712-1">Base712-1</span><span class="paragraph-text">Return Parameters 把上限、資源池、主機可見配置與大小提示放在不同欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.1, Figure 712, 文件頁 624-625, PDF 頁 650-651</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base712-2">Base712-2</span><span class="paragraph-text">MSL=8、NSSA=5、NSSO=2、NSA=3、NSO=1 時，5 是非專用資源池大小，2 是其中開啟數，3 是本例專用配置，1 是本例已開啟數。不能把 5 當成完全閒置的資源數。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-resources">欄位、條件與相關細節：五個數量欄位，分別在數什麼 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-714 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-714"><h4>Base Figure 714 · Allocate Resources – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-714-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base714-1">Base714-1</span><span class="paragraph-text">NSR 直接保存主機要求的專用資源數量，不使用數量減 1 的編碼。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 714, 文件頁 626, PDF 頁 652</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base714-2">Base714-2</span><span class="paragraph-text">要求 4 個資源填 CDW12=00000004h；如果習慣性減 1 填 3，控制器看到的就是要求 3 個。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-resources">欄位、條件與相關細節：五個數量欄位，分別在數什麼 →</a></div></article>
+
+<!-- figure-table:STREAMS-BASE-FIG-715 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-715"><h4>Base Figure 715 · Allocate Resources – Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-715-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base715-1">Base715-1</span><span class="paragraph-text">Allocate 的 CQE DW0.NSA 回實際配置數量，不能只看成功狀態或原始 NSR。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 715, 文件頁 626, PDF 頁 652</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base715-2">Base715-2</span><span class="paragraph-text">NSR=4、成功 CQE 的 NSA=3，表示實際取得 3 個專用資源；NSA=0 則要按可使用 subsystem 資源的分支理解。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-resources">欄位、條件與相關細節：五個數量欄位，分別在數什麼 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-sharing"><summary>圖表組 06 · 同一個 Stream Identifier，到底是不是同一條串流 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.15">10.15.</span><span class="paragraph-text">Figure 710 固定 namespace 與編號，只改 Host Identifier 與 SSID，觀察分組數如何改變。計數結果再連到 Figure 712 的 NSA／NSO 與 Figure 713。</span></p>
+<a class="reading-link" href="#module-streams-sharing">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-sharing"><h4 id="fields-heading-streams-sharing">四條路徑，為什麼可能是三條串流或一條串流</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.16">10.16.</span><span class="paragraph-text">圖內 controller 數量和 stream 數量沒有固定的一比一關係；原圖所有路徑都連到同一 namespace。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-sharing"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Host A → Controllers 1、2</td><td>相同非零 Host Identifier A 代表同一主機，對共同 namespace 的同號串流共享。</td><td>兩條路徑各送一筆 stream 1 的 Write，仍屬同一串流。</td></tr><tr><td>Host B／Host C → Controllers 3、4</td><td>不同非零身分是否合併，由 NSSC.SSID 決定。SSID=0 不合併；SSID=1 合併同一 namespace 的同號串流。</td><td>固定同號 1：SSID=0 為 3 組，SSID=1 為 1 組。</td></tr><tr><td>NSID 與 0h 身分邊界</td><td>改成不同 namespace 就不能沿用同一組；0h 也不加入非零身分共享。</td><td>即使 SSID=1，C4 的身分改為 0h，不能仍把它當成原先共同串流的一條路徑。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-710">Base 710</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 710, 文件頁 622, PDF 頁 648</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-710 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-710"><h4>Base Figure 710 · Example Multi-Stream and NSSC</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-710-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base710-1">Base710-1</span><span class="paragraph-text">共享判斷先固定 namespace，再看相同非零 Host Identifier 與 SSID。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 710, 文件頁 622, PDF 頁 648</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base710-2">Base710-2</span><span class="paragraph-text">原圖 C1、C2 皆屬 A，C3 屬 B、C4 屬 C，四條路徑都用編號 1。SSID=0 得到 A／B／C 三組，SSID=1 才合成同一組；圖上的 a、b、c、d 是路徑標示。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-sharing">欄位、條件與相關細節：四條路徑，為什麼可能是三條串流或一條串流 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-write"><summary>圖表組 07 · 把一筆 Write 接到串流 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.17">10.17.</span><span class="paragraph-text">必要引用 NVM Figures 70–72 只取 SLBA、NLB、DTYPE、CETYPE 與 DSPEC 的連接。先算真正的 LBA 範圍，再把串流編號視為附加資訊。</span></p>
+<a class="reading-link" href="#module-streams-write">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-write"><h4 id="fields-heading-streams-write">Write 的地址、數量與串流標記如何組合</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.18">10.18.</span><span class="paragraph-text">本組是必要引用，只教一般 CETYPE=0 Write 連到 Streams 的欄位，以及讀表時必須分開的其他提示。其他完整 Write 功能不在這裡重講。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-write"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>SLBA：CDW10／11</td><td>低 32 bits 在 CDW10，高 32 bits 在 CDW11，合成 64-bit 起始 logical block address。</td><td>SLBA=128、NLB=7 → LBA 128–135。</td></tr><tr><td>CDW12 DTYPE[23:20]／CETYPE[19:16]／NLB[15:0]</td><td>DTYPE=1 是 Streams；本例 CETYPE=0；NLB 保存 blocks−1。其他 Write 控制位元依其功能處理，不由 stream 編號決定。</td><td>DTYPE=1、NLB=7 → 本例 CDW12=00100007h。</td></tr><tr><td>CDW13 DSPEC[31:16]／保留[15:8]／DSM[7:0]</td><td>DSPEC 指串流編號；低 8 bits 的 DSM 是額外工作負載提示，不是 Dataset Management 命令本身。</td><td>stream 40 放在高 16 bits；本例 DSM=0，表示不額外提供這些屬性資訊。</td></tr><tr><td>DSM 的 INCPRS[7]／SEQREQ[6]／AL[5:4]／AF[3:0]</td><td>分別描述不可壓縮、連續寫入請求、預期延遲與頻率；全 0 表示未提供相關資訊，和 DSPEC 獨立。</td><td>是否提供順序寫入提示，不會改變同一 namespace 上 stream 7 的身分判斷。</td></tr><tr><td>FUA 與資料持久保存</td><td>FUA 位於 CDW12[30]，它的持久保存要求獨立於 DTYPE；Streams 本身不新增排序或持久性保證。</td><td>本例 FUA=0，不能把「有 stream」當成「已強制寫到非揮發媒體」。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>DSM</dt><dd>Dataset Management；由 host 提供資料範圍的使用與配置提示。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-NVM-FIG-070">NVM 70</a><a href="#figure-STREAMS-NVM-FIG-071">NVM 71</a><a href="#figure-STREAMS-NVM-FIG-072">NVM 72</a></nav>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 70, 文件頁 54, PDF 頁 54</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 71, 文件頁 54, PDF 頁 54</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 72, 文件頁 54-55, PDF 頁 54-55</p></details>
+</section>
+<!-- figure-table:STREAMS-NVM-FIG-070 -->
+<article class="field-note" id="figure-STREAMS-NVM-FIG-070"><h4>NVM Figure 70 · Write – Command Dword 10 and Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-NVM-FIG-070-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM70-1">NVM70-1</span><span class="paragraph-text">Write 的 SLBA 是資料寫入起點，不是串流編號。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 70, 文件頁 54, PDF 頁 54</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM70-2">NVM70-2</span><span class="paragraph-text">SLBA=128，CDW10=00000080h、CDW11=0；stream 7 另放 DSPEC。這筆寫入從 LBA 128 開始，不會因 stream=7 改成 LBA 7。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-write">欄位、條件與相關細節：Write 的地址、數量與串流標記如何組合 →</a></div></article>
+
+<!-- figure-table:STREAMS-NVM-FIG-071 -->
+<article class="field-note" id="figure-STREAMS-NVM-FIG-071"><h4>NVM Figure 71 · Write – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-NVM-FIG-071-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM71-1">NVM71-1</span><span class="paragraph-text">Write CDW12 把 DTYPE、CETYPE 與 NLB 放在不同 bit 範圍。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 71, 文件頁 54, PDF 頁 54</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM71-2">NVM71-2</span><span class="paragraph-text">本例 DTYPE=1、CETYPE=0、NLB=7，其他示範位元為 0，得到 00100007h。NLB 的 7 表示 8 blocks；不是要求 7 個串流。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-write">欄位、條件與相關細節：Write 的地址、數量與串流標記如何組合 →</a></div></article>
+
+<!-- figure-table:STREAMS-NVM-FIG-072 -->
+<article class="field-note" id="figure-STREAMS-NVM-FIG-072"><h4>NVM Figure 72 · Write – Command Dword 13 if CETYPE is cleared to 0h</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-NVM-FIG-072-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM72-1">NVM72-1</span><span class="paragraph-text">CETYPE=0 時，Write CDW13 的高 16 bits 是 DSPEC，低位的 DSM 屬性是另一組提示。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 72, 文件頁 54-55, PDF 頁 54-55</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM72-2">NVM72-2</span><span class="paragraph-text">DSPEC=7、DSM=0 得 CDW13=00070000h；DSM=0 只表示不提供這些屬性資訊，不會取消高 16 bits 的 stream 7。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-write">欄位、條件與相關細節：Write 的地址、數量與串流標記如何組合 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-sizes"><summary>圖表組 08 · 把 SWS／SGS 換成實際的資料量 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.19">10.19.</span><span class="paragraph-text">Figure 708 教大小的組成；Figure 712 提供 SWS／SGS 的欄位位置。NVM §5.13 補上 SWS 的 logical-block 單位，兩份定義要一起使用。</span></p>
+<a class="reading-link" href="#module-streams-sizes">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-sizes"><h4 id="fields-heading-streams-sizes">把圖中的大小統一成 logical blocks 與 bytes</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.20">10.20.</span><span class="paragraph-text">Figure 708 沒有地址與時間軸，它是大小關係圖；欄位值見 Figure 712，SWS 單位見 NVM §5.13。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-sizes"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>SWS first…last → 一個 Stream Granularity</td><td>SGS 的數值是包含多少個 SWS；SGS×SWS 才是 logical block 數。</td><td>8 blocks/SWS × 4 SWS = 32 blocks；4096 bytes/block 時是 128 KiB。</td></tr><tr><td>SGS first…last → Complete Stream</td><td>完整串流可包含多個粒度單位，並不是只有一筆命令大小。</td><td>同一 stream 可以由多筆符合 SWS 的 Write 持續增加資料。</td></tr><tr><td>Write 對齊／解除配置對齊</td><td>Write 起點與長度用 SWS 比較；對相關資料的解除配置建議使用換算後的 Stream Granularity。</td><td>LBA 136 是 8 的倍數卻不是 32 的倍數；兩種最佳化條件不同。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-708">Base 708</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 708, 文件頁 620, PDF 頁 646</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-708 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-708"><h4>Base Figure 708 · Directive Streams – Stream Alignment and Granularity</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-708-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base708-1">Base708-1</span><span class="paragraph-text">一個 Stream Granularity 由多個 SWS 單位組成，完整串流又可跨多個 granularity 單位。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 708, 文件頁 620, PDF 頁 646</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base708-2">Base708-2</span><span class="paragraph-text">SWS=8 blocks、SGS=4 時，一個 granularity 是 32 blocks。上層圖有「first／last」不代表主機只能送第一筆和最後一筆 Write；它是在畫大小的組成。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-sizes">欄位、條件與相關細節：把圖中的大小統一成 logical blocks 與 bytes →</a></div></article>
+<section class="field-guide" id="fields-streams-page-unit"><h4 id="fields-heading-streams-page-unit">最小記憶體頁與 logical block 是不同單位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.21">10.21.</span><span class="paragraph-text">這張能力表只取 MPSMIN，讓讀者能自己完成 MDTS 換算；不展開其他控制器寄存器。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-page-unit"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CAP[51:48] MPSMIN</td><td>最小記憶體頁大小為 2^(12+MPSMIN) bytes，供 MDTS 的非零值當基底。</td><td>MPSMIN=0、MDTS=5 → 4096×32=131072 bytes。</td></tr><tr><td>記憶體頁大小 vs. logical block 大小</td><td>前者用於傳输上限與記憶體配置；後者用於 SWS、LBA、Write 的資料長度。</td><td>例子中兩者都選 4096 bytes，是設定相同，不代表兩種單位永遠相同。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-036">Base 36</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-036 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-036"><h4>Base Figure 36 · Offset 0h: CAP – Controller Capabilities</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-036-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-1">Base36-1</span><span class="paragraph-text">CAP.MPSMIN 定義 MDTS 所使用的最小記憶體頁大小單位。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base36-2">Base36-2</span><span class="paragraph-text">MPSMIN=0 對應 2^(12+0)=4096 bytes；MDTS=5 再乘 2^5，得到 128 KiB。MPSMIN 不是 namespace 的 logical block 大小。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-page-unit">欄位、條件與相關細節：最小記憶體頁與 logical block 是不同單位 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-streams-lifetime"><summary>圖表組 09 · 觀察串流、結束使用與處理狀態變更 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.22">10.22.</span><span class="paragraph-text">Figure 713 先讀 OSC 再讀排序的編號；釋放與 reset 的規則連回正文的生命週期比較。Figure 705 的 SDIRCLR=0 需連同多控制器例外一起判斷。</span></p>
+<a class="reading-link" href="#module-streams-lifetime">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-streams-status"><h4 id="fields-heading-streams-status">清單的數量、位置與身分範圍</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.23">10.23.</span><span class="paragraph-text">這張表的 SID1、SID2 是「第幾個回覆欄位」，不是要求它的值必須是 1、2；每個欄位皆為 2 bytes。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-streams-status"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>OSC bytes 1:0</td><td>直接表示目前開啟數量；與 NSID／Host Identifier／SSID 選到的可見範圍一起解讀。</td><td>OSC=3、SID1=7、SID2=40、SID3=1000 → 3 條串流，最高編號不是數量。</td></tr><tr><td>SIDk：byte offset 2×k，k 從 1 起算</td><td>每筆 2 bytes，依數值遞增；第 1 筆位於 bytes 3:2，最後可至 bytes 131071:131070。</td><td>第 3 筆從 offset 6 開始，占 bytes 7:6；這裡的 index 和 identifier 不同。</td></tr><tr><td>NUMD 與有效前綴</td><td>總結構上限 131072 bytes；可按需要讀前綴，但至少要有 OSC 才知道清單是否完整。傳輸長度以 4 bytes 為單位。</td><td>要容納 4 個編號需要 10 bytes，向上取 12 bytes，NUMD=2；只解讀實際有效的 4 筆。</td></tr><tr><td>NSID=FFFFFFFFh／SSID</td><td>整體查詢只列使用非專用 subsystem 資源的編號，跨 namespace 的重複值只回一次；特定 NSID 查詢依主機可見範圍回覆。</td><td>namespace 1 與 2 的共用資源都開啟 7，整體清單只列一個 7，不能用它分辨兩個 namespace 的細節。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-STREAMS-BASE-FIG-713">Base 713</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.2, Figure 713, 文件頁 626, PDF 頁 652</p></details>
+</section>
+<!-- figure-table:STREAMS-BASE-FIG-713 -->
+<article class="field-note" id="figure-STREAMS-BASE-FIG-713"><h4>Base Figure 713 · Streams Directive – Get Status Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:STREAMS-BASE-FIG-713-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base713-1">Base713-1</span><span class="paragraph-text">Get Status 先提供開啟數量，接著按數值由小到大列出 Stream Identifier。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.3.1.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.2, Figure 713, 文件頁 626, PDF 頁 652</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base713-2">Base713-2</span><span class="paragraph-text">OSC=3、後續 7／40／1000 共需要 2+3×2=8 bytes，NUMD=1 可取得這個前綴。若 OSC 比可容納數更多，這次讀取就是部分清單。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-streams-status">欄位、條件與相關細節：清單的數量、位置與身分範圍 →</a></div></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:streams-stages -->
+<details class="review-question" id="qa-streams-stages"><summary>1. SDIRS=1、NSA=3、NSO=0，這些值互相矛盾嗎？</summary>
+<div data-qa-answer="streams-stages"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="11.01">11.01.</span><span class="paragraph-text">不矛盾。它們分別是支援能力、已配置專用容量與目前開啟數。主機可以已啟用且配置容量，但還沒有用任何串流編號寫入。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.2, 8.1.9.3, 文件頁 616-624, PDF 頁 642-650</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3, 文件頁 621-626, PDF 頁 647-652</p>
+</details></details>
+<!-- qa:streams-host-zero -->
+<details class="review-question" id="qa-streams-host-zero"><summary>2. C1、C2 都是 Host Identifier=0h，可否當成同一主機的 stream 7？</summary>
+<div data-qa-answer="streams-host-zero"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="11.02">11.02.</span><span class="paragraph-text">不能只因兩個值都是 0h 就合併。0h 表示不建立跨控制器主機關聯；先登記相同非零識別值，才符合共同主機的判斷前提。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, 5.2.30.1.35.1, 文件頁 508-510, PDF 頁 534-536</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.2, 文件頁 621-626, PDF 頁 647-652</p>
+</details></details>
+<!-- qa:streams-allocation -->
+<details class="review-question" id="qa-streams-allocation"><summary>3. 已取得 3 個專用資源，再送 NSR=2，能變成 5 個嗎？</summary>
+<div data-qa-answer="streams-allocation"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="11.03">11.03.</span><span class="paragraph-text">不能。已有專用配置時重複申請會被拒絕；要先歸還原配置，再請求完整的新數量，並檢查實際授予數。釋放一個編號不等於歸還整份配置。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3, 文件頁 621-626, PDF 頁 647-652</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2, 文件頁 619-627, PDF 頁 645-653</p>
+</details></details>
+<!-- qa:streams-sizing -->
+<details class="review-question" id="qa-streams-sizing"><summary>4. 4 KiB/block、SWS=8、SGS=4，LBA 136 起的 16-block Write 與同起點解除配置，各符合哪個大小建議？</summary>
+<div data-qa-answer="streams-sizing"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="11.04">11.04.</span><span class="paragraph-text">Write 的起點與長度都是 8 的倍數，符合 SWS；Stream Granularity 是 32 blocks，起點 136 與長度 16 都不是 32 的倍數，所以不符合該解除配置最佳化建議。這不是在宣告命令必須失敗。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.13, 文件頁 175, PDF 頁 175</p>
+</details></details>
+<!-- qa:streams-scope -->
+<details class="review-question" id="qa-streams-scope"><summary>5. 整體 Get Status 只列出一次編號 7，能證明只有一個 namespace 正在用它嗎？</summary>
+<div data-qa-answer="streams-scope"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="11.05">11.05.</span><span class="paragraph-text">不能。整體查詢只涵蓋非專用資源，跨 namespace 的重複編號只回一次。要知道某個 namespace 的狀態，需要用該 NSID 和正確主機關聯查詢。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2, 文件頁 619-627, PDF 頁 645-653</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p><p>NVM Express NVM Command Set Specification, Revision 1.3</p></details></footer></main></div></body></html>

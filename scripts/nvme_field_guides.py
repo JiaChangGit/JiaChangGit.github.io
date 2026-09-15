@@ -19,6 +19,9 @@ def guide(source, numbers, key, title, relation, rows):
 
 
 def get(figure):
+    if figure['report_id'] == 'base-directives-streams':
+        from scripts.nvme_directives_figures import guide as selected_guide
+        return selected_guide(figure)
     if figure['report_id'] == 'admin-io-spec-walkthrough':
         from scripts.nvme_admin_io_figures import guide as selected_guide
         selected = selected_guide(figure)

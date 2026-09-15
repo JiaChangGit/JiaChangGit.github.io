@@ -639,6 +639,8 @@ from scripts.nvme_report_split import install as install_split, SPLITS
 install_split(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES)
 from scripts.nvme_admin_io import install as install_admin_io
 install_admin_io(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
+from scripts.nvme_directives import install as install_directives
+install_directives(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
 for new_id, (old_id, *_) in SPLITS.items():
     POST_IMAGES[new_id] = POST_IMAGES[old_id]
     REPORTS[new_id]['date'] = '2026-09-11'
@@ -649,6 +651,8 @@ except ModuleNotFoundError:
 
 
 def artifact_ids(report_id: str) -> list[str]:
+    if report_id == 'base-directives-streams':
+        return ['streams-tutorial-html', 'streams-zh-md', 'streams-en-md']
     if report_id == 'admin-io-spec-walkthrough':
         return ['adminio-tutorial-html', 'adminio-zh-md', 'adminio-en-md']
     if report_id in SPLITS:
@@ -690,6 +694,11 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
 
 def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     """Return a source-specific, non-verbatim guide for one Figure."""
+
+    if figure['report_id'] == 'base-directives-streams':
+        from scripts.nvme_directives_figures import lesson
+        teaching = lesson(figure)
+        return dict(purpose=teaching['en' if language == 'en' else 'takeaway'], example=teaching['example'])
 
     if language == 'zh':
         from scripts.nvme_figure_lessons import lesson
@@ -1336,6 +1345,7 @@ def frontmatter(
     report_date = REPORTS[report_id].get("date", "2026-08-28")
     slugs = {'base-boot-telemetry-sanitize': 'boot-telemetry-sanitize', 'nvm-command-set-1.3': 'nvm-command-set-1-3'}
     slugs['admin-io-spec-walkthrough'] = 'admin-io-spec-walkthrough'
+    slugs['base-directives-streams'] = 'directives-streams'
     slugs.update({rid:rid.removeprefix('base-') for rid in SPLITS})
     permalink = f"permalink: /nvme/{slugs[report_id]}-{'en' if language == 'en' else 'zh-tw'}/\n" if report_id in slugs else ""
     return f"""---
@@ -1440,7 +1450,7 @@ def main() -> int:
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
 
-    priority = ['admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
+    priority = ['base-directives-streams', 'admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
     order = priority + [key for key in reversed(REPORTS) if key not in priority]
     for report_id in order:
         report = REPORTS[report_id]

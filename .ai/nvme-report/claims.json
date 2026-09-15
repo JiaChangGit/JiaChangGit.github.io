@@ -14,6 +14,1144 @@
   ],
   "claims": [
     {
+      "id": "STREAMS-MODEL",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9, 8.1.9.1, 8.1.9.3",
+      "figure": null,
+      "table": null,
+      "printed_pages": "616-623",
+      "pdf_pages": "642-649",
+      "normative_keyword": "none",
+      "zh_tw": "Directives 讓主機與控制器交換額外資訊。Streams 用主機指定的 Stream Identifier，指出哪些寫入資料屬於同一組；控制器可利用分組改善資料配置或效能，但這個編號不直接指定 NAND 的實體位置。",
+      "en": "Directives exchange additional information between the host and controller. Streams uses a host-selected Stream Identifier to associate writes with a group. The controller may use that grouping for placement or performance improvements; the identifier does not select a physical NAND address.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "先理解 Streams 要解決什麼問題",
+      "heading_en": "What Streams communicates",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.1, 8.1.9.3, 文件頁 616-623, PDF 頁 642-649",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.1, 8.1.9.3, printed pages 616-623, PDF pages 642-649"
+    },
+    {
+      "id": "STREAMS-HOST",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30.1.35, 5.2.30.1.35.1",
+      "figure": null,
+      "table": null,
+      "printed_pages": "508-510",
+      "pdf_pages": "534-536",
+      "normative_keyword": "none",
+      "zh_tw": "FID 81h 登記 Host Identifier，讓同一 NVM subsystem 內的控制器辨認共同主機。相同非零值可建立共同身分；0h 則表示不與其他控制器建立這種關聯。PCIe 的預設值為 0h，此 Feature 不可保存。",
+      "en": "FID 81h registers a Host Identifier so controllers in an NVM subsystem can recognize a common host. Equal nonzero values establish that identity; 0h does not associate a controller with other controllers. The PCIe default is 0h and this Feature is not saveable.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "先讓控制器知道哪些路徑屬於同一主機",
+      "heading_en": "Identify the host across controller paths",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, 5.2.30.1.35.1, 文件頁 508-510, PDF 頁 534-536",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, 5.2.30.1.35.1, printed pages 508-510, PDF pages 534-536"
+    },
+    {
+      "id": "STREAMS-ENABLE",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9, 8.1.9.2, 8.1.9.3",
+      "figure": null,
+      "table": null,
+      "printed_pages": "616-624",
+      "pdf_pages": "642-650",
+      "normative_keyword": "none",
+      "zh_tw": "先由 OACS.DIRS 確認 Directives，再用 Identify Directive 查 Streams 是否支援與啟用。Enable Directive 的 CDW11 選 Identify 操作，CDW12 才選要啟用的 Streams；namespace 與 Host Identifier 一起決定共享的啟用狀態。",
+      "en": "First check OACS.DIRS, then query Streams support and enablement through the Identify Directive. For Enable Directive, CDW11 selects the Identify operation and CDW12 selects Streams as the target. Namespace and Host Identifier determine the shared enable state.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "查支援、登記身分，再啟用 Streams",
+      "heading_en": "Check support and enable Streams",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.2, 8.1.9.3, 文件頁 616-624, PDF 頁 642-650",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9, 8.1.9.2, 8.1.9.3, printed pages 616-624, PDF pages 642-650"
+    },
+    {
+      "id": "STREAMS-COMMANDS",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.7, 5.2.8",
+      "figure": null,
+      "table": null,
+      "printed_pages": "201-202",
+      "pdf_pages": "227-228",
+      "normative_keyword": "none",
+      "zh_tw": "Directive Receive 的資料由控制器送往主機，Directive Send 則相反；實際是否有資料傳輸取決於操作。CDW11 用 DTYPE／DOPER 選操作，DSPEC 的含義由類型決定；需要 buffer 時，NUMD 是 Dword 數量減 1。",
+      "en": "Directive Receive transfers data toward the host and Directive Send toward the controller, when the selected operation transfers data. CDW11 selects DTYPE/DOPER and type-specific DSPEC. For buffer transfers, NUMD encodes the Dword count minus one.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "讀懂 Directive 命令的欄位與資料方向",
+      "heading_en": "Read the Directive command envelope",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, 5.2.8, 文件頁 201-202, PDF 頁 227-228",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.7, 5.2.8, printed pages 201-202, PDF pages 227-228"
+    },
+    {
+      "id": "STREAMS-RESOURCES",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3",
+      "figure": null,
+      "table": null,
+      "printed_pages": "621-626",
+      "pdf_pages": "647-652",
+      "normative_keyword": "none",
+      "zh_tw": "Streams 可使用 namespace 的專用資源，或使用尚未專用配置的 subsystem 資源。Allocate Resources 要求的是可同時追蹤的數量，回覆 NSA 可以小於 NSR；真正開啟串流，是後續 Write 使用尚未開啟的編號時。",
+      "en": "Streams uses either namespace-exclusive resources or subsystem resources not exclusively allocated. Allocate Resources requests concurrent tracking capacity; returned NSA may be smaller than NSR. A stream is opened when a later Write uses an identifier that is not already open.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "配置多少資源，與開了幾條串流分開看",
+      "heading_en": "Separate allocated capacity from open streams",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3, 文件頁 621-626, PDF 頁 647-652",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.3, printed pages 621-626, PDF pages 647-652"
+    },
+    {
+      "id": "STREAMS-SHARING",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.2",
+      "figure": null,
+      "table": null,
+      "printed_pages": "621-626",
+      "pdf_pages": "647-652",
+      "normative_keyword": "none",
+      "zh_tw": "Stream Identifier 的意義要連同 namespace、Host Identifier 與 NSSC.SSID 判斷。SSID=0 時，不同非零主機身分的同號串流彼此獨立；SSID=1 時，同一 namespace 的同號串流可由不同非零主機身分共享。",
+      "en": "Interpret a Stream Identifier together with namespace, Host Identifier, and NSSC.SSID. With SSID=0, equal identifiers belonging to different nonzero host identities are separate streams. With SSID=1, those hosts may share the same numbered stream in the same namespace.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "同一個 Stream Identifier，到底是不是同一條串流",
+      "heading_en": "When equal Stream Identifiers mean the same stream",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.2, 文件頁 621-626, PDF 頁 647-652",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, 8.1.9.3.1.1, 8.1.9.3.1.2, printed pages 621-626, PDF pages 647-652"
+    },
+    {
+      "id": "STREAMS-WRITE",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.1, 8.1.9.3",
+      "figure": null,
+      "table": null,
+      "printed_pages": "617-623",
+      "pdf_pages": "643-649",
+      "normative_keyword": "none",
+      "zh_tw": "使用 Streams 的 Write 指定 DTYPE=1、DSPEC=非零 Stream Identifier；首次使用尚未開啟的編號時，控制器開啟串流。DTYPE=0 或 Streams 的 DSPEC=0 不使用串流分組；未啟用類型的處理還要看是否已有任何 I/O Directive 啟用。",
+      "en": "A Streams Write uses DTYPE=1 and a nonzero Stream Identifier in DSPEC. First use of an unopened identifier opens a stream. DTYPE=0 or a zero Streams DSPEC omits stream grouping; handling an unenabled type also depends on whether any I/O Directive is enabled.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "把一筆 Write 接到串流",
+      "heading_en": "Attach a Write to a stream",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, 8.1.9.3, 文件頁 617-623, PDF 頁 643-649",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, 8.1.9.3, printed pages 617-623, PDF pages 643-649"
+    },
+    {
+      "id": "STREAMS-SIZES",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "5.13",
+      "figure": null,
+      "table": null,
+      "printed_pages": "175",
+      "pdf_pages": "175",
+      "normative_keyword": "none",
+      "zh_tw": "NVM Command Set 的 SWS 以 logical blocks 為單位；SGS 則以 SWS 為單位。先用 namespace 的 logical block 大小換成 bytes，才能比較寫入對齊、傳輸長度與整組資料的解除配置範圍。",
+      "en": "For the NVM Command Set, SWS is measured in logical blocks; SGS is measured in SWS units. Convert through the namespace logical block size before comparing write alignment, transfer length, and group-sized deallocation ranges.",
+      "scope_entry_id": "STREAMS-NVM-INCLUDE",
+      "heading_zh_tw": "把 SWS／SGS 換成實際的資料量",
+      "heading_en": "Convert SWS and SGS into data sizes",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §5.13, 文件頁 175, PDF 頁 175",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §5.13, printed pages 175, PDF pages 175"
+    },
+    {
+      "id": "STREAMS-LIFETIME",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2",
+      "figure": null,
+      "table": null,
+      "printed_pages": "619-627",
+      "pdf_pages": "645-653",
+      "normative_keyword": "none",
+      "zh_tw": "Get Status 回報目前開啟的編號。Release Identifier 結束一個編號的本次串流關聯，專用資源仍可保留；Release Resources 歸還 namespace 的專用配置。停用、Format、刪除、寫入保護與 reset 則各有不同的狀態影響。",
+      "en": "Get Status reports open identifiers. Release Identifier ends the current association of one identifier while exclusive capacity can remain allocated; Release Resources returns the namespace-exclusive allocation. Disablement, Format, deletion, write protection, and reset have distinct effects.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "heading_zh_tw": "觀察串流、結束使用與處理狀態變更",
+      "heading_en": "Observe streams and end their use",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2, 文件頁 619-627, PDF 頁 645-653",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, 8.1.9.3, 8.1.9.3.1.2, 8.1.9.3.2, printed pages 619-627, PDF pages 645-653"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-181-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.7",
+      "figure": "181",
+      "table": null,
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "normative_keyword": "none",
+      "zh_tw": "Receive 的 DPTR 指主機用來接收回覆資料的記憶體。",
+      "en": "Figure 181, \"Directive Receive – Data Pointer\": Directive Receive DPTR identifies the host destination for returned data.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "DPTR"
+      ],
+      "evidence_digest": "1cd54fe7befaf6b3a03a28eb57d477fe626c63e63acc8e490848a5dec3d7d894",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 181, 文件頁 201, PDF 頁 227",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 181, printed pages 201, PDF pages 227"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-182-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.7",
+      "figure": "182",
+      "table": null,
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "normative_keyword": "none",
+      "zh_tw": "Receive 的 NUMD 用傳輸 Dword 數量減 1 表示長度。",
+      "en": "Figure 182, \"Directive Receive – Command Dword 10\": Directive Receive NUMD encodes the requested Dword count minus one.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "NUMD"
+      ],
+      "evidence_digest": "51633f740178102684b105eefad39af28277da6f9a6263ef4a9b4398445b7122",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 182, 文件頁 201, PDF 頁 227",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 182, printed pages 201, PDF pages 227"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-183-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.7",
+      "figure": "183",
+      "table": null,
+      "printed_pages": "201",
+      "pdf_pages": "227",
+      "normative_keyword": "none",
+      "zh_tw": "Receive CDW11 的 DTYPE／DOPER 選回覆種類，DSPEC 依該操作決定是否使用。",
+      "en": "Figure 183, \"Directive Receive – Command Dword 11\": Receive CDW11 selects the directive and operation; DSPEC usage depends on that operation.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "may"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DTYPE",
+        "DOPER"
+      ],
+      "evidence_digest": "752a221102552d2dc227078b1669e9354e94c02562b2598770ead135e7c75c2d",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 183, 文件頁 201, PDF 頁 227",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.7, Figure 183, printed pages 201, PDF pages 227"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-184-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.8",
+      "figure": "184",
+      "table": null,
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "normative_keyword": "none",
+      "zh_tw": "Send 的 DPTR 只在操作需要傳送資料時，指出主機來源 buffer。",
+      "en": "Figure 184, \"Directive Send – Data Pointer\": Directive Send DPTR is a host-source pointer only when the selected operation transfers a buffer.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "DPTR"
+      ],
+      "evidence_digest": "8b0ba74003398ef1a0dc275ef22f911cd99d36421c4da60474c33ee46c52af00",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 184, 文件頁 202, PDF 頁 228",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 184, printed pages 202, PDF pages 228"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-185-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.8",
+      "figure": "185",
+      "table": null,
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "normative_keyword": "none",
+      "zh_tw": "Send 的 NUMD 是有資料傳輸時的長度格式，不是所有 Send 操作都要搬資料。",
+      "en": "Figure 185, \"Directive Send – Command Dword 10\": Send NUMD defines buffered-transfer length; the operation decides whether any transfer occurs.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "NUMD"
+      ],
+      "evidence_digest": "cdbfad3292818f74d79923ff7d04cf814aa6b3b6f4c3137d01ccd88a169c112f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 185, 文件頁 202, PDF 頁 228",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 185, printed pages 202, PDF pages 228"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-186-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.8",
+      "figure": "186",
+      "table": null,
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "normative_keyword": "none",
+      "zh_tw": "Send CDW11 同時選 Directive、動作與必要的特定參數。",
+      "en": "Figure 186, \"Directive Send – Command Dword 11\": Send CDW11 combines directive type, operation, and any operation-specific DSPEC value.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "may",
+        "shall"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DTYPE",
+        "DOPER"
+      ],
+      "evidence_digest": "49bfce106b31cea1f50ec9ba0545ae34a7b6302a0766b1dda791984e84676bbf",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 186, 文件頁 202, PDF 頁 228",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 186, printed pages 202, PDF pages 228"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-537-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30.1.35",
+      "figure": "537",
+      "table": null,
+      "printed_pages": "509",
+      "pdf_pages": "535",
+      "normative_keyword": "none",
+      "zh_tw": "EXHID 選 Host Identifier 的長度，支援能力與其他控制器的非零格式會限制這個選擇。",
+      "en": "Figure 537, \"Host Identifier – Command Dword 11\": EXHID selects Host Identifier width, subject to supported widths and subsystem consistency.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "key_items": [
+        "EXHID",
+        "HOSTID"
+      ],
+      "evidence_digest": "df74b5e0073dee01f64fc5075c59bbda5874d3434c3594c51000934418a376d9",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 537, 文件頁 509, PDF 頁 535",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 537, printed pages 509, PDF pages 535"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-538-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30.1.35",
+      "figure": "538",
+      "table": null,
+      "printed_pages": "510",
+      "pdf_pages": "536",
+      "normative_keyword": "none",
+      "zh_tw": "HOSTID 是身分資料；64-bit 模式只使用低 8 bytes，128-bit 模式使用全部 16 bytes。",
+      "en": "Figure 538, \"Host Identifier – Data Structure Entry\": HOSTID carries the identity: the lower eight bytes in 64-bit mode or all sixteen in extended mode.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "reserved",
+        "may",
+        "shall not"
+      ],
+      "key_items": [
+        "HOSTID",
+        "EXHID"
+      ],
+      "evidence_digest": "e8fb96abf998e6746fb6d71e166d7916a80f6980d0042e71ad696c2c25124010",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 538, 文件頁 510, PDF 頁 536",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.35, Figure 538, printed pages 510, PDF pages 536"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-702-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9",
+      "figure": "702",
+      "table": null,
+      "printed_pages": "617",
+      "pdf_pages": "643",
+      "normative_keyword": "none",
+      "zh_tw": "Directive Type 選資訊交換的類型；Identify=00h 和 Streams=01h 在本篇分別負責管理與分組。",
+      "en": "Figure 702, \"Directive Types\": Directive Type selects the exchange: Identify 00h manages capabilities and Streams 01h carries grouping information.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may",
+        "should"
+      ],
+      "key_items": [
+        "Identify",
+        "Streams",
+        "Directive Type"
+      ],
+      "evidence_digest": "4fa5b4081b3a98e3abd7a43b30296bd55a8913e15727af998e2d175c9eced2b2",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9, Figure 702, 文件頁 617, PDF 頁 643",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9, Figure 702, printed pages 617, PDF pages 643"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-703-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.1",
+      "figure": "703",
+      "table": null,
+      "printed_pages": "617",
+      "pdf_pages": "643",
+      "normative_keyword": "none",
+      "zh_tw": "I/O 的 DSPEC 必須由 DTYPE 解讀：Streams 下是串流編號，未使用 Directive 時沒有這個作用。",
+      "en": "Figure 703, \"Directive Specific Field Interpretation\": The I/O DTYPE determines whether DSPEC is a Stream Identifier or has no directive meaning.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "DTYPE",
+        "DSPEC"
+      ],
+      "evidence_digest": "d9e1d0faf0e7549077d7d63057a9c9438b513d7274eb9fd1a5d37ea2a4ce648f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, Figure 703, 文件頁 617, PDF 頁 643",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.1, Figure 703, printed pages 617, PDF pages 643"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-704-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.2",
+      "figure": "704",
+      "table": null,
+      "printed_pages": "618",
+      "pdf_pages": "644",
+      "normative_keyword": "none",
+      "zh_tw": "Identify Directive 的 DOPER=01h，在 Receive 是查參數，在 Send 是啟用或停用。",
+      "en": "Figure 704, \"Identify Directive – Directive Operations\": For the Identify Directive, DOPER=01h means Return Parameters on Receive and Enable Directive on Send.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "key_items": [
+        "Identify Directive – Directive Operations"
+      ],
+      "evidence_digest": "cb4452ccb64c39aaf63b2c3fbe1257a8378a3cecc200fd88586bd8d460bdf208",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2, Figure 704, 文件頁 618, PDF 頁 644",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.2, Figure 704, printed pages 618, PDF pages 644"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-705-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.2.1.1",
+      "figure": "705",
+      "table": null,
+      "printed_pages": "618-619",
+      "pdf_pages": "644-645",
+      "normative_keyword": "none",
+      "zh_tw": "Supported、Enabled、跨 reset 保留是三份獨立的位元向量。",
+      "en": "Figure 705, \"Identify Directive – Return Parameters Data Structure\": Supported, Enabled, and persistence across resets are three independent bit vectors.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "key_items": [
+        "SDIRS",
+        "SDIRE",
+        "SDIRCLR",
+        "IDIRS",
+        "IDIRE",
+        "IDIRCLR"
+      ],
+      "evidence_digest": "0727e50c0ac66e9d683589d50e838b2a2f1d61d9203e18aed61db4714a6f020b",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.1.1, Figure 705, 文件頁 618-619, PDF 頁 644-645",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.1.1, Figure 705, printed pages 618-619, PDF pages 644-645"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-706-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.2.2.1",
+      "figure": "706",
+      "table": null,
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "normative_keyword": "none",
+      "zh_tw": "Enable 的 CDW12 選目標 Directive 與開關，外層仍由 Identify Directive 承接。",
+      "en": "Figure 706, \"Enable Directive – Command Dword 12\": Enable CDW12 selects the target directive and ENDIR while the outer command uses the Identify Directive.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "key_items": [
+        "DTYPE",
+        "ENDIR"
+      ],
+      "evidence_digest": "514a7c7c01209d837ca725f390fc202946f393684c322fcd2f1d3dcd8af332d5",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 706, 文件頁 620, PDF 頁 646",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 706, printed pages 620, PDF pages 646"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-707-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.2.2.1",
+      "figure": "707",
+      "table": null,
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "normative_keyword": "none",
+      "zh_tw": "Enable 可能因為沒有足夠資源而回 Stream Resource Allocation Failed。",
+      "en": "Figure 707, \"Enable Directive – Command Specific Status Values\": Stream Resource Allocation Failed can report insufficient resources while enabling Streams.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "may"
+      ],
+      "key_items": [
+        "SWS",
+        "SGS"
+      ],
+      "evidence_digest": "4a1a0779cd6a8f4143cbebd83d72fa3f90c0df5e56ca5fbc657cc02e53559f88",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 707, 文件頁 620, PDF 頁 646",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 707, printed pages 620, PDF pages 646"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-708-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3",
+      "figure": "708",
+      "table": null,
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "normative_keyword": "none",
+      "zh_tw": "一個 Stream Granularity 由多個 SWS 單位組成，完整串流又可跨多個 granularity 單位。",
+      "en": "Figure 708, \"Directive Streams – Stream Alignment and Granularity\": A stream-granularity unit contains multiple SWS units, and a complete stream can span multiple granularity units.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "should"
+      ],
+      "key_items": [
+        "SWS",
+        "SGS"
+      ],
+      "evidence_digest": "caeb4abc2a2b03fb45df20495bb9c95eaf127cd73839828b157373d26e29d0a7",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 708, 文件頁 620, PDF 頁 646",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 708, printed pages 620, PDF pages 646"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-709-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3",
+      "figure": "709",
+      "table": null,
+      "printed_pages": "621",
+      "pdf_pages": "647",
+      "normative_keyword": "none",
+      "zh_tw": "Streams 的五種管理操作，依命令方向和 DOPER 選擇，各自回答不同問題。",
+      "en": "Figure 709, \"Streams – Directive Operations\": The five Streams management operations are selected by command direction and DOPER.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved",
+        "may"
+      ],
+      "key_items": [
+        "Streams – Directive Operations"
+      ],
+      "evidence_digest": "9eaa54e5edb8b3f5ec6b1d214e0c5b62637a7d87bbe95f054383c53260750c6f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 709, 文件頁 621, PDF 頁 647",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 709, printed pages 621, PDF pages 647"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-710-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3",
+      "figure": "710",
+      "table": null,
+      "printed_pages": "622",
+      "pdf_pages": "648",
+      "normative_keyword": "none",
+      "zh_tw": "共享判斷先固定 namespace，再看相同非零 Host Identifier 與 SSID。",
+      "en": "Figure 710, \"Example Multi-Stream and NSSC\": Figure 710 groups equal stream numbers by namespace, nonzero Host Identifier, and SSID.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [],
+      "key_items": [
+        "Host Identifier",
+        "SSID",
+        "NSID",
+        "Stream Identifier"
+      ],
+      "evidence_digest": "1f26cfe3598476f4d244333cd96bab3bba41a67958da30cd06a1d851c270d94f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 710, 文件頁 622, PDF 頁 648",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 710, printed pages 622, PDF pages 648"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-711-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3",
+      "figure": "711",
+      "table": null,
+      "printed_pages": "623",
+      "pdf_pages": "649",
+      "normative_keyword": "none",
+      "zh_tw": "Streams 的 7Fh 表示無法提供專用資源且沒有可用的 subsystem 資源。",
+      "en": "Figure 711, \"Streams Directive – Command Specific Status Values\": Streams status 7Fh reports failure to allocate exclusive resources with no subsystem resources available.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "shall not"
+      ],
+      "key_items": [
+        "Stream Resource Allocation Failed"
+      ],
+      "evidence_digest": "628247a0a7cdbe4e1d60584919bdbe045557586977d1c1ec762daa88f8bbf9d0",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 711, 文件頁 623, PDF 頁 649",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3, Figure 711, printed pages 623, PDF pages 649"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-712-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3.1.1",
+      "figure": "712",
+      "table": null,
+      "printed_pages": "624-625",
+      "pdf_pages": "650-651",
+      "normative_keyword": "none",
+      "zh_tw": "Return Parameters 把上限、資源池、主機可見配置與大小提示放在不同欄位。",
+      "en": "Figure 712, \"Streams Directive – Return Parameters Data Structure\": Return Parameters separates subsystem limits and pool usage, host-visible allocation, and size hints.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved",
+        "may",
+        "should",
+        "shall"
+      ],
+      "key_items": [
+        "MSL",
+        "NSSA",
+        "NSSO",
+        "NSSC",
+        "SRNZID",
+        "SSID",
+        "SWS",
+        "MDTS",
+        "SGS",
+        "NSA",
+        "NSO"
+      ],
+      "evidence_digest": "ded916fae1c7879e7e97e74801ee4b1838fb20947e0ed5efbb01c082d9e40372",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.1, Figure 712, 文件頁 624-625, PDF 頁 650-651",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.1, Figure 712, printed pages 624-625, PDF pages 650-651"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-713-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3.1.2",
+      "figure": "713",
+      "table": null,
+      "printed_pages": "626",
+      "pdf_pages": "652",
+      "normative_keyword": "none",
+      "zh_tw": "Get Status 先提供開啟數量，接著按數值由小到大列出 Stream Identifier。",
+      "en": "Figure 713, \"Streams Directive – Get Status Data Structure\": Get Status returns an open count followed by numerically sorted Stream Identifiers.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "may",
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "OSC",
+        "SID1",
+        "SID2",
+        "SID65535"
+      ],
+      "evidence_digest": "9b46c4314c636e3de922c8fb611d1b0f693c258f461353fdeadd7ac352b2796c",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.2, Figure 713, 文件頁 626, PDF 頁 652",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.2, Figure 713, printed pages 626, PDF pages 652"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-714-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3.1.3",
+      "figure": "714",
+      "table": null,
+      "printed_pages": "626",
+      "pdf_pages": "652",
+      "normative_keyword": "none",
+      "zh_tw": "NSR 直接保存主機要求的專用資源數量，不使用數量減 1 的編碼。",
+      "en": "Figure 714, \"Allocate Resources – Command Dword 12\": NSR is the direct requested allocation count, not a zero-based count.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "NSR"
+      ],
+      "evidence_digest": "3b779a5437812e03e4fc28e9636b48489ce0adae40910c6b7cf860822cc17fd2",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 714, 文件頁 626, PDF 頁 652",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 714, printed pages 626, PDF pages 652"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-715-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.9.3.1.3",
+      "figure": "715",
+      "table": null,
+      "printed_pages": "626",
+      "pdf_pages": "652",
+      "normative_keyword": "none",
+      "zh_tw": "Allocate 的 CQE DW0.NSA 回實際配置數量，不能只看成功狀態或原始 NSR。",
+      "en": "Figure 715, \"Allocate Resources – Completion Queue Entry Dword 0\": Allocation CQE DW0.NSA reports the actual grant rather than echoing NSR.",
+      "scope_entry_id": "STREAMS-BASE-INCLUDE",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "NSA"
+      ],
+      "evidence_digest": "8024be97dec0dd1061f7c54d7797f0e9f4f6817997ded6a5200d5c6e697a086e",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 715, 文件頁 626, PDF 頁 652",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.9.3.1.3, Figure 715, printed pages 626, PDF pages 652"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-036-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "3.1.4.1",
+      "figure": "36",
+      "table": null,
+      "printed_pages": "55-58",
+      "pdf_pages": "81-84",
+      "normative_keyword": "none",
+      "zh_tw": "CAP.MPSMIN 定義 MDTS 所使用的最小記憶體頁大小單位。",
+      "en": "Figure 36, \"Offset 0h: CAP – Controller Capabilities\": CAP.MPSMIN supplies the minimum memory-page unit used by MDTS.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "reserved",
+        "shall",
+        "shall not",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "key_items": [
+        "MPSMIN"
+      ],
+      "evidence_digest": "f15f0948bdc2faed0c9e87e8348c3e165684478bbfd6e5bc627e885f1f4dbb17",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, 文件頁 55-58, PDF 頁 81-84",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §3.1.4.1, Figure 36, printed pages 55-58, PDF pages 81-84"
+    },
+    {
+      "id": "STREAMS-NVM-FIG-070-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "3.3.6",
+      "figure": "70",
+      "table": null,
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "normative_keyword": "none",
+      "zh_tw": "Write 的 SLBA 是資料寫入起點，不是串流編號。",
+      "en": "Figure 70, \"Write – Command Dword 10 and Command Dword 11\": Write SLBA specifies the destination start independently of the Stream Identifier.",
+      "scope_entry_id": "STREAMS-NVM-DEPENDENCY",
+      "source_keywords": [],
+      "key_items": [
+        "SLBA"
+      ],
+      "evidence_digest": "51a696190f810ac9a30eaea1073ae4915df7bb3af169cff36caa4c71aa9e5512",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 70, 文件頁 54, PDF 頁 54",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 70, printed pages 54, PDF pages 54"
+    },
+    {
+      "id": "STREAMS-NVM-FIG-071-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "3.3.6",
+      "figure": "71",
+      "table": null,
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "normative_keyword": "none",
+      "zh_tw": "Write CDW12 把 DTYPE、CETYPE 與 NLB 放在不同 bit 範圍。",
+      "en": "Figure 71, \"Write – Command Dword 12\": Write CDW12 separates directive type, command extension selection, and zero-based block count.",
+      "scope_entry_id": "STREAMS-NVM-DEPENDENCY",
+      "source_keywords": [
+        "should",
+        "shall",
+        "reserved"
+      ],
+      "key_items": [
+        "DTYPE",
+        "CETYPE",
+        "NLB",
+        "FUA"
+      ],
+      "evidence_digest": "1cbb820e7f82a8b51046b15483f96198c9a5513b87a9498103cf49fd2d9323c1",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 71, 文件頁 54, PDF 頁 54",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 71, printed pages 54, PDF pages 54"
+    },
+    {
+      "id": "STREAMS-NVM-FIG-072-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "3.3.6",
+      "figure": "72",
+      "table": null,
+      "printed_pages": "54-55",
+      "pdf_pages": "54-55",
+      "normative_keyword": "none",
+      "zh_tw": "CETYPE=0 時，Write CDW13 的高 16 bits 是 DSPEC，低位的 DSM 屬性是另一組提示。",
+      "en": "Figure 72, \"Write – Command Dword 13 if CETYPE is cleared to 0h\": For CETYPE=0, Write CDW13 places DSPEC in the upper sixteen bits, independently of DSM attributes.",
+      "scope_entry_id": "STREAMS-NVM-DEPENDENCY",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "DSPEC",
+        "DSM",
+        "INCPRS",
+        "SEQREQ",
+        "AL",
+        "AF"
+      ],
+      "evidence_digest": "d0b9e29bea6cda4f9ebe04175d32143822b40f19998eab702c2dd7ee5a16054a",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 72, 文件頁 54-55, PDF 頁 54-55",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 72, printed pages 54-55, PDF pages 54-55"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-093-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "4.1.1",
+      "figure": "93",
+      "table": null,
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "normative_keyword": "none",
+      "zh_tw": "共同格式把命令識別、namespace、資料地址與命令專屬控制欄位分開。",
+      "en": "Figure 93, \"Common Command Format\": The common command format separates command identity, namespace, data pointers, and command-specific controls.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "key_items": [
+        "OPC",
+        "CID",
+        "NSID",
+        "DPTR",
+        "CDW10-CDW13"
+      ],
+      "evidence_digest": "2646ac7e445140352902aeb4a261afc24b64df0487985cae0bba4def0fef99ff",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, printed pages 140-142, PDF pages 166-168"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-143-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5",
+      "figure": "143",
+      "table": null,
+      "printed_pages": "176-177",
+      "pdf_pages": "202-203",
+      "normative_keyword": "none",
+      "zh_tw": "Admin opcode 表用來辨認 Directive Send／Receive，不是用來選某個 Streams 操作。",
+      "en": "Figure 143, \"Opcodes for Admin Commands\": The Admin opcode table identifies Directive Send/Receive; DTYPE and DOPER still select the operation.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "Directive Send",
+        "Directive Receive",
+        "NSID"
+      ],
+      "evidence_digest": "56063f6a1d513b89be1db412f8143198a779db178be23636bd651c47d74da6ec",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5, Figure 143, 文件頁 176-177, PDF 頁 202-203",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5, Figure 143, printed pages 176-177, PDF pages 202-203"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-197-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.12",
+      "figure": "197",
+      "table": null,
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "normative_keyword": "none",
+      "zh_tw": "Get Features 的 DPTR 是接收 HOSTID 結構的位置。",
+      "en": "Figure 197, \"Get Features – Data Pointer\": Get Features DPTR identifies the buffer used to return HOSTID for value queries.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "evidence_digest": "42ad2a125363d3905b0c99826d21c7d02a26cc20c1a07b8ef750e7571adb1396",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, printed pages 209, PDF pages 235"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-198-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.12",
+      "figure": "198",
+      "table": null,
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "normative_keyword": "none",
+      "zh_tw": "Get Features CDW10 用 FID 選功能、SEL 選查詢種類。",
+      "en": "Figure 198, \"Get Features – Command Dword 10\": Get Features CDW10 selects the Feature Identifier and the requested value/capability class.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "reserved",
+        "shall"
+      ],
+      "key_items": [
+        "FID",
+        "SEL"
+      ],
+      "evidence_digest": "a26fedad3e68576ea96ee1906237849d2e6e2e100baebd527d89009701d32220",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, printed pages 209-210, PDF pages 235-236"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-199-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.12",
+      "figure": "199",
+      "table": null,
+      "printed_pages": "210",
+      "pdf_pages": "236",
+      "normative_keyword": "none",
+      "zh_tw": "UIDX 是選擇相關 UUID 的索引，不能拿來存 Host Identifier。",
+      "en": "Figure 199, \"Get Features – Command Dword 14\": Get Features UIDX selects an associated UUID when applicable; it is not the Host Identifier.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "reserved",
+        "may"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "evidence_digest": "474514248909e64dc5a88fb1d9bf55ad289bd264f61a272a97cd36d5a282a883",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, 文件頁 210, PDF 頁 236",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 199, printed pages 210, PDF pages 236"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-201-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.12.2",
+      "figure": "201",
+      "table": null,
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "normative_keyword": "none",
+      "zh_tw": "SEL=3 的 CQE DW0 回覆 Feature 能力位元，不回覆 HOSTID 的數值。",
+      "en": "Figure 201, \"Completion Queue Entry Dword 0 when Select is set to 11b\": With SEL=3, CQE DW0 reports Feature capabilities rather than the numeric HOSTID.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "evidence_digest": "fcc1aa6db6702e65ccb3956bc0ecc7dc8a4655f3abfd23d36331ed2c325ac970",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, printed pages 212, PDF pages 238"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-212-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.2",
+      "figure": "212",
+      "table": null,
+      "printed_pages": "218-220",
+      "pdf_pages": "244-246",
+      "normative_keyword": "none",
+      "zh_tw": "Parameter Error Location 指命令參數的 byte／bit 位置，不是資料 LBA。",
+      "en": "Figure 212, \"Error Information Log Entry Data Structure\": Parameter Error Location identifies a command-field byte/bit location, not a data LBA.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may",
+        "should"
+      ],
+      "key_items": [
+        "PEL",
+        "BYTLOC",
+        "BITLOC"
+      ],
+      "evidence_digest": "df3cdbb3d89941f9eac4d0daea5680983bddf8eaa447c0536e24f82c52c92516",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.2, Figure 212, 文件頁 218-220, PDF 頁 244-246",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.2, Figure 212, printed pages 218-220, PDF pages 244-246"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-338-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.14.1",
+      "figure": "338",
+      "table": null,
+      "printed_pages": "342, 345, 347, 353",
+      "pdf_pages": "368, 371, 373, 379",
+      "normative_keyword": "none",
+      "zh_tw": "DIRS、HIDS 與 MDTS 分別回答 Directives 支援、128-bit 身分支援、傳輸上限。",
+      "en": "Figure 338, \"Identify – Identify Controller Data Structure, I/O Command Set Independent\": DIRS, HIDS, and MDTS independently describe Directives support, 128-bit identity support, and maximum transfer size.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "should not",
+        "shall",
+        "shall not",
+        "reserved",
+        "may"
+      ],
+      "key_items": [
+        "OACS.DIRS",
+        "CTRATT.HIDS",
+        "MDTS",
+        "CTRATT.RHII"
+      ],
+      "evidence_digest": "3c2eff29be10ee9d192ffb8997c582a496e118e363cb96fdb5df59a409292b55",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, Figure 338, 文件頁 342, 345, 347, 353, PDF 頁 368, 371, 373, 379",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.1, Figure 338, printed pages 342, 345, 347, 353, PDF pages 368, 371, 373, 379"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-463-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30",
+      "figure": "463",
+      "table": null,
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "normative_keyword": "none",
+      "zh_tw": "Set Features 的 DPTR 指向主機提供的 HOSTID。",
+      "en": "Figure 463, \"Set Features – Data Pointer\": Set Features DPTR locates the host-supplied HOSTID data.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall not",
+        "may"
+      ],
+      "key_items": [
+        "DPTR"
+      ],
+      "evidence_digest": "1a49951e3f6c5970aa9866da961e0eb763faf4a8fd4090e24ca581af66c24103",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, printed pages 456, PDF pages 482"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-464-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30",
+      "figure": "464",
+      "table": null,
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "normative_keyword": "none",
+      "zh_tw": "Set Features 的 SV 控制保存要求，但 FID 81h 本身不允許保存。",
+      "en": "Figure 464, \"Set Features – Command Dword 10\": Set Features SV requests saving, but Host Identifier is not a saveable Feature.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "key_items": [
+        "FID",
+        "SV"
+      ],
+      "evidence_digest": "a4da378da4bc1259150a5f0ba542647a192ce240bb749c26391f405baeef3df3",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, printed pages 457, PDF pages 483"
+    },
+    {
+      "id": "STREAMS-BASE-FIG-465-CLAIM",
+      "report_id": "base-directives-streams",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30",
+      "figure": "465",
+      "table": null,
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "normative_keyword": "none",
+      "zh_tw": "Set Features 的 UIDX 選 UUID 關聯，與 CDW11.EXHID 的長度選擇不同。",
+      "en": "Figure 465, \"Set Features – Command Dword 14\": Set Features UIDX selects UUID association separately from EXHID width selection.",
+      "scope_entry_id": "STREAMS-BASE-DEPENDENCY",
+      "source_keywords": [
+        "reserved"
+      ],
+      "key_items": [
+        "UIDX"
+      ],
+      "evidence_digest": "02035f552f3d99e1d313c3f0e7215c7ff6dc9381cde9d6233a23c2e93e7a432f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, 文件頁 457, PDF 頁 483",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 465, printed pages 457, PDF pages 483"
+    },
+    {
       "id": "ADMINIO-COMMAND-MAP",
       "report_id": "admin-io-spec-walkthrough",
       "source_id": "NVME-BASE-2.4",
