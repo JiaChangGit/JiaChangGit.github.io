@@ -104,6 +104,9 @@ for term, full, zh, en in [
 
 def definitions(report_id, language):
     selected = dict(COMMON)
+    if report_id == 'base-flexible-data-placement':
+        from scripts.nvme_fdp_terms import TERMS
+        selected.update({term:b(*values) for term,values in TERMS.items()})
     if report_id == 'base-directives-streams':
         from scripts.nvme_directives import TERMS
         selected.update({term:b(*values) for term,values in TERMS.items()})

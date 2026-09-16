@@ -596,6 +596,47 @@
         "NVME-NVM-CS-1.3"
       ],
       "parity_group": "streams-bilingual"
+    },
+    {
+      "id": "fdp-tutorial-html",
+      "report_id": "base-flexible-data-placement",
+      "path": "DOCS/nvme-spec-report/base-flexible-data-placement/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文獨立漸進教學與完整逐圖解說",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "fdp-zh-md",
+      "report_id": "base-flexible-data-placement",
+      "path": "_posts/2026-09-16-nvme-flexible-data-placement-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；順向Spec路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "fdp-bilingual"
+    },
+    {
+      "id": "fdp-en-md",
+      "report_id": "base-flexible-data-placement",
+      "path": "_posts/2026-09-16-nvme-flexible-data-placement-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；順向Spec路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "fdp-bilingual"
     }
   ],
   "source_markers": {
@@ -660,7 +701,8 @@
     "basetelemetry-tutorial-html",
     "basesanitize-tutorial-html",
     "adminio-tutorial-html",
-    "streams-tutorial-html"
+    "streams-tutorial-html",
+    "fdp-tutorial-html"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -684,5 +726,5 @@
     "per_figure_takeaway_example_details": true,
     "post_purpose": "global view before opening the specification"
   },
-  "report_count": 15
+  "report_count": 16
 }

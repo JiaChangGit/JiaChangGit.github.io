@@ -38,6 +38,9 @@ def steps(title, values, caption):
 
 def module_illustration(report_id, module, language):
     key = module['id']
+    if report_id == 'base-flexible-data-placement':
+        from scripts.nvme_fdp_visuals import illustration
+        return illustration(key, language)
     if report_id == 'base-directives-streams':
         from scripts.nvme_directives_visuals import illustration
         return illustration(key, language)

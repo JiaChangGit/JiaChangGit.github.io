@@ -31190,6 +31190,2812 @@
         "zh_tw": "僅 PEL 將 Streams 拒絕條件對回命令欄位。",
         "en": "Only PEL linking a Streams rejection to command-field location."
       }
+    },
+    {
+      "id": "FDP-BASE-FIG-070",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "70",
+      "title": "Flexible Data Placement Logical View of Non-Volatile Storage",
+      "section": "3.2.4",
+      "printed_pages": "85",
+      "pdf_pages": "111",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RG",
+        "RU",
+        "RGID",
+        "NRG",
+        "RUH",
+        "NRUH",
+        "RG2",
+        "RG1",
+        "NSID",
+        "PHNDL",
+        "RUHID",
+        "PID",
+        "LBA"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "73af837d30ab53da58d1a09a2979b08492b812edddd4de2f6ea5d137d96922b3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-model",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-730",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "730",
+      "title": "Flexible Data Placement Model",
+      "section": "8.1.12.1",
+      "printed_pages": "649",
+      "pdf_pages": "675",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RG",
+        "RU",
+        "RGID",
+        "NRG",
+        "RUH",
+        "NRUH",
+        "RG2",
+        "RG1",
+        "NSID",
+        "PHNDL",
+        "RUHID",
+        "PID",
+        "LBA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "0729471d8c3329db3c5725852c41b327a59cf45878bb2e145c7a64c889264360",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-model",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-731",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "731",
+      "title": "Initially Isolated Reclaim Unit Handles",
+      "section": "8.1.12.1",
+      "printed_pages": "650",
+      "pdf_pages": "676",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RUHT",
+        "RG",
+        "RUH",
+        "RU",
+        "MBMW",
+        "HBMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f3f5dccfaca357cb9acfe73f007474734bb4fcfea29688d96741485ebcadaf63",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-isolation",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-732",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "732",
+      "title": "Persistently Isolated Reclaim Unit Handle",
+      "section": "8.1.12.1",
+      "printed_pages": "650",
+      "pdf_pages": "676",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RUHT",
+        "RG",
+        "RUH",
+        "RU",
+        "MBMW",
+        "HBMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f3f5dccfaca357cb9acfe73f007474734bb4fcfea29688d96741485ebcadaf63",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-isolation",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-295",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "295",
+      "title": "Reclaim Unit Handle Descriptor",
+      "section": "5.2.13.1.29",
+      "printed_pages": "295",
+      "pdf_pages": "321",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RUHT",
+        "RG",
+        "RUH",
+        "RU",
+        "MBMW",
+        "HBMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "6da96a68116b0b142d8b5af51c0e6fa236762df122668cb98ba47f2a46646594",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-isolation",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-293",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "293",
+      "title": "FDP Configurations Log Page",
+      "section": "5.2.13.1.29",
+      "printed_pages": "293",
+      "pdf_pages": "319",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NUMFDPC",
+        "VER",
+        "SZE",
+        "DSZE",
+        "FDPA",
+        "FDPCV",
+        "FDPVWC",
+        "RGIF",
+        "NRG",
+        "NRUH",
+        "RG",
+        "RUH",
+        "RU",
+        "MAXPIDS",
+        "NPID",
+        "PID",
+        "NNS",
+        "MNAN",
+        "NN",
+        "PHNDL",
+        "RUNS",
+        "ERUTL",
+        "VSS",
+        "VS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "499438333cc376a84c8583099e872d83efccb075d0f97d6be45eef853f7886f8",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-294",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "294",
+      "title": "FDP Configuration Descriptor",
+      "section": "5.2.13.1.29",
+      "printed_pages": "293-295",
+      "pdf_pages": "319-321",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NUMFDPC",
+        "VER",
+        "SZE",
+        "DSZE",
+        "FDPA",
+        "FDPCV",
+        "FDPVWC",
+        "RGIF",
+        "NRG",
+        "NRUH",
+        "RG",
+        "RUH",
+        "RU",
+        "MAXPIDS",
+        "NPID",
+        "PID",
+        "NNS",
+        "MNAN",
+        "NN",
+        "PHNDL",
+        "RUNS",
+        "ERUTL",
+        "VSS",
+        "VS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "04899be9094394cfa3e96133b93cf45488aa22e0b2f0af522491d04d52460307",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-296",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "296",
+      "title": "Placement Identifier Format without Reclaim Group Identifier",
+      "section": "5.2.13.1.29",
+      "printed_pages": "295",
+      "pdf_pages": "321",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RGIF",
+        "NRG",
+        "PHNDL",
+        "PID",
+        "RGID",
+        "RUHID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "6da96a68116b0b142d8b5af51c0e6fa236762df122668cb98ba47f2a46646594",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-297",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "297",
+      "title": "Placement Identifier Format with a non-zero RGIF",
+      "section": "5.2.13.1.29",
+      "printed_pages": "296",
+      "pdf_pages": "322",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "RGIF",
+        "NRG",
+        "PHNDL",
+        "PID",
+        "RGID",
+        "RUHID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "1ea12d5fa44f34b66be141668f2ea6545730a76dd788e3a57171cf5a414b72a9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-499",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "499",
+      "title": "Flexible Data Placement – Command Dword 11",
+      "section": "5.2.30.1.21",
+      "printed_pages": "480",
+      "pdf_pages": "506",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "NSID",
+        "CDW12",
+        "FDPCIDX",
+        "FDPE",
+        "SV",
+        "SEL",
+        "CQE",
+        "DW0",
+        "FDP"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "0308a0d34a4776c4082baa7c7e5130a0e7d6eb5ac311ea1fd30cebdcac9f7610",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-500",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "500",
+      "title": "Flexible Data Placement – Command Dword 12",
+      "section": "5.2.30.1.21",
+      "printed_pages": "480-481",
+      "pdf_pages": "506-507",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "NSID",
+        "CDW12",
+        "FDPCIDX",
+        "FDPE",
+        "SV",
+        "SEL",
+        "CQE",
+        "DW0",
+        "FDP"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "fa55d54218f36212289c2ddee4d6a332de5866c4779835b4827de6a5d2e798f1",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-650",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "650",
+      "title": "I/O Management Receive – Data Pointer",
+      "section": "7.3",
+      "printed_pages": "568",
+      "pdf_pages": "594",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "MO",
+        "PRP",
+        "SGL",
+        "MOS",
+        "RG2",
+        "CDW11",
+        "NUMD",
+        "NRUHSD",
+        "NSID",
+        "FDP",
+        "RUAMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "46d4c329c490989cd9b3eb38ab66e542f17d32d146c243491caea3b5bf0e1316",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-status",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-651",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "651",
+      "title": "I/O Management Receive – Command Dword 10",
+      "section": "7.3",
+      "printed_pages": "568",
+      "pdf_pages": "594",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "MO",
+        "PRP",
+        "SGL",
+        "MOS",
+        "RG2",
+        "CDW11",
+        "NUMD",
+        "NRUHSD",
+        "NSID",
+        "FDP",
+        "RUAMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "46d4c329c490989cd9b3eb38ab66e542f17d32d146c243491caea3b5bf0e1316",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-status",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-652",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "652",
+      "title": "I/O Management Receive – Command Dword 11",
+      "section": "7.3",
+      "printed_pages": "568",
+      "pdf_pages": "594",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "MO",
+        "PRP",
+        "SGL",
+        "MOS",
+        "RG2",
+        "CDW11",
+        "NUMD",
+        "NRUHSD",
+        "NSID",
+        "FDP",
+        "RUAMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "46d4c329c490989cd9b3eb38ab66e542f17d32d146c243491caea3b5bf0e1316",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-status",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-653",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "653",
+      "title": "Reclaim Unit Handle Status",
+      "section": "7.3.1.1",
+      "printed_pages": "569",
+      "pdf_pages": "595",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "MO",
+        "PRP",
+        "SGL",
+        "MOS",
+        "RG2",
+        "CDW11",
+        "NUMD",
+        "NRUHSD",
+        "NSID",
+        "FDP",
+        "RUAMW"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "edbb66a225da77554ff1288024549036f20e1b05ca3ffca5f19c12dfc34f1a29",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-status",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-NVM-FIG-021",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "21",
+      "title": "Reclaim Unit Handle Status Descriptor",
+      "section": "3.2.1.1",
+      "printed_pages": "26",
+      "pdf_pages": "26",
+      "scope_entry_id": "FDP-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "PID",
+        "RUHID",
+        "RGIF",
+        "PHNDL",
+        "EARUTR",
+        "RU",
+        "ERUTL",
+        "RUAMW",
+        "RUNS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "120a8ca4e29744f6d9ac117d26f150c05443f7d7fdc8faa8d1cb5d7f9cea4050",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-status",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-654",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "654",
+      "title": "I/O Management Send – Data Pointer",
+      "section": "7.4",
+      "printed_pages": "569",
+      "pdf_pages": "595",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "MO",
+        "MOS",
+        "NPID",
+        "MAXPIDS",
+        "NRG",
+        "NRUH",
+        "DPTR",
+        "NUMD",
+        "RU",
+        "PID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "edbb66a225da77554ff1288024549036f20e1b05ca3ffca5f19c12dfc34f1a29",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-update",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-655",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "655",
+      "title": "I/O Management Send – Command Dword 10",
+      "section": "7.4",
+      "printed_pages": "569-570",
+      "pdf_pages": "595-596",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "MO",
+        "MOS",
+        "NPID",
+        "MAXPIDS",
+        "NRG",
+        "NRUH",
+        "DPTR",
+        "NUMD",
+        "RU",
+        "PID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "755e58ed7c8e3fac4b47da628ed434ca6197e010e618cd4fa38fd5efb27a1289",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-update",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-656",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "656",
+      "title": "Management Operation Specific – Reclaim Unit Handle Update Operation",
+      "section": "7.4.1.1",
+      "printed_pages": "570",
+      "pdf_pages": "596",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "MO",
+        "MOS",
+        "NPID",
+        "MAXPIDS",
+        "NRG",
+        "NRUH",
+        "DPTR",
+        "NUMD",
+        "RU",
+        "PID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "a157b056f28f15bd0ef1b21927b9d8f6de58b659ff5ea483e209189c69332fab",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-update",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-657",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "657",
+      "title": "Reclaim Unit Handle Update – Data Buffer",
+      "section": "7.4.1.1",
+      "printed_pages": "571",
+      "pdf_pages": "597",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "MO",
+        "MOS",
+        "NPID",
+        "MAXPIDS",
+        "NRG",
+        "NRUH",
+        "DPTR",
+        "NUMD",
+        "RU",
+        "PID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "4c48e073bdb97c3699f88cf2c58404b3362f840592dd8d9b8368d03c0c88c015",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-update",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-298",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "298",
+      "title": "Reclaim Unit Handle Usage Log Page",
+      "section": "5.2.13.1.30",
+      "printed_pages": "296",
+      "pdf_pages": "322",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NRUH",
+        "RUH",
+        "RUHID",
+        "RUHA",
+        "RUH2",
+        "LSI",
+        "ENDGID",
+        "NSID",
+        "FDP"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "1ea12d5fa44f34b66be141668f2ea6545730a76dd788e3a57171cf5a414b72a9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-usage",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-299",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "299",
+      "title": "Reclaim Unit Handle Usage Descriptor",
+      "section": "5.2.13.1.30",
+      "printed_pages": "296-297",
+      "pdf_pages": "322-323",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NRUH",
+        "RUH",
+        "RUHID",
+        "RUHA",
+        "RUH2",
+        "LSI",
+        "ENDGID",
+        "NSID",
+        "FDP"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "2cf7c0d17cfcf686124d35022895bd59f91b1ce920ca6d68154accb07f3b87ae",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-usage",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-300",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "300",
+      "title": "FDP Statistics Log Page",
+      "section": "5.2.13.1.31",
+      "printed_pages": "297",
+      "pdf_pages": "323",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "HBMW",
+        "MBMW",
+        "MBE",
+        "FID",
+        "NVM",
+        "DMA"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "db7285e0fbffd102e841535137cd29bdf95c28374b2ae9ba19c054978910529c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-statistics",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-501",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "501",
+      "title": "FDP Events – Completion Queue Entry Dword 0",
+      "section": "5.2.30.1.22",
+      "printed_pages": "481",
+      "pdf_pages": "507",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "NOET",
+        "CDW11",
+        "PHNDL",
+        "CDW12",
+        "FDPEE",
+        "FDPET",
+        "FDP",
+        "RUH",
+        "PH1",
+        "PH0",
+        "RUH3"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ba4f172b07c54076efec96e83f60c9485f5324685cc98a9214b93b41dd55b9f1",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-events",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-502",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "502",
+      "title": "FDP Events – Command Dword 11",
+      "section": "5.2.30.1.22",
+      "printed_pages": "481-482",
+      "pdf_pages": "507-508",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "NOET",
+        "CDW11",
+        "PHNDL",
+        "CDW12",
+        "FDPEE",
+        "FDPET",
+        "FDP",
+        "RUH",
+        "PH1",
+        "PH0",
+        "RUH3"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "bf252de4a80c4ce096c33b35c6669e0fa7c8fbe0d1a6b0375b18b0e1f2ac3ef3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-events",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-503",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "503",
+      "title": "Flexible Data Placement – Command Dword 12",
+      "section": "5.2.30.1.22",
+      "printed_pages": "482",
+      "pdf_pages": "508",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "NOET",
+        "CDW11",
+        "PHNDL",
+        "CDW12",
+        "FDPEE",
+        "FDPET",
+        "FDP",
+        "RUH",
+        "PH1",
+        "PH0",
+        "RUH3"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "eb57753c7dc30835c7aabcc7aeef986e7550594137f537cbee2d1cc27d3f1025",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-events",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-504",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "504",
+      "title": "FDP Events – Set Feature Data Structure",
+      "section": "5.2.30.1.22",
+      "printed_pages": "482",
+      "pdf_pages": "508",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "NOET",
+        "CDW11",
+        "PHNDL",
+        "CDW12",
+        "FDPEE",
+        "FDPET",
+        "FDP",
+        "RUH",
+        "PH1",
+        "PH0",
+        "RUH3"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "eb57753c7dc30835c7aabcc7aeef986e7550594137f537cbee2d1cc27d3f1025",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-events",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-505",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "505",
+      "title": "FDP Events – Get Feature Data Structure",
+      "section": "5.2.30.1.22",
+      "printed_pages": "482",
+      "pdf_pages": "508",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "NOET",
+        "CDW11",
+        "PHNDL",
+        "CDW12",
+        "FDPEE",
+        "FDPET",
+        "FDP",
+        "RUH",
+        "PH1",
+        "PH0",
+        "RUH3"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "eb57753c7dc30835c7aabcc7aeef986e7550594137f537cbee2d1cc27d3f1025",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-events",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-506",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "506",
+      "title": "Supported FDP Event Descriptor",
+      "section": "5.2.30.1.22",
+      "printed_pages": "482-483",
+      "pdf_pages": "508-509",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "NOET",
+        "CDW11",
+        "PHNDL",
+        "CDW12",
+        "FDPEE",
+        "FDPET",
+        "FDP",
+        "RUH",
+        "PH1",
+        "PH0",
+        "RUH3"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "2553fe11fca5d5349798cc14950a1667db0709d4365e1972a7956cb5ccf2d6d8",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-events",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-301",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "301",
+      "title": "Command Dword 10 – Log Specific Field",
+      "section": "5.2.13.1.32",
+      "printed_pages": "298",
+      "pdf_pages": "324",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "FDPET",
+        "LSI",
+        "ENDGID",
+        "NUMFDPE",
+        "ETYP",
+        "FDPEF",
+        "PIV",
+        "NSIDV",
+        "LV",
+        "PID",
+        "NSID",
+        "ETMSP",
+        "ETSP",
+        "NVM",
+        "RGID",
+        "RUHID",
+        "VS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "dd2b7abb0942822793b5225ff12da693eb53190a2704221c21a653dfab6988ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-event-record",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-302",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "302",
+      "title": "FDP Events Log Page",
+      "section": "5.2.13.1.32",
+      "printed_pages": "298",
+      "pdf_pages": "324",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "FDPET",
+        "LSI",
+        "ENDGID",
+        "NUMFDPE",
+        "ETYP",
+        "FDPEF",
+        "PIV",
+        "NSIDV",
+        "LV",
+        "PID",
+        "NSID",
+        "ETMSP",
+        "ETSP",
+        "NVM",
+        "RGID",
+        "RUHID",
+        "VS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "dd2b7abb0942822793b5225ff12da693eb53190a2704221c21a653dfab6988ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-event-record",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-303",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "303",
+      "title": "FDP Event",
+      "section": "5.2.13.1.32",
+      "printed_pages": "299-300",
+      "pdf_pages": "325-326",
+      "scope_entry_id": "FDP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "FDPET",
+        "LSI",
+        "ENDGID",
+        "NUMFDPE",
+        "ETYP",
+        "FDPEF",
+        "PIV",
+        "NSIDV",
+        "LV",
+        "PID",
+        "NSID",
+        "ETMSP",
+        "ETSP",
+        "NVM",
+        "RGID",
+        "RUHID",
+        "VS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ccb035eb5839836ae2905ae70ec8c752a683cb95cb8469456925ba561545d2f2",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-event-record",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-NVM-FIG-116",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "116",
+      "title": "Media Reallocated - Event Type Specific Data Structure",
+      "section": "4.1.4.7.1.1",
+      "printed_pages": "79",
+      "pdf_pages": "79",
+      "scope_entry_id": "FDP-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "SEF",
+        "LBAV",
+        "LBA",
+        "NLBAM",
+        "PIV",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "bcfa428f00c622587fc3dc98a964d9a03fdad65b03bc8cff2a18bf20bc8ef9a7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-event-record",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "FDP-BASE-FIG-093",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "DPTR",
+        "CDW0",
+        "PSDT",
+        "PRP1",
+        "SGL",
+        "CDW",
+        "CDW10",
+        "PID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "b99a61ac238013d8e32afb610743c0caa9b82ab907da5187619d42ae10ded1e0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-status",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取本篇所需的 NSID、DPTR、CDW 位置與 PRP／SGL 選擇；不展開完整 SQE 結構。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-186",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "186",
+      "title": "Directive Send – Command Dword 11",
+      "section": "5.2.8",
+      "printed_pages": "202",
+      "pdf_pages": "228",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "DSPEC",
+        "DTYPE",
+        "DOPER",
+        "CDW12",
+        "ENDIR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c8ecf4c975d4aabe4567e19df556ec6fce59060dd036a2678edebea6b78ce8a5",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-directive",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "必要背景取 Identify Directive 的通用 Enable 與 Data Placement 位元；不展開 Streams 資源操作。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-705",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "705",
+      "title": "Identify Directive – Return Parameters Data Structure",
+      "section": "8.1.9.2.1.1",
+      "printed_pages": "618-619",
+      "pdf_pages": "644-645",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "DSPEC",
+        "DTYPE",
+        "DOPER",
+        "CDW12",
+        "ENDIR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "31713a7ec191a6b2ea3b80edb56da80448477311089db2ada26d76038791aa0a",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-directive",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "必要背景取 Identify Directive 的通用 Enable 與 Data Placement 位元；不展開 Streams 資源操作。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-706",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "706",
+      "title": "Enable Directive – Command Dword 12",
+      "section": "8.1.9.2.2.1",
+      "printed_pages": "620",
+      "pdf_pages": "646",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "DSPEC",
+        "DTYPE",
+        "DOPER",
+        "CDW12",
+        "ENDIR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "d4f1714ddc972203698553be880027ea9ec12ed31071b4af562a364300983673",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-directive",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "必要背景取 Identify Directive 的通用 Enable 與 Data Placement 位元；不展開 Streams 資源操作。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-198",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "FID",
+        "SEL",
+        "SV",
+        "SEL3",
+        "CQE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "1380340d28d58291a9ba4b387a47eb3481c606d62731ca9ec27687f1b6f85dd4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "僅解釋本篇FID1Dh、1Eh需要的選擇；UIDX未指定UUID時為0，不展開UUID機制。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-201",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "FID",
+        "SEL",
+        "SV",
+        "SEL3",
+        "CQE"
+      ],
+      "source_keywords": [
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "fe7483f9e4405684c84f544ad37ae3c3702515b37c2fef8b78b2e50ac63232ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "僅解釋本篇FID1Dh、1Eh需要的選擇；UIDX未指定UUID時為0，不展開UUID機制。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-464",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "FID",
+        "SEL",
+        "SV",
+        "SEL3",
+        "CQE"
+      ],
+      "source_keywords": [
+        "shall",
+        "reserved"
+      ],
+      "evidence_digest": "366ab9cd84b05dd2743ebe946dff5cf57bf06e0c817fa99e7504a738b9032c9e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "僅解釋本篇FID1Dh、1Eh需要的選擇；UIDX未指定UUID時為0，不展開UUID機制。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-204",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL",
+        "NUMD",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "ENDGID",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "CSI",
+        "UIDX",
+        "NVM",
+        "DPTR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-205",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL",
+        "NUMD",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "ENDGID",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "CSI",
+        "UIDX",
+        "NVM",
+        "DPTR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-206",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page – Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL",
+        "NUMD",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "ENDGID",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "CSI",
+        "UIDX",
+        "NVM",
+        "DPTR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-207",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page – Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL",
+        "NUMD",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "ENDGID",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "CSI",
+        "UIDX",
+        "NVM",
+        "DPTR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-208",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL",
+        "NUMD",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "ENDGID",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "CSI",
+        "UIDX",
+        "NVM",
+        "DPTR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "8cb0acdbd8a5752d0805867233e556d419934da159c0da658d66e5cd0f26bc0f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-224",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "224",
+      "title": "Endurance Group Identifier - Log Specific Identifier",
+      "section": "5.2.13.1.10",
+      "printed_pages": "237",
+      "pdf_pages": "263",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "LID",
+        "LSP",
+        "RAE",
+        "NUMDL",
+        "NUMD",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "ENDGID",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "CSI",
+        "UIDX",
+        "NVM",
+        "DPTR",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "3581f1bea027dd10bbf4d46cb5b4da8052327560f19a7b09d5e1e852d04ae040",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-config",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-270",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "270",
+      "title": "Feature Identifiers Effects Log Page",
+      "section": "5.2.13.1.18",
+      "printed_pages": "276",
+      "pdf_pages": "302",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "FID",
+        "FSUPP",
+        "FSP",
+        "RUHS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "aa5d04c55331f91183038fb7f47e14521bcc28cb04f43eaf003deae510edcc1e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "FDP支援時也必須支援這份log。本篇只取1Dh／1Eh兩項的支持位與範圍；其餘effects不展開。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-271",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "271",
+      "title": "FID Supported and Effects Data Structure",
+      "section": "5.2.13.1.18",
+      "printed_pages": "277-278",
+      "pdf_pages": "303-304",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "FID",
+        "FSUPP",
+        "FSP",
+        "RUHS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "195ed2e84f4207e2b1f499d7c7c6494e8f13a98024fe58580de4c48b98b38605",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "FDP支援時也必須支援這份log。本篇只取1Dh／1Eh兩項的支持位與範圍；其餘effects不展開。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-338",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "342, 345, 370-372, 374, 378",
+      "pdf_pages": "368, 371, 396-398, 400, 404",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "CTRATT",
+        "FDPS",
+        "ONCS",
+        "SSFS",
+        "VWC",
+        "VWCP",
+        "NSFEAT",
+        "MNAN",
+        "NN519",
+        "NN",
+        "NRUH"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "70b4e357ad33e68c1c067aa235aba152e0d6c5cded0a8d4a1fde7c6316ff7ab1",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-enable",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "對照位置分散在指定PDF頁；这里逐項說明讀法，不要求從數十頁的大表自行找結論。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-346",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "346",
+      "title": "Identify – I/O Command Set Independent Identify Namespace Data Structure",
+      "section": "5.2.14.2.8",
+      "printed_pages": "391",
+      "pdf_pages": "417",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NSFEAT",
+        "VWCNP",
+        "VWCP",
+        "FDPVWC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "9cbac315d653f64db730831711a770192ce9c35b1b5c7c1d4b7156afc330af64",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-write",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只取CNS08h中NSFEAT.VWCNP及其與Flush的必要關係；不展開整份Identify Namespace。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-BASE-FIG-480",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "480",
+      "title": "Timestamp – Data Structure for Get Features",
+      "section": "5.2.30.1.8",
+      "printed_pages": "470-471",
+      "pdf_pages": "496-497",
+      "scope_entry_id": "FDP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "TSTMP",
+        "TSTMPS",
+        "TSTMPO",
+        "SYNC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "ff4b05c6429756664042bc29469b6b1651d575313fca16b60a7fcee14cc5aac3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-event-record",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "ETMSP在事件bytes11:4，以下位置先以8-byte Timestamp結構起點計算。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-134",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "134",
+      "title": "Namespace Management – Host Specified Fields",
+      "section": "4.1.6.4",
+      "printed_pages": "112-113",
+      "pdf_pages": "112-113",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "ENDGID",
+        "NPHNDLS",
+        "NRUH",
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "4087b37795cd3ddef1a56907900f593e24e775ffb67a7e936c82b5c3786320ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-namespace",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "必要引用包含NVM§4.1.6.3的完整映射限制；其他建立namespace能力不在此複製成另一篇。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-070",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "70",
+      "title": "Write – Command Dword 10 and Command Dword 11",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA",
+        "CDW12",
+        "NLB",
+        "CETYPE",
+        "DTYPE",
+        "DTYPE2",
+        "CDW13",
+        "DSPEC",
+        "DSM",
+        "FUA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "f73e037ff0047b30a0245f27a435840cf00efb5a49bb7a1160dfe3d32681c0de",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-write",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只用CETYPE=0的普通Write帶PID範例；沒有替非零CETYPE推導欄位。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-071",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "71",
+      "title": "Write – Command Dword 12",
+      "section": "3.3.6",
+      "printed_pages": "54",
+      "pdf_pages": "54",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA",
+        "CDW12",
+        "NLB",
+        "CETYPE",
+        "DTYPE",
+        "DTYPE2",
+        "CDW13",
+        "DSPEC",
+        "DSM",
+        "FUA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "f73e037ff0047b30a0245f27a435840cf00efb5a49bb7a1160dfe3d32681c0de",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-write",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只用CETYPE=0的普通Write帶PID範例；沒有替非零CETYPE推導欄位。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-072",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "72",
+      "title": "Write – Command Dword 13 if CETYPE is cleared to 0h",
+      "section": "3.3.6",
+      "printed_pages": "54-55",
+      "pdf_pages": "54-55",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "SLBA",
+        "CDW12",
+        "NLB",
+        "CETYPE",
+        "DTYPE",
+        "DTYPE2",
+        "CDW13",
+        "DSPEC",
+        "DSM",
+        "FUA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "reserved"
+      ],
+      "evidence_digest": "d055f59b0317e1d9862b19becbb44b209c78164913f3e28079886228d60e1c28",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-write",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "只用CETYPE=0的普通Write帶PID範例；沒有替非零CETYPE推導欄位。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-045",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "45",
+      "title": "Dataset Management – Command Dword 10",
+      "section": "3.3.3",
+      "printed_pages": "44",
+      "pdf_pages": "44",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NR",
+        "CDW10",
+        "AD",
+        "CDW11",
+        "NR1",
+        "CATTR",
+        "LLB7",
+        "SLBA15",
+        "LLB8",
+        "NVM",
+        "DMRL",
+        "DMRSL",
+        "DMSL"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "6b53fb39239c099dd1b0a75d2b1bc0a805729642ca6606773afee0f460faf21b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-lifetime",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這些是FDP資料生命週期的必要背景；DSM屬advisory，不能把它畫成收到就必定擦除。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-046",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "46",
+      "title": "Dataset Management – Command Dword 11",
+      "section": "3.3.3",
+      "printed_pages": "44-45",
+      "pdf_pages": "44-45",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NR",
+        "CDW10",
+        "AD",
+        "CDW11",
+        "NR1",
+        "CATTR",
+        "LLB7",
+        "SLBA15",
+        "LLB8",
+        "NVM",
+        "DMRL",
+        "DMRSL",
+        "DMSL"
+      ],
+      "source_keywords": [
+        "should",
+        "may",
+        "reserved"
+      ],
+      "evidence_digest": "c0afd150e89b6df19d9b0d3f881b3b52bdedc1c15b5ddad994c814b6a0af8c57",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-lifetime",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這些是FDP資料生命週期的必要背景；DSM屬advisory，不能把它畫成收到就必定擦除。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-047",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "47",
+      "title": "Dataset Management – Range Definition",
+      "section": "3.3.3",
+      "printed_pages": "45",
+      "pdf_pages": "45",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NR",
+        "CDW10",
+        "AD",
+        "CDW11",
+        "NR1",
+        "CATTR",
+        "LLB7",
+        "SLBA15",
+        "LLB8",
+        "NVM",
+        "DMRL",
+        "DMRSL",
+        "DMSL"
+      ],
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "evidence_digest": "528d7483e94e36abe772edc61f65c9ca02f313dc89f29c19d55d25ad86a8d1b7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-lifetime",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這些是FDP資料生命週期的必要背景；DSM屬advisory，不能把它畫成收到就必定擦除。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
+    },
+    {
+      "id": "FDP-NVM-FIG-129",
+      "report_id": "base-flexible-data-placement",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "129",
+      "title": "I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set",
+      "section": "4.1.5.4",
+      "printed_pages": "104-105",
+      "pdf_pages": "104-105",
+      "scope_entry_id": "FDP-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "fdp-tutorial-html"
+      ],
+      "introduced_in": [
+        "fdp-tutorial-html"
+      ],
+      "key_items": [
+        "NR",
+        "CDW10",
+        "AD",
+        "CDW11",
+        "NR1",
+        "CATTR",
+        "LLB7",
+        "SLBA15",
+        "LLB8",
+        "NVM",
+        "DMRL",
+        "DMRSL",
+        "DMSL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "64554c0fd570aacbd421c062d1288553a8b55a8fa081b20d704c0cf733b79b3f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "fdp-lifetime",
+      "role": "referenced_dependency",
+      "scope_reduced": false,
+      "referenced_from": [
+        "8.1.12"
+      ],
+      "dependency_focus": {
+        "zh_tw": "這些是FDP資料生命週期的必要背景；DSM屬advisory，不能把它畫成收到就必定擦除。",
+        "en": "Only the FDP-related field slices explained in the linked field guide."
+      }
     }
   ]
 }

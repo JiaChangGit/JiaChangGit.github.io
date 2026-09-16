@@ -6,7 +6,7 @@
 
 - 中文 HTML：學過 OS、Computer Organization，聽過 SSD 基本概念的大學畢業生。從用途、元件關係、運作流程逐步深入欄位、條件與例子，讓讀者從新手一路讀到進階。
 - 中文與英文 post：用於向主管報告，內容對等；先講主題與重要性，再說關鍵機制、條件及代表性例子。每篇均須獨立可讀。
-- 15 份報告各保留 3 版：1 份 iPad／電腦共用的中文教學 HTML 加上中英文 GitHub Pages post，共 45 個交付檔。取消詳細版 HTML，不保留副本或導覽連結。
+- 16 份報告各保留 3 版：1 份 iPad／電腦共用的中文教學 HTML 加上中英文 GitHub Pages post，共 48 個交付檔。取消詳細版 HTML，不保留副本或導覽連結。
 - 中文 HTML 涵蓋該篇全部已核准 claim 與全部範圍內圖表；中英文 Pages 以全局觀念、流程及代表案例銜接 Spec，不重複完整技術附錄。中英文 post 的 claim、主軸、例子、限制與問題順序一致；HTML 可以採不同的漸進教學順序。
 - 路徑與契約見 `.ai/nvme-report/output-contract.json`。先更新規則與產生程式，再處理 NVM Command Set、Boot／Telemetry／Sanitize，最後改其餘舊篇。
 - Admin／I/O 整合篇另有 `admin-io-route.json`：按實際 PDF 頁與章節標題規劃順向報告路徑，Base → NVM 只切換一次；共用頁必須標停止標題，不能整頁納入。維護紀錄見 `docs/nvme-admin-io-scope-and-route.md`。
@@ -63,3 +63,5 @@ workflow，不得把單一 Pages 成功或網站 HTTP 200 當作 CI 全數成功
 2026-09-13：全部 13 篇中文 HTML 採獨立課程編排，先情境與全貌，再逐步推理、欄位關係及完整案例。五篇精確主範圍見 scope.json 的 primary_scope；必要引用單獨說明用途。範圍內及必要引用圖表均須教會欄位如何一起決定操作或結果，不能只列欄名。Reserved 依該處規則交代，不逐列湊字。必要解釋預設顯示，共同定義只解釋一次並可就近連回。狀態與事件用有條件的轉移圖，延遲用時間軸；不得把適用配置放進重設結果欄。
 
 2026-09-15：新增 Directives／Streams 專篇，Base §8.1.9 排除 §8.1.9.4，加 §5.2.7、§5.2.8、§5.2.30.1.35 與 NVM §5.13。Host Identifier 只取共同與 PCIe 規則；前篇 Admin／I/O 的排除項不變。啟用的外層 DTYPE=00h 與目標 DTYPE=01h 必須分清；NSSA 是非專用資源池大小，不是閒置數。Spec 目錄部分頁碼與正文不一致，報告路徑採 PDF 檢視器實際頁碼並標共享頁的停止標題。
+
+2026-09-16：新增 FDP 專篇，指定 Base／NVM 範圍、33 張主範圍與 26 張必要引用見 scope.json；維護注意事項見 docs/nvme-fdp-scope-and-teaching.md。FDP 不繼承前篇對本次明確指定內容的排除。Write 的非法 PID 容錯不可套到 Update；零值 DSM 限制須連同 NVMDSMSV 判斷。

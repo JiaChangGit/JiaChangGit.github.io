@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Flexible Data Placement：資料放置、回收單位與事件觀察</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-fdp-model">01 先看資料為何需要一起回收</a><a href="#module-fdp-isolation">02 初次分開寫入，搬移後是否仍分開</a><a href="#module-fdp-config">03 讀懂候選配置與 PID 的切割方式</a><a href="#module-fdp-enable">04 啟用的是整個 Endurance Group</a><a href="#module-fdp-namespace">05 建立 namespace 的 Placement Handle 對照表</a><a href="#module-fdp-directive">06 分清兩次啟用與三種 Write 情況</a><a href="#module-fdp-write">07 把一筆 Write 走完，包含非法 PID</a><a href="#module-fdp-status">08 查目前可寫容量，別把回覆當成永久保證</a><a href="#module-fdp-update">09 主機要求換一個空 RU，舊資料仍有自己的生命週期</a><a href="#module-fdp-usage">10 Usage 查誰配置了 RUH，不查剩多少容量</a><a href="#module-fdp-statistics">11 用相同量測期間判斷寫入放大</a><a href="#module-fdp-events">12 先替 RUH 選事件，再讀已發生的紀錄</a><a href="#module-fdp-event-record">13 把事件的原因、位置與資料量讀完整</a><a href="#module-fdp-lifetime">14 把資料失效、RU 切換與 reset 分開</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Flexible Data Placement：資料放置、回收單位與事件觀察</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">FDP 讓主機把資料何時會一起失效的知識，轉成 SSD 可以使用的放置選擇。本文從回收成本開始，連起配置、namespace 映射、Write、RUH 更新，以及能驗證使用結果的狀態、統計與事件。讀完應能解釋一個 PID 如何選到目前的 RU，也能判斷一次操作究竟改了參照、邏輯資料，還是整個群組設定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>FDP</dt><dd>Flexible Data Placement；主機參與資料放置以降低回收搬移成本的能力。</dd></div><div><dt>PID</dt><dd>Placement Identifier；放置識別值，簡寫 PID；16-bit 值，依配置含 PHNDL 與可能存在的 RGID。</dd></div><div><dt>RUH</dt><dd>Reclaim Unit Handle；回收單位控制代號，簡寫 RUH；在每個 RG 各參照一個目前的 RU。</dd></div><div><dt>RU</dt><dd>Reclaim Unit；回收單位，簡寫 RU；FDP 模型中接收一批資料的媒體單位。</dd></div></dl>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>資料為什麼要一起放</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">先從有效資料搬移的成本理解目的，再分清 RG、RUH、RU，以及初始與持續隔離。它們決定分組的範圍與搬移後仍須維持的條件。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RG</dt><dd>Reclaim Group；回收群組，簡寫 RG；包含多個可輪替使用的回收單位。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>設定如何接到一筆 Write</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">配置定義資源與 PID 格式；namespace 清單把 PHNDL 對到 RUH；Data Placement Directive 再讓 Write 明確選擇 RG 與 PHNDL。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PHNDL</dt><dd>Placement Handle；namespace 的映射清單索引，用來查出 RUHID。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>資料生命週期與主機控制</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">Status 查當下剩餘量，Update 換空 RU，DSM 描述失效的 LBA。三者分工不同，配合使用才有機會改善回收成本。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSM</dt><dd>Dataset Management；由 host 提供資料範圍的使用與配置提示。</dd></div></dl></article>
+<article><span class="axis-number">04</span><h3>如何知道實際發生什麼</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">Usage 看配置來源，Statistics 看累計量，Events 看原因與位置；先辨識範圍、期間與有效位，才能正確解讀數據。</span></p></article>
+</div>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">適合具備 OS、Computer Organization 與 SSD 基本概念的讀者。以 PCIe 與 NVM Command Set 為情境；所有數量與命令值的例子都是說明性設定，實際能力以裝置回覆為準。本文包含指定主範圍，必要引用只講理解 FDP 所需的欄位與條件。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">可以沿著一批資料走完全文：先按預期失效時間分組，再設定可用資源與映射；寫入時透過 PID 選到目前 RU，寫滿或主動 Update 後使用下一個 RU。舊資料何時失效、何時由主機提供解除配置資訊，是另一條同樣重要的線。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">以下教學先按理解順序串起這條資料路徑，再把各張規格表放回它所解答的問題。資料量、資源數、清單索引與命令的數量減 1 編碼會各自演算，不用背一串縮寫來猜其意義。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-fdp-model"><h2 id="heading-fdp-model"><span class="section-number">01</span> 先看資料為何需要一起回收</h2>
+<!-- claim:FDP-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">FDP 讓主機依資料使用方式安排寫入，目標是減少媒體回收時搬移仍有效資料的成本。功能以 Endurance Group 為範圍；LBA 決定邏輯位置，Placement Identifier 則透過 namespace 的對照關係選擇目前接收資料的 Reclaim Unit。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Placement Identifier</dt><dd>Placement Identifier；放置識別值，簡寫 PID；16-bit 值，依配置含 PHNDL 與可能存在的 RGID。</dd></div><div><dt>Endurance Group</dt><dd>耐久度群組；FDP 配置生效的媒體管理範圍。</dd></div><div><dt>Reclaim Unit</dt><dd>Reclaim Unit；回收單位，簡寫 RU；FDP 模型中接收一批資料的媒體單位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, 文件頁 647-650, PDF 頁 673-676</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>從主機看見的更新開始</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">檔案系統把某個 LBA 的內容改掉，並不表示 SSD 已經原地覆寫同一塊媒體。裝置可能把新內容放到別處，原位置成為不再需要的舊資料。回收空間時，若同一批媒體仍夾著有效資料，控制器就需要保留或搬移那些資料。這是理解 FDP 的出發點。</span></p>
+<h3>主機提供的是分組資訊</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">主機較容易知道哪些資料會一起失效，例如同一批可整體刪除的暫存檔。FDP 讓主機把這種關係反映到資料放置上，但不把 NAND 實體位址交給主機管理，也不保證任意分組都能改善寫入量；分錯生命週期，仍可能留下需要搬移的資料。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 500" role="img"><title>一筆 Write 的兩個選擇</title><desc>LBA 決定邏輯位置；PID 透過 namespace 的映射選目前的 RU。圖中 RU A 是說明用名稱，不是可填進命令的地址。來源：Base 70、730。</desc><rect x="20" y="20" width="720" height="60" rx="6" class="v-command"/><text x="380.0" y="56.0" text-anchor="middle" font-size="17">Write · NSID A · LBA 128 · PID 8001h</text><rect x="20" y="135" width="280" height="75" rx="6" class="v-object"/><text x="160.0" y="166.0" text-anchor="middle" font-size="17">LBA 128</text><text x="160.0" y="191.0" text-anchor="middle" font-size="17">namespace 邏輯位置</text><rect x="335" y="135" width="405" height="75" rx="6" class="v-object"/><text x="537.5" y="178.5" text-anchor="middle" font-size="17">RGIF = 2 → RGID 2 / PHNDL 1</text><path d="M160,80 L160,135" class="v-line"/><path d="M156,128 L160,135 L164,128" class="v-line"/><path d="M530,80 L530,135" class="v-line"/><path d="M526,128 L530,135 L534,128" class="v-line"/><rect x="335" y="265" width="405" height="75" rx="6" class="v-object"/><text x="537.5" y="308.5" text-anchor="middle" font-size="17">A 的映射表：PH1 → RUH3</text><path d="M530,210 L530,265" class="v-line"/><path d="M526,258 L530,265 L534,258" class="v-line"/><rect x="335" y="395" width="405" height="75" rx="6" class="v-success"/><text x="537.5" y="426.0" text-anchor="middle" font-size="17">RUH3 / RG2 → RU A</text><text x="537.5" y="451.0" text-anchor="middle" font-size="17">目前寫入的回收單位</text><path d="M530,340 L530,395" class="v-line"/><path d="M526,388 L530,395 L534,388" class="v-line"/></svg></div><figcaption>LBA 決定邏輯位置；PID 透過 namespace 的映射選目前的 RU。圖中 RU A 是說明用名稱，不是可填進命令的地址。來源：Base 70、730。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>RGID</dt><dd>Reclaim Group Identifier；選擇 Reclaim Group 的編號。</dd></div><div><dt>RGIF</dt><dd>Reclaim Group Identifier Format；PID 高位分配給 RGID 的 bit 數。</dd></div></dl>
+<h3>先分清楚 4 層物件</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Endurance Group 裡有一個或多個 Reclaim Group；每個 Reclaim Group 裡有多個 Reclaim Unit。Reclaim Unit Handle 在每個 Reclaim Group 各持有一個目前可寫入單位的參照。因此只說 RUH 3 還不夠，還需要知道是哪一個 Reclaim Group。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Reclaim Unit Handle</dt><dd>Reclaim Unit Handle；回收單位控制代號，簡寫 RUH；在每個 RG 各參照一個目前的 RU。</dd></div><div><dt>Reclaim Group</dt><dd>Reclaim Group；回收群組，簡寫 RG；包含多個可輪替使用的回收單位。</dd></div></dl>
+<h3>Handle 會持續存在，所指單位會換</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">當目前的 Reclaim Unit 寫滿，控制器把相應參照改到同一 Reclaim Group 的另一個空單位。主機後續仍可使用相同 handle；相同 PID 並不是某塊媒體永久不變的地址。切換也不表示之前寫入的有效資料已刪除。</span></p>
+<h3>把模型接回 namespace</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">每個 namespace 的 Placement Handle List 將 PHNDL 對應到 RUHID。主機寫入時帶 NSID、LBA 和 PID；控制器先從 PID 取 PHNDL 與 RGID，再查 namespace 的表，最後選到目前的 RU。這幾個步驟會在後文使用同一組數值逐步演算。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RUHID</dt><dd>Reclaim Unit Handle Identifier；識別 Endurance Group 內的一個 RUH。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">說明性案例：短期暫存 A、B 今天失效，長期資料 C 下週才失效。若三者混在需要一起回收的媒體中，今天清理 A、B 時仍可能要搬 C；把生命週期相近的資料分組，才有機會減少這種搬移。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-model">閱讀相關規格圖表 → 先看資料為何需要一起回收</a>
+</section>
+<section class="lesson" id="module-fdp-isolation"><h2 id="heading-fdp-isolation"><span class="section-number">02</span> 初次分開寫入，搬移後是否仍分開</h2>
+<!-- claim:FDP-ISOLATION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">一個 RU 同時最多由一個 RUH 參照，因此不同 RUH 的新寫入起初分開。Initially Isolated 允許控制器搬移後在同一 Reclaim Group 合併同類型 RUH 的資料；Persistently Isolated 則要求搬移目的 RU 只包含同一 RUH 寫入的資料。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Persistently Isolated</dt><dd>持續隔離；內部搬移後目的 RU 仍只含同一 RUH 寫入的資料。</dd></div><div><dt>Initially Isolated</dt><dd>初始隔離；新寫入分開，內部搬移可合併不同同類型 RUH 的資料。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, 文件頁 649-650, PDF 頁 675-676</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先看共同點</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">兩種類型都讓不同 RUH 的新寫入起初放在不同 RU。不能把 Initially Isolated 解讀成完全沒有隔離，也不能把 Persistently Isolated 解讀成控制器不得搬移資料。真正需要比較的是控制器內部搬移之後，哪些資料可以放到同一個目的 RU。</span></p>
+<h3>Initially Isolated 的允許範圍</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">RUHT=1h。控制器例如為了垃圾回收，把舊資料搬到同一 Reclaim Group 內的另一個 RU；目的 RU 可以混合其他 Initially Isolated RUH 所寫的資料。原本分組仍影響初次放置，但不能據此假設搬移後每一組都維持各自的 RU。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RUHT</dt><dd>Reclaim Unit Handle Type；指定搬移時的隔離類型。</dd></div></dl>
+<figure><figcaption><strong>同一 RG 內：只改隔離類型，觀察搬移目的</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">RUH 類型</th><th scope="col">X、Y 的新資料</th><th scope="col">控制器搬移 X、Y 舊資料後</th></tr></thead><tbody><tr><td>Initially Isolated</td><td>不同 RU</td><td>允許進同一個目的 RU</td></tr><tr><td>Persistently Isolated</td><td>不同 RU</td><td>X、Y 必須保留不同目的 RU</td></tr></tbody></table></div><figcaption>兩種都允許在同一 RG 內搬移；差別在不同 RUH 的資料能否合併，不是能否搬移。來源：Base 295、731、732。</figcaption></figure>
+
+<h3>Persistently Isolated 的限制</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">RUHT=2h。控制器一樣可以在同一 Reclaim Group 內搬移，但目的 RU 只能包含由同一 RUH 寫入的資料。這是資料來源的隔離條件，不是固定實體地址、跨 Reclaim Group 的複製能力，或資料永久保留的承諾。</span></p>
+<h3>隔離不等於 namespace 隔離</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">不同 namespace 可以在符合格式等條件時共用同一 RUH。此時即使 RUHT=2h，也不能把該 RUH 的持續隔離當成這些 namespace 彼此隔離；規則的識別對象是 RUH。選用共享或獨立 RUH 前，要先確認應用程式想一起管理的是哪些資料。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">RUH 1 和 RUH 3 都是 Initially Isolated 時，兩者舊資料搬移後可以進同一 RU；若兩者是 Persistently Isolated，不能因為今天都只剩一點資料，就把兩者有效資料合併到同一 RU。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-isolation">閱讀相關規格圖表 → 初次分開寫入，搬移後是否仍分開</a>
+</section>
+<section class="lesson" id="module-fdp-config"><h2 id="heading-fdp-config"><span class="section-number">03</span> 讀懂候選配置與 PID 的切割方式</h2>
+<!-- claim:FDP-CONFIG -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">LID 20h 回傳 Endurance Group 的配置清單。先讀整份大小與每筆 DSZE，再檢查 FDPCV、NRG、NRUH、RUHT、RUNS 等內容。RGIF 決定 16-bit PID 高位有多少 bits 是 RGID，剩餘低位才是 PHNDL；配置索引不是 byte offset。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>位移；距結構起點的距離，讀本篇時需確認單位是否為 bytes。</dd></div><div><dt>FDPCV</dt><dd>FDP Configuration Valid；該候選配置目前是否可用。</dd></div><div><dt>DSZE</dt><dd>Descriptor Size；本筆配置描述器的 byte 長度，含補齊。</dd></div><div><dt>NRUH</dt><dd>Number of Reclaim Unit Handles；RUH 數，直接計數。</dd></div><div><dt>RUNS</dt><dd>Reclaim Unit Nominal Size；每個 RU 的名目 byte 大小。</dd></div><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div><div><dt>NRG</dt><dd>Number of Reclaim Groups；RG 數，直接計數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, 文件頁 293-296, PDF 頁 319-322</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先讀清單外框，再讀一筆配置</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">NUMFDPC 在 header bytes 1:0，採數量減 1 的編碼；值 1 表示 2 筆配置。SZE 是整份 log 的 byte 數，第一筆從 byte 16 開始。每筆配置可能因 RUH 數與廠商資料長度不同而有不同 DSZE，所以下一筆位置要加上本筆 DSZE，不能假設固定間距。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMFDPC</dt><dd>Number of FDP Configurations；配置清單數量減 1。</dd></div><div><dt>SZE</dt><dd>Size；整份 FDP Configurations log 的 byte 長度。</dd></div></dl>
+<h3>位置、索引與有效性分開</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">第 0、1、2 筆是清單索引，Set Features 的 FDPCIDX 選這個索引。假設第 0 筆 DSZE=80，則第 1 筆起點是 byte 96；要選它仍填 FDPCIDX=1，不是 96。FDPCV=0 表示該候選目前不可用；建立其他 Endurance Group 或啟用其他配置後，可用性可能改變。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FDPCIDX</dt><dd>FDP Configuration Index；選清單的第幾筆，從 0 開始。</dd></div></dl>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 380" role="img"><title>8001h 如何變成 RG 2 與 PH 1</title><desc>說明性配置 RGIF=2。方塊寬度為排版調整，以標示的 bits 為準；解出 PH 後還要查 namespace 映射。來源：Base 294、297。</desc><rect x="20" y="20" width="720" height="60" rx="6" class="v-command"/><text x="380.0" y="56.0" text-anchor="middle" font-size="17">PID = 8001h = 1000 0000 0000 0001b</text><rect x="20" y="140" width="275" height="85" rx="6" class="v-object"/><text x="157.5" y="176.0" text-anchor="middle" font-size="17">bits 15:14</text><text x="157.5" y="201.0" text-anchor="middle" font-size="17">10b → RGID 2</text><rect x="320" y="140" width="420" height="85" rx="6" class="v-object"/><text x="530.0" y="176.0" text-anchor="middle" font-size="17">bits 13:0</text><text x="530.0" y="201.0" text-anchor="middle" font-size="17">00 0000 0000 0001b → PHNDL 1</text><path d="M160,80 L160,140" class="v-line"/><path d="M156,133 L160,140 L164,133" class="v-line"/><path d="M530,80 L530,140" class="v-line"/><path d="M526,133 L530,140 L534,133" class="v-line"/><rect x="20" y="285" width="720" height="65" rx="6" class="v-success"/><text x="380.0" y="323.5" text-anchor="middle" font-size="17">查 namespace A：PH1 → RUH3，再選 RG2</text></svg></div><figcaption>說明性配置 RGIF=2。方塊寬度為排版調整，以標示的 bits 為準；解出 PH 後還要查 namespace 映射。來源：Base 294、297。</figcaption></figure>
+
+<h3>用配置判斷數量、類型與大小</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">NRG、NRUH 是直接計數且非零；RUH 清單依 RUHID 遞增，每筆描述器提供 RUHT。RUNS 是每個 RU 的名目 bytes，ERUTL 是估計時間上限秒數，0 表示未回報。MAXPIDS 則是 Update 可接受的 NPID 編碼上限，不能把這幾個值都當成同一種容量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MAXPIDS</dt><dd>Max Placement Identifiers；Update 的 NPID 編碼上限。</dd></div><div><dt>ERUTL</dt><dd>Estimated Reclaim Unit Time Limit；配置中的估計時間上限，秒。</dd></div><div><dt>NPID</dt><dd>Number of Placement Identifiers；Update 清單 PID 數減 1。</dd></div></dl>
+<h3>從一個 16-bit 值取出兩個選擇</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">RGIF=r 且 r&gt;0 時，RGID=PID&gt;&gt;(16-r)，PHNDL=PID &amp; ((1&lt;&lt;(16-r))-1)。NRG=1 且 RGIF=0 時，16 bits 全部是 PHNDL；NRG=1 但 RGIF 非零也合法，此時 RGID 欄位由控制器忽略。不要自行以 log2(NRG) 取代裝置實際回報的 RGIF。</span></p>
+<h3>結構長度需要把對齊也算進去</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">一筆配置先有 64 bytes 固定部分，再加 NRUH×4 bytes 的 RUH 描述器、VSS bytes 的廠商內容，最後補 0 到 8-byte 邊界。例：NRUH=3、VSS=1，未補齊為 77 bytes，補 3 bytes 後 DSZE=80。VS 是廠商資料；沒有廠商定義時不替其中的值編造意義。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>VSS</dt><dd>Vendor Specific Size；廠商定義內容的 byte 數。</dd></div><div><dt>VS</dt><dd>Vendor Specific；廠商定義的內容，需廠商文件才可進一步解讀。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">NRG=4、RGIF=2、PHNDL=1、RGID=2：PID=(2&lt;&lt;14)|1=8001h。PHNDL=1 的 RUHID 由 namespace 的表決定，不能把 8001h 當成 RUHID，也不能把它當成 LBA。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-config">閱讀相關規格圖表 → 讀懂候選配置與 PID 的切割方式</a>
+</section>
+<section class="lesson" id="module-fdp-enable"><h2 id="heading-fdp-enable"><span class="section-number">04</span> 啟用的是整個 Endurance Group</h2>
+<!-- claim:FDP-ENABLE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">先查 FDPS 與有效配置，讓目標 Endurance Group 沒有 namespace，再以 FID 1Dh、SV=1 設定 FDPE 與 FDPCIDX。設定值改變後需重新取得資料格式資訊，再建立 namespace；FDP 設定成功改變也會清除該群組的 FDP 事件與統計。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FDPE</dt><dd>Flexible Data Placement Enable；FID 1Dh 中的群組啟用位。</dd></div><div><dt>FDPS</dt><dd>Flexible Data Placement Support；控制器是否支援 FDP 的能力位。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div><div><dt>SV</dt><dd>Save；Set Features 是否要求保存設定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.2, 文件頁 651-652, PDF 頁 677-678</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>FDPS 回答能力，不回答目前狀態</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">Identify Controller 的 CTRATT.FDPS=1 表示支援 FDP；LID 20h 再回答有哪些配置。即使兩者都符合，也還不能直接對現有 namespace 所屬群組改設定。支援、候選可用性與目前啟用狀態是不同問題，必須依次確認。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CTRATT</dt><dd>Controller Attributes；Identify Controller 的能力屬性欄。</dd></div></dl>
+<h3>先處理現有 namespace 的原因</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">FDP 改變的是群組的配置，後續 namespace 的資料格式與 handle 映射也與該配置有關。只要群組還有 namespace，而要求的 FID 1Dh 值又不同於目前值，控制器就以 Command Sequence Error 拒絕。這項規則要求刪除該群組全部 namespace 後才變更，不能把它畫成隨時可以切換的普通開關。</span></p>
+<figure><figcaption><strong>先建立配置，再讓 Write 使用它</strong></figcaption><ol class="flow-steps"><li>查 FDPS → LID20h 選目前有效的配置。</li><li>準備好目標 Endurance Group：修改 FID1Dh 前必須沒有 namespace。</li><li>Set FID1Dh、SV=1，填 ENDGID、FDPCIDX、FDPE。</li><li>重新查資料格式 → Create namespace，建立 PHNDL→RUHID。</li><li>設定所需事件 → 對 namespace 啟用 Data Placement Directive → 查狀態與 cache。</li><li>Write 使用 PID；後續以 Status、Update、Statistics、Events 觀察並管理。</li></ol><figcaption>這是設定依存關係；namespace 的資料處理必須先完成，不能把群組改配置當成無條件切換。來源：Base §8.1.12.2。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>ENDGID</dt><dd>Endurance Group Identifier；選定耐久度群組的編號。</dd></div></dl>
+<h3>把目標、配置與保存分開編碼</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">CDW11 低 16 bits 是 ENDGID；CDW12 bit 0 是 FDPE、bits 15:8 是 FDPCIDX；Save 在 CDW10 bit 31。此 Feature 可保存、預設 0，值的改變只允許在 SV=1 時進行。支援 SSFS 而 SV=0 的要求會回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SSFS</dt><dd>Save and Select Feature Support；是否支援保存設定及選擇非零 SEL 查詢。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl>
+<h3>成功後需要重新確認什麼</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">Feature 值改變時，控制器可以改變 Identify 所提供的資料格式相關資訊。主機應重新查支持的格式，再建立使用 NVM Command Set（CSI=00h）的 namespace。還要保留舊統計的量測終點，因為成功改值會把 FDP Statistics 清 0，並清掉 FDP Events；前後已不是同一段累計期間。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div></dl>
+<h3>報告操作順序不等於立即執行刪除</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">本文教的是配置條件與流程。完整順序是確認能力與候選、安排既有資料與 namespace 的處理、在空群組保存新設定、重新查格式、建立 namespace 及其映射，再啟用所需 Directive 與事件。這裡不把「設定成功」當成資料已遷移或已安全保存的證明。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">ENDGID=2、選配置索引 1：Set Features CDW10=8000001Dh、CDW11=00000002h、CDW12=00000101h。這表示替群組 2 啟用第 1 筆配置；尚未代表某個 namespace 的 Data Placement Directive 已啟用。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-enable">閱讀相關規格圖表 → 啟用的是整個 Endurance Group</a>
+</section>
+<section class="lesson" id="module-fdp-namespace"><h2 id="heading-fdp-namespace"><span class="section-number">05</span> 建立 namespace 的 Placement Handle 對照表</h2>
+<!-- claim:FDP-NAMESPACE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">NPHNDLS 與 Placement Handle List 建立 namespace 私有的 PHNDL→RUHID 對照。主機可明確列出不同 RUH；NPHNDLS=0 則由控制器選一個 RUH 作為 PHNDL 0。共享 RUH 的 namespace 必須使用相同資料格式，且控制器選用與主機明確指定的 RUH 有分配限制。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NPHNDLS</dt><dd>Number of Placement Handles；建立 namespace 時明確提供的映射項目數。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-113, PDF 頁 110-113</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>PHNDL 是清單的位置，RUHID 是清單的內容</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">本例 NPHNDLS=2，bytes 512:513 放 1，514:515 放 3。第 0 筆的位置定義 PHNDL 0，內容 1 才是 RUHID。這是「索引」與「值」的典型差別：寫入帶 PHNDL，控制器查出 RUHID；不能把主機清單 [1,3] 解讀成這個 namespace 只有 PHNDL 1 和 PHNDL 3。</span></p>
+<h3>主機提供清單時的完整檢查</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">非零 NPHNDLS 不能大於 NRUH 或 128；每個 RUHID 必須小於 NRUH；同一 namespace 的清單不能重複 RUHID。若列到控制器已為 NPHNDLS=0 的 namespace 選用的 RUH，也會被拒絕為 Invalid Placement Handle List。</span></p>
+<h3>不提供清單並不是沒有 Placement Handle</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">NPHNDLS=0 要求控制器替 namespace 建立唯一的 PHNDL 0。若群組已存在這種 namespace，新 namespace 使用相同的控制器選定 RUH；否則控制器需選一個未被主機明確配置的 RUH。沒有可用候選時會回 Invalid Placement Handle List，不能任意借用一個已被明確配置的 RUH。</span></p>
+<h3>共享需要一致的資料格式</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">兩個 namespace 明確使用同一 RUH 時，Format Index 必須相同；不一致會回 Invalid Format。只看每個 logical block 的 data bytes 相同還不夠，Format Index 代表整份資料格式選擇。FDP 群組中的 namespace 使用 NVM Command Set，且不能把 NVM Set 配置混進同一個 FDP 配置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>logical block</dt><dd>邏輯區塊；namespace 可定址的基本單位，其資料大小由使用中的格式決定。</dd></div><div><dt>Format Index</dt><dd>格式索引；用來選取一組 LBAF／ELBAF 格式資訊的編號。</dd></div><div><dt>NVM Set</dt><dd>NVM Set，把 namespace 與一組共同管理的 NVM 資源建立關聯的容量集合。</dd></div><div><dt>index</dt><dd>索引；清單中第幾個項目的編號，與項目距起點多少 bytes 不同。</dd></div></dl>
+<h3>建立後取得目前映射與容量</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">建立命令決定 PHNDL 到 RUH 的關係，但每個 RUH 在各 Reclaim Group 指向的 RU 會隨寫入變化。使用 I/O Management Receive 查目前的 PID、RUHID、剩餘可寫量與時間，才能把建立時的表接到運作中的狀態。Create 與 Attachment 是不同操作；要透過某控制器做 I/O，namespace 還需能由該控制器存取。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">NRUH=4，namespace A 的清單為 [1,3]：PHNDL 0→RUHID 1，PHNDL 1→RUHID 3。namespace B 可以用不同 PHNDL 編號指到 RUHID 3，但必須符合共享格式條件；不能因為 A 的 PHNDL 1 有效，就假設 B 也有 PHNDL 1。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-namespace">閱讀相關規格圖表 → 建立 namespace 的 Placement Handle 對照表</a>
+</section>
+<section class="lesson" id="module-fdp-directive"><h2 id="heading-fdp-directive"><span class="section-number">06</span> 分清兩次啟用與三種 Write 情況</h2>
+<!-- claim:FDP-DIRECTIVE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">FDP 已啟用的群組內，namespace 還需要啟用 Data Placement Directive 才能明確指定 PID。Enable 使用外層 Identify DTYPE=00h，CDW12 目標 DTYPE=02h；Data Placement 本身沒有 Send／Receive 操作。沒有使用 Directive 的寫入則使用 PHNDL 0，讓控制器選 Reclaim Group。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DTYPE</dt><dd>Directive Type；依命令情境選操作類型或 I/O 附加資訊類型。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.9.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.4, 文件頁 627, PDF 頁 653</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先確認兩種狀態各屬於誰</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">FID 1Dh 是 Endurance Group 的 FDP 設定；Data Placement Directive 則套用到指定 namespace，以及適用的主機身分與共享控制器關係。群組有能力並已啟用，不會自動證明某主機已替 namespace 啟用 Directive。</span></p>
+<h3>Enable 由 Identify Directive 處理</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">Directive Send 外層選 DTYPE=00h、DOPER=01h，再由 CDW12 的 DTYPE=02h、ENDIR=1 指定目標。若 namespace 不在已啟用 FDP 的群組，回 FDP Disabled；若用 NSID=FFFFFFFFh 要一次啟用所有 namespace，回 Invalid Namespace or Format。應逐一對有效 namespace 設定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DOPER</dt><dd>Directive Operation；所選 Directive 中的管理動作。</dd></div><div><dt>ENDIR</dt><dd>Enable Directive；控制目標 Directive 的啟用或停用。</dd></div></dl>
+<figure><figcaption><strong>命令名字相似，目標卻不同</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">目的</th><th scope="col">入口與選擇</th><th scope="col">改變或取得什麼</th></tr></thead><tbody><tr><td>群組啟用 FDP</td><td>Set Features / FID1Dh</td><td>Endurance Group 的配置</td></tr><tr><td>namespace 使用 PID</td><td>Directive Send / Identify / Enable target02h</td><td>Data Placement 啟用狀態</td></tr><tr><td>查每個 PID 狀態</td><td>I/O Management Receive / MO1</td><td>映射、剩餘量、估計時間</td></tr><tr><td>改到空 RU</td><td>I/O Management Send / MO1</td><td>所列 PID 的目前 RU 參照</td></tr></tbody></table></div><figcaption>Data Placement 自身沒有 Directive Send／Receive 操作，管理 RU 要走 I/O Management。來源：Base §8.1.9.4、§7.3–7.4。</figcaption></figure>
+
+<h3>為何不能直接對 Data Placement 發管理操作</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">§8.1.9.4 沒有定義 Data Placement 的任何 Directive Operations。因此 Send 或 Receive 若在 CDW11 直接選 DTYPE=02h，回 Invalid Field in Command。查能力使用 Identify Directive 的 Return Parameters；查 RUH 狀態與更新參照則使用 I/O Management 命令，各入口有不同工作。</span></p>
+<h3>DTYPE 被忽略、明確使用與非法類型</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">I/O 中若沒有任何 I/O Directive 啟用，或 DTYPE=00h，控制器忽略 DTYPE／DSPEC；FDP 群組裡這種寫入使用 PHNDL 0，RG 由控制器選。若 Directive 有效且 DTYPE=02h，才解讀 DSPEC 為 PID。若已有 I/O Directive 啟用，卻選不支援或未啟用的類型，則以 Invalid Field in Command 拒絕。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DSPEC</dt><dd>Directive Specific；Data Placement 的 I/O 中承載 PID。</dd></div></dl>
+<h3>保存的啟用狀態不代表參照不變</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">Data Placement 的 DPDIRCLR=1 表示其啟用狀態跨 Controller Level Reset 保留；但 RUH 目前指向哪個 RU、剩餘容量與事件仍需重新查。不要因為 Enable 不必照搬 Streams 的 reset 規則，就省略後續 FDP 狀態恢復流程。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPDIRCLR</dt><dd>Data Placement Directive Persistent Across Controller Level Resets；啟用狀態是否跨此類 reset 保留。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">啟用 Data Placement：Directive Send CDW11=00000001h、CDW12=00000201h。把外層 CDW11 的 DTYPE 直接填 02h 會被拒絕；02h 是這次 Enable 的目標，不是它的外層管理操作類型。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-directive">閱讀相關規格圖表 → 分清兩次啟用與三種 Write 情況</a>
+</section>
+<section class="lesson" id="module-fdp-write"><h2 id="heading-fdp-write"><span class="section-number">07</span> 把一筆 Write 走完，包含非法 PID</h2>
+<!-- claim:FDP-WRITE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">明確放置的 Write 用 DTYPE=02h、DSPEC=PID；LBA 與區塊數仍決定邏輯資料。PID 的 RGID 或 PHNDL 無效時，控制器另選該 namespace 可存取的 RG／RUH 來處理放置，並在所選 RUH 已啟用該事件時記錄 Invalid Placement Identifier；不能把這個規則套到 Update。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.12.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.3, 文件頁 652, PDF 頁 678</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>固定其他條件，觀察 PID 的作用</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">假設 namespace A 可存取、Data Placement 已啟用，映射 [1,3]，NRG=4、RGIF=2。PID=8001h 指 RG 2 與 PHNDL 1，查表得到 RUH 3。控制器把這次資料放到 RUH 3 在 RG 2 目前參照的 RU；LBA 128 是 namespace 的邏輯位置，與 RG 2 不是同一層地址。</span></p>
+<h3>把命令長度與放置選項分開</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">8 blocks 的 NLB 是 7，位於 CDW12 bits 15:0；DTYPE=2 位於 bits 23:20。CETYPE=0 的格式下，PID 放在 CDW13 高 16 bits。不能把 PID 填入 SLBA，不能把 8 直接填成 NLB，也不能把這個 CDW13 例子無條件套到非零 CETYPE。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CETYPE</dt><dd>Command Extension Type；決定 Write 的擴充欄位格式，本篇例子固定 0。</dd></div><div><dt>SLBA</dt><dd>Starting LBA；一段邏輯資料的起始 LBA。</dd></div><div><dt>NLB</dt><dd>Number of Logical Blocks；Write 的資料區塊數減 1。</dd></div></dl>
+<h3>沒有明確帶 PID 時仍有 FDP 放置</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">若本例 Write 不使用 Directive，PHNDL 自動採 0，因而查到 RUHID 1；Reclaim Group 由控制器選。這不表示離開 FDP 群組，也不表示控制器把非零 DSPEC 自動當作 PID。是否解讀 DSPEC 先取決於 Directive 規則。</span></p>
+<h3>非法 PID 的資料與事件分開判斷</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">假設改成 PHNDL=2，但 A 只有 PHNDL 0、1。控制器為這次 Write 選擇 A 可存取的 RG／RUH；這個放置錯誤本身不是要求 Write 必須失敗。事件是否出現還取決於實際所選 RUH 是否啟用了 Invalid Placement Identifier；想收到此事件，應在所有 RUH 啟用它。其他命令錯誤仍可能使 Write 失敗。</span></p>
+<h3>寫入完成與媒體持久化分開</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">FDP 沒有取消 volatile write cache 的差別。有些配置帶 cache，有些 namespace 由 VWCNP=1 明確表示沒有。完成 Write 不應一律解讀成已寫入非揮發媒體；需要持久化時使用原本的 FUA／Flush 規則。FDP 的分組選擇也不額外提供原子寫入保證。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>VWCNP</dt><dd>Volatile Write Cache Not Present；1 表示此 namespace 沒有揮發性寫入快取。</dd></div><div><dt>FUA</dt><dd>Force Unit Access；對這筆 Write 要求資料及 metadata 在成功完成前寫入非揮發媒體。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">沿用 PHNDL 1→RUHID 3、RGIF=2：寫 LBA 128 起的 8 blocks，PID=8001h。在 CETYPE=0 且其餘選項清 0 的例子，CDW10=00000080h、CDW11=0、CDW12=00200007h、CDW13=80010000h。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-write">閱讀相關規格圖表 → 把一筆 Write 走完，包含非法 PID</a>
+</section>
+<section class="lesson" id="module-fdp-status"><h2 id="heading-fdp-status"><span class="section-number">08</span> 查目前可寫容量，別把回覆當成永久保證</h2>
+<!-- claim:FDP-STATUS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.01">08.01.</span><span class="paragraph-text">I/O Management Receive 的 MO=01h 逐一回傳 namespace 每個 PHNDL、每個 RG 的狀態。NVM 描述器含 PID、RUHID、EARUTR 秒數與 RUAMW logical blocks；回覆是處理當下的狀態，未必反映其他未完成命令，且 RUNS 只是名目大小。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>EARUTR</dt><dd>Estimated Active Reclaim Unit Time Remaining；狀態回覆中的剩餘估計秒數。</dd></div><div><dt>RUAMW</dt><dd>Reclaim Unit Available Media Writes；目前還可寫的 logical block 數。</dd></div><div><dt>MO</dt><dd>Management Operation；I/O Management 的操作選擇。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.2.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.2.1.1, 文件頁 26, PDF 頁 26</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>查詢對象是 namespace，不是 ENDGID</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.02">08.02.</span><span class="paragraph-text">I/O Management Receive 用 NSID 指定可存取的 namespace；MO=01h，這個操作沒有定義 MOS 的額外選擇。NSID=0 或 FFFFFFFFh 會回 Invalid Namespace or Format，FDP 未啟用則回 FDP Disabled。這和 LID 20h～23h 用 ENDGID 選群組不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>MOS</dt><dd>Management Operation Specific；由 MO 決定含義，Update 時保存 NPID。</dd></div></dl>
+<h3>先讀 header，再按 32 bytes 前進</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.03">08.03.</span><span class="paragraph-text">header 是 16 bytes，NRUHSD 位於 bytes 15:14，直接表示描述器數量。第 i 筆從 16+32×i 開始。NVM 排序先 PHNDL 遞增，再 RGID 遞增：先看 PH0/RG0、PH0/RG1…，才輪到 PH1。這有助於核對相同 PH 在不同 RG 的狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NRUHSD</dt><dd>Number of Reclaim Unit Handle Status Descriptors；狀態描述器直接計數。</dd></div></dl>
+<figure><figcaption><strong>同一個 PH，跨 4 個 RG 的狀態可能不同</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">PID / PH / RG</th><th scope="col">RUHID</th><th scope="col">RUAMW (blocks)</th><th scope="col">EARUTR (s)</th></tr></thead><tbody><tr><td>0001h / 1 / 0</td><td>3</td><td>8</td><td>30</td></tr><tr><td>4001h / 1 / 1</td><td>3</td><td>4</td><td>15</td></tr><tr><td>8001h / 1 / 2</td><td>3</td><td>6</td><td>20</td></tr><tr><td>C001h / 1 / 3</td><td>3</td><td>0</td><td>0</td></tr></tbody></table></div><figcaption>RGIF=2 的說明性快照，並非容量保留。最後一列 RUAMW=0 是無剩餘可寫 blocks；EARUTR=0 則是未回報時間，兩個 0 意義不同。來源：NVM 21。</figcaption></figure>
+
+<h3>容量與時間各回答一個問題</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.04">08.04.</span><span class="paragraph-text">RUAMW 是當時仍可寫入的 logical block 數；EARUTR 是目前 RU 估計還可維持被參照的秒數，0 表示沒回報時間，不表示立即到期。ERUTL 是配置層的估計上限，EARUTR 是這次狀態中的剩餘估計，不該用相同數值替代。</span></p>
+<h3>實際容量可能大於或小於名目大小</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.05">08.05.</span><span class="paragraph-text">RUAMW×格式化 block 大小可以小於 RUNS，例如有缺陷的可寫媒體減少；也可以大於 RUNS，例如有額外預留容量。因此即使看到未寫過的 RU，也不能直接用 RUNS 除 block size 取代裝置回覆。Reset 或 Flush 之後，RUAMW 也可能改變或不變。</span></p>
+<h3>傳輸長度與快照限制</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.06">08.06.</span><span class="paragraph-text">NUMD 採 Dword 數量減 1；短 buffer 只收到前段。此 Status 操作有特別規則：buffer 比完整結構長時，多出的部分填 0。不同描述器不是保證同一時刻的原子快照；若另外有 Write 或 Update 正在處理，不可把剛查到的容量當成已為下一筆 Write 保留。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>buffer</dt><dd>緩衝區；主機準備給命令提供或接收資料的記憶體。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>NUMD</dt><dd>Number of Dwords；4-byte 傳輸單位的個數減 1。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.07">08.07.</span><span class="paragraph-text">2 個 PHNDL、4 個 RG 共 8 筆描述器，大小=16+8×32=272 bytes，NUMD=67。某筆 RUAMW=6、block data size=4096 bytes，表示當時尚可寫 24576 bytes；不是還有 6 個 RU。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-status">閱讀相關規格圖表 → 查目前可寫容量，別把回覆當成永久保證</a>
+</section>
+<section class="lesson" id="module-fdp-update"><h2 id="heading-fdp-update"><span class="section-number">09</span> 主機要求換一個空 RU，舊資料仍有自己的生命週期</h2>
+<!-- claim:FDP-UPDATE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="09.01">09.01.</span><span class="paragraph-text">I/O Management Send MO=01h 接收 PID 清單，將已寫入的 RU 參照換到空 RU；若原本已空，可換也可不換。非法 PID 或超出限制會拒絕命令，但失敗前可能已有部分更新。與 Update 重疊處理的 Write 可能落在更新前或更新後的 RU。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, 文件頁 570-571, PDF 頁 596-597</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>Update 改的是參照，不是 PHNDL 清單</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.02">09.02.</span><span class="paragraph-text">同一 PID 經由同一 PHNDL→RUHID 映射，在指定 RG 換到新的空 RU。它不是重新建立 namespace 的 Placement Handle List，不會把 PHNDL 1 改成 PHNDL 2，也不會因為成功就把舊 RU 的有效 LBA 刪掉。</span></p>
+<h3>已寫入與原本為空有不同要求</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.03">09.03.</span><span class="paragraph-text">若目前 RU 已寫有 user data，控制器必須改到另一個空 RU；若目前 RU 完全沒寫過，可保留也可換另一個空 RU。主機提早切走尚未寫滿的 RU，可能犧牲可用寫入量，並在事件已啟用時留下 Not Fully Written To Capacity 紀錄。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 370" role="img"><title>相同 PID，切換的是目前 RU</title><desc>先協調並完成相關 I/O，再 Update 並等完成，才能讓下一批有明確的操作邊界；若重疊處理，Write 可落在切換前或後。舊 RU 的資料仍需按其生命週期管理。來源：Base §7.4.1.1。</desc><rect x="20" y="20" width="310" height="80" rx="6" class="v-command"/><text x="175.0" y="53.5" text-anchor="middle" font-size="17">PID 8001h → RU A</text><text x="175.0" y="78.5" text-anchor="middle" font-size="17">已寫入這一批資料</text><rect x="420" y="20" width="320" height="80" rx="6" class="v-success"/><text x="580.0" y="53.5" text-anchor="middle" font-size="17">PID 8001h → RU B</text><text x="580.0" y="78.5" text-anchor="middle" font-size="17">空 RU 接下一批</text><path d="M330,60 L420,60" class="v-line"/><path d="M413,56 L420,60 L413,64" class="v-line"/><rect x="20" y="165" width="720" height="60" rx="6" class="v-object"/><text x="380.0" y="201.0" text-anchor="middle" font-size="17">Update：改參照；PH1 → RUH3 的映射不變</text><rect x="20" y="280" width="720" height="65" rx="6" class="v-object"/><text x="380.0" y="318.5" text-anchor="middle" font-size="17">RU A 的有效 LBA 不會因為 Update 就消失</text></svg></div><figcaption>先協調並完成相關 I/O，再 Update 並等完成，才能讓下一批有明確的操作邊界；若重疊處理，Write 可落在切換前或後。舊 RU 的資料仍需按其生命週期管理。來源：Base §7.4.1.1。</figcaption></figure>
+
+<h3>NPID 放在 MOS 裡，不是獨立 CDW</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.04">09.04.</span><span class="paragraph-text">CDW10 的 MO 位於 bits 7:0，MOS 位於 bits 31:16；Update 把 MOS 的 16 bits 定義為 NPID。清單有 K 個 PID 時，NPID=K-1，每個 PID 2 bytes。NPID 不得超過配置 MAXPIDS；MAXPIDS 自身已是數量減 1 的上限，不能再把編碼值多減一次。</span></p>
+<h3>Update 不採 Write 的非法 PID 容錯</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.05">09.05.</span><span class="paragraph-text">RGID 超出 NRG 或 PHNDL 超出 namespace 的數量時，Update 回 Invalid Field in Command。命令被拒絕也不保證清單完全沒動過，因為規格允許部分 PID 已更新。完成後需要的狀態應重新查詢，不能假設整批更新具備全部成功或全部回復的語意。</span></p>
+<h3>想形成清楚資料邊界，先處理重疊 I/O</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.06">09.06.</span><span class="paragraph-text">如果某筆 Write 在 Update 處理期間使用同一 PID，資料可進入切換前或切換後的 RU。主機若需要讓「這一批」和「下一批」分開，應先完成並協調相關寫入，執行 Update，確認完成後才送下一批；還要依 cache 情況處理持久化。單靠先後送進不同 queue 不能證明控制器的處理順序。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.07">09.07.</span><span class="paragraph-text">要更新 PID 8000h、8001h：NPID=1，CDW10=00010001h，資料 buffer 的 4 bytes 為 00 80 01 80。這是 2 個 little-endian PID；不需要另外用 NUMD 表示長度。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>little-endian</dt><dd>低有效 byte 放在低位址的整數儲存方式。</dd></div></dl></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-update">閱讀相關規格圖表 → 主機要求換一個空 RU，舊資料仍有自己的生命週期</a>
+</section>
+<section class="lesson" id="module-fdp-usage"><h2 id="heading-fdp-usage"><span class="section-number">10</span> Usage 查誰配置了 RUH，不查剩多少容量</h2>
+<!-- claim:FDP-USAGE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.01">10.01.</span><span class="paragraph-text">LID 21h 按 RUHID 回報 RUHA：0 未被 namespace 使用，1 由主機明確指定，2 由控制器選用。這份清單以 Endurance Group 為範圍，最多一個 RUH 的屬性為 2；它不列每個 RG 的剩餘可寫量，後者需要 I/O Management Receive。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>RUHA</dt><dd>Reclaim Unit Handle Attributes；Usage 中的配置來源分類。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.30, 文件頁 296-297, PDF 頁 322-323</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先選正確群組</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.02">10.02.</span><span class="paragraph-text">Get Log Page 的 LSI.ENDGID 選 Endurance Group；FDP 已啟用時，此查詢的 NSID 保留。不能把某個 NSID 放進去期待清單只剩這個 namespace 的 RUH。若該群組 FDP 未啟用，回 FDP Disabled。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LSI</dt><dd>Log Specific Identifier；依 log 定義選對象，本篇 FDP logs 用它放 ENDGID。</dd></div></dl>
+<h3>RUHID 由清單位置取得</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.03">10.03.</span><span class="paragraph-text">8-byte header 的 NRUH 是直接計數，與目前配置的 NRUH 相同。第 i 個 8-byte 描述器從 8+8×i 開始，它描述 RUHID i；描述器本身 byte 0 是 RUHA，其餘保留。不要把它的 byte offset 當成 RUHID。</span></p>
+<h3>三個值是分類，不是數量</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.04">10.04.</span><span class="paragraph-text">RUHA=0 表示沒被 namespace 使用，1 表示主機在建立時明確指定，2 表示 namespace 請控制器選。控制器自選的 namespace 共用同一個此類 RUH，所以整份清單最多一筆為 2。RUHA=1 的 RUH 可以被符合條件的多個 namespace 共享。</span></p>
+<h3>用兩種查詢回答不同問題</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.05">10.05.</span><span class="paragraph-text">安排新 namespace 時，Usage 協助看 RUH 的分配來源；準備下一批 Write 時，Status 協助看某 namespace 可用的 PID 及剩餘量。Usage 不會直接告訴你哪個 RU 尚有 24 KiB，也不能由 RUHA=0 推斷某段舊媒體已被擦除。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.06">10.06.</span><span class="paragraph-text">4 個 RUH 的 RUHA=[2,1,0,1]：RUH 0 供控制器自選的 namespace 使用，RUH 1／3 被明確指定，RUH 2 尚未使用。值 1 不表示只有一個 namespace 使用，也不表示已寫了 1 block。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-usage">閱讀相關規格圖表 → Usage 查誰配置了 RUH，不查剩多少容量</a>
+</section>
+<section class="lesson" id="module-fdp-statistics"><h2 id="heading-fdp-statistics"><span class="section-number">11</span> 用相同量測期間判斷寫入放大</h2>
+<!-- claim:FDP-STATISTICS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.01">11.01.</span><span class="paragraph-text">LID 22h 的 HBMW 計主機寫入，MBMW 同時包含主機與控制器內部寫入，MBE 計媒體擦除量，皆為含對應 metadata 的相關 byte 計數。比較相同配置期間的增量，才可用 ΔMBMW/ΔHBMW 觀察寫入放大；不能把擦除量加到分子，或跨清零直接相減。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨資料儲存的附加資訊；統計與格式判斷時不能只看 data bytes。</dd></div><div><dt>HBMW</dt><dd>Host Bytes with Metadata Written；含 metadata 的主機相關寫入 byte 計數。</dd></div><div><dt>MBMW</dt><dd>Media Bytes with Metadata Written；含 metadata 與相關內部寫入的媒體 byte 計數。</dd></div><div><dt>MBE</dt><dd>Media Bytes Erased；媒體擦除 byte 計數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.31</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.31, 文件頁 297-298, PDF 頁 323-324</p></details>
+<!-- claim:FDP-STATISTICS-COMMANDS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.02">11.02.</span><span class="paragraph-text">NVM 的 HBMW／MBMW 計入 User Data Out Commands、Write Zeroes 和 Write Uncorrectable；命令是否有等量主機 payload，不能代替這項統計分類。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>User Data Out Commands</dt><dd>把 user data 寫向媒體的命令分類；此分類不等於必須有等量 PCIe payload。</dd></div></dl><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.6, 文件頁 79, PDF 頁 79</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先知道這份累計涵蓋誰</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="11.03">11.03.</span><span class="paragraph-text">Log 以 Endurance Group 為範圍，包含該 FDP 配置期間曾存在的全部 namespace。不能刪掉某 namespace 後，就以為它過去的寫入也會從累計移除。FDP 未啟用時，查詢回 FDP Disabled；啟用時 NSID 在這份查詢中保留。</span></p>
+<h3>主機寫入與媒體寫入的差距</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="11.04">11.04.</span><span class="paragraph-text">HBMW 不含控制器垃圾回收等內部寫入；MBMW 包含相關主機和內部寫入。NVM §4.1.4.6 指明計入 User Data Out Commands，以及 Write Zeroes、Write Uncorrectable。因此不能單純用 PCIe 傳輸的 payload bytes 替代 HBMW，尤其某些命令沒有等量主機 payload。</span></p>
+<h3>用前後快照算增量</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="11.05">11.05.</span><span class="paragraph-text">三個計數都是 128 bits，讀出後先記錄配置、群組、時間與起點，再計算同一時段差值。例如 host 從 500 增至 600 GiB，media 從 800 增至 950 GiB，差值的比是 150/100=1.5，不是只比結束時的 950/600。工作負載與背景處理也應一併考量。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Host</dt><dd>主機；執行作業系統並送出 NVMe 命令的一端。</dd></div></dl>
+<h3>遇到清零、飽和與零分母</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="11.06">11.06.</span><span class="paragraph-text">成功改變 FID 1Dh 值會把統計清 0，firmware update 不會清零；計數到 2^128-1 後飽和不回繞。跨清零不能直接相減，飽和後差值不再完整，host 增量為 0 時則不計這個比值。這些邊界會決定一個漂亮數字到底有沒有意義。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="11.07">11.07.</span><span class="paragraph-text">同一配置期間 HBMW 增加 100 GiB、MBMW 增加 150 GiB，觀察比值為 1.5；MBE 增加 200 GiB 另行記錄。若另一時段主機沒有新寫入但控制器仍搬資料，ΔHBMW=0，不能把除法結果說成 0。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-statistics">閱讀相關規格圖表 → 用相同量測期間判斷寫入放大</a>
+</section>
+<section class="lesson" id="module-fdp-events"><h2 id="heading-fdp-events"><span class="section-number">12</span> 先替 RUH 選事件，再讀已發生的紀錄</h2>
+<!-- claim:FDP-EVENTS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="12.01">12.01.</span><span class="paragraph-text">FID 1Eh 透過 NSID＋PHNDL 選 RUH，為列出的事件類型啟用或停用紀錄。Get 回支持的事件與目前啟用狀態，Set 送事件類型清單；共享 RUH 的 namespace 也共享該 RUH 的設定效果。LID 23h 才是已發生事件的紀錄。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, 文件頁 481-483, PDF 頁 507-509</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先查支援，再選需要的類型</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="12.02">12.02.</span><span class="paragraph-text">Get Features FID 1Eh 以指定 namespace 的 PHNDL 找到 RUH。一般的值查詢會在 buffer 回 supported event descriptors，CQE DW0.NOET 回項目數，按事件值遞增排列。SEL=3 則是通用能力查詢，不能用一般值回覆格式解讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NOET</dt><dd>Number of FDP Event Types；事件類型的直接計數。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div><div><dt>SEL</dt><dd>Select；Get Features 要讀目前、預設、保存值，還是支援能力。</dd></div></dl>
+<h3>Set 一次控制所列的一組事件</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="12.03">12.03.</span><span class="paragraph-text">CDW11 高位 NOET 表示 buffer 中有幾個 1-byte 事件類型，低位 PHNDL 選對象；CDW12.FDPEE 決定這些類型啟用或停用。Get 忽略輸入的 NOET 與 CDW12 開關，回覆每個類型目前狀態。若 PHNDL 無效，Get／Set 都會回 Invalid Field in Command。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FDPEE</dt><dd>FDP Event Enable；事件啟用位，與整體 FDP 啟用不同。</dd></div></dl>
+<h3>選 namespace 的路徑，改 RUH 的設定</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="12.04">12.04.</span><span class="paragraph-text">A 的 PHNDL 1 與 B 的 PHNDL 0 若都映射到 RUH 3，透過 A 改事件設定會影響這個共享 RUH。不能以為 NSID 不同就各有一份獨立開關。FDP 停用時，此 Feature 的 Get／Set 都回 FDP Disabled；Feature 本身可保存，保存行為仍按通用 SV／SEL 規則使用。</span></p>
+<h3>沒有紀錄，不一定沒有發生</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="12.05">12.05.</span><span class="paragraph-text">事件必須在發生時已對相關 RUH 啟用才會被記錄。容量達上限後，新增紀錄會丟掉最舊的一筆；若設定值改變也可能清掉整份歷史。因此排程與效能分析應記錄設定及讀取時段，不能只憑空白的 log 宣告整段運作從未發生事件。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="12.06">12.06.</span><span class="paragraph-text">對 PHNDL=1 啟用 00h、03h、80h：NOET=3，CDW11=00030001h、CDW12=1，Set buffer 為 00 03 80。NOET 直接計數，Get 的每個回覆項目卻是 2 bytes，不能沿用 Set 的 1-byte 項目長度。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-events">閱讀相關規格圖表 → 先替 RUH 選事件，再讀已發生的紀錄</a>
+</section>
+<section class="lesson" id="module-fdp-event-record"><h2 id="heading-fdp-event-record"><span class="section-number">13</span> 把事件的原因、位置與資料量讀完整</h2>
+<!-- claim:FDP-EVENT-RECORD -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="13.01">13.01.</span><span class="paragraph-text">LID 23h 一次選 host 或 controller events，依發生先後回傳 64-byte 紀錄。先看 ETYP，再用 PIV／NSIDV／LV 判斷哪些識別欄位有效。Media Reallocated 的 NVM 擴充還要讀 LBAV、NLBAM 和一個示例 LBA；事件時間戳不保證數值遞增。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>controller，實作 NVMe 介面、取走 command 並回報 completion 的控制實體。</dd></div><div><dt>NLBAM</dt><dd>Number of LBAs Moved；搬移數量，0 與 FFFFh 有特殊意義。</dd></div><div><dt>NSIDV</dt><dd>NSID Valid；事件的 namespace 識別值是否有效。</dd></div><div><dt>ETYP</dt><dd>Event Type；紀錄內的事件種類編碼。</dd></div><div><dt>LBAV</dt><dd>LBA Valid；Media Reallocated 是否提供有效的示例 LBA。</dd></div><div><dt>PIV</dt><dd>Placement Identifier Valid；事件 PID 是否有有效報告。</dd></div><div><dt>LV</dt><dd>Location Valid；事件 RGID 與 RUHID 是否有效。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, 文件頁 298-301, PDF 頁 324-327</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>查哪一類事件先由命令決定</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.02">13.02.</span><span class="paragraph-text">CDW10 bit 8 的 FDPET=1 選 host events，0 選 controller events；單次回覆不混兩類。整份 log 是 4096 bytes，64-byte header 後接 64-byte 記錄，最多容納 63 筆；實際支援上限仍依裝置。NUMFDPE 是實際筆數，最後一筆以外的 bytes 沒有可任意當作新紀錄的意義。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMFDPE</dt><dd>Number of FDP Events；log 內實際事件紀錄數。</dd></div><div><dt>FDPET</dt><dd>依所在結構而定：log 請求中是選 host／controller 的 1-bit 值；supported descriptor 中是事件種類的 byte 值。</dd></div></dl>
+<h3>Host events 說明哪些使用行為</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.03">13.03.</span><span class="paragraph-text">00h 是主機 Update 時舊 RU 尚未寫滿；01h 是未在估計時間內寫滿而控制器改參照；02h 是 Controller Level Reset 改了一個或多個 RUH，此事件的 NSID 與 PID 保留；03h 是 Write 的 PHNDL 或 RGID 不合法。事件名稱描述原因，不能把全部都翻成「配置失敗」。</span></p>
+<figure><figcaption><strong>先看有效位，再決定哪些數字可用</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">位元</th><th scope="col">為 1 時可讀</th><th scope="col">為 0 時怎麼處理</th></tr></thead><tbody><tr><td>PIV</td><td>PID；03h事件為主機原值</td><td>PID 保留</td></tr><tr><td>NSIDV</td><td>NSID</td><td>NSID 清0並忽略</td></tr><tr><td>LV</td><td>RGID 與 RUHID</td><td>兩欄清0並忽略</td></tr><tr><td>LBAV（80h NVM 擴充）</td><td>其中一個被搬移 LBA</td><td>LBA 清0並忽略</td></tr></tbody></table></div><figcaption>欄位清 0 不代表真的選到了 0 號物件；要先確認有效位。來源：Base 303、NVM 116。</figcaption></figure>
+
+<h3>Controller events 說明內部改變</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.04">13.04.</span><span class="paragraph-text">80h Media Reallocated 描述 Initially Isolated 資料被搬到別的 RU；81h 描述控制器隱式改了 RUH 的參照。這和主機明確送 Update 不同。廠商事件範圍另有編碼，沒有廠商說明時只保存原值，不套用 80h 的欄位意義。</span></p>
+<h3>先看有效位，再讀看似有值的欄位</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.05">13.05.</span><span class="paragraph-text">PIV 決定 PID 可否使用，NSIDV 決定 NSID，LV 同時控制 RGID 與 RUHID。NSIDV=0 時 NSID 清 0 且忽略；LV=0 時兩個位置欄清 0 且忽略；PIV=0 時 PID 保留。若無法回報具體 RUH，PIV 與 LV 都清 0，不能把這些 0 解讀成真的在 RG0／RUH0。</span></p>
+<h3>Media Reallocated 的 LBA 只是一個被搬移的例子</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.06">13.06.</span><span class="paragraph-text">NVM 擴充中的 NLBAM=0 表示沒回報數量，FFFFh 表示至少 65535 個；LBA 在 LBAV=1 時有效，代表其中一個被搬移的 LBA，而不是連續範圍起點。因此 NLBAM=8、LBA=100 不能推論恰好搬了 100～107。PIV=1 才能把原始寫入的 handle 與此搬移關聯起來。</span></p>
+<h3>順序以清單為準，時間需要讀來源與計時屬性</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.07">13.07.</span><span class="paragraph-text">紀錄按發生先後排列，但 reset 或主機重新設 Timestamp 可讓後一筆時間數值較小。ETMSP 的格式含時間、初始化來源與是否可能暫停計時；分析跨 reset 的事件時保留清單順序，不能直接按 timestamp 數字重新排序。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ETMSP</dt><dd>Event Timestamp；事件發生時保存的 Timestamp 值與屬性。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="13.08">13.08.</span><span class="paragraph-text">Invalid Placement Identifier 紀錄若 PIV=1、LV=1：PID 是主機原先送錯的值，RGID／RUHID 是控制器實際另選的目的。兩者不同是這個事件要揭露的差異，不是清單損壞。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-event-record">閱讀相關規格圖表 → 把事件的原因、位置與資料量讀完整</a>
+</section>
+<section class="lesson" id="module-fdp-lifetime"><h2 id="heading-fdp-lifetime"><span class="section-number">14</span> 把資料失效、RU 切換與 reset 分開</h2>
+<!-- claim:FDP-LIFETIME -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="14.01">14.01.</span><span class="paragraph-text">降低回收成本，需要主機追蹤一整個 RU 內資料的使用週期；資料不再需要時，可用 Dataset Management AD=1 指出其 LBA 範圍。RUH Update 只改未來寫入的參照。Reset 後重新查配置、事件、namespace 的 PID 狀態與 cache，不要將保留啟用狀態誤認為所有 RU 狀態不變。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AD</dt><dd>Attribute–Deallocate；DSM 中標示可解除配置範圍的選項。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12, 文件頁 647-652, PDF 頁 673-678</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>主機要追蹤實際資料，而不是只記一個 PID</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="14.02">14.02.</span><span class="paragraph-text">同一 PID 在 RU 寫滿或 Update 後會指向新 RU。若要在舊 RU 資料一起失效時通知控制器，主機需知道那一批實際寫了哪些 LBA 範圍。單看目前 PID 並無法重新找回所有舊批次的 LBA；規格介面沒有把 PID 當成可直接刪整批資料的鍵。</span></p>
+<h3>DSM 的範圍描述有自己的計數規則</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="14.03">14.03.</span><span class="paragraph-text">AD=1 表示主機提供解除配置建議；每個 range 有 SLBA 與直接計數的 LLB，命令 NR 則是 range 數減 1。把兩個不連續範圍拆成兩列，才能正確表達哪些邏輯資料不再需要。此命令是 advisory，不能保證提交後立刻擦除媒體，也不能當成 Sanitize。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>advisory</dt><dd>建議性；符合規格的控制器可選擇不依該提示採取動作。</dd></div><div><dt>LLB</dt><dd>Length in Logical Blocks；DSM 單一範圍的區塊數，直接計數。</dd></div><div><dt>NR</dt><dd>Number of Ranges；DSM 的範圍項目數減 1。</dd></div></dl>
+<figure><figcaption><strong>結束一批資料時，3 種操作各改什麼</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">操作</th><th scope="col">主要改變</th><th scope="col">不能由此推論</th></tr></thead><tbody><tr><td>RUH Update</td><td>未來寫入使用的 RU 參照</td><td>舊資料已失效或已擦除</td></tr><tr><td>DSM / AD=1</td><td>向控制器提供不再需要的 LBA 範圍</td><td>立即擦除，或改了 PH→RUH 映射</td></tr><tr><td>變更 FID1Dh</td><td>群組 FDP 配置；清事件與統計</td><td>可在現有 namespace 尚存時任意切換</td></tr></tbody></table></div><figcaption>用「誰、改了什麼、何時生效」讀操作，比把它們都叫回收更清楚。來源：Base §7.4、§8.1.12、NVM §3.3.3。</figcaption></figure>
+
+<h3>大小限制會影響一次能處理多少範圍</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="14.04">14.04.</span><span class="paragraph-text">先確認 NVMDSMSV 與 DSM 限制欄位所表示的命令支援，再以非零 DMRL、DMRSL、DMSL 分別判斷 range 數、單一 range blocks、整命令 blocks。NVMDSMSV=1 時限制欄位 0 表示未回報該限制；NVMDSMSV=0 時欄位 0 表示不支援命令。超出非零限制的部分可能不處理。主機需要分批並在既有資料已不再使用時發出；不能只因為清單完整，就推論一個超大命令必然處理全部內容。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMDSMSV</dt><dd>Dataset Management Support Variants；決定如何連同限制欄位判斷 DSM 支援。</dd></div><div><dt>DMRSL</dt><dd>Dataset Management Range Size Limit；每個範圍的 logical block 數限制。</dd></div><div><dt>DMRL</dt><dd>Dataset Management Ranges Limit；範圍項目數的限制。</dd></div><div><dt>DMSL</dt><dd>Dataset Management Size Limit；整筆命令的 logical block 總數限制。</dd></div></dl>
+<h3>Reset 後沿資訊依存關係恢復</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="14.05">14.05.</span><span class="paragraph-text">先 Get FID 1Dh 確認 ENDGID 的 FDPE／FDPCIDX，再查 LID 20h 取得該配置，接著查並設定所需 FDP events；對各 namespace 查 RUH Status 與 CNS08h cache 資訊。Data Placement 的 enable 狀態可保留，但 RUH 參照與 RUAMW 仍可能變動，舊快照不能直接接著使用。</span></p>
+<h3>結束一批資料，與更換整份配置不同</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="14.06">14.06.</span><span class="paragraph-text">Update 是單一或多個 PID 的參照更新；DSM 是指定不再需要的邏輯範圍；改 FID 1Dh 是 Endurance Group 配置更動，需先無 namespace，並清事件與統計。把這三種操作分開，才能說清楚誰改了什麼、哪些資料仍可讀，以及哪些累計值還能前後比較。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="14.07">14.07.</span><span class="paragraph-text">同一 RU 內曾寫 LBA 100 起 8 blocks、LBA 1000 起 4 blocks。兩段都失效後，DSM 可帶 2 個 ranges：NR=1，LLB 分別為 8、4；不是把兩個不連續範圍誤寫成從 100 起共 12 blocks。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-fdp-lifetime">閱讀相關規格圖表 → 把資料失效、RU 切換與 reset 分開</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">15</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.01">15.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-fdp-model"><summary>圖表組 01 · 先看資料為何需要一起回收 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.02">15.02.</span><span class="paragraph-text">Base 70 看層次與參照，730 再加上 namespace 的映射。兩張圖的用途不同：前者回答資源有哪些，後者回答一筆 Write 如何抵達其中一個資源。</span></p>
+<a class="reading-link" href="#module-fdp-model">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-model"><h4 id="fields-heading-fdp-model">把資源層次接到一筆寫入</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.03">15.03.</span><span class="paragraph-text">兩張圖沒有規定硬體電路配置；外框表示資源所屬，線表示目前的參照與查表關係。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-model"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Endurance Group → RG → RU</td><td>RGID 從 0 到 NRG-1；RG 內有多個可輪替使用的 RU。</td><td>NRG=4 時 RGID=0、1、2、3；不是 1、2、3、4。</td></tr><tr><td>RUH 0…NRUH-1 的跨 RG 參照</td><td>每個 RUH 在每個 RG 選一個 RU；同時一個 RU 最多給一個 RUH 參照。</td><td>RUH 3/RG2 與 RUH 3/RG1 的目前 RU 不同。</td></tr><tr><td>NSID → PHNDL → RUHID</td><td>PHNDL 是 namespace 清單索引，清單內容才是 RUHID。</td><td>清單 [1,3] 的 PHNDL 1 對 RUHID 3。</td></tr><tr><td>寫滿後的箭頭改向</td><td>該 RUH 在同一 RG 參照新的空 RU；PID 數字可保持不變。</td><td>舊 RU 內仍有效的 LBA 不會因為箭頭改向就消失。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-070">Base 70</a><a href="#figure-FDP-BASE-FIG-730">Base 730</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.2.4 · Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, Figure 730, 文件頁 649, PDF 頁 675</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-070 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-070"><h4>Base Figure 70 · Flexible Data Placement Logical View of Non-Volatile Storage</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-070-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base70-1">Base70-1</span><span class="paragraph-text">RUH 在每個 Reclaim Group 各參照一個 RU，不是一個 RUH 只有一塊全域媒體。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.4, Figure 70, 文件頁 85, PDF 頁 111</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base70-2">Base70-2</span><span class="paragraph-text">圖中每條 RUH 橫跨所有 RG，往每個 RG 連一個目前 RU。假設 4 個 RG、4 個 RUH，共有 16 個目前參照；這不代表整個群組總共只有 16 個 RU。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-model">欄位、條件與相關細節：把資源層次接到一筆寫入 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-730 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-730"><h4>Base Figure 730 · Flexible Data Placement Model</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-730-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base730-1">Base730-1</span><span class="paragraph-text">NSID 選映射表，PID 選 RGID 與 PHNDL，再由 PHNDL 查到 RUH。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, Figure 730, 文件頁 649, PDF 頁 675</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base730-2">Base730-2</span><span class="paragraph-text">圖中 PHNDL 0 對 RUH 1，PHNDL 1 對 RUH NRUH-1。帶 RGID=2、PHNDL=1 的 Write 要沿第二列接到最上方 RUH，再到 RG2；不要沿 PHNDL 1 直接找 RUH 1。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-model">欄位、條件與相關細節：把資源層次接到一筆寫入 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-isolation"><summary>圖表組 02 · 初次分開寫入，搬移後是否仍分開 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.04">15.04.</span><span class="paragraph-text">Base 295 定義 RUHT；731 和 732 要比較搬移箭頭的來源與目的 RU，而不是只比較兩張圖的外框。</span></p>
+<a class="reading-link" href="#module-fdp-isolation">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-isolation"><h4 id="fields-heading-fdp-isolation">讀來源與目的，不以顏色代替規則</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.05">15.05.</span><span class="paragraph-text">圖中 Previous RU 是同一 RUH 先前寫入過的單位；目的 RU α／β／γ 是搬移目的的圖示名稱，不是要填入命令的值。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-isolation"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>RUHT：描述器 byte 0</td><td>1h 初始隔離；2h 持續隔離；0h、3h～BFh 保留；C0h～FFh 廠商定義。</td><td>遇到廠商值不擅自套用 1h 或 2h 的搬移限制。</td></tr><tr><td>描述器 bytes 3:1</td><td>保留；每筆描述器總長 4 bytes。</td><td>第 i 筆在配置內的 byte offset 是 64+4×i。</td></tr><tr><td>相同 RG 與來源 RUH</td><td>兩種類型皆在同一 RG 內搬移；RUHT=2 的目的 RU 只含同一 RUH 寫入的資料。</td><td>不同 namespace 共用 RUH 時，不能以 RUHT=2 推論 namespace 彼此隔離。</td></tr><tr><td>目前 RU／Previous RU／搬移目的</td><td>三者是不同時點或用途；資料搬走不等於主機發了新 Write。</td><td>右側目的 RU 的內部寫入會影響 MBMW，而不增加對應的主機 HBMW。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-295">Base 295</a><a href="#figure-FDP-BASE-FIG-731">Base 731</a><a href="#figure-FDP-BASE-FIG-732">Base 732</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29 · Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 295, 文件頁 295, PDF 頁 321</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, Figure 731, 文件頁 650, PDF 頁 676</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, Figure 732, 文件頁 650, PDF 頁 676</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-295 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-295"><h4>Base Figure 295 · Reclaim Unit Handle Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-295-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base295-1">Base295-1</span><span class="paragraph-text">RUHT 決定內部搬移後的隔離要求，並非決定 PID 的位元格式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 295, 文件頁 295, PDF 頁 321</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base295-2">Base295-2</span><span class="paragraph-text">RUHT=1 是 Initially Isolated、2 是 Persistently Isolated；將 2 誤當成 RGIF=2 會改錯 PID 切割，因為 RGIF 在另一個配置欄位。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-isolation">欄位、條件與相關細節：讀來源與目的，不以顏色代替規則 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-731 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-731"><h4>Base Figure 731 · Initially Isolated Reclaim Unit Handles</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-731-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base731-1">Base731-1</span><span class="paragraph-text">Initially Isolated 的不同 RUH，搬移後可以在同一 RG 合併資料。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, Figure 731, 文件頁 650, PDF 頁 676</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base731-2">Base731-2</span><span class="paragraph-text">看右側 RU α 的多種來源顏色：X、Y、Z 的舊 RU 資料可以被搬到同一個目的 RU。左側仍各有目前寫入 RU，不能把右側合併誤讀成所有新 Write 都直接混寫。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-isolation">欄位、條件與相關細節：讀來源與目的，不以顏色代替規則 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-732 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-732"><h4>Base Figure 732 · Persistently Isolated Reclaim Unit Handle</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-732-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base732-1">Base732-1</span><span class="paragraph-text">Persistently Isolated 允許搬移，但搬移目的 RU 必須維持 RUH 來源分離。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.12.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, Figure 732, 文件頁 650, PDF 頁 676</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base732-2">Base732-2</span><span class="paragraph-text">X 的資料可從多個 Previous RU A′ 搬到 RU α；Y 進 RU β，Z 進 RU γ。重點是不同來源的箭頭沒有在同一目的 RU 合流，不是「不能有垃圾回收」。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-isolation">欄位、條件與相關細節：讀來源與目的，不以顏色代替規則 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-config"><summary>圖表組 03 · 讀懂候選配置與 PID 的切割方式 · 10 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.06">15.06.</span><span class="paragraph-text">Base 293 看清單索引與總長；294／295 看一筆配置和 RUH 類型；296／297 是 RGIF=0 與非零的兩種 PID 格式。</span></p>
+<a class="reading-link" href="#module-fdp-config">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-configuration"><h4 id="fields-heading-fdp-configuration">先取完整描述器，再判斷能否使用</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.07">15.07.</span><span class="paragraph-text">Header 與描述器的 offset 都以 bytes 計；清單索引與 RUHID 則是項目編號。共同的保留欄不代表可自由塞入額外參數。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-configuration"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Header NUMFDPC 1:0／VER 2／SZE 7:4</td><td>NUMFDPC+1 是配置數；VER=0；SZE 是整份 byte 數。第一筆從 16 開始，header 3 與 15:8 保留。</td><td>值 1、有兩筆各 80 bytes，SZE=16+160=176。</td></tr><tr><td>DSZE 1:0／FDPA byte 2</td><td>DSZE 是含補齊的本筆長度。FDPA[7] FDPCV；[4] FDPVWC；[3:0] RGIF；[6:5] 保留。</td><td>FDPA=92h 表示有效、帶 volatile cache、RGIF=2。</td></tr><tr><td>NRG 7:4／NRUH 9:8</td><td>直接計數，皆必須非零；前者數 RG，後者數 RUH 描述器。</td><td>NRG=4／NRUH=3 不是共 7 個 RU；每個 RUH 橫跨各 RG。</td></tr><tr><td>MAXPIDS 11:10</td><td>Update 的 NPID 編碼最大值，採數量減 1，且小於 NRG×NRUH。</td><td>MAXPIDS=7 容許一次 8 個 PID；不等於只准 7 個。</td></tr><tr><td>NNS 15:12</td><td>這份配置容許建立的 namespace 數。MNAN 非零時 NNS≤MNAN；MNAN=0 時 NNS≤NN。</td><td>NNS 是容量配置的 namespace 上限，不能拿 PID 的 PHNDL 位元數取代。</td></tr><tr><td>RUNS 23:16／ERUTL 27:24</td><td>RUNS 為每個 RU 名目 bytes；ERUTL 為估計秒數，0 表示未回報。</td><td>RUNS=1073741824 是 1 GiB；ERUTL=0 不是 0 秒後必須換 RU。</td></tr><tr><td>VSS byte 3／RUH list 64 起／VS／PAD</td><td>固定 64 bytes，加 4×NRUH、VSS，再補到 8-byte 邊界；PAD 清 0，28:63 保留。</td><td>NRUH=3、VSS=1：64+12+1=77，再補 3，DSZE=80。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FDPVWC</dt><dd>FDP Volatile Write Cache；該配置是否包含揮發性寫入快取。</dd></div><div><dt>FDPA</dt><dd>FDP Attributes；配置描述器內的屬性位元組。</dd></div><div><dt>MNAN</dt><dd>Maximum Number of Allowed Namespaces；控制器回報的 subsystem namespace 數量上限。</dd></div><div><dt>NNS</dt><dd>Number of Namespaces Supported；配置容許的 namespace 數。</dd></div><div><dt>PAD</dt><dd>Padding；為滿足結構對齊而補入的 bytes。</dd></div><div><dt>VER</dt><dd>Version；資料結構版本欄。</dd></div><div><dt>NN</dt><dd>Number of Namespaces；此欄實際表示有效 NSID 的最大值，數量上限還需參照 MNAN。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-293">Base 293</a><a href="#figure-FDP-BASE-FIG-294">Base 294</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 293, 文件頁 293, PDF 頁 319</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 294, 文件頁 293-295, PDF 頁 319-321</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-293 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-293"><h4>Base Figure 293 · FDP Configurations Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-293-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base293-1">Base293-1</span><span class="paragraph-text">配置清單先給整份長度，索引從第 0 筆開始，每筆長度另由 DSZE 決定。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 293, 文件頁 293, PDF 頁 319</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base293-2">Base293-2</span><span class="paragraph-text">NUMFDPC=1 表示 2 筆；header 16 bytes、第 0 筆 DSZE=80，則第 1 筆從 byte 96 開始。FDPCIDX 要填 1，不是 96。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-configuration">欄位、條件與相關細節：先取完整描述器，再判斷能否使用 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-294 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-294"><h4>Base Figure 294 · FDP Configuration Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-294-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base294-1">Base294-1</span><span class="paragraph-text">一筆配置把可用性、PID 格式、資源數量與大小分開提供。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 294, 文件頁 293-295, PDF 頁 319-321</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base294-2">Base294-2</span><span class="paragraph-text">FDPCV=1、NRG=4、NRUH=4、RGIF=2：可用候選有 4 個 RG、4 個 RUH，PID 高 2 bits 選 RG。RUNS=1 GiB 則是每 RU 名目大小，不是總群組容量。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-configuration">欄位、條件與相關細節：先取完整描述器，再判斷能否使用 →</a></div></article>
+<section class="field-guide" id="fields-fdp-pid"><h4 id="fields-heading-fdp-pid">從配置還原 16-bit PID</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.08">15.08.</span><span class="paragraph-text">先查已啟用配置的 RGIF，才知道 bits 的意義；不要以數字看起來小就猜它是 RUHID。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-pid"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>RGIF=0／NRG=1</td><td>PHNDL=PID；沒有 RGID 子欄位。</td><td>PID=3 指 namespace 的 PHNDL 3，不是 RUHID 3。</td></tr><tr><td>RGIF=r&gt;0</td><td>RGID=PID&gt;&gt;(16-r)；PHNDL=PID &amp; ((1&lt;&lt;(16-r))-1)。</td><td>r=2，8001h&gt;&gt;14=2；8001h &amp; 3FFFh=1。</td></tr><tr><td>RGID 的合法性</td><td>一般要求 RGID&lt;NRG；若 NRG=1，即使分配了 RGID bits 也忽略其值。</td><td>NRG=3、RGIF=2 可編碼 0～3，但 RGID=3 超出實際數量。</td></tr><tr><td>PHNDL 的合法性</td><td>PHNDL 必須是指定 namespace 實際建立的 handle；欄位能編碼不代表已配置。</td><td>13:0 能放 16383，但清單 [1,3] 只有 PHNDL 0、1。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-296">Base 296</a><a href="#figure-FDP-BASE-FIG-297">Base 297</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 296, 文件頁 295, PDF 頁 321</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 297, 文件頁 296, PDF 頁 322</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-296 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-296"><h4>Base Figure 296 · Placement Identifier Format without Reclaim Group Identifier</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-296-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base296-1">Base296-1</span><span class="paragraph-text">RGIF=0 且只有一個 RG 時，PID 的 16 bits 全部是 PHNDL。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 296, 文件頁 295, PDF 頁 321</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base296-2">Base296-2</span><span class="paragraph-text">NRG=1、RGIF=0、PHNDL=3 → PID=0003h；不要把高位 0 當成另外保留的一段 RGID，這個格式根本沒有切出 RGID。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-pid">欄位、條件與相關細節：從配置還原 16-bit PID →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-297 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-297"><h4>Base Figure 297 · Placement Identifier Format with a non-zero RGIF</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-297-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base297-1">Base297-1</span><span class="paragraph-text">RGIF 指定 PID 高位 RGID 的寬度，低位餘下部分是 PHNDL。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.29</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, Figure 297, 文件頁 296, PDF 頁 322</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base297-2">Base297-2</span><span class="paragraph-text">RGIF=2：RGID 在 bits 15:14，PHNDL 在 13:0；8001h 取出 RGID=2、PHNDL=1。NRG=1 而 RGIF&gt;0 時，高位 RGID 由控制器忽略。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-pid">欄位、條件與相關細節：從配置還原 16-bit PID →</a></div></article>
+<section class="field-guide" id="fields-fdp-log-envelope"><h4 id="fields-heading-fdp-log-envelope">把局部欄位放回整個 Get Log Page 命令</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.09">15.09.</span><span class="paragraph-text">同樣寫bits15:0，可能是在LSI子欄位內，也可能在整個CDW；必須先看表題。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-log-envelope"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CDW10 LID[7:0]／LSP[14:8]／RAE[15]／NUMDL[31:16]</td><td>LID選20h～23h；LID23h的LSP最低bit是FDPET；NUMDL是NUMD低16bits。</td><td>4KiB=1024 Dwords → NUMD=1023，不是4096。</td></tr><tr><td>CDW11 LSI[31:16]／NUMDU[15:0]</td><td>LSI對FDP logs解讀為ENDGID；NUMDU是傳輸Dword數減1的高16bits。</td><td>NUMD=(NUMDU&lt;&lt;16)|NUMDL。ENDGID=2只影響高16bits的LSI。</td></tr><tr><td>CDW12 LPOL／CDW13 LPOU</td><td>合成offset=(LPOU&lt;&lt;32)|LPOL；本篇OT=0以bytes計，須按Dword對齊。</td><td>offset96可用；不是從第96筆開始。</td></tr><tr><td>CDW14 OT[23]／CSI[31:24]／UIDX[6:0]</td><td>本篇採OT=0、NVM CSI=0、UIDX=0，其他保留；不在本篇使用index offset。</td><td>將欄位固定才可直接對照本文完整命令算例。</td></tr><tr><td>DPTR／NSID／群組</td><td>DPTR指接收buffer；LID21h～23h在FDP啟用群組中NSID保留。</td><td>查群組狀態不等於選了某個namespace；Status命令的NSID規則另外看。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NUMDL</dt><dd>Number of Dwords Lower；NUMD 編碼的低 16 bits。</dd></div><div><dt>NUMDU</dt><dd>Number of Dwords Upper；NUMD 編碼的高 16 bits。</dd></div><div><dt>DPTR</dt><dd>Data Pointer；指向資料傳輸的主機記憶體描述，不是資料內容本身。</dd></div><div><dt>LPOL</dt><dd>Log Page Offset Lower；起讀位移的低 32 bits。</dd></div><div><dt>LPOU</dt><dd>Log Page Offset Upper；同一個起讀位移的高 32 bits。</dd></div><div><dt>UIDX</dt><dd>UUID Index；通用介面中的 UUID 選擇，本篇範例使用 0。</dd></div><div><dt>LSP</dt><dd>Log Specific Field；依 log 定義的選擇位元。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event；讀取 log 時的非同步事件保留選項，是否相關依該 log 定義。</dd></div><div><dt>OT</dt><dd>Offset Type；區別 byte 位移與項目索引。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-204">Base 204</a><a href="#figure-FDP-BASE-FIG-205">Base 205</a><a href="#figure-FDP-BASE-FIG-206">Base 206</a><a href="#figure-FDP-BASE-FIG-207">Base 207</a><a href="#figure-FDP-BASE-FIG-208">Base 208</a><a href="#figure-FDP-BASE-FIG-224">Base 224</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13 · Base 2.4 §5.2.13.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.10, Figure 224, 文件頁 237, PDF 頁 263</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-204 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-204"><h4>Base Figure 204 · Get Log Page – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-204-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-1">Base204-1</span><span class="paragraph-text">Get Log Page CDW10 同時選 LID、特定選項與傳輸長度低位。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-2">Base204-2</span><span class="paragraph-text">完整讀4096-byte FDP host events：NUMDL=1023、FDPET=1、LID=23h，其他選項0，CDW10=03FF0123h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-log-envelope">欄位、條件與相關細節：把局部欄位放回整個 Get Log Page 命令 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-205 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-205"><h4>Base Figure 205 · Get Log Page – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-205-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-1">Base205-1</span><span class="paragraph-text">Get Log Page CDW11 的高16 bits 是 LSI，低16 bits 是 NUMDU。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">ENDGID=2、NUMDU=0 → CDW11=00020000h；不是00000002h，後者改的是傳輸長度高位。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-log-envelope">欄位、條件與相關細節：把局部欄位放回整個 Get Log Page 命令 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-206 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-206-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 提供 log 起讀 offset 的低32 bits，與配置清單索引不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">要從byte96續讀配置資料，在OT=0時LPOL=96；要啟用配置索引1仍填FDPCIDX=1。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-log-envelope">欄位、條件與相關細節：把局部欄位放回整個 Get Log Page 命令 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-207 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-207"><h4>Base Figure 207 · Get Log Page – Command Dword 13</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-207-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 是同一個64-bit offset 的高32 bits，不是另一段長度。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-2">Base207-2</span><span class="paragraph-text">小型FDP logs從起點或byte96讀取，LPOU=0；不要把NUMD放進這裡。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-log-envelope">欄位、條件與相關細節：把局部欄位放回整個 Get Log Page 命令 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-208 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-208"><h4>Base Figure 208 · Get Log Page – Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-208-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">OT 決定 offset 類型；本篇 byte offset 範例固定 OT=0。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-2">Base208-2</span><span class="paragraph-text">OT=0、LPOL=96表示第96 byte；不是第96個FDP descriptor。CSI／UIDX仍按所選命令集與識別使用。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-log-envelope">欄位、條件與相關細節：把局部欄位放回整個 Get Log Page 命令 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-224 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-224"><h4>Base Figure 224 · Endurance Group Identifier - Log Specific Identifier</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-224-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base224-1">Base224-1</span><span class="paragraph-text">FDP 四份 log 以 LSI 的 ENDGID 選群組。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.10</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.10, Figure 224, 文件頁 237, PDF 頁 263</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base224-2">Base224-2</span><span class="paragraph-text">讀群組2的LID21h，ENDGID=2在LSI低16bits，也就是整個CDW11高16bits。表內bit15:0是相對LSI的位置。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-log-envelope">欄位、條件與相關細節：把局部欄位放回整個 Get Log Page 命令 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-enable"><summary>圖表組 04 · 啟用的是整個 Endurance Group · 8 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.10">15.10.</span><span class="paragraph-text">Base 499 選群組，500 選配置與啟用。必要引用中的 Feature 通用欄位解釋 SV、SEL；不要把 Get Features 的能力回覆和目前值回覆混用。</span></p>
+<a class="reading-link" href="#module-fdp-enable">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-feature"><h4 id="fields-heading-fdp-feature">FDP 設定改變的前提與結果</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.11">15.11.</span><span class="paragraph-text">FID 1Dh 的欄位值會保存；不是用 Delete／Create 資料結構直接開啟 FDP。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-feature"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CDW11[15:0] ENDGID</td><td>Endurance Groups 支援時選目標群組；高 16 bits 保留。</td><td>ENDGID=2 不代表 NSID=2 的 namespace。</td></tr><tr><td>CDW12[15:8] FDPCIDX／[0] FDPE</td><td>索引選有效候選；FDPE=1 啟用，0 停用；[31:16]、[7:1] 保留。</td><td>索引 1 且啟用 → (1&lt;&lt;8)|1=00000101h。</td></tr><tr><td>SV 與群組內 namespace</td><td>變更只允許 SV=1；群組已有 namespace 時要求不同值，回 Command Sequence Error。</td><td>預設值 0；改值前需該群組沒有 namespace。</td></tr><tr><td>Get 的 SEL≠3／SEL=3</td><td>一般值查詢的 CQE DW0 採 Figure 500 格式；SEL=3 是通用支持能力格式。</td><td>不能把能力回覆 bit 0 的 saveable 當成 FDPE。</td></tr><tr><td>成功改值的效果</td><td>清 FDP events 和 statistics；資料格式相關 Identify 欄位可能改變。</td><td>新配置的統計起點 0，不能沿用舊配置累計直接相減。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-499">Base 499</a><a href="#figure-FDP-BASE-FIG-500">Base 500</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.21, Figure 499, 文件頁 480, PDF 頁 506</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.21, Figure 500, 文件頁 480-481, PDF 頁 506-507</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-499 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-499"><h4>Base Figure 499 · Flexible Data Placement – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-499-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base499-1">Base499-1</span><span class="paragraph-text">FID 1Dh 的 CDW11 指定 ENDGID，不是 NSID 或配置索引。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.21, Figure 499, 文件頁 480, PDF 頁 506</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base499-2">Base499-2</span><span class="paragraph-text">CDW11=2 選群組 2；要選配置 2，應改 CDW12 的 FDPCIDX，不是把两者塞在同一欄。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-feature">欄位、條件與相關細節：FDP 設定改變的前提與結果 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-500 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-500"><h4>Base Figure 500 · Flexible Data Placement – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-500-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base500-1">Base500-1</span><span class="paragraph-text">FDPE 與 FDPCIDX 決定要保存的 FDP 狀態，Save 位元另在通用 CDW10。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.21, Figure 500, 文件頁 480-481, PDF 頁 506-507</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base500-2">Base500-2</span><span class="paragraph-text">CDW12=00000101h 選配置索引 1 且啟用；相同十六進位值在 Enable Directive 的 CDW12 有不同含義，因為外層命令與 FID 不同。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-feature">欄位、條件與相關細節：FDP 設定改變的前提與結果 →</a></div></article>
+<section class="field-guide" id="fields-fdp-feature-envelope"><h4 id="fields-heading-fdp-feature-envelope">先由通用欄選 Feature 與查詢種類</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.12">15.12.</span><span class="paragraph-text">僅解釋本篇FID1Dh、1Eh需要的選擇；UIDX未指定UUID時為0，不展開UUID機制。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UUID</dt><dd>Universally Unique Identifier，128-bit identifier；其實際關聯範圍仍由使用它的資料結構決定。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-feature-envelope"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Get CDW10 FID[7:0]／SEL[10:8]</td><td>SEL=0目前、1預設、2保存、3支援能力；其他值保留。</td><td>FID1Dh/SEL0的DW0採Base500，FID1Eh/SEL0的資料在buffer。</td></tr><tr><td>Set CDW10 FID[7:0]／SV[31]</td><td>SV=1要求保存；具體Feature可以增加保存要求，1Dh就要求改值時SV=1。</td><td>8000001Dh選FDP並保存；其餘命令屬性另讀CDW11/12。</td></tr><tr><td>SEL3 CQE bits0／1／2</td><td>分別saveable、namespace-specific、changeable能力；其他bits保留。</td><td>能力與範圍仍要結合Feature定義，不能把bit1當成NSID數值。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-198">Base 198</a><a href="#figure-FDP-BASE-FIG-201">Base 201</a><a href="#figure-FDP-BASE-FIG-464">Base 464</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.12.2 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-198 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-198"><h4>Base Figure 198 · Get Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-198-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">Get Features 的 SEL 選目前值、預設值、保存值或支援能力。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">查FID1Dh目前配置用SEL=0；SEL=3的CQE是能力位，不是FDPE／FDPCIDX。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-feature-envelope">欄位、條件與相關細節：先由通用欄選 Feature 與查詢種類 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-201 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-201"><h4>Base Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-201-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-1">Base201-1</span><span class="paragraph-text">SEL=3 的 CQE 描述 saveable 等能力，不是某個 Feature 的實際設定值。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-2">Base201-2</span><span class="paragraph-text">DW0 bit0=1表示可保存；不能由這個bit說FDP已啟用，後者要用FID1Dh值查詢。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-feature-envelope">欄位、條件與相關細節：先由通用欄選 Feature 與查詢種類 →</a></div></article>
+<section class="field-guide" id="fields-fdp-effects"><h4 id="fields-heading-fdp-effects">用最小欄位確認支援與共享範圍</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.13">15.13.</span><span class="paragraph-text">FDP支援時也必須支援這份log。本篇只取1Dh／1Eh兩項的支持位與範圍；其餘effects不展開。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-effects"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>項目位置=4×FID</td><td>每FID固定4bytes；1Dh=29，1Eh=30。</td><td>29×4=116；30×4=120。</td></tr><tr><td>FSUPP bit0／FSP[31:20]</td><td>FSUPP回支援；FSP非零時僅1bit為1，0代表未回報。</td><td>支持不表示當前FDPE或FDPEE=1。</td></tr><tr><td>FSP內EGSCPE bit3／RUHS bit7</td><td>對應整個Dword bits23／27；分別為Endurance Group與RUH範圍。</td><td>別把局部bit7當成整個Dword bit7。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FSUPP</dt><dd>Feature Supported；該 FID 是否受支援。</dd></div><div><dt>RUHS</dt><dd>Reclaim Unit Handle Scope；Feature 作用於 RUH 的範圍位。</dd></div><div><dt>FSP</dt><dd>FID Scope；Feature 作用範圍的位元欄。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-270">Base 270</a><a href="#figure-FDP-BASE-FIG-271">Base 271</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.18, Figure 270, 文件頁 276, PDF 頁 302</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.18, Figure 271, 文件頁 277-278, PDF 頁 303-304</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-270 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-270"><h4>Base Figure 270 · Feature Identifiers Effects Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-270-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base270-1">Base270-1</span><span class="paragraph-text">FID Effects log 用 FID×4 找對應項目，支援能力與作用範圍各自回報。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.18, Figure 270, 文件頁 276, PDF 頁 302</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base270-2">Base270-2</span><span class="paragraph-text">FID1Dh項目在byte116，1Eh在byte120；不是把這兩個byte offset當成Feature Identifier。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-effects">欄位、條件與相關細節：用最小欄位確認支援與共享範圍 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-271 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-271"><h4>Base Figure 271 · FID Supported and Effects Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-271-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base271-1">Base271-1</span><span class="paragraph-text">Feature 的作用範圍能指向 Endurance Group 或 RUH，而非一律是 namespace。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.18, Figure 271, 文件頁 277-278, PDF 頁 303-304</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base271-2">Base271-2</span><span class="paragraph-text">FDP1Dh對Endurance Group；Events1Eh透過namespace的PHNDL改RUH。FSP=0表示沒回報範圍，不表示所有範圍皆適用。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-effects">欄位、條件與相關細節：用最小欄位確認支援與共享範圍 →</a></div></article>
+<section class="field-guide" id="fields-fdp-controller"><h4 id="fields-heading-fdp-controller">長 Identify 表只取 FDP 使用的欄位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.14">15.14.</span><span class="paragraph-text">對照位置分散在指定PDF頁；這里逐項說明讀法，不要求從數十頁的大表自行找結論。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-controller"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CTRATT bytes99:96，FDPS bit19</td><td>1支持FDP；Fixed Capacity Management支援時FDPS必須0。</td><td>FDPS不是FID1Dh的FDPE。</td></tr><tr><td>ONCS bytes521:520，NVMDSMSV bit2</td><td>1表示支持DSM並以限制欄位回報可選限制；0時支持與否由非零DMRL／DMRSL／DMSL判斷。</td><td>先看支持，再看範圍限制，不能由某欄0直接推論無上限。</td></tr><tr><td>ONCS bytes521:520，SSFS bit4</td><td>支持Set的Save與Get的非零Select；FDP1Dh的改值要求仍是SV=1。</td><td>不要用支持能力取代目前設定查詢。</td></tr><tr><td>VWC byte525，VWCP bit0</td><td>有配置報FDPVWC=1時，controller的VWCP也為1；某namespace仍可另報沒cache。</td><td>搭配Base346.NSFEAT.VWCNP判斷特定namespace。</td></tr><tr><td>MNAN bytes543:540／NN519:516</td><td>MNAN非零給支持namespace數上限；為0時上限≤NN。NN本身是有效NSID最大值。</td><td>NRUH=4不能推論最多4個namespace。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>NSFEAT</dt><dd>Common Namespace Features；此處 CNS08h 中的共同 namespace 屬性。</dd></div><div><dt>ONCS</dt><dd>Optional NVM Command Support；可選命令與功能的支持位元欄。</dd></div><div><dt>VWCP</dt><dd>Volatile Write Cache Present；控制器是否回報有揮發性寫入快取。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 342, 345, 370-372, 374, 378, PDF 頁 368, 371, 396-398, 400, 404</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-338 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-338"><h4>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">FDPS、SSFS、VWCP 與 namespace 上限各回答不同能力問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 342, 345, 370-372, 374, 378, PDF 頁 368, 371, 396-398, 400, 404</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">FDPS=1表示支持FDP；VWCP=1卻可能有VWCNP=1的namespace；MNAN=8則是namespace數量上限，不是8個RUH。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-controller">欄位、條件與相關細節：長 Identify 表只取 FDP 使用的欄位 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-464 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-464"><h4>Base Figure 464 · Set Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-464-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">Set Features 的 SV 在 CDW10 bit31，與 FID 的低8 bits 分開。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">FID=1Dh且SV=1 → 8000001Dh；將SV錯放在CDW12會改到Feature屬性或保留位。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-feature-envelope">欄位、條件與相關細節：先由通用欄選 Feature 與查詢種類 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-namespace"><summary>圖表組 05 · 建立 namespace 的 Placement Handle 對照表 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.15">15.15.</span><span class="paragraph-text">NVM 134 只取 ENDGID、NPHNDLS、Placement Handle List 與必要格式關係；Base 730 用圖把同一張映射表接到 Write。</span></p>
+<a class="reading-link" href="#module-fdp-namespace">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-namespace-fields"><h4 id="fields-heading-fdp-namespace-fields">只讀FDP建立映射需要的欄位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.16">15.16.</span><span class="paragraph-text">必要引用包含NVM§4.1.6.3的完整映射限制；其他建立namespace能力不在此複製成另一篇。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-namespace-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>ENDGID bytes103:102</td><td>選FDP所屬群組；CSI需NVM00h。</td><td>群組設定與namespace的Placement Handle List必須匹配。</td></tr><tr><td>NPHNDLS bytes393:392</td><td>直接計數，非零時≤min(NRUH,128)；0請controller選唯一PH0。</td><td>值2是2個，不是3個；與NUMFDPC的編碼不同。</td></tr><tr><td>List bytes512起，每項2bytes</td><td>第i項起點512+2×i，內容RUHID&lt;NRUH，不許同一list重複。</td><td>[1,3]合法候選；[1,1]回Invalid Placement Handle List。</td></tr><tr><td>controller-selected與host-selected</td><td>NPHNDLS=0的namespace共用一個controller選的RUH，該RUH不能再被host明確列入。</td><td>無可供controller選用的RUH時，不會偷偷共用host選定的RUH。</td></tr><tr><td>共享格式／NVM Set</td><td>共享RUH需相同Format Index，否則Invalid Format；FDP群組不支持NVM Sets。</td><td>只看每block的4096 data bytes相同，不足以證明全部格式相同。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-NVM-FIG-134">NVM 134</a></nav>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, Figure 134, 文件頁 112-113, PDF 頁 112-113</p></details>
+</section>
+<!-- figure-table:FDP-NVM-FIG-134 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-134"><h4>NVM Figure 134 · Namespace Management – Host Specified Fields</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-134-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM134-1">NVM134-1</span><span class="paragraph-text">Namespace 的 PHNDL 是清單索引，該位置的2-byte值才是RUHID。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.6.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.4, Figure 134, 文件頁 112-113, PDF 頁 112-113</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM134-2">NVM134-2</span><span class="paragraph-text">NPHNDLS=2且清單bytes512～515=01 00 03 00，得到PH0→RUH1、PH1→RUH3；不會建立PH3。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-namespace-fields">欄位、條件與相關細節：只讀FDP建立映射需要的欄位 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-directive"><summary>圖表組 06 · 分清兩次啟用與三種 Write 情況 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.17">15.17.</span><span class="paragraph-text">Base 705 分 supported／enabled／reset persistence，706 看目標 DTYPE；186 看外層 DTYPE，兩個欄位不能互換。</span></p>
+<a class="reading-link" href="#module-fdp-directive">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-directive-fields"><h4 id="fields-heading-fdp-directive-fields">兩個 DTYPE 與 3 個狀態位元</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.18">15.18.</span><span class="paragraph-text">必要背景取 Identify Directive 的通用 Enable 與 Data Placement 位元；不展開 Streams 資源操作。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-directive-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CDW11 DSPEC[31:16]／DTYPE[15:8]／DOPER[7:0]</td><td>Enable 的 DSPEC 不使用；DTYPE=0選Identify，DOPER=1選Enable。</td><td>示例CDW11=1；不能直接對Data Placement發Send/Receive。</td></tr><tr><td>CDW12 DTYPE[15:8]／ENDIR[0]</td><td>目標DTYPE=2；ENDIR=1啟用、0停用；其他bits保留。</td><td>啟用值=(2&lt;&lt;8)|1=201h。</td></tr><tr><td>回覆 bytes31:0／63:32／95:64</td><td>分別支持、啟用、跨Controller Level Reset保留；Data Placement在每個向量bit2。</td><td>byte0 bit2為DPDIRS；byte32 bit2為DPDIRE；byte64 bit2為DPDIRCLR。</td></tr><tr><td>NSID／主機關聯</td><td>Data Placement Enable不接受FFFFFFFFh；共享namespace在相同非零Host Identifier的控制器之間共享啟用狀態。</td><td>選具體namespace，不能從FID1Dh的群組範圍推論Enable也能群組廣播。</td></tr><tr><td>4096-byte回覆的其餘欄</td><td>本篇只用Data Placement的bit2；其他類型不展開，bytes4095:96保留。</td><td>讀96 bytes才涵蓋三個向量，不要只讀32就宣稱取得啟用狀態。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>DPDIRE</dt><dd>Data Placement Directive Enabled；指定 namespace 的啟用狀態。</dd></div><div><dt>DPDIRS</dt><dd>Data Placement Directive Supported；是否支援該 Directive。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-186">Base 186</a><a href="#figure-FDP-BASE-FIG-705">Base 705</a><a href="#figure-FDP-BASE-FIG-706">Base 706</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.8 · Base 2.4 §8.1.9.2.1.1 · Base 2.4 §8.1.9.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 186, 文件頁 202, PDF 頁 228</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.1.1, Figure 705, 文件頁 618-619, PDF 頁 644-645</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 706, 文件頁 620, PDF 頁 646</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-186 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-186"><h4>Base Figure 186 · Directive Send – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-186-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base186-1">Base186-1</span><span class="paragraph-text">Directive Send 外層由 DTYPE／DOPER 選管理操作，目標類型另在 CDW12。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.8, Figure 186, 文件頁 202, PDF 頁 228</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base186-2">Base186-2</span><span class="paragraph-text">CDW11=00000001h 選 Identify/Enable；CDW12=00000201h 才選 Data Placement。外層 DTYPE=02h 沒有已定義的操作。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-directive-fields">欄位、條件與相關細節：兩個 DTYPE 與 3 個狀態位元 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-705 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-705"><h4>Base Figure 705 · Identify Directive – Return Parameters Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-705-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base705-1">Base705-1</span><span class="paragraph-text">Data Placement 的支援、啟用、跨 reset 保留分屬三份位元向量。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.1.1, Figure 705, 文件頁 618-619, PDF 頁 644-645</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base705-2">Base705-2</span><span class="paragraph-text">DPDIRS=1、DPDIRE=0 代表支持但尚未啟用；DPDIRCLR=1 表示該啟用狀態跨 Controller Level Reset 保留。這不保證 RUH 參照沒有變化。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-directive-fields">欄位、條件與相關細節：兩個 DTYPE 與 3 個狀態位元 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-706 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-706"><h4>Base Figure 706 · Enable Directive – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-706-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base706-1">Base706-1</span><span class="paragraph-text">Enable 的 target DTYPE=02h 配 ENDIR=1，得到 CDW12=00000201h。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.9.2.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.9.2.2.1, Figure 706, 文件頁 620, PDF 頁 646</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base706-2">Base706-2</span><span class="paragraph-text">00000200h 是停用 Data Placement；00000001h 是企圖改變 Identify 的狀態，不能把它當作通用啟用任何類型。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-directive-fields">欄位、條件與相關細節：兩個 DTYPE 與 3 個狀態位元 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-write"><summary>圖表組 07 · 把一筆 Write 走完，包含非法 PID · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.19">15.19.</span><span class="paragraph-text">NVM 70 看 SLBA，71 看 NLB／DTYPE／CETYPE，72 看 DSPEC。Base 346 的 VWCNP 與 338 的 VWCP 解釋為何群組配置與 namespace 的 cache 要分層讀。</span></p>
+<a class="reading-link" href="#module-fdp-write">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-write-fields"><h4 id="fields-heading-fdp-write-fields">把邏輯地址、長度、放置與持久化分開</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.20">15.20.</span><span class="paragraph-text">只用CETYPE=0的普通Write帶PID範例；沒有替非零CETYPE推導欄位。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-write-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>SLBA：CDW10低32／CDW11高32</td><td>64-bit namespace邏輯起點；不參與PHNDL→RUH映射。</td><td>128=00000000_00000080h。</td></tr><tr><td>CDW12 NLB[15:0]／CETYPE[19:16]／DTYPE[23:20]</td><td>NLB=blocks-1；本例CETYPE0、DTYPE2。</td><td>(2&lt;&lt;20)|7=00200007h。</td></tr><tr><td>CDW13 DSPEC[31:16]／DSM[7:0]</td><td>CETYPE0時DSPEC放16-bitPID；DSM是另外的資料集提示，[15:8]保留。</td><td>8001h&lt;&lt;16=80010000h；沒有暗示DSM的值也應8001h。</td></tr><tr><td>CDW12 FUA bit30</td><td>FUA控制該Write的非揮發提交要求；FDP沒有改掉這層語意。</td><td>本篇0值範例沒要求FUA，不能據成功完成就忽略cache狀態。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-NVM-FIG-070">NVM 70</a><a href="#figure-FDP-NVM-FIG-071">NVM 71</a><a href="#figure-FDP-NVM-FIG-072">NVM 72</a></nav>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 70, 文件頁 54, PDF 頁 54</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 71, 文件頁 54, PDF 頁 54</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 72, 文件頁 54-55, PDF 頁 54-55</p></details>
+</section>
+<!-- figure-table:FDP-NVM-FIG-070 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-070"><h4>NVM Figure 70 · Write – Command Dword 10 and Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-070-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM70-1">NVM70-1</span><span class="paragraph-text">Write 的 SLBA 是64-bit邏輯起點，跟PID的RGID無關。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 70, 文件頁 54, PDF 頁 54</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM70-2">NVM70-2</span><span class="paragraph-text">LBA128 → CDW10=80h、CDW11=0；即使PID=8001h，不能把CDW11改成2來代表RG2。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-write-fields">欄位、條件與相關細節：把邏輯地址、長度、放置與持久化分開 →</a></div></article>
+
+<!-- figure-table:FDP-NVM-FIG-071 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-071"><h4>NVM Figure 71 · Write – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-071-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM71-1">NVM71-1</span><span class="paragraph-text">Write CDW12分別承載NLB、CETYPE與DTYPE，各有自己的bits。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 71, 文件頁 54, PDF 頁 54</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM71-2">NVM71-2</span><span class="paragraph-text">8blocks、CETYPE0、DTYPE2，其他選項0 → 00200007h；NLB是7，不是8。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-write-fields">欄位、條件與相關細節：把邏輯地址、長度、放置與持久化分開 →</a></div></article>
+
+<!-- figure-table:FDP-NVM-FIG-072 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-072"><h4>NVM Figure 72 · Write – Command Dword 13 if CETYPE is cleared to 0h</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-072-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM72-1">NVM72-1</span><span class="paragraph-text">CETYPE=0時，Write CDW13的高16bits才是DSPEC。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.6</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.6, Figure 72, 文件頁 54-55, PDF 頁 54-55</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM72-2">NVM72-2</span><span class="paragraph-text">PID8001h → CDW13=80010000h，低位DSM提示本例0。不要把8001h放低16bits，那不是DSPEC。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-write-fields">欄位、條件與相關細節：把邏輯地址、長度、放置與持久化分開 →</a></div></article>
+<section class="field-guide" id="fields-fdp-cache"><h4 id="fields-heading-fdp-cache">把群組配置、控制器與 namespace 的 cache 資訊對上</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.21">15.21.</span><span class="paragraph-text">只取CNS08h中NSFEAT.VWCNP及其與Flush的必要關係；不展開整份Identify Namespace。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-cache"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NSFEAT byte0，VWCNP bit5</td><td>1=此namespace沒有volatile cache，忽略VWCP；0=依controller VWCP。</td><td>VWCP=1、VWCNP=1：此namespace仍沒有cache。</td></tr><tr><td>FDPVWC／VWCNP／Flush</td><td>配置是否帶cache、namespace是否不帶cache分層判斷；無cache或未啟用cache時Flush不產生資料提交效果。</td><td>Update成功不是Flush成功，也不是媒體已擦除。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-346">Base 346</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.8, Figure 346, 文件頁 391, PDF 頁 417</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-346 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-346"><h4>Base Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-346-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-1">Base346-1</span><span class="paragraph-text">VWCNP 讓主機知道特定 namespace 沒有 volatile write cache。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.8, Figure 346, 文件頁 391, PDF 頁 417</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-2">Base346-2</span><span class="paragraph-text">VWCNP=1時忽略controller的VWCP；VWCNP=0時才依VWCP判斷。不是VWCNP=0就必定有cache。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-cache">欄位、條件與相關細節：把群組配置、控制器與 namespace 的 cache 資訊對上 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-status"><summary>圖表組 08 · 查目前可寫容量，別把回覆當成永久保證 · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.22">15.22.</span><span class="paragraph-text">Base 650～653 說明命令與清單外框，NVM 21 才定義每個 32-byte 描述器。兩份規格是外框加內容的關係。</span></p>
+<a class="reading-link" href="#module-fdp-status">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-status-fields"><h4 id="fields-heading-fdp-status-fields">每筆 32-byte 狀態如何連到寫入決策</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.23">15.23.</span><span class="paragraph-text">NVM 排序先 PHNDL 再 RGID；相同 PHNDL 的多筆狀態一起讀，才看得出各 RG 的差異。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-status-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>PID bytes 1:0／RUHID 3:2</td><td>PID 依目前 RGIF 分解；RUHID 是 PHNDL 的映射結果。</td><td>PID=8001h 可對 RUHID=3；兩欄不需要數值相等。</td></tr><tr><td>EARUTR 7:4</td><td>當時目前 RU 可維持參照的估計剩餘秒數；0 未回報。</td><td>ERUTL=60、EARUTR=20 是配置上限估計與剩餘估計。</td></tr><tr><td>RUAMW 15:8</td><td>當時可寫入媒體的 logical blocks；換算 bytes 可比 RUNS 大或小。</td><td>6×4096=24576 bytes；不是 6×RUNS。</td></tr><tr><td>保留 31:16／狀態變動</td><td>保留不作新欄位；RUAMW 可因 Reset／Flush 改變或不變。</td><td>不能把回覆中保留 0 bytes 當成額外 0-capacity 描述器。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-NVM-FIG-021">NVM 21</a></nav>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §3.2.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.2.1.1, Figure 21, 文件頁 26, PDF 頁 26</p></details>
+</section>
+<!-- figure-table:FDP-NVM-FIG-021 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-021"><h4>NVM Figure 21 · Reclaim Unit Handle Status Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-021-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM21-1">NVM21-1</span><span class="paragraph-text">NVM Status 描述器把 PID 映射、剩餘秒數與可寫 blocks 放在各自欄位。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.2.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.2.1.1, Figure 21, 文件頁 26, PDF 頁 26</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM21-2">NVM21-2</span><span class="paragraph-text">PID=8001h、RUHID=3、EARUTR=20、RUAMW=6：在本例是 RG2 的 PH1→RUH3，估計還有 20 秒、可寫 6 blocks。20 與 6 不能相加成容量。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-status-fields">欄位、條件與相關細節：每筆 32-byte 狀態如何連到寫入決策 →</a></div></article>
+<section class="field-guide" id="fields-fdp-receive"><h4 id="fields-heading-fdp-receive">一筆查詢的命令、外框與截斷規則</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.24">15.24.</span><span class="paragraph-text">Receive 用於讀取 namespace 可用 PID 的即時狀態；共用規則集中在此，NVM 描述器欄位另有詳細說明。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-receive"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>DPTR 127:0／CDW10 MO[7:0]</td><td>DPTR 按 PRP 或 SGL 指接收記憶體；MO=1 選 Status，0 No action，FFh 廠商；其他保留。</td><td>本例固定 MO=1，其餘未定義的命令特定欄清 0。</td></tr><tr><td>CDW10 MOS[31:16]／[15:8]</td><td>Status 沒有定義 MOS，故保留；[15:8] 也保留。</td><td>不能用 MOS=2 指定只讀 RG2。</td></tr><tr><td>CDW11 NUMD[31:0]</td><td>傳輸 bytes=(NUMD+1)×4。短傳前段；Status 特別允許超出結構後以 0 補足。</td><td>要求 288 bytes 但結構 272 bytes，最後 16 bytes 填 0。</td></tr><tr><td>Header bytes 15:14 NRUHSD／13:0 保留</td><td>NRUHSD 直接計數；第 i 筆起點 16+32×i。</td><td>NUMD=3 只讀 16-byte header；不能據此宣稱取得全部描述器。</td></tr><tr><td>NSID／FDP 狀態／快照</td><td>NSID 0、FFFFFFFFh 拒絕；FDP 停用拒絕。每筆反映其處理時點，未必含 outstanding I/O。</td><td>先前查的 RUAMW 不會替下一筆 Write 預留容量。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PRP</dt><dd>Physical Region Page；用記憶體頁描述主機資料 buffer 的方式。</dd></div><div><dt>SGL</dt><dd>Scatter Gather List；用一個或多個區段描述主機資料 buffer 的方式。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-650">Base 650</a><a href="#figure-FDP-BASE-FIG-651">Base 651</a><a href="#figure-FDP-BASE-FIG-652">Base 652</a><a href="#figure-FDP-BASE-FIG-653">Base 653</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §7.3 · Base 2.4 §7.3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3, Figure 650, 文件頁 568, PDF 頁 594</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3, Figure 651, 文件頁 568, PDF 頁 594</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3, Figure 652, 文件頁 568, PDF 頁 594</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3.1.1, Figure 653, 文件頁 569, PDF 頁 595</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-650 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-650"><h4>Base Figure 650 · I/O Management Receive – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-650-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base650-1">Base650-1</span><span class="paragraph-text">Receive 的 DPTR 指向主機接收狀態的 buffer。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3, Figure 650, 文件頁 568, PDF 頁 594</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base650-2">Base650-2</span><span class="paragraph-text">272-byte Status 結構會回到這個 buffer；PID 清單不是放在 DPTR 的數值本身。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-receive">欄位、條件與相關細節：一筆查詢的命令、外框與截斷規則 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-651 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-651"><h4>Base Figure 651 · I/O Management Receive – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-651-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base651-1">Base651-1</span><span class="paragraph-text">Receive 的 MO=01h 要每個 PHNDL 在每個 RG 的狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3, Figure 651, 文件頁 568, PDF 頁 594</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base651-2">Base651-2</span><span class="paragraph-text">2 PHNDL×4 RG=8 筆；CDW10=00000001h。MO=0 是 No action，不能把 0 當成第一個 PHNDL。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-receive">欄位、條件與相關細節：一筆查詢的命令、外框與截斷規則 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-652 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-652"><h4>Base Figure 652 · I/O Management Receive – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-652-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base652-1">Base652-1</span><span class="paragraph-text">Receive 的 NUMD 是 4-byte 傳輸單位數減 1。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3, Figure 652, 文件頁 568, PDF 頁 594</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base652-2">Base652-2</span><span class="paragraph-text">272 bytes/4-1=67=43h，所以 CDW11=00000043h；NUMD 不是描述器數 8。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-receive">欄位、條件與相關細節：一筆查詢的命令、外框與截斷規則 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-653 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-653"><h4>Base Figure 653 · Reclaim Unit Handle Status</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-653-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base653-1">Base653-1</span><span class="paragraph-text">RUH Status header 的 NRUHSD 計描述器，每筆內容由 NVM 規格定義。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.3.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.3.1.1, Figure 653, 文件頁 569, PDF 頁 595</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base653-2">Base653-2</span><span class="paragraph-text">NRUHSD=8 → 16-byte header 加 256 bytes 描述器。第 0 筆從 16 開始，第 7 筆從 240 開始，最後 byte 是 271。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-receive">欄位、條件與相關細節：一筆查詢的命令、外框與截斷規則 →</a></div></article>
+<section class="field-guide" id="fields-fdp-command-envelope"><h4 id="fields-heading-fdp-command-envelope">讀位置前先確定是命令內還是 buffer 內</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.25">15.25.</span><span class="paragraph-text">只取本篇所需的 NSID、DPTR、CDW 位置與 PRP／SGL 選擇；不展開完整 SQE 結構。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry，SQ 中的一筆命令資料結構。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-command-envelope"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NSID bytes7:4／DPTR bytes39:24</td><td>NSID 選 namespace；DPTR 根據 CDW0.PSDT 解讀為 PRP1/2 或 SGL descriptor。</td><td>Receive 的 DPTR 指目的記憶體，Send 指來源記憶體。</td></tr><tr><td>CDW k 的 byte offset=4×k</td><td>CDW10在40、CDW11在44、CDW12在48、CDW13在52。</td><td>CDW10 bit8是命令 byte41 bit0，不是 buffer byte8。</td></tr><tr><td>little-endian 與 bit 範圍</td><td>多 byte 整數低有效 byte 在前；bit欄仍按規格高低位標示。</td><td>PID=8001h 存成 01 80；不要把位元圖的左右順序當成記憶體 byte 順序。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PSDT</dt><dd>PRP or SGL for Data Transfer；決定 DPTR 的描述格式。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-093">Base 93</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-093 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">命令欄位與主機 buffer 是兩個位置，DPTR 只是把它們連起來。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">NSID 位於命令 bytes7:4；DPTR 位於 bytes39:24；CDW10 從 byte40 開始。把 buffer 的第一個 PID 填在 CDW10，會變成錯誤的 MO／MOS。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-command-envelope">欄位、條件與相關細節：讀位置前先確定是命令內還是 buffer 內 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-update"><summary>圖表組 09 · 主機要求換一個空 RU，舊資料仍有自己的生命週期 · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.26">15.26.</span><span class="paragraph-text">Base 654／655 是 Send 入口；656 把 MOS 解讀為 NPID；657 看每個 2-byte PID。對比 Receive：Send 沒有 NUMD。</span></p>
+<a class="reading-link" href="#module-fdp-update">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-send"><h4 id="fields-heading-fdp-send">Update 的長度、有效性與部分更新</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.27">15.27.</span><span class="paragraph-text">先由 NPID 得清單數量，逐個 PID 用 namespace 映射驗證；成功完成才代表此操作完成，但失敗不能保證完全沒有改動。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-send"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CDW10 MO[7:0]／MOS[31:16]</td><td>MO=1 Update；MOS 全部 16 bits 是 NPID。MO=0 No action、FFh 廠商；[15:8] 保留。</td><td>CDW10=(NPID&lt;&lt;16)|1。</td></tr><tr><td>NPID 與 MAXPIDS</td><td>NPID≤min(MAXPIDS,NRG×NRUH)；配置另要求 MAXPIDS&lt;NRG×NRUH，因此它已是較小上限。</td><td>NRG=4、NRUH=4、MAXPIDS=7，NPID 最大 7，清單最多 8 筆。</td></tr><tr><td>DPTR／清單位址</td><td>K=NPID+1；buffer 大小 2×K；第 i 項在 2×i。Send 沒有 NUMD。</td><td>K=2、NPID=1，讀 4 bytes，不是 (1+1)×4。</td></tr><tr><td>原 RU 有資料／原 RU 為空</td><td>有資料必須換到另一空 RU；已空可換或保留。</td><td>Update 不是 Deallocate，也不保證舊資料被擦除。</td></tr><tr><td>非法 PID／失敗／重疊 Write</td><td>非法或超上限回 Invalid Field；失敗可能部分更新。重疊 Write 可使用更新前或後的 RU。</td><td>要求批次邊界時，先協調相關 I/O 並等待完成，再更新及發下一批。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-654">Base 654</a><a href="#figure-FDP-BASE-FIG-655">Base 655</a><a href="#figure-FDP-BASE-FIG-656">Base 656</a><a href="#figure-FDP-BASE-FIG-657">Base 657</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §7.4 · Base 2.4 §7.4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4, Figure 654, 文件頁 569, PDF 頁 595</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4, Figure 655, 文件頁 569-570, PDF 頁 595-596</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, Figure 656, 文件頁 570, PDF 頁 596</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, Figure 657, 文件頁 571, PDF 頁 597</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-654 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-654"><h4>Base Figure 654 · I/O Management Send – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-654-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base654-1">Base654-1</span><span class="paragraph-text">Send 的 DPTR 指向主機提供的 PID 清單，資料方向與 Receive 相反。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4, Figure 654, 文件頁 569, PDF 頁 595</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base654-2">Base654-2</span><span class="paragraph-text">更新 2 個 PID 的來源 buffer 是 4 bytes；它不是接收 32-byte Status 描述器的空間。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-send">欄位、條件與相關細節：Update 的長度、有效性與部分更新 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-655 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-655"><h4>Base Figure 655 · I/O Management Send – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-655-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base655-1">Base655-1</span><span class="paragraph-text">Send 的 MO=01h 選 Update，與 Receive 的相同 MO 數值代表不同動作。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4, Figure 655, 文件頁 569-570, PDF 頁 595-596</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base655-2">Base655-2</span><span class="paragraph-text">CDW10 低 byte=01h，在 Send 是換空 RU，在 Receive 是讀狀態。辨認命令入口後再讀 MO。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-send">欄位、條件與相關細節：Update 的長度、有效性與部分更新 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-656 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-656"><h4>Base Figure 656 · Management Operation Specific – Reclaim Unit Handle Update Operation</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-656-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base656-1">Base656-1</span><span class="paragraph-text">Update 的 NPID 是 MOS 內的數量減 1，上限來自目前配置。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, Figure 656, 文件頁 570, PDF 頁 596</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base656-2">Base656-2</span><span class="paragraph-text">2 個 PID → NPID=1，再放入 CDW10 bits 31:16 得 00010000h，與 MO=1 合成 00010001h；MAXPIDS=7 表示最多 8 個。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-send">欄位、條件與相關細節：Update 的長度、有效性與部分更新 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-657 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-657"><h4>Base Figure 657 · Reclaim Unit Handle Update – Data Buffer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-657-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base657-1">Base657-1</span><span class="paragraph-text">Update buffer 每 2 bytes 是一個 PID，清單內容不含 RUH Status 描述器。</span></p><details class="source-note"><summary>來源：Base 2.4 §7.4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, Figure 657, 文件頁 571, PDF 頁 597</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base657-2">Base657-2</span><span class="paragraph-text">8000h、8001h 用 little-endian 依序放成 00 80 01 80；最後一筆從 2×NPID 開始。不要把 NPID=1 誤讀為清單只有 1 筆。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-send">欄位、條件與相關細節：Update 的長度、有效性與部分更新 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-usage"><summary>圖表組 10 · Usage 查誰配置了 RUH，不查剩多少容量 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.28">15.28.</span><span class="paragraph-text">Base 298 給清單位置；299 給分類值。與 Base 653／NVM 21 對照時，只比較各自回答的問題，不把欄位名稱相似當成相同資訊。</span></p>
+<a class="reading-link" href="#module-fdp-usage">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-usage"><h4 id="fields-heading-fdp-usage">用清單位置與分類判斷配置來源</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.29">15.29.</span><span class="paragraph-text">這份 log 不細分每個 RG 的剩餘量，也不描述 RU 是否已擦除。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-usage"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Header NRUH 1:0／7:2 保留</td><td>NRUH=目前配置的 RUH 數，直接計數且非零。</td><td>4 表示 RUHID 0～3。</td></tr><tr><td>第 i 筆位置 8+8×i</td><td>描述器 byte 0 是 RUHA，bytes 7:1 保留。</td><td>RUH2 起點 24；offset 24 不等於 RUHID 24。</td></tr><tr><td>RUHA=0／1／2</td><td>未用／主機明確選用／控制器選用；其他值保留。</td><td>主機清單 [1,3] 可讓項目 1、3 分類為 1。</td></tr><tr><td>LSI.ENDGID／NSID</td><td>選群組；FDP 啟用時 NSID 保留，停用時回 FDP Disabled。</td><td>不能用 NSID 篩到只有一個 namespace 的清單。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-298">Base 298</a><a href="#figure-FDP-BASE-FIG-299">Base 299</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.30, Figure 298, 文件頁 296, PDF 頁 322</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.30, Figure 299, 文件頁 296-297, PDF 頁 322-323</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-298 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-298"><h4>Base Figure 298 · Reclaim Unit Handle Usage Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-298-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base298-1">Base298-1</span><span class="paragraph-text">Usage 的項目索引就是 RUHID，每筆 8 bytes。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.30, Figure 298, 文件頁 296, PDF 頁 322</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base298-2">Base298-2</span><span class="paragraph-text">NRUH=4 時，header 8 bytes 加 4×8=32 bytes，總共 40 bytes；RUHID 3 的描述器從 byte 32 開始。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-usage">欄位、條件與相關細節：用清單位置與分類判斷配置來源 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-299 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-299"><h4>Base Figure 299 · Reclaim Unit Handle Usage Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-299-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base299-1">Base299-1</span><span class="paragraph-text">RUHA 0／1／2 是配置來源分類，不是 namespace 個數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.30, Figure 299, 文件頁 296-297, PDF 頁 322-323</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base299-2">Base299-2</span><span class="paragraph-text">RUHA=2 表示 controller-selected；即使 5 個 namespace 共用該 RUH，值仍是 2。整份清單最多 1 筆分類為 2。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-usage">欄位、條件與相關細節：用清單位置與分類判斷配置來源 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-statistics"><summary>圖表組 11 · 用相同量測期間判斷寫入放大 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.30">15.30.</span><span class="paragraph-text">Base 300 的三列先分開看計數對象，再讀共同的清零與飽和條件。NVM §4.1.4.6 補足哪些命令列入，該節沒有另外一張 log 格式圖。</span></p>
+<a class="reading-link" href="#module-fdp-statistics">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-statistics"><h4 id="fields-heading-fdp-statistics">先對齊計數範圍與期間再計算</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.31">15.31.</span><span class="paragraph-text">單位是 bytes，包含規格所定義的 user data 與 metadata；不是 SMART 使用的其他量化單位。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-statistics"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>HBMW bytes 15:0</td><td>128-bit 主機寫入量，不含 controller internal writes。</td><td>Write Zeroes 沒有等量主機 payload 也不能從統計排除。</td></tr><tr><td>MBMW 31:16／MBE 47:32</td><td>MBMW 含主機與控制器相關寫入；MBE 是擦除量。</td><td>內部搬移增加 MBMW，不是把 MBE 加回主機寫入。</td></tr><tr><td>飽和／清零／保留 63:48</td><td>到 2^128-1 不回繞；改 FID 1Dh 值清 0；firmware update 不清零。</td><td>前後跨配置改值時，不作普通差分。</td></tr><tr><td>NVM 計入的命令</td><td>User Data Out Commands，加 Write Zeroes、Write Uncorrectable。</td><td>它是規格定義的邏輯寫入計量，不是只量 PCIe DMA bytes。</td></tr><tr><td>量測期間與比值</td><td>同一群組、同一配置期間，ΔHBMW&gt;0 且未飽和時才算 ΔMBMW/ΔHBMW。</td><td>100→150 GiB 的增量是 50 GiB，不是取結束絕對值代替增量。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-300">Base 300</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.31</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.31, Figure 300, 文件頁 297, PDF 頁 323</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-300 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-300"><h4>Base Figure 300 · FDP Statistics Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-300-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base300-1">Base300-1</span><span class="paragraph-text">FDP Statistics 的三個 128-bit 計數分別記主機寫入、全部媒體寫入與擦除。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.31</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.31, Figure 300, 文件頁 297, PDF 頁 323</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base300-2">Base300-2</span><span class="paragraph-text">ΔHBMW=100 GiB、ΔMBMW=150 GiB、ΔMBE=200 GiB；寫入比值是 1.5，不是 (150+200)/100=3.5。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-statistics">欄位、條件與相關細節：先對齊計數範圍與期間再計算 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-events"><summary>圖表組 12 · 先替 RUH 選事件，再讀已發生的紀錄 · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.32">15.32.</span><span class="paragraph-text">Base 501 是回覆數量，502／503 是請求選擇，504 是 Set 清單，505／506 是 Get 清單與每項開關。</span></p>
+<a class="reading-link" href="#module-fdp-events">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-event-feature"><h4 id="fields-heading-fdp-event-feature">把 Get 的查詢結果與 Set 的事件清單分開</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.33">15.33.</span><span class="paragraph-text">FID 1Eh 以 NSID／PHNDL 間接選 RUH；共用 RUH 的 namespace 共用設定效果。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-event-feature"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CQE DW0.NOET[7:0]</td><td>一般 Get 回支持項目數，直接計數；[31:8] 保留。</td><td>3 項×2 bytes=6 bytes。</td></tr><tr><td>CDW11[23:16] NOET／[15:0] PHNDL</td><td>NOET 對 Set 有效，Get 忽略；PHNDL 兩者均用。[31:24] 保留。</td><td>PHNDL 無效，Get 和 Set 都回 Invalid Field。</td></tr><tr><td>CDW12[0] FDPEE</td><td>1 啟用所列類型，0 停用；Get 忽略；[31:1] 保留。</td><td>Set 停用一組類型不表示刪除整份歷史 log。</td></tr><tr><td>Set 1 byte／Get 2 bytes</td><td>Set 只送 event type；Get byte 0 是 FDPET，byte 1 的 bit 0 是 FDPEE，其餘保留。</td><td>Get 的 03 00 是「03h 支持、停用」，不是 03h 和 00h 兩種請求。</td></tr><tr><td>可保存／FDP Disabled／共享</td><td>可保存；FDP 停用時拒絕 Get／Set。共享 RUH 的事件設定會相互影響。</td><td>A/PH1 與 B/PH0 對 RUH3，透過任一映射設定都指同一 RUH。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-501">Base 501</a><a href="#figure-FDP-BASE-FIG-502">Base 502</a><a href="#figure-FDP-BASE-FIG-503">Base 503</a><a href="#figure-FDP-BASE-FIG-504">Base 504</a><a href="#figure-FDP-BASE-FIG-505">Base 505</a><a href="#figure-FDP-BASE-FIG-506">Base 506</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 501, 文件頁 481, PDF 頁 507</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 502, 文件頁 481-482, PDF 頁 507-508</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 503, 文件頁 482, PDF 頁 508</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 504, 文件頁 482, PDF 頁 508</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 505, 文件頁 482, PDF 頁 508</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 506, 文件頁 482-483, PDF 頁 508-509</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-501 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-501"><h4>Base Figure 501 · FDP Events – Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-501-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base501-1">Base501-1</span><span class="paragraph-text">Get FDP Events 的 CQE DW0.NOET 是 buffer 回傳項目數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 501, 文件頁 481, PDF 頁 507</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base501-2">Base501-2</span><span class="paragraph-text">NOET=3 表示 3 個 2-byte supported descriptors，共 6 bytes；不是只讀 3 bytes，也不是已發生了 3 件事件。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-event-feature">欄位、條件與相關細節：把 Get 的查詢結果與 Set 的事件清單分開 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-502 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-502"><h4>Base Figure 502 · FDP Events – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-502-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base502-1">Base502-1</span><span class="paragraph-text">CDW11 用 PHNDL 選 RUH，Set 時 NOET 再告訴控制器有幾個事件類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 502, 文件頁 481-482, PDF 頁 507-508</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base502-2">Base502-2</span><span class="paragraph-text">PHNDL=1、NOET=3 → 00030001h；Get 忽略 NOET，不能靠把它填 1 只要求第一種事件。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-event-feature">欄位、條件與相關細節：把 Get 的查詢結果與 Set 的事件清單分開 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-503 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-503"><h4>Base Figure 503 · Flexible Data Placement – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-503-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base503-1">Base503-1</span><span class="paragraph-text">FDPEE 是此次 Set 清單的共同開關，不是啟用 FDP 的 FDPE。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 503, 文件頁 482, PDF 頁 508</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base503-2">Base503-2</span><span class="paragraph-text">CDW12=1 配清單 [00h,03h]，表示啟用這兩種事件；不會因此更換群組的 FDP 配置。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-event-feature">欄位、條件與相關細節：把 Get 的查詢結果與 Set 的事件清單分開 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-504 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-504"><h4>Base Figure 504 · FDP Events – Set Feature Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-504-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base504-1">Base504-1</span><span class="paragraph-text">Set buffer 每個 byte 只列一個事件類型。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 504, 文件頁 482, PDF 頁 508</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base504-2">Base504-2</span><span class="paragraph-text">00 03 80 是 3 種事件；不要送成 00 01 03 01 80 01，後者是誤把 Get 描述器格式拿來當 Set 請求。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-event-feature">欄位、條件與相關細節：把 Get 的查詢結果與 Set 的事件清單分開 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-505 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-505"><h4>Base Figure 505 · FDP Events – Get Feature Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-505-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base505-1">Base505-1</span><span class="paragraph-text">Get buffer 每個支持項目有事件值與屬性，依事件值遞增。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 505, 文件頁 482, PDF 頁 508</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base505-2">Base505-2</span><span class="paragraph-text">00 01 03 00 80 01：00h 啟用、03h 停用、80h 啟用；此處 00h 出現兩種角色，要按每 2 bytes 分組讀。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-event-feature">欄位、條件與相關細節：把 Get 的查詢結果與 Set 的事件清單分開 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-506 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-506"><h4>Base Figure 506 · Supported FDP Event Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-506-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base506-1">Base506-1</span><span class="paragraph-text">每個 supported descriptor 的 FDPEE 只回答該事件目前是否啟用。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.22</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, Figure 506, 文件頁 482-483, PDF 頁 508-509</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base506-2">Base506-2</span><span class="paragraph-text">事件 03h 的 descriptor=03 00，表示支持但停用；沒有出現在支持清單的事件，不能只用缺少開關推論成同一種停用狀態。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-event-feature">欄位、條件與相關細節：把 Get 的查詢結果與 Set 的事件清單分開 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-event-record"><summary>圖表組 13 · 把事件的原因、位置與資料量讀完整 · 5 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.34">15.34.</span><span class="paragraph-text">Base 301 選事件類別，302 看清單，303 看共同事件欄位，480 看時間格式。NVM 116 只解釋 80h 的 ETSP 16 bytes，不是另一個 log。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ETSP</dt><dd>Event Type Specific；由事件類型決定格式的 16-byte 內容。</dd></div></dl>
+<a class="reading-link" href="#module-fdp-event-record">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-media-event"><h4 id="fields-heading-fdp-media-event">把 16-byte NVM 擴充放回 Base 事件的 ETSP</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.35">15.35.</span><span class="paragraph-text">以下相對位置從 ETSP 起點算；Base 事件中的 ETSP 起於 byte 16。Media Reallocated 的外層事件值按 Base 303 為 80h。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-media-event"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>SEF byte 0，LBAV bit 0</td><td>LBAV=1 才可讀 LBA；[7:1] 保留；byte 1 保留。</td><td>在整筆事件中，LBAV 位於 byte16 bit0。</td></tr><tr><td>NLBAM bytes 3:2</td><td>直接計數；0未回報數量，FFFFh代表65535或更多。</td><td>整筆事件中的 bytes19:18，不是NUMFDPE。</td></tr><tr><td>LBA 11:4</td><td>其中一個被搬移的LBA；LBAV=0時清0並忽略。PIV=1時外層PID指原始寫入所用handle。</td><td>整筆事件 bytes27:20；不能從這一個值還原整批不連續範圍。</td></tr><tr><td>Reserved 15:12／外層有效位</td><td>最後4 bytes保留；NSID、PID有效性仍由Base FDPEF判斷。</td><td>LBAV=1也不能讓外層NSIDV=0的NSID突然有效。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>FDPEF</dt><dd>FDP Event Flags；控制事件各識別欄位有效性的位元組。</dd></div><div><dt>SEF</dt><dd>Specific Event Flags；NVM Media Reallocated 的屬性位元組。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-NVM-FIG-116">NVM 116</a></nav>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.7.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.7.1.1, Figure 116, 文件頁 79, PDF 頁 79</p></details>
+</section>
+<!-- figure-table:FDP-NVM-FIG-116 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-116"><h4>NVM Figure 116 · Media Reallocated - Event Type Specific Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-116-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM116-1">NVM116-1</span><span class="paragraph-text">Media Reallocated 的 NLBAM 是搬移量，LBA 是其中一個位置而不是範圍起點。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.4.7.1.1</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.7.1.1, Figure 116, 文件頁 79, PDF 頁 79</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM116-2">NVM116-2</span><span class="paragraph-text">LBAV=1、NLBAM=8、LBA=100 只表示 100 是其中一個被搬的 LBA，不能畫成連續 100～107。NLBAM=FFFFh 表示至少 65535 個。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-media-event">欄位、條件與相關細節：把 16-byte NVM 擴充放回 Base 事件的 ETSP →</a></div></article>
+<section class="field-guide" id="fields-fdp-events"><h4 id="fields-heading-fdp-events">原因先讀 ETYP，位置再讀有效位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.36">15.36.</span><span class="paragraph-text">一次回覆不混 host／controller；每筆 64 bytes，事件類型決定 ETSP 是否有格式可解釋。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-events"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CDW10[8] FDPET／[14:9] 保留</td><td>1 host，0 controller；LSI.ENDGID 指群組。</td><td>讀兩類需各一次 Get Log Page；不能把兩次當成同一個原子快照。</td></tr><tr><td>Header NUMFDPE 3:0／63:4 保留</td><td>直接計數；第 i 筆起點 64+64×i；4096-byte log 物理上最多 63 筆。</td><td>2 筆從 64、128 開始，之後的 bytes 不作第三筆。</td></tr><tr><td>ETYP byte 0</td><td>00h未寫滿就Update；01h超過時間；02h reset改RUH；03h非法PID；80h搬資料；81h隱式改參照。</td><td>70h～7Fh、F0h～FFh 為廠商事件；其他保留值不代入標準事件解法。</td></tr><tr><td>FDPEF byte 1：PIV[0]／NSIDV[1]／LV[2]</td><td>依序控制 PID、NSID、RGID與RUHID；[7:3] 保留。</td><td>00h 表示這些位置資訊沒有有效報告，不是所有位置都真的為 0。</td></tr><tr><td>PID 3:2／NSID 15:12</td><td>PID 在 PIV=0 時保留；NSIDV=0 時 NSID 清0並忽略。02h 事件這兩欄保留。</td><td>03h事件的 PID 是主機送出的原值；不是控制器另選的 PID。</td></tr><tr><td>ETMSP 11:4／ETSP 31:16</td><td>ETMSP 依 Timestamp 格式；ETSP 只有事件指定使用時才解讀。</td><td>80h 的 ETSP 接 NVM 116，00h～03h、81h 不使用它。</td></tr><tr><td>RGID 33:32／RUHID 35:34</td><td>LV=0 時清0並忽略；03h且有效時回控制器實際另選的位置。</td><td>主機錯的 PID 與回報的 RUHID 不相等可以是正常結果。</td></tr><tr><td>Reserved 39:36／VS 63:40</td><td>VS 可用於任何事件，不限廠商事件；無廠商定義時不能編造欄位含義。</td><td>標準 80h 仍可能帶 VS；它不是 NVM ETSP 的延伸欄位。</td></tr><tr><td>容量上限／先後順序</td><td>滿了丟最舊；按發生先後回報，timestamp 可因初始化不同而逆序。</td><td>看不到事件可能因未啟用、被覆蓋或改配置後清空。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-301">Base 301</a><a href="#figure-FDP-BASE-FIG-302">Base 302</a><a href="#figure-FDP-BASE-FIG-303">Base 303</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, Figure 301, 文件頁 298, PDF 頁 324</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, Figure 302, 文件頁 298, PDF 頁 324</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, Figure 303, 文件頁 299-300, PDF 頁 325-326</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-301 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-301"><h4>Base Figure 301 · Command Dword 10 – Log Specific Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-301-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base301-1">Base301-1</span><span class="paragraph-text">Log 請求的 FDPET bit 選 host 或 controller events，與事件記錄的 ETYP 不同。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, Figure 301, 文件頁 298, PDF 頁 324</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base301-2">Base301-2</span><span class="paragraph-text">CDW10 bit 8=1 看 host 類；bit 8=0 看 controller 類。不能把 ETYP=80h 填入這個 1-bit 選擇欄來篩單一事件。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-events">欄位、條件與相關細節：原因先讀 ETYP，位置再讀有效位 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-302 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-302"><h4>Base Figure 302 · FDP Events Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-302-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base302-1">Base302-1</span><span class="paragraph-text">FDP Events 是 64-byte header 加 64-byte 記錄，依發生先後排列。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, Figure 302, 文件頁 298, PDF 頁 324</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base302-2">Base302-2</span><span class="paragraph-text">NUMFDPE=2 時讀 header 後第 1、2 筆：offset 64、128；兩筆 timestamp 數值逆序也不應交換，因為來源時鐘可能重設。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-events">欄位、條件與相關細節：原因先讀 ETYP，位置再讀有效位 →</a></div></article>
+
+<!-- figure-table:FDP-BASE-FIG-303 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-303"><h4>Base Figure 303 · FDP Event</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-303-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base303-1">Base303-1</span><span class="paragraph-text">事件識別欄位只有在對應有效位成立時才有報告意義。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.32</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, Figure 303, 文件頁 299-300, PDF 頁 325-326</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base303-2">Base303-2</span><span class="paragraph-text">FDPEF=05h：PIV=1、LV=1、NSIDV=0。可以讀 PID 與 RGID/RUHID，NSID 必須忽略；不能因 NSID=0 就說事件發生在 namespace 0。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-events">欄位、條件與相關細節：原因先讀 ETYP，位置再讀有效位 →</a></div></article>
+<section class="field-guide" id="fields-fdp-timestamp"><h4 id="fields-heading-fdp-timestamp">事件時間的相對位置與意義</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.37">15.37.</span><span class="paragraph-text">ETMSP在事件bytes11:4，以下位置先以8-byte Timestamp結構起點計算。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-timestamp"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>TSTMP bytes5:0</td><td>48-bit毫秒值；來源0按最近reset，來源1按主機設定值再累加。</td><td>事件中的TSTMP實際位於bytes9:4。</td></tr><tr><td>TSTMPS byte6：TSTMPO[3:1]／SYNC[0]</td><td>來源0=reset初始化，1=主機設定；SYNC=1表示可能停止計時過；[7:4]保留。</td><td>事件byte10=02h表示origin1且連續計時，不能把02h當事件類型。</td></tr><tr><td>byte7保留／清單順序</td><td>保留byte不作時間高位；事件仍按發生先後列出。</td><td>保留原始列表次序，可避免跨reset按數字排序顛倒因果。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>TSTMPO</dt><dd>Timestamp Origin；計時值由 reset 初始化還是主機設定。</dd></div><div><dt>TSTMPS</dt><dd>Timestamp Attribute；時間來源與計時狀態的屬性位元組。</dd></div><div><dt>TSTMP</dt><dd>Timestamp；48-bit 毫秒計時值。</dd></div><div><dt>SYNC</dt><dd>Synch；表示計時是否可能曾在某些區間停止。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-BASE-FIG-480">Base 480</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.8, Figure 480, 文件頁 470-471, PDF 頁 496-497</p></details>
+</section>
+<!-- figure-table:FDP-BASE-FIG-480 -->
+<article class="field-note" id="figure-FDP-BASE-FIG-480"><h4>Base Figure 480 · Timestamp – Data Structure for Get Features</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-BASE-FIG-480-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base480-1">Base480-1</span><span class="paragraph-text">事件的8-byte時間包含時間值和時鐘來源，不能只拿整個值排序。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.8, Figure 480, 文件頁 470-471, PDF 頁 496-497</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base480-2">Base480-2</span><span class="paragraph-text">TSTMPO=0、TSTMP=500是reset後約500ms；TSTMPO=1則由主機設定值加計時而來。兩筆數字大小不直接代表跨reset先後。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-timestamp">欄位、條件與相關細節：事件時間的相對位置與意義 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-fdp-lifetime"><summary>圖表組 14 · 把資料失效、RU 切換與 reset 分開 · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.38">15.38.</span><span class="paragraph-text">NVM 45～47 看 range 個數、AD 與長度；129 只取 DSM 三個處理限制。將它們接到主文資料生命週期，而不是再複製一套完整 DSM 教學。</span></p>
+<a class="reading-link" href="#module-fdp-lifetime">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-fdp-deallocation"><h4 id="fields-heading-fdp-deallocation">按原來的邏輯範圍交代資料不再需要</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="15.39">15.39.</span><span class="paragraph-text">這些是FDP資料生命週期的必要背景；DSM屬advisory，不能把它畫成收到就必定擦除。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-fdp-deallocation"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NR CDW10[7:0]／AD CDW11[2]</td><td>NR=range數-1，最多256項；AD=1提供解除配置資訊。</td><td>2ranges→NR1、AD命令值4。</td></tr><tr><td>Range CATTR bytes3:0／LLB7:4／SLBA15:8</td><td>每筆16bytes；LLB直接計數；CATTR為附加提示，本例0。</td><td>第一筆SLBA100、LLB8；下一筆獨立從offset16開始。</td></tr><tr><td>NVM Identify Controller：DMRL byte3／DMRSL bytes7:4／DMSL bytes15:8</td><td>非零時分別限制range數、單range blocks、總blocks；超出部分可能不處理。NVMDSMSV=1時0表示未回報該限制；NVMDSMSV=0時0表示不支持命令，不能一律當作無上限。</td><td>2個ranges共12blocks，DMSL10時不能以「只有2項」推論完整處理。</td></tr><tr><td>解除配置與隔離／擦除</td><td>提供失效LBA範圍可協助回收；不保證立即回收、不等同Sanitize、也不改PHNDL映射。</td><td>同一PID已指到新RU時，仍需知道舊批次的LBA範圍。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CATTR</dt><dd>Context Attributes；DSM 範圍的附加使用提示。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-FDP-NVM-FIG-045">NVM 45</a><a href="#figure-FDP-NVM-FIG-046">NVM 46</a><a href="#figure-FDP-NVM-FIG-047">NVM 47</a><a href="#figure-FDP-NVM-FIG-129">NVM 129</a></nav>
+<details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3 · NVM Command Set 1.3 §4.1.5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 45, 文件頁 44, PDF 頁 44</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 46, 文件頁 44-45, PDF 頁 44-45</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 47, 文件頁 45, PDF 頁 45</p><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.4, Figure 129, 文件頁 104-105, PDF 頁 104-105</p></details>
+</section>
+<!-- figure-table:FDP-NVM-FIG-045 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-045"><h4>NVM Figure 45 · Dataset Management – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-045-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM45-1">NVM45-1</span><span class="paragraph-text">DSM 的 NR 計16-byte範圍項目數減1。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 45, 文件頁 44, PDF 頁 44</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM45-2">NVM45-2</span><span class="paragraph-text">2個不連續範圍 → NR=1，buffer=32bytes；不是2個PID，也不是2blocks。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-deallocation">欄位、條件與相關細節：按原來的邏輯範圍交代資料不再需要 →</a></div></article>
+
+<!-- figure-table:FDP-NVM-FIG-046 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-046"><h4>NVM Figure 46 · Dataset Management – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-046-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM46-1">NVM46-1</span><span class="paragraph-text">DSM 的 AD 位表示可解除配置的資料範圍，不是切換RUH。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 46, 文件頁 44-45, PDF 頁 44-45</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM46-2">NVM46-2</span><span class="paragraph-text">CDW11=4只設AD，讓controller可解除提供的LBA ranges；它不包含PID，也不保證立即擦除媒體。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-deallocation">欄位、條件與相關細節：按原來的邏輯範圍交代資料不再需要 →</a></div></article>
+
+<!-- figure-table:FDP-NVM-FIG-047 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-047"><h4>NVM Figure 47 · Dataset Management – Range Definition</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-047-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM47-1">NVM47-1</span><span class="paragraph-text">DSM 的每個範圍需要自己的SLBA與直接計數長度。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §3.3.3</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §3.3.3, Figure 47, 文件頁 45, PDF 頁 45</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM47-2">NVM47-2</span><span class="paragraph-text">(SLBA100,LLB8)和(SLBA1000,LLB4)是兩筆；Write NLB減1的習慣不能套成LLB7、3。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-deallocation">欄位、條件與相關細節：按原來的邏輯範圍交代資料不再需要 →</a></div></article>
+
+<!-- figure-table:FDP-NVM-FIG-129 -->
+<article class="field-note" id="figure-FDP-NVM-FIG-129"><h4>NVM Figure 129 · I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:FDP-NVM-FIG-129-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM129-1">NVM129-1</span><span class="paragraph-text">DSM 三個限制分別管範圍數、單一範圍長度與整個命令長度。</span></p><details class="source-note"><summary>來源：NVM Command Set 1.3 §4.1.5.4</summary><p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.4, Figure 129, 文件頁 104-105, PDF 頁 104-105</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="NVM129-2">NVM129-2</span><span class="paragraph-text">DMRL=2、DMRSL=8、DMSL=10：兩筆8與4blocks雖各自不超8，但總共12超過10，需要分批安排。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-fdp-deallocation">欄位、條件與相關細節：按原來的邏輯範圍交代資料不再需要 →</a></div></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:fdp-mapping -->
+<details class="review-question" id="qa-fdp-mapping"><summary>1. PHNDL 1 對 RUH 3、RGIF=2，PID 8001h 寫向哪裡？</summary>
+<div data-qa-answer="fdp-mapping"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="16.01">16.01.</span><span class="paragraph-text">高 2 bits 是 RGID 2，低 14 bits 是 PHNDL 1；查 namespace 的表得到 RUH 3，因此使用 RUH 3 在 RG 2 目前參照的 RU。它不是實體地址，也不是 LBA。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, 文件頁 293-296, PDF 頁 319-322</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, 文件頁 647-650, PDF 頁 673-676</p>
+</details></details>
+<!-- qa:fdp-invalid -->
+<details class="review-question" id="qa-fdp-invalid"><summary>2. 同一個非法 PID 放在 Write 和 RUH Update，結果一樣嗎？</summary>
+<div data-qa-answer="fdp-invalid"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="16.02">16.02.</span><span class="paragraph-text">不同。明確使用 Data Placement 的 Write 由控制器另選可存取的位置，並依事件啟用條件記錄；Update 拒絕非法 PID，而且失敗前可能部分更新。這兩種規則不能互套。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.3, 文件頁 652, PDF 頁 678</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, 文件頁 570-571, PDF 頁 596-597</p>
+</details></details>
+<!-- qa:fdp-counts -->
+<details class="review-question" id="qa-fdp-counts"><summary>3. NUMFDPC=1、NPHNDLS=2、NPID=1，各是多少項？</summary>
+<div data-qa-answer="fdp-counts"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="16.03">16.03.</span><span class="paragraph-text">依序為 2 筆配置、2 個明確 Placement Handles、2 個 Update PIDs。前後兩者採數量減 1，中間直接計數；名稱都像數量，編碼卻不同。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.29, 文件頁 293-296, PDF 頁 319-322</p>
+<p>來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6.3, 文件頁 110-113, PDF 頁 110-113</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §7.4.1.1, 文件頁 570-571, PDF 頁 596-597</p>
+</details></details>
+<!-- qa:fdp-isolation -->
+<details class="review-question" id="qa-fdp-isolation"><summary>4. 共享同一 Persistently Isolated RUH，能保證兩個 namespace 彼此隔離嗎？</summary>
+<div data-qa-answer="fdp-isolation"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="16.04">16.04.</span><span class="paragraph-text">不能。持續隔離是按 RUH 區分資料來源；兩個 namespace 共用同一個 RUH，正好落在同一個隔離對象之內，還會共享相關事件設定效果。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.1, 文件頁 649-650, PDF 頁 675-676</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.22, 文件頁 481-483, PDF 頁 507-509</p>
+</details></details>
+<!-- qa:fdp-event-range -->
+<details class="review-question" id="qa-fdp-event-range"><summary>5. Media Reallocated 回 NLBAM=8、LBA=100，能列出全部被搬的 LBA 嗎？</summary>
+<div data-qa-answer="fdp-event-range"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="16.05">16.05.</span><span class="paragraph-text">不能。先確認 LBAV 有效；100 只是其中一個位置。其餘 7 個可能不連續，也無法由這筆事件的單一 LBA 欄重建完整清單。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.32, 文件頁 298-301, PDF 頁 324-327</p>
+</details></details>
+<!-- qa:fdp-measurement -->
+<details class="review-question" id="qa-fdp-measurement"><summary>6. 改過 FDP 配置後，能用之前的 HBMW／MBMW 繼續算同一段增量嗎？</summary>
+<div data-qa-answer="fdp-measurement"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="16.06">16.06.</span><span class="paragraph-text">不能直接延續。成功改變 Feature 值會清零統計，應結束舊量測、重新建立起點；也要避免飽和或 ΔHBMW=0 的情況。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.31, 文件頁 297-298, PDF 頁 323-324</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.12.2, 文件頁 651-652, PDF 頁 677-678</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p><p>NVM Express NVM Command Set Specification, Revision 1.3</p></details></footer></main></div></body></html>

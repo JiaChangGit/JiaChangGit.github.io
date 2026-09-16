@@ -284,6 +284,9 @@ class Reading:
         if self.id == 'admin-io-spec-walkthrough' and not self.tutorial:
             from scripts.nvme_admin_io import render_route
             out.append(render_route(self))
+        if self.id == 'base-flexible-data-placement' and not self.tutorial:
+            from scripts.nvme_fdp import render_route
+            out.append(render_route(self))
         if self.id == 'base-directives-streams' and not self.tutorial:
             from scripts.nvme_directives import render_route
             out.append(render_route(self))
@@ -297,7 +300,7 @@ class Reading:
             sources = [self.by_id[s] for s in module['sources']]
             fresh = [c for c in sources if c['id'] not in self.used_claims]
             if not self.tutorial:
-                fresh = fresh[:1]
+                fresh = fresh[:module.get('overview_claim_count', 1)]
             out.append(f'<section class="lesson" id="module-{module["id"]}"><h2 id="heading-{module["id"]}"><span class="section-number">{index:02d}</span> {esc(module["title"][self.lang])}</h2>')
             lead = module['lead'][self.lang]
             if not self.tutorial and not any(similar(module['lead'][lang], c[text_key(lang)]) for c in fresh for lang in ('zh', 'en')):

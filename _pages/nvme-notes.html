@@ -6,6 +6,11 @@ nvme_notes: true
 ---
 <div class="nvme-note">
 <h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>
+<section><h2>NVMe Flexible Data Placement：資料放置、回收單位與事件觀察</h2><p>FDP 讓主機把資料何時會一起失效的知識，轉成 SSD 可以使用的放置選擇。本文從回收成本開始，連起配置、namespace 映射、Write、RUH 更新，以及能驗證使用結果的狀態、統計與事件。讀完應能解釋一個 PID 如何選到目前的 RU，也能判斷一次操作究竟改了參照、邏輯資料，還是整個群組設定。</p><ul>
+<li><a href="/DOCS/nvme-spec-report/base-flexible-data-placement/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
+<li><a href="{% post_url 2026-09-16-nvme-flexible-data-placement-zh-tw %}">中文全局報告</a></li>
+<li><a href="{% post_url 2026-09-16-nvme-flexible-data-placement-en %}">English overview</a></li>
+</ul></section>
 <section><h2>NVMe Directives 與 Streams：從主機分組到寫入與資源管理</h2><p>這篇說明主機如何把「哪些資料屬於同一組」告訴 SSD。先建立主機、控制器、namespace 與串流的關係，再走過能力查詢、啟用、資源配置、Write 與釋放；最後看相同編號在不同路徑下的含義，以及 SWS／SGS 如何影響資料安排。</p><ul>
 <li><a href="/DOCS/nvme-spec-report/base-directives-streams/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
 <li><a href="{% post_url 2026-09-15-nvme-directives-streams-zh-tw %}">中文全局報告</a></li>
