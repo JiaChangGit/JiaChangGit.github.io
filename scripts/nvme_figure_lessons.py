@@ -6,6 +6,9 @@ from scripts.nvme_figure_examples_pcie import LESSONS as PCIE
 CATALOG = {'NVME-BASE-2.4':BASE,'NVME-NVM-CS-1.3':NVM,'NVME-PCIE-TRANSPORT-1.4':PCIE}
 
 def lesson(figure):
+    if figure['report_id'] == 'base-command-feature-lockdown':
+        from scripts.nvme_lockdown_figures import lesson as selected_lesson
+        return selected_lesson(figure)
     if figure['report_id'] == 'base-flexible-data-placement':
         from scripts.nvme_fdp_figures import lesson as selected_lesson
         return selected_lesson(figure)

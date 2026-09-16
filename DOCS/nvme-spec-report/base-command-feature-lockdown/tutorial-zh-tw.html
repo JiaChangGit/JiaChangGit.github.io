@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Command and Feature Lockdown：查詢、限制範圍與持續性</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-lockdown-model">01 先理解：限制的是哪個操作從哪裡進來</a><a href="#module-lockdown-capability">02 先查支援層級，再查可禁止項目</a><a href="#module-lockdown-targets">03 介面與控制器是兩個獨立選擇</a><a href="#module-lockdown-query">04 把 LID 14h 的查詢問題寫完整</a><a href="#module-lockdown-basic">05 一般格式：一串代碼代表全體共同的項目</a><a href="#module-lockdown-enhanced">06 增強格式：分清至少一台與全部控制器</a><a href="#module-lockdown-command">07 完整編碼一次禁止與解除操作</a><a href="#module-lockdown-result">08 把設定失敗與命令被禁止分開判斷</a><a href="#module-lockdown-persistence">09 限制何時消失，要看 CSEL 與持續性設定</a><a href="#module-lockdown-uuid">10 同一廠商 FID 有不同定義時，用 UUID 選版本</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Command and Feature Lockdown：查詢、限制範圍與持續性</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">Command and Feature Lockdown 處理的是「哪些管理操作，在什麼入口、哪些控制器上不准執行」。理解它需要把能力、目前狀態與修改命令接起來，再分清限制何時解除、斷電後是否保留。本文以一個 FID 的限制與讀回為例，從全貌走到命令欄位、兩種 Log 格式與必要的持續性例外。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Lockdown</dt><dd>本篇指 Command and Feature Lockdown：以操作種類、接收介面與控制器範圍限制管理操作的機制。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>先知道能限制什麼</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">先查裝置是否支援整體限制或逐一指定控制器，再查哪些操作允許被禁止。功能存在、操作受支援、操作可禁止，是三個不同問題。</span></p></article>
+<article><span class="axis-number">02</span><h3>把限制範圍說清楚</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">依序選操作、接收入口與控制器。只禁止一項設定、只限制某個入口，或只選某台控制器，會得到不同的影響範圍。</span></p></article>
+<article><span class="axis-number">03</span><h3>查詢要能驗證設定</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">一般格式看全體共同項目；增強格式看指定控制器或全體彙整，再分辨某項是否所有控制器都符合。用相同條件讀回才有比較意義。</span></p></article>
+<article><span class="axis-number">04</span><h3>理解限制的生命週期</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">限制可以用命令解除；經過斷電循環後是否仍保留，還要看最初選的控制器範圍與持續性設定。最後補足認證解凍與廠商定義的必要條件。</span></p></article>
+</div>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">適合學過 OS、Computer Organization 並了解 SSD 基本概念的讀者。以 PCIe 主機管理流程為主要情境；Management Endpoint 只解釋 Base 明載的關係。所有控制器編號、可禁止清單及命令編碼案例均為說明性範例，實際可用項目由裝置能力決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Management Endpoint</dt><dd>帶外管理接收入口；與主機的 Admin Submission Queue 分開選擇限制。</dd></div><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">可以用一個問題帶著讀：如果只想限制控制器 7 經 Admin Queue 修改 FID 06h，應查哪些能力、送哪些參數、用什麼回覆證明限制成立？沿著這條線，清單、欄位與錯誤碼才有各自的位置。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">中文教學先補足每一步的理由，再在問答前整理相關規格圖表的欄位關係。兩種 Log 的長度、控制器編號、代碼清單與 UUID 索引會各自演算，避免只記住縮寫而失去它所描述的對象。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UUID</dt><dd>Universally Unique Identifier；128-bit 識別值，本篇用來區分同一廠商 FID 的不同定義。</dd></div></dl>
+</div>
+</section>
+<section class="lesson" id="module-lockdown-model"><h2 id="heading-lockdown-model"><span class="section-number">01</span> 先理解：限制的是哪個操作從哪裡進來</h2>
+<!-- claim:LOCKDOWN-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Command and Feature Lockdown 讓主機限制特定管理命令，或 Set Features 對某個 FID 的設定操作。限制同時有操作種類、接收介面與控制器範圍；LID 14h 用來查可禁止項目與目前禁止狀態，Lockdown 命令用來改變它們。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LID</dt><dd>Log Page Identifier；指定要讀取哪一種 log page 的編號。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.5, 文件頁 597-599, PDF 頁 623-625</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>從管理需求開始</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">假設一台機器已完成儲存裝置設定，接下來希望限制某些管理操作。Lockdown 讓控制器在收到指定操作時拒絕執行；它不修改 namespace 的資料格式，也沒有替每個 LBA 建立讀寫權限表。先辨認要限制的是哪種命令，才能選對入口。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>主機透過控制器存取的一份邏輯儲存空間；不是本篇 CSS 要選的控制器。</dd></div></dl>
+<h3>命令代碼與 Feature 編號分屬不同空間</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">Admin 命令用 opcode 選動作；Set Features 的命令內又用 FID 選設定項目。Lockdown 的 SCP=0 表示 OFI 是 Admin opcode，SCP=2 表示 OFI 是 Set Features 的 FID。相同的 06h 放在不同 SCP 底下，代表的操作可以完全不同。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>opcode</dt><dd>操作代碼；先選要執行的命令，再由該命令的其他欄位提供參數。</dd></div><div><dt>OFI</dt><dd>Opcode or Feature Identifier；Lockdown 要禁止或允許的代碼，其種類由 SCP 選定。</dd></div><div><dt>SCP</dt><dd>Scope；指定代碼屬於 Admin opcode、Set Features FID 或管理介面命令集。</dd></div></dl>
+<figure><figcaption><strong>從意圖到可確認的限制</strong></figcaption><ol class="flow-steps"><li>先說清楚：要限制哪個操作、接收介面與控制器集合。</li><li>Identify 查 CFLS／CCFLS，再讀 LID14h 的可禁止清單。</li><li>Lockdown 填 SCP、OFI、IFC、CSEL／CSS、PRHBT，等完成。</li><li>用相同範圍讀 LID14h 的目前禁止清單，確認設定結果。</li><li>後續符合條件的命令被拒絕；解除與 power cycle 另依持續性規則判斷。</li></ol><figcaption>查詢取得資訊；Lockdown 改變狀態；後續命令才接受限制檢查。來源：Base §8.1.5、§5.2.16。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>power cycle</dt><dd>整個指定裝置或 subsystem 的電源循環；本篇不能以一般 Controller Reset 代替。</dd></div><div><dt>CCFLS</dt><dd>Controller-scoped Command and Feature Lockdown Supported；可選控制器範圍的擴充支援位元。</dd></div><div><dt>PRHBT</dt><dd>Prohibit；1 要求禁止，0 要求允許，作用對象由其餘選擇欄位決定。</dd></div><div><dt>CFLS</dt><dd>Command and Feature Lockdown Supported；基本 Lockdown 支援位元。</dd></div><div><dt>CSEL</dt><dd>Controller Select；選全部、單一或某 primary 所屬 secondary 控制器集合。</dd></div><div><dt>CSS</dt><dd>Controller Select Specific；在本命令 CDW14 中依 CSEL 提供目標或 primary 控制器編號。</dd></div><div><dt>IFC</dt><dd>Interface；指定受限制操作從哪個介面收到時套用限制。</dd></div></dl>
+<h3>設定命令與被限制命令是兩次動作</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">先送 Lockdown，控制器成功完成後，對選定範圍建立限制。之後再有符合條件的命令進來，才會因限制而被拒絕。要分清「成功設定禁止」和「後來某個命令被禁止」的完成結果；前者成功，後者失敗，並不矛盾。</span></p>
+<h3>讀回時必須問對問題</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">可禁止清單是裝置提供的能力，不是目前的黑名單；目前禁止清單才表示限制狀態。兩者都在 LID 14h，透過不同 CNTTS 選擇。沒有先保留查詢的種類與介面，就算拿到一串 opcode，也無法判斷它代表能禁止還是已禁止。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CNTTS</dt><dd>Contents；選可禁止清單，或某種接收介面目前禁止的清單。</dd></div></dl>
+<h3>知道功能的邊界</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">哪些命令或 FID 可被禁止由廠商決定，甚至可包含 Lockdown 自己。因此不能看到功能支援位元就假設每個管理操作都能限制，也不能先把解除限制的入口禁止，再假設一定能從同一條路徑解除。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">假設 FID 06h 可被禁止：只限制「Set Features / FID 06h」與限制整個 Set Features opcode，影響不同。前者不會只因這條規則而禁止其他 FID 的設定，也不等同禁止 Get Features 讀取。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-model">閱讀相關規格圖表 → 先理解：限制的是哪個操作從哪裡進來</a>
+</section>
+<section class="lesson" id="module-lockdown-capability"><h2 id="heading-lockdown-capability"><span class="section-number">02</span> 先查支援層級，再查可禁止項目</h2>
+<!-- claim:LOCKDOWN-CAPABILITY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Identify Controller 的 OACS.CFLS 表示基本 Lockdown 能力，CCFLS 表示可選控制器的擴充能力。CFLS=1 保證 CSEL=0 與 LID 14h；CCFLS=1 還要求 CSEL=1、2 與增強版 Log。每個 OFI 能否被禁止仍需查清單。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>OACS</dt><dd>Optional Admin Command Support；Identify Controller 的選用管理命令與功能能力位元欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.5, 文件頁 599, PDF 頁 625</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>從 Identify 的能力位元往下讀</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">OACS 在 Identify Controller bytes 257:256，bit 10 是 CFLS、bit 13 是 CCFLS。這是 16-bit 欄位；從原始 bytes 讀到 00 24 時，以 little-endian 合成 2400h，再看各 bit，不能把第一個 byte 當成全部能力。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>little-endian</dt><dd>低位 byte 先存，例如 00 24 組成 16-bit 數值 2400h。</dd></div></dl>
+<h3>基本能力已經包含哪些必要入口</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">CFLS=1 的控制器必須支援整個 NVM subsystem 範圍的 Lockdown，以及 Command and Feature Lockdown Log。它沒有直接承諾可以逐一挑控制器；因此第一層問題是功能存在，第二層才是控制器選擇。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVMe 中的儲存子系統，可以包含多個控制器；本篇的全體控制器以這個範圍計算。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<h3>擴充能力如何接到查詢格式</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">CCFLS=1 必須同時支援基本能力，以及 CSEL=1 的單一控制器、CSEL=2 的某 primary controller 所屬 secondary controllers。對應的 ELPF=1 Log 能查指定控制器或彙整多個控制器。CCFLS=1、CFLS=0 不是合法的能力組合。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>控制器；接收並處理 NVMe 命令的介面實體，同一 subsystem 可有多個。</dd></div><div><dt>secondary</dt><dd>附屬控制器；本篇只需知道其與 primary 的所屬關係，不以名稱推論效能或優先級。</dd></div><div><dt>primary</dt><dd>主要控制器；本篇 CSEL=2 用它的 Identifier 選其所屬 secondary 控制器集合。</dd></div><div><dt>ELPF</dt><dd>Enhanced Log Page Format；選一般或增強版 LID14h 資料格式。</dd></div></dl>
+<h3>功能支援不等於操作全部開放</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">通過能力檢查後，以 CNTTS=0 查目標種類的可禁止清單。如果要限制 FID，查 SCP=2；要限制 Admin opcode，查 SCP=0。某個命令本來就受控制器支援，也不表示它允許被 Lockdown 禁止，兩個問題不能互相代替。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">只觀察 OACS 的 bits 13、10：2400h 同時設了 CCFLS 與 CFLS；0400h 只表示基本能力。不能把 0400h 的裝置當成一定支援 CSEL=1 或 ELPF=1。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-capability">閱讀相關規格圖表 → 先查支援層級，再查可禁止項目</a>
+</section>
+<section class="lesson" id="module-lockdown-targets"><h2 id="heading-lockdown-targets"><span class="section-number">03</span> 介面與控制器是兩個獨立選擇</h2>
+<!-- claim:LOCKDOWN-TARGETS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">IFC 選命令接收介面：00b 為 Admin Submission Queue，01b 為該 Queue 加 Management Endpoint，10b 為 Management Endpoint。CSEL 選全部控制器、單一控制器或某 primary 的 secondary controllers，CSS 再提供所需控制器編號。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin Submission Queue</dt><dd>主機提交管理命令的佇列，本文也簡稱 Admin Queue。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 406-407, PDF 頁 432-433</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>同一操作走不同入口，結果可以不同</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">主機通常經由 Admin Submission Queue 送管理命令；Management Endpoint 則是帶外管理入口。規格容許同一操作在 Queue 被禁止、在帶外入口仍允許，但必須有相應支援。這裡只使用 Base 定義的入口與回覆規則，不推導未提供的 NVMe-MI 封包格式。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl>
+<h3>先決定介面，再決定控制器集合</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">IFC 與 CSEL 一起決定適用範圍。CSEL=0 選 subsystem 全部控制器；1 選 CSS 指定的控制器；2 選 CSS 所指 primary controller 的全部 secondary controllers。最後一種不是把 primary 自己也列入目標。CSEL=Fh 是廠商定義，3h～Eh 保留。</span></p>
+<figure><figcaption><strong>只改一個選擇，觀察受影響範圍</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">固定條件</th><th scope="col">改變的欄位</th><th scope="col">限制涵蓋的對象</th></tr></thead><tbody><tr><td>FID06h、Admin Queue</td><td>CSEL0</td><td>全部控制器</td></tr><tr><td>FID06h、Admin Queue</td><td>CSEL1、CSS7</td><td>控制器 7</td></tr><tr><td>FID06h、Admin Queue</td><td>CSEL2、CSS7</td><td>primary7 所屬 secondaries，非 primary7 本身</td></tr><tr><td>FID06h、controller7</td><td>IFC 由 0 改 2</td><td>從 Admin Queue 改為 Management Endpoint</td></tr></tbody></table></div><figcaption>每列假設相關能力與入口均受支援；這些選擇分別管控制器集合與接收入口。來源：Base Figures365、366。</figcaption></figure>
+
+<h3>CSS 依 CSEL 改變意義</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">CSS 在 CDW14 高 16 bits。CSEL=0 時 CSS 保留；1 時是目標 Controller Identifier；2 時是 primary 的 Identifier。若 CSEL=2 的 CSS 不對應 primary，回 Invalid Controller Identifier。不能把 namespace 編號填進 CSS，也不能把 CSEL=2 理解成「控制器 2」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl>
+<h3>介面不存在或組合不合理時會拒絕</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">裝置沒有 Management Endpoint 卻選 IFC=01b 或 10b，Lockdown 回 Invalid Field in Command。SCP=4 是 NVMe-MI 的 PCIe Command Set opcode 類別，只能走 Management Endpoint；它若配 IFC=00b 或 01b 也會被拒絕。這個 PCIe Command Set 不是 NVMe 的 NVM I/O 命令集。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div></dl>
+<h3>控制器選擇也有能力條件</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">若 CCFLS=0，非零 CSEL 的 Lockdown 會以 Invalid Field in Command 拒絕。即使 CSS 看起來是有效的控制器編號，也不能跳過這項能力條件；編號有效與功能支援是不同層次。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">要限制控制器 7 的 Admin Queue：CSEL=1、CSS=7、IFC=00b。送 Lockdown 的控制器與受影響的控制器不能混為一談；IFC 也不是在描述這次 Lockdown 是從哪裡送進去。</span></p></aside></div>
+</div>
+</section>
+<section class="lesson" id="module-lockdown-query"><h2 id="heading-lockdown-query"><span class="section-number">04</span> 把 LID 14h 的查詢問題寫完整</h2>
+<!-- claim:LOCKDOWN-QUERY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">LID 14h 的 SCP 選項目種類，CNTTS=00b 查可禁止、01b 查 Admin Queue 目前禁止、10b 查 Management Endpoint 目前禁止。ELPF=0 使用一般格式；ELPF=1 使用增強格式，並以 LSI.CNTLID 選控制器，FFFFh 查所有控制器。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CNTLID</dt><dd>Controller Identifier；控制器的識別編號，增強 Log 查詢以 FFFFh 指定全體。</dd></div><div><dt>LSI</dt><dd>Log Specific Identifier；Get Log 中依 Log 種類解讀的 16-bit 識別值。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 279-280, PDF 頁 305-306</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>用三個條件描述回覆內容</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">先選 SCP：0 是 Admin opcode，2 是 Set Features FID，3 是 Management Interface Command Set opcode，4 是其 PCIe Command Set opcode；1 與 5～F 保留。接著選 CNTTS，再選格式。若只記錄 LID 14h，會遺失足以改變清單意義的條件。</span></p>
+<h3>可禁止與目前禁止用不同 CNTTS</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">CNTTS=0 回裝置允許禁止的項目；1、2 分別回兩種接收介面的目前禁止項目，3 保留。若 subsystem 沒有 Management Endpoint，卻查 CNTTS=2，命令會回 Invalid Field in Command；空清單和查詢本身失敗不能混為一談。</span></p>
+<h3>只有增強格式使用這個控制器選擇</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">ELPF 是 CDW10 bit 14；設 1 時需要 CCFLS 支援。CNTLID 放在 CDW11 的 LSI，也就是高 16 bits；FFFFh 代表所有控制器。ELPF=0 時這個 LSI.CNTLID 保留，填入 7 也不會把一般格式變成控制器 7 的專屬回覆。</span></p>
+<h3>把 byte 長度換成命令需要的 Dword 數</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">1 Dword 是 4 bytes，NUMD=(回傳 bytes/4)-1。512 bytes 是 128 Dwords，所以 NUMD=127，而不是 512。低 16 bits 放 NUMDL，高 16 bits 放 NUMDU。資料由 DPTR 指定的主機 buffer 接收，沒有放進完成佇列的 DW0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>buffer</dt><dd>資料緩衝區；本篇指主機預留給 Log 回覆資料的記憶體。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div><div><dt>NUMDL</dt><dd>Number of Dwords Lower；Get Log 傳輸計數的低 16bits。</dd></div><div><dt>NUMDU</dt><dd>Number of Dwords Upper；Get Log 傳輸計數的高 16bits。</dd></div><div><dt>DPTR</dt><dd>Data Pointer；指定命令資料 buffer 的指標欄位。</dd></div><div><dt>NUMD</dt><dd>Number of Dwords；本篇 Get Log 傳輸長度採 Dword 數量減 1。</dd></div></dl>
+<h3>位移和清單索引不能互換</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">本篇範例 OT=0，以 byte offset 指向 Log 內的起點，LPOL／LPOU 合成 64-bit 值且需 4-byte 對齊。ELPF 是 Log 格式選擇，不是 offset 單位。若要用 OT=1 的 index-offset，必須有對應支援與項目定義，不能看到清單就自行把第 2 筆索引填成 byte offset 2。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>index-offset</dt><dd>以清單項目索引表示起點；和按 byte 距離表示起點不同，必須由該 Log 明確支援。</dd></div><div><dt>byte offset</dt><dd>以 byte 計算、相對結構起點的距離；索引 2 不一定代表 offset2。</dd></div><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>index</dt><dd>index；用來選取清單中的項目或格式。它回答「選哪一項」，不是「離起點多遠」。</dd></div><div><dt>LPOL</dt><dd>Log Page Offset Lower；Log 起讀位置的低 32bits。</dd></div><div><dt>LPOU</dt><dd>Log Page Offset Upper；同一 Log 起讀位置的高 32bits。</dd></div><div><dt>OT</dt><dd>Offset Type；0 以 byte 距離指定 Log 起點，1 是需另有支援的清單索引方式。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">讀 512 bytes 的一般格式、查 Admin Queue 已禁止 FID：LID=14h、SCP=2、CNTTS=1、ELPF=0，NUMD=127，得到 CDW10=007F1214h。這是查詢，不會新增任何禁止項目。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-query">閱讀相關規格圖表 → 把 LID 14h 的查詢問題寫完整</a>
+</section>
+<section class="lesson" id="module-lockdown-basic"><h2 id="heading-lockdown-basic"><span class="section-number">05</span> 一般格式：一串代碼代表全體共同的項目</h2>
+<!-- claim:LOCKDOWN-BASIC -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">一般 Log 固定 512 bytes，CFILA 回報查詢種類，LNGTH 直接表示後方代碼清單的 byte 數，清單從 byte 4 開始並由小到大排列。對全體控制器的可禁止項目與 Admin Queue 目前禁止項目，不能把一般清單當成任何一台控制器的聯集。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CFILA</dt><dd>Command and Feature Identifier List Attributes；一般 Log 中描述清單種類的屬性。</dd></div><div><dt>LNGTH</dt><dd>Length；一般格式代碼清單的 byte 數，直接計數，0 表示空清單。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 281, PDF 頁 307</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先解釋 header，再讀值</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">byte 0 的 CFILA[5:4] 是 CS、[3:0] 是 SS，分別回映查詢 CNTTS 與 SCP；[7:6] 保留。bytes 2:1 保留，byte 3 才是 LNGTH。這個清單沒有逐項附上「這是 opcode 還是 FID」，必須先由 header 判斷。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>header</dt><dd>資料結構開頭的固定欄位區，用來說明後方內容的種類、長度或數量。</dd></div><div><dt>CS</dt><dd>Contents Selected；header 回報這份清單選的是可禁止或哪個入口已禁止。</dd></div><div><dt>SS</dt><dd>Scope Selected；header 回報清單內代碼所屬的種類。</dd></div></dl>
+<h3>長度直接計數，0 代表空清單</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">LNGTH=n 時，有 n 個各 1-byte 的代碼，位置是 bytes 4 到 n+3。LNGTH=0 沒有有效代碼；不是 1 個值為 0 的項目。LNGTH 與 Get Log 的 NUMD 不同，不能對 LNGTH 再加 1。</span></p>
+<figure><figcaption><strong>把 6 個 bytes 分成 header 與有效清單</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">byte offset</th><th scope="col">範例值</th><th scope="col">如何解讀</th></tr></thead><tbody><tr><td>0</td><td>12h</td><td>CS1：Admin 已禁止；SS2：FID</td></tr><tr><td>1～2</td><td>00 00</td><td>保留，不是清單內容</td></tr><tr><td>3</td><td>02h</td><td>LNGTH=2，直接計數</td></tr><tr><td>4～5</td><td>06 07</td><td>2 筆 FID：06h、07h</td></tr><tr><td>6～511</td><td>保留</td><td>不解析為其他 FID</td></tr></tbody></table></div><figcaption>索引 0、offset4、FID06h 是第幾筆、存在哪、代表什麼的三種答案。來源：Base Figure276。</figcaption></figure>
+
+<h3>排序用來掃描，不是清單位置就是代碼</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">範例清單 [06h,07h] 在 byte 4、5。第一筆的索引是 0、byte offset 是 4、內容才是 FID 06h；三者各自回答第幾筆、存在哪、代表什麼。清單後方到 byte 511 的保留區不參與排序，也不當成其他命令。</span></p>
+<h3>全體條件會隱藏只有部分控制器具備的項目</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">假設控制器 A 已禁止 FID 06h，但 B 未禁止。一般格式的 Admin Queue 目前禁止清單不能因為 A 禁止就當作「全體已禁止 06h」。需要知道部分控制器的差異時，改用增強格式的 FFFFh 彙整，再以特定 CNTLID 追查。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">回覆開頭 12 00 00 02 06 07：CFILA=12h 表示 Admin Queue 已禁止 FID；LNGTH=2，後面兩個 FID 是 06h、07h。02h 是長度，不是第三個 FID。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-basic">閱讀相關規格圖表 → 一般格式：一串代碼代表全體共同的項目</a>
+</section>
+<section class="lesson" id="module-lockdown-enhanced"><h2 id="heading-lockdown-enhanced"><span class="section-number">06</span> 增強格式：分清至少一台與全部控制器</h2>
+<!-- claim:LOCKDOWN-ENHANCED -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">增強 Log 用 16-byte header 說明版本、查詢種類、CNTLID、SZE、NCFID 與 CFIDS，描述器按 CFI 遞增排列。CNTLID=FFFFh 時清單含至少一台控制器回報的項目；每筆 ACNTL=1 才表示所有控制器都回報這項。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>ACNTL</dt><dd>All Controllers；1 表示所有控制器回報此項，0 表示至少一台但非全部。</dd></div><div><dt>CFIDS</dt><dd>Command and Feature Identifier Descriptors Size；增強 Log 每筆描述器占用的 byte 數。</dd></div><div><dt>NCFID</dt><dd>Number of Command and Feature Identifier Descriptors；增強 Log 中的描述器數量，直接計數。</dd></div><div><dt>CFI</dt><dd>Command and Feature Identifier；一筆增強描述器中，依 SCP 解讀的操作代碼。</dd></div><div><dt>SZE</dt><dd>Size；增強 Log 的完整 byte 大小，不是項目數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 282-283, PDF 頁 308-309</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先讀長度，再決定要拿多少資料</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">VER=0，header 的 SZE 是整份 Log byte 數。NCFID 是描述器數，CFIDS 是每筆描述器 byte 數，兩者直接計數。先讀足 16-byte header，確認完整大小，再依控制器傳輸能力讀取需要的內容；不能永久假設增強 Log 也只有 512 bytes。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>VER</dt><dd>Version；此 Log 資料格式的版本值。</dd></div></dl>
+<h3>依 CFIDS 算位置，不把 byte offset 當控制器編號</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">第 i 筆從 16+i×CFIDS 開始。若 NCFID=2、CFIDS=2，兩筆起點是 16、18，清單結束於 byte 19，SZE=20 的範例完全裝得下。若未來描述器尺寸不同，應依回報步距前進，不能把 2 bytes 寫死成所有版本通用規則。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 450" role="img"><title>A／B 的禁止狀態，如何變成兩種 Log</title><desc>固定查 SCP2、CNTTS1；假設 subsystem 只有 A、B。全體增強清單保留 06h 的部分控制器資訊，一般格式只留下全體共同的 07h。來源：Base Figures276～278。</desc><rect x="20" y="20" width="345" height="90" rx="6" class="v-command"/><text x="192.5" y="58.5" text-anchor="middle" font-size="17">控制器 A 目前禁止</text><text x="192.5" y="83.5" text-anchor="middle" font-size="17">FID 06h, 07h</text><rect x="395" y="20" width="345" height="90" rx="6" class="v-command"/><text x="567.5" y="58.5" text-anchor="middle" font-size="17">控制器 B 目前禁止</text><text x="567.5" y="83.5" text-anchor="middle" font-size="17">FID 07h</text><path d="M190,110 L190,175" class="v-line"/><path d="M186,168 L190,175 L194,168" class="v-line"/><path d="M565,110 L565,175" class="v-line"/><path d="M561,168 L565,175 L569,168" class="v-line"/><rect x="20" y="175" width="720" height="75" rx="6" class="v-object"/><text x="380.0" y="218.5" text-anchor="middle" font-size="17">相同 SCP／CNTTS，改變回覆格式</text><path d="M190,250 L190,315" class="v-line"/><path d="M186,308 L190,315 L194,308" class="v-line"/><path d="M565,250 L565,315" class="v-line"/><path d="M561,308 L565,315 L569,308" class="v-line"/><rect x="20" y="315" width="345" height="110" rx="6" class="v-object"/><text x="192.5" y="363.5" text-anchor="middle" font-size="17">一般 ELPF0</text><text x="192.5" y="388.5" text-anchor="middle" font-size="17">LNGTH=1 → 07h</text><rect x="395" y="315" width="345" height="110" rx="6" class="v-success"/><text x="567.5" y="351.0" text-anchor="middle" font-size="17">ELPF1 / CNTLID=FFFFh</text><text x="567.5" y="376.0" text-anchor="middle" font-size="17">06h: ACNTL0</text><text x="567.5" y="401.0" text-anchor="middle" font-size="17">07h: ACNTL1</text></svg></div><figcaption>固定查 SCP2、CNTTS1；假設 subsystem 只有 A、B。全體增強清單保留 06h 的部分控制器資訊，一般格式只留下全體共同的 07h。來源：Base Figures276～278。</figcaption></figure>
+
+<h3>Header 與描述器都有 CFIA，但不是同一個欄位</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">header byte 1 的 CFIA 包含 CS／SS，說明整份清單的種類；描述器 byte 1 的 CFIA 只有 bit 0 的 ACNTL 是本篇定義的有效屬性。把 header 的 12h 用來解讀 ACNTL，或把描述器的 01h 當 SCP，都會讀錯。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CFIA</dt><dd>Command and Feature Identifier Attributes；header 中的此欄說明清單種類，描述器中的同名欄說明 ACNTL，需看所在結構。</dd></div></dl>
+<h3>全體彙整保留部分控制器的資訊</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">CNTLID=FFFFh 時，只要至少一台控制器回報某 CFI，就可在清單看到它。ACNTL=1 表示所有控制器都回報，0 表示至少一台但非全部。它不列出是哪幾台，因此需要進一步以各 CNTLID 查詢，才能建立精確的控制器對照表。</span></p>
+<h3>描述器中的 0 與空清單也不同</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">NCFID=0 才是沒有描述器；ACNTL=0 是一筆已存在項目的屬性。以 A／B 的例子，06h 留在全體增強清單內，但不應出現在一般格式的全體共同禁止清單中。比較兩種格式時，先確認同一 SCP、CNTTS 和查詢期間。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">A 禁止 06h、07h，B 只禁止 07h：查全體 Admin Queue 已禁止 FID，增強清單可回 (06h,ACNTL=0)、(07h,ACNTL=1)。06h 的 0 不是「沒禁止」，而是「不是全部都有」。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-enhanced">閱讀相關規格圖表 → 增強格式：分清至少一台與全部控制器</a>
+</section>
+<section class="lesson" id="module-lockdown-command"><h2 id="heading-lockdown-command"><span class="section-number">07</span> 完整編碼一次禁止與解除操作</h2>
+<!-- claim:LOCKDOWN-COMMAND -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">Lockdown 使用 CDW10 的 CSEL、OFI、IFC、PRHBT、SCP，以及 CDW14 的 CSS／UIDX。PRHBT=1 禁止、0 允許；其他欄位保留原本要作用的種類、介面與控制器集合。重複禁止已禁止項目或允許已允許項目，本身不是錯誤。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>UIDX</dt><dd>UUID Index；命令帶入的 UUID List 索引，0 不指定 UUID。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 405-407, PDF 頁 431-433</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>列出意圖再填 bits</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">本例限制的是 FID，因此 SCP=2；FID 是 06h，因此 OFI=6；只針對 Admin Queue，因此 IFC=0；要禁止，因此 PRHBT=1；只針對控制器 7，因此 CSEL=1、CSS=7。每個值都來自一句具體需求，而不是從另一個命令整段複製。</span></p>
+<h3>演算 CDW10</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">CSEL 位於 bits 19:16，OFI 在 15:8，IFC 在 6:5，PRHBT 在 bit 4，SCP 在 3:0。因此 (1&lt;&lt;16)|(6&lt;&lt;8)|(0&lt;&lt;5)|(1&lt;&lt;4)|2 = 00010612h。bits 31:20 和 bit 7 保留。把 FID 06h 直接填 CDW10=6，會選錯 SCP，並未完成這項設定。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 415" role="img"><title>同一目標：禁止與允許只差 bit4</title><desc>假設功能、controller7 與 FID06h 均符合條件，且 Lockdown 入口可執行。低位 SCP2 選 FID；高位 CSEL1 仍需 CDW14 的 CSS7 提供實際編號。來源：Base Figures365、366。</desc><rect x="20" y="20" width="720" height="80" rx="6" class="v-command"/><text x="380.0" y="53.5" text-anchor="middle" font-size="17">OPC=24h · CSEL1 · OFI06h · IFC0 · SCP2</text><text x="380.0" y="78.5" text-anchor="middle" font-size="17">CSS7 → CDW14=00070000h</text><path d="M190,100 L190,175" class="v-line"/><path d="M186,168 L190,175 L194,168" class="v-line"/><path d="M565,100 L565,175" class="v-line"/><path d="M561,168 L565,175 L569,168" class="v-line"/><rect x="20" y="175" width="345" height="90" rx="6" class="v-object"/><text x="192.5" y="213.5" text-anchor="middle" font-size="17">PRHBT=1</text><text x="192.5" y="238.5" text-anchor="middle" font-size="17">禁止：00010612h</text><rect x="395" y="175" width="345" height="90" rx="6" class="v-success"/><text x="567.5" y="213.5" text-anchor="middle" font-size="17">PRHBT=0</text><text x="567.5" y="238.5" text-anchor="middle" font-size="17">允許：00010602h</text><rect x="20" y="330" width="720" height="60" rx="6" class="v-object"/><text x="380.0" y="366.0" text-anchor="middle" font-size="17">每次成功後，按相同目標讀回 LID14h</text></svg></div><figcaption>假設功能、controller7 與 FID06h 均符合條件，且 Lockdown 入口可執行。低位 SCP2 選 FID；高位 CSEL1 仍需 CDW14 的 CSS7 提供實際編號。來源：Base Figures365、366。</figcaption></figure>
+
+<h3>CDW14 提供目標，不傳資料清單</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">CSS 在 bits 31:16，填 7 得 00070000h；本例 UIDX=0，不選廠商 UUID。Lockdown 沒有用資料 buffer 傳一串 OFI，一次只有這一個 OFI；除 CDW10、CDW14 外，其他命令專用欄位保留。</span></p>
+<h3>等完成，再讀同一範圍的狀態</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">成功完成後，用 ELPF=1、CNTLID=7、SCP=2、CNTTS=1 查回。若範例只有 FID 06h 一筆，header 加 2-byte 描述器共 18 bytes；Get Log 傳輸以 Dword 計，需容納至少 20 bytes，但 SZE 外的傳輸尾端不能當有效 Log 內容。</span></p>
+<h3>解除時保持其餘選擇一致</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">解除例子保留同一個 FID、介面與控制器，只清 PRHBT。先確認執行解除的 Lockdown 入口仍允許；如果先前也禁止了 Lockdown 自身，不能把 PRHBT=0 當成可繞過限制的特殊命令。重複送出原本已成立的禁止或允許，本身不算錯。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">假設能力與清單均允許：禁止控制器 7 的 Admin Queue 設定 FID 06h，CDW10=00010612h、CDW14=00070000h。解除同一項限制只改 PRHBT=0，CDW10=00010602h；兩次都使用 Lockdown opcode 24h。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-command">閱讀相關規格圖表 → 完整編碼一次禁止與解除操作</a>
+</section>
+<section class="lesson" id="module-lockdown-result"><h2 id="heading-lockdown-result"><span class="section-number">08</span> 把設定失敗與命令被禁止分開判斷</h2>
+<!-- claim:LOCKDOWN-RESULT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.01">08.01.</span><span class="paragraph-text">Lockdown 設定本身可因項目不可禁止、介面不支援或控制器選擇無效而失敗。28h 是 Prohibition of Command Execution Not Supported；1Fh 是 Invalid Controller Identifier。已受限制的 Admin 命令則回通用狀態 Command Prohibited by Command and Feature Lockdown。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 407-408, PDF 頁 433-434</p></details>
+<!-- claim:LOCKDOWN-PROHIBITED-EXECUTION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.02">08.02.</span><span class="paragraph-text">受限制的操作從 Admin Queue 收到時，命令以 Command Prohibited by Command and Feature Lockdown 中止；從 Management Endpoint 收到時，回 Access Denied Error Response。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.5, 文件頁 598, PDF 頁 624</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先看是哪個命令完成</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.03">08.03.</span><span class="paragraph-text">CQE 的 Command Identifier 對回原本命令，Status 再解出 SCT 與 SC。只看到 23h 或 28h 這個數字還不夠；SCT 決定狀態碼類別，也要知道完成的是 Lockdown 還是被限制的後續命令。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry；完成佇列中回報某筆命令結果的項目。</dd></div><div><dt>SCT</dt><dd>Status Code Type；指定完成狀態碼所屬類別，需與 SC 一起解讀。</dd></div><div><dt>SC</dt><dd>Status Code；指定所選 SCT 類別中的完成結果。</dd></div></dl>
+<h3>項目不可禁止與入口不支援有不同要求強度</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.04">08.04.</span><span class="paragraph-text">若 OFI 沒被標示為可禁止，Lockdown 必須回 Prohibition of Command Execution Not Supported。若它可禁止，但不支援 IFC 選到的其中一個介面，規格建議回同一狀態，也允許回 Invalid Field in Command；不能把建議誤寫成唯一合法結果。</span></p>
+<h3>欄位組合錯誤不是成功建立限制</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.05">08.05.</span><span class="paragraph-text">缺 Management Endpoint 卻選它、SCP=4 卻包含 Admin Queue、CCFLS=0 卻用非零 CSEL，都會回 Invalid Field in Command。CSEL=2 指到非 primary 的控制器編號則回 Invalid Controller Identifier。應把錯誤放回它所檢查的選擇，而不是統稱為「裝置不支援」。</span></p>
+<h3>被限制的命令依接收入口得到回覆</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.06">08.06.</span><span class="paragraph-text">已禁止的操作從 Admin Queue 進來，以 Command Prohibited by Command and Feature Lockdown 中止；Management Endpoint 則回 Access Denied Error Response。這是兩個入口的回覆形式，不能要求帶外回覆一定長得像 Admin CQE。</span></p>
+<h3>多個問題同時存在時，不推論唯一檢查順序</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.07">08.07.</span><span class="paragraph-text">通用規則允許在多個失敗原因同時成立時由廠商選擇回報狀態，除非有另外規定。學習例子一次固定一個錯誤原因，才看得出哪個條件導向哪個結果；這不代表控制器內部必須依教材排列的順序檢查。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="08.08">08.08.</span><span class="paragraph-text">第一次 Lockdown 成功；第二次送出的 Set Features 被禁止，回 SCT=0、SC=23h。若第一次 Lockdown 就因 OFI 不可禁止而回 SCT=1、SC=28h，代表沒有得到成功設定的證據，不能把這兩種失敗當成一件事。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-result">閱讀相關規格圖表 → 把設定失敗與命令被禁止分開判斷</a>
+</section>
+<section class="lesson" id="module-lockdown-persistence"><h2 id="heading-lockdown-persistence"><span class="section-number">09</span> 限制何時消失，要看 CSEL 與持續性設定</h2>
+<!-- claim:LOCKDOWN-PERSISTENCE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="09.01">09.01.</span><span class="paragraph-text">CSEL=0 的全體限制在 Lockdown Persistence 啟用時跨 power cycle 保留；停用時持續到 subsystem power cycle 或後續解除。CSEL=1、2 的限制持續到 power cycle 或後續解除，不因 LDPE=1 自動取得全體限制的跨斷電保留規則。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LDPE</dt><dd>Lockdown Persistence Enable；啟用全體限制跨 power cycle 保留的設定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.5</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.5, 文件頁 598-599, PDF 頁 624-625</p></details>
+<!-- claim:LOCKDOWN-PERSISTENCE-EXCEPTIONS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="09.02">09.02.</span><span class="paragraph-text">持續性啟用時，未凍結或無認證解凍支援的 Lockdown Persistence Personality，不能透過 Lockdown 禁止 Set Features 或 FID 22h。若任一 personality 支援認證解凍，特定 CDP Authentication 的 Security Send／Receive 必須仍被允許。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>personality</dt><dd>規格中的一組裝置配置；本篇只用 Lockdown Persistence 這一種配置及其必要條件。</dd></div><div><dt>CDP</dt><dd>Configurable Device Personality；將裝置配置分為可查詢、設定或凍結的 personality。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.25.4.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25.4.1, 文件頁 494, PDF 頁 520</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先問限制是用哪個 CSEL 建立</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.03">09.03.</span><span class="paragraph-text">持續性取決於當初 Lockdown 的 CSEL。CSEL=0 搭配 LDPE=1，禁止會跨 power cycle 持續，直到後續 Lockdown 解除；LDPE=0 則可由 subsystem power cycle 結束。CSEL=1、2 依自己的規則，在 power cycle 或後續解除時結束。一般 Controller Reset 不等於整個 subsystem power cycle。</span></p>
+<h3>LDPE 和 LDPS 分別是設定與讀回</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.04">09.04.</span><span class="paragraph-text">Lockdown Persistence 屬於 Configurable Device Personality 的 PERID=02h；FID=22h 是 Feature 編號，不能把 02h 當成同一層編號。設定的 CDW11 bit 0 是 LDPE；Get 回覆 CQE DW1 bit 0 是 LDPS。DW0 則回報該 personality 的屬性，兩個 Dword 要分開讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>PERID</dt><dd>Personality Identifier；選 CDP 功能中的一組配置，02h 是 Lockdown Persistence。</dd></div><div><dt>LDPS</dt><dd>Lockdown Persistence State；讀回目前持續性是否啟用。</dd></div></dl>
+<figure><figcaption><strong>一個 subsystem power cycle 之後，哪些限制保留？</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">建立限制時的 CSEL</th><th scope="col">Lockdown Persistence</th><th scope="col">斷電循環後的規則</th></tr></thead><tbody><tr><td>0：全部控制器</td><td>已啟用</td><td>保留，後續 Lockdown 可解除</td></tr><tr><td>0：全部控制器</td><td>已停用</td><td>原禁止不跨 power cycle 保留</td></tr><tr><td>1：單一控制器</td><td>任一狀態</td><td>不因 LDPE1 而跨 power cycle 保留</td></tr><tr><td>2：指定 primary 的 secondaries</td><td>任一狀態</td><td>同樣在 power cycle 或後續解除時結束</td></tr></tbody></table></div><figcaption>比較的是 power cycle；不能把一般 Controller Reset 代入這一欄。凍結與認證例外則在正文另行說明其條件。來源：Base §8.1.5。</figcaption></figure>
+
+<h3>設定持續性與凍結設定是不同動作</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.05">09.05.</span><span class="paragraph-text">Personality 是裝置的一組配置，frozen 表示不允許再任意改變該配置。CDW13 的 CHPS 控制是否改設定，PERFS 控制凍結請求，PERID 選配置。設定接受後是否還待特定 reset，需看 MRSTT 與 PPSC；教材不能把送出 LDPE=1 直接當成所有情況都已生效。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>frozen</dt><dd>已凍結；表示這組 personality 設定不能任意改成其他值，不表示控制器停止所有 I/O。</dd></div><div><dt>MRSTT</dt><dd>Minimum Required Reset Type；使 personality 變更生效所需的最低 reset 類型。</dd></div><div><dt>PERFS</dt><dd>Personality Freeze State；在 Set 是凍結請求，在 Get 是凍結或待凍結的回報。</dd></div><div><dt>CHPS</dt><dd>Change Personality Settings；指定 Set 是否要改變 personality 設定。</dd></div><div><dt>PPSC</dt><dd>Pending Personality Settings Change；表示存在尚待生效的 personality 設定變更。</dd></div></dl>
+<h3>避免把必要的解凍入口一起封死</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.06">09.06.</span><span class="paragraph-text">當 Lockdown Persistence 已啟用，而此 personality 未凍結或不支援認證解凍，要求禁止整個 Set Features 或 FID 22h 的 Lockdown 必須回 Prohibition of Command Execution Not Supported。這是特定條件下的規則，不表示任何 FID 永遠都能被禁止。</span></p>
+<h3>認證命令有明確限定的例外</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.07">09.07.</span><span class="paragraph-text">若持續性已啟用，且任一 personality 支援認證解凍，控制器與 Management Endpoint 必須允許指定 CDP Authentication、SPSP=0002h 的 Security Send／Receive，即使先前限制了這兩個 opcode。例外只涵蓋這種認證用途，不能擴張成所有 Security 命令都無條件允許。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SPSP</dt><dd>Security Protocol Specific；Security 命令的協定專用選擇，本篇 0002h 限定 CDP Authentication 用途。</dd></div></dl>
+<h3>解凍與目前禁止清單仍應分開觀察</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.08">09.08.</span><span class="paragraph-text">成功的 Security Send 認證解凍若解凍的是 Lockdown Persistence Personality，持續性會停用。這不等於該命令本身直接移除每個目前禁止項目；後續狀態與是否跨 power cycle 保留應分別查證。本篇教到影響 Lockdown 的條件，不展開金鑰、驗證訊息與其他 personality 的操作。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="09.09">09.09.</span><span class="paragraph-text">同時有「CSEL=0 禁止 FID 06h」與「CSEL=1 禁止 FID 07h」，且 Lockdown Persistence 已啟用。subsystem power cycle 後，前者按全體持續性規則保留，後者不因這個設定而跨斷電保留。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-persistence">閱讀相關規格圖表 → 限制何時消失，要看 CSEL 與持續性設定</a>
+</section>
+<section class="lesson" id="module-lockdown-uuid"><h2 id="heading-lockdown-uuid"><span class="section-number">10</span> 同一廠商 FID 有不同定義時，用 UUID 選版本</h2>
+<!-- claim:LOCKDOWN-UUID -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.01">10.01.</span><span class="paragraph-text">廠商定義 FID 的 Lockdown 在 SCP=2 且相關命令與項目支援 UUID 選擇時，使用 CDW14.UIDX 選 UUID List 項目。LID 14h 對 SCP=2 的廠商 FID 查詢也可使用 UIDX；SCP≠2 時忽略 UIDX。UIDX 是清單索引，不是 FID 或 byte offset。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 406-407, PDF 頁 432-433</p></details>
+<!-- claim:LOCKDOWN-UUID-VALIDITY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="10.02">10.02.</span><span class="paragraph-text">UIDX=0 不指定 UUID；非零索引需指向該資訊支援的有效 UUID。全 0、NVMe Invalid UUID 或不支援於該資訊的 UUID 會導向 Invalid Field in Command。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.31.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.31.2, 文件頁 737-738, PDF 頁 763-764</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先確認什麼情況需要 UUID</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.03">10.03.</span><span class="paragraph-text">標準定義的主要流程通常不用選廠商 UUID。只有涉及同一個廠商 FID 的不同定義，且相關能力支援時，才需用 UUID 區分內容。SCP=2 是必要條件；對 Admin opcode 等其他 SCP，UIDX 會被忽略，不會改變操作種類。</span></p>
+<h3>Lockdown 與查詢應對到同一份定義</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.04">10.04.</span><span class="paragraph-text">Lockdown 需要本命令及 Set Features 對該廠商 FID 支援 UUID 選擇，才以 CDW14 提供 UIDX。LID 14h 查詢 SCP=2 且指定 UUID 時，控制器應依該 UUID 回報廠商 FID 的限制資訊。沒有把這層定義對齊，清單上的 C0h 可能不是原本要限制的設定。</span></p>
+<h3>索引、項目位置與 UUID 本體有三種長度</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.05">10.05.</span><span class="paragraph-text">UIDX 是 7 bits；UUID List 每項 32 bytes，項目中的 UUID 本體是 16 bytes。清單前 32 bytes 保留，第一項索引 1 位於 byte 32，第二項位於 byte 64；第 2 項的 UUID 本體從 byte 80 開始。命令填的是 2，不是 64 或 80。</span></p>
+<h3>0 不表示第一個 UUID</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.06">10.06.</span><span class="paragraph-text">UIDX=0 表示不指定 UUID；有效非零索引必須對應受支援且有效的 UUID。指到全 0、NVMe Invalid UUID，或不支援於該資訊的 UUID，依通用 UUID 規則回 Invalid Field in Command。NVMe Invalid UUID 是 FFFFFFFF_FFFFFFFF_7FFFFFFF_FFFFFFFFh，用來保留已失效項目的索引位置；它和全 0 的清單終止值不同。清單末尾第 127 項必須為 0，不能把最大 7-bit 數當成一定可用的索引。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="10.07">10.07.</span><span class="paragraph-text">假設兩份廠商定義都使用 FID C0h，UUID List 的第 2 項對應所需定義。使用 UIDX=2；不是把 C0h 填 UIDX，也不是填第 2 項的 byte offset 64。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-lockdown-uuid">閱讀相關規格圖表 → 同一廠商 FID 有不同定義時，用 UUID 選版本</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">11</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.01">11.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-lockdown-model"><summary>圖表組 01 · 先理解：限制的是哪個操作從哪裡進來 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.02">11.02.</span><span class="paragraph-text">先把查詢 LID 14h 與修改 Lockdown 分成兩條箭頭，再接到被限制的管理命令；Figure 365 的 SCP／IFC／CSEL 各回答不同問題。</span></p>
+<a class="reading-link" href="#module-lockdown-model">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-capability-fields"><h4 id="fields-heading-lockdown-capability-fields">只讀建立本篇操作入口所需的共同欄位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.03">11.03.</span><span class="paragraph-text">Identify Controller 不整份複製；本篇 OACS 與必要的 UUID 能力依各欄位局部閱讀。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-capability-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>OACS bytes257:256：CFLS[10]／CCFLS[13]</td><td>基本能力／控制器範圍能力；CCFLS1 要求 CFLS1。</td><td>2400h=(1&lt;&lt;13)|(1&lt;&lt;10)，不代表所有 OFI 都可禁止。</td></tr><tr><td>OPC：SQE CDW0[7:0]</td><td>Lockdown24h；Get Log Page02h；Set Features09h；Get Features0Ah。</td><td>整個 Set Features opcode09h 與單一 FID06h 是不同目標。</td></tr><tr><td>CID：SQE CDW0[31:16]</td><td>主機指派命令編號，用於完成配對。</td><td>CID7 與 CSS7 即使數字相同，也分別代表命令和控制器。</td></tr><tr><td>DPTR／命令專用 CDW</td><td>需要收 Log 時 DPTR 提供資料 buffer；Lockdown 本身只使用 CDW10、14 的專用參數。</td><td>LNGTH 或 NCFID 在回傳 buffer 內，不在 Lockdown 的 CQE 內。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CID</dt><dd>Command Identifier；主機指定的命令編號，配合佇列編號對應提交與完成。</dd></div><div><dt>SQE</dt><dd>Submission Queue Entry；提交佇列中承載一筆命令及參數的項目。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-028">Base 28</a><a href="#figure-LOCKDOWN-BASE-FIG-093">Base 93</a><a href="#figure-LOCKDOWN-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.1.3 · Base 2.4 §4.1.1 · Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 28, 文件頁 45-46, PDF 頁 71-72</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 352, PDF 頁 378</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-028 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-028"><h4>Base Figure 28 · Admin Command Support Requirements</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-028-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base28-1">Base28-1</span><span class="paragraph-text">Lockdown 是獨立的 Admin 命令，OFI 是它要管理的目標。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.1.3, Figure 28, 文件頁 45-46, PDF 頁 71-72</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base28-2">Base28-2</span><span class="paragraph-text">送 Lockdown 時外層 OPC=24h；如果要禁止 Set Features 的 FID06h，06h 放 OFI 且 SCP2，不能把外層 OPC 改 06h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-capability-fields">欄位、條件與相關細節：只讀建立本篇操作入口所需的共同欄位 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-093 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">命令外框、目標操作與回傳 buffer 屬於不同層次。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">Get Log 用 OPC02h 及 DPTR 收資料；Lockdown 用 OPC24h 及 CDW10/14 改狀態。CID 用於辨識各筆完成，並非控制器編號。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-capability-fields">欄位、條件與相關細節：只讀建立本篇操作入口所需的共同欄位 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-capability"><summary>圖表組 02 · 先查支援層級，再查可禁止項目 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.04">11.04.</span><span class="paragraph-text">Figure 338 很大，本篇只讀 OACS 的 CFLS、CCFLS；先核對 byte 位置，再把位元接到 Figure 274 的 ELPF 和 Figure 365 的 CSEL。</span></p>
+<a class="reading-link" href="#module-lockdown-capability">回到本節的解釋與範例</a>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-338 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-338"><h4>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">OACS 的兩個能力位元分別保證基本範圍與控制器擴充範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 352, PDF 頁 378</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">bytes256、257 讀到 00 24，合成 2400h；bits13、10 均 1，因此可用基本功能、CSEL1/2 及 ELPF1。其他 OACS 位元本例不作推論。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-capability-fields">欄位、條件與相關細節：只讀建立本篇操作入口所需的共同欄位 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-query"><summary>圖表組 04 · 把 LID 14h 的查詢問題寫完整 · 8 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.05">11.05.</span><span class="paragraph-text">Figure 274 解釋 CDW10 中間的 bits 14:8；275 解釋 CDW11 高 16 bits。Figure 204～208 則提供包住它們的長度與位移欄位。</span></p>
+<a class="reading-link" href="#module-lockdown-query">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-query-fields"><h4 id="fields-heading-lockdown-query-fields">先組成問題，再指定要查的控制器</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.06">11.06.</span><span class="paragraph-text">Figure 274 的 bits 位置已經是 CDW10 的位置；Figure 275 則以 16-bit LSI 自身為起點，必須再放到 CDW11 高位。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-query-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>ELPF：CDW10 bit14</td><td>0=Figure276；1=Figure277，後者需 CCFLS 支援。</td><td>ELPF=1 不能只更換解析器，也要讓命令確實請求增強格式。</td></tr><tr><td>CNTTS：CDW10 bits13:12</td><td>0=可禁止；1=Admin Queue 已禁止；2=Management Endpoint 已禁止；3 保留。</td><td>沒有 Management Endpoint 卻查 2，回 Invalid Field in Command。</td></tr><tr><td>SCP：CDW10 bits11:8</td><td>0=Admin opcode；2=Set Features FID；3=Management Interface opcode；4=其 PCIe opcode；1、5～F 保留。</td><td>SCP2 的 06h 是 FID，不是 Admin opcode06h。</td></tr><tr><td>CNTLID：LSI bits15:0 → CDW11 bits31:16</td><td>ELPF1 時指定控制器，FFFFh 查全部；ELPF0 時保留。</td><td>CMD11=00070000h 中 0007 是控制器，不是 NUMDU。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-274">Base 274</a><a href="#figure-LOCKDOWN-BASE-FIG-275">Base 275</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 274, 文件頁 280, PDF 頁 306</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 275, 文件頁 280, PDF 頁 306</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-274 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-274"><h4>Base Figure 274 · Command and Feature Lockdown Log Specific Parameter Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-274-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base274-1">Base274-1</span><span class="paragraph-text">LSP 同時選查詢種類與格式，不是只有一個「查 Lockdown」的開關。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>LSP</dt><dd>Log Specific Parameter；Get Log 中依 Log 種類解讀的 7-bit 參數。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 274, 文件頁 280, PDF 頁 306</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base274-2">Base274-2</span><span class="paragraph-text">ELPF=0、CNTTS=1、SCP=2：CDW10 bits 14:8 對應 12h，所以放入命令的部分值是 00001200h。加 LID14h 得 00001214h，還未加 NUMDL。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-query-fields">欄位、條件與相關細節：先組成問題，再指定要查的控制器 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-275 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-275"><h4>Base Figure 275 · Controller Identifier - Log Specific Identifier</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-275-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base275-1">Base275-1</span><span class="paragraph-text">只有 ELPF=1 時，LSI 才被本 Log 解讀為 CNTLID。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 275, 文件頁 280, PDF 頁 306</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base275-2">Base275-2</span><span class="paragraph-text">查控制器 7：LSI=0007h，實際放進 CDW11 高 16 bits 成為 00070000h；FFFFh 才是全體查詢，不是 0。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-query-fields">欄位、條件與相關細節：先組成問題，再指定要查的控制器 →</a></div></article>
+<section class="field-guide" id="fields-lockdown-log-envelope"><h4 id="fields-heading-lockdown-log-envelope">把 Log 的種類、長度、起點與接收 buffer 分開</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.07">11.07.</span><span class="paragraph-text">範例採 OT0 且已知裝置支援所需長度與 offset；未定義的尾端資料不當作有效記錄。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-log-envelope"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>DPTR</td><td>主機提供可接收資料的 buffer；大小需容納要求的傳輸。</td><td>不是把 Log 放在 Lockdown 的資料指標。</td></tr><tr><td>CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]</td><td>NUMDL 是計數低 16bits；RAE 控制相關非同步事件是否保留，本例 0；LSP 依 274；LID14h。</td><td>512/4-1=127，不能用 LNGTH2 代替 NUMDL。</td></tr><tr><td>CDW11 LSI[31:16]／NUMDU[15:0]</td><td>LSI 依 275；合成 NUMD=(NUMDU&lt;&lt;16)|NUMDL，傳輸 bytes=(NUMD+1)×4。</td><td>LSIFFFFh 查全體控制器，不表示傳 65536Dwords。</td></tr><tr><td>CDW12 LPOL／CDW13 LPOU</td><td>OT0 時合成 64-bit byte offset，需 4-byte 對齊；超出 Log 大小會拒絕。</td><td>要讀增強第二筆 offset18，不能直接作為未對齊的 Get Log 起點；可從 16 讀取包含它的 Dwords。</td></tr><tr><td>CDW14 OT[23]／UIDX[6:0]／CSI[31:24]</td><td>OT0 為 bytes；OT1 是需支援的項目索引。UIDX 依 UUID 規則。CSI 有自己的 I/O 命令集選擇規則，不是 SCP。bits22:7 保留。</td><td>本篇以 NVM 情境 CSI0、OT0 作例，絕不以 CSI2 代替 SCP2。</td></tr><tr><td>請求長度超過 Log 末端</td><td>回完整 Log 後，多出的 Dwords 結果未定義，除非該 Log 另有規定；不能假設填 0。</td><td>SZE18bytes 以 20-byte 傳輸容納時，只依 SZE 與 NCFID 讀有效內容。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CSI</dt><dd>I/O Command Set Identifier；選擇 I/O 命令集，NVM Command Set 使用 00h。</dd></div><div><dt>RAE</dt><dd>Retain Asynchronous Event；控制讀 Log 是否保留相關非同步事件。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-203">Base 203</a><a href="#figure-LOCKDOWN-BASE-FIG-204">Base 204</a><a href="#figure-LOCKDOWN-BASE-FIG-205">Base 205</a><a href="#figure-LOCKDOWN-BASE-FIG-206">Base 206</a><a href="#figure-LOCKDOWN-BASE-FIG-207">Base 207</a><a href="#figure-LOCKDOWN-BASE-FIG-208">Base 208</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-203 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-203"><h4>Base Figure 203 · Get Log Page – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-203-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-1">Base203-1</span><span class="paragraph-text">Log 資料經 DPTR 回主機記憶體，CQE 回的是完成結果。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base203-2">Base203-2</span><span class="paragraph-text">主機配置 512-byte buffer 並送 Get Log；完成成功後再讀 buffer 的 CFILA 與 LNGTH，不能把 CQE DW0 當這份清單。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-log-envelope">欄位、條件與相關細節：把 Log 的種類、長度、起點與接收 buffer 分開 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-204 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-204"><h4>Base Figure 204 · Get Log Page – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-204-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-1">Base204-1</span><span class="paragraph-text">NUMDL 計 Dword 數減 1，LSP 另決定 Log 的問題。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base204-2">Base204-2</span><span class="paragraph-text">讀 512bytes→NUMDL127=007Fh；LSP12h 查目前禁止 FID，LID14h，合成 CDW10=007F1214h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-log-envelope">欄位、條件與相關細節：把 Log 的種類、長度、起點與接收 buffer 分開 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-205 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-205"><h4>Base Figure 205 · Get Log Page – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-205-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-1">Base205-1</span><span class="paragraph-text">LSI 與 NUMDU 共用 CDW11，但不是同一個長度欄位。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base205-2">Base205-2</span><span class="paragraph-text">增強查 controller7、傳輸不足 65537Dwords：CDW11=00070000h，高位 7 是 CNTLID，低位 0 是 NUMDU。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-log-envelope">欄位、條件與相關細節：把 Log 的種類、長度、起點與接收 buffer 分開 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-206 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-206"><h4>Base Figure 206 · Get Log Page – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-206-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-1">Base206-1</span><span class="paragraph-text">LPOL 選起讀位置，不能代替清單的項目數。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base206-2">Base206-2</span><span class="paragraph-text">OT0、LPOL16 從 byte16 開始；一般清單索引 0 在 byte4，增強清單索引 0 在 byte16，不能共用同一個換算。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-log-envelope">欄位、條件與相關細節：把 Log 的種類、長度、起點與接收 buffer 分開 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-207 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-207"><h4>Base Figure 207 · Get Log Page – Command Dword 13</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-207-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-1">Base207-1</span><span class="paragraph-text">LPOU 是同一個 64-bit 起點的高位，不是第二段 buffer 的起點。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base207-2">Base207-2</span><span class="paragraph-text">起點 16bytes→LPOU0、LPOL16；不能把 NUMDU127 放 LPOU，否則會請求完全不同的 offset。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-log-envelope">欄位、條件與相關細節：把 Log 的種類、長度、起點與接收 buffer 分開 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-208 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-208"><h4>Base Figure 208 · Get Log Page – Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-208-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-1">Base208-1</span><span class="paragraph-text">OT 選 offset 單位，UIDX 選廠商定義，兩者不能混用。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base208-2">Base208-2</span><span class="paragraph-text">OT0 且 UIDX2 時 CDW14 低位 2 代表 UUID List 第 2 項；LPOL 仍以 bytes 計，不會因 UIDX 非零變成 index-offset。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-log-envelope">欄位、條件與相關細節：把 Log 的種類、長度、起點與接收 buffer 分開 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-basic"><summary>圖表組 05 · 一般格式：一串代碼代表全體共同的項目 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.08">11.08.</span><span class="paragraph-text">Figure 276 由 CFILA → LNGTH → CFIL 讀，先確認查詢種類，再決定到底有幾個代碼可解讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CFIL</dt><dd>Command and Feature Identifier List；一般格式內由小到大排列的代碼清單。</dd></div></dl>
+<a class="reading-link" href="#module-lockdown-basic">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-basic-fields"><h4 id="fields-heading-lockdown-basic-fields">每個代碼的意義來自 header，不來自清單位置</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.09">11.09.</span><span class="paragraph-text">一般格式固定 512bytes；先核對 CS／SS，再讀 LNGTH 個單 byte 代碼。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-basic-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CFILA byte0：CS[5:4]、SS[3:0]</td><td>回映 CNTTS／SCP；[7:6]保留。CS0 的可禁止清單、CS1 的 Admin 已禁止清單描述全體控制器共同項目。</td><td>CFILA12h→CS1、SS2。</td></tr><tr><td>bytes2:1 保留；LNGTH byte3</td><td>LNGTH=n，直接表示清單 byte 數；0=空清單。</td><td>n2 不是數量減 1，不可讀 3 筆。</td></tr><tr><td>CFIL bytes n+3:4</td><td>每個值 1byte，由小到大排序；其餘 bytes511:n+4 保留。</td><td>索引 0 在 offset4，內容 06h 才是 FID。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-276">Base 276</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 276, 文件頁 281, PDF 頁 307</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-276 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-276"><h4>Base Figure 276 · Command and Feature Lockdown Log Page</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-276-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base276-1">Base276-1</span><span class="paragraph-text">一般 Log 以 byte 長度限制代碼清單，不能掃到保留區。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 276, 文件頁 281, PDF 頁 307</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base276-2">Base276-2</span><span class="paragraph-text">12 00 00 02 06 07 的 LNGTH=2，只讀 byte4、5 的 06h、07h。若 LNGTH=0，沒有任何有效項目，不把 byte4 的 0 當命令。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-basic-fields">欄位、條件與相關細節：每個代碼的意義來自 header，不來自清單位置 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-enhanced"><summary>圖表組 06 · 增強格式：分清至少一台與全部控制器 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.10">11.10.</span><span class="paragraph-text">Figure 277 給外框與步距，278 給每筆 CFI／ACNTL。拿 A／B 範例對照 276，才能看出增強格式增加的是什麼資訊。</span></p>
+<a class="reading-link" href="#module-lockdown-enhanced">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-enhanced-fields"><h4 id="fields-heading-lockdown-enhanced-fields">外層 CFIA 說明清單種類，內層 CFIA 說明一筆項目的全體屬性</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.11">11.11.</span><span class="paragraph-text">同名 CFIA 所在結構不同；先確認是 header byte1 還是描述器 byte1。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-enhanced-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Header VER byte0／CFIA byte1</td><td>VER0；CFIA 的 CS[5:4]與 SS[3:0]回映查詢，[7:6]保留。</td><td>Header12h 是 Admin Queue 已禁止 FID，不是 ACNTL 值。</td></tr><tr><td>Header CNTLID bytes3:2</td><td>回映請求；FFFFh 時收錄至少一台控制器回報的項目，其他值選指定控制器。</td><td>同樣查 Admin 禁止 FID，FFFFh 與 0007h 是不同範圍。</td></tr><tr><td>SZE bytes7:4／NCFID9:8／CFIDS11:10</td><td>總 byte 數／直接項目數／每筆 byte 數；header15:12 保留。</td><td>16+2×2=20bytes，NCFID0 才是空清單。</td></tr><tr><td>第 i 筆從 16+i×CFIDS 開始</td><td>按 CFI 值遞增排列，不能按 ACNTL 或 Controller Identifier 排序。</td><td>i1、CFIDS2→offset18。</td></tr><tr><td>Descriptor CFI byte0／CFIA byte1</td><td>CFI 是 SCP 選定種類的代碼；CFIA bit0 為 ACNTL，bits7:1 保留。</td><td>06 00 中的 00 不表示 06h 目前全部允許。</td></tr><tr><td>ACNTL[0]</td><td>1=全部控制器回報；0=至少一台但非全部。清單不含每項的控制器名單。</td><td>需要找出哪台時，保留同一 CNTTS／SCP，改 CNTLID 逐一查。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-277">Base 277</a><a href="#figure-LOCKDOWN-BASE-FIG-278">Base 278</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 277, 文件頁 282-283, PDF 頁 308-309</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 278, 文件頁 283, PDF 頁 309</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-277 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-277"><h4>Base Figure 277 · Command and Feature Lockdown Log Page – Enhanced</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-277-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base277-1">Base277-1</span><span class="paragraph-text">增強 header 分開提供總長度、項目數與每筆步距。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 277, 文件頁 282-283, PDF 頁 308-309</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base277-2">Base277-2</span><span class="paragraph-text">NCFID=2、CFIDS=2、SZE=20：16-byte header 後兩筆分別從 16、18 開始。若把 NCFID 當 byte 數，就只會讀到第一筆。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-enhanced-fields">欄位、條件與相關細節：外層 CFIA 說明清單種類，內層 CFIA 說明一筆項目的全體屬性 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-278 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-278"><h4>Base Figure 278 · Command and Feature Identifier Descriptor</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-278-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base278-1">Base278-1</span><span class="paragraph-text">ACNTL=0 仍是一筆有控制器回報的項目，只是不是全部都有。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.20</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, Figure 278, 文件頁 283, PDF 頁 309</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base278-2">Base278-2</span><span class="paragraph-text">全體查詢回 06 00、07 01：06h 只在部分控制器符合，07h 全部符合；還不能由 06 00 知道具體是哪一台。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-enhanced-fields">欄位、條件與相關細節：外層 CFIA 說明清單種類，內層 CFIA 說明一筆項目的全體屬性 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-command"><summary>圖表組 07 · 完整編碼一次禁止與解除操作 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.12">11.12.</span><span class="paragraph-text">Figure 365 與 366 是同一筆命令的兩個 Dword。把完整算式對回各個 bits，再用 LID 14h 確認目標，而不是只看送出命令就假設已生效。</span></p>
+<a class="reading-link" href="#module-lockdown-command">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-command-fields"><h4 id="fields-heading-lockdown-command-fields">把操作、入口、控制器與禁止方向放回各自的位置</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.13">11.13.</span><span class="paragraph-text">Lockdown 使用 opcode24h，沒有資料清單 payload；其他命令專用 Dword 保留。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>payload</dt><dd>命令另外傳送的資料內容，與 SQE 裡的命令參數區分。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-command-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CDW10 CSEL[19:16]／CDW14 CSS[31:16]</td><td>CSEL0 全體且 CSS 保留；1 指定 CSS 控制器；2 指定 CSS primary 的全部 secondaries；Fh 廠商定義；3～E 保留。</td><td>CSEL2 不包含 primary 本身；CSS 不是 primary 則回 Invalid Controller Identifier。</td></tr><tr><td>CDW10 OFI[15:8]／SCP[3:0]</td><td>SCP0 解 OFI 為 Admin opcode；2 為 Set Features FID；3、4 為管理介面的兩種命令集；其餘保留。</td><td>SCP2、OFI06h 只選 FID06h 的設定操作。</td></tr><tr><td>CDW10 IFC[6:5]</td><td>0=Admin Queue；1=Queue 加 Management Endpoint；2=Management Endpoint；3 保留。</td><td>沒有 Endpoint 時 1、2 皆非法；SCP4 搭 IFC0 或 1 也非法。</td></tr><tr><td>CDW10 PRHBT[4]</td><td>1 禁止，0 允許；不改變 OFI、IFC、CSEL 各自選出的範圍。</td><td>00010612h 清 bit4→00010602h。</td></tr><tr><td>CDW14 UIDX[6:0]</td><td>SCP2 及相關 UUID 能力成立才選廠商定義；0 不指定；非 SCP2 忽略。</td><td>CSS7 與 UIDX2 可共存為 00070002h，不是二選一。</td></tr><tr><td>命令保留位</td><td>CDW10[31:20]、[7]；CDW14[15:7]保留。</td><td>例子先將保留位清 0，再加入需要的欄位。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-365">Base 365</a><a href="#figure-LOCKDOWN-BASE-FIG-366">Base 366</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, Figure 365, 文件頁 405-406, PDF 頁 431-432</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, Figure 366, 文件頁 407, PDF 頁 433</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-365 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-365"><h4>Base Figure 365 · Lockdown – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-365-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base365-1">Base365-1</span><span class="paragraph-text">CDW10 的五個選擇共同決定限制，PRHBT 自己不能表達完整意圖。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, Figure 365, 文件頁 405-406, PDF 頁 431-432</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base365-2">Base365-2</span><span class="paragraph-text">(1&lt;&lt;16)|(6&lt;&lt;8)|(1&lt;&lt;4)|2=00010612h，代表控制器選擇 1、FID06h、Admin Queue、禁止；這裡的 1 還不是 Controller ID。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-command-fields">欄位、條件與相關細節：把操作、入口、控制器與禁止方向放回各自的位置 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-366 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-366"><h4>Base Figure 366 · Lockdown – Command Dword 14</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-366-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base366-1">Base366-1</span><span class="paragraph-text">CSS 的意義由 CSEL 決定，UIDX 則是另一層廠商定義選擇。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, Figure 366, 文件頁 407, PDF 頁 433</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base366-2">Base366-2</span><span class="paragraph-text">CSEL1、CSS7、UIDX0→CDW14=00070000h。CSEL2 且同樣 CSS7，會改成選 primary7 所屬的 secondary 集合，不是單一 controller7。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-command-fields">欄位、條件與相關細節：把操作、入口、控制器與禁止方向放回各自的位置 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-result"><summary>圖表組 08 · 把設定失敗與命令被禁止分開判斷 · 4 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.14">11.14.</span><span class="paragraph-text">Figure 367 是 Lockdown 本身的特定狀態；Figure 103 的 SC=23h 是後續命令被限制。用 Figure 99／101 把命令身分、狀態種類與代碼接起來。</span></p>
+<a class="reading-link" href="#module-lockdown-result">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-status-fields"><h4 id="fields-heading-lockdown-status-fields">先辨認完成的命令，再辨認錯誤種類與原因</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.15">11.15.</span><span class="paragraph-text">以下 bits 以 CQE DW3 為起點；只有本篇需要的通用與命令特定代碼列入教學。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-status-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>DW3 CID[15:0]／P[16]／STATUS[31:17]</td><td>CID 配合 SQ Identifier 對回命令；P 辨認新完成項，STATUS 才是處理結果。</td><td>同一輪有查詢與 Lockdown 時，不把查詢成功當設定成功。</td></tr><tr><td>SC[24:17]／SCT[27:25]</td><td>SCT0 為 Generic，SCT1 為 Command Specific；SC 提供該類別的代碼。</td><td>SCT0/23h=現有限制；SCT1/28h=不能建立要求的限制。</td></tr><tr><td>DNR[31]／M[30]／CRD[29:28]</td><td>DNR1 表示原命令重送預期仍失敗；M1 表示另有錯誤資訊；CRD 只有 DNR0 且主機 ACRE1 時依 0 或 CRDT1～3 選重試延遲，其餘情況保留。它們不是 SC 高位。</td><td>不能因為延遲一段時間就假設禁止狀態自動解除。</td></tr><tr><td>SC1Fh、28h：SCT1</td><td>無效 Controller Identifier／Prohibition of Command Execution Not Supported。</td><td>OFI 不可禁止必須 28h；某個所選介面不支援該 OFI 時應回 28h，也可回 Invalid Field。</td></tr><tr><td>SC23h、02h：SCT0</td><td>Command Prohibited by Command and Feature Lockdown／Invalid Field in Command。</td><td>後者檢查欄位或組合，不代表成功套用禁止。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CRD</dt><dd>Command Retry Delay；在有效條件成立時選擇命令重試延遲。</dd></div><div><dt>DNR</dt><dd>Do Not Retry；1 表示相同命令重送預期仍會失敗。</dd></div><div><dt>SQ</dt><dd>Submission Queue，主機放入命令的提交佇列。</dd></div><div><dt>P</dt><dd>Phase Tag，讓 host 判斷 CQ slot 是否包含新 completion 的翻轉 bit。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-367">Base 367</a><a href="#figure-LOCKDOWN-BASE-FIG-099">Base 99</a><a href="#figure-LOCKDOWN-BASE-FIG-101">Base 101</a><a href="#figure-LOCKDOWN-BASE-FIG-103">Base 103</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.16 · Base 2.4 §4.2.1 · Base 2.4 §4.2.3 · Base 2.4 §4.2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, Figure 367, 文件頁 408, PDF 頁 434</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, 文件頁 145, PDF 頁 171</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.1, Figure 103, 文件頁 147,149, PDF 頁 173,175</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-367 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-367"><h4>Base Figure 367 · Lockdown – Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-367-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base367-1">Base367-1</span><span class="paragraph-text">Lockdown 的 1Fh／28h 描述設定命令失敗，不是後續操作受限制的 23h。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.16</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, Figure 367, 文件頁 408, PDF 頁 434</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base367-2">Base367-2</span><span class="paragraph-text">CSEL2 配非 primary 的 CSS→1Fh；目標 OFI 不可禁止→28h。兩者都先辨認 SCT=1，再讀 SC。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-status-fields">欄位、條件與相關細節：先辨認完成的命令，再辨認錯誤種類與原因 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-099 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-099"><h4>Base Figure 99 · Completion Queue Entry: DW 3</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-099-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base99-1">Base99-1</span><span class="paragraph-text">CQE DW3 先將命令身分與狀態分開，避免把兩次操作的完成結果配錯。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, 文件頁 145, PDF 頁 171</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base99-2">Base99-2</span><span class="paragraph-text">CID10 是 Lockdown、CID11 是後續 Set Features；CID10 成功而 CID11 回限制錯誤，符合先設定再攔截的流程。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-status-fields">欄位、條件與相關細節：先辨認完成的命令，再辨認錯誤種類與原因 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-101 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-101"><h4>Base Figure 101 · Completion Queue Entry: Status Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-101-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base101-1">Base101-1</span><span class="paragraph-text">SC 要搭 SCT 判斷，不能只看一個十六進位錯誤碼。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base101-2">Base101-2</span><span class="paragraph-text">DW3 中 SCT bits27:25=0、SC bits24:17=23h 時，才是通用 Lockdown 禁止狀態；Phase Tag 不屬於 SC。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-status-fields">欄位、條件與相關細節：先辨認完成的命令，再辨認錯誤種類與原因 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-103 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-103"><h4>Base Figure 103 · Status Code – Generic Command Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-103-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base103-1">Base103-1</span><span class="paragraph-text">通用 SC=23h 指出命令因現有 Lockdown 限制而中止。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.3.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3.1, Figure 103, 文件頁 147,149, PDF 頁 173,175</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base103-2">Base103-2</span><span class="paragraph-text">設定成功後送被限制的 Set Features，讀到 SCT0、SC23h；不是在說 LID23h，也不是 Lockdown opcode23h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-status-fields">欄位、條件與相關細節：先辨認完成的命令，再辨認錯誤種類與原因 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-persistence"><summary>圖表組 09 · 限制何時消失，要看 CSEL 與持續性設定 · 6 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.16">11.16.</span><span class="paragraph-text">Figure 518／519 對照輸入 LDPE 和輸出 LDPS；512～514 與 292 僅補足 PERID、凍結、待生效狀態與認證支援，避免把持續性當成單一無條件開關。</span></p>
+<a class="reading-link" href="#module-lockdown-persistence">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-persistence-fields"><h4 id="fields-heading-lockdown-persistence-fields">讀目前狀態、待生效狀態與支援能力，三者不能互相代替</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.17">11.17.</span><span class="paragraph-text">只教 Lockdown 持續性必需的 Personality02h；不展開其他 personality 設定或認證封包。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-persistence-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>FID22h／PERID02h</td><td>前者選 Configurable Device Personality；後者選 Lockdown Persistence，這個 personality 無額外 data buffer。</td><td>FID 與 PERID 各占自己的欄位，不能互換。</td></tr><tr><td>Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]</td><td>設定跨 power-cycle 持續性／回報目前狀態；各自 bits31:1 保留。</td><td>只把 LDPE1 套用到 CSEL0 的全體禁止持續性規則。</td></tr><tr><td>CDW13 CHPS[9]／PERFS[8]／PERID[7:0]</td><td>Set 的 CHPS1 請求改設定，0 不改；PERFS1 請求凍結，0 不是已凍結對象的通用解凍方法。Get 忽略 CHPS/PERFS。</td><td>對尚未凍結的 PERID02h 要求改設定可示範 202h；不代表已完成所有能力與重設條件。</td></tr><tr><td>Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]</td><td>選 PERID02h 時：是否製造預設／是否有待變更／凍結或待凍結／對象；高位保留。</td><td>PPSC1 表示不能把請求接受與設定已生效當成同一件事。</td></tr><tr><td>Properties PPS byte0／PERID byte1／MRSTT byte2</td><td>PPS5bytes；PERID 辨認對象；MRSTT0 無 reset、1 Controller Level、2 排除 Controller Reset 的 Limited Controller Level、3 subsystem reset、4 main power cycle。</td><td>MRSTT0 的變更須在 Set 成功前套用；非零需滿足對應 reset 條件。</td></tr><tr><td>Properties AUS byte3</td><td>bit0 PCAS 支援 Physical Credential Authentication；bit1 PKAS 支援 Programmable Key Authentication；高位保留，0 表示沒有認證解凍方法。</td><td>AUS2 只設 bit1，不是兩個 bit 都 1。</td></tr><tr><td>Properties byte4 PSCUDE[0]</td><td>表示改此 personality 是否可能影響 user data；[7:1]保留。</td><td>不是目前有多少命令被禁止，也不是凍結狀態。</td></tr><tr><td>已啟用持續性時的命令互動</td><td>若未凍結或無認證解凍支援，不准禁止 Set Features 或 FID22h；若任一 personality 支持認證解凍，允許指定 CDP Authentication/SPSP0002h 的 Security Send/Receive。</td><td>不把特定認證用途的例外擴張到所有 Security 操作。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>PSCUDE</dt><dd>Personality Settings Change User Data Effect；表示配置變更是否可能影響使用者資料。</dd></div><div><dt>PMDSS</dt><dd>Personality Manufacturing Default Settings State；表示設定是否為製造預設值。</dd></div><div><dt>PCAS</dt><dd>Physical Credential Authentication Support；支援以實體憑證認證解凍。</dd></div><div><dt>PKAS</dt><dd>Programmable Key Authentication Support；支援以可程式化金鑰認證解凍。</dd></div><div><dt>AUS</dt><dd>Authenticated Unfreeze Support；支援哪些認證解凍方法的位元欄位。</dd></div><div><dt>PPS</dt><dd>Personality Properties Size；一筆 personality 屬性結構的 byte 大小。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-292">Base 292</a><a href="#figure-LOCKDOWN-BASE-FIG-512">Base 512</a><a href="#figure-LOCKDOWN-BASE-FIG-513">Base 513</a><a href="#figure-LOCKDOWN-BASE-FIG-514">Base 514</a><a href="#figure-LOCKDOWN-BASE-FIG-518">Base 518</a><a href="#figure-LOCKDOWN-BASE-FIG-519">Base 519</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.28 · Base 2.4 §5.2.30.1.25 · Base 2.4 §5.2.30.1.25.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.28, Figure 292, 文件頁 291-293, PDF 頁 317-319</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25, Figure 512, 文件頁 485, PDF 頁 511</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25, Figure 513, 文件頁 485-486, PDF 頁 511-512</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25, Figure 514, 文件頁 486-487, PDF 頁 512-513</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25.4, Figure 518, 文件頁 493, PDF 頁 519</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25.4, Figure 519, 文件頁 494, PDF 頁 520</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-292 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-292"><h4>Base Figure 292 · Personality Properties Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-292-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base292-1">Base292-1</span><span class="paragraph-text">Personality Properties 的 AUS 說明能否認證解凍，MRSTT 說明設定所需的 reset 條件。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.28</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.28, Figure 292, 文件頁 291-293, PDF 頁 317-319</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base292-2">Base292-2</span><span class="paragraph-text">PERID02h 的 AUS=02h 表示支援 Programmable Key Authentication；MRSTT4 表示需 main power cycle。AUS 的 2 不是 PERID2，也不是兩個方法都支援。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-persistence-fields">欄位、條件與相關細節：讀目前狀態、待生效狀態與支援能力，三者不能互相代替 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-512 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-512"><h4>Base Figure 512 · Personality Identifier List</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-512-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base512-1">Base512-1</span><span class="paragraph-text">PERID02h 是 FID22h 裡的一種 personality，不是 FID02h。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25, Figure 512, 文件頁 485, PDF 頁 511</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base512-2">Base512-2</span><span class="paragraph-text">先選 Configurable Device Personality Feature22h，再用 PERID02h 選 Lockdown Persistence；這種 personality 不使用資料 buffer。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-persistence-fields">欄位、條件與相關細節：讀目前狀態、待生效狀態與支援能力，三者不能互相代替 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-513 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-513"><h4>Base Figure 513 · Configurable Device Personality - Command Dword 13</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-513-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base513-1">Base513-1</span><span class="paragraph-text">改設定與凍結是獨立位元，PERID 選擇它們操作的對象。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25, Figure 513, 文件頁 485-486, PDF 頁 511-512</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base513-2">Base513-2</span><span class="paragraph-text">CHPS1、PERFS0、PERID02h→CDW13=00000202h；只代表本例請求改設定且保持未凍結，不能用於直接解凍已凍結對象。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-persistence-fields">欄位、條件與相關細節：讀目前狀態、待生效狀態與支援能力，三者不能互相代替 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-514 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-514"><h4>Base Figure 514 · Configurable Device Personality – Get Features Completion Queue Entry Dword 0</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-514-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base514-1">Base514-1</span><span class="paragraph-text">DW0 回待生效與凍結狀態，不能只讀 DW1 的 LDPS 就省略它。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.25</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25, Figure 514, 文件頁 486-487, PDF 頁 512-513</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base514-2">Base514-2</span><span class="paragraph-text">DW0=00000302h 表示 PERID02h、PERFS1、PPSC1；可能仍有待生效變更，PERFS 也可表示待凍結，不可一律當成所有設定都已完成。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-persistence-fields">欄位、條件與相關細節：讀目前狀態、待生效狀態與支援能力，三者不能互相代替 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-518 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-518"><h4>Base Figure 518 · Lockdown Persistence Personality – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-518-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base518-1">Base518-1</span><span class="paragraph-text">LDPE 是全體限制的跨 power-cycle 設定，不是立即禁止某個 OFI。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.25.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25.4, Figure 518, 文件頁 493, PDF 頁 519</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base518-2">Base518-2</span><span class="paragraph-text">CDW11 bit0=1 要求啟用 Lockdown Persistence；仍需另外的 Lockdown 命令指定要禁止哪個 FID 或 opcode。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-persistence-fields">欄位、條件與相關細節：讀目前狀態、待生效狀態與支援能力，三者不能互相代替 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-519 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-519"><h4>Base Figure 519 · Lockdown Persistence Personality – Completion Queue Entry Dword 1</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-519-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base519-1">Base519-1</span><span class="paragraph-text">LDPS 回在 CQE DW1，顯示目前持續性狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.25.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.25.4, Figure 519, 文件頁 494, PDF 頁 520</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base519-2">Base519-2</span><span class="paragraph-text">查 PERID02h，DW1=1 代表持續性啟用；這不是目前禁止 1 個 FID，也不是 ACNTL1。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-persistence-fields">欄位、條件與相關細節：讀目前狀態、待生效狀態與支援能力，三者不能互相代替 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-lockdown-uuid"><summary>圖表組 10 · 同一廠商 FID 有不同定義時，用 UUID 選版本 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.18">11.18.</span><span class="paragraph-text">Figure 782 說明命令只帶索引；347／348 說明索引對到哪一項與哪 16 bytes。再回到 Figure 366 和 208，確認 UIDX 放在哪個命令。</span></p>
+<a class="reading-link" href="#module-lockdown-uuid">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-lockdown-uuid-fields"><h4 id="fields-heading-lockdown-uuid-fields">把命令索引接到清單，再接到 UUID 本體</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="11.19">11.19.</span><span class="paragraph-text">只讀廠商 FID 定義選擇所需的索引與格式；不將 UUID 當作權限憑證或密碼。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-lockdown-uuid-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>UIDX bits6:0</td><td>0 不指定 UUID；非零指向 UUID List 有效項目，還需該資訊支援該 UUID。</td><td>C0h 是 FID 候選值，不可能原封不動放進 7-bit UIDX。</td></tr><tr><td>List bytes31:0／entry i at32×i</td><td>前 32bytes 保留，i=1～126 可含有效項目；第 127 項清 0。</td><td>i2→offset64，和 UIDX2 的單位不同。</td></tr><tr><td>Entry ULEH byte0，IDASSOC[1:0]</td><td>0 未回報關聯；1 與 PCI Vendor ID 廠商相關；2 與 PCI Subsystem Vendor ID 廠商相關；3 保留。高位及 bytes15:1 保留。</td><td>IDASSOC1 不是 UUID List 索引 1。</td></tr><tr><td>Entry UUID bytes31:16</td><td>128-bit UUID；全 0、NVMe Invalid UUID 或不支持該資訊的 UUID 不可作有效選擇。</td><td>第 2 項 UUID 的實際 bytes 是 80～95；命令不傳這 16bytes，只傳索引。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>IDASSOC</dt><dd>Identifier Association；UUID 與廠商識別資訊的關聯分類。</dd></div><div><dt>ULEH</dt><dd>UUID Lists Entry Header；單一 UUID 項目的 header。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-LOCKDOWN-BASE-FIG-347">Base 347</a><a href="#figure-LOCKDOWN-BASE-FIG-348">Base 348</a><a href="#figure-LOCKDOWN-BASE-FIG-782">Base 782</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.14 · Base 2.4 §8.1.31.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.14, Figure 347, 文件頁 396, PDF 頁 422</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.14, Figure 348, 文件頁 396, PDF 頁 422</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.31.2, Figure 782, 文件頁 738, PDF 頁 764</p></details>
+</section>
+<!-- figure-table:LOCKDOWN-BASE-FIG-347 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-347"><h4>Base Figure 347 · UUID List</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-347-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base347-1">Base347-1</span><span class="paragraph-text">UUID List 從索引 1 開始，前 32bytes 保留，不能把 offset0 當第一項。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.14, Figure 347, 文件頁 396, PDF 頁 422</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base347-2">Base347-2</span><span class="paragraph-text">索引 2 的 entry 起點=32×2=64；命令仍填 UIDX2。清單最多 126 個非零項，127 項強制清 0。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-uuid-fields">欄位、條件與相關細節：把命令索引接到清單，再接到 UUID 本體 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-348 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-348"><h4>Base Figure 348 · UUID List Entry</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-348-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base348-1">Base348-1</span><span class="paragraph-text">一個 32-byte entry 裡，UUID 本體只占後 16bytes。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.14, Figure 348, 文件頁 396, PDF 頁 422</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base348-2">Base348-2</span><span class="paragraph-text">索引 2 的 entry 從 64 開始；header 在 64，UUID 在 80～95。IDASSOC 只描述廠商關聯，不能用來代替 128-bit UUID。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-uuid-fields">欄位、條件與相關細節：把命令索引接到清單，再接到 UUID 本體 →</a></div></article>
+
+<!-- figure-table:LOCKDOWN-BASE-FIG-782 -->
+<article class="field-note" id="figure-LOCKDOWN-BASE-FIG-782"><h4>Base Figure 782 · UUID Index Field</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:LOCKDOWN-BASE-FIG-782-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base782-1">Base782-1</span><span class="paragraph-text">UIDX 只指定 UUID 清單位置，0 代表不指定。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.31.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.31.2, Figure 782, 文件頁 738, PDF 頁 764</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base782-2">Base782-2</span><span class="paragraph-text">UIDX2 對第 2 項 UUID；如果那項 UUID 全 0 或對本資訊不受支援，就回 Invalid Field，而不是自動換第 1 項。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-lockdown-uuid-fields">欄位、條件與相關細節：把命令索引接到清單，再接到 UUID 本體 →</a></div></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:lockdown-eligibility -->
+<details class="review-question" id="qa-lockdown-eligibility"><summary>1. LID 14h 可禁止清單含 06h，就代表目前已禁止嗎？</summary>
+<div data-qa-answer="lockdown-eligibility"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="12.01">12.01.</span><span class="paragraph-text">不代表。先看 SCP 確認它是哪種代碼，CNTTS=0 只表示可禁止。要查目前 Admin Queue 限制，應用同一種類並選 CNTTS=1，再配合正確格式與控制器範圍。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 279-280, PDF 頁 305-306</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 281, PDF 頁 307</p>
+</details></details>
+<!-- qa:lockdown-union -->
+<details class="review-question" id="qa-lockdown-union"><summary>2. 全體增強清單回 06 00，能說全部控制器都允許 06h 嗎？</summary>
+<div data-qa-answer="lockdown-union"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="12.02">12.02.</span><span class="paragraph-text">不能。這是一筆已回報的 CFI=06h，ACNTL=0 表示至少一台但非全部符合這次查詢。如果 CNTTS=1，它表示只有部分控制器目前禁止；要找是哪台需用特定 CNTLID 查詢。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 282-283, PDF 頁 308-309</p>
+</details></details>
+<!-- qa:lockdown-encoding -->
+<details class="review-question" id="qa-lockdown-encoding"><summary>3. 要解除 controller7 的 FID06h 限制，能只送 PRHBT=0 嗎？</summary>
+<div data-qa-answer="lockdown-encoding"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="12.03">12.03.</span><span class="paragraph-text">還需保留 SCP=2、OFI=06h、IFC=0、CSEL=1、CSS=7 等相同選擇，並確保執行 Lockdown 的入口仍允許。PRHBT 只決定禁止或允許，不指定對象。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 405-407, PDF 頁 431-433</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 406-407, PDF 頁 432-433</p>
+</details></details>
+<!-- qa:lockdown-persist -->
+<details class="review-question" id="qa-lockdown-persist"><summary>4. LDPE=1，是否每個 CSEL 建立的限制都能跨斷電保留？</summary>
+<div data-qa-answer="lockdown-persist"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="12.04">12.04.</span><span class="paragraph-text">不是。跨 power cycle 的 Lockdown Persistence 規則針對 CSEL=0 的全體限制；CSEL=1、2 仍依其在 power cycle 或後續解除時結束的規則。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.5, 文件頁 598-599, PDF 頁 624-625</p>
+</details></details>
+<!-- qa:lockdown-offset -->
+<details class="review-question" id="qa-lockdown-offset"><summary>5. 增強 Log 第二筆在 byte18，UUID 第二項在 byte64，兩個 2 可以互用嗎？</summary>
+<div data-qa-answer="lockdown-offset"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="12.05">12.05.</span><span class="paragraph-text">不能。CFIDS=2 時增強 Log 第 2 筆從 16+1×2=18 開始；UIDX=2 選 UUID 第 2 項，其 entry 從 64 開始。OT=0 的 Get Log 起點還要 4-byte 對齊，所以讀含 byte18 的資料可從 16 開始。索引和值的位置是不同單位。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 282-283, PDF 頁 308-309</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.20, 文件頁 279-280, PDF 頁 305-306</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.16, 文件頁 406-407, PDF 頁 432-433</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p></details></footer></main></div></body></html>

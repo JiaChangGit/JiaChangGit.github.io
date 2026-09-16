@@ -19,6 +19,9 @@ def guide(source, numbers, key, title, relation, rows):
 
 
 def get(figure):
+    if figure['report_id'] == 'base-command-feature-lockdown':
+        from scripts.nvme_lockdown_figures import guide as selected_guide
+        return selected_guide(figure)
     if figure['report_id'] == 'base-flexible-data-placement':
         from scripts.nvme_fdp_figures import guide as selected_guide
         return selected_guide(figure)

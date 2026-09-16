@@ -33996,6 +33996,1353 @@
         "zh_tw": "這些是FDP資料生命週期的必要背景；DSM屬advisory，不能把它畫成收到就必定擦除。",
         "en": "Only the FDP-related field slices explained in the linked field guide."
       }
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-274",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "274",
+      "title": "Command and Feature Lockdown Log Specific Parameter Field",
+      "section": "5.2.13.1.20",
+      "printed_pages": "280",
+      "pdf_pages": "306",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "ELPF",
+        "CDW10",
+        "CCFLS",
+        "CNTTS",
+        "SCP",
+        "FID",
+        "SCP2",
+        "CNTLID",
+        "LSI",
+        "CDW11",
+        "CMD11"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "4947516f9bccd997f1e4591bad228b959ade47b9a771040b5d94c14eda55b371",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-275",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "275",
+      "title": "Controller Identifier - Log Specific Identifier",
+      "section": "5.2.13.1.20",
+      "printed_pages": "280",
+      "pdf_pages": "306",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "ELPF",
+        "CDW10",
+        "CCFLS",
+        "CNTTS",
+        "SCP",
+        "FID",
+        "SCP2",
+        "CNTLID",
+        "LSI",
+        "CDW11",
+        "CMD11"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "4947516f9bccd997f1e4591bad228b959ade47b9a771040b5d94c14eda55b371",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-276",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "276",
+      "title": "Command and Feature Lockdown Log Page",
+      "section": "5.2.13.1.20",
+      "printed_pages": "281",
+      "pdf_pages": "307",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CFILA",
+        "CS",
+        "SS",
+        "SCP",
+        "CS1",
+        "SS2",
+        "LNGTH",
+        "CFIL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "6723cad57f7e99b874a19d44698f88cceca8d8ec6b42cc220e32237a094718ea",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-basic",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-277",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "277",
+      "title": "Command and Feature Lockdown Log Page – Enhanced",
+      "section": "5.2.13.1.20",
+      "printed_pages": "282-283",
+      "pdf_pages": "308-309",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "VER",
+        "CFIA",
+        "VER0",
+        "CNTLID",
+        "SZE",
+        "NCFID9",
+        "CFIDS11",
+        "CFIDS2",
+        "CFI",
+        "ACNTL",
+        "SCP"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "f1725346da3f2cd2b2d04d0d41abbb62d3d1ca4d330dee68f3ca8ca338d7163c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-enhanced",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-278",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "278",
+      "title": "Command and Feature Identifier Descriptor",
+      "section": "5.2.13.1.20",
+      "printed_pages": "283",
+      "pdf_pages": "309",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "VER",
+        "CFIA",
+        "VER0",
+        "CNTLID",
+        "SZE",
+        "NCFID9",
+        "CFIDS11",
+        "CFIDS2",
+        "CFI",
+        "ACNTL",
+        "SCP"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "6ab3e92712368d5970bf8c525b42adb3e5077d79461aed6f64c08ac4d9e214b3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-enhanced",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-365",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "365",
+      "title": "Lockdown – Command Dword 10",
+      "section": "5.2.16",
+      "printed_pages": "405-406",
+      "pdf_pages": "431-432",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "CSEL",
+        "CDW14",
+        "CSS",
+        "OFI",
+        "SCP",
+        "FID",
+        "SCP2",
+        "IFC",
+        "PRHBT",
+        "UIDX"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "a14fb50f62d2c9bac1040691267d516200553a9a97f9cf646789147f76db5dec",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-command",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-366",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "366",
+      "title": "Lockdown – Command Dword 14",
+      "section": "5.2.16",
+      "printed_pages": "407",
+      "pdf_pages": "433",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "CSEL",
+        "CDW14",
+        "CSS",
+        "OFI",
+        "SCP",
+        "FID",
+        "SCP2",
+        "IFC",
+        "PRHBT",
+        "UIDX"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "066cc11468318232632470a43727c79d7e6a74f88f3ae801536d92446039a1c5",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-command",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-367",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "367",
+      "title": "Lockdown – Command Specific Status Values",
+      "section": "5.2.16",
+      "printed_pages": "408",
+      "pdf_pages": "434",
+      "scope_entry_id": "LOCKDOWN-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DW3",
+        "CID",
+        "STATUS",
+        "SC",
+        "SCT",
+        "SCT0",
+        "SCT1",
+        "DNR",
+        "CRD"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "ff9a91ec827664947ac3a61635ee96ba87210c0d1a4306b2ab1b2008a356767a",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-result",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-028",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "28",
+      "title": "Admin Command Support Requirements",
+      "section": "3.1.3",
+      "printed_pages": "45-46",
+      "pdf_pages": "71-72",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "OACS",
+        "CFLS",
+        "CCFLS",
+        "OPC",
+        "SQE",
+        "CDW0",
+        "CID",
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "7d17b5764efbba621f6362aebf9af145fb419a7ab5b453df57ac7db3efa36b08",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-model",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "Identify Controller不整份複製；本篇OACS與必要的UUID能力依各欄位局部閱讀。 OACS bytes257:256：CFLS[10]／CCFLS[13]; OPC：SQE CDW0[7:0]; CID：SQE CDW0[31:16]; DPTR／命令專用CDW"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-093",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "OACS",
+        "CFLS",
+        "CCFLS",
+        "OPC",
+        "SQE",
+        "CDW0",
+        "CID",
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "b99a61ac238013d8e32afb610743c0caa9b82ab907da5187619d42ae10ded1e0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-model",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "Identify Controller不整份複製；本篇OACS與必要的UUID能力依各欄位局部閱讀。 OACS bytes257:256：CFLS[10]／CCFLS[13]; OPC：SQE CDW0[7:0]; CID：SQE CDW0[31:16]; DPTR／命令專用CDW"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-338",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "352",
+      "pdf_pages": "378",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "OACS",
+        "CFLS",
+        "CCFLS",
+        "OPC",
+        "SQE",
+        "CDW0",
+        "CID",
+        "DPTR"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c3cdf40157eb44028c4f58e2fb349ffb09c805528523fefdfcabacb72864a18d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-capability",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "Identify Controller不整份複製；本篇OACS與必要的UUID能力依各欄位局部閱讀。 OACS bytes257:256：CFLS[10]／CCFLS[13]; OPC：SQE CDW0[7:0]; CID：SQE CDW0[31:16]; DPTR／命令專用CDW"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-203",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page – Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "NUMD",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "UIDX",
+        "CSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "範例採OT0且已知裝置支援所需長度與offset；未定義的尾端資料不當作有效記錄。 DPTR; CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]; CDW11 LSI[31:16]／NUMDU[15:0]; CDW12 LPOL／CDW13 LPOU; CDW14 OT[23]／UIDX[6:0]／CSI[31:24]; 請求長度超過Log末端"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-204",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "NUMD",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "UIDX",
+        "CSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "範例採OT0且已知裝置支援所需長度與offset；未定義的尾端資料不當作有效記錄。 DPTR; CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]; CDW11 LSI[31:16]／NUMDU[15:0]; CDW12 LPOL／CDW13 LPOU; CDW14 OT[23]／UIDX[6:0]／CSI[31:24]; 請求長度超過Log末端"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-205",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "NUMD",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "UIDX",
+        "CSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "範例採OT0且已知裝置支援所需長度與offset；未定義的尾端資料不當作有效記錄。 DPTR; CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]; CDW11 LSI[31:16]／NUMDU[15:0]; CDW12 LPOL／CDW13 LPOU; CDW14 OT[23]／UIDX[6:0]／CSI[31:24]; 請求長度超過Log末端"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-206",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page – Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "NUMD",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "UIDX",
+        "CSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "範例採OT0且已知裝置支援所需長度與offset；未定義的尾端資料不當作有效記錄。 DPTR; CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]; CDW11 LSI[31:16]／NUMDU[15:0]; CDW12 LPOL／CDW13 LPOU; CDW14 OT[23]／UIDX[6:0]／CSI[31:24]; 請求長度超過Log末端"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-207",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page – Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "NUMD",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "UIDX",
+        "CSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "範例採OT0且已知裝置支援所需長度與offset；未定義的尾端資料不當作有效記錄。 DPTR; CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]; CDW11 LSI[31:16]／NUMDU[15:0]; CDW12 LPOL／CDW13 LPOU; CDW14 OT[23]／UIDX[6:0]／CSI[31:24]; 請求長度超過Log末端"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-208",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "CDW10",
+        "NUMDL",
+        "RAE",
+        "LSP",
+        "LID",
+        "CDW11",
+        "LSI",
+        "NUMDU",
+        "NUMD",
+        "CDW12",
+        "LPOL",
+        "CDW13",
+        "LPOU",
+        "CDW14",
+        "OT",
+        "UIDX",
+        "CSI"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8cb0acdbd8a5752d0805867233e556d419934da159c0da658d66e5cd0f26bc0f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-query",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "範例採OT0且已知裝置支援所需長度與offset；未定義的尾端資料不當作有效記錄。 DPTR; CDW10 NUMDL[31:16]／RAE[15]／LSP[14:8]／LID[7:0]; CDW11 LSI[31:16]／NUMDU[15:0]; CDW12 LPOL／CDW13 LPOU; CDW14 OT[23]／UIDX[6:0]／CSI[31:24]; 請求長度超過Log末端"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-099",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "99",
+      "title": "Completion Queue Entry: DW 3",
+      "section": "4.2.1",
+      "printed_pages": "145",
+      "pdf_pages": "171",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DW3",
+        "CID",
+        "STATUS",
+        "SC",
+        "SCT",
+        "SCT0",
+        "SCT1",
+        "DNR",
+        "CRD"
+      ],
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "evidence_digest": "62c4e4c1f455149bd744c4f4402fb7e3816c264d37153562c820dc487c4c6b70",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-result",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "以下bits以CQE DW3為起點；只有本篇需要的通用與命令特定代碼列入教學。 DW3 CID[15:0]／P[16]／STATUS[31:17]; SC[24:17]／SCT[27:25]; DNR[31]／M[30]／CRD[29:28]; SC1Fh、28h：SCT1; SC23h、02h：SCT0"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-101",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "101",
+      "title": "Completion Queue Entry: Status Field",
+      "section": "4.2.3",
+      "printed_pages": "145-146",
+      "pdf_pages": "171-172",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DW3",
+        "CID",
+        "STATUS",
+        "SC",
+        "SCT",
+        "SCT0",
+        "SCT1",
+        "DNR",
+        "CRD"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "8caab5160c15e3e1a23d11f1e73d85abcdf0bc707d41b44d37d9cd89baed01d2",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-result",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "以下bits以CQE DW3為起點；只有本篇需要的通用與命令特定代碼列入教學。 DW3 CID[15:0]／P[16]／STATUS[31:17]; SC[24:17]／SCT[27:25]; DNR[31]／M[30]／CRD[29:28]; SC1Fh、28h：SCT1; SC23h、02h：SCT0"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-103",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "103",
+      "title": "Status Code – Generic Command Status Values",
+      "section": "4.2.3.1",
+      "printed_pages": "147,149",
+      "pdf_pages": "173,175",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "DW3",
+        "CID",
+        "STATUS",
+        "SC",
+        "SCT",
+        "SCT0",
+        "SCT1",
+        "DNR",
+        "CRD"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "5aceff0696e94ce9739e7cf810ca90f6758f72b27bef25a379a94ef39a2cb2e9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-result",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "以下bits以CQE DW3為起點；只有本篇需要的通用與命令特定代碼列入教學。 DW3 CID[15:0]／P[16]／STATUS[31:17]; SC[24:17]／SCT[27:25]; DNR[31]／M[30]／CRD[29:28]; SC1Fh、28h：SCT1; SC23h、02h：SCT0"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-292",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "292",
+      "title": "Personality Properties Data Structure",
+      "section": "5.2.13.1.28",
+      "printed_pages": "291-293",
+      "pdf_pages": "317-319",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "LDPE",
+        "CQE",
+        "DW1",
+        "LDPS",
+        "CDW13",
+        "CHPS",
+        "PERFS",
+        "PERID",
+        "DW0",
+        "PMDSS",
+        "PPSC",
+        "PPS",
+        "MRSTT",
+        "AUS",
+        "PSCUDE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "726e97ede4fd4b47077be0c31d532bb06fbde731a0e17187ad6b89aa10b7a495",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-persistence",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只教Lockdown持續性必需的Personality02h；不展開其他personality設定或認證封包。 FID22h／PERID02h; Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]; CDW13 CHPS[9]／PERFS[8]／PERID[7:0]; Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]; Properties PPS byte0／PERID byte1／MRSTT byte2; Properties AUS byte3; Properties byte4 PSCUDE[0]; 已啟用持續性時的命令互動"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-512",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "512",
+      "title": "Personality Identifier List",
+      "section": "5.2.30.1.25",
+      "printed_pages": "485",
+      "pdf_pages": "511",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "LDPE",
+        "CQE",
+        "DW1",
+        "LDPS",
+        "CDW13",
+        "CHPS",
+        "PERFS",
+        "PERID",
+        "DW0",
+        "PMDSS",
+        "PPSC",
+        "PPS",
+        "MRSTT",
+        "AUS",
+        "PSCUDE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "1bcb6f7c79b5ba452d9a91b47da81acd76ae65a3975e77f95331d3637063e8f2",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-persistence",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只教Lockdown持續性必需的Personality02h；不展開其他personality設定或認證封包。 FID22h／PERID02h; Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]; CDW13 CHPS[9]／PERFS[8]／PERID[7:0]; Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]; Properties PPS byte0／PERID byte1／MRSTT byte2; Properties AUS byte3; Properties byte4 PSCUDE[0]; 已啟用持續性時的命令互動"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-513",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "513",
+      "title": "Configurable Device Personality - Command Dword 13",
+      "section": "5.2.30.1.25",
+      "printed_pages": "485-486",
+      "pdf_pages": "511-512",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "LDPE",
+        "CQE",
+        "DW1",
+        "LDPS",
+        "CDW13",
+        "CHPS",
+        "PERFS",
+        "PERID",
+        "DW0",
+        "PMDSS",
+        "PPSC",
+        "PPS",
+        "MRSTT",
+        "AUS",
+        "PSCUDE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "7bc79c2bac07f25704dc9a6fe868c51cc9dced8dfe155eb8177dc19989461f57",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-persistence",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只教Lockdown持續性必需的Personality02h；不展開其他personality設定或認證封包。 FID22h／PERID02h; Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]; CDW13 CHPS[9]／PERFS[8]／PERID[7:0]; Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]; Properties PPS byte0／PERID byte1／MRSTT byte2; Properties AUS byte3; Properties byte4 PSCUDE[0]; 已啟用持續性時的命令互動"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-514",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "514",
+      "title": "Configurable Device Personality – Get Features Completion Queue Entry Dword 0",
+      "section": "5.2.30.1.25",
+      "printed_pages": "486-487",
+      "pdf_pages": "512-513",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "LDPE",
+        "CQE",
+        "DW1",
+        "LDPS",
+        "CDW13",
+        "CHPS",
+        "PERFS",
+        "PERID",
+        "DW0",
+        "PMDSS",
+        "PPSC",
+        "PPS",
+        "MRSTT",
+        "AUS",
+        "PSCUDE"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "5712030c07145b78d30708857bad90670dcc3cf5a35e6b24fafc8da7b4bc0c43",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-persistence",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只教Lockdown持續性必需的Personality02h；不展開其他personality設定或認證封包。 FID22h／PERID02h; Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]; CDW13 CHPS[9]／PERFS[8]／PERID[7:0]; Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]; Properties PPS byte0／PERID byte1／MRSTT byte2; Properties AUS byte3; Properties byte4 PSCUDE[0]; 已啟用持續性時的命令互動"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-518",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "518",
+      "title": "Lockdown Persistence Personality – Command Dword 11",
+      "section": "5.2.30.1.25.4",
+      "printed_pages": "493",
+      "pdf_pages": "519",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "LDPE",
+        "CQE",
+        "DW1",
+        "LDPS",
+        "CDW13",
+        "CHPS",
+        "PERFS",
+        "PERID",
+        "DW0",
+        "PMDSS",
+        "PPSC",
+        "PPS",
+        "MRSTT",
+        "AUS",
+        "PSCUDE"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "7660e4bd0fa4ece4c5bc9cd1af9731c0941592db9f9b45729216f667fff3bcbe",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-persistence",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只教Lockdown持續性必需的Personality02h；不展開其他personality設定或認證封包。 FID22h／PERID02h; Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]; CDW13 CHPS[9]／PERFS[8]／PERID[7:0]; Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]; Properties PPS byte0／PERID byte1／MRSTT byte2; Properties AUS byte3; Properties byte4 PSCUDE[0]; 已啟用持續性時的命令互動"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-519",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "519",
+      "title": "Lockdown Persistence Personality – Completion Queue Entry Dword 1",
+      "section": "5.2.30.1.25.4",
+      "printed_pages": "494",
+      "pdf_pages": "520",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "LDPE",
+        "CQE",
+        "DW1",
+        "LDPS",
+        "CDW13",
+        "CHPS",
+        "PERFS",
+        "PERID",
+        "DW0",
+        "PMDSS",
+        "PPSC",
+        "PPS",
+        "MRSTT",
+        "AUS",
+        "PSCUDE"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "c1ac461143226a9629cdea7a3c3f128391e7d7d5bc0f29c3e17151f2b5f713cd",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-persistence",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只教Lockdown持續性必需的Personality02h；不展開其他personality設定或認證封包。 FID22h／PERID02h; Set CDW11 LDPE[0]／Get CQE DW1 LDPS[0]; CDW13 CHPS[9]／PERFS[8]／PERID[7:0]; Get CQE DW0 PMDSS[10]／PPSC[9]／PERFS[8]／PERID[7:0]; Properties PPS byte0／PERID byte1／MRSTT byte2; Properties AUS byte3; Properties byte4 PSCUDE[0]; 已啟用持續性時的命令互動"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-782",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "782",
+      "title": "UUID Index Field",
+      "section": "8.1.31.2",
+      "printed_pages": "738",
+      "pdf_pages": "764",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX",
+        "ULEH",
+        "IDASSOC",
+        "UUID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "6f8e007605eeed8358411b3f1b3696d94ceed909630256b20243aaa25ebf4838",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-uuid",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只讀廠商FID定義選擇所需的索引與格式；不將UUID當作權限憑證或密碼。 UIDX bits6:0; List bytes31:0／entry i at32×i; Entry ULEH byte0，IDASSOC[1:0]; Entry UUID bytes31:16"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-347",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "347",
+      "title": "UUID List",
+      "section": "5.2.14.2.14",
+      "printed_pages": "396",
+      "pdf_pages": "422",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX",
+        "ULEH",
+        "IDASSOC",
+        "UUID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "fe4d70b4ff6c585fdc432e50aeecec35eb79c305f0d5f638c7303ed4b3801e4c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-uuid",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只讀廠商FID定義選擇所需的索引與格式；不將UUID當作權限憑證或密碼。 UIDX bits6:0; List bytes31:0／entry i at32×i; Entry ULEH byte0，IDASSOC[1:0]; Entry UUID bytes31:16"
+    },
+    {
+      "id": "LOCKDOWN-BASE-FIG-348",
+      "report_id": "base-command-feature-lockdown",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "348",
+      "title": "UUID List Entry",
+      "section": "5.2.14.2.14",
+      "printed_pages": "396",
+      "pdf_pages": "422",
+      "scope_entry_id": "LOCKDOWN-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "dependency-slice",
+      "required_artifact_ids": [
+        "lockdown-tutorial-html"
+      ],
+      "introduced_in": [
+        "lockdown-tutorial-html"
+      ],
+      "key_items": [
+        "UIDX",
+        "ULEH",
+        "IDASSOC",
+        "UUID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "fe4d70b4ff6c585fdc432e50aeecec35eb79c305f0d5f638c7303ed4b3801e4c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "lockdown-uuid",
+      "role": "referenced_dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
+      ],
+      "dependency_focus": "只讀廠商FID定義選擇所需的索引與格式；不將UUID當作權限憑證或密碼。 UIDX bits6:0; List bytes31:0／entry i at32×i; Entry ULEH byte0，IDASSOC[1:0]; Entry UUID bytes31:16"
     }
   ]
 }
