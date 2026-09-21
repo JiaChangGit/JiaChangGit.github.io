@@ -284,6 +284,9 @@ class Reading:
         if self.id == 'admin-io-spec-walkthrough' and not self.tutorial:
             from scripts.nvme_admin_io import render_route
             out.append(render_route(self))
+        if self.id == 'base-read-recovery-level' and not self.tutorial:
+            from scripts.nvme_rrl import render_route
+            out.append(render_route(self))
         if self.id == 'base-command-feature-lockdown' and not self.tutorial:
             from scripts.nvme_lockdown import render_route
             out.append(render_route(self))

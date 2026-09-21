@@ -35343,6 +35343,610 @@
         "Base §§8.1.5, 5.2.13.1.20, 5.2.16"
       ],
       "dependency_focus": "只讀廠商FID定義選擇所需的索引與格式；不將UUID當作權限憑證或密碼。 UIDX bits6:0; List bytes31:0／entry i at32×i; Entry ULEH byte0，IDASSOC[1:0]; Entry UUID bytes31:16"
+    },
+    {
+      "id": "RRL-BASE-FIG-755",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "755",
+      "title": "Read Recovery Level Overview",
+      "section": "8.1.23",
+      "printed_pages": "690",
+      "pdf_pages": "716",
+      "scope_entry_id": "RRL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "RRL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "555210603378a783083dee612cfd8cd3186f9eb179b5d0788ea222ea3ccfdd9a",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-levels",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "RRL-BASE-FIG-484",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "484",
+      "title": "Read Recovery Level Config – Command Dword 11",
+      "section": "5.2.30.1.12",
+      "printed_pages": "473",
+      "pdf_pages": "499",
+      "scope_entry_id": "RRL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "NVMSETID",
+        "CDW12",
+        "RRL",
+        "SEL",
+        "CQE",
+        "DW0"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "579d31a774d62bfb6232adcaf7e72a6b28a0399a55458b7d889a7d13496e78ef",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-set",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "RRL-BASE-FIG-485",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "485",
+      "title": "Read Recovery Level Config – Command Dword 12",
+      "section": "5.2.30.1.12",
+      "printed_pages": "473",
+      "pdf_pages": "499",
+      "scope_entry_id": "RRL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "NVMSETID",
+        "CDW12",
+        "RRL",
+        "SEL",
+        "CQE",
+        "DW0"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "579d31a774d62bfb6232adcaf7e72a6b28a0399a55458b7d889a7d13496e78ef",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-set",
+      "role": "primary",
+      "scope_reduced": false,
+      "referenced_from": [],
+      "dependency_focus": null
+    },
+    {
+      "id": "RRL-BASE-FIG-067",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "67",
+      "title": "NVM Sets and Associated Namespaces",
+      "section": "3.2.2",
+      "printed_pages": "81",
+      "pdf_pages": "107",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NVM",
+        "NVMSETID",
+        "NS",
+        "A1",
+        "A3",
+        "B1",
+        "B2",
+        "C1",
+        "A2",
+        "RRL"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6bd3dfc598a8f6d0243f2a6db5ffd12782c21681793a49db62f12419df478785",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-scope",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "這張圖沒有 bit 欄位；要讀的是外框、namespace 方塊與未配置空間三者的關係。"
+    },
+    {
+      "id": "RRL-BASE-FIG-338",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "344-347,371-372",
+      "pdf_pages": "370-373,397-398",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "CTRATT",
+        "RRLVLS",
+        "RRL",
+        "NSETS",
+        "NVM",
+        "FID",
+        "RRLS",
+        "ONCS",
+        "SSFS",
+        "SEL",
+        "SV",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "b2173323711c79d5aff6b4930ad9286bdc2fc700fca9f002707c9d9478dcc103",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-discover",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "只讀本篇所需的欄位切片；其他能力 bit 有自己的定義，不能把未在此介紹的 bit 全當保留。位置全部以 Identify Controller 結構起點為準。"
+    },
+    {
+      "id": "RRL-BASE-FIG-093",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "NVM",
+        "NVMSETID",
+        "DPTR",
+        "FID",
+        "CDW10",
+        "SV",
+        "CDW11",
+        "RRL",
+        "CDW12",
+        "SSFS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "b99a61ac238013d8e32afb610743c0caa9b82ab907da5187619d42ae10ded1e0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-set",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "本篇只用共同格式中的 NSID、資料指標位置與 CDW10～12；欄位序號不是欄位內的值。"
+    },
+    {
+      "id": "RRL-BASE-FIG-463",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "463",
+      "title": "Set Features – Data Pointer",
+      "section": "5.2.30",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "NVM",
+        "NVMSETID",
+        "DPTR",
+        "FID",
+        "CDW10",
+        "SV",
+        "CDW11",
+        "RRL",
+        "CDW12",
+        "SSFS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f97f1901f0d3a3373be52f2b228ab11a3ac98356cd5cbbfb8e15a014a2a7be71",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-set",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "本篇只用共同格式中的 NSID、資料指標位置與 CDW10～12；欄位序號不是欄位內的值。"
+    },
+    {
+      "id": "RRL-BASE-FIG-464",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "NVM",
+        "NVMSETID",
+        "DPTR",
+        "FID",
+        "CDW10",
+        "SV",
+        "CDW11",
+        "RRL",
+        "CDW12",
+        "SSFS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "366ab9cd84b05dd2743ebe946dff5cf57bf06e0c817fa99e7504a738b9032c9e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-set",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "本篇只用共同格式中的 NSID、資料指標位置與 CDW10～12；欄位序號不是欄位內的值。"
+    },
+    {
+      "id": "RRL-BASE-FIG-197",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "197",
+      "title": "Get Features – Data Pointer",
+      "section": "5.2.12",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "SEL",
+        "FID",
+        "SEL3",
+        "CDW11",
+        "DPTR",
+        "NVMSETID",
+        "DW0",
+        "CHANG",
+        "RRL",
+        "NSSPEC",
+        "NSETS",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8fa88156c0783fe40ad916bf27117cdba844b0a63b2d5cae3ed300948925af2b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-get",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "Figure 198 是送出的命令；Figure 201 是 SEL=3 的回覆。SEL≠3 的成功回覆則回到 Figure 485 的 RRL 格式。"
+    },
+    {
+      "id": "RRL-BASE-FIG-198",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "SEL",
+        "FID",
+        "SEL3",
+        "CDW11",
+        "DPTR",
+        "NVMSETID",
+        "DW0",
+        "CHANG",
+        "RRL",
+        "NSSPEC",
+        "NSETS",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "1380340d28d58291a9ba4b387a47eb3481c606d62731ca9ec27687f1b6f85dd4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-get",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "Figure 198 是送出的命令；Figure 201 是 SEL=3 的回覆。SEL≠3 的成功回覆則回到 Figure 485 的 RRL 格式。"
+    },
+    {
+      "id": "RRL-BASE-FIG-201",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "CDW10",
+        "SEL",
+        "FID",
+        "SEL3",
+        "CDW11",
+        "DPTR",
+        "NVMSETID",
+        "DW0",
+        "CHANG",
+        "RRL",
+        "NSSPEC",
+        "NSETS",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "fe7483f9e4405684c84f544ad37ae3c3702515b37c2fef8b78b2e50ac63232ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-get",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "Figure 198 是送出的命令；Figure 201 是 SEL=3 的回覆。SEL≠3 的成功回覆則回到 Figure 485 的 RRL 格式。"
+    },
+    {
+      "id": "RRL-BASE-FIG-466",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Set Features – Feature Identifiers",
+      "section": "5.2.30",
+      "printed_pages": "458-459",
+      "pdf_pages": "484-485",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "5e5baa657e54567789d40cfc6dc6c25d57d0f66d3948c9f02d89eba67e6460ac",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-lifetime",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "先看 FID 12h 是否可保存。不可保存的持續性由 Figure 466 與 §4.4 直接決定；可保存者再用 Figures 126／127 的對應欄。"
+    },
+    {
+      "id": "RRL-BASE-FIG-126",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "126",
+      "title": "Current Value after Reset with Scope of Entire NVM Subsystem",
+      "section": "4.4",
+      "printed_pages": "167",
+      "pdf_pages": "193",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "57b0d66498b68c163654c138afe066b0fb5bf7731a4ea8e3faf01de99a4f1b22",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-lifetime",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "先看 FID 12h 是否可保存。不可保存的持續性由 Figure 466 與 §4.4 直接決定；可保存者再用 Figures 126／127 的對應欄。"
+    },
+    {
+      "id": "RRL-BASE-FIG-127",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "127",
+      "title": "Current Value after Reset with Scope of Subset of the NVM Subsystem",
+      "section": "4.4",
+      "printed_pages": "167-168",
+      "pdf_pages": "193-194",
+      "scope_entry_id": "RRL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "rrl-tutorial-html"
+      ],
+      "introduced_in": [
+        "rrl-tutorial-html"
+      ],
+      "key_items": [
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d4b3042751bc946c6a5ff781391a2018cc9bc383f85504d9d5bdbbffca2faa8c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "rrl-lifetime",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.23",
+        "Base §5.2.30.1.12"
+      ],
+      "dependency_focus": "先看 FID 12h 是否可保存。不可保存的持續性由 Figure 466 與 §4.4 直接決定；可保存者再用 Figures 126／127 的對應欄。"
     }
   ]
 }

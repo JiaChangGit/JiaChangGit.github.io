@@ -675,6 +675,44 @@
         "NVME-BASE-2.4"
       ],
       "parity_group": "lockdown-bilingual"
+    },
+    {
+      "id": "rrl-tutorial-html",
+      "report_id": "base-read-recovery-level",
+      "path": "DOCS/nvme-spec-report/base-read-recovery-level/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文獨立漸進教學與逐圖欄位解說",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "rrl-zh-md",
+      "report_id": "base-read-recovery-level",
+      "path": "_posts/2026-09-21-nvme-read-recovery-level-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；順向 Spec 路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "rrl-bilingual"
+    },
+    {
+      "id": "rrl-en-md",
+      "report_id": "base-read-recovery-level",
+      "path": "_posts/2026-09-21-nvme-read-recovery-level-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；順向 Spec 路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "rrl-bilingual"
     }
   ],
   "source_markers": {
@@ -741,7 +779,8 @@
     "adminio-tutorial-html",
     "streams-tutorial-html",
     "fdp-tutorial-html",
-    "lockdown-tutorial-html"
+    "lockdown-tutorial-html",
+    "rrl-tutorial-html"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -765,5 +804,5 @@
     "per_figure_takeaway_example_details": true,
     "post_purpose": "global view before opening the specification"
   },
-  "report_count": 17
+  "report_count": 18
 }

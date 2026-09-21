@@ -1804,6 +1804,56 @@
       ],
       "approval_note": "2026-09-16 使用者指定Base三節合為一篇，沿用三版與驗證後push授權。",
       "reference_teaching_policy": "必要引用僅教與本篇直接相關的欄位與條件；Fabrics排除。"
+    },
+    {
+      "id": "base-read-recovery-level",
+      "title_zh_tw": "NVMe Read Recovery Level",
+      "title_en": "NVMe Read Recovery Level",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "8.1.23",
+        "5.2.30.1.12"
+      ],
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.23",
+          "5.2.30.1.12"
+        ]
+      },
+      "excluded_sections": [],
+      "printed_pages": "473,689-690",
+      "pdf_pages": "499,715-716",
+      "included_figure_ids": [
+        "RRL-BASE-FIG-755",
+        "RRL-BASE-FIG-484",
+        "RRL-BASE-FIG-485",
+        "RRL-BASE-FIG-067",
+        "RRL-BASE-FIG-338",
+        "RRL-BASE-FIG-093",
+        "RRL-BASE-FIG-463",
+        "RRL-BASE-FIG-464",
+        "RRL-BASE-FIG-197",
+        "RRL-BASE-FIG-198",
+        "RRL-BASE-FIG-201",
+        "RRL-BASE-FIG-466",
+        "RRL-BASE-FIG-126",
+        "RRL-BASE-FIG-127"
+      ],
+      "dependency_figures": [
+        "RRL-BASE-FIG-067",
+        "RRL-BASE-FIG-338",
+        "RRL-BASE-FIG-093",
+        "RRL-BASE-FIG-463",
+        "RRL-BASE-FIG-464",
+        "RRL-BASE-FIG-197",
+        "RRL-BASE-FIG-198",
+        "RRL-BASE-FIG-201",
+        "RRL-BASE-FIG-466",
+        "RRL-BASE-FIG-126",
+        "RRL-BASE-FIG-127"
+      ],
+      "approval_note": "2026-09-21 使用者指定 Base §8.1.23 與 §5.2.30.1.12（FID 12h）合為一篇，沿用三版及驗證後 push 授權。",
+      "reference_teaching_policy": "逐圖教學涵蓋三張主範圍圖表及必要引用的相關欄位；不納入其他 FID，Fabrics 排除。"
     }
   ],
   "interpretation_sources": [
@@ -3174,6 +3224,68 @@
       ],
       "teaching_necessity": "Explain the exact command/log envelope, status classes, Identify capability bits, UUID indexing, and persistence/freeze exceptions required by the three primary sections.",
       "supports_topic": "Command and Feature Lockdown queries, scope, completion and persistence."
+    },
+    {
+      "id": "RRL-BASE-INCLUDE",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "8.1.23",
+        "5.2.30.1.12"
+      ],
+      "figures": [
+        "755",
+        "484",
+        "485"
+      ]
+    },
+    {
+      "id": "RRL-BASE-DEPENDENCY",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "3.2.2",
+        "5.2.14.2.1",
+        "4.1.1",
+        "5.2.30",
+        "5.2.12",
+        "5.2.12.2",
+        "4.4",
+        "5.2.30.1"
+      ],
+      "figures": [
+        "67",
+        "338",
+        "93",
+        "463",
+        "464",
+        "197",
+        "198",
+        "201",
+        "466",
+        "126",
+        "127"
+      ]
+    },
+    {
+      "id": "RRL-BASE-PREREQUISITES",
+      "report_id": "base-read-recovery-level",
+      "source_id": "NVME-BASE-2.4",
+      "status": "PREREQUISITE_ONLY",
+      "sections": [
+        "3.2.2",
+        "5.2.14.2.1",
+        "4.1.1",
+        "5.2.30",
+        "5.2.12",
+        "5.2.12.2",
+        "4.4",
+        "5.2.30.1"
+      ],
+      "teaching_necessity": "Explain NVM Set inheritance and identifiers, capability bitmaps, Feature command envelopes, typed Get results, command activation, shared access and conditional reset persistence needed for FID 12h.",
+      "supports_topic": "Read Recovery Level support, scope, configuration, readback and lifecycle."
     }
   ],
   "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",

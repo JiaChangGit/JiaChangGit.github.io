@@ -38,6 +38,9 @@ def steps(title, values, caption):
 
 def module_illustration(report_id, module, language):
     key = module['id']
+    if report_id == 'base-read-recovery-level':
+        from scripts.nvme_rrl_visuals import illustration
+        return illustration(key, language)
     if report_id == 'base-command-feature-lockdown':
         from scripts.nvme_lockdown_visuals import illustration
         return illustration(key, language)

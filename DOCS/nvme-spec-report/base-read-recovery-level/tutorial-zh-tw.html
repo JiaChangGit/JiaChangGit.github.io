@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Read Recovery Level：讀取復原、作用範圍與設定</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-rrl-levels">01 讀取遇到困難時，要花多少力氣復原？</a><a href="#module-rrl-scope">02 一個設定，會影響哪些儲存空間？</a><a href="#module-rrl-discover">03 讀懂支援位元，才知道哪些值能選</a><a href="#module-rrl-set">04 把「哪個集合、哪個等級」組成設定命令</a><a href="#module-rrl-get">05 讀回時先看 SEL，才知道 DW0 在回答什麼</a><a href="#module-rrl-activation">06 以成功完成為界，區分舊命令與新命令</a><a href="#module-rrl-lifetime">07 重設後保留什麼，要分可保存性與重設範圍</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Read Recovery Level：讀取復原、作用範圍與設定</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">讀取遇到難以復原的資料時，控制器應該再多試一些，還是少做一些復原、讓主機早點取得結果？Read Recovery Level 提供這項取捨。本文從等級與影響範圍開始，再把支援位元、設定命令、讀回格式和重設後的行為接起來，讓每個欄位都對應到一個具體問題。</span></p>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>先理解取捨</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">等級調整的是讀取錯誤復原的程度。比較最多、預設與最少復原，並分清策略、實際延遲與成功結果。</span></p></article>
+<article><span class="axis-number">02</span><h3>找到共用設定的對象</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">先看是否有儲存集合，再找哪些 namespace 在同一集合內。這決定一次設定影響誰，以及哪些空間無法各自選不同等級。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>namespace</dt><dd>主機透過控制器存取的一份邏輯儲存空間。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>把能力、要求與結果接起來</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">先查哪些等級受支援，再指定目標與新值，最後以正確的查詢格式讀回。支援清單、目前值與保存能力分別回答不同問題。</span></p></article>
+<article><span class="axis-number">04</span><h3>沿著時間追蹤設定</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">以設定成功區分先前與後續命令；再判斷重設覆蓋範圍、目前值與已保存值。這樣才能解釋何時用新值、何時可能回到另一個值。</span></p></article>
+</div>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">讀者已學過 OS、Computer Organization，並了解 SSD 的基本概念。本文的 Set 7／9、namespace A／B／C 與位元數值均為說明性範例；使用前須以實際裝置回報的集合與能力為準。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">先用一個 Set 的設定情境串起觀念，再比較容易混淆的值與範圍；讀完應能解釋哪些空間共用設定，以及每次查詢究竟回答什麼。</span></p>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">可以用同一個問題貫穿全文：想讓 Set 7 內的讀取採用最少復原，需要查哪些能力、送出什麼參數，又要怎樣知道目前真的在用這個設定？先理解這條流程，再看每個欄位的位置。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span><span class="paragraph-text">後半部會刻意比較相同數值在不同格式下的意思，以及相同設定在不同重設範圍下的結果。這些對比能避免只背等級名稱，卻把查詢或持續性判斷用錯。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-rrl-levels"><h2 id="heading-rrl-levels"><span class="section-number">01</span> 讀取遇到困難時，要花多少力氣復原？</h2>
+<!-- claim:RRL-LEVELS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Read Recovery Level（RRL）在讀取完成時間與錯誤復原投入之間提供取捨。支援此功能時，Level 4 是必備的預設等級，Level 15 是必備的 Fast Fail；Level 0 若有支援，提供最多復原。等級越高，復原量越少；與 I/O 命令 LR 的互動由實作決定。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Fast Fail</dt><dd>RRL Level 15 的正式名稱，表示最少復原量；沒有在此定義固定完成時間。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div><div><dt>RRL</dt><dd>Read Recovery Level；讀取錯誤復原等級，用來選擇讀取遇到困難時投入的復原程度。</dd></div><div><dt>LR</dt><dd>Limited Retry；I/O 命令中與限制復原相關的控制資訊，和 RRL 的互動由實作決定。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.23, 文件頁 689-690, PDF 頁 715-716</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先把「復原」放回讀取流程</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">主機送出讀取後，控制器需要從媒體取得正確資料。當資料不容易讀出時，額外的復原工作會占用時間。RRL 讓主機選擇控制器要投入多少復原，而不是直接指定要讀哪個位置、回傳多少 bytes，或把媒體內容改成另一份資料。</span></p>
+<h3>數字描述的是復原量的順序</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">規格定義 0～15 共 16 個可能的等級，數字往上走，復原量往下走。0 是最多復原，4 是一般程度且為預設，15 是最少復原。中間等級的差距不是固定比例：不能把 8 解讀成 4 的兩倍速度，也不能把等級當作重試次數。</span></p>
+<h3>先確認有功能，再談必備等級</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">RRL 本身不是每個控制器都必須具備的功能。一旦支援，subsystem 與所有控制器就必須支援 4、15，宣告能力與等級清單，並支援 FID 12h。0、1～3、5～14 是選用等級；表上列有這些數字，不代表手上的裝置全部能選。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl>
+<h3>Fast Fail 沒有定義一個毫秒數</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">Fast Fail 指最少的復原量。這兩節沒有替它指定 1 ms、10 ms 等上限，也沒有規定完全不做復原。它調整的是讀取困難時的處理策略；正常讀取可能根本用不到較深入的復原，因此不能承諾每筆 Read 都會變快。</span></p>
+<h3>不要替 LR 發明優先順序</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">I/O 命令中的 Limited Retry（LR）也是與復原有關的控制資訊，但 §8.1.23 明確把 LR 與 RRL 的互動留給實作。即使已選 Level 15，又送出帶 LR 的命令，仍不能由本規格推導成「一定零次重試」或「LR 一定蓋過 RRL」。兩者的共同效果需要對應實作資訊。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">說明性情境：資料有另一份可用副本的服務，可能希望裝置少做復原，早些交由上層決定下一步；願意等待這份媒體資料的工作，可能選較多復原的受支援等級。這是選擇策略的理由，不是特定等級的延遲或成功率保證。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-rrl-levels">閱讀相關規格圖表 → 讀取遇到困難時，要花多少力氣復原？</a>
+</section>
+<section class="lesson" id="module-rrl-scope"><h2 id="heading-rrl-scope"><span class="section-number">02</span> 一個設定，會影響哪些儲存空間？</h2>
+<!-- claim:RRL-SCOPE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">有 NVM Sets 時，FID 12h 以 NVM Set 為範圍，選中的集合共用一份 RRL。沒有 NVM Sets 時，範圍改為整個 NVM subsystem，所有 namespace 使用同一等級。改變 RRL 不會改變 namespace 中已有的資料。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM subsystem</dt><dd>NVMe 儲存子系統，可包含多個控制器及 namespace。</dd></div><div><dt>NVM Set</dt><dd>一組在邏輯上與其他集合分開的非揮發性儲存，可包含多個 namespace；本篇用它界定共用 RRL 的範圍。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, 文件頁 473, PDF 頁 499</p></details>
+<!-- claim:RRL-INHERITANCE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">在 NVM Set 內建立的 namespace 繼承該 Set 的 RRL；不支援 NVM Sets 時，所有 namespace 使用同一 RRL。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.23, 文件頁 689, PDF 頁 715</p></details>
+<!-- claim:RRL-SET-IDENTIFIER -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">NVMSETID 是 subsystem 內的 16-bit Set 識別值；支援 NVM Sets 時 0 為保留，不支援時主機將此欄清為 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMSETID</dt><dd>NVM Set Identifier；16-bit 集合識別碼，與 namespace 的 NSID 分開。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, 文件頁 80-82, PDF 頁 106-108</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先分清 namespace 與 NVM Set</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">namespace 是主機存取的邏輯儲存空間；NVM Set 則是可包含一個或多個 namespace 的儲存集合。具有已格式化儲存空間的 namespace 完整位於一個 NVM Set 內，不橫跨多個 Set。RRL 是集合的屬性，所以要沿 namespace 的歸屬往上找，才知道它共用誰的設定。</span></p>
+<h3>共享設定不代表共享每一個欄位</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">例子裡 A、B 可以是不同大小、不同用途的 namespace，但兩者在同一個 Set，因此共用 RRL。這個關係只說明讀取復原策略的範圍，不表示 A 的資料會被複製到 B，或兩者的每一項設定都完全相同。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 410" role="img"><title>同一 Set 內共用等級</title><desc>說明性範例：設定目標是 Set 7，A、B 一起使用 15；C 沿用 Set 9 的 4。若無 NVM Sets，則所有 namespace 共用 subsystem 的一份 RRL。來源：Base §8.1.23、§5.2.30.1.12、Figure 67。</desc><rect x="20" y="20" width="720" height="70" rx="6" class="v-object"/><text x="380.0" y="61.0" text-anchor="middle" font-size="17">NVM subsystem</text><path d="M190,90 L190,140" class="v-line"/><path d="M186,133 L190,140 L194,133" class="v-line"/><path d="M565,90 L565,140" class="v-line"/><path d="M561,133 L565,140 L569,133" class="v-line"/><rect x="20" y="140" width="345" height="95" rx="6" class="v-command"/><text x="192.5" y="181.0" text-anchor="middle" font-size="17">NVM Set 7</text><text x="192.5" y="206.0" text-anchor="middle" font-size="17">RRL: 4 → 15</text><rect x="395" y="140" width="345" height="95" rx="6" class="v-object"/><text x="567.5" y="181.0" text-anchor="middle" font-size="17">NVM Set 9</text><text x="567.5" y="206.0" text-anchor="middle" font-size="17">RRL: 4</text><path d="M190,235 L190,285" class="v-line"/><path d="M186,278 L190,285 L194,278" class="v-line"/><path d="M565,235 L565,285" class="v-line"/><path d="M561,278 L565,285 L569,278" class="v-line"/><rect x="20" y="285" width="345" height="100" rx="6" class="v-success"/><text x="192.5" y="328.5" text-anchor="middle" font-size="17">namespace A + B</text><text x="192.5" y="353.5" text-anchor="middle" font-size="17">RRL = 15</text><rect x="395" y="285" width="345" height="100" rx="6" class="v-object"/><text x="567.5" y="328.5" text-anchor="middle" font-size="17">namespace C</text><text x="567.5" y="353.5" text-anchor="middle" font-size="17">RRL = 4</text></svg></div><figcaption>說明性範例：設定目標是 Set 7，A、B 一起使用 15；C 沿用 Set 9 的 4。若無 NVM Sets，則所有 namespace 共用 subsystem 的一份 RRL。來源：Base §8.1.23、§5.2.30.1.12、Figure 67。</figcaption></figure>
+
+<h3>新增 namespace 也沿用 Set 的等級</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">假設 Set 7 已經設為 15，之後又在其中建立 namespace D，D 繼承的是 Set 7 的 RRL。不能因為 D 是新建的，就推論它一定單獨回到預設 4；預設等級與目前 Set 正在使用的等級是不同概念。</span></p>
+<h3>沒有 NVM Sets 時，不能靠編號隔離影響</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">若裝置不支援 NVM Sets，所有 namespace 使用 subsystem 的同一個 RRL。此時 FID 12h 不用 NVMSETID 選範圍；送入 7 並不會創造 Set 7。主機依 NVM Set 共通規則把 NVMSETID 填 0，控制器在本 Feature 忽略該欄。</span></p>
+<h3>變更策略與變更資料分開理解</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">從 4 改到 15 不會清除、格式化或重寫 namespace 中的資料。它可能改變後續遇到困難的讀取如何處理，不能當作修復既有資料的命令。主機也不能透過本 Feature 指定只改某一個 LBA 的策略。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.09">02.09.</span><span class="paragraph-text">說明性範例：Set 7 內有 namespace A、B，Set 9 內有 C。把 Set 7 改成 15，A、B 共用這個新等級，C 仍使用 Set 9 的設定。不能把 A 改成 15、同時要求同一 Set 內的 B 保持 4。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-rrl-scope">閱讀相關規格圖表 → 一個設定，會影響哪些儲存空間？</a>
+</section>
+<section class="lesson" id="module-rrl-discover"><h2 id="heading-rrl-discover"><span class="section-number">03</span> 讀懂支援位元，才知道哪些值能選</h2>
+<!-- claim:RRL-DISCOVER -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">Identify Controller 的 CTRATT.RRLVLS 表示是否支援功能，RRLS 的 16 個 bits 分別表示各等級是否支援。CTRATT.NSETS 決定使用 Set 或 subsystem 範圍；ONCS.SSFS 則決定能否使用非零 SEL 與 SV。這些能力不能互相替代。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CTRATT</dt><dd>Controller Attributes；Identify Controller 中的控制器屬性位元欄位。</dd></div><div><dt>RRLVLS</dt><dd>Read Recovery Levels；CTRATT 中表示是否支援 RRL 功能的 bit。</dd></div><div><dt>NSETS</dt><dd>NVM Sets；CTRATT 中的 NVM Set 支援 bit。</dd></div><div><dt>ONCS</dt><dd>Optional NVM Command Support；Identify Controller 中的能力欄位，本篇只使用其中 SSFS。</dd></div><div><dt>RRLS</dt><dd>Read Recovery Levels Supported；每個 bit 對應一個等級是否受支援。</dd></div><div><dt>SSFS</dt><dd>Save and Select Feature Support；表示是否支援 Set 的非零 SV 與 Get 的非零 SEL。</dd></div><div><dt>SEL</dt><dd>Select；Get Features 要求回傳目前值、預設值、已保存值或能力的選擇欄位。</dd></div><div><dt>SV</dt><dd>Save；Set Features 中提出保存設定要求的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 文件頁 344-347,371-372, PDF 頁 370-373,397-398</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先確認整體支援</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">在 Identify Controller 資料結構 bytes 99:96 的 CTRATT 內，bit 3 是 RRLVLS。它為 1 才表示控制器支援 RRL；bit 2 的 NSETS 則是另一件事，說明有沒有 NVM Sets。RRLVLS=1、NSETS=0 是可以理解的組合：功能存在，但設定由整個 subsystem 共用。</span></p>
+<h3>bitmap 中，每一個 bit 都是一個答案</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">RRLS 位於 bytes 101:100。要判斷等級 n 是否支援，計算 (RRLS &gt;&gt; n) &amp; 1；結果 1 表示支援，0 表示不支援。範例 8011h 的 bit 8 是 0，因此即使 8 在 0～15 範圍內，也不能當成可選值。這個檢查與欄位放不放得下 8 是兩回事。</span></p>
+<figure><figcaption><strong>從支援清單走到一個設定值</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">想選的等級</th><th scope="col">檢查 RRLS=8011h 的哪個 bit</th><th scope="col">送進 RRL 的值</th></tr></thead><tbody><tr><td>0</td><td>bit 0 = 1，支援</td><td>0h</td></tr><tr><td>4</td><td>bit 4 = 1，支援</td><td>4h</td></tr><tr><td>8</td><td>bit 8 = 0，不支援</td><td>不選此值</td></tr><tr><td>15</td><td>bit 15 = 1，支援</td><td>Fh</td></tr></tbody></table></div><figcaption>RRLS 的 bit 位置選一個是／否答案；RRL 則直接保存等級代碼。兩者不能互換。來源：Base Figures 338、485。</figcaption></figure>
+
+<h3>不要把 bitmap 與 RRL 欄位互換</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">RRLS 用 16 個 bits 同時列出可用集合；設定命令的 RRL 只用 4 個 bits 放一個等級。選 15 時，RRLS 中應檢查的是 bit 15，也就是遮罩 8000h；實際送進 RRL 的卻是 Fh，不能把 8000h 塞進該欄。</span></p>
+<h3>再確認查詢與保存的擴充能力</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">ONCS 位於 bytes 521:520，其中 bit 4 是 SSFS。若為 0，不使用非零 SEL 或 SV，仍可以用 SEL=0 讀目前值。若為 1，可用 SEL=3 查本 Feature 是否可變更、是否可保存；這裡回的是另一組能力 bits，並不是 RRLS 支援等級清單。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">說明性範例：RRLS=8011h，拆成 (1&lt;&lt;15) | (1&lt;&lt;4) | (1&lt;&lt;0)，表示只支援 0、4、15。byte 100、101 若是 11 80，依 little-endian 組合後才是 8011h；它不是目前等級，也不是「共有 8011h 個等級」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>little-endian</dt><dd>低位 byte 先存；例如 11 80 組成 16-bit 值 8011h。</dd></div></dl></aside></div>
+</div>
+<a class="reading-link" href="#reading-rrl-discover">閱讀相關規格圖表 → 讀懂支援位元，才知道哪些值能選</a>
+</section>
+<section class="lesson" id="module-rrl-set"><h2 id="heading-rrl-set"><span class="section-number">04</span> 把「哪個集合、哪個等級」組成設定命令</h2>
+<!-- claim:RRL-SET -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">Set Features 用 FID 12h 選 Read Recovery Level Config，CDW11 的低 16 bits 放 NVMSETID，CDW12 的低 4 bits 放 RRL。這個 Feature 不使用資料 buffer；NVM Set 或 subsystem 範圍的 NSID 應為 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>buffer</dt><dd>資料緩衝區；本 Feature 的參數與回覆不需要額外的資料緩衝區。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, 文件頁 473, PDF 頁 499</p></details>
+<!-- claim:RRL-TARGET-RULES -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">NVM Set 與 subsystem 範圍的 Feature，NSID 應為 0；非零值使 Get／Set Features 被中止，不能用來縮小成單一 namespace。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 169, PDF 頁 195</p></details>
+<!-- claim:RRL-SET-ENVELOPE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">FID 12h 不使用資料 buffer；Set 的 CDW10 帶 FID 與 SV。未使用的命令專用欄位保留，不可保存時要求 SV=1 會以 Feature Identifier Not Saveable 中止。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 456-459, PDF 頁 482-485</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先選 Feature，再解讀後面的參數</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">CDW10 bits 7:0 的 FID=12h 選本篇功能；bit 31 的 SV 控制是否提出保存要求。先用 SV=0 理解目前值的修改，得到 CDW10=00000012h。是否需要保存、是否支援保存，以及重設後如何處理，會在後面的生命週期單元分開說明。</span></p>
+<h3>NVMSETID 不是 namespace 編號</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">CDW11 bits 15:0 是 16-bit NVM Set Identifier，高 16 bits 保留。已支援 NVM Sets 時要填既有 Set 的識別碼，0 是保留值，不是「全部 Set」。本篇例子用已知有效的 7；不把 namespace A 的 NSID 放到此欄。命令本身的 NSID 則依共通規則填 0，非零會被中止。</span></p>
+<h3>RRL 是一個 4-bit 代碼</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">CDW12 bits 3:0 直接保存等級，bits 31:4 保留。15 的十六進位是 Fh，所以整個 CDW12 是 0000000Fh。這不是數量減 1 的欄位，選 Level 15 就填 15；填 14 會選到另一個等級。送出前先確認 RRLS 的對應 bit 為 1。</span></p>
+<h3>只有參數，沒有另外一包設定資料</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">本 Feature 的屬性就在 CDW11、CDW12，不需要另外準備一份 data buffer。Set 的 DPTR 在此沒有用途，Get 的 DPTR 也會被忽略。其餘沒有供本 Feature 使用的命令專用欄位屬保留區；示例將保留位清 0，不自行塞入額外控制資訊。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer；命令中的資料指標，本 Feature 不用它傳遞設定。</dd></div></dl>
+<h3>看懂索引與位移，才能讀欄位圖</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.08">04.08.</span><span class="paragraph-text">Dword 是 4 bytes；命令的 CDW11 表示從 0 起算的第 11 個 Dword，起點是 byte offset 44，CDW12 起點則是 48。NVMSETID=7 是識別值，並不是 byte offset 7。命令欄位位置、欄位中的 Set 編號、欄位中的等級，各有不同用途。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>byte offset</dt><dd>相對資料結構起點、以 byte 計算的距離；和項目索引或識別值不同。</dd></div><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div><div><dt>Dword</dt><dd>Dword（Double word）；32 bits，也就是 4 bytes。對比 word=16 bits；例如 zero-based dword count=3 代表 4 個 Dwords，也就是 16 bytes。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.09">04.09.</span><span class="paragraph-text">說明性範例：已確認 Set 7 存在且支援 Level 15，以 SV=0 設定：NSID=0、CDW10=00000012h、CDW11=00000007h、CDW12=0000000Fh。三個數值依序回答「改哪項功能、改哪個 Set、改成哪個等級」。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-rrl-set">閱讀相關規格圖表 → 把「哪個集合、哪個等級」組成設定命令</a>
+</section>
+<section class="lesson" id="module-rrl-get"><h2 id="heading-rrl-get"><span class="section-number">05</span> 讀回時先看 SEL，才知道 DW0 在回答什麼</h2>
+<!-- claim:RRL-GET -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">成功的 Get Features 在 SEL≠3 時，以 CQE DW0 回傳 Figure 485 格式的 RRL。SEL=3 則改回 Supported Capabilities：CHANG、NSSPEC、SVBL。相同 DW0 數值可能有完全不同的意思；RRLS 等級清單仍應從 Identify Controller 取得。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>NS Specific；1 表示 namespace scope，0 本身不指定其他範圍。</dd></div><div><dt>CHANG</dt><dd>Changeable；回報該 Feature 是否有可變更的設定值。</dd></div><div><dt>SVBL</dt><dd>Saveable；回報該 Feature 的值是否可保存。</dd></div><div><dt>CQE</dt><dd>Completion Queue Entry；完成佇列中回報命令執行結果的項目。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, 文件頁 473, PDF 頁 499</p></details>
+<!-- claim:RRL-QUERY-SELECTION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">SEL 的 0、1、2、3 分別選目前、預設、已保存與能力。沒有可用的 saved 值時，saved 查詢回 default；能力格式只表示 CHANG、NSSPEC 與 SVBL。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>default</dt><dd>預設值；本篇 RRL 預設為 Level 4，與目前值分開。</dd></div><div><dt>saved</dt><dd>已保存值；成功要求保存的 Feature 設定，用於適用的恢復情境。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-212, PDF 頁 235-238</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>讀目前值，沿用相同的目標 Set</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">Get Features 的 CDW10 bits 10:8 是 SEL，bits 7:0 是 FID。查目前值用 SEL=0，因此 CDW10=00000012h；查 Set 7 仍用 CDW11=00000007h、NSID=0。Set 命令放新等級的 CDW12，不是 Get 命令拿來要求回傳等級的位置；Get 的未使用命令專用欄位保留。</span></p>
+<h3>成功完成之後，從回覆而非命令抽出等級</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">確認 Get 命令成功，再讀完成項目的 DW0，取 bits 3:0 就得到 RRL。若 DW0=0000000Fh，讀回的是 Level 15。Figure 485 雖然以 Command Dword 12 為標題，§5.2.30.1.12 另明確指定：Get 成功且 SEL≠3 時，同一個格式放到 CQE DW0。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 455" role="img"><title>同一個 DW0=4，先確認查詢問題</title><desc>假設 SSFS=1，兩次都成功。SEL=0 的回覆採 RRL 格式；SEL=3 的回覆採能力格式。能力查詢不會改變目前等級。來源：Base Figures 198、201、485。</desc><rect x="20" y="20" width="720" height="70" rx="6" class="v-object"/><text x="380.0" y="61.0" text-anchor="middle" font-size="17">Get Features · FID 12h · CQE DW0 = 00000004h</text><path d="M190,90 L190,160" class="v-line"/><path d="M186,153 L190,160 L194,153" class="v-line"/><path d="M565,90 L565,160" class="v-line"/><path d="M561,153 L565,160 L569,153" class="v-line"/><rect x="20" y="160" width="345" height="105" rx="6" class="v-command"/><text x="192.5" y="206.0" text-anchor="middle" font-size="17">SEL = 0</text><text x="192.5" y="231.0" text-anchor="middle" font-size="17">問目前值</text><rect x="395" y="160" width="345" height="105" rx="6" class="v-command"/><text x="567.5" y="206.0" text-anchor="middle" font-size="17">SEL = 3</text><text x="567.5" y="231.0" text-anchor="middle" font-size="17">問能力</text><path d="M190,265 L190,325" class="v-line"/><path d="M186,318 L190,325 L194,318" class="v-line"/><path d="M565,265 L565,325" class="v-line"/><path d="M561,318 L565,325 L569,318" class="v-line"/><rect x="20" y="325" width="345" height="105" rx="6" class="v-success"/><text x="192.5" y="371.0" text-anchor="middle" font-size="17">DW0[3:0] = 4</text><text x="192.5" y="396.0" text-anchor="middle" font-size="17">RRL = 4</text><rect x="395" y="325" width="345" height="105" rx="6" class="v-success"/><text x="567.5" y="371.0" text-anchor="middle" font-size="17">CHANG = 1</text><text x="567.5" y="396.0" text-anchor="middle" font-size="17">NSSPEC = 0 · SVBL = 0</text></svg></div><figcaption>假設 SSFS=1，兩次都成功。SEL=0 的回覆採 RRL 格式；SEL=3 的回覆採能力格式。能力查詢不會改變目前等級。來源：Base Figures 198、201、485。</figcaption></figure>
+
+<h3>有支援時，再比較目前、預設與已保存</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">SSFS=1 時，SEL=1 查 default，SEL=2 查 saved，SEL=3 查 supported capabilities；4～7 保留。預設 RRL 為 4，但目前值可以是 15。若功能不可保存，或還沒有已保存值，SEL=2 依 Get 共通規則回預設；不能只因查到 4，就說主機曾把 4 保存過。</span></p>
+<h3>能力回覆要換一種欄位解讀</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">SEL=3 的 DW0 bit 2 是 CHANG，bit 1 是 NSSPEC，bit 0 是 SVBL，bits 31:3 保留。NSSPEC=1 才表示 namespace 範圍；為 0 時，這個 bit 不會告訴你其他範圍是哪一種。本篇應再看 NSETS 與 FID 12h 的定義，判定為 NVM Set 或 NVM subsystem，不能自行推成只影響一個控制器。</span></p>
+<h3>用同一個例子串起三種查詢</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">假設 SSFS=1，先用 CDW10=00000312h 查能力；能力允許後設定 Set 7。接著用 00000012h 查 current，預期讀回要求的 15；若改用 00000112h 查 default，回答的仍是 4。這三次是在問能力、目前值與預設值，不是控制器自相矛盾。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>current</dt><dd>目前值；控制器現在使用的 Feature 設定。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.08">05.08.</span><span class="paragraph-text">同樣收到 DW0=00000004h：SEL=0 時表示目前 Level 4；SEL=3 時表示 CHANG=1、NSSPEC=0、SVBL=0，也就是可變更、非 指定的 namespace 範圍、不可保存。後者不能讀成「目前 Level 4」。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-rrl-get">閱讀相關規格圖表 → 讀回時先看 SEL，才知道 DW0 在回答什麼</a>
+</section>
+<section class="lesson" id="module-rrl-activation"><h2 id="heading-rrl-activation"><span class="section-number">06</span> 以成功完成為界，區分舊命令與新命令</h2>
+<!-- claim:RRL-ACTIVATION -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">已提交而尚在執行的命令，可能套用或不套用剛改好的 Feature。Set Features 成功完成後才提交的命令，必須使用新設定。若希望明確區隔兩批讀取，主機宜先讓原有命令完成，再改設定。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1, 文件頁 459, PDF 頁 485</p></details>
+<!-- claim:RRL-SHARED-ACCESS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">多個主機同時存取非 controller scope 的共享 Feature 值，需要主機間協調；Base 沒有指定協調程序。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>controller</dt><dd>控制器；接收並處理主機 NVMe 命令的介面實體。</dd></div><div><dt>scope</dt><dd>作用範圍；一份設定由哪些物件共用，例如同一 NVM Set 或整個 subsystem。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 168, PDF 頁 194</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>「送出設定」與「設定成功」中間還有處理時間</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">主機把 Set Features 提交到佇列，只代表控制器可以開始處理它。不能在此刻就宣稱新的 RRL 已適用於之後所有命令；規格用成功完成作為後續提交命令的保證界線。設定失敗時，也不能把要求值當作有效的 current。</span></p>
+<h3>已在途的讀取沒有統一的新舊保證</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">Read A 若在 Set 成功前就已提交，設定變更時它可能仍在執行。共通規則允許它套用或不套用新設定。教材中的時間圖因此把 A 標為不保證採新值，而不是擅自指定它一定用舊值。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 480" role="img"><title>設定成功是後續提交的保證界線</title><desc>時間由上往下。A 在界線前提交，不能保證採用新設定；B 在成功後才提交，必須採用新設定。這張圖沒有替 RRL 指定固定完成時間。來源：Base §5.2.30.1。</desc><rect x="20" y="20" width="720" height="80" rx="6" class="v-object"/><text x="380.0" y="53.5" text-anchor="middle" font-size="17">提交 Read A；A 仍可能在執行</text><text x="380.0" y="78.5" text-anchor="middle" font-size="17">新設定是否套用到 A：不保證</text><path d="M380,100 L380,145" class="v-line"/><path d="M376,138 L380,145 L384,138" class="v-line"/><rect x="20" y="145" width="720" height="70" rx="6" class="v-command"/><text x="380.0" y="186.0" text-anchor="middle" font-size="17">提交 Set Features：RRL = 15</text><path d="M380,215 L380,260" class="v-line"/><path d="M376,253 L380,260 L384,253" class="v-line"/><rect x="20" y="260" width="720" height="70" rx="6" class="v-decision"/><text x="380.0" y="301.0" text-anchor="middle" font-size="17">Set 成功完成</text><path d="M380,330 L380,375" class="v-line"/><path d="M376,368 L380,375 L384,368" class="v-line"/><rect x="20" y="375" width="720" height="80" rx="6" class="v-success"/><text x="380.0" y="408.5" text-anchor="middle" font-size="17">此後才提交 Read B</text><text x="380.0" y="433.5" text-anchor="middle" font-size="17">B 必須使用新設定</text></svg></div><figcaption>時間由上往下。A 在界線前提交，不能保證採用新設定；B 在成功後才提交，必須採用新設定。這張圖沒有替 RRL 指定固定完成時間。來源：Base §5.2.30.1。</figcaption></figure>
+
+<h3>需要清楚分界時，主機可先整理提交順序</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">先暫緩新的讀取，等已提交命令完成，再送 Set，等成功後才提交下一批。這樣做的目的，是讓每一批使用哪個 RRL 可被明確說明；不是說 RRL 會改寫舊資料。完成設定後，也宜重新確認與該 Feature 有關的能力及狀態。</span></p>
+<h3>共用 Set 時，還要協調其他主機</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">RRL 不屬於單一控制器私有的設定。多個主機若同時管理同一 Set 或 subsystem，一個主機剛讀回 15，另一個主機仍可能隨後改成 4。Base 要求這類共享 Feature 存取有某種主機間協調，但沒有指定協調協定；不能把一次讀回當成永遠鎖住該值。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">說明性時間順序：Read A 先提交，接著 Set RRL=15；Set 成功後才提交 Read B。B 必須使用新設定，但不能對仍未完成的 A 作相同保證。若先等 A 完成再送 Set，就能明確分成兩批。</span></p></aside></div>
+</div>
+</section>
+<section class="lesson" id="module-rrl-lifetime"><h2 id="heading-rrl-lifetime"><span class="section-number">07</span> 重設後保留什麼，要分可保存性與重設範圍</h2>
+<!-- claim:RRL-LIFETIME -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">Figure 466 把 FID 12h 的持續性列為 Yes，但該欄只適用於不可保存的 Feature。若本 Feature 可保存，應依 current／saved 與重設範圍判斷：整個 subsystem 範圍的重設按 Figure 126，局部範圍按 Figure 127。例如多控制器的 subsystem 只重設一個控制器，Set／subsystem 的共用目前值維持不變；符合全體條件的重設則回到 saved，沒有 saved 才回 default。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 167-169, PDF 頁 193-195</p></details>
+<!-- claim:RRL-PERSISTENCE-FOOTNOTE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">FID 12h 的 Current Setting Persists 欄為 Yes，註腳 2 限定該欄僅供不可保存的 Feature 使用。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 458-459, PDF 頁 484-485</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先分開「目前值」與「已保存值」</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">current 是正在使用的設定，saved 是主機要求保存後留下的設定。SSFS 支援不代表每一項 Feature 都可保存，還要看該 FID 的 SVBL。只有本 Feature 可保存時，成功的 SV=1 設定才同時更新 current 與 saved；SV=0 的成功設定只更新 current。</span></p>
+<h3>不可保存，不等於斷電一定遺失</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">Figure 466 的 FID 12h 列為 Yes，註腳 2 說明這個持續性欄只用在不可保存時。因此不可保存的 RRL 目前值仍必須跨 power cycle 與 reset 保留。SV=0 的意義是沒有提出保存要求，不能直接翻成「這個設定斷電就沒了」。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>power cycle</dt><dd>斷電再供電的電源循環，與單純重設某個控制器分開。</dd></div></dl>
+<figure><figcaption><strong>相同 current=15，重設後為何不同？</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">Feature 能力與原值</th><th scope="col">這次事件的判斷條件</th><th scope="col">之後的 current</th></tr></thead><tbody><tr><td>不可保存；current=15</td><td>Power cycle 或 reset：FID12h 具持續性</td><td>15</td></tr><tr><td>可保存；current=15、saved=4</td><td>Figure126 的全體範圍重設</td><td>4：取 saved</td></tr><tr><td>可保存；current=15、沒有 saved</td><td>Figure126 的全體範圍重設</td><td>4：取 default</td></tr><tr><td>可保存；current=15、saved=4</td><td>Figure127 的局部範圍重設；Set／subsystem scope</td><td>15：維持目前值</td></tr></tbody></table></div><figcaption>先查可保存性，再確認配置與重設範圍。表內都是說明性原值；兩種重設表的完整適用條件在相鄰段落說明。來源：Base §4.4、Figures 126／127／466。</figcaption></figure>
+
+<h3>可保存時，看這次重設覆蓋的範圍</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">Figure 126 適用於只有單一控制器的 subsystem 發生 Controller Level Reset，或多控制器且無多 domain 的 NVM Subsystem Reset，或確實重設全部 domain 的 NVM Subsystem Reset。可保存的 Feature 在這些情況用 saved 恢復 current；沒有 saved 時用 default，本篇為 4。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>domain</dt><dd>subsystem 內的劃分單位；此處只用來判斷一次重設是否涵蓋整個 subsystem。</dd></div></dl>
+<h3>局部重設不應重設仍被其他控制器共用的值</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">Figure 127 適用於可支援多控制器的 subsystem 發生 Controller Level Reset，以及多 domain 的 NVM Subsystem Reset 未覆蓋整個 subsystem 的情況。對 NVM Set／NVM subsystem 範圍而言，表中結果是維持不變，除非另有規定。要用這張表，先確認配置與實際重設範圍，不能只看事件名稱裡有 Reset。</span></p>
+<h3>把保存要求寫成具體數值</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">若已確認 SSFS=1、SVBL=1，Set 的 CDW10 加上 bit 31，得到 80000012h；NVMSETID 與 RRL 仍各放 CDW11、CDW12。若 Feature 不可保存卻送 SV=1，控制器必須以 Feature Identifier Not Saveable 中止，不能把該失敗當成已成功修改 current。</span></p>
+<h3>讀能力、讀保存值、讀目前值各有用途</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.08">07.08.</span><span class="paragraph-text">SVBL 告訴你能不能要求保存，SEL=2 告訴你保存查詢回什麼，SEL=0 才告訴你現在用什麼。判斷一次重設的結果時，把裝置能力、重設覆蓋範圍及前後值列在一起，才不會把 Figure 466 的一個 Yes 解讀成所有情境都永遠使用最後一次要求值。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="07.09">07.09.</span><span class="paragraph-text">說明性範例：可保存的 FID 12h 目前是 15、saved 是 4。遇到 Figure 126 適用的全體重設後，current 回到 saved=4；若是 Figure 127 適用的局部重設，NVM Set／subsystem 範圍的 current 維持 15。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-rrl-lifetime">閱讀相關規格圖表 → 重設後保留什麼，要分可保存性與重設範圍</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">08</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.01">08.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-rrl-levels"><summary>圖表組 01 · 讀取遇到困難時，要花多少力氣復原？ · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.02">08.02.</span><span class="paragraph-text">Figure 755 先看 4 與 15 的 M，再看 0 的 O，最後沿箭頭確認數字增加時復原量減少。</span></p>
+<a class="reading-link" href="#module-rrl-levels">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-rrl-level-fields"><h4 id="fields-heading-rrl-level-fields">用支援要求與箭頭，讀懂整張等級總覽</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.03">08.03.</span><span class="paragraph-text">先確認功能受支援，再讀各列的 M／O，最後看復原量的方向。表裡沒有延遲單位或復原次數。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-level-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Level 0～15</td><td>16 個可能等級；數字較高，復原量較少。</td><td>不能把 Level 8 當 8 次重試或 8 ms。</td></tr><tr><td>O／M</td><td>O 表示選用；M 表示支援 RRL 時必備。4、15 為 M，其餘為 O。</td><td>即使 Level 0 提供最多復原，也可能沒有實作。</td></tr><tr><td>Definition：Default／Fast Fail</td><td>4 為預設的一般復原量；15 為最少復原量。</td><td>目前讀回 15 與預設是 4 可以同時成立。</td></tr><tr><td>向下箭頭：Decreasing Amount of Recovery</td><td>比較的是相對復原量，沒有定義等距、倍數、毫秒或成功率。</td><td>從 4 調到 15，只能說選擇較少復原，不能承諾每次 I/O 快幾倍。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-755">Base 755</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.23, Figure 755, 文件頁 690, PDF 頁 716</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-755 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-755"><h4>Base Figure 755 · Read Recovery Level Overview</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-755-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base755-1">Base755-1</span><span class="paragraph-text">等級增加代表復原量減少，M／O 說明支援要求，不是效能評分。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.23</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.23, Figure 755, 文件頁 690, PDF 頁 716</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base755-2">Base755-2</span><span class="paragraph-text">若 RRLS=8010h，裝置只支援 4、15；雖然表裡畫了 0～15，不能要求 Level 0。0 提供最多復原的敘述，有「若支援」的前提。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-level-fields">欄位、條件與相關細節：用支援要求與箭頭，讀懂整張等級總覽 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-rrl-scope"><summary>圖表組 02 · 一個設定，會影響哪些儲存空間？ · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.04">08.04.</span><span class="paragraph-text">Figure 67 說明集合與 namespace 的包含關係；Figure 484 把這個關係接到命令的 NVMSETID。</span></p>
+<a class="reading-link" href="#module-rrl-scope">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-rrl-scope-fields"><h4 id="fields-heading-rrl-scope-fields">從包含關係判斷設定影響</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.05">08.05.</span><span class="paragraph-text">這張圖沒有 bit 欄位；要讀的是外框、namespace 方塊與未配置空間三者的關係。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-scope-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NVM Set A／B／C 外框</td><td>各代表一個與其他集合邏輯分開的 NVM 集合；圖上的 A／B／C 是示意名稱。</td><td>實際命令使用 16-bit NVMSETID，不把字母 A 填進命令。</td></tr><tr><td>NS A1～A3、B1～B2、C1</td><td>每個具有已格式化儲存空間的 namespace 完整位於一個 Set；同 Set 繼承共同屬性。</td><td>A1 的讀取復原策略與 A2 共用 Set A 的 RRL。</td></tr><tr><td>Unallocated 區域</td><td>屬於該 Set、但尚未配置給 namespace 的儲存空間。</td><td>之後從 Set A 建立新 namespace，仍繼承 A 的 RRL，不是從灰色區塊取得另一個等級。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-067">Base 67</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-067 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-067"><h4>Base Figure 67 · NVM Sets and Associated Namespaces</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-067-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-1">Base67-1</span><span class="paragraph-text">namespace 位於哪個 Set 內，決定它繼承哪一份 RRL。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-2">Base67-2</span><span class="paragraph-text">原圖的 A1、A2、A3 同在 Set A。若 A 的 RRL 為 15，三者共用 15；Set B 的 B1、B2 不因 A 的設定命令而一起改變。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-scope-fields">欄位、條件與相關細節：從包含關係判斷設定影響 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-rrl-discover"><summary>圖表組 03 · 讀懂支援位元，才知道哪些值能選 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.06">08.06.</span><span class="paragraph-text">Figure 338 很長，本篇只讀 CTRATT 的 RRLVLS／NSETS、RRLS，以及 ONCS.SSFS；逐圖區集中列出 byte 位置與算例。</span></p>
+<a class="reading-link" href="#module-rrl-discover">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-rrl-identify-fields"><h4 id="fields-heading-rrl-identify-fields">同一份 Identify，回答三種不同問題</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.07">08.07.</span><span class="paragraph-text">只讀本篇所需的欄位切片；其他能力 bit 有自己的定義，不能把未在此介紹的 bit 全當保留。位置全部以 Identify Controller 結構起點為準。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-identify-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CTRATT bytes 99:96：RRLVLS bit 3</td><td>1 支援 RRL；0 不支援。</td><td>用 (CTRATT &gt;&gt; 3) &amp; 1 判斷，不直接比較整個 CTRATT 是否等於 8。</td></tr><tr><td>CTRATT：NSETS bit 2</td><td>1 支援 NVM Sets，FID 12h 按 Set 選擇；0 則採 subsystem 範圍。</td><td>CTRATT=8 的相關 bits 表示有 RRL、沒有 NVM Sets。</td></tr><tr><td>RRLS bytes 101:100：bits 15:0</td><td>每一 bit 對應同編號等級；支援 RRL 時，bit 4、15 必須為 1。</td><td>11 80 → 8011h；(8011h &gt;&gt; 8) &amp; 1 = 0，Level 8 不受支援。</td></tr><tr><td>ONCS bytes 521:520：SSFS bit 4</td><td>1 支援非零 SEL／SV；0 不支援這些非零選項。</td><td>SSFS=1 才繼續用 SEL=3 查本 Feature 的 SVBL；SSFS 本身不等於 SVBL。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 344-347,371-372, PDF 頁 370-373,397-398</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-338 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-338"><h4>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">先讀支援功能的 bit，再用 RRLS 檢查候選等級，最後判斷可用的查詢方式。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 344-347,371-372, PDF 頁 370-373,397-398</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">CTRATT 的相關 bits 為 0000000Ch 時，bit 3、2 同為 1，表示有 RRL 與 NVM Sets。RRLS=8011h 可選 0、4、15；ONCS bit 4 若為 0，仍只使用 SEL=0、SV=0。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-identify-fields">欄位、條件與相關細節：同一份 Identify，回答三種不同問題 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-rrl-set"><summary>圖表組 04 · 把「哪個集合、哪個等級」組成設定命令 · 5 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.08">08.08.</span><span class="paragraph-text">Figures 484／485 對照看：前者回答對象，後者回答新值。共同命令外框與 SV 放在相應引用圖表中。</span></p>
+<a class="reading-link" href="#module-rrl-set">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-rrl-envelope-fields"><h4 id="fields-heading-rrl-envelope-fields">命令外框與 FID 12h 參數的接法</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.09">08.09.</span><span class="paragraph-text">本篇只用共同格式中的 NSID、資料指標位置與 CDW10～12；欄位序號不是欄位內的值。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-envelope-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NSID：bytes 7:4</td><td>本 Feature 屬 NVM Set 或 subsystem scope，依 §4.4 應填 0；非零會被中止。</td><td>有 A、B 兩個 namespace 共用 Set 7，也仍填 NSID=0、NVMSETID=7。</td></tr><tr><td>DPTR：bytes 39:24</td><td>Figure 463 說明 Set 的資料指標；FID 12h 沒有屬性資料結構，因此不用此欄。</td><td>不把等級 Fh 當成記憶體地址。</td></tr><tr><td>CDW10：bytes 43:40</td><td>FID bits 7:0；SV bit 31；bits 30:8 保留。</td><td>(1 &lt;&lt; 31) | 12h = 80000012h，只在保存條件成立時使用。</td></tr><tr><td>CDW11／12：bytes 47:44／51:48</td><td>分別放 NVMSETID 與 RRL；其欄位規則見 Figures 484／485 的共同說明。</td><td>相同數值 7 放在 CDW11 是 Set 7，放在 CDW12 則會選 Level 7。</td></tr><tr><td>SV=1 的必要條件</td><td>需 SSFS 支援及本 Feature 可保存；不可保存時要求 SV=1，回 Feature Identifier Not Saveable。</td><td>收到失敗完成，不能把所要求的 15 當成設定成功的證據。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-093">Base 93</a><a href="#figure-RRL-BASE-FIG-463">Base 463</a><a href="#figure-RRL-BASE-FIG-464">Base 464</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.1.1 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-093 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">共同格式先交代欄位位置，FID 12h 再賦予 CDW11／12 專屬含義。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">CDW11 的 byte offset 為 11×4=44，NVMSETID=7 存在 bytes 45:44；CDW12 從 48 開始，低 4 bits 才是等級。NSID 則在 bytes 7:4，本 Feature 填 0。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-envelope-fields">欄位、條件與相關細節：命令外框與 FID 12h 參數的接法 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-463 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-463"><h4>Base Figure 463 · Set Features – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-463-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-1">Base463-1</span><span class="paragraph-text">Set Features 的 DPTR 是否有用途，要看該 Feature 有沒有資料結構。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-2">Base463-2</span><span class="paragraph-text">本 Feature 的 Set 只要 CDW11 的 Set 編號與 CDW12 的等級，不需要把 Fh 放進一個 buffer 再提供地址。Figure 466 的 FID 12h 列明確標示不使用 data buffer。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-envelope-fields">欄位、條件與相關細節：命令外框與 FID 12h 參數的接法 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-464 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-464"><h4>Base Figure 464 · Set Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-464-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">FID 與 SV 分別選功能和保存要求，SV 不決定作用範圍。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">SV=0、FID=12h 得 00000012h；確認可保存後，SV=1 得 80000012h。兩者仍用同一個 CDW11 選 Set，不能藉 SV 改成單一 namespace 設定。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-envelope-fields">欄位、條件與相關細節：命令外框與 FID 12h 參數的接法 →</a></div></article>
+<section class="field-guide" id="fields-rrl-target-value-fields"><h4 id="fields-heading-rrl-target-value-fields">把目標與新值各自放到正確位置</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.10">08.10.</span><span class="paragraph-text">兩張圖相鄰，但代表兩個不同問題。把 NVMSETID 與 RRL 合在同一個 Dword，會失去正確的欄位語意。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-target-value-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Figure 484：CDW11 bits 15:0</td><td>NVMSETID 選 Set；bits 31:16 保留。沒有 Set 支援時忽略此欄，主機填 0。</td><td>7 是已存在 Set 的識別碼，不是第 7 個 namespace。</td></tr><tr><td>Figure 485：Set CDW12 bits 3:0</td><td>RRL 直接指定 0～15 的某個受支援等級；bits 31:4 保留。</td><td>15 填 Fh；沒有數量減 1 或再加 1 的換算。</td></tr><tr><td>Figure 485：Get 成功且 SEL≠3</td><td>相同 RRL 格式出現在 CQE DW0；Get 命令的 CDW12 不承載這份回覆。</td><td>讀回值先取 DW0 &amp; Fh，再依查詢的 SEL 說明是目前、預設或已保存。</td></tr><tr><td>Reserved</td><td>本範例將保留位清 0，不利用它們增加等級範圍或夾帶其他參數。</td><td>0000001Fh 的 bit 4 已落入保留區，不能稱作 Level 31。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-484">Base 484</a><a href="#figure-RRL-BASE-FIG-485">Base 485</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, Figure 484, 文件頁 473, PDF 頁 499</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, Figure 485, 文件頁 473, PDF 頁 499</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-484 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-484"><h4>Base Figure 484 · Read Recovery Level Config – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-484-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base484-1">Base484-1</span><span class="paragraph-text">CDW11 放目標 Set，不放 namespace 編號，也不放等級。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, Figure 484, 文件頁 473, PDF 頁 499</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base484-2">Base484-2</span><span class="paragraph-text">Set 7 的 CDW11=00000007h；若裝置不支援 NVM Sets，填 0 且本 Feature 忽略此欄，命令影響整個 subsystem。支援 Sets 時 0 是保留識別值，不是全部 Set。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-target-value-fields">欄位、條件與相關細節：把目標與新值各自放到正確位置 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-485 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-485"><h4>Base Figure 485 · Read Recovery Level Config – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-485-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base485-1">Base485-1</span><span class="paragraph-text">4-bit RRL 是直接的等級代碼；Get 回覆使用同一格式，但位置改在 CQE DW0。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, Figure 485, 文件頁 473, PDF 頁 499</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base485-2">Base485-2</span><span class="paragraph-text">Level 15 在 Set 的 CDW12 填 0000000Fh。成功 Get 且 SEL=0 時，若 CQE DW0 也是 0000000Fh，低 4 bits 表示目前等級 15；這不是 RRLS 的 bit 15 遮罩 8000h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-target-value-fields">欄位、條件與相關細節：把目標與新值各自放到正確位置 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-rrl-get"><summary>圖表組 05 · 讀回時先看 SEL，才知道 DW0 在回答什麼 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.11">08.11.</span><span class="paragraph-text">Figure 198 決定問題；Figure 201 與 Figure 485 是兩種互斥的 DW0 解讀方式，先確認 SEL 再挑格式。</span></p>
+<a class="reading-link" href="#module-rrl-get">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-rrl-readback-fields"><h4 id="fields-heading-rrl-readback-fields">先用 SEL 選格式，再解讀回傳欄位</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.12">08.12.</span><span class="paragraph-text">Figure 198 是送出的命令；Figure 201 是 SEL=3 的回覆。SEL≠3 的成功回覆則回到 Figure 485 的 RRL 格式。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-readback-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Get CDW10：SEL bits 10:8、FID bits 7:0</td><td>SEL=0 current、1 default、2 saved、3 capabilities；4～7 保留，高位 31:11 保留。</td><td>SEL3 的 3 需左移 8 bits，不是把 FID 從 12h 改成 15h。</td></tr><tr><td>Get CDW11／DPTR</td><td>CDW11 沿用 NVMSETID 指定目標；DPTR 因無資料結構而忽略。</td><td>同一 Set 的設定與讀回，都使用相同 NVMSETID。</td></tr><tr><td>能力 DW0：CHANG bit 2</td><td>1 表示有可變更值；0 表示值不可變更。</td><td>它不表示支援 RRL Level 2。</td></tr><tr><td>能力 DW0：NSSPEC bit 1</td><td>1 表示 namespace scope；0 不能自行推成 controller scope。</td><td>本 Feature 的 Set／subsystem 範圍仍由 NSETS 與主範圍定義決定。</td></tr><tr><td>能力 DW0：SVBL bit 0；31:3 保留</td><td>1 可保存；0 不可保存。讀 saved 卻沒有 saved 值時，回 default。</td><td>能力值 4 表示可變更但不可保存；current 值 4 才表示 Level 4。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-197">Base 197</a><a href="#figure-RRL-BASE-FIG-198">Base 198</a><a href="#figure-RRL-BASE-FIG-201">Base 201</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-197 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-197"><h4>Base Figure 197 · Get Features – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-197-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-1">Base197-1</span><span class="paragraph-text">沒有額外資料結構的 Feature，Get 會忽略 DPTR。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-2">Base197-2</span><span class="paragraph-text">查 RRL 後，主機應讀成功 CQE 的 DW0，不能在一份預先配置但未被使用的 buffer 裡找 Fh。DPTR 沒有資料，不表示 Get 沒有回覆。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-readback-fields">欄位、條件與相關細節：先用 SEL 選格式，再解讀回傳欄位 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-198 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-198"><h4>Base Figure 198 · Get Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-198-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">SEL 讓同一個 FID 分別回答目前、預設、已保存或能力。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">SSFS=1 時，FID12h 搭配 SEL=0／1／2／3，CDW10 依序是 00000012h、00000112h、00000212h、00000312h。只改這個選擇，就會改變回覆的問題或格式。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-readback-fields">欄位、條件與相關細節：先用 SEL 選格式，再解讀回傳欄位 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-201 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-201"><h4>Base Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-201-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-1">Base201-1</span><span class="paragraph-text">SEL=3 回三個能力 bit，不回等級清單，也不回目前 RRL。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-2">Base201-2</span><span class="paragraph-text">DW0=5 時，bit 2、0 為 1：可變更且可保存，NSSPEC=0。把 5 解讀成 Level 5 會用錯格式；讀目前值必須另送 SEL=0。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-readback-fields">欄位、條件與相關細節：先用 SEL 選格式，再解讀回傳欄位 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-rrl-lifetime"><summary>圖表組 07 · 重設後保留什麼，要分可保存性與重設範圍 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.13">08.13.</span><span class="paragraph-text">Figures 126／127 以列選可保存性、以欄選 Feature 範圍；Figure 466 的 FID 12h 列必須和註腳 2 合讀。</span></p>
+<a class="reading-link" href="#module-rrl-lifetime">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-rrl-reset-fields"><h4 id="fields-heading-rrl-reset-fields">先選能力與重設範圍，再讀交叉儲存格</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="08.14">08.14.</span><span class="paragraph-text">先看 FID 12h 是否可保存。不可保存的持續性由 Figure 466 與 §4.4 直接決定；可保存者再用 Figures 126／127 的對應欄。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-rrl-reset-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Figure 466：Feature Identifier／Uses Data Buffer／Scope</td><td>只取 FID12h 這列：不使用 buffer，範圍為 NVM Set 或 NVM subsystem。</td><td>不能因為 Set 命令經某個控制器送出，就改讀 controller scope。</td></tr><tr><td>Figure 466：Current Setting Persists／註腳 2</td><td>Yes 只適用不可保存的 Feature；可保存者不用此欄。</td><td>不可保存且目前為 15，跨 power cycle 與 reset 仍保留 15。</td></tr><tr><td>Figure 126：Saveable 列</td><td>適用全體範圍重設；所有 Feature scope 的此列都回 saved，無 saved 回 default，除非另有規定。</td><td>目前 15、saved 4 → current 4。</td></tr><tr><td>Figure 127：Saveable 列 × NVM Set／NVM subsystem 欄</td><td>適用局部範圍重設；這兩欄維持 current，除非另有規定。</td><td>目前 15、saved 4 → current 15；不能誤讀左側 controller 欄。</td></tr><tr><td>兩張重設表的另一列</td><td>Non-saveable and non-persistent 同時要求不可保存與不具持續性；FID12h 的不可保存分支具持續性，不符合這一列。</td><td>不可只看到 Non-saveable，就忽略後面 and non-persistent 而套用預設值。</td></tr><tr><td>表格適用的配置與事件</td><td>Figure126：單控制器的 Controller Level Reset，或覆蓋整個 subsystem 的適用 NVM Subsystem Reset。Figure127：多控制器的 Controller Level Reset，或多 domain 中未覆蓋全體的 NVM Subsystem Reset。</td><td>先寫出裝置配置與重設覆蓋範圍，再查結果；配置不是重設後的值。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>saveable</dt><dd>可保存；表示本 Feature 接受保存要求，不等同於目前值一定會在所有重設中改變。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-RRL-BASE-FIG-126">Base 126</a><a href="#figure-RRL-BASE-FIG-127">Base 127</a><a href="#figure-RRL-BASE-FIG-466">Base 466</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.4 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, 文件頁 167, PDF 頁 193</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, 文件頁 167-168, PDF 頁 193-194</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 458-459, PDF 頁 484-485</p></details>
+</section>
+<!-- figure-table:RRL-BASE-FIG-126 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-126"><h4>Base Figure 126 · Current Value after Reset with Scope of Entire NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-126-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base126-1">Base126-1</span><span class="paragraph-text">全體範圍重設下，可保存的值回到 saved，沒有 saved 才回 default。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 126, 文件頁 167, PDF 頁 193</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base126-2">Base126-2</span><span class="paragraph-text">可保存的 RRL 在 Set 7 目前為 15、saved 為 4。若這次重設符合 Figure 126 的整個 subsystem 條件，結果是 current=4，不是維持最後一次 SV=0 的 15。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-reset-fields">欄位、條件與相關細節：先選能力與重設範圍，再讀交叉儲存格 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-127 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-127"><h4>Base Figure 127 · Current Value after Reset with Scope of Subset of the NVM Subsystem</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-127-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base127-1">Base127-1</span><span class="paragraph-text">局部範圍重設下，RRL 所在的 NVM Set／subsystem 欄是維持不變。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, Figure 127, 文件頁 167-168, PDF 頁 193-194</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base127-2">Base127-2</span><span class="paragraph-text">可支援多控制器的 subsystem 只對其中一個控制器做 Controller Level Reset，適用本表；current=15 的共用 RRL 維持 15，不因該控制器重設而套用 controller-scope 欄的恢復規則。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-reset-fields">欄位、條件與相關細節：先選能力與重設範圍，再讀交叉儲存格 →</a></div></article>
+
+<!-- figure-table:RRL-BASE-FIG-466 -->
+<article class="field-note" id="figure-RRL-BASE-FIG-466"><h4>Base Figure 466 · Set Features – Feature Identifiers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:RRL-BASE-FIG-466-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-1">Base466-1</span><span class="paragraph-text">FID 12h 列的 Yes 要連同註腳 2 讀，不能跳過可保存性判斷。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 458-459, PDF 頁 484-485</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-2">Base466-2</span><span class="paragraph-text">不可保存的 FID 12h：Yes 表示目前值跨 power cycle 與 reset 保留。可保存的 FID 12h：這一欄不用，改查 current／saved 與適用重設表。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-rrl-reset-fields">欄位、條件與相關細節：先選能力與重設範圍，再讀交叉儲存格 →</a></div></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:rrl-bitmap -->
+<details class="review-question" id="qa-rrl-bitmap"><summary>1. RRLS=8011h，能選 Level 8 嗎？Level 15 應填 8000h 嗎？</summary>
+<div data-qa-answer="rrl-bitmap"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="09.01">09.01.</span><span class="paragraph-text">不能選 8，因為 bit 8 是 0。要選 15，先用 RRLS bit 15 確認支援，再在 4-bit RRL 欄填 Fh；8000h 是支援位元的遮罩，不是等級代碼。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 文件頁 344-347,371-372, PDF 頁 370-373,397-398</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, 文件頁 473, PDF 頁 499</p>
+</details></details>
+<!-- qa:rrl-scope -->
+<details class="review-question" id="qa-rrl-scope"><summary>2. A、B 在同一 Set，能靠填 A 的 NSID 只讓 A 用 Level 15 嗎？</summary>
+<div data-qa-answer="rrl-scope"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="09.02">09.02.</span><span class="paragraph-text">不能。RRL 依 Set 共用，命令的 NVMSETID 選該集合；這種 scope 的 NSID 應為 0，非零不會縮小作用範圍，而會使命令被中止。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, 文件頁 473, PDF 頁 499</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 169, PDF 頁 195</p>
+</details></details>
+<!-- qa:rrl-result -->
+<details class="review-question" id="qa-rrl-result"><summary>3. 成功 Get 的 DW0=4，為什麼還不能立即說目前是 Level 4？</summary>
+<div data-qa-answer="rrl-result"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="09.03">09.03.</span><span class="paragraph-text">還要看 SEL。SEL=0 才回 current；SEL=3 的 4 是 CHANG=1、NSSPEC=0、SVBL=0 的能力組合。若 SEL=1，4 說的是預設值。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.12, 文件頁 473, PDF 頁 499</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, 文件頁 209-212, PDF 頁 235-238</p>
+</details></details>
+<!-- qa:rrl-timing -->
+<details class="review-question" id="qa-rrl-timing"><summary>4. Set Level 15 成功後，仍在途的 Read A 與之後才提交的 Read B 都保證用 15 嗎？</summary>
+<div data-qa-answer="rrl-timing"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="09.04">09.04.</span><span class="paragraph-text">B 必須使用新設定；A 已先提交，可能套用或不套用新值。Level 15 本身也沒有固定毫秒上限。需要清楚區分兩批時，宜先完成 A，再修改設定。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1, 文件頁 459, PDF 頁 485</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.23, 文件頁 689-690, PDF 頁 715-716</p>
+</details></details>
+<!-- qa:rrl-reset -->
+<details class="review-question" id="qa-rrl-reset"><summary>5. SV=0 成功設成 15，是否一重設就回到 4？</summary>
+<div data-qa-answer="rrl-reset"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="09.05">09.05.</span><span class="paragraph-text">不一定。不可保存的 FID 12h 本身具持續性；可保存者還要看重設範圍。Figure 126 的全體情況回 saved 或 default，Figure 127 的局部情況對 Set／subsystem scope 維持 current。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 167-169, PDF 頁 193-195</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, 文件頁 458-459, PDF 頁 484-485</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p></details></footer></main></div></body></html>

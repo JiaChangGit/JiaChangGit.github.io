@@ -18,6 +18,9 @@ def route(points, label='', label_at=None):
 
 
 def course_illustration(key):
+    if key.startswith('rrl-'):
+        from scripts.nvme_rrl_visuals import illustration
+        return illustration(key)
     if key.startswith('lockdown-'):
         from scripts.nvme_lockdown_visuals import illustration
         return illustration(key)

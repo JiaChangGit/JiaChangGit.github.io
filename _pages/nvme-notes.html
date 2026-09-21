@@ -6,6 +6,11 @@ nvme_notes: true
 ---
 <div class="nvme-note">
 <h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>
+<section><h2>NVMe Read Recovery Level：讀取復原、作用範圍與設定</h2><p>讀取遇到難以復原的資料時，控制器應該再多試一些，還是少做一些復原、讓主機早點取得結果？Read Recovery Level 提供這項取捨。本文從等級與影響範圍開始，再把支援位元、設定命令、讀回格式和重設後的行為接起來，讓每個欄位都對應到一個具體問題。</p><ul>
+<li><a href="/DOCS/nvme-spec-report/base-read-recovery-level/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
+<li><a href="{% post_url 2026-09-21-nvme-read-recovery-level-zh-tw %}">中文全局報告</a></li>
+<li><a href="{% post_url 2026-09-21-nvme-read-recovery-level-en %}">English overview</a></li>
+</ul></section>
 <section><h2>NVMe Command and Feature Lockdown：查詢、限制範圍與持續性</h2><p>Command and Feature Lockdown 處理的是「哪些管理操作，在什麼入口、哪些控制器上不准執行」。理解它需要把能力、目前狀態與修改命令接起來，再分清限制何時解除、斷電後是否保留。本文以一個 FID 的限制與讀回為例，從全貌走到命令欄位、兩種 Log 格式與必要的持續性例外。</p><ul>
 <li><a href="/DOCS/nvme-spec-report/base-command-feature-lockdown/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
 <li><a href="{% post_url 2026-09-16-nvme-command-feature-lockdown-zh-tw %}">中文全局報告</a></li>

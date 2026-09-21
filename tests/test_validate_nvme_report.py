@@ -411,15 +411,15 @@ class NvmeReportContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("publish contract validated", result.stdout)
 
-    def test_contract_has_seventeen_reports_and_fifty_one_artifacts(self):
+    def test_contract_has_eighteen_reports_and_fifty_four_artifacts(self):
         contract = json.loads(
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 51)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 17)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 34)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 17)
+        self.assertEqual(len(artifacts), 54)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 18)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 36)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 18)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -431,7 +431,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 "basepower-bilingual",
                 "baseselftest-bilingual", "basehmb-bilingual", "basenamespace-bilingual",
                 "baseboot-bilingual", "basetelemetry-bilingual", "basesanitize-bilingual",
-                "nvmcs13-bilingual", "adminio-bilingual", "streams-bilingual", "fdp-bilingual", "lockdown-bilingual",
+                "nvmcs13-bilingual", "adminio-bilingual", "streams-bilingual", "fdp-bilingual", "lockdown-bilingual", "rrl-bilingual",
             },
         )
 
@@ -629,7 +629,7 @@ class NvmeReportContractTest(unittest.TestCase):
     def test_html_has_responsive_accessible_reading_structure(self):
         contract = VALIDATOR.load_json("output-contract.json")
         artifacts = [a for a in contract["artifacts"] if a["format"] == "html"]
-        self.assertEqual(len(artifacts), 17)
+        self.assertEqual(len(artifacts), 18)
         for artifact in artifacts:
             with self.subTest(artifact=artifact["id"]):
                 self.assertFalse(VALIDATOR.validate_html(ROOT / artifact["path"]))
