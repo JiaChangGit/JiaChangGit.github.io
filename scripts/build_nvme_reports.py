@@ -647,6 +647,8 @@ from scripts.nvme_lockdown import install as install_lockdown
 install_lockdown(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
 from scripts.nvme_rrl import install as install_rrl
 install_rrl(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
+from scripts.nvme_sqa import install as install_sqa
+install_sqa(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
 for new_id, (old_id, *_) in SPLITS.items():
     POST_IMAGES[new_id] = POST_IMAGES[old_id]
     REPORTS[new_id]['date'] = '2026-09-11'
@@ -657,6 +659,8 @@ except ModuleNotFoundError:
 
 
 def artifact_ids(report_id: str) -> list[str]:
+    if report_id == "base-sq-associations":
+        return ["sqa-tutorial-html", "sqa-zh-md", "sqa-en-md"]
     if report_id == "base-read-recovery-level":
         return ["rrl-tutorial-html", "rrl-zh-md", "rrl-en-md"]
     if report_id == "base-command-feature-lockdown":
@@ -707,6 +711,10 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
 def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     """Return a source-specific, non-verbatim guide for one Figure."""
 
+    if figure['report_id'] == 'base-sq-associations':
+        from scripts.nvme_sqa_figures import lesson
+        teaching = lesson(figure)
+        return dict(purpose=teaching['en' if language == 'en' else 'takeaway'], example=teaching['example'])
     if figure['report_id'] == 'base-read-recovery-level':
         from scripts.nvme_rrl_figures import lesson
         teaching = lesson(figure)
@@ -1369,6 +1377,7 @@ def frontmatter(
     report_date = REPORTS[report_id].get("date", "2026-08-28")
     slugs = {'base-boot-telemetry-sanitize': 'boot-telemetry-sanitize', 'nvm-command-set-1.3': 'nvm-command-set-1-3'}
     slugs['admin-io-spec-walkthrough'] = 'admin-io-spec-walkthrough'
+    slugs['base-sq-associations'] = 'sq-associations'
     slugs['base-read-recovery-level'] = 'read-recovery-level'
     slugs['base-command-feature-lockdown'] = 'command-feature-lockdown'
     slugs['base-flexible-data-placement'] = 'flexible-data-placement'
@@ -1477,7 +1486,7 @@ def main() -> int:
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
 
-    priority = ['base-read-recovery-level', 'base-command-feature-lockdown', 'base-flexible-data-placement', 'base-directives-streams', 'admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
+    priority = ['base-sq-associations', 'base-read-recovery-level', 'base-command-feature-lockdown', 'base-flexible-data-placement', 'base-directives-streams', 'admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
     order = priority + [key for key in reversed(REPORTS) if key not in priority]
     for report_id in order:
         report = REPORTS[report_id]

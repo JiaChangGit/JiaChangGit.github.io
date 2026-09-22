@@ -19,6 +19,9 @@ def guide(source, numbers, key, title, relation, rows):
 
 
 def get(figure):
+    if figure['report_id'] == 'base-sq-associations':
+        from scripts.nvme_sqa_figures import guide as selected
+        return selected(figure)
     if figure['report_id'] == 'base-read-recovery-level':
         from scripts.nvme_rrl_figures import guide as selected
         return selected(figure)

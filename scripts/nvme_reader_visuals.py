@@ -38,6 +38,9 @@ def steps(title, values, caption):
 
 def module_illustration(report_id, module, language):
     key = module['id']
+    if report_id == 'base-sq-associations':
+        from scripts.nvme_sqa_visuals import illustration
+        return illustration(key, language)
     if report_id == 'base-read-recovery-level':
         from scripts.nvme_rrl_visuals import illustration
         return illustration(key, language)

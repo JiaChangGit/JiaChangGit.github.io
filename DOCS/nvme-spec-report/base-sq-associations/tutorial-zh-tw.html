@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe SQ Associations：從儲存歸屬到 I/O 佇列分流</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-sqa-model">01 把佇列用途告訴控制器</a><a href="#module-sqa-support">02 支援能力、模式狀態與工作視窗</a><a href="#module-sqa-inventory">03 先建立 namespace 到 Set 的對照</a><a href="#module-sqa-create">04 建立 SQ 時，同時指定 Set 與完成佇列</a><a href="#module-sqa-routing">05 讓每筆 I/O 的 Set 與 SQ 關聯一致</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe SQ Associations：從儲存歸屬到 I/O 佇列分流</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">主機知道每筆 I/O 要讀寫哪個 namespace，但控制器也需要知道：這個提交佇列預計服務哪一組儲存空間？SQ Associations 讓主機在建立佇列時提供這項提示。本文把儲存歸屬、佇列配置與命令分流接起來，說明提示何時有幫助，以及為什麼「命令完成」還不足以證明分流正確。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQ Associations</dt><dd>提交佇列關聯；建立 SQ 時，提示控制器這個佇列預計服務哪個 NVM Set。</dd></div><div><dt>namespace</dt><dd>主機以 NSID 指定的一份邏輯儲存空間。</dd></div><div><dt>I/O</dt><dd>Input/Output，對 namespace 執行資料輸入與輸出的操作類別。</dd></div><div><dt>SQ</dt><dd>Submission Queue，提交佇列；主機放置待執行命令的記憶體佇列。</dd></div></dl>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>看懂三種關係</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">namespace 屬於哪個 NVM Set，SQ 關聯哪個 Set，完成結果送往哪個 CQ：這三種關係各回答不同問題，不能因為編號接近就混在一起。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM Set</dt><dd>在邏輯上與其他集合分開的一組非揮發性儲存，可包含多個 namespace。</dd></div><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div><div><dt>CQ</dt><dd>Completion Queue，完成佇列；控制器放置命令完成結果的記憶體佇列。</dd></div></dl></article>
+<article><span class="axis-number">02</span><h3>確認提示的前提</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">先查控制器能力，再分清 Predictable Latency Mode 是否啟用、Set 目前處於哪種工作視窗。支援位元本身沒有提供固定的應用程式延遲上限。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Predictable Latency Mode</dt><dd>可預測延遲模式；以 NVM Set 為單位，在符合操作條件的工作視窗提供確定性讀寫延遲。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>把儲存清單接到建立命令</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">讀出 Set 的實際識別值及 namespace 歸屬，再放進 Create I/O SQ。清單索引、byte 位置與識別值各有用途，64 筆佇列也有自己的數量編碼。</span></p></article>
+<article><span class="axis-number">04</span><h3>用每筆 I/O 檢查分流</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">從命令 NSID 找到 Set，再選已關聯該 Set 的 SQ。比較建立參數錯誤與後續送錯佇列，理解規格對兩者規定的不同後果。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSID</dt><dd>Namespace Identifier；I/O 命令用來指定 namespace 的識別值。</dd></div></dl></article>
+</div>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">預備知識是 OS、Computer Organization 與基本 SSD 概念。本文的 Set 7／9、SQ3／4／5、CQ2 與 namespace 編號均為說明性範例；能力與可用編號以裝置實際回覆為準。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">從「這筆 I/O 應送到哪個佇列」出發，先建立全貌，再逐步追蹤查詢、欄位與結果。</span></p>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">同一組例子貫穿本文：namespace A、B 在 Set 7，C 在 Set 9。主機讓 SQ3、SQ4 服務 Set 7，SQ5 服務 Set 9，而完成結果可以共用 CQ2。讀完應能說明每個編號從哪裡取得、填在哪裡，以及後續怎樣選對 SQ。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span><span class="paragraph-text">SQ Associations 是配合 Predictable Latency Mode 的選用提示。提示是否受支援、提示是否正確、模式當下能提供什麼服務品質，需要分別確認。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-sqa-model"><h2 id="heading-sqa-model"><span class="section-number">01</span> 把佇列用途告訴控制器</h2>
+<!-- claim:SQA-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">SQ Associations 讓主機在建立 I/O Submission Queue 時，提供該 SQ 對應的 NVM Set，作為控制器在 Predictable Latency Mode 下改善效能的提示。這是選用能力；Predictable Latency Mode 不依賴主機一定使用 SQ Associations。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.28</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 732-733, PDF 頁 758-759</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先辨認三種物件</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">namespace 是命令要存取的邏輯儲存空間；NVM Set 是可配置出 namespace、也可保留未配置空間的儲存集合；SQ 是主機放置待執行命令的佇列。它們分別回答「存取誰、屬於哪組儲存、從哪裡提交」。不能把 SQ 的記憶體空間當作 namespace 的資料容量。</span></p>
+<h3>關聯描述的是 SQ 的預定用途</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">主機把某個 SQ 關聯到 Set 7，意思是打算把 Set 7 內 namespace 的 I/O 送到這個 SQ。這項關聯不會建立 namespace，也不會把原本屬於 Set 9 的 namespace 搬到 Set 7。I/O 命令本身仍以 NSID 指定真正的資料對象。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 470" role="img"><title>儲存歸屬、工作提示、完成路徑各有一條關係</title><desc>由上往下追蹤。上層是 namespace 的儲存歸屬；中層表示主機為各 SQ 選擇相符的 Set；下層只表示完成結果匯入同一 CQ。這些連線不表示把 namespace 容量搬進主機佇列。來源：Base §3.2.2、§3.3、§5.3.2、§8.1.28。</desc><rect x="20" y="20" width="345" height="100" rx="6" class="v-object"/><text x="192.5" y="63.5" text-anchor="middle" font-size="17">NVM Set 7</text><text x="192.5" y="88.5" text-anchor="middle" font-size="17">A: NSID11 · B: NSID12</text><rect x="395" y="20" width="345" height="100" rx="6" class="v-object"/><text x="567.5" y="63.5" text-anchor="middle" font-size="17">NVM Set 9</text><text x="567.5" y="88.5" text-anchor="middle" font-size="17">C: NSID21</text><path d="M192,120 L192,190" class="v-line"/><path d="M188,183 L192,190 L196,183" class="v-line"/><path d="M567,120 L567,190" class="v-line"/><path d="M563,183 L567,190 L571,183" class="v-line"/><rect x="20" y="190" width="345" height="100" rx="6" class="v-command"/><text x="192.5" y="233.5" text-anchor="middle" font-size="17">SQ3 + SQ4</text><text x="192.5" y="258.5" text-anchor="middle" font-size="17">NVMSETID = 7</text><rect x="395" y="190" width="345" height="100" rx="6" class="v-command"/><text x="567.5" y="233.5" text-anchor="middle" font-size="17">SQ5</text><text x="567.5" y="258.5" text-anchor="middle" font-size="17">NVMSETID = 9</text><path d="M192,290 L192,360" class="v-line"/><path d="M188,353 L192,360 L196,353" class="v-line"/><path d="M567,290 L567,360" class="v-line"/><path d="M563,353 L567,360 L571,353" class="v-line"/><rect x="20" y="360" width="720" height="85" rx="6" class="v-success"/><text x="380.0" y="396.0" text-anchor="middle" font-size="17">CQ2</text><text x="380.0" y="421.0" text-anchor="middle" font-size="17">完成結果共用；Set 歸屬維持不變</text></svg></div><figcaption>由上往下追蹤。上層是 namespace 的儲存歸屬；中層表示主機為各 SQ 選擇相符的 Set；下層只表示完成結果匯入同一 CQ。這些連線不表示把 namespace 容量搬進主機佇列。來源：Base §3.2.2、§3.3、§5.3.2、§8.1.28。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>NVMSETID</dt><dd>NVM Set Identifier；Set 的 16-bit 識別值，和 SQ 編號、NSID 都不同。</dd></div></dl>
+<h3>為什麼要讓控制器知道</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">Predictable Latency Mode 以 NVM Set 為單位提供服務品質屬性。若主機把不同 Set 的工作混在同一個 SQ，控制器比較難單靠佇列判斷工作所屬；提供關聯並遵守分流規則，讓佇列資訊能配合 Set 層級的處理。規格沒有替這項提示指定固定的加速倍數。</span></p>
+<h3>提示、模式與延遲保證分別看</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">支援 SQ Associations、已建立 SQ 關聯、已啟用 Predictable Latency Mode，是三個不同狀態。建立 SQ 關聯不會順便把模式打開；模式也可以在不使用此選用提示的情況下運作。主機若希望取得關聯的效益，還必須持續按正確 Set 分流。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">說明性範例：Set 7 內有 namespace A、B，Set 9 內有 C。主機先安排 SQ3、SQ4 服務 Set 7，SQ5 服務 Set 9，再在建立各 SQ 時送入對應的 Set 編號。控制器因此知道這些佇列預期承載哪一組儲存空間的 I/O。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-sqa-model">閱讀相關規格圖表 → 把佇列用途告訴控制器</a>
+</section>
+<section class="lesson" id="module-sqa-support"><h2 id="heading-sqa-support"><span class="section-number">02</span> 支援能力、模式狀態與工作視窗</h2>
+<!-- claim:SQA-SUPPORT -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">支援 SQ Associations 的控制器必須在 CTRATT 同時宣告 SQA、NVM Sets 與 Predictable Latency Mode 支援。這些支援位元不表示每個 Set 目前都已啟用模式，也不表示目前處於可提供確定性延遲的視窗。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CTRATT</dt><dd>Controller Attributes；Identify Controller 中由多個能力 bit 組成的屬性欄位。</dd></div><div><dt>SQA</dt><dd>SQ Associations；CTRATT 中表示是否支援提交佇列關聯的 bit。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.28</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 732-733, PDF 頁 758-759</p></details>
+<!-- claim:SQA-SUPPORT-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">Predictable Latency Mode 有 DTWIN／NDWIN；DTWIN 的確定性依賴操作限制與當時狀態，SQ 提示不會取消這些條件。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>DTWIN</dt><dd>Deterministic Window；Set 可以提供確定性讀寫延遲的工作視窗。</dd></div><div><dt>NDWIN</dt><dd>Non-Deterministic Window；Set 準備下一個 DTWIN，無法提供確定性讀寫延遲的工作視窗。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.21, 文件頁 682-683, PDF 頁 708-709</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先讀控制器的能力宣告</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">Identify Controller 的 CTRATT 位於 bytes 99:96。SQA bit 8 為 1 表示支援 SQ Associations；同時必須有 NSETS bit 2 與 PLM bit 5。這三個 bit 是不同能力，不可只看到支援 NVM Sets，就自行推論控制器也支援 SQ Associations。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSETS</dt><dd>NVM Sets；CTRATT 中表示是否支援 NVM 集合的 bit。</dd></div><div><dt>PLM</dt><dd>Predictable Latency Mode；CTRATT 中表示是否支援可預測延遲模式的 bit。</dd></div></dl>
+<h3>支援不等於目前已啟用</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">模式是以 NVM Set 為單位配置的。假設 Set 7 已啟用 Predictable Latency Mode，Set 9 沒有啟用，兩者仍可存在於宣告 PLM 支援的同一個控制器內。本篇設定 SQ 關聯的命令不會取代模式配置；範例的效益討論以相關 Set 已啟用該模式為前提。</span></p>
+<figure><figcaption><strong>同一個控制器，三種問題要分別回答</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">觀察到的資訊</th><th scope="col">足以說明什麼</th><th scope="col">還不能據此推出什麼</th></tr></thead><tbody><tr><td>CTRATT 三個 bit 為 1</td><td>控制器支援 SQA、NVM Sets、PLM</td><td>Set 7 現在已啟用模式</td></tr><tr><td>Set 7 已啟用模式</td><td>該 Set 使用模式的工作視窗規則</td><td>此刻必定在 DTWIN</td></tr><tr><td>Set 7 目前在 DTWIN</td><td>現在能在符合條件時提供確定性延遲</td><td>主機可無限增加工作量，或保證全部 PCIe 延遲</td></tr><tr><td>SQ3 已關聯 Set 7</td><td>控制器收到此 SQ 的預定用途</td><td>主機之後一定送對每筆 I/O</td></tr></tbody></table></div><figcaption>由支援走到實際效果，中間仍有設定、視窗及主機分流條件。來源：Base §8.1.28、§8.1.21、Figure 338。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>PCIe</dt><dd>PCI Express，NVMe memory-based controller 使用的 transport 與裝置互連。</dd></div></dl>
+<h3>模式內還有兩種工作視窗</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">例如 Set 7 在 DTWIN 接收讀寫，之後進入 NDWIN 準備下一個視窗；這時延遲性質已改變，SQ3 關聯 Set 7 的設定卻可以保持不變。規格的服務品質描述適用於 subsystem 內部，不涵蓋 PCIe 傳輸路徑的全部延遲。因此不能僅靠 SQA=1 保證應用程式端的每次 I/O 延遲。</span></p>
+<h3>保持正確路由仍不足以無限延長 DTWIN</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">DTWIN 還受到讀取量、最佳寫入大小的寫入量、視窗時間及廠商定義屬性限制；若超過相關典型或最大值，或發生需控制器立即處理的 Deterministic Excursion，Set 可能轉入 NDWIN。SQ 關聯幫助工作分組，但沒有取消這些模式規則。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Deterministic Excursion</dt><dd>subsystem 中罕見但需要控制器立即處理的事件，可能讓 Set 離開 DTWIN。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">只觀察相關三個 bit：SQA bit 8、PLM bit 5、NSETS bit 2 的遮罩合計為 0124h。用 (CTRATT &amp; 0124h)==0124h 檢查三者，不要求整個 CTRATT 恰好等於 0124h，因為控制器可能還有其他能力。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-sqa-support">閱讀相關規格圖表 → 支援能力、模式狀態與工作視窗</a>
+</section>
+<section class="lesson" id="module-sqa-inventory"><h2 id="heading-sqa-inventory"><span class="section-number">03</span> 先建立 namespace 到 Set 的對照</h2>
+<!-- claim:SQA-INVENTORY -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">主機需要兩份資訊：NVM Set List 說明控制器可存取哪些 Set，Identify Namespace 則說明指定 namespace 屬於哪個 Set。清單位置、NVM Set Identifier 與 NSID 是不同數值，不能用同一個編號代替。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, 文件頁 388-389, PDF 頁 414-415</p></details>
+<!-- claim:SQA-INVENTORY-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">CNS=08h 對 目前可存取的 NSID 回 namespace 結構；NVMSETID 位於 bytes 11:10。inactive NSID 回全零資料，不能當有效歸屬。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CNS</dt><dd>Controller or Namespace Structure；Identify 用來選擇回覆哪種資料的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.8, 文件頁 390,393, PDF 頁 416,419</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>用 CNS 選正確的問題</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">Identify 的 CNS=01h 取得控制器能力，CNS=04h 取得 NVM Set List，CNS=08h 取得指定 namespace 的 I/O Command Set Independent 資料。CNS 放在 CDW10 bits 7:0；CNS=04h 用 CDW11 的 CNSSID 低 16 bits 提供清單起始 Set 編號，CNS=08h 則以命令 NSID 選 namespace。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CNSSID</dt><dd>CNS Specific Identifier；用途由 CNS 選項決定的識別欄位。</dd></div><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl>
+<h3>清單的數量與位置要各自計算</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">NVM Set List 前 128 bytes 是 header，NUMENT 在 byte 0，直接表示 0～31 筆。每筆 entry 為 128 bytes，所以索引 i 的起點為 128+i×128。NUMENT=0 就是空清單，不把後面的補零區解成 Set 0；最多 31 筆加 header 正好是 4096 bytes。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NUMENT</dt><dd>Number of Entries；這份清單中實際回傳的項目數。</dd></div><div><dt>header</dt><dd>資料結構的前置區；NVM Set List 的前 128 bytes 保存項目數與保留空間。</dd></div><div><dt>entry</dt><dd>清單中的一筆資料；此處每筆 NVM Set Attributes Entry 為 128 bytes。</dd></div></dl>
+<figure><figcaption><strong>清單位置不是 Set 識別值</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">清單內的索引</th><th scope="col">整份清單的 byte 範圍</th><th scope="col">entry 內的 NSETID</th><th scope="col">建立 SQ 時使用</th></tr></thead><tbody><tr><td>0</td><td>128～255</td><td>7</td><td>CDW12=00000007h</td></tr><tr><td>1</td><td>256～383</td><td>9</td><td>CDW12=00000009h</td></tr></tbody></table></div><figcaption>說明性範例 NUMENT=2。先用位置找到資料，再從資料取識別值；不要把左邊的 0／1 或 128／256 填成 Set ID。來源：Base Figures 344／345／578。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>NSETID</dt><dd>NVM Set Identifier；NVM Set Attributes Entry 內對 Set 識別欄位使用的縮寫。</dd></div></dl>
+<h3>起始識別值使用大於或等於</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">CNS=04h 回傳的 Set 識別值從指定起點開始，採大於或等於，並按識別值排序。若上一批最後一個 NSETID 是 37，而還要繼續查，可以用 38 當下一次起點，避免又取回 37。這個起點是識別值，不是第幾頁，也不是記憶體 byte offset。若到 FFFFh 就不能再加 1 回繞成 0。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>byte offset</dt><dd>相對資料結構起點、以 byte 計算的距離；不等於項目索引或識別值。</dd></div><div><dt>offset</dt><dd>offset；從指定起點算出的位移。它回答「離起點多遠」，不等於 index。</dd></div></dl>
+<h3>從 namespace 的回覆找歸屬</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">對有效且目前可透過該控制器存取的 NSID 使用 CNS=08h，回覆 bytes 11:10 的 NVMSETID 指出其 Set。若查 inactive NSID，回的是全零結構，不能把它當成「有效 namespace 屬於 Set 0」。不支援 NVM Sets 或 namespace 沒有已格式化儲存空間時，此欄也為 0，因此要連同查詢條件判斷。</span></p>
+<h3>能力或配置改變後，對照表也要跟著更新</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">命令的 NSID 決定真正的資料對象，主機保存的對照表只是目前認識。若 namespace 被刪除或配置已變，不能繼續拿舊的 NSID→Set→SQ 關係送命令。建立 SQ 前先確認目標 Set 在可用清單中，之後也要讓路由與目前有效的 namespace 配置一致。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">說明性範例：NUMENT=2，Entry 0 的 NSETID=7，Entry 1 的 NSETID=9；兩筆分別從 byte 128、256 開始。另查 NSID=11、12 得到 Set 7，查 NSID=21 得到 Set 9。路由表應保存這些實際值，不是把清單索引 0、1 當 Set 編號。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-sqa-inventory">閱讀相關規格圖表 → 先建立 namespace 到 Set 的對照</a>
+</section>
+<section class="lesson" id="module-sqa-create"><h2 id="heading-sqa-create"><span class="section-number">04</span> 建立 SQ 時，同時指定 Set 與完成佇列</h2>
+<!-- claim:SQA-CREATE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">Create I/O Submission Queue 的 CDW12.NVMSETID 建立 SQ 與 Set 的關聯；CDW11.CQID 則指定完成結果送往哪個 CQ。兩個欄位用途不同。NVMSETID=0 或不支援 SQA 時不建立特定 Set 關聯；SQA 支援時指定清單外的非零 Set，命令必須以 Invalid Field in Command 中止。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQID</dt><dd>Completion Queue Identifier；這個 SQ 的完成項目要送往哪個 CQ。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, 文件頁 529-531, PDF 頁 555-557</p></details>
+<!-- claim:SQA-CREATE-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">PCIe 的多個 SQ 可以使用同一個 CQ；共用完成佇列不會取代各 SQ 的 Set 關聯。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3, 文件頁 88, PDF 頁 114</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先準備完成結果的去處</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">CQ 保存完成項目，SQ 保存待執行命令。Create I/O SQ 的 CQID 必須指定已建立的有效 I/O CQ；不能填 Admin CQ 的 0。多個 SQ 可以把結果送往同一個 CQ，因此 CQ2 的編號與 Set 7 沒有必須相同的關係。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>
+<h3>CDW10 同時裝深度與 SQ 編號</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">bits 31:16 的 QSIZE 採數量減 1，64 筆填 63，也就是 003Fh；bits 15:0 的 QID 填 SQ3 的 3。合成 (63&lt;&lt;16)|3=003F0003h。QSIZE=0 不是空 SQ 的合法建立要求；QID=0 是 Admin Queue，也不能用來建立一般 I/O SQ。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>QSIZE</dt><dd>Queue Size；Create I/O SQ 中以項目數減 1 編碼的深度。</dd></div><div><dt>QID</dt><dd>Queue Identifier；本命令準備建立的 SQ 編號。</dd></div></dl>
+<figure><figcaption><strong>把 64-entry SQ3 的建立參數拆開檢查</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">命令位置</th><th scope="col">本例如何組成</th><th scope="col">送出的值</th></tr></thead><tbody><tr><td>CDW10</td><td>高 16 bits：64−1=63；低 16 bits：QID3</td><td>003F0003h</td></tr><tr><td>CDW11</td><td>高 16 bits：CQID2；PC=1；QPRIO=0</td><td>00020001h</td></tr><tr><td>CDW12</td><td>低 16 bits：Set 7；高 16 bits 保留</td><td>00000007h</td></tr><tr><td>PRP1</td><td>4 KiB 對齊、已配置的連續主機記憶體</td><td>0000000000100000h</td></tr></tbody></table></div><figcaption>前提：CQ2 已建立，Set 7 可用且支援 SQA，控制器已初始化且支援此佇列深度；採 round robin，所以 QPRIO 被忽略。來源：Base §5.3.2、Figures 575～578。</figcaption></figure>
+<dl class="term-note" aria-label="本段名詞"><div><dt>round robin</dt><dd>輪詢仲裁；輪流從佇列選取待處理命令，本例不使用加權優先級。</dd></div><div><dt>QPRIO</dt><dd>Queue Priority；僅在指定的加權輪詢仲裁機制下使用的 SQ 優先級。</dd></div><div><dt>PRP1</dt><dd>PRP Entry 1；本命令依 PC 選擇存放 SQ 基底位址或 PRP List 位址。</dd></div><div><dt>PC</dt><dd>Physically Contiguous；1 表示 SQ 的記憶體實體連續，0 表示用頁面清單描述。</dd></div></dl>
+<h3>CDW11 管完成路徑、優先級與記憶體配置</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">CQID 放高 16 bits，本例是 2。低位 PC=1 表示實體連續 SQ 記憶體；QPRIO bits 2:1 只在 weighted round robin with urgent priority class 仲裁時使用，本例採 round robin，因此控制器忽略 QPRIO。剩餘 bits 15:3 保留。這些欄位都不會代替 CDW12 的 Set 選擇。</span></p>
+<h3>CDW12 才是這篇的 Set 提示</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">低 16 bits 放 NVMSETID=7，高 16 bits 保留。0 在此有明確定義：不與特定 Set 關聯；它不是廣播到全部 Set。這和某些必須指定有效 Set 的其他命令對 0 的規則不同，必須依 Create I/O SQ 的定義解讀。</span></p>
+<h3>PRP1 指向佇列記憶體</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">PC=1 時，PRP1 放實體連續 SQ 的基底位址，並依已配置的記憶體頁大小對齊。以 4 KiB 頁、每項 64 bytes、64 筆為例，SQ 恰好占一頁，可用 00100000h 等已配置且對齊的主機位址。這個位址保存命令項目，不是 Set 7 的儲存媒體位址。</span></p>
+<h3>等建立成功，再使用這個 SQ</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.08">04.08.</span><span class="paragraph-text">SQ 的 QID、CQID、深度與 Set 識別值都需要各自有效。建立命令成功後，主機才可按該 SQ 的配置提交 I/O。若支援 SQA 卻把不存在的 Set 99 填入 CDW12，這是建立參數錯誤；與之後把其他 Set 的 I/O 送錯佇列是不同問題。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.09">04.09.</span><span class="paragraph-text">說明性範例：CQ2 已建立且裝置支援所需深度，建立 64 筆的 SQ3，關聯 Set 7，採實體連續記憶體與 round-robin 仲裁：CDW10=003F0003h、CDW11=00020001h、CDW12=00000007h。若每個 SQE 為 64 bytes，64 筆需 4096 bytes。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SQE</dt><dd>Submission Queue Entry；SQ 內的一個命令項目。</dd></div></dl></aside></div>
+</div>
+<a class="reading-link" href="#reading-sqa-create">閱讀相關規格圖表 → 建立 SQ 時，同時指定 Set 與完成佇列</a>
+</section>
+<section class="lesson" id="module-sqa-routing"><h2 id="heading-sqa-routing"><span class="section-number">05</span> 讓每筆 I/O 的 Set 與 SQ 關聯一致</h2>
+<!-- claim:SQA-ROUTING -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">要取得 SQ Associations 的效益，主機必須把每個 I/O SQ 關聯到某個 NVM Set，並只把命令送入與該命令 NSID 所屬 Set 相符的 SQ。不遵守操作規則可能影響 Predictable Latency；這不是一個由本節定義的強制拒絕其他 Set 命令的存取保護機制。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.28</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 733, PDF 頁 759</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>以資料對象為起點</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">先看 I/O 命令的 NSID，再查這個 namespace 的 NVMSETID，最後從主機建立的關聯中選同一個 Set 的 SQ。不要反過來先找一個空 SQ，就假定它可以承載任何 namespace；這會讓主機提供給控制器的提示與實際工作不一致。</span></p>
+<h3>一個 Set 可以使用多個 SQ</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">一個 Create I/O SQ 命令只能填一個 NVMSETID，但主機可以建立多個 SQ，逐一填入同一個 Set 編號。例子裡 SQ3、SQ4 都服務 Set 7。這表示關聯不是一個 Set 只能有一個 SQ，也不表示每個 namespace 必須獨占一個 SQ。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 430" role="img"><title>以命令的 NSID 選 SQ，而不是以 CQID 選儲存空間</title><desc>本例只追蹤 NSID21。SQ3 即使較空，也不符合 Set 9 的提示；兩個 SQ 共用 CQ2 不會改變這個判斷。來源：Base §8.1.28、Figures 346／578。</desc><rect x="20" y="20" width="720" height="70" rx="6" class="v-object"/><text x="380.0" y="61.0" text-anchor="middle" font-size="17">I/O · NSID21</text><path d="M380,90 L380,145" class="v-line"/><path d="M376,138 L380,145 L384,138" class="v-line"/><rect x="20" y="145" width="720" height="85" rx="6" class="v-command"/><text x="380.0" y="181.0" text-anchor="middle" font-size="17">Identify namespace → NVMSETID = 9</text><text x="380.0" y="206.0" text-anchor="middle" font-size="17">先確認資料對象的儲存歸屬</text><path d="M190,230 L190,295" class="v-line"/><path d="M186,288 L190,295 L194,288" class="v-line"/><path d="M565,230 L565,295" class="v-line"/><path d="M561,288 L565,295 L569,288" class="v-line"/><rect x="20" y="295" width="345" height="105" rx="6" class="v-success"/><text x="192.5" y="341.0" text-anchor="middle" font-size="17">SQ5 → Set 9</text><text x="192.5" y="366.0" text-anchor="middle" font-size="17">相符：使用 SQ5</text><rect x="395" y="295" width="345" height="105" rx="6" class="v-decision"/><text x="567.5" y="341.0" text-anchor="middle" font-size="17">SQ3 → Set 7</text><text x="567.5" y="366.0" text-anchor="middle" font-size="17">不符：不要選 SQ3</text></svg></div><figcaption>本例只追蹤 NSID21。SQ3 即使較空，也不符合 Set 9 的提示；兩個 SQ 共用 CQ2 不會改變這個判斷。來源：Base §8.1.28、Figures 346／578。</figcaption></figure>
+
+<h3>不同的關聯錯誤有不同後果</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">建立時指定不存在的 Set，Figure 578 明定命令中止；建立成功後卻把 Set 9 的命令送入關聯 Set 7 的 SQ，違反的是主機操作規則。§8.1.28 說這可能影響可預測延遲，沒有在此規定每次都回某個錯誤碼，因此不能靠「沒報錯」證明路由正確。</span></p>
+<h3>CQ 共用不等於 Set 混用</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">SQ3 與 SQ5 可以都使用 CQ2；CQ 裡的完成項目仍用命令與佇列識別資訊對應原命令。SQ→CQ 是結果回報路徑，SQ→Set 是工作分組提示。要判斷主機是否遵守 SQA 規則，應比較 Set 歸屬，不是比較 CQID。</span></p>
+<h3>關聯是在建立時提出的</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">§8.1.28 的啟用方式是在建立 SQ 時給出關聯，不提供直接改寫既有 SQ 關聯的操作。若要換一套佇列配置，主機可先妥善完成既有工作，再依新的配置建立並使用對應 SQ；不能只修改自己記憶體裡的路由表，就宣稱控制器收到新的 Set 提示。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">已知 NSID11／12→Set7、NSID21→Set9，且 SQ3／SQ4→Set7、SQ5→Set9。NSID11 可以選 SQ3 或 SQ4；NSID21 應選 SQ5。即使三個 SQ 都把完成項目送往 CQ2，也不會改變這個分流判斷。</span></p></aside></div>
+</div>
+</section>
+<section id="figure-reading"><h2><span class="section-number">06</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-sqa-model"><summary>圖表組 01 · 把佇列用途告訴控制器 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">先看 Figure 67 的儲存歸屬，再對照命令中的 NVMSETID；本節本身沒有另列編號圖表。</span></p>
+<a class="reading-link" href="#module-sqa-model">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-sqa-membership-fields"><h4 id="fields-heading-sqa-membership-fields">儲存外框與命令對象的關係</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">Figure 67 是儲存配置示意，沒有表示 SQ 或 CQ，也沒有要求每個 Set 的 namespace 數量相等。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-membership-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>NVM Set A／B／C</td><td>外框代表彼此邏輯分開的儲存集合；字母是示意名稱。</td><td>實際關聯使用 16-bit Set 識別值，例如 7。</td></tr><tr><td>NS A1～A3、B1～B2、C1</td><td>每個具有已格式化儲存空間的 namespace 完整位於一個 Set。</td><td>A1 與 A2 可使用同一個關聯到 A 的 SQ；不需要一個 namespace 獨占一個 SQ。</td></tr><tr><td>Unallocated</td><td>Set 內尚未配置給 namespace 的容量。</td><td>它沒有可供一般 I/O 指定的 namespace 對象；不是另一個待選的 Set 或空 SQ。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-067">Base 67</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-067 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-067"><h4>Base Figure 67 · NVM Sets and Associated Namespaces</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-067-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-1">Base67-1</span><span class="paragraph-text">先讀 namespace 的包含關係，才知道 SQ 應該服務哪一個 Set。</span></p><details class="source-note"><summary>來源：Base 2.4 §3.2.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §3.2.2, Figure 67, 文件頁 81, PDF 頁 107</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base67-2">Base67-2</span><span class="paragraph-text">原圖中 NS A1、A2、A3 都在 NVM Set A 的外框內；若一個 SQ 關聯到 A，它預期承載這三個 namespace 的 I/O。圖上的 Set B 不會因為某筆命令經同一個 CQ 完成，就變成 A 的一部分。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-membership-fields">欄位、條件與相關細節：儲存外框與命令對象的關係 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-sqa-support"><summary>圖表組 02 · 支援能力、模式狀態與工作視窗 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">Figure 338 讀三個支援位元；Figure 751 讀兩種工作視窗，不把視窗的交替誤認為功能支援 bit 在切換。</span></p>
+<a class="reading-link" href="#module-sqa-support">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-sqa-capability-fields"><h4 id="fields-heading-sqa-capability-fields">先確認能做，再談是否已做</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">只取 Figure 338 的 CTRATT bytes 99:96 中 SQA、PLM、NSETS。其餘 bit 不是本篇內容，也不能一律當成保留。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-capability-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>SQA bit 8</td><td>1 支援 SQ Associations；0 不支援。</td><td>0124h &amp; 0100h 非零，表示此能力受支援。</td></tr><tr><td>PLM bit 5</td><td>1 支援 Predictable Latency Mode；支援 SQA 時必須同時為 1。</td><td>此 bit 不能證明 Set 7 當下已啟用模式。</td></tr><tr><td>NSETS bit 2</td><td>1 支援 NVM Sets；支援 SQA 時必須同時為 1。</td><td>只看到 NSETS=1，不足以推論 SQA=1。</td></tr><tr><td>三者合併檢查</td><td>遮罩 0124h=(1&lt;&lt;8)|(1&lt;&lt;5)|(1&lt;&lt;2)，檢查與遮罩相 AND 的結果。</td><td>CTRATT=0324h 仍通過三 bit 檢查；額外 bit 9 不改變這個結論。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 344-346, PDF 頁 370-372</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-338 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-338"><h4>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">CTRATT 的三個 bit 回答支援能力，沒有回報 SQ 關聯清單或目前工作視窗。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 344-346, PDF 頁 370-372</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">0124h 的相關位元是 bit 8、5、2；0224h 雖然也有 bit 5、2，卻沒有 bit 8，不能當作 SQA 支援。對整個 CTRATT 應使用遮罩，避免其他能力位元干擾判斷。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-capability-fields">欄位、條件與相關細節：先確認能做，再談是否已做 →</a></div></article>
+<section class="field-guide" id="fields-sqa-window-fields"><h4 id="fields-heading-sqa-window-fields">沿時間讀兩種視窗與切換條件</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">本篇只補 Figure 751 所需的模式背景；SQA 的選用提示不能代替模式啟用與視窗條件。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-window-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>綠色 DTWIN</td><td>Set 能提供確定性讀寫延遲；仍需符合該視窗的工作量與時間限制。</td><td>兩個關聯同 Set 的 SQ 要共同計入該 Set 的負載。</td></tr><tr><td>紅色 NDWIN</td><td>準備後續 DTWIN 所需的工作使 Set 無法提供確定性讀寫延遲。</td><td>例如進行媒體背景操作；不是主機必須把資料移到另一個 Set。</td></tr><tr><td>橫向交替與 Legend</td><td>時間由左往右，圖例把顏色對應到狀態；未給固定週期或長度。</td><td>DTWIN 畫得較長，不代表它固定是 NDWIN 的某個倍數。</td></tr><tr><td>DTWIN → NDWIN</td><td>主機可要求切換；操作屬性超過典型或最大值，或發生 Deterministic Excursion 時，Set 可自行轉入 NDWIN。</td><td>有關聯而且送對 SQ，仍不能忽略視窗的讀取量、寫入量與時間條件。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-751">Base 751</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.21, Figure 751, 文件頁 682-683, PDF 頁 708-709</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-751 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-751"><h4>Base Figure 751 · Deterministic and Non-Deterministic Windows</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-751-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base751-1">Base751-1</span><span class="paragraph-text">DTWIN 與 NDWIN 表示同一 Set 沿時間經過的不同工作視窗，不是兩個 Set。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.21</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.21, Figure 751, 文件頁 682-683, PDF 頁 708-709</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base751-2">Base751-2</span><span class="paragraph-text">Set 7 原本在綠色 DTWIN，之後為準備下一個視窗進入紅色 NDWIN。SQ3 仍可保持關聯 Set 7；視窗改變不代表 SQ3 自動改去 Set 9。原圖沒有時間刻度，不能從方塊寬度算毫秒。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-window-fields">欄位、條件與相關細節：沿時間讀兩種視窗與切換條件 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-sqa-inventory"><summary>圖表組 03 · 先建立 namespace 到 Set 的對照 · 7 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">Figures 333／334／336 選查詢；343～345 解釋清單；346 只取 NSID 查詢條件及 NVMSETID 歸屬欄位。</span></p>
+<a class="reading-link" href="#module-sqa-inventory">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-sqa-identify-command-fields"><h4 id="fields-heading-sqa-identify-command-fields">同一個 Identify 命令的三種查詢</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.08">06.08.</span><span class="paragraph-text">只取 CNS 01h／04h／08h，以及命令中解釋這三種查詢所需的欄位。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-identify-command-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Figure 333：CNS bits 7:0</td><td>01h 回控制器資料；04h 回 Set 清單；08h 回指定 namespace 的跨命令集共用資料。</td><td>三者沒有相同的回覆布局，不能把 04h 的回覆當 08h 解。</td></tr><tr><td>Figure 333：CNTID bits 31:16</td><td>這三種 CNS 都不使用 CNTID；主機必須清 0，控制器必須忽略。bits 15:8 保留。</td><td>要查 NSID21，填共同 NSID 欄；不是 CNTID=21。</td></tr><tr><td>Figure 334：CSI bits 31:24</td><td>三種 CNS 均不使用 CSI；主機宜清 0，控制器宜忽略。若非零，控制器可回 Invalid Field in Command。</td><td>相容的組合在此填 0；不能因「不使用」就隨意留下其他值。</td></tr><tr><td>Figure 334：CNSSID bits 15:0</td><td>CNS=04h 用作清單起始 Set ID；01h／08h 未定義，屬保留。bits 23:16 保留。</td><td>04h 配 7 是找 ID≥7；08h 的目標由 NSID 決定。</td></tr><tr><td>Figure 336：O／M 與 Y／N</td><td>O／M 為選用／必備支援；Y／N 為該輸入欄是否使用。01h、08h 為 M，04h 為 O。</td><td>04h 的 O 不等於主機可以忽略回覆內容；支援 SQA 的情境需要 Set 資訊。</td></tr><tr><td>NSID 欄與回覆</td><td>01h／04h 不用 NSID；08h 使用 NSID，對 active NSID 回傳對應資料。</td><td>本例依序查 11、12、21，得到 7、7、9；不是只做一次查詢就取得整張 namespace 對照。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CNTID</dt><dd>Controller Identifier；只在需要指定控制器的 Identify 選項使用。</dd></div><div><dt>CSI</dt><dd>Command Set Identifier；Identify 某些選項使用的 I/O Command Set 識別值。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-333">Base 333</a><a href="#figure-SQA-BASE-FIG-334">Base 334</a><a href="#figure-SQA-BASE-FIG-336">Base 336</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14, Figure 333, 文件頁 337, PDF 頁 363</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14, Figure 334, 文件頁 337, PDF 頁 363</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14, Figure 336, 文件頁 338-339, PDF 頁 364-365</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-333 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-333"><h4>Base Figure 333 · Identify – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-333-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base333-1">Base333-1</span><span class="paragraph-text">CDW10 的 CNS 選擇要問哪個問題，CNTID 不是 namespace 的編號。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14, Figure 333, 文件頁 337, PDF 頁 363</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base333-2">Base333-2</span><span class="paragraph-text">查 Set List 用 CDW10=00000004h，查 namespace 歸屬用 00000008h。後者的 NSID=21 放在共同命令的 NSID 欄，不能填到 CDW10 高 16 bits 的 CNTID。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-identify-command-fields">欄位、條件與相關細節：同一個 Identify 命令的三種查詢 →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-334 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-334"><h4>Base Figure 334 · Identify – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-334-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base334-1">Base334-1</span><span class="paragraph-text">CDW11 低 16 bits 的意思由 CNS 決定，不是每次 Identify 都在選 Set。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14, Figure 334, 文件頁 337, PDF 頁 363</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base334-2">Base334-2</span><span class="paragraph-text">CNS=04h、CDW11=00000007h 表示從 Set ID 7 開始列舉；換成 CNS=08h 查 NSID21 的歸屬時，不再把 7 填成篩選條件，CNSSID 在該選項未定義。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-identify-command-fields">欄位、條件與相關細節：同一個 Identify 命令的三種查詢 →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-336 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-336"><h4>Base Figure 336 · Identify – CNS Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-336-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base336-1">Base336-1</span><span class="paragraph-text">先用 CNS 列選回覆結構，再用 Y／N 判斷 NSID、CNTID、CSI 是否參與這次查詢。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14, Figure 336, 文件頁 338-339, PDF 頁 364-365</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base336-2">Base336-2</span><span class="paragraph-text">01h 問控制器能力，04h 問 Set 清單，08h 問指定 namespace。只有這三列中的 08h 對 NSID 標 Y；不可因為 Identify 命令帶有 NSID 欄，就認為所有選項都使用它。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-identify-command-fields">欄位、條件與相關細節：同一個 Identify 命令的三種查詢 →</a></div></article>
+<section class="field-guide" id="fields-sqa-set-list-fields"><h4 id="fields-heading-sqa-set-list-fields">先找 entry，再讀其中的實際 Set ID</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.09">06.09.</span><span class="paragraph-text">Figure 343 選清單起點，344 定位一筆資料，345 才讀該 Set 的欄位。清單依 ID 排序，只包含處理查詢的控制器可存取的 Set。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-set-list-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Figure 343：CDW11 bits 15:0</td><td>NVMSETID 是起始識別值，下限為含等號的 ≥。最大值 FFFFh；繼續列舉時不可回繞。</td><td>上一筆為 37，下一次可從 38 開始；可能直接取得 100，ID 不必連續。</td></tr><tr><td>Figure 344：byte 0／bytes 127:1</td><td>NUMENT=0～31；其餘 header 保留。</td><td>31 筆加 header 為 128+31×128=4096 bytes。</td></tr><tr><td>Figure 344：Entry i</td><td>i 是從 0 起算的 index；起點 128+i×128，末位為起點+127。</td><td>i=1 對應 byte offset 256，不能把 256 當作 Set ID。</td></tr><tr><td>Figure 345：NSETID bytes 1:0／ENDGID bytes 3:2</td><td>前者識別本 Set；後者指出其耐用度群組。這裡的 byte 位置都相對 entry 起點。</td><td>Entry 1 的 NSETID 在整份清單 bytes 257:256；ENDGID 在 259:258。</td></tr><tr><td>R4KRT bytes 11:8</td><td>每單位 100 ns；僅指 DTWIN 中、每個 Set 只有 1 筆 outstanding 命令時的 4 KiB 隨機讀取典型時間。</td><td>120×100 ns=12 μs，是典型值。兩個 SQ 同屬一 Set、各有 1 筆未完成，合計是 2，已非此測量條件。</td></tr><tr><td>OWS bytes 15:12</td><td>最佳寫入大小以 bytes 表示；0 表示未指定。不同 namespace 格式不能共用 OWS 時，此欄宜為 0。</td><td>OWS=65536 表示 64 KiB，並非 65536 個 logical blocks，也不是允許的 SQ 項目數。</td></tr><tr><td>TNVMSC bytes 31:16／UNVMSC bytes 47:32</td><td>均是 16-byte 容量值、單位為 bytes：一個是總容量，一個是未配置容量。</td><td>總容量 1,000,000、未配置 250,000，說明有部分空間尚未分給 namespace；與 64-entry SQ 的記憶體無關。</td></tr><tr><td>entry 的保留區</td><td>bytes 7:4 與 127:48 不提供本篇可使用的屬性；保留區不納入容量或時間換算。</td><td>解析下一筆時直接移動 128 bytes，不能把最後一個已知欄位結尾當下一筆起點。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>outstanding</dt><dd>已提交但尚未完成的命令；要按規定的 Set 範圍合計。</dd></div><div><dt>ENDGID</dt><dd>Endurance Group Identifier；Set 或 namespace 所屬耐用度群組的識別值。</dd></div><div><dt>TNVMSC</dt><dd>Total NVM Set Capacity；Set 的總儲存容量，以 bytes 表示。</dd></div><div><dt>UNVMSC</dt><dd>Unallocated NVM Set Capacity；Set 中尚未配置給 namespace 的容量，以 bytes 表示。</dd></div><div><dt>R4KRT</dt><dd>Random 4 KiB Read Typical；在指定視窗與在途命令數條件下，4 KiB 隨機讀取的典型完成時間。</dd></div><div><dt>index</dt><dd>索引；項目在清單中的順序位置，這裡從 0 起算。</dd></div><div><dt>OWS</dt><dd>Optimal Write Size；以 bytes 表示的最佳寫入大小。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-343">Base 343</a><a href="#figure-SQA-BASE-FIG-344">Base 344</a><a href="#figure-SQA-BASE-FIG-345">Base 345</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, Figure 343, 文件頁 388, PDF 頁 414</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, Figure 344, 文件頁 389, PDF 頁 415</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, Figure 345, 文件頁 389, PDF 頁 415</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-343 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-343"><h4>Base Figure 343 · Command Dword 11 - CNS Specific Identifier</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-343-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base343-1">Base343-1</span><span class="paragraph-text">清單的起點是 Set 識別值下限，而且包含等於該值的 entry。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, Figure 343, 文件頁 388, PDF 頁 414</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base343-2">Base343-2</span><span class="paragraph-text">可存取的 Set 為 7、9、37，要求起點 9 會從 9 開始，不會跳過它。若上一批最後值為 37，下一批可從 38 查；不是把「已讀 31 筆」直接當下一個 Set ID。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-set-list-fields">欄位、條件與相關細節：先找 entry，再讀其中的實際 Set ID →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-344 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-344"><h4>Base Figure 344 · NVM Set List</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-344-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base344-1">Base344-1</span><span class="paragraph-text">NUMENT 是直接筆數，entry 位置則由固定 header 與 128-byte 步距計算。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, Figure 344, 文件頁 389, PDF 頁 415</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base344-2">Base344-2</span><span class="paragraph-text">NUMENT=2 時只讀 Entry 0、1。Entry 1 起點=128+1×128=256，結束=383；剩餘補零不能再被當成有效 Set。NUMENT=0 就沒有 entry，不是 1 筆。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-set-list-fields">欄位、條件與相關細節：先找 entry，再讀其中的實際 Set ID →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-345 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-345"><h4>Base Figure 345 · NVM Set Attributes Entry</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-345-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base345-1">Base345-1</span><span class="paragraph-text">同一筆 entry 同時有識別值、效能參考與儲存容量，必須分開使用。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, Figure 345, 文件頁 389, PDF 頁 415</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base345-2">Base345-2</span><span class="paragraph-text">假設 NSETID=9、R4KRT=120、TNVMSC=1,048,576,000。9 可用於建立 SQ 關聯；120 代表特定測量條件下典型 12 μs；容量則是 bytes，不能拿來設定 SQ 深度。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-set-list-fields">欄位、條件與相關細節：先找 entry，再讀其中的實際 Set ID →</a></div></article>
+<section class="field-guide" id="fields-sqa-namespace-fields"><h4 id="fields-heading-sqa-namespace-fields">回覆條件與相鄰兩種歸屬</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.10">06.10.</span><span class="paragraph-text">僅解釋 Figure 346 的 NVMSETID／ENDGID、查詢 NSID 與 Reported 欄，其他 namespace 屬性不影響此處的 Set 路由。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-namespace-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>CNS=08h／active NSID</td><td>查詢指定且目前可透過該控制器存取的 namespace，才回對應資料。inactive NSID 回全零結構。</td><td>全零回覆不能直接當成「這是一個正常的 Set 0 namespace」。</td></tr><tr><td>NVMSETID bytes 11:10</td><td>NSID≠FFFFFFFFh 時表示 namespace 所屬 Set；不支援 NVM Sets 或沒有已格式化儲存空間時清 0。</td><td>本例為 09 00 → 0009h；選 SQ5，而不是因 NSID21 就找 SQ21。</td></tr><tr><td>ENDGID bytes 13:12</td><td>同樣在特定 NSID 下指出其 Endurance Group；不支援該能力或無已格式化儲存空間時清 0。</td><td>同一個 Group 可能包含多個 Set，Group 相同不能代替 Set 相同。</td></tr><tr><td>Reported：No</td><td>這兩個欄位在成功的 NSID=FFFFFFFFh 能力查詢中不回報歸屬，回覆為 0。不支援 Namespace Management 時，該查詢可被以 Invalid Namespace or Format 中止。</td><td>要路由 NSID21 的 I/O，重新查 21；不能用 FFFFFFFFh 的共同能力代替。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>Endurance Group</dt><dd>Endurance Group，用於隔離與回報耐久度相關狀態的 NVM 資源群組。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-346">Base 346</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.8, Figure 346, 文件頁 390,393, PDF 頁 416,419</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-346 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-346"><h4>Base Figure 346 · I/O Command Set Independent Identify Namespace Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-346-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-1">Base346-1</span><span class="paragraph-text">查特定 NSID 的 NVMSETID，才能把 I/O 對象接到正確的 Set。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.8</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.8, Figure 346, 文件頁 390,393, PDF 頁 416,419</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base346-2">Base346-2</span><span class="paragraph-text">CNS=08h、NSID21 的回覆在 bytes 11:10 為 09 00，解為 Set 9。若把 NSID 改成 FFFFFFFFh，這是能力查詢；若查詢成功，這個不回報的欄位為 0，不能拿來判斷 NSID21 的歸屬。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-namespace-fields">欄位、條件與相關細節：回覆條件與相鄰兩種歸屬 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-sqa-create"><summary>圖表組 04 · 建立 SQ 時，同時指定 Set 與完成佇列 · 5 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.11">06.11.</span><span class="paragraph-text">Figures 575～579 按記憶體、深度、完成路徑、Set 與建立錯誤分工閱讀；本篇範例採一般主機記憶體。</span></p>
+<a class="reading-link" href="#module-sqa-create">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-sqa-create-command-fields"><h4 id="fields-heading-sqa-create-command-fields">把建立命令的參數拆成四個問題</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.12">06.12.</span><span class="paragraph-text">這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-sqa-create-command-fields"><thead><tr><th scope="col">一起判讀的欄位或標示</th><th scope="col">如何共同決定操作或結果</th><th scope="col">帶入情境後怎麼讀</th></tr></thead><tbody><tr><td>Figure 575：PRP1 bits 63:0／PC</td><td>PC=1 指向實體連續 SQ 的基底；PC=0 指向 PRP List。兩者按 CC.MPS 對齊且 offset 必須為 0，非連續佇列的每個 PRP 也須為 0。</td><td>任一非零 offset 時，控制器宜回 PRP Offset Invalid。4 KiB 頁的基底範例是 00100000h。</td></tr><tr><td>PRP List 的生命週期</td><td>若採 PC=0，主機必須維持清單位置及值，直到對應 Delete I/O SQ 成功或控制器重設。</td><td>建立成功不代表清單立即可改寫；控制器之後仍可能用它存取 SQ。</td></tr><tr><td>Figure 576：QSIZE bits 31:16</td><td>深度採項目數減 1；0 或大於支援值時，控制器宜回 Invalid Queue Size。</td><td>64 筆填 003Fh；還需先完成 CC.IOSQES 初始化，並符合 CAP.MQES。</td></tr><tr><td>Figure 576：QID bits 15:0</td><td>為新 SQ 指定編號，不得超過 Number of Queues 回報範圍；0、超出範圍或已使用時宜回 Invalid Queue Identifier。</td><td>SQ3 尚未建立且配置允許編號 3，才使用 QID=3。</td></tr><tr><td>Figure 577：CQID bits 31:16</td><td>0 或超出支援範圍時必須回 Invalid Queue Identifier；範圍內但尚未建立時必須回 Completion Queue Invalid。</td><td>I/O 完成送 CQ2；Create I/O SQ 這條 Admin 命令本身的完成結果仍送 Admin CQ。</td></tr><tr><td>QPRIO bits 2:1／PC bit 0</td><td>加權輪詢且含 Urgent class 時，00／01／10／11 分別為 Urgent／High／Medium／Low；其他仲裁必須忽略 QPRIO。PC=0 且 CAP.CQR=1 時宜回 Invalid Field。</td><td>round robin、CQ2、PC1 合成 00020001h，不表示設定了 Urgent 仲裁。bits 15:3 保留。</td></tr><tr><td>Figure 578：NVMSETID bits 15:0</td><td>0 或 SQA 不受支援：沒有特定關聯。支援 SQA 且非零值不在 Set List：必須以 Invalid Field in Command 中止。</td><td>選 Set 7 填 00000007h；高 16 bits 保留。NSID 在建立命令中不負責選這個 Set。</td></tr><tr><td>Figure 579：命令專用 0h／1h／2h</td><td>依序表示完成佇列未建立、佇列編號無效、佇列深度或項目大小初始化條件不符。</td><td>此表 0h 是命令專用狀態碼，不等於通用狀態類別的成功碼；需連同類別解讀。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>CC.IOSQES</dt><dd>I/O Submission Queue Entry Size；設定每個 I/O SQ 項目的大小。</dd></div><div><dt>CAP.MQES</dt><dd>Maximum Queue Entries Supported；控制器每個佇列可支援項目數的上限，欄位採數量減 1。</dd></div><div><dt>PRP List</dt><dd>Physical Region Page List；依序列出組成佇列的實體記憶體頁位址。</dd></div><div><dt>CAP.CQR</dt><dd>Contiguous Queues Required；1 表示佇列必須採實體連續記憶體。</dd></div><div><dt>CC.MPS</dt><dd>Memory Page Size；控制器目前設定的記憶體頁大小，用來判斷 PRP 對齊。</dd></div><div><dt>CAP</dt><dd>Controller Capabilities，offset 00h 的 controller property，回報 queue、page size、timeout 與其他能力。</dd></div><div><dt>MPS</dt><dd>Memory Page Size，controller 使用的 memory page 大小設定；影響 queue address 與 PRP 對齊。</dd></div><div><dt>PRP</dt><dd>Physical Region Page，以 memory page 為單位描述 host-addressable data buffer 的 pointer 格式。</dd></div><div><dt>CC</dt><dd>Controller Configuration，host 用來選擇設定並啟用或停用 controller 的 property。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-SQA-BASE-FIG-575">Base 575</a><a href="#figure-SQA-BASE-FIG-576">Base 576</a><a href="#figure-SQA-BASE-FIG-577">Base 577</a><a href="#figure-SQA-BASE-FIG-578">Base 578</a><a href="#figure-SQA-BASE-FIG-579">Base 579</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 575, 文件頁 529, PDF 頁 555</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 576, 文件頁 529, PDF 頁 555</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 577, 文件頁 529-530, PDF 頁 555-556</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 578, 文件頁 530, PDF 頁 556</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 579, 文件頁 530-531, PDF 頁 556-557</p></details>
+</section>
+<!-- figure-table:SQA-BASE-FIG-575 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-575"><h4>Base Figure 575 · Create I/O Submission Queue – PRP Entry 1</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-575-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base575-1">Base575-1</span><span class="paragraph-text">PRP1 的內容由 PC 決定，描述的是 SQ 記憶體，不是 namespace 資料位置。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 575, 文件頁 529, PDF 頁 555</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base575-2">Base575-2</span><span class="paragraph-text">PC=1、4 KiB 記憶體頁時，00100000h 是對齊的 SQ 基底範例；00100080h 帶有 128-byte offset，違反這個對齊要求。PC=0 時則要把 PRP1 解成頁面清單的位址。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-create-command-fields">欄位、條件與相關細節：把建立命令的參數拆成四個問題 →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-576 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-576"><h4>Base Figure 576 · Create I/O Submission Queue – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-576-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base576-1">Base576-1</span><span class="paragraph-text">QSIZE 選數量、QID 選名稱，64 筆 SQ3 要編成 003F0003h。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 576, 文件頁 529, PDF 頁 555</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base576-2">Base576-2</span><span class="paragraph-text">高 16 bits 003Fh=63，還原筆數為 63+1=64；低 16 bits 0003h 選 SQ3。若高半部直接填 64，要求的會是 65 筆，而不是把 SQ3 改名成 SQ64。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-create-command-fields">欄位、條件與相關細節：把建立命令的參數拆成四個問題 →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-577 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-577"><h4>Base Figure 577 · Create I/O Submission Queue – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-577-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base577-1">Base577-1</span><span class="paragraph-text">CQID 決定後續 I/O 的完成去處；PC 與 QPRIO 分別影響記憶體描述與仲裁。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 577, 文件頁 529-530, PDF 頁 555-556</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base577-2">Base577-2</span><span class="paragraph-text">00020001h 表示 CQ2、PC=1、QPRIO=00b。若採一般 round robin，QPRIO 被忽略，不能只看 00b 就宣稱這個 SQ 享有 Urgent 優先級。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-create-command-fields">欄位、條件與相關細節：把建立命令的參數拆成四個問題 →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-578 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-578"><h4>Base Figure 578 · Create I/O Submission Queue – Command Dword 12</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-578-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base578-1">Base578-1</span><span class="paragraph-text">NVMSETID 在建立 SQ 時提供 Set 關聯，0 在這個命令明確表示沒有特定關聯。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 578, 文件頁 530, PDF 頁 556</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base578-2">Base578-2</span><span class="paragraph-text">支援 SQA 且清單含 7 時，CDW12=00000007h 要求關聯 Set 7；改成 0 則沒有特定關聯。清單沒有 99 卻填 99，必須回 Invalid Field in Command。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-create-command-fields">欄位、條件與相關細節：把建立命令的參數拆成四個問題 →</a></div></article>
+
+<!-- figure-table:SQA-BASE-FIG-579 -->
+<article class="field-note" id="figure-SQA-BASE-FIG-579"><h4>Base Figure 579 · Create I/O Submission Queue – Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:SQA-BASE-FIG-579-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base579-1">Base579-1</span><span class="paragraph-text">建立命令的錯誤值要搭配錯誤類別與觸發欄位，不能當作後續 I/O 的分流檢查表。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.3.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, Figure 579, 文件頁 530-531, PDF 頁 556-557</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base579-2">Base579-2</span><span class="paragraph-text">CQ2 在合法編號範圍內卻未建立，對應 Completion Queue Invalid（此表 0h）；SQID3 已被使用，對應 Invalid Queue Identifier（1h）。不存在的 Set 使用 Figure 578 的 Invalid Field 規則，並不是這張表的 0h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-sqa-create-command-fields">欄位、條件與相關細節：把建立命令的參數拆成四個問題 →</a></div></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:sqa-support -->
+<details class="review-question" id="qa-sqa-support"><summary>1. CTRATT 的三個相關 bit 都是 1，能否直接保證下一筆 Read 的完成時間？</summary>
+<div data-qa-answer="sqa-support"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">不能。它們只表示支援能力。還要確認目標 Set 的模式已啟用、目前的工作視窗與操作限制；而服務品質描述也不包括 PCIe 連線的全部延遲。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 732-733, PDF 頁 758-759</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.21, 文件頁 682-683, PDF 頁 708-709</p>
+</details></details>
+<!-- qa:sqa-list -->
+<details class="review-question" id="qa-sqa-list"><summary>2. 清單 Entry 1 的 NSETID=9，建立 SQ 時填 1、256，還是 9？</summary>
+<div data-qa-answer="sqa-list"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">填 9。1 是索引；256 是該筆相對整份清單起點的 byte 位置；9 才是要填入 CDW12 的 Set 識別值。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.4, 文件頁 388-389, PDF 頁 414-415</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, 文件頁 529-531, PDF 頁 555-557</p>
+</details></details>
+<!-- qa:sqa-route -->
+<details class="review-question" id="qa-sqa-route"><summary>3. NSID21 屬於 Set 9，SQ3 與 SQ5 都使用 CQ2，是否可以任選一個 SQ？</summary>
+<div data-qa-answer="sqa-route"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">依本例應選關聯 Set 9 的 SQ5。共用 CQ 只代表完成結果送到相同地方，不能改變 SQ3 關聯 Set 7 的事實。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 733, PDF 頁 759</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §3.3, 文件頁 88, PDF 頁 114</p>
+</details></details>
+<!-- qa:sqa-zero -->
+<details class="review-question" id="qa-sqa-zero"><summary>4. 把 NVMSETID 設為 0，是建立通往所有 Set 的共同提示嗎？</summary>
+<div data-qa-answer="sqa-zero"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">不是。Create I/O SQ 把 0 定義為沒有特定 Set 關聯；它不能滿足本篇「先建立關聯，再按 Set 分流」的提示使用方式。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, 文件頁 529-531, PDF 頁 555-557</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 733, PDF 頁 759</p>
+</details></details>
+<!-- qa:sqa-errors -->
+<details class="review-question" id="qa-sqa-errors"><summary>5. Set 9 的命令送到關聯 Set 7 的 SQ，而且成功完成，是否表示主機使用正確？</summary>
+<div data-qa-answer="sqa-errors"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">不表示。送錯 SQ 違反分流規則，可能影響可預測延遲；§8.1.28 沒有要求每次都用錯誤碼拒絕。這與建立 SQ 時填入清單外非零 Set、必須回 Invalid Field in Command 的規則不同。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.28, 文件頁 733, PDF 頁 759</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.3.2, 文件頁 529-531, PDF 頁 555-557</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p></details></footer></main></div></body></html>

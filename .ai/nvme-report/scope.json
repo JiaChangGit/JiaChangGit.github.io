@@ -1854,6 +1854,59 @@
       ],
       "approval_note": "2026-09-21 使用者指定 Base §8.1.23 與 §5.2.30.1.12（FID 12h）合為一篇，沿用三版及驗證後 push 授權。",
       "reference_teaching_policy": "逐圖教學涵蓋三張主範圍圖表及必要引用的相關欄位；不納入其他 FID，Fabrics 排除。"
+    },
+    {
+      "id": "base-sq-associations",
+      "title_zh_tw": "NVMe SQ Associations",
+      "title_en": "NVMe SQ Associations",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "8.1.28"
+      ],
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.28"
+        ]
+      },
+      "excluded_sections": [],
+      "printed_pages": "732-733",
+      "pdf_pages": "758-759",
+      "included_figure_ids": [
+        "SQA-BASE-FIG-067",
+        "SQA-BASE-FIG-338",
+        "SQA-BASE-FIG-751",
+        "SQA-BASE-FIG-333",
+        "SQA-BASE-FIG-334",
+        "SQA-BASE-FIG-336",
+        "SQA-BASE-FIG-343",
+        "SQA-BASE-FIG-344",
+        "SQA-BASE-FIG-345",
+        "SQA-BASE-FIG-346",
+        "SQA-BASE-FIG-575",
+        "SQA-BASE-FIG-576",
+        "SQA-BASE-FIG-577",
+        "SQA-BASE-FIG-578",
+        "SQA-BASE-FIG-579"
+      ],
+      "dependency_figures": [
+        "SQA-BASE-FIG-067",
+        "SQA-BASE-FIG-338",
+        "SQA-BASE-FIG-751",
+        "SQA-BASE-FIG-333",
+        "SQA-BASE-FIG-334",
+        "SQA-BASE-FIG-336",
+        "SQA-BASE-FIG-343",
+        "SQA-BASE-FIG-344",
+        "SQA-BASE-FIG-345",
+        "SQA-BASE-FIG-346",
+        "SQA-BASE-FIG-575",
+        "SQA-BASE-FIG-576",
+        "SQA-BASE-FIG-577",
+        "SQA-BASE-FIG-578",
+        "SQA-BASE-FIG-579"
+      ],
+      "approval_note": "2026-09-22 使用者再次要求完成 Base §8.1.28；沿用三版、驗證後 commit／push 與發布授權。",
+      "reference_teaching_policy": "主範圍本身沒有編號圖表；15 張必要引用逐圖說明識別值、欄位與模式背景。只採 PCIe，Fabrics 排除。"
     }
   ],
   "interpretation_sources": [
@@ -3286,6 +3339,69 @@
       ],
       "teaching_necessity": "Explain NVM Set inheritance and identifiers, capability bitmaps, Feature command envelopes, typed Get results, command activation, shared access and conditional reset persistence needed for FID 12h.",
       "supports_topic": "Read Recovery Level support, scope, configuration, readback and lifecycle."
+    },
+    {
+      "id": "SQA-BASE-INCLUDE",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "8.1.28"
+      ],
+      "figures": []
+    },
+    {
+      "id": "SQA-BASE-DEPENDENCY",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "3.2.2",
+        "5.2.14.2.1",
+        "8.1.21",
+        "5.2.14",
+        "5.2.14.2.4",
+        "5.2.14.2.8",
+        "5.3.2",
+        "3.3",
+        "3.2.3"
+      ],
+      "figures": [
+        "67",
+        "338",
+        "751",
+        "333",
+        "334",
+        "336",
+        "343",
+        "344",
+        "345",
+        "346",
+        "575",
+        "576",
+        "577",
+        "578",
+        "579"
+      ]
+    },
+    {
+      "id": "SQA-BASE-PREREQUISITES",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "status": "PREREQUISITE_ONLY",
+      "sections": [
+        "3.2.2",
+        "5.2.14.2.1",
+        "8.1.21",
+        "5.2.14",
+        "5.2.14.2.4",
+        "5.2.14.2.8",
+        "5.3.2",
+        "3.3",
+        "3.2.3"
+      ],
+      "teaching_necessity": "Explain namespace/set membership, the three CTRATT capability bits, Identify query selection and list addressing, Create I/O SQ fields and completion routing, and the minimum Predictable Latency window context required to understand the hint.",
+      "supports_topic": "Base §8.1.28 association prerequisites, association at SQ creation and host routing rules."
     }
   ],
   "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",

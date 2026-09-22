@@ -35947,6 +35947,722 @@
         "Base §5.2.30.1.12"
       ],
       "dependency_focus": "先看 FID 12h 是否可保存。不可保存的持續性由 Figure 466 與 §4.4 直接決定；可保存者再用 Figures 126／127 的對應欄。"
+    },
+    {
+      "id": "SQA-BASE-FIG-067",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "67",
+      "title": "NVM Sets and Associated Namespaces",
+      "section": "3.2.2",
+      "printed_pages": "81",
+      "pdf_pages": "107",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "NVM",
+        "NS",
+        "A1",
+        "A3",
+        "B1",
+        "B2",
+        "C1",
+        "A2",
+        "SQ"
+      ],
+      "source_keywords": [],
+      "evidence_digest": "6bd3dfc598a8f6d0243f2a6db5ffd12782c21681793a49db62f12419df478785",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-model",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "Figure 67 是儲存配置示意，沒有表示 SQ 或 CQ，也沒有要求每個 Set 的 namespace 數量相等。"
+    },
+    {
+      "id": "SQA-BASE-FIG-338",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "344-346",
+      "pdf_pages": "370-372",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "SQA",
+        "SQ",
+        "PLM",
+        "NSETS",
+        "NVM",
+        "AND",
+        "CTRATT"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "126a5abc356c83570017c5738f648213ebf0c55e7cc5db85f3c9deda32fe7aa8",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-support",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "只取 Figure 338 的 CTRATT bytes 99:96 中 SQA、PLM、NSETS。其餘 bit 不是本篇內容，也不能一律當成保留。"
+    },
+    {
+      "id": "SQA-BASE-FIG-751",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "751",
+      "title": "Deterministic and Non-Deterministic Windows",
+      "section": "8.1.21",
+      "printed_pages": "682-683",
+      "pdf_pages": "708-709",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "DTWIN",
+        "SQ",
+        "NDWIN"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "a103f348c16743e6686f963d3788ea901961acb4ab1d409714ec03d21adb4410",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-support",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "本篇只補 Figure 751 所需的模式背景；SQA 的選用提示不能代替模式啟用與視窗條件。"
+    },
+    {
+      "id": "SQA-BASE-FIG-333",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "333",
+      "title": "Identify – Command Dword 10",
+      "section": "5.2.14",
+      "printed_pages": "337",
+      "pdf_pages": "363",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CNS",
+        "CNTID",
+        "NSID21",
+        "NSID",
+        "CSI",
+        "CNSSID",
+        "ID",
+        "SQA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "b0112b1dd0d9914a925b99f5b174be8e8f88a6f47107189abc73bed74bc680b7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "只取 CNS 01h／04h／08h，以及命令中解釋這三種查詢所需的欄位。"
+    },
+    {
+      "id": "SQA-BASE-FIG-334",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "334",
+      "title": "Identify – Command Dword 11",
+      "section": "5.2.14",
+      "printed_pages": "337",
+      "pdf_pages": "363",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CNS",
+        "CNTID",
+        "NSID21",
+        "NSID",
+        "CSI",
+        "CNSSID",
+        "ID",
+        "SQA"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "b0112b1dd0d9914a925b99f5b174be8e8f88a6f47107189abc73bed74bc680b7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "只取 CNS 01h／04h／08h，以及命令中解釋這三種查詢所需的欄位。"
+    },
+    {
+      "id": "SQA-BASE-FIG-336",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "336",
+      "title": "Identify – CNS Values",
+      "section": "5.2.14",
+      "printed_pages": "338-339",
+      "pdf_pages": "364-365",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CNS",
+        "CNTID",
+        "NSID21",
+        "NSID",
+        "CSI",
+        "CNSSID",
+        "ID",
+        "SQA"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "bbba1e24a84bcc31bf8275a698a07e77b8d9de415cfd85c6535e09305b2cd987",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "只取 CNS 01h／04h／08h，以及命令中解釋這三種查詢所需的欄位。"
+    },
+    {
+      "id": "SQA-BASE-FIG-343",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "343",
+      "title": "Command Dword 11 - CNS Specific Identifier",
+      "section": "5.2.14.2.4",
+      "printed_pages": "388",
+      "pdf_pages": "414",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "NVMSETID",
+        "ID",
+        "NUMENT",
+        "NSETID",
+        "ENDGID",
+        "R4KRT",
+        "DTWIN",
+        "SQ",
+        "OWS",
+        "TNVMSC",
+        "UNVMSC"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "15922bc929969d93aa97acb50dddc14020af9a7c7bcff8c392c4783e58d2c4fc",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "Figure 343 選清單起點，344 定位一筆資料，345 才讀該 Set 的欄位。清單依 ID 排序，只包含處理查詢的控制器可存取的 Set。"
+    },
+    {
+      "id": "SQA-BASE-FIG-344",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "344",
+      "title": "NVM Set List",
+      "section": "5.2.14.2.4",
+      "printed_pages": "389",
+      "pdf_pages": "415",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "NVMSETID",
+        "ID",
+        "NUMENT",
+        "NSETID",
+        "ENDGID",
+        "R4KRT",
+        "DTWIN",
+        "SQ",
+        "OWS",
+        "TNVMSC",
+        "UNVMSC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "e71d6ddffbd4ba4e392c470f405f6a719bfbdb167f755c5784296d9d0769a444",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "Figure 343 選清單起點，344 定位一筆資料，345 才讀該 Set 的欄位。清單依 ID 排序，只包含處理查詢的控制器可存取的 Set。"
+    },
+    {
+      "id": "SQA-BASE-FIG-345",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "345",
+      "title": "NVM Set Attributes Entry",
+      "section": "5.2.14.2.4",
+      "printed_pages": "389",
+      "pdf_pages": "415",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "NVMSETID",
+        "ID",
+        "NUMENT",
+        "NSETID",
+        "ENDGID",
+        "R4KRT",
+        "DTWIN",
+        "SQ",
+        "OWS",
+        "TNVMSC",
+        "UNVMSC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "e71d6ddffbd4ba4e392c470f405f6a719bfbdb167f755c5784296d9d0769a444",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "Figure 343 選清單起點，344 定位一筆資料，345 才讀該 Set 的欄位。清單依 ID 排序，只包含處理查詢的控制器可存取的 Set。"
+    },
+    {
+      "id": "SQA-BASE-FIG-346",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "346",
+      "title": "I/O Command Set Independent Identify Namespace Data Structure",
+      "section": "5.2.14.2.8",
+      "printed_pages": "390,393",
+      "pdf_pages": "416,419",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "CNS",
+        "NSID",
+        "NVMSETID",
+        "NVM",
+        "SQ5",
+        "NSID21",
+        "SQ21",
+        "ENDGID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "c5fb7eea11b0996c258741275358c4342764de5117f590d7a7f9a4daa971827f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-inventory",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "僅解釋 Figure 346 的 NVMSETID／ENDGID、查詢 NSID 與 Reported 欄，其他 namespace 屬性不影響此處的 Set 路由。"
+    },
+    {
+      "id": "SQA-BASE-FIG-575",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "575",
+      "title": "Create I/O Submission Queue – PRP Entry 1",
+      "section": "5.3.2",
+      "printed_pages": "529",
+      "pdf_pages": "555",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1",
+        "PC",
+        "SQ",
+        "PRP",
+        "CC",
+        "MPS",
+        "QSIZE",
+        "IOSQES",
+        "CAP",
+        "MQES",
+        "QID",
+        "SQ3",
+        "CQID",
+        "CQ2",
+        "CQ",
+        "QPRIO",
+        "CQR",
+        "PC1",
+        "NVMSETID",
+        "SQA",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "3550f6abac5ad27a85390b836566c02701e31c3f8ab4d4497a51b95b6984cad9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-create",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。"
+    },
+    {
+      "id": "SQA-BASE-FIG-576",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "576",
+      "title": "Create I/O Submission Queue – Command Dword 10",
+      "section": "5.3.2",
+      "printed_pages": "529",
+      "pdf_pages": "555",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1",
+        "PC",
+        "SQ",
+        "PRP",
+        "CC",
+        "MPS",
+        "QSIZE",
+        "IOSQES",
+        "CAP",
+        "MQES",
+        "QID",
+        "SQ3",
+        "CQID",
+        "CQ2",
+        "CQ",
+        "QPRIO",
+        "CQR",
+        "PC1",
+        "NVMSETID",
+        "SQA",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "3550f6abac5ad27a85390b836566c02701e31c3f8ab4d4497a51b95b6984cad9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-create",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。"
+    },
+    {
+      "id": "SQA-BASE-FIG-577",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "577",
+      "title": "Create I/O Submission Queue – Command Dword 11",
+      "section": "5.3.2",
+      "printed_pages": "529-530",
+      "pdf_pages": "555-556",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1",
+        "PC",
+        "SQ",
+        "PRP",
+        "CC",
+        "MPS",
+        "QSIZE",
+        "IOSQES",
+        "CAP",
+        "MQES",
+        "QID",
+        "SQ3",
+        "CQID",
+        "CQ2",
+        "CQ",
+        "QPRIO",
+        "CQR",
+        "PC1",
+        "NVMSETID",
+        "SQA",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "cd9e668a7cffb002beacc58fb13c3942c16799f1a7f1175aee153fc824f500ae",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-create",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。"
+    },
+    {
+      "id": "SQA-BASE-FIG-578",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "578",
+      "title": "Create I/O Submission Queue – Command Dword 12",
+      "section": "5.3.2",
+      "printed_pages": "530",
+      "pdf_pages": "556",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1",
+        "PC",
+        "SQ",
+        "PRP",
+        "CC",
+        "MPS",
+        "QSIZE",
+        "IOSQES",
+        "CAP",
+        "MQES",
+        "QID",
+        "SQ3",
+        "CQID",
+        "CQ2",
+        "CQ",
+        "QPRIO",
+        "CQR",
+        "PC1",
+        "NVMSETID",
+        "SQA",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "f9b207a30988efbf599f4efbdb534c7fcf04627265e29f034ada04c7d0e36cdb",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-create",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。"
+    },
+    {
+      "id": "SQA-BASE-FIG-579",
+      "report_id": "base-sq-associations",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "579",
+      "title": "Create I/O Submission Queue – Command Specific Status Values",
+      "section": "5.3.2",
+      "printed_pages": "530-531",
+      "pdf_pages": "556-557",
+      "scope_entry_id": "SQA-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "sqa-tutorial-html"
+      ],
+      "introduced_in": [
+        "sqa-tutorial-html"
+      ],
+      "key_items": [
+        "PRP1",
+        "PC",
+        "SQ",
+        "PRP",
+        "CC",
+        "MPS",
+        "QSIZE",
+        "IOSQES",
+        "CAP",
+        "MQES",
+        "QID",
+        "SQ3",
+        "CQID",
+        "CQ2",
+        "CQ",
+        "QPRIO",
+        "CQR",
+        "PC1",
+        "NVMSETID",
+        "SQA",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "cafe6754aa008d8e47f65c90e26cdedde854fe9fb9383fafb99c71d63b32f342",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "sqa-create",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.28"
+      ],
+      "dependency_focus": "這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。"
     }
   ]
 }

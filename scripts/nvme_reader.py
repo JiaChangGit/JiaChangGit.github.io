@@ -362,6 +362,13 @@ class Reading:
         if remainder:
             raise ValueError(f'{self.id}: figures lack a teaching home: {[f["id"] for f in remainder]}')
         self.begin_section(len(self.modules) + 1)
+        if not self.tutorial and self.id == 'base-sq-associations':
+            from scripts.nvme_sqa import render_route
+            out.append('<section id="spec-reading">'+render_route(self)+'</section>')
+            out.append('<a class="reading-link" href="/DOCS/nvme-spec-report/'+self.id+'/tutorial-zh-tw.html">'+pair(self.lang,'開啟完整中文教學與逐圖解釋 →','Open the complete Chinese tutorial and figure explanations →')+'</a>')
+            self.begin_section(len(self.modules)+2)
+            out.append(self.api.render_questions(self.id,self.all_modules,self.claims,self.lang,'html',len(self.modules)+2))
+            return '\n'.join(out)
         if not self.tutorial:
             out.append('<section id="spec-reading"><h2>' + pair(self.lang, '接著打開 Spec 看什麼', 'Where to continue in the specification') + '</h2>')
             out.append(self.paragraph(pair(self.lang,
