@@ -6,6 +6,11 @@ nvme_notes: true
 ---
 <div class="nvme-note">
 <h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>
+<section><h2>NVMe Endurance Group：健康資訊、事件清單與通知設定</h2><p>同一個儲存裝置裡，不同儲存群組的耐用度與健康狀態可能不同。Endurance Group Information 讓主機查一組的警告、讀寫量與容量；Event Aggregate 則把需要注意的群組列出來。本篇把 FID 18h 的逐組設定接到這兩份 log，說明主機如何從一則通知走到具體資料，又如何確認事件而不誤以為問題已經修復。</p><ul>
+<li><a href="/DOCS/nvme-spec-report/base-endurance-group-events/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
+<li><a href="{% post_url 2026-09-22-nvme-endurance-group-events-zh-tw %}">中文全局報告</a></li>
+<li><a href="{% post_url 2026-09-22-nvme-endurance-group-events-en %}">English overview</a></li>
+</ul></section>
 <section><h2>NVMe SQ Associations：從儲存歸屬到 I/O 佇列分流</h2><p>主機知道每筆 I/O 要讀寫哪個 namespace，但控制器也需要知道：這個提交佇列預計服務哪一組儲存空間？SQ Associations 讓主機在建立佇列時提供這項提示。本文把儲存歸屬、佇列配置與命令分流接起來，說明提示何時有幫助，以及為什麼「命令完成」還不足以證明分流正確。</p><ul>
 <li><a href="/DOCS/nvme-spec-report/base-sq-associations/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
 <li><a href="{% post_url 2026-09-22-nvme-sq-associations-zh-tw %}">中文全局報告</a></li>

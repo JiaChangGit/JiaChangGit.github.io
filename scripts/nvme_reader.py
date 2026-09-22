@@ -196,7 +196,7 @@ class Reading:
         heading_id = 'fields-heading-'+guide['id']
         out = ['<section class="field-guide" id="fields-'+guide['id']+'"><h4 id="'+heading_id+'">'+esc(guide['title'])+'</h4>']
         out.append(self.paragraph(guide['relation']))
-        out.append(self.table(['一起判讀的欄位或標示','如何共同決定操作或結果','帶入情境後怎麼讀'], guide['rows'], labelledby=heading_id))
+        out.append(self.table(guide.get('headers', ['一起判讀的欄位或標示','如何共同決定操作或結果','帶入情境後怎麼讀']), guide['rows'], labelledby=heading_id))
         out.append('<nav class="figure-crossrefs" aria-label="對照本組規格圖表">'+''.join('<a href="#figure-'+item['id']+'">'+labels[item['source_id']]+' '+item['number']+'</a>' for item in related)+'</nav>')
         out.append(self.source([self.by_id[item['id']+'-CLAIM'] for item in related]))
         out.append('</section>')
@@ -362,8 +362,11 @@ class Reading:
         if remainder:
             raise ValueError(f'{self.id}: figures lack a teaching home: {[f["id"] for f in remainder]}')
         self.begin_section(len(self.modules) + 1)
-        if not self.tutorial and self.id == 'base-sq-associations':
-            from scripts.nvme_sqa import render_route
+        if not self.tutorial and self.id in {'base-sq-associations', 'base-endurance-group-events'}:
+            if self.id == 'base-endurance-group-events':
+                from scripts.nvme_endurance import render_route
+            else:
+                from scripts.nvme_sqa import render_route
             out.append('<section id="spec-reading">'+render_route(self)+'</section>')
             out.append('<a class="reading-link" href="/DOCS/nvme-spec-report/'+self.id+'/tutorial-zh-tw.html">'+pair(self.lang,'開啟完整中文教學與逐圖解釋 →','Open the complete Chinese tutorial and figure explanations →')+'</a>')
             self.begin_section(len(self.modules)+2)

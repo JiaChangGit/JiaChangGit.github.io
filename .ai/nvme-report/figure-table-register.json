@@ -36663,6 +36663,963 @@
         "Base §8.1.28"
       ],
       "dependency_focus": "這裡以一般主機記憶體為前提，Figures 575～579 分別回答「佇列放哪、多少項、結果送哪、服務哪個 Set」。相關條件在此共用一次。"
+    },
+    {
+      "id": "EGE-BASE-FIG-069",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "69",
+      "title": "NVM Sets and Associated Namespaces",
+      "section": "3.2.3",
+      "printed_pages": "83",
+      "pdf_pages": "109",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NVM",
+        "NS",
+        "A1",
+        "B1",
+        "UEGCAP"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a92f44b2f1e0cf8e60e6ea0d8adad360850a6b0a6660f82af91cfc6e7a9e5ac0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-model",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figure 69 是包含關係示意，顏色與面積不是容量數值，也不是資料移動方向。"
+    },
+    {
+      "id": "EGE-BASE-FIG-338",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "342-346,353,362,371-372",
+      "pdf_pages": "368-372,379,388,397-398",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "CTRATT",
+        "EGS",
+        "OAES",
+        "EGEAN",
+        "AERL",
+        "AER",
+        "ENDGIDMAX",
+        "ID",
+        "ID1",
+        "ONCS",
+        "SSFS",
+        "SV",
+        "SEL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "59e50487c384548f491da3460b26ef83336cb26cbc65103cecea80fa635b3db0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-model",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figure 338 很長；以下列出本篇需要的 byte 位置與 bit。其他能力位元不是保留，也不應被本篇的遮罩檢查清除。"
+    },
+    {
+      "id": "EGE-BASE-FIG-224",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "224",
+      "title": "Endurance Group Identifier - Log Specific Identifier",
+      "section": "5.2.13.1.10",
+      "printed_pages": "237",
+      "pdf_pages": "263",
+      "scope_entry_id": "EGE-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "semantic-summary",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "LSI",
+        "ENDGID",
+        "ID",
+        "CDW11",
+        "NUMDU",
+        "LID",
+        "CDW10",
+        "NUMD",
+        "RAE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "3581f1bea027dd10bbf4d46cb5b4da8052327560f19a7b09d5e1e852d04ae040",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-model",
+      "role": "primary",
+      "scope_reduced": false
+    },
+    {
+      "id": "EGE-BASE-FIG-225",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "225",
+      "title": "Endurance Group Information Log Page",
+      "section": "5.2.13.1.10",
+      "printed_pages": "238-239",
+      "pdf_pages": "264-265",
+      "scope_entry_id": "EGE-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "semantic-summary",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "EGCW",
+        "EGASB",
+        "EGDR",
+        "EGRO",
+        "EGFEAT",
+        "EGRMEDIA",
+        "SSD",
+        "AVSP",
+        "AVSPT",
+        "AVSP8",
+        "AVSPT10",
+        "AVSP10",
+        "PUSED",
+        "DID",
+        "ENDGID",
+        "EE",
+        "GB",
+        "DUR"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "e1189f21ec6aafd57cd512cad4680afedaa13f68936c39bc16b331679dd1bdc5",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-health",
+      "role": "primary",
+      "scope_reduced": false
+    },
+    {
+      "id": "EGE-BASE-FIG-213",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "213",
+      "title": "SMART / Health Information Log Page",
+      "section": "5.2.13.1.3",
+      "printed_pages": "221",
+      "pdf_pages": "247",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "ASCBT",
+        "EGASB",
+        "SMART",
+        "CW",
+        "EGCW",
+        "NDR",
+        "EGDR",
+        "AMRO",
+        "EGRO"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d843bff09b66424eb0a82a79c88d51ef2615fcba594c337888062eaf249aeb83",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-health",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figure 213 本篇只用 byte0 的 bits 0、2、3 來對照 Figure 225。其他欄位有自己的規則，不能把 LID09h 的十億-byte 單位套過去。"
+    },
+    {
+      "id": "EGE-BASE-FIG-493",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "493",
+      "title": "Endurance Group Event Configuration – Command Dword 11",
+      "section": "5.2.30.1.17",
+      "printed_pages": "478",
+      "pdf_pages": "504",
+      "scope_entry_id": "EGE-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "semantic-summary",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "EGCW",
+        "ENDGIDMAX",
+        "SEL",
+        "CQE",
+        "DW0",
+        "CDW10",
+        "FID7",
+        "SV31",
+        "SV",
+        "SEL10",
+        "SEL2",
+        "ONCS",
+        "SSFS",
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f4f1acaf07d0315f1503913bdcdf083556b246f868e9cf8d63025e1d2bafdaf9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-configure",
+      "role": "primary",
+      "scope_reduced": false
+    },
+    {
+      "id": "EGE-BASE-FIG-198",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "EGCW",
+        "ENDGIDMAX",
+        "SEL",
+        "CQE",
+        "DW0",
+        "CDW10",
+        "FID7",
+        "SV31",
+        "SV",
+        "SEL10",
+        "SEL2",
+        "ONCS",
+        "SSFS",
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "1380340d28d58291a9ba4b387a47eb3481c606d62731ca9ec27687f1b6f85dd4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 493／464／198／201／466 描述同一功能在不同命令階段的欄位；以下共用一次，避免反覆抄同一個 mask 例子。"
+    },
+    {
+      "id": "EGE-BASE-FIG-201",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "EGCW",
+        "ENDGIDMAX",
+        "SEL",
+        "CQE",
+        "DW0",
+        "CDW10",
+        "FID7",
+        "SV31",
+        "SV",
+        "SEL10",
+        "SEL2",
+        "ONCS",
+        "SSFS",
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "fe7483f9e4405684c84f544ad37ae3c3702515b37c2fef8b78b2e50ac63232ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 493／464／198／201／466 描述同一功能在不同命令階段的欄位；以下共用一次，避免反覆抄同一個 mask 例子。"
+    },
+    {
+      "id": "EGE-BASE-FIG-464",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "EGCW",
+        "ENDGIDMAX",
+        "SEL",
+        "CQE",
+        "DW0",
+        "CDW10",
+        "FID7",
+        "SV31",
+        "SV",
+        "SEL10",
+        "SEL2",
+        "ONCS",
+        "SSFS",
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "366ab9cd84b05dd2743ebe946dff5cf57bf06e0c817fa99e7504a738b9032c9e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 493／464／198／201／466 描述同一功能在不同命令階段的欄位；以下共用一次，避免反覆抄同一個 mask 例子。"
+    },
+    {
+      "id": "EGE-BASE-FIG-466",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Set Features – Feature Identifiers",
+      "section": "5.2.30.1",
+      "printed_pages": "458-459",
+      "pdf_pages": "484-485",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "CDW11",
+        "ENDGID",
+        "EGCW",
+        "ENDGIDMAX",
+        "SEL",
+        "CQE",
+        "DW0",
+        "CDW10",
+        "FID7",
+        "SV31",
+        "SV",
+        "SEL10",
+        "SEL2",
+        "ONCS",
+        "SSFS",
+        "CHANG",
+        "NSSPEC",
+        "SVBL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "5e5baa657e54567789d40cfc6dc6c25d57d0f66d3948c9f02d89eba67e6460ac",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 493／464／198／201／466 描述同一功能在不同命令階段的欄位；以下共用一次，避免反覆抄同一個 mask 例子。"
+    },
+    {
+      "id": "EGE-BASE-FIG-474",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "474",
+      "title": "Asynchronous Event Configuration – Command Dword 11",
+      "section": "5.2.30.1.6",
+      "printed_pages": "467",
+      "pdf_pages": "493",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "EGEALCN",
+        "AER",
+        "CTRATT",
+        "EGS",
+        "OAES",
+        "EGEAN"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "37eeb3fc6f7d8557f33a7c7271730bfb3b043f5959947ddc2bddd6a88131c9ac",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figure 474 只取 EGEALCN bit14；其他 bit 是其他事件的選擇，既有設定不應因本篇示例而被清除。"
+    },
+    {
+      "id": "EGE-BASE-FIG-261",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "261",
+      "title": "Endurance Group Event Aggregate Log Page",
+      "section": "5.2.13.1.15",
+      "printed_pages": "270",
+      "pdf_pages": "296",
+      "scope_entry_id": "EGE-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "semantic-summary",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMENT",
+        "ENDGIDMAX",
+        "NUMENT3",
+        "ENDGIDMAX9",
+        "ENDGID",
+        "ID7",
+        "NUMD",
+        "NUMD3"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "9458a3e084555113a70a195e799c4e09172a707cb367a0ffd5d8ada4a4f77c34",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "primary",
+      "scope_reduced": false
+    },
+    {
+      "id": "EGE-BASE-FIG-204",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL31",
+        "RAE15",
+        "LSP14",
+        "LID7",
+        "LSI31",
+        "NUMDU15",
+        "LPOL31",
+        "LPOU31",
+        "LPOL",
+        "OT23",
+        "CSI31",
+        "CDW14",
+        "UIDX6"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 204～209 共用這組命令欄位解釋。例子從offset0讀取，以已配置且足夠大的主機接收緩衝區接收資料，不展開記憶體頁描述機制。"
+    },
+    {
+      "id": "EGE-BASE-FIG-205",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL31",
+        "RAE15",
+        "LSP14",
+        "LID7",
+        "LSI31",
+        "NUMDU15",
+        "LPOL31",
+        "LPOU31",
+        "LPOL",
+        "OT23",
+        "CSI31",
+        "CDW14",
+        "UIDX6"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 204～209 共用這組命令欄位解釋。例子從offset0讀取，以已配置且足夠大的主機接收緩衝區接收資料，不展開記憶體頁描述機制。"
+    },
+    {
+      "id": "EGE-BASE-FIG-206",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page – Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL31",
+        "RAE15",
+        "LSP14",
+        "LID7",
+        "LSI31",
+        "NUMDU15",
+        "LPOL31",
+        "LPOU31",
+        "LPOL",
+        "OT23",
+        "CSI31",
+        "CDW14",
+        "UIDX6"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 204～209 共用這組命令欄位解釋。例子從offset0讀取，以已配置且足夠大的主機接收緩衝區接收資料，不展開記憶體頁描述機制。"
+    },
+    {
+      "id": "EGE-BASE-FIG-207",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page – Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL31",
+        "RAE15",
+        "LSP14",
+        "LID7",
+        "LSI31",
+        "NUMDU15",
+        "LPOL31",
+        "LPOU31",
+        "LPOL",
+        "OT23",
+        "CSI31",
+        "CDW14",
+        "UIDX6"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 204～209 共用這組命令欄位解釋。例子從offset0讀取，以已配置且足夠大的主機接收緩衝區接收資料，不展開記憶體頁描述機制。"
+    },
+    {
+      "id": "EGE-BASE-FIG-208",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL31",
+        "RAE15",
+        "LSP14",
+        "LID7",
+        "LSI31",
+        "NUMDU15",
+        "LPOL31",
+        "LPOU31",
+        "LPOL",
+        "OT23",
+        "CSI31",
+        "CDW14",
+        "UIDX6"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8cb0acdbd8a5752d0805867233e556d419934da159c0da658d66e5cd0f26bc0f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 204～209 共用這組命令欄位解釋。例子從offset0讀取，以已配置且足夠大的主機接收緩衝區接收資料，不展開記憶體頁描述機制。"
+    },
+    {
+      "id": "EGE-BASE-FIG-209",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page – Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-216",
+      "pdf_pages": "241-242",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDL31",
+        "RAE15",
+        "LSP14",
+        "LID7",
+        "LSI31",
+        "NUMDU15",
+        "LPOL31",
+        "LPOU31",
+        "LPOL",
+        "OT23",
+        "CSI31",
+        "CDW14",
+        "UIDX6"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "36c10580ace70094590187f0dae9c7551d4de2f9e61b0994f1f95e5df6398838",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-aggregate",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 204～209 共用這組命令欄位解釋。例子從offset0讀取，以已配置且足夠大的主機接收緩衝區接收資料，不展開記憶體頁描述機制。"
+    },
+    {
+      "id": "EGE-BASE-FIG-151",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "151",
+      "title": "Asynchronous Event Request – Completion Queue Entry Dword 0",
+      "section": "5.2.2",
+      "printed_pages": "184-185",
+      "pdf_pages": "210-211",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "AET",
+        "ID",
+        "AEI",
+        "LID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "a805d80fd7947cd640b6e04355bd1564630eda51fb2c0f51b6353f17dc04917e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-service",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 151／155 只讀本篇Notice的格式與06h這列；其他事件不展開。規格把通知類型與清單中各組事件分開管理。"
+    },
+    {
+      "id": "EGE-BASE-FIG-155",
+      "report_id": "base-endurance-group-events",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "155",
+      "title": "Asynchronous Event Information – Notice",
+      "section": "5.2.2",
+      "printed_pages": "187",
+      "pdf_pages": "213",
+      "scope_entry_id": "EGE-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "ege-tutorial-html"
+      ],
+      "introduced_in": [
+        "ege-tutorial-html"
+      ],
+      "key_items": [
+        "AET",
+        "ID",
+        "AEI",
+        "LID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "5320eb801db1b6b0c7ca1e142fc9d03d0c176517e2a850474ca0af70a6ce6f43",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "ege-service",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.10",
+        "Base §5.2.13.1.15",
+        "Base §5.2.30.1.17"
+      ],
+      "dependency_focus": "Figures 151／155 只讀本篇Notice的格式與06h這列；其他事件不展開。規格把通知類型與清單中各組事件分開管理。"
     }
   ]
 }

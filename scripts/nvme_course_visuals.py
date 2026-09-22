@@ -18,6 +18,9 @@ def route(points, label='', label_at=None):
 
 
 def course_illustration(key):
+    if key.startswith('ege-'):
+        from scripts.nvme_endurance_visuals import illustration
+        return illustration(key)
     if key.startswith('sqa-'):
         from scripts.nvme_sqa_visuals import illustration
         return illustration(key)

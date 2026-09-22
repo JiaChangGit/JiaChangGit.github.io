@@ -32,9 +32,10 @@ def install_report(config, units, terms, reports, titles, modules, glossaries, i
         for index, claim in enumerate(unit['claims']):
             key=unit['key'].upper()+(f'-{index+1}' if index else '')
             cid=prefix+'-'+key; sources.append(cid)
-            report['claims'].append(dict(key=key,source_id='NVME-BASE-2.4',section=claim['section'],
-                printed_pages=printed(claim['pages']),pdf_pages=claim['pages'],normative_keyword='none',
-                scope_entry_id=prefix+'-BASE-'+('PREREQUISITES' if claim.get('background') else 'INCLUDE'),
+            source_id=claim.get('source_id','NVME-BASE-2.4')
+            report['claims'].append(dict(key=key,source_id=source_id,section=claim['section'],
+                printed_pages=printed(claim['pages']) if source_id=='NVME-BASE-2.4' else claim['pages'],pdf_pages=claim['pages'],normative_keyword='none',
+                scope_entry_id=claim.get('scope_entry_id') or prefix+'-BASE-'+('PREREQUISITES' if claim.get('background') else 'INCLUDE'),
                 zh_tw=claim['text']['zh'],en=claim['text']['en']))
             titles[cid]=(unit['title']['zh'],unit['title']['en'])
         modules[rid].append(dict(id=mid,title=unit['title'],lead=unit['claims'][0]['text'],sources=sources,
