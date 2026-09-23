@@ -6,6 +6,11 @@ nvme_notes: true
 ---
 <div class="nvme-note">
 <h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>
+<section><h2>NVMe Namespace Write Protection：狀態、控制與命令行為</h2><p>一份已寫好的資料要繼續提供讀取，又要避免後續命令改動它，可以對所在的 namespace 設定寫入保護。Namespace Write Protection 不只是一個開關：它有可解除、直到斷電、永久等不同狀態，並把裝置支援、進入許可與實際保護分開。本篇把這些關係接到 FID 84h，最後說明保護如何改變命令處理。</p><ul>
+<li><a href="/DOCS/nvme-spec-report/base-namespace-write-protection/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
+<li><a href="{% post_url 2026-09-23-nvme-namespace-write-protection-zh-tw %}">中文全局報告</a></li>
+<li><a href="{% post_url 2026-09-23-nvme-namespace-write-protection-en %}">English overview</a></li>
+</ul></section>
 <section><h2>NVMe Endurance Group：健康資訊、事件清單與通知設定</h2><p>同一個儲存裝置裡，不同儲存群組的耐用度與健康狀態可能不同。Endurance Group Information 讓主機查一組的警告、讀寫量與容量；Event Aggregate 則把需要注意的群組列出來。本篇把 FID 18h 的逐組設定接到這兩份 log，說明主機如何從一則通知走到具體資料，又如何確認事件而不誤以為問題已經修復。</p><ul>
 <li><a href="/DOCS/nvme-spec-report/base-endurance-group-events/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
 <li><a href="{% post_url 2026-09-22-nvme-endurance-group-events-zh-tw %}">中文全局報告</a></li>

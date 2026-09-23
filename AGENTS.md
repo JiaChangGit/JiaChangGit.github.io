@@ -6,7 +6,7 @@
 
 - 中文 HTML：學過 OS、Computer Organization，聽過 SSD 基本概念的大學畢業生。從用途、元件關係、運作流程逐步深入欄位、條件與例子，讓讀者從新手一路讀到進階。
 - 中文與英文 post：用於向主管報告，內容對等；先講主題與重要性，再說關鍵機制、條件及代表性例子。每篇均須獨立可讀。
-- 20 份報告各保留 3 版：1 份 iPad／電腦共用的中文教學 HTML 加上中英文 GitHub Pages post，共 60 個交付檔。取消詳細版 HTML，不保留副本或導覽連結。
+- 21 份報告各保留 3 版：1 份 iPad／電腦共用的中文教學 HTML 加上中英文 GitHub Pages post，共 63 個交付檔。取消詳細版 HTML，不保留副本或導覽連結。
 - 中文 HTML 涵蓋該篇全部已核准 claim 與全部範圍內圖表；中英文 Pages 以全局觀念、流程及代表案例銜接 Spec，不重複完整技術附錄。中英文 post 的 claim、主軸、例子、限制與問題順序一致；HTML 可以採不同的漸進教學順序。
 - 路徑與契約見 `.ai/nvme-report/output-contract.json`。先更新規則與產生程式，再處理 NVM Command Set、Boot／Telemetry／Sanitize，最後改其餘舊篇。
 - Admin／I/O 整合篇另有 `admin-io-route.json`：按實際 PDF 頁與章節標題規劃順向報告路徑，Base → NVM 只切換一次；共用頁必須標停止標題，不能整頁納入。維護紀錄見 `docs/nvme-admin-io-scope-and-route.md`。
@@ -73,3 +73,5 @@ workflow，不得把單一 Pages 成功或網站 HTTP 200 當作 CI 全數成功
 2026-09-22：新增 SQ Associations 專篇，主範圍 Base §8.1.28 本身無編號圖表，15 張必要引用分組教學。Create I/O SQ 的 NVMSETID=0 表示無特定關聯；建立時非法 Set 與後續錯誤分流的後果分開。PLM 實際標題為 §8.1.21，不沿用本節舊交叉引用。維護紀錄見 docs/nvme-sqa-scope-and-teaching.md。
 
 2026-09-22：新增 Endurance Group 健康與事件專篇，Base §5.2.13.1.10、§5.2.13.1.15、§5.2.30.1.17；4 張主圖與 16 張必要引用。0Fh 通知確認與 09h 逐組確認分開；Figure209 出廠預設復原不能當作一般 reset。維護紀錄見 docs/nvme-endurance-scope-and-teaching.md。
+
+2026-09-23：新增 Namespace Write Protection 專篇，Base §8.1.18 與 §5.2.30.1.38（FID84h）；4張主圖與12張必要引用。NWPC能力、WPC進入許可、WPS狀態分開；控制位重設不解除既有保護，不可保存不等於不持續。維護紀錄見 docs/nvme-nwp-scope-and-teaching.md。

@@ -1970,6 +1970,59 @@
       ],
       "approval_note": "2026-09-22 使用者要求完成指定 LID09h、LID0Fh、FID18h；沿用三版、驗證後直接 commit／push 與發布授權。",
       "reference_teaching_policy": "4張主範圍與16張必要引用依觀念分組；NVM命令分類只補兩項定義。"
+    },
+    {
+      "id": "base-namespace-write-protection",
+      "title_zh_tw": "NVMe Namespace Write Protection：狀態、控制與命令行為",
+      "title_en": "NVMe Namespace Write Protection: States, Controls, and Command Behavior",
+      "source_id": "NVME-BASE-2.4",
+      "sections": [
+        "8.1.18",
+        "5.2.30.1.38"
+      ],
+      "primary_scope": {
+        "NVME-BASE-2.4": [
+          "8.1.18",
+          "5.2.30.1.38"
+        ]
+      },
+      "excluded_sections": [],
+      "printed_pages": "512-513,664-666",
+      "pdf_pages": "538-539,690-692",
+      "included_figure_ids": [
+        "NWP-BASE-FIG-735",
+        "NWP-BASE-FIG-736",
+        "NWP-BASE-FIG-737",
+        "NWP-BASE-FIG-541",
+        "NWP-BASE-FIG-338",
+        "NWP-BASE-FIG-756",
+        "NWP-BASE-FIG-093",
+        "NWP-BASE-FIG-463",
+        "NWP-BASE-FIG-464",
+        "NWP-BASE-FIG-466",
+        "NWP-BASE-FIG-197",
+        "NWP-BASE-FIG-198",
+        "NWP-BASE-FIG-201",
+        "NWP-BASE-FIG-213",
+        "NWP-BASE-FIG-103",
+        "NWP-BASE-FIG-554"
+      ],
+      "dependency_figures": [
+        "NWP-BASE-FIG-338",
+        "NWP-BASE-FIG-756",
+        "NWP-BASE-FIG-093",
+        "NWP-BASE-FIG-463",
+        "NWP-BASE-FIG-464",
+        "NWP-BASE-FIG-466",
+        "NWP-BASE-FIG-197",
+        "NWP-BASE-FIG-198",
+        "NWP-BASE-FIG-201",
+        "NWP-BASE-FIG-213",
+        "NWP-BASE-FIG-103",
+        "NWP-BASE-FIG-554"
+      ],
+      "approval_note": "2026-09-23 使用者要求完成 Base §8.1.18 與 FID84h；沿用三版、驗證後直接 commit／push 與發布授權。",
+      "reference_teaching_policy": "4張主範圍與12張必要引用依概念分組；其他Feature、RPMB與狀態碼只教本篇必要欄位。"
     }
   ],
   "interpretation_sources": [
@@ -3564,6 +3617,84 @@
       ],
       "teaching_necessity": "Identify exactly which NVM commands contribute to HRC/HWC in Base Figure225; distinguish command classes from host data-transfer direction without expanding command formats.",
       "supports_topic": "Base §5.2.13.1.10 HRC and HWC interpretation."
+    },
+    {
+      "id": "NWP-BASE-INCLUDE",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "8.1.18",
+        "5.2.30.1.38"
+      ],
+      "figures": [
+        "735",
+        "736",
+        "737",
+        "541"
+      ]
+    },
+    {
+      "id": "NWP-BASE-DEPENDENCY",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "status": "INCLUDE",
+      "sections": [
+        "5.2.14.2.1",
+        "8.1.24",
+        "4.1.1",
+        "4.2.1",
+        "4.4",
+        "5.2.12",
+        "5.2.12.2",
+        "5.2.30",
+        "5.2.30.1",
+        "5.2.30.4",
+        "5.2.13.1.3",
+        "3.2.1",
+        "3.2.5",
+        "3.7.2"
+      ],
+      "figures": [
+        "338",
+        "756",
+        "93",
+        "463",
+        "464",
+        "466",
+        "197",
+        "198",
+        "201",
+        "213",
+        "103",
+        "554"
+      ]
+    },
+    {
+      "id": "NWP-BASE-PREREQUISITES",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "status": "PREREQUISITE_ONLY",
+      "sections": [
+        "5.2.14.2.1",
+        "8.1.24",
+        "4.1.1",
+        "4.2.1",
+        "4.4",
+        "5.2.12",
+        "5.2.12.2",
+        "5.2.30",
+        "5.2.30.1",
+        "5.2.30.4",
+        "5.2.13.1.3",
+        "3.2.1",
+        "3.2.5",
+        "3.7.2",
+        "8.1.18",
+        "5.2.30.1.38"
+      ],
+      "teaching_necessity": "Explain NWPC/MDS/SSFS, WPC controls and their independent reset behavior, active/inactive/invalid NSID, Get/Set selection and capability formats, non-saveability versus state persistence, cache commit and successful completion, and protection status versus SMART health. Shared source tables are restricted to the related rows and fields.",
+      "supports_topic": "Namespace Write Protection state machine and FID84h usage."
     }
   ],
   "approval_note": "2026-09-13：使用者確認五篇精確範圍，授權深化全部 13 篇中文教學，包含範圍內圖表及必要引用；完成驗證後直接 push。",

@@ -416,10 +416,10 @@ class NvmeReportContractTest(unittest.TestCase):
             (ROOT / ".ai/nvme-report/output-contract.json").read_text(encoding="utf-8")
         )
         artifacts = contract["artifacts"]
-        self.assertEqual(len(artifacts), 60)
-        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 20)
-        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 40)
-        self.assertEqual(len({item["report_id"] for item in artifacts}), 20)
+        self.assertEqual(len(artifacts), 63)
+        self.assertEqual(sum(item["format"] == "html" for item in artifacts), 21)
+        self.assertEqual(sum(item["format"] == "markdown" for item in artifacts), 42)
+        self.assertEqual(len({item["report_id"] for item in artifacts}), 21)
         self.assertEqual(
             {item.get("parity_group") for item in artifacts if item["format"] == "markdown"},
             {
@@ -431,7 +431,7 @@ class NvmeReportContractTest(unittest.TestCase):
                 "basepower-bilingual",
                 "baseselftest-bilingual", "basehmb-bilingual", "basenamespace-bilingual",
                 "baseboot-bilingual", "basetelemetry-bilingual", "basesanitize-bilingual",
-                "nvmcs13-bilingual", "adminio-bilingual", "streams-bilingual", "fdp-bilingual", "lockdown-bilingual", "rrl-bilingual", "sqa-bilingual", "ege-bilingual",
+                "nvmcs13-bilingual", "adminio-bilingual", "streams-bilingual", "fdp-bilingual", "lockdown-bilingual", "rrl-bilingual", "sqa-bilingual", "ege-bilingual", "nwp-bilingual",
             },
         )
 
@@ -629,7 +629,7 @@ class NvmeReportContractTest(unittest.TestCase):
     def test_html_has_responsive_accessible_reading_structure(self):
         contract = VALIDATOR.load_json("output-contract.json")
         artifacts = [a for a in contract["artifacts"] if a["format"] == "html"]
-        self.assertEqual(len(artifacts), 20)
+        self.assertEqual(len(artifacts), 21)
         for artifact in artifacts:
             with self.subTest(artifact=artifact["id"]):
                 self.assertFalse(VALIDATOR.validate_html(ROOT / artifact["path"]))

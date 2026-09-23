@@ -37620,6 +37620,727 @@
         "Base §5.2.30.1.17"
       ],
       "dependency_focus": "Figures 151／155 只讀本篇Notice的格式與06h這列；其他事件不展開。規格把通知類型與清單中各組事件分開管理。"
+    },
+    {
+      "id": "NWP-BASE-FIG-735",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "735",
+      "title": "Namespace Write Protection State Definitions",
+      "section": "8.1.18",
+      "printed_pages": "664",
+      "pdf_pages": "690",
+      "scope_entry_id": "NWP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NWPC",
+        "WPS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "2475803844581bb891509858b1c9d4a7830537c6e9c2b065dd3ccd1a76715f4d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-model",
+      "role": "primary"
+    },
+    {
+      "id": "NWP-BASE-FIG-736",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "736",
+      "title": "Namespace Write Protection State Machine Model",
+      "section": "8.1.18",
+      "printed_pages": "664",
+      "pdf_pages": "690",
+      "scope_entry_id": "NWP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "WPC",
+        "MDS",
+        "WPUPCC",
+        "MDS",
+        "PWPC"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "2475803844581bb891509858b1c9d4a7830537c6e9c2b065dd3ccd1a76715f4d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-transitions",
+      "role": "primary"
+    },
+    {
+      "id": "NWP-BASE-FIG-737",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "737",
+      "title": "Commands Allowed when Specifying a Write Protected NSID",
+      "section": "8.1.18.2",
+      "printed_pages": "665-666",
+      "pdf_pages": "691-692",
+      "scope_entry_id": "NWP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NVM",
+        "NVM",
+        "NVM",
+        "NVM",
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "b7e70e261a7fd41d512f93cbe2b0db8095c488cb18e9a3508a8a9a835ed65bfe",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-commands",
+      "role": "primary"
+    },
+    {
+      "id": "NWP-BASE-FIG-541",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "541",
+      "title": "Write Protection – Command Dword 11",
+      "section": "5.2.30.1.38",
+      "printed_pages": "512",
+      "pdf_pages": "538",
+      "scope_entry_id": "NWP-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "WPS",
+        "SEL",
+        "WPS",
+        "CDW11",
+        "WPS",
+        "WPS",
+        "DW0",
+        "SEL",
+        "CQE",
+        "DW0",
+        "SEL",
+        "CDW11",
+        "DW0"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "b318ed3cd1f9a035f979cf455eece78acc2501a839ada4edb452b01856a4e68b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "primary"
+    },
+    {
+      "id": "NWP-BASE-FIG-338",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "346,371-372,375",
+      "pdf_pages": "372,397-398,401",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NWPC",
+        "CTRATT",
+        "MDS",
+        "ONCS",
+        "SSFS",
+        "NWPC",
+        "NWPWPS",
+        "NWPC",
+        "NWPC",
+        "WPUPCS",
+        "WPC",
+        "NWPC",
+        "WPS",
+        "NWPC",
+        "PWPS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "283c2a214cd5ccbedd09abc45e619a3ff6be13454f0b5a67d0c9ea568aad72f0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-controls",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "Figure 338 很長；本篇只取 NWPC、CTRATT.MDS 與 ONCS.SSFS。其他未在此列出的能力 bit 有各自用途，不是全都保留。位置從 Identify Controller 結構起點起算。"
+    },
+    {
+      "id": "NWP-BASE-FIG-756",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "756",
+      "title": "RPMB Device Configuration Block Data Structure",
+      "section": "8.1.24",
+      "printed_pages": "691-692",
+      "pdf_pages": "717-718",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "WPC",
+        "RPMB",
+        "WPS",
+        "WPC",
+        "RW",
+        "RPMB",
+        "WPC",
+        "WPS",
+        "WPC",
+        "WPUPCC",
+        "NWPC",
+        "WPC",
+        "MDS",
+        "WPC",
+        "PWPC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "0660c6a3bf8e72b489800a4d896c2822376f037d73678e4064db733a5e425d67",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-controls",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "本篇引用 Figure 756 的 byte2。它是 RPMB target0 的 512-byte Device Configuration Block 的一部分；相鄰 bytes0、1 屬 Boot Partition 保護，不能拿來解讀 namespace 的 WPS。"
+    },
+    {
+      "id": "NWP-BASE-FIG-093",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "93",
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "printed_pages": "140-142",
+      "pdf_pages": "166-168",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "CDW",
+        "SV",
+        "FID",
+        "NSID",
+        "ID",
+        "ID",
+        "NSID",
+        "MDS",
+        "MDS",
+        "CDW10",
+        "SV",
+        "FID",
+        "SV",
+        "CDW11"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "b99a61ac238013d8e32afb610743c0caa9b82ab907da5187619d42ae10ded1e0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "只取 Figure93 的 NSID、CDW 位置，Figure463 的資料指標用途、Figure464 的 SV／FID，以及 Figure466 的 FID84h 列與註腳2、8。"
+    },
+    {
+      "id": "NWP-BASE-FIG-463",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "463",
+      "title": "Set Features – Data Pointer",
+      "section": "5.2.30",
+      "printed_pages": "456",
+      "pdf_pages": "482",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "CDW",
+        "SV",
+        "FID",
+        "NSID",
+        "ID",
+        "ID",
+        "NSID",
+        "MDS",
+        "MDS",
+        "CDW10",
+        "SV",
+        "FID",
+        "SV",
+        "CDW11"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f97f1901f0d3a3373be52f2b228ab11a3ac98356cd5cbbfb8e15a014a2a7be71",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "只取 Figure93 的 NSID、CDW 位置，Figure463 的資料指標用途、Figure464 的 SV／FID，以及 Figure466 的 FID84h 列與註腳2、8。"
+    },
+    {
+      "id": "NWP-BASE-FIG-464",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "464",
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "printed_pages": "457",
+      "pdf_pages": "483",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "CDW",
+        "SV",
+        "FID",
+        "NSID",
+        "ID",
+        "ID",
+        "NSID",
+        "MDS",
+        "MDS",
+        "CDW10",
+        "SV",
+        "FID",
+        "SV",
+        "CDW11"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "366ab9cd84b05dd2743ebe946dff5cf57bf06e0c817fa99e7504a738b9032c9e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "只取 Figure93 的 NSID、CDW 位置，Figure463 的資料指標用途、Figure464 的 SV／FID，以及 Figure466 的 FID84h 列與註腳2、8。"
+    },
+    {
+      "id": "NWP-BASE-FIG-466",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "466",
+      "title": "Set Features – Feature Identifiers",
+      "section": "5.2.30",
+      "printed_pages": "459",
+      "pdf_pages": "485",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "NSID",
+        "CDW",
+        "SV",
+        "FID",
+        "NSID",
+        "ID",
+        "ID",
+        "NSID",
+        "MDS",
+        "MDS",
+        "CDW10",
+        "SV",
+        "FID",
+        "SV",
+        "CDW11"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "0455155a0d57d29c91d239a7167ce3b75a165737cf648155803d332b8888bf2b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-transitions",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "只取 Figure93 的 NSID、CDW 位置，Figure463 的資料指標用途、Figure464 的 SV／FID，以及 Figure466 的 FID84h 列與註腳2、8。"
+    },
+    {
+      "id": "NWP-BASE-FIG-197",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "197",
+      "title": "Get Features – Data Pointer",
+      "section": "5.2.12",
+      "printed_pages": "209",
+      "pdf_pages": "235",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "SEL",
+        "DW0",
+        "SEL",
+        "SSFS",
+        "DW0",
+        "CDW10",
+        "FID",
+        "SEL",
+        "SEL0",
+        "DPTR",
+        "SEL3",
+        "DW0",
+        "CHANG",
+        "SEL3",
+        "DW0"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8fa88156c0783fe40ad916bf27117cdba844b0a63b2d5cae3ed300948925af2b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "以下非零 SEL 的討論以控制器支援 SSFS 為前提。成功 Get 的回覆格式不能只根據 DW0 數字猜測。"
+    },
+    {
+      "id": "NWP-BASE-FIG-198",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "198",
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "printed_pages": "209-210",
+      "pdf_pages": "235-236",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "SEL",
+        "DW0",
+        "SEL",
+        "SSFS",
+        "DW0",
+        "CDW10",
+        "FID",
+        "SEL",
+        "SEL0",
+        "DPTR",
+        "SEL3",
+        "DW0",
+        "CHANG",
+        "SEL3",
+        "DW0"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "1380340d28d58291a9ba4b387a47eb3481c606d62731ca9ec27687f1b6f85dd4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "以下非零 SEL 的討論以控制器支援 SSFS 為前提。成功 Get 的回覆格式不能只根據 DW0 數字猜測。"
+    },
+    {
+      "id": "NWP-BASE-FIG-201",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "201",
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12.2",
+      "printed_pages": "212",
+      "pdf_pages": "238",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "SEL",
+        "DW0",
+        "SEL",
+        "SSFS",
+        "DW0",
+        "CDW10",
+        "FID",
+        "SEL",
+        "SEL0",
+        "DPTR",
+        "SEL3",
+        "DW0",
+        "CHANG",
+        "SEL3",
+        "DW0"
+      ],
+      "source_keywords": [
+        "may"
+      ],
+      "evidence_digest": "fe7483f9e4405684c84f544ad37ae3c3702515b37c2fef8b78b2e50ac63232ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-configure",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "以下非零 SEL 的討論以控制器支援 SSFS 為前提。成功 Get 的回覆格式不能只根據 DW0 數字猜測。"
+    },
+    {
+      "id": "NWP-BASE-FIG-213",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "213",
+      "title": "SMART / Health Information Log",
+      "section": "5.2.13.1.3",
+      "printed_pages": "221",
+      "pdf_pages": "247",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "SMART",
+        "AMRO"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d843bff09b66424eb0a82a79c88d51ef2615fcba594c337888062eaf249aeb83",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-observe",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "Figure213 只取 byte0 Critical Warning 的 bit3。此處不把其他健康欄位納入教學範圍。"
+    },
+    {
+      "id": "NWP-BASE-FIG-103",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "103",
+      "title": "Status Code – Generic Command Status Values",
+      "section": "4.2.1",
+      "printed_pages": "149",
+      "pdf_pages": "175",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "SCT0",
+        "SCT1",
+        "SCT1"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "db3d72e77fd62851f98a07f16cd3217dd9cf9b0d8e0a4e6a26d8fa6aa83facb0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-observe",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "本篇只取Figure103的20h與Figure554的0Dh、0Eh。SCT是狀態碼類型，SC是該類型內的代碼；以下不是整個CQE Status欄的16-bit編碼。"
+    },
+    {
+      "id": "NWP-BASE-FIG-554",
+      "report_id": "base-namespace-write-protection",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "554",
+      "title": "Set Features – Command Specific Status Values",
+      "section": "5.2.30.4",
+      "printed_pages": "519",
+      "pdf_pages": "545",
+      "scope_entry_id": "NWP-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "nwp-tutorial-html"
+      ],
+      "introduced_in": [
+        "nwp-tutorial-html"
+      ],
+      "key_items": [
+        "SCT0",
+        "SCT1",
+        "SCT1"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "930024c0b2bc6bb04369cfa41b0dc4c8fff621ee8c7b8f5ab4d5bd4ae646c49b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "nwp-observe",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §8.1.18",
+        "Base §5.2.30.1.38"
+      ],
+      "dependency_focus": "本篇只取Figure103的20h與Figure554的0Dh、0Eh。SCT是狀態碼類型，SC是該類型內的代碼；以下不是整個CQE Status欄的16-bit編碼。"
     }
   ]
 }

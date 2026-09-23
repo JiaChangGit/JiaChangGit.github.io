@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef1f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c1113" media="(prefers-color-scheme: dark)">
+<title>NVMe Namespace Write Protection：狀態、控制與命令行為</title><style>/* Shared visual language for the standalone course and NVMe posts. */
+.nvme-note, .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a;
+  --violet: #5b4b9e; --blue: #236baf; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Segoe UI", "Microsoft JhengHei", sans-serif;
+  font-size: 17px; line-height: 1.8; -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  .nvme-note, .edition-tutorial { --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+    --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+    --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa; }
+}
+/* The main Jekyll theme switches with html[data-theme], not only with the OS preference. */
+html[data-theme="dark"] .nvme-note, html[data-theme="dark"] .edition-tutorial {
+  --paper: #0c1113; --surface: #12181a; --surface-2: #1a2427;
+  --ink: #e7ecec; --muted: #acbab8; --line: #344447; --accent: #53d1c2; --soft: #103330;
+  --example: #61d397; --example-soft: #142e22; --warning: #e7a56d; --violet: #b9a9ee; --blue: #83bafa;
+}
+html[data-theme="light"] .nvme-note, html[data-theme="light"] .edition-tutorial {
+  --paper: #eef1f2; --surface: #fff; --surface-2: #e6eaed; --ink: #11161a;
+  --muted: #4d5761; --line: #ccd5d8; --accent: #0b766e; --soft: #e0f1ee;
+  --example: #1c7a4d; --example-soft: #e2f3e8; --warning: #a8501a; --violet: #5b4b9e; --blue: #236baf;
+}
+.nvme-note *, .edition-tutorial * { box-sizing: border-box; }
+.edition-tutorial { margin: 0; background: var(--paper); }
+.reader-shell { max-width: 1480px; margin: auto; padding-top: env(safe-area-inset-top); }
+.reader-nav { padding: 12px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.reader-nav summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 700; }
+.reader-nav summary::after { content: "+"; margin-left: auto; }
+.reader-nav details[open] > summary::after { content: "−"; }
+.reader-nav nav { display: grid; gap: 3px; }
+.reader-nav a { display: flex; align-items: center; min-height: 44px; color: var(--muted); padding: 6px 8px; text-decoration: none; font-size: 14px; }
+.reader-nav a:hover { background: var(--soft); color: var(--accent); }
+.edition-tutorial main { max-width: 860px; padding: 24px 24px 64px; margin: auto; min-width: 0; }
+.reader-heading { padding: 26px 0 30px; }
+.reader-heading .eyebrow { color: var(--accent); font: 700 12px var(--mono); letter-spacing: .1em; }
+.nvme-note h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.3; margin: 14px 0; }
+.nvme-note h2 { font-size: clamp(22px, 3vw, 29px); line-height: 1.4; margin: 0 0 22px; color: var(--ink); }
+.nvme-note h3 { font-size: 18px; line-height: 1.5; margin: 0 0 10px; color: var(--ink); }
+.nvme-note p { margin: 0 0 16px; color: var(--ink); overflow-wrap: anywhere; }
+.nvme-note .reader-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .8em; align-items: start; }
+.nvme-note .paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; min-width: 5.5ch; }
+.nvme-note .paragraph-text { min-width: 0; }
+.nvme-note .lesson-explanation { margin: 22px 0; line-height: 1.95; }
+.nvme-note .lesson-explanation p { margin-bottom: 22px; }
+.nvme-note .overview-connections { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.nvme-note .reading-link { display: block; padding: 12px 0; min-height: 44px; font-size: 14px; }
+.nvme-note .figure-reading-fold { margin: 24px 0; padding: 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .figure-reading-fold > summary { color: var(--accent); font-weight: 700; }
+.nvme-note .figure-reading-group { padding: 28px 0; border-top: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .review-answer { margin-bottom: 12px; }
+.nvme-note .opening { font-size: 19px; line-height: 1.85; }
+.nvme-note section { padding: 34px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+.nvme-note .section-number, .nvme-note .axis-number { color: var(--accent); font-family: var(--mono); }
+.nvme-note .topic-map { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+.nvme-note .topic-map article { padding: 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.nvme-note .topic-map p { color: var(--muted); font-size: 15px; margin: 0; }
+.nvme-note .topic-map .axis-paragraph { display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: .55em; align-items: start; }
+.nvme-note .axis-paragraph-number { color: var(--accent); font: 700 .78em/1.8 var(--mono); text-align: right; padding-top: .12em; white-space: nowrap; }
+.nvme-note .axis-number { display: block; margin-bottom: 8px; font-size: 13px; }
+.nvme-note .term-note { margin: -4px 0 22px; padding: 10px 14px; border-left: 3px solid var(--accent); background: var(--soft); font-size: 14px; }
+.nvme-note .term-note > div { margin: 5px 0; }
+.nvme-note .term-note dt { font-family: var(--mono); font-weight: 700; overflow-wrap: anywhere; }
+.nvme-note .term-note dd { margin: 0; color: var(--muted); }
+.nvme-note a { color: var(--accent); }
+.nvme-note h1, .nvme-note h2, .nvme-note h3, .nvme-note summary, .nvme-note caption { color: var(--ink); }
+.nvme-note .source-note { font-size: 13px; color: var(--muted); margin: 4px 0 22px; }
+.nvme-note details > summary { min-height: 44px; cursor: pointer; padding: 10px 0; line-height: 1.5; overflow-wrap: anywhere; }
+.nvme-note .source-note p { color: var(--muted); margin-bottom: 6px; }
+.nvme-note .technical-note { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 0 16px; margin: 20px 0; }
+.nvme-note .technical-note > summary { color: var(--accent); font-weight: 650; }
+.nvme-note .field-note { padding: 6px 0; border-top: 1px solid var(--line); }
+.nvme-note article.field-note { margin: 22px 0; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; scroll-margin-top: 20px; }
+.nvme-note .field-note h4 { color: var(--ink); font-size: 17px; line-height: 1.6; margin: 0 0 18px; overflow-wrap: anywhere; }
+.nvme-note .field-note h5 { color: var(--accent); font-size: 13px; letter-spacing: .04em; margin: 0 0 8px; }
+.nvme-note .figure-example { border-left: 3px solid var(--example); padding: 14px; background: var(--example-soft); margin: 20px 0; }
+.nvme-note .figure-example h5 { color: var(--ink); }
+.nvme-note .figure-example p { margin-bottom: 0; }
+.nvme-note .figure-detail { border-top: 1px solid var(--line); font-size: 15px; }
+.nvme-note .field-index { color: var(--muted); font-size: 14px; }
+.nvme-note .field-index ul { display: flex; flex-wrap: wrap; gap: 6px 18px; padding-left: 20px; }
+.nvme-note .figure-reading-group > summary { font-size: 18px; font-weight: 700; }
+.nvme-note .field-note:target { outline: 2px solid var(--accent); outline-offset: 3px; }
+.nvme-note .field-note > summary { font-size: 15px; }
+.nvme-note .table-wrap { overflow-x: auto; margin: 20px 0; border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 15px; margin: 0; }
+.nvme-note th, .nvme-note td { padding: 11px 13px; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); }
+.nvme-note th { background: var(--surface-2); font-weight: 700; white-space: normal; }
+.nvme-note tr:last-child td { border-bottom: 0; }
+.nvme-note caption { text-align: left; padding: 12px; font-weight: 700; }
+.nvme-note .worked-example { background: var(--example-soft); border-left: 4px solid var(--example); border-radius: 6px; padding: 18px; margin: 24px 0; }
+.nvme-note .worked-example p:last-child { margin-bottom: 0; }
+.nvme-note figure { margin: 24px 0; padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.nvme-note figcaption { color: var(--muted); font-size: 14px; margin-top: 12px; }
+.nvme-note .diagram-scroll { overflow-x: auto; }
+.nvme-note svg { width: 100%; height: auto; display: block; color: var(--ink); min-width: 440px; }
+.nvme-note svg text { fill: var(--ink); font-family: var(--mono); }
+.nvme-note .v-object { fill: var(--soft); stroke: var(--accent); stroke-width: 1.5; }
+.nvme-note .v-command { fill: var(--surface-2); stroke: var(--blue); stroke-width: 1.5; }
+.nvme-note .v-decision { fill: var(--surface-2); stroke: var(--violet); stroke-width: 1.5; }
+.nvme-note .v-success { fill: var(--example-soft); stroke: var(--example); stroke-width: 1.5; }
+.nvme-note .v-failure { fill: var(--surface-2); stroke: var(--warning); stroke-width: 1.5; stroke-dasharray: 5 3; }
+.nvme-note .v-line { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.nvme-note .v-arrow { fill: var(--muted); }
+.nvme-note .v-text { fill: var(--ink); font-size: 16px; }
+.nvme-note .flow-steps { list-style: none; padding: 0; display: grid; gap: 10px; counter-reset: steps; }
+.nvme-note .flow-steps li { counter-increment: steps; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.nvme-note .flow-steps li::before { content: counter(steps) ". "; font-family: var(--mono); color: var(--accent); font-weight: 700; }
+.nvme-note .reference-editions { padding-top: 24px; }
+.skip-link { position: fixed; top: -100px; left: 12px; z-index: 100; padding: 12px; background: var(--surface); color: var(--ink); }
+.skip-link:focus { top: 8px; }
+.nvme-note :focus-visible, .edition-tutorial :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 1200px) {
+  .reader-shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); }
+  .reader-nav { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; border: 0; padding: 24px 14px; }
+  .edition-tutorial main { width: 100%; padding-inline: 36px; }
+}
+@media (max-width: 600px) {
+  .nvme-note .topic-map { grid-template-columns: 1fr; }
+  .edition-tutorial main { padding-inline: 18px; }
+  .nvme-note .reader-paragraph, .nvme-note .topic-map .axis-paragraph { grid-template-columns: max-content minmax(0, 1fr); column-gap: .45em; }
+}
+@media (prefers-reduced-motion: reduce) { .nvme-note *, .edition-tutorial * { scroll-behavior: auto; transition: none; animation: none; } }
+@media print {
+  .reader-nav, .skip-link { display: none; } .reader-shell { display: block; }
+  .nvme-note, .edition-tutorial { --paper: #fff; --surface: #fff; --surface-2: #eee; --ink: #111; --muted: #333; --line: #aaa; background: #fff; }
+  .nvme-note figure, .nvme-note tr { break-inside: avoid; } .nvme-note svg { min-width: 0; }
+  .edition-tutorial main { max-width: none; }
+}
+/* Visible reasoning paths and one shared home for related fields. */
+.nvme-note .course-walkthrough h4 { margin-top:1.8rem; margin-bottom:.65rem; }
+.nvme-note .course-outcome { border-left:4px solid var(--accent); padding:.3rem 1rem; margin:1.5rem 0; }
+.nvme-note .field-guide { border:1px solid var(--line); border-radius:10px; padding:1.15rem; margin:2rem 0; scroll-margin-top:5rem; }
+.nvme-note .field-guide h4 { margin-top:0; }
+.nvme-note .field-guide td:first-child { width:24%; font-weight:650; }
+.nvme-note .field-guide td:nth-child(2) { width:38%; }
+.nvme-note .figure-crossrefs { display:flex; flex-wrap:wrap; gap:.35rem .65rem; margin-top:.8rem; }
+.nvme-note .figure-crossrefs a { display:inline-flex; align-items:center; min-height:44px; padding:0 .45rem; }
+.nvme-note .field-guide:target { outline:2px solid var(--accent); outline-offset:3px; }
+.nvme-note .spec-route td { overflow-wrap:anywhere; }
+.nvme-note .route-table { min-width:620px; }
+.nvme-note .route-table th:first-child { width:4.5em; white-space:nowrap; }
+.nvme-note .route-table td:nth-child(2), .nvme-note .route-table td:last-child { width:19%; }
+.nvme-note .route-table td:nth-child(3) { width:52%; line-height:1.75; }
+.nvme-note .route-table tr:target { outline:2px solid var(--accent); outline-offset:-2px; }
+.nvme-note .scope-selection { padding:0 1rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+@media(max-width:900px) { .nvme-note .field-guide { padding:.8rem; } }
+</style></head>
+<body class="edition-tutorial"><a class="skip-link" href="#main">跳到正文</a>
+<div class="reader-shell"><aside class="reader-nav"><details open><summary>閱讀目錄</summary><nav aria-label="章節目錄"><a href="#topic-overview">主題與主軸</a><a href="#module-nwp-model">01 先看保護誰，再看四種狀態</a><a href="#module-nwp-transitions">02 沿著狀態圖理解解除與重設</a><a href="#module-nwp-controls">03 能力、進入許可與目前狀態是三件事</a><a href="#module-nwp-configure">04 把查詢、設定與成功完成接起來</a><a href="#module-nwp-commands">05 保護後，哪些命令仍能做什麼</a><a href="#module-nwp-observe">06 用正確的狀態與錯誤解釋結果</a><a href="#figure-reading">讀懂本篇的規格圖表</a><a href="#knowledge-check">學完後想一想</a></nav></details></aside>
+<main id="main" class="nvme-note"><header class="reader-heading"><p class="eyebrow">NVMe · 規格與原理</p><h1>NVMe Namespace Write Protection：狀態、控制與命令行為</h1></header>
+<section id="topic-overview" class="topic-overview">
+<p class="reader-paragraph opening"><span class="paragraph-number" aria-label="00.01">00.01.</span><span class="paragraph-text">一份已寫好的資料要繼續提供讀取，又要避免後續命令改動它，可以對所在的 namespace 設定寫入保護。Namespace Write Protection 不只是一個開關：它有可解除、直到斷電、永久等不同狀態，並把裝置支援、進入許可與實際保護分開。本篇把這些關係接到 FID 84h，最後說明保護如何改變命令處理。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Namespace Write Protection</dt><dd>namespace寫入保護；控制一份namespace能否接受受限制的修改操作。</dd></div><div><dt>namespace</dt><dd>namespace，主機透過 controller 存取的一份已格式化非揮發性容量。</dd></div><div><dt>FID</dt><dd>Feature Identifier；指定要讀取或設定哪一項 Feature 的編號。</dd></div></dl>
+<h2 id="main-ideas">這篇的主軸</h2>
+<div class="topic-map">
+<article><span class="axis-number">01</span><h3>保護的對象與邊界</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="01-01">01-01</span><span class="paragraph-text">設定跟著 namespace，所有附接它的控制器都要遵守。先分清資料對象與傳送命令的控制器，再看會影響多個 namespace 的操作。</span></p></article>
+<article><span class="axis-number">02</span><h3>用事件追蹤狀態</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="02-01">02-01</span><span class="paragraph-text">四種狀態各有允許的進入與離開路徑。Set Features、控制器重設與 power cycle 造成的結果不同，圖上的箭頭必須帶著事件讀。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>power cycle</dt><dd>電源循環，即斷電後重新上電；不等同於所有形式的控制器重設。</dd></div></dl></article>
+<article><span class="axis-number">03</span><h3>從能力走到成功設定</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="03-01">03-01</span><span class="paragraph-text">NWPC 回答能不能支援，WPC 決定特定進入要求是否獲准，WPS 回報目前狀態。設定成功還包含將既有寫入快取提交到媒體。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NWPC</dt><dd>Namespace Write Protection Capabilities，控制器支援哪些保護狀態的位元欄位。</dd></div><div><dt>WPC</dt><dd>Write Protection Control，決定是否接受進入特定保護狀態之要求的控制欄位。</dd></div><div><dt>WPS</dt><dd>Write Protection State，namespace目前的寫入保護狀態代碼。</dd></div></dl></article>
+<article><span class="axis-number">04</span><h3>保護後如何使用與觀察</h3><p class="axis-paragraph"><span class="axis-paragraph-number" aria-label="04-01">04-01</span><span class="paragraph-text">Read、Flush、管理命令各有處理規則；跨 namespace 的操作也受影響。用目前 WPS、完成狀態與健康警告回答各自的問題。</span></p></article>
+</div>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.02">00.02.</span><span class="paragraph-text">讀者已學過 OS 與 Computer Organization，並了解 SSD 基本概念。本文使用 namespace 7／8 與控制器 A／B 作為說明性範例；數值不代表裝置一定具備這些配置。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.03">00.03.</span><span class="paragraph-text">先掌握四種狀態，再讀支援與控制位，接著完成一個設定案例；最後把狀態套回實際命令。欄位說明按相關概念分組，可從正文直接連到對應圖表。</span></p>
+<div class="overview-connections"><h3>把主軸連起來</h3>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.04">00.04.</span><span class="paragraph-text">全文以 namespace 7 的資料集為例：先決定需要哪種保護與解除方式，再確認裝置能否接受該轉換，等待設定成功，最後解釋哪些操作還能執行。每個欄位都有一個具體要回答的問題。</span></p>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="00.05">00.05.</span><span class="paragraph-text">最容易混淆的三組關係是：支援能力與進入許可、不可保存與跨斷電保留、namespace 保護狀態與全體媒體健康警告。後面的對比會分別處理它們。</span></p>
+</div>
+</section>
+<section class="lesson" id="module-nwp-model"><h2 id="heading-nwp-model"><span class="section-number">01</span> 先看保護誰，再看四種狀態</h2>
+<!-- claim:NWP-MODEL -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.01">01.01.</span><span class="paragraph-text">Namespace Write Protection 讓主機控制單一 namespace 的寫入保護狀態。支援這項能力時，No Write Protect 與 Write Protect 必備；Until Power Cycle 與 Permanent 兩種狀態選用。namespace 建立時從 No Write Protect 開始；同一 namespace 的狀態須由所有附接它的控制器共同遵守。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18, 文件頁 664-666, PDF 頁 690-692</p></details>
+<!-- claim:NWP-MODEL-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="01.02">01.02.</span><span class="paragraph-text">FID 84h 的作用範圍是 namespace，不使用額外屬性資料 buffer。WPS 的 0、1、2、3 是互斥的狀態代碼，不是可自由組合的位元遮罩。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.38, 文件頁 512-513, PDF 頁 538-539</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>從保存一份資料的情境開始</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.03">01.03.</span><span class="paragraph-text">假設 namespace 7 放著一份已完成驗證的資料集，接下來只希望讀取，不希望後續命令改寫它。這時主機可以要求控制器把 namespace 7 切到 Write Protect。保護的是這份儲存空間，不是某個程式的檔案權限，也不是把整顆裝置拔掉；查詢狀態、讀取資料等操作仍各有允許規則。本文的 7 是說明用的有效識別值。</span></p>
+<h3>四個代碼先按用途理解</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.04">01.04.</span><span class="paragraph-text">WPS=0 表示本機制未設寫入保護；1 表示已保護，但可用合法的 Set Features 要求解除；2 表示維持保護直到 power cycle；3 表示永久保護。這些代碼不代表程度從弱到強的連續量。尤其 3 不是把 1 與 2 兩種功能疊加，而是另外定義的一個狀態。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 410" role="img"><title>設定經由控制器送出，保護跟著 namespace</title><desc>A、B 的箭頭都指向同一份namespace7；它們必須遵守相同保護。下方namespace8是另一個設定對象。此圖說明附接關係，不表示命令執行順序。來源：Base §8.1.18。</desc><rect x="20" y="20" width="340" height="85" rx="6" class="v-command"/><text x="190.0" y="56.0" text-anchor="middle" font-size="17">Controller A</text><text x="190.0" y="81.0" text-anchor="middle" font-size="17">送出 Set FID84h</text><rect x="400" y="20" width="340" height="85" rx="6" class="v-command"/><text x="570.0" y="56.0" text-anchor="middle" font-size="17">Controller B</text><text x="570.0" y="81.0" text-anchor="middle" font-size="17">同樣遵守 WPS</text><path d="M190,105 L190,165" class="v-line"/><path d="M186,158 L190,165 L194,158" class="v-line"/><path d="M570,105 L570,165" class="v-line"/><path d="M566,158 L570,165 L574,158" class="v-line"/><rect x="20" y="165" width="720" height="90" rx="6" class="v-success"/><text x="380.0" y="203.5" text-anchor="middle" font-size="17">Namespace 7 · WPS=1</text><text x="380.0" y="228.5" text-anchor="middle" font-size="17">所有附接的控制器共同遵守</text><rect x="20" y="305" width="720" height="80" rx="6" class="v-object"/><text x="380.0" y="338.5" text-anchor="middle" font-size="17">Namespace 8 · WPS=0</text><text x="380.0" y="363.5" text-anchor="middle" font-size="17">獨立的 namespace 設定</text></svg></div><figcaption>A、B 的箭頭都指向同一份namespace7；它們必須遵守相同保護。下方namespace8是另一個設定對象。此圖說明附接關係，不表示命令執行順序。來源：Base §8.1.18。</figcaption></figure>
+
+<h3>支援整個功能，不等於支援每一種狀態</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.05">01.05.</span><span class="paragraph-text">裝置可以只提供 0 與 1，仍符合這項選用功能的最低要求。想用 2 或 3，必須先確認控制器宣告支援。原表的 M 是「有實作 Namespace Write Protection 時必備」，不能讀成每一台 NVMe 裝置都一定有這項功能。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVMe</dt><dd>Non-Volatile Memory Express，主機與非揮發性記憶體子系統之間的介面規範家族。</dd></div></dl>
+<h3>從另一個控制器存取也受到限制</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.06">01.06.</span><span class="paragraph-text">若控制器 A、B 都附接 namespace 7，由 A 設好的保護不能透過 B 繞過。規格要求附接該 namespace 的任何控制器都遵守它的保護狀態。反過來，namespace 8 是另一個設定對象；保護 7 不等於自動把 8 的 WPS 也改成 1。之後會再討論影響多個 namespace 的命令。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="01.07">01.07.</span><span class="paragraph-text">說明性範例：namespace 7 由 A、B 共同存取。經 A 成功設為 WPS=1 後，B 也必須遵守保護；不能把設定命令的傳送入口當作保護的邊界。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-nwp-model">閱讀相關規格圖表 → 先看保護誰，再看四種狀態</a>
+</section>
+<section class="lesson" id="module-nwp-transitions"><h2 id="heading-nwp-transitions"><span class="section-number">02</span> 沿著狀態圖理解解除與重設</h2>
+<!-- claim:NWP-TRANSITIONS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.01">02.01.</span><span class="paragraph-text">Set Features 可在 0 與 1 之間切換，也可從 0 或 1 進入受支援且獲准的 2 或 3。處於 2 或 3 時，用 Set Features 要求改變狀態會得到 Feature Not Changeable。一般狀態機中，2 經 power cycle 回到 0；沒有 power cycle 的 Controller Level Reset 不解除它。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Controller Level Reset</dt><dd>控制器層級重設；狀態2是否解除仍要辨認有沒有發生power cycle。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.18; 5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18; 5.2.30.1.38, 文件頁 512-513,664-665, PDF 頁 538-539,690-691</p></details>
+<!-- claim:NWP-TRANSITIONS-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="02.02">02.02.</span><span class="paragraph-text">除了狀態 2，四種狀態都跨 power cycle 與 Controller Level Reset 保留。FID 84h 不可保存且沒有 default 值，但這不會取消各狀態本身的持續性。Revert to Subsystem Manufacturing Settings Personality 生效時，非永久狀態回到 0，永久狀態維持。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.38; 8.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.38; 8.1.18, 文件頁 512-513,664, PDF 頁 538-539,690</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先追蹤可逆的那條路</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.03">02.03.</span><span class="paragraph-text">建立 namespace 後是 0。成功 Set WPS=1 會進入一般寫入保護，之後成功 Set WPS=0 可以解除。這兩個方向都是命令造成的轉換。不要看到狀態名稱有「Write Protect」就以為一律不可解除；是否能解除，要看完整的狀態名稱與目前代碼。</span></p>
+<h3>Until Power Cycle 不是 Until Reset</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.04">02.04.</span><span class="paragraph-text">從 0 或 1 可進入 2，但沒有用 Set Features 從 2 回到 0、1 或前進到 3 的箭頭。要求改變會被拒絕。2 回到 0 的特殊箭頭是 power cycle；若只是控制器層級重設而沒有 power cycle，仍然是 2。日常說的「重開」太含糊，必須辨認實際發生的是哪種事件。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 580" role="img"><title>四種狀態：先看起點，再看事件</title><desc>普通箭頭為Set Features；通往2、3的箭頭另須能力、WPC及相關配置條件成立。圖中2回到0的箭頭由power cycle觸發，3沒有解除箭頭。為了讓線條清楚，兩條垂直分支分別標明可從0或1出發。來源：Base Figures735／736、§5.2.30.1.38。</desc><rect x="50" y="30" width="275" height="90" rx="6" class="v-success"/><text x="187.5" y="68.5" text-anchor="middle" font-size="17">0 · No Write Protect</text><text x="187.5" y="93.5" text-anchor="middle" font-size="17">建立時的狀態</text><rect x="435" y="30" width="275" height="90" rx="6" class="v-command"/><text x="572.5" y="68.5" text-anchor="middle" font-size="17">1 · Write Protect</text><text x="572.5" y="93.5" text-anchor="middle" font-size="17">可由 Set 解除</text><path d="M325,55 L435,55" class="v-line"/><path d="M428,51 L435,55 L428,59" class="v-line"/><path d="M435,95 L325,95 M332,91 L325,95 L332,99" class="v-line"/><rect x="30" y="185" width="330" height="65" rx="6" class="v-command"/><text x="195.0" y="223.5" text-anchor="middle" font-size="17">從 0 或 1；要求 WPS2</text><rect x="400" y="185" width="330" height="65" rx="6" class="v-command"/><text x="565.0" y="223.5" text-anchor="middle" font-size="17">從 0 或 1；要求 WPS3</text><path d="M195,250 L195,315" class="v-line"/><path d="M191,308 L195,315 L199,308" class="v-line"/><path d="M565,250 L565,315" class="v-line"/><path d="M561,308 L565,315 L569,308" class="v-line"/><rect x="30" y="315" width="330" height="110" rx="6" class="v-decision"/><text x="195.0" y="363.5" text-anchor="middle" font-size="17">2 · Until Power Cycle</text><text x="195.0" y="388.5" text-anchor="middle" font-size="17">Set 不能改變此狀態</text><rect x="400" y="315" width="330" height="110" rx="6" class="v-decision"/><text x="565.0" y="363.5" text-anchor="middle" font-size="17">3 · Permanent</text><text x="565.0" y="388.5" text-anchor="middle" font-size="17">沒有解除路徑</text><path d="M195,425 L195,485" class="v-line"/><path d="M191,478 L195,485 L199,478" class="v-line"/><rect x="30" y="485" width="330" height="70" rx="6" class="v-success"/><text x="195.0" y="526.0" text-anchor="middle" font-size="17">Power cycle → WPS0</text><rect x="400" y="485" width="330" height="70" rx="6" class="v-object"/><text x="565.0" y="526.0" text-anchor="middle" font-size="17">power cycle 後仍為 3</text></svg></div><figcaption>普通箭頭為Set Features；通往2、3的箭頭另須能力、WPC及相關配置條件成立。圖中2回到0的箭頭由power cycle觸發，3沒有解除箭頭。為了讓線條清楚，兩條垂直分支分別標明可從0或1出發。來源：Base Figures735／736、§5.2.30.1.38。</figcaption></figure>
+
+<h3>Permanent 的圖上沒有解除箭頭</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.05">02.05.</span><span class="paragraph-text">從 0 或 1 進入 3 後，Set Features 不能再改變此狀態，斷電與控制器重設也不解除它。這是理解狀態機的重要界線：不能因為 3 的數字比 2 大，就假設可以先進入 2 再往上調到 3。圖上的箭頭才定義了允許路徑，支援與控制條件還要同時成立。</span></p>
+<h3>把不可保存和跨重設保留分開</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.06">02.06.</span><span class="paragraph-text">Set Features 的 Save 是一種儲存 feature 屬性值的通用機制；本功能不提供這種保存選項。WPS 的持續性則直接由本節規定。因此 WPS=1 即使是用 SV=0 設定，斷電後仍是 1；WPS=2 同樣用 SV=0，斷電後卻回到 0。不能用 SV 的值替代狀態規則。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SV</dt><dd>Save，Set Features中要求保存屬性值的位元。</dd></div></dl>
+<h3>出廠設定復原是另外一種事件</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.07">02.07.</span><span class="paragraph-text">指定的 Revert to Subsystem Manufacturing Settings Personality 真正生效後，1、2 等非永久狀態回到 0；3 保留。它不是一般 Controller Level Reset 的別名，也不是本篇 state machine 裡的 Set WPS 解除命令。這裡只說它對 WPS 的結果，不把這項管理操作當作一般解除流程。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="02.08">02.08.</span><span class="paragraph-text">同樣先成功設為 WPS=2：沒有斷電的控制器重設後仍為 2；power cycle 後為 0。若原本是 WPS=1，兩種事件之後都仍為 1。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-nwp-transitions">閱讀相關規格圖表 → 沿著狀態圖理解解除與重設</a>
+</section>
+<section class="lesson" id="module-nwp-controls"><h2 id="heading-nwp-controls"><span class="section-number">03</span> 能力、進入許可與目前狀態是三件事</h2>
+<!-- claim:NWP-CONTROLS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.01">03.01.</span><span class="paragraph-text">NWPC 宣告控制器支援哪些狀態；RPMB 的 WPC 控制是否允許命令進入狀態 2 或 3；FID 84h 的 WPS 才是 namespace 目前的狀態。WPUPCC=0 或 PWPC=0 會阻止對應的進入要求。MDS=1 的多 domain subsystem 禁止使用狀態 2，即使相關能力與控制位已設為 1。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>WPUPCC</dt><dd>Write Protect Until Power Cycle Control，WPC內允許進入狀態2的控制位。</dd></div><div><dt>domain</dt><dd>subsystem內用來界定通訊與故障影響的範圍；本篇用它判斷是否允許直到斷電的保護。</dd></div><div><dt>PWPC</dt><dd>Permanent Write Protect Control，WPC內允許進入永久保護的控制位。</dd></div><div><dt>RPMB</dt><dd>Replay Protected Memory Block，使用認證與防重播機制存取的記憶區；本篇只取其WPC控制欄位。</dd></div><div><dt>MDS</dt><dd>Multi-Domain Subsystem，Identify Controller中表示支援多domain的位元。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.18; 5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18; 5.2.30.1.38, 文件頁 512-513,664-665, PDF 頁 538-539,690-691</p></details>
+<!-- claim:NWP-CONTROLS-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.02">03.02.</span><span class="paragraph-text">Identify Controller 的 NWPC 位於 byte 531，bit 0 支援 0／1，bit 1 支援 2，bit 2 支援 3。CTRATT bit 10 的 MDS 表示多 domain；ONCS bit 4 的 SSFS 控制非零 SEL／SV 的支援。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SSFS</dt><dd>Save and Select Feature Support，表示是否支援非零SV與SEL選項。</dd></div><div><dt>SEL</dt><dd>Select，Get Features中選擇目前值、預設值、已保存值或能力的欄位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, 文件頁 346,371-372,375, PDF 頁 372,397-398,401</p></details>
+<!-- claim:NWP-CONTROLS-3 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="03.03">03.03.</span><span class="paragraph-text">RPMB target 0 的 Device Configuration Block byte 2 是 WPC：bit 0 WPUPCC、bit 1 PWPC。支援 Namespace Write Protection 時，這兩個控制位在 power cycle 或 Controller Level Reset 後清為 0；它們清零不代表既有 WPS 也清零。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Device Configuration Block</dt><dd>RPMB target0的裝置設定資料結構，WPC位於其中byte2。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, 文件頁 691-692, PDF 頁 717-718</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先問裝置會不會，再問目前允不允許</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.04">03.04.</span><span class="paragraph-text">NWPC=07h 表示 0～3 都受支援，並不是目前 WPS=7。即使硬體具備永久保護能力，PWPC=0 仍會拒絕要求進入 3 的 Set Features。這就像一項操作確實存在，但另有控制位決定現在是否接受；兩者都不能用目前 namespace 是不是唯讀來替代。</span></p>
+<h3>WPC 位於另一份經認證存取的設定結構</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.05">03.05.</span><span class="paragraph-text">WPC 不在 FID 84h 的 CDW11，也不屬於 namespace 的 WPS。它在 RPMB target 0 的 Device Configuration Block 內；RPMB 透過認證與防重播機制存取，不能把一般 namespace 的 Write 命令當作修改 WPC 的方法。本篇只需要理解這個控制欄位與 FID 84h 的關係，不需要先學完整訊息交換才能理解狀態機。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CDW</dt><dd>CDW（Command Dword）；命令中的 32-bit 欄位單位，例如 CDW10 的 10 是欄位 index，不是 byte offset。</dd></div></dl>
+<figure><figcaption><strong>相同的數字，放在不同欄位意思不同</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">觀察到的值</th><th scope="col">它回答的問題</th><th scope="col">不能推出的結論</th></tr></thead><tbody><tr><td>NWPC=03h</td><td>支援0／1及2，不支援3</td><td>目前已永久保護</td></tr><tr><td>WPC=03h</td><td>允許處理進入2與3的要求</td><td>所有namespace已保護</td></tr><tr><td>WPS=3</td><td>這個namespace已永久保護</td><td>這是一份支援bitmap</td></tr><tr><td>MDS=1</td><td>多domain；禁止進入2</td><td>禁止所有寫入保護</td></tr></tbody></table></div><figcaption>每列獨立示範欄位意義，不是同一台裝置的完整配置。Source：Base Figures338／756／541。</figcaption></figure>
+
+<h3>控制位重設後，已保護的資料仍然受到保護</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.06">03.06.</span><span class="paragraph-text">假設 PWPC 曾為 1，namespace 7 已成功進入永久保護。控制器重設後 PWPC 清為 0，意思是後續嘗試讓其他 namespace 進入永久保護時，必須重新滿足控制條件；namespace 7 本來的永久保護仍在。WPS=2 經沒有斷電的控制器重設也保留，雖然 WPUPCC 此時已清零。</span></p>
+<h3>多 domain 限制要看整個 subsystem</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.07">03.07.</span><span class="paragraph-text">狀態 2 的解除需要 namespace 與它所附接的所有控制器同時經歷 power cycle。多 domain 配置不能以單一局部電源事件保證這件事，因此規格禁止在 MDS=1 時使用狀態 2；要求進入時回 Feature Not Changeable。這個條件針對狀態 2，不應自行擴大成多 domain 配置禁止所有寫入保護。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="03.08">03.08.</span><span class="paragraph-text">NWPC=07h、WPC=01h、目前 WPS=0：單 domain 可在其餘條件滿足時要求 WPS=2；WPS=3 因 PWPC=0 被拒絕。若改成 MDS=1，WPS=2 的要求也會被拒絕。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-nwp-controls">閱讀相關規格圖表 → 能力、進入許可與目前狀態是三件事</a>
+</section>
+<section class="lesson" id="module-nwp-configure"><h2 id="heading-nwp-configure"><span class="section-number">04</span> 把查詢、設定與成功完成接起來</h2>
+<!-- claim:NWP-CONFIGURE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.01">04.01.</span><span class="paragraph-text">以有效且 active 的 NSID 選 namespace；Get FID 84h、SEL=0 讀目前 WPS，Set 在 CDW11 bits 2:0 放新 WPS。設定不可使用 SV=1；SEL=1 沒有 default 可讀，回 Invalid Field in Command。成功進入寫入保護時，控制器必須把該 namespace 的所有揮發性寫入快取資料及 metadata 寫入非揮發媒體。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>metadata</dt><dd>隨 logical block 儲存的附加資料，可包含資料保護資訊，也可有其他用途。</dd></div><div><dt>active</dt><dd>已附接於處理命令之控制器的namespace狀態。</dd></div><div><dt>NSID</dt><dd>Namespace Identifier，controller 用來指向 namespace 的數值 handle；identifier 不等於 namespace 物件本身。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.38, 文件頁 512-513, PDF 頁 538-539</p></details>
+<!-- claim:NWP-CONFIGURE-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.02">04.02.</span><span class="paragraph-text">Get 的 SEL=3 回 CHANG、NSSPEC、SVBL 能力格式；CHANG=1 只表示功能有可改變的值，不保證目前的永久狀態可解除。FID 84h 不可保存，SEL=2 的 saved 請求依通用規則轉成 default，仍遇到本功能沒有 default 的限制。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NSSPEC</dt><dd>NS Specific，能力回覆中表示namespace作用範圍的位元。</dd></div><div><dt>CHANG</dt><dd>Changeable，能力回覆中表示此Feature有可變更值的位元。</dd></div><div><dt>SVBL</dt><dd>Saveable，能力回覆中表示是否可保存屬性值的位元。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §5.2.12; 5.2.12.2; 5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12; 5.2.12.2; 5.2.30.1.38, 文件頁 209-212,512, PDF 頁 235-238,538</p></details>
+<!-- claim:NWP-CONFIGURE-3 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.03">04.03.</span><span class="paragraph-text">指定的 namespace 範圍 的 FFFFFFFFh：Set 在 MDS=0 時通常選處理命令之控制器附接的所有 namespace；MDS=1 時回 Invalid Field in Command。Get 沒有本功能特例可套用，回 Invalid Namespace or Format。共享設定需要主機間協調。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.4, 文件頁 168-169, PDF 頁 194-195</p></details>
+<!-- claim:NWP-CONFIGURE-4 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="04.04">04.04.</span><span class="paragraph-text">成功 Set Features 完成後才提交的命令必須使用新設定；更早已提交的命令可能使用或不使用新設定。要劃清前後兩批，主機宜先讓處理中的命令完成，再修改設定。成功完成不能早於 Feature 屬性設定完成。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1; 5.2.30.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1; 5.2.30.4, 文件頁 459,519, PDF 頁 485,545</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>先讀目前值，才能選合法路徑</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.05">04.05.</span><span class="paragraph-text">範例選已附接的 namespace 7，送 Get Features，FID=84h、SEL=0，CDW10=00000084h。成功完成後，CQE DW0 的低 3 bits 才是 WPS。若讀到 0，可以計畫進入 1；若讀到 2，就不能以相同流程要求改成 1。Get 不會把 namespace 改成查到的值，它只回報狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>CQE</dt><dd>Completion Queue Entry，CQ 中的一筆完成結果資料結構。</dd></div></dl>
+<h3>同一個 DW0，要先看當初問的是什麼</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.06">04.06.</span><span class="paragraph-text">SSFS 支援非零 SEL 時，SEL=3 的 CDW10 是 00000384h，回覆改成能力格式。假設 DW0=6，表示 CHANG=1、NSSPEC=1、SVBL=0，不是 WPS=6。尤其即使已永久保護，CHANG 仍可表示這個 Feature 曾有可變更的值；它不是解除永久保護的許可。SEL=2 也不能拿來尋找「上次保護前的值」：不可保存時會轉問 default，而本功能沒有 default。</span></p>
+<figure><div class="diagram-scroll"><svg viewBox="0 0 760 610" role="img"><title>成功切入保護，包含先把既有快取提交到媒體</title><desc>範例採WPS0 → 1、NSID7。主機宜先等舊命令完成；控制器在轉換時提交該namespace的快取資料與metadata。完成後才提交的命令必須用新設定；較早在途的命令不能一概推定。來源：Base §§5.2.30.1、5.2.30.1.38、5.2.30.4。</desc><rect x="20" y="20" width="720" height="70" rx="6" class="v-command"/><text x="380.0" y="61.0" text-anchor="middle" font-size="17">主機：先等待前一批命令完成</text><path d="M380,90 L380,130" class="v-line"/><path d="M376,123 L380,130 L384,123" class="v-line"/><rect x="20" y="130" width="720" height="90" rx="6" class="v-command"/><text x="380.0" y="168.5" text-anchor="middle" font-size="17">Set · NSID7 · FID84h · SV0</text><text x="380.0" y="193.5" text-anchor="middle" font-size="17">CDW11 = 00000001h</text><path d="M380,220 L380,260" class="v-line"/><path d="M376,253 L380,260 L384,253" class="v-line"/><rect x="20" y="260" width="720" height="95" rx="6" class="v-object"/><text x="380.0" y="301.0" text-anchor="middle" font-size="17">控制器：將此 namespace 的快取提交到媒體</text><text x="380.0" y="326.0" text-anchor="middle" font-size="17">包含 data 與 metadata</text><path d="M380,355 L380,395" class="v-line"/><path d="M376,388 L380,395 L384,388" class="v-line"/><rect x="20" y="395" width="720" height="75" rx="6" class="v-success"/><text x="380.0" y="438.5" text-anchor="middle" font-size="17">完成設定後，回覆成功 CQE</text><path d="M380,470 L380,510" class="v-line"/><path d="M376,503 L380,510 L384,503" class="v-line"/><rect x="20" y="510" width="720" height="75" rx="6" class="v-success"/><text x="380.0" y="541.0" text-anchor="middle" font-size="17">Get · SEL0 → CQE DW0 = 1</text><text x="380.0" y="566.0" text-anchor="middle" font-size="17">確認目前保護狀態</text></svg></div><figcaption>範例採WPS0 → 1、NSID7。主機宜先等舊命令完成；控制器在轉換時提交該namespace的快取資料與metadata。完成後才提交的命令必須用新設定；較早在途的命令不能一概推定。來源：Base §§5.2.30.1、5.2.30.1.38、5.2.30.4。</figcaption></figure>
+
+<h3>送出要求，不把參數當結果</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.07">04.07.</span><span class="paragraph-text">在 WPS=0 的範例中，Set 的 NSID=7、CDW10=00000084h、CDW11=00000001h，表示要求一般 Write Protect；WPS 不放在資料 buffer 裡。SV=0 是正確用法。若錯用 SV=1，會遇到 Feature Identifier Not Saveable，不能因為送過命令就宣稱已經保護成功。</span></p>
+<h3>成功完成之前，控制器還要處理快取</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.08">04.08.</span><span class="paragraph-text">進入保護不只是把一個狀態 bit 改掉。該 namespace 在揮發性寫入快取中的資料和 metadata 必須在轉換時寫到非揮發媒體。這樣成功切入保護後，受影響的既有快取內容不會留待後續寫回。規格沒有給這個步驟固定毫秒數；資料量與裝置行為會影響完成時間。</span></p>
+<h3>用清楚的命令邊界理解前後行為</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.09">04.09.</span><span class="paragraph-text">教學流程先等待先前的寫入完成，再送 Set，等待成功 CQE，最後讀回 WPS。這符合通用的設定切換建議，也避免把已在處理中的命令硬套成一定使用新值。若多個主機共享同一 namespace，還要協調對這份設定的存取；本規格不定義主機之間的協調協定。</span></p>
+<h3>不要把特殊 NSID 當成方便的查詢捷徑</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.10">04.10.</span><span class="paragraph-text">本文使用單一 目前可存取的 NSID，是為了明確選到目標。FFFFFFFFh 的 Set 和 Get 行為不對稱；Set 在單 domain 可涵蓋該控制器附接的全部 namespace，但每個目標仍受自己的狀態限制，不能據此推論多目標更新的原子性。Get 不用這個值回一張全體 WPS 清單。active 表示已附接於本控制器；inactive 與 invalid 的錯誤也不同，欄位教學會把兩者分開。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>inactive</dt><dd>已配置但未附接於該控制器的namespace狀態，與無效識別值不同。</dd></div><div><dt>invalid</dt><dd>無效；此處指無效namespace識別值，而非僅未附接。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="04.11">04.11.</span><span class="paragraph-text">namespace 7 原為 0：Set 的 CDW10=00000084h、CDW11=00000001h；等待成功完成後，Get SEL=0 回 DW0=1 才能確認目前為 Write Protect。能力查詢 DW0=6 回答的是另一個問題。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-nwp-configure">閱讀相關規格圖表 → 把查詢、設定與成功完成接起來</a>
+</section>
+<section class="lesson" id="module-nwp-commands"><h2 id="heading-nwp-commands"><span class="section-number">05</span> 保護後，哪些命令仍能做什麼</h2>
+<!-- claim:NWP-COMMANDS -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="05.01">05.01.</span><span class="paragraph-text">Figure 737 列出對受保護 NSID 正常處理的命令，但註腳仍限制會修改非揮發媒體的動作。Flush 成功且不產生作用；Directive Receive 若要求配置 Streams 資源則回 Namespace is Write Protected。未列出的命令只要符合本節列出的受保護目標或跨 namespace 修改條件，就會被拒絕。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.18.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18.2, 文件頁 665-666, PDF 頁 691-692</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>正常處理不等於保證成功</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.02">05.02.</span><span class="paragraph-text">Read、Compare、Verify 仍可以處理，是指寫入保護本身不阻擋它們；若讀到媒體錯誤，仍可能因自己的命令規則失敗。Get Features、Identify 等查詢也是如此。這張表不是「只要在表內就永遠成功」的保證表，而是說明寫入保護如何與命令處理共存。</span></p>
+<h3>有些列必須連註腳一起讀</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.03">05.03.</span><span class="paragraph-text">例如 Dataset Management 列在允許表中，但其指定動作若試圖修改受保護 namespace 的非揮發媒體，控制器必須使命令失敗。Directive Send、Security Send／Receive、Set Features 與兩類 Vendor Specific 命令也有這個註腳。因此僅用命令名稱判斷不夠，必須再看該次請求的具體動作。</span></p>
+<figure><figcaption><strong>命令名稱只是起點，實際動作決定判斷</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">命令或情境</th><th scope="col">是否被寫入保護阻擋</th><th scope="col">原因</th></tr></thead><tbody><tr><td>Read／Compare／Verify</td><td>正常處理；仍可能有其他錯誤</td><td>保護不封鎖這些操作</td></tr><tr><td>Dataset Management修改受保護媒體</td><td>必須失敗</td><td>表內命令仍受註腳1約束</td></tr><tr><td>受保護NSID的Flush</td><td>成功且無作用</td><td>進入保護時已提交快取</td></tr><tr><td>Format指向8但也修改受保護的7</td><td>Namespace is Write Protected</td><td>實際影響包含受保護namespace</td></tr><tr><td>Sanitize會修改受保護namespace</td><td>Namespace is Write Protected</td><td>沒有指定NSID也須遵守保護</td></tr></tbody></table></div><figcaption>每列示範不同判斷，不構成執行順序。完整允許清單與三項註腳在圖表閱讀區逐組說明。來源：Base Figure737及其後條文。</figcaption></figure>
+
+<h3>Flush 的特例來自前面的轉換保證</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.04">05.04.</span><span class="paragraph-text">受保護 NSID 的 Flush 必須成功且不產生作用。原因是進入保護時，該 namespace 的所有揮發性快取資料與 metadata 已被寫入非揮發媒體。這裡沒有授權 Flush 在保護後偷偷修改資料，也沒有說所有情況下的 Flush 都不需要做事；這是針對已受保護 namespace 的規則。</span></p>
+<h3>Directive Receive 要辨認是不是配置資源</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.05">05.05.</span><span class="paragraph-text">這個命令名稱看起來像只接收資料，但其配置 Streams 資源的操作另有規則：對受保護 namespace 執行時，必須以 Namespace is Write Protected 中止。這個例子提醒讀者：資料傳送方向不能單獨代表操作是否改變狀態。</span></p>
+<h3>真正影響的 namespace 比命令上寫哪個 NSID 更重要</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.06">05.06.</span><span class="paragraph-text">未列在 Figure 737 的命令，若直接指定受保護 namespace，會受到拒絕規則約束。另一種情況是命令指定未受保護的 namespace 8，實際操作卻會修改受保護的 7；規格以 Format NVM 為例，仍須拒絕。再例如 Sanitize 沒有指定某個 NSID，只要執行會修改受保護 namespace，仍須拒絕。不能靠改填目標或省略 NSID 繞過保護。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>NVM</dt><dd>Non-Volatile Memory，斷電後仍能保存資料的記憶體。</dd></div></dl>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="05.07">05.07.</span><span class="paragraph-text">namespace 7 已受保護、8 未受保護。如果某次 Format NVM 雖指定 8，其格式化範圍卻包含 7，該命令仍須以 Namespace is Write Protected 中止。範圍只含 8 的另一個操作不能直接套用這個案例。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-nwp-commands">閱讀相關規格圖表 → 保護後，哪些命令仍能做什麼</a>
+</section>
+<section class="lesson" id="module-nwp-observe"><h2 id="heading-nwp-observe"><span class="section-number">06</span> 用正確的狀態與錯誤解釋結果</h2>
+<!-- claim:NWP-OBSERVE -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.01">06.01.</span><span class="paragraph-text">主機應以 Get FID 84h 查 namespace 寫入保護狀態。控制器不得只因本狀態機造成的唯讀條件，就把 SMART Critical Warning 的 All Media Read-Only 設為 1；AMRO=0 也不能證明 namespace 沒有設保護。外部寫入保護系統與本機制組合的結果不在此規格定義內。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>AMRO</dt><dd>All Media Read-Only，SMART健康資訊中表示全體媒體唯讀的警告位。</dd></div></dl><details class="source-note"><summary>來源：Base 2.4 §8.1.18.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18.1, 文件頁 665, PDF 頁 691</p></details>
+<!-- claim:NWP-OBSERVE-2 -->
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="06.02">06.02.</span><span class="paragraph-text">Namespace is Write Protected 表示命令被既有保護禁止；Feature Not Changeable 表示要求改變的值當下不可改；Feature Identifier Not Saveable 表示不支援保存要求。它們分別出現在命令執行、狀態轉換與保存設定的問題上。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1; 5.2.30.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1; 5.2.30.4, 文件頁 149,519, PDF 頁 175,545</p></details>
+<div class="lesson-explanation">
+<div class="course-walkthrough">
+<h3>查詢設定與查看健康警告，目的不同</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.03">06.03.</span><span class="paragraph-text">WPS=1 是主機要求的 namespace 保護狀態；SMART 的 AMRO 是全體媒體唯讀警告。若所有 namespace 都因 FID 84h 設成保護，也不能僅因此把 AMRO 設為 1。想知道 namespace 7 的設定，直接查它的 WPS，不要從整體健康 bit 猜測。</span></p>
+<h3>WPS=0 只排除這個機制的保護</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.04">06.04.</span><span class="paragraph-text">解除本功能不代表下一筆 Write 在任何條件下都會成功。其他錯誤、媒體狀況或外部保護仍可能影響操作；本節沒有把它們都收編成 WPS 的狀態。若外部寫入保護機制也存在，本規格不定義兩者組合的所有結果，不能自行編造優先順序。</span></p>
+<figure><figcaption><strong>先問正在觀察什麼，再選資料來源</strong></figcaption><div class="table-wrap"><table><thead><tr><th scope="col">想回答的問題</th><th scope="col">查看哪裡</th><th scope="col">代表性判讀</th></tr></thead><tbody><tr><td>namespace7目前是哪種保護？</td><td>Get FID84h、SEL0的WPS</td><td>1是一般Write Protect</td></tr><tr><td>裝置是否支援永久保護？</td><td>Identify的NWPC bit2</td><td>1是支援，不是已進入</td></tr><tr><td>為何要求改變狀態失敗？</td><td>完成狀態＋原狀態／控制條件</td><td>WPS2要求0：Feature Not Changeable</td></tr><tr><td>是否回報全體媒體唯讀警告？</td><td>SMART的AMRO</td><td>不能只因WPS變化而設1</td></tr></tbody></table></div><figcaption>這些資料可同時存在；它們分別描述設定、能力、一次命令的結果與健康狀況。來源：Base §8.1.18與Figures338／541／554／213。</figcaption></figure>
+
+<h3>從主機原本想做的動作解讀失敗</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.05">06.05.</span><span class="paragraph-text">如果主機本來想寫受保護的 namespace，Namespace is Write Protected 說的是資料命令受到限制。若主機想把 WPS=2 改成 0，Feature Not Changeable 說的是此狀態不允許 Set 解除。若主機錯把 SV=1 加到 FID 84h，Feature Identifier Not Saveable 說的是保存要求不成立；這三種情境不能都寫成模糊的「功能不支援」。</span></p>
+<h3>完成一個可以向別人說清楚的判斷</h3><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.06">06.06.</span><span class="paragraph-text">最後應能把 namespace、能力、控制位、目前狀態、所要求的動作與完成結果串成一句有因果的描述。例如：namespace 7 已是 2，所以 Set WPS=0 被拒絕；控制器重設未造成 power cycle，因此目前仍是 2。這比只記一個錯誤名稱更能解釋裝置行為。</span></p>
+<aside class="course-outcome"><p class="reader-paragraph"><span class="paragraph-number" aria-label="06.07">06.07.</span><span class="paragraph-text">WPS=1 且 AMRO=0 完全可能同時成立：namespace 受到設定保護，但不能因此回報全體媒體唯讀警告。Read 仍按自身條件處理，Write 則受保護限制。</span></p></aside></div>
+</div>
+<a class="reading-link" href="#reading-nwp-observe">閱讀相關規格圖表 → 用正確的狀態與錯誤解釋結果</a>
+</section>
+<section id="figure-reading"><h2><span class="section-number">07</span> 讀懂本篇的規格圖表</h2>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.01">07.01.</span><span class="paragraph-text">以下依概念整理規格中的圖表。每組先說明讀取順序與要判斷的問題，接著列出各圖的欄位或行為說明。可以由正文的連結跳到對應組別，也可以用這一節檢查自己能否把欄位連回完整操作。</span></p>
+<details open class="figure-reading-group" id="reading-nwp-model"><summary>圖表組 01 · 先看保護誰，再看四種狀態 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.02">07.02.</span><span class="paragraph-text">先用 Figure 735 比較狀態與支援要求；WPS 的實際編碼在 Figure 541。</span></p>
+<a class="reading-link" href="#module-nwp-model">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-nwp-state-definitions"><h4 id="fields-heading-nwp-state-definitions">把狀態、支援要求與持續性分開讀</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.03">07.03.</span><span class="paragraph-text">Figure 735 不是能力 bitmap，也不是命令格式；每一列是一種狀態。以下代碼用 Figure 541 補上，讓名稱、數值與事件結果接得起來。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-state-definitions"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>M／O 與註腳</td><td>M：有實作本功能時必備；O：有實作本功能時仍可選擇是否支援。</td><td>NWPC bit0=1、bits2:1=0 的裝置可以只有狀態 0、1。</td></tr><tr><td>No Write Protect／Write Protect</td><td>0 為未設保護，1 為一般保護；兩者都跨 power cycle 與 Controller Level Reset 保留。</td><td>斷電不會自動把 1 解除成 0。</td></tr><tr><td>Write Protect Until Power Cycle</td><td>2 在沒有 power cycle 的 Controller Level Reset 後保留；power cycle 才使其回到 0。</td><td>僅重設控制器後，仍不能送 Set WPS=0 來解除 2。</td></tr><tr><td>Permanent Write Protect</td><td>3 是永久保護；兩種事件後都保持。</td><td>power cycle 不提供 3 → 0 的路徑。</td></tr><tr><td>Persistent Across 欄的讀法</td><td>先選目前狀態，再選實際事件；No 表示不保留原狀態，轉到哪裡要結合正文。</td><td>狀態 2 的 No 不是功能消失，而是狀態轉為 0。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-735">Base 735</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18, Figure 735, 文件頁 664, PDF 頁 690</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-735 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-735"><h4>Base Figure 735 · Namespace Write Protection State Definitions</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-735-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base735-1">Base735-1</span><span class="paragraph-text">M／O 表示支援要求；兩個 persistence 欄表示事件發生後是否仍保持原狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18, Figure 735, 文件頁 664, PDF 頁 690</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base735-2">Base735-2</span><span class="paragraph-text">WPS=2 這列在 Power Cycles 是 No、Controller Level Resets 是 Yes。配合正文可知：真正 power cycle 後回到 0；沒有 power cycle 的控制器重設仍是 2。不是看見任一 Reset 就讀 No。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-state-definitions">欄位、條件與相關細節：把狀態、支援要求與持續性分開讀 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-nwp-transitions"><summary>圖表組 02 · 沿著狀態圖理解解除與重設 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.04">07.04.</span><span class="paragraph-text">Figure 736 看箭頭與事件，Figure 735 看事件後是否保留；兩張圖回答不同問題。</span></p>
+<a class="reading-link" href="#module-nwp-transitions">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-nwp-command-envelope"><h4 id="fields-heading-nwp-command-envelope">把目標、外框與功能參數放到正確位置</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.05">07.05.</span><span class="paragraph-text">只取 Figure93 的 NSID、CDW 位置，Figure463 的資料指標用途、Figure464 的 SV／FID，以及 Figure466 的 FID84h 列與註腳2、8。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-command-envelope"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>NSID bytes7:4：active、inactive、invalid</td><td>active 已附接本控制器；inactive 已配置但未附接；invalid 是無效識別值。通用格式對 inactive 回 Invalid Field in Command，對 invalid 回 Invalid Namespace or Format，除非另有特例。</td><td>不存在的 ID 和存在但未附接的 ID 不要寫成同一種「不可用」。</td></tr><tr><td>NSID=FFFFFFFFh</td><td>Set：MDS=0 通常設定本控制器附接的所有 namespace，MDS=1 拒絕。Get：本功能沒有全體查詢特例，回 Invalid Namespace or Format。</td><td>不從一次 broadcast Set 推論每個目標都可轉換，也不假設更新原子性。</td></tr><tr><td>CDW10 bytes43:40</td><td>SV bit31；FID bits7:0；bits30:8 保留。FID84h 不可保存，使用 SV=0。</td><td>(0 &lt;&lt; 31) | 84h = 00000084h。</td></tr><tr><td>CDW11 bytes47:44；DPTR bytes39:24</td><td>CDW11 帶 WPS；Figure463 定義的 DPTR 不用來放本 Feature 屬性。</td><td>byte offset44 = 11×4；不是把 WPS 左移44位。</td></tr><tr><td>Figure466：84h 列 Scope／Uses Data Buffer</td><td>Scope=Namespace；Uses Data Buffer=No。</td><td>不是只對收到命令的控制器生效。</td></tr><tr><td>Figure466：註腳2與8</td><td>持續性欄只供不可保存 Feature 使用；84h 正是不可保存，但註腳8仍要求使用專屬狀態規則。</td><td>WPS1保留、WPS2在power cycle清除，不能一起讀成No。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>DPTR</dt><dd>Data Pointer，SQE 中指出 command data buffer 的欄位。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-093">Base 93</a><a href="#figure-NWP-BASE-FIG-463">Base 463</a><a href="#figure-NWP-BASE-FIG-464">Base 464</a><a href="#figure-NWP-BASE-FIG-466">Base 466</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.1.1 · Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 459, PDF 頁 485</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-466 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-466"><h4>Base Figure 466 · Set Features – Feature Identifiers</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-466-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-1">Base466-1</span><span class="paragraph-text">FID84h 的 No 帶註腳8，必須回到此 Feature 的狀態規則判斷持續性。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 466, 文件頁 459, PDF 頁 485</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base466-2">Base466-2</span><span class="paragraph-text">只看 Current Setting Persists 的 No，會錯把 WPS=1 讀成斷電即解除。註腳8 指定由該 Feature 定義，而 Figure735 規定 WPS=1 保留；本列同時指出 namespace 作用範圍、無屬性 buffer。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-command-envelope">欄位、條件與相關細節：把目標、外框與功能參數放到正確位置 →</a></div></article>
+<section class="field-guide" id="fields-nwp-state-arrows"><h4 id="fields-heading-nwp-state-arrows">用起點、方向和觸發事件讀狀態機</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.06">07.06.</span><span class="paragraph-text">這張圖沒有 bit 欄位，節點與箭頭就是需要解讀的資訊。Figure 736 只畫轉換關係；可用能力、WPC 與 MDS 的附加條件見控制欄位組。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-state-arrows"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>Initial state → No Write Protect</td><td>新建 namespace 從 0 開始。</td><td>這是建立時的起點，不代表每次控制器重設都回到 0。</td></tr><tr><td>0 → 1 與 1 → 0</td><td>成功 Set Features 進入一般保護或解除一般保護。</td><td>先在 1，要求 0，是有箭頭的操作。</td></tr><tr><td>0／1 → 2</td><td>兩個來源都可以要求進入 Until Power Cycle，另須支援、WPUPCC=1、MDS=0。</td><td>來源 1 也能進入 2，不必先解除成 0。</td></tr><tr><td>0／1 → 3</td><td>兩個來源都可以要求進入 Permanent，另須支援且 PWPC=1。</td><td>來源 2 不在這組箭頭內。</td></tr><tr><td>2 → 0：Power Cycle</td><td>這個返回箭頭的事件不是 Set Features。</td><td>沒有 power cycle 的重設保留 2。</td></tr><tr><td>3 沒有離開箭頭；2 沒有 Set 離開箭頭</td><td>要區分「改變到另一狀態」與同值請求；本節的 Feature Not Changeable 條文針對改變狀態的嘗試。</td><td>不替原圖補上 3 → 1，也不把條文擴寫成所有同值請求必須失敗。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-736">Base 736</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18, Figure 736, 文件頁 664, PDF 頁 690</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-736 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-736"><h4>Base Figure 736 · Namespace Write Protection State Machine Model</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-736-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base736-1">Base736-1</span><span class="paragraph-text">圖上的普通箭頭由 Set Features 觸發，唯一標 Power Cycle 的箭頭是 2 回到 0。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.18</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18, Figure 736, 文件頁 664, PDF 頁 690</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base736-2">Base736-2</span><span class="paragraph-text">原圖有 1 → 2 與 1 → 3，但沒有 2 → 3。即使永久保護受支援且 PWPC=1，已在 2 時要求改成 3 仍會被拒絕；必須尊重目前狀態，而不只檢查目的地能力。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-state-arrows">欄位、條件與相關細節：用起點、方向和觸發事件讀狀態機 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-nwp-controls"><summary>圖表組 03 · 能力、進入許可與目前狀態是三件事 · 2 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.07">07.07.</span><span class="paragraph-text">Figure 338 的支援位、Figure 756 的控制位與 Figure 541 的狀態碼要分開解碼。</span></p>
+<a class="reading-link" href="#module-nwp-controls">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-nwp-identify"><h4 id="fields-heading-nwp-identify">先辨認位元組位置，再辨認每個 bit 的問題</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.08">07.08.</span><span class="paragraph-text">Figure 338 很長；本篇只取 NWPC、CTRATT.MDS 與 ONCS.SSFS。其他未在此列出的能力 bit 有各自用途，不是全都保留。位置從 Identify Controller 結構起點起算。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-identify"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>NWPC byte 531：bit0 NWPWPS</td><td>1 支援 No Write Protect／Write Protect；0 不支援本功能，bits1、2 也須為 0。</td><td>NWPC=01h 已表示支援本功能的基本兩種狀態。</td></tr><tr><td>NWPC bit1 WPUPCS</td><td>1 支援 Until Power Cycle，且必須支援 WPC 控制欄位。</td><td>(NWPC &gt;&gt; 1) &amp; 1 = 0 時，不選 WPS=2。</td></tr><tr><td>NWPC bit2 PWPS；bits7:3 保留</td><td>1 支援 Permanent，且必須支援 WPC。bit2 本身不是 PWPC 進入許可。</td><td>05h 的 bit2=1；仍要另外確認 WPC.PWPC。</td></tr><tr><td>CTRATT bytes 99:96：bit10 MDS</td><td>1 支援多 domain；0 表示單 domain 且不支援多 domain 回報。</td><td>使用 (CTRATT &gt;&gt; 10) &amp; 1；MDS=1 阻止進入 2。</td></tr><tr><td>ONCS bytes 521:520：bit4 SSFS</td><td>1 支援非零 SEL／SV；0 時不使用非零選項。特定 Feature 的限制仍優先適用。</td><td>SSFS=1 不會讓不可保存的 FID84h 變成可以 SV=1。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-338">Base 338</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 346,371-372,375, PDF 頁 372,397-398,401</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-338 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-338"><h4>Base Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-338-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-1">Base338-1</span><span class="paragraph-text">NWPC 說明裝置能力，MDS 限制狀態 2，SSFS 決定是否能使用非零查詢選項。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.14.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 346,371-372,375, PDF 頁 372,397-398,401</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base338-2">Base338-2</span><span class="paragraph-text">NWPC=05h 表示支援 0／1 與 3，不支援 2；不是目前 WPS=5。若 NWPC=07h 但 MDS=1，也仍不能使用狀態 2。這些結論要讀各自的 bit，不能比較整個 CTRATT 是否只等於 400h。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-identify">欄位、條件與相關細節：先辨認位元組位置，再辨認每個 bit 的問題 →</a></div></article>
+<section class="field-guide" id="fields-nwp-rpmb-control"><h4 id="fields-heading-nwp-rpmb-control">WPC 的位置、兩個許可與重設後結果</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.09">07.09.</span><span class="paragraph-text">本篇引用 Figure 756 的 byte2。它是 RPMB target0 的 512-byte Device Configuration Block 的一部分；相鄰 bytes0、1 屬 Boot Partition 保護，不能拿來解讀 namespace 的 WPS。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-rpmb-control"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>byte2：WPC；Type=RW</td><td>可讀寫的控制欄位，透過 RPMB 的存取機制操作；不在 FID84h 的命令參數內。</td><td>WPC=01h 不等於某個 namespace 已是 WPS=1。</td></tr><tr><td>WPC bit0：WPUPCC</td><td>0 拒絕要求進入 2 的 Set；1 允許處理該要求，但仍須符合能力與狀態條件。</td><td>NWPC 支援且 WPC=01h，也不能忽略 MDS=1 的禁止。</td></tr><tr><td>WPC bit1：PWPC</td><td>0 拒絕要求進入 3 的 Set；1 允許處理，並不直接執行狀態轉換。</td><td>把 PWPC 設為 1 本身不會把所有 namespace 變永久保護。</td></tr><tr><td>power cycle／Controller Level Reset</td><td>支援本功能時，WPUPCC、PWPC 均清為 0。</td><td>重設後要進入 3 的新請求與既有 WPS=3 的保留，是不同問題。</td></tr><tr><td>保留區與不支援時</td><td>WPC bits7:2 保留；不支援 Namespace Write Protection 時 WPC 必須為 0。結構 bytes511:3 保留。</td><td>例子只使用 00h～03h，不把保留 bit 當成更多保護狀態。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-756">Base 756</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 756, 文件頁 691-692, PDF 頁 717-718</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-756 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-756"><h4>Base Figure 756 · RPMB Device Configuration Block Data Structure</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-756-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base756-1">Base756-1</span><span class="paragraph-text">WPC 的兩個 bit 只控制進入請求，不儲存 namespace 目前的 WPS。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.24</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, Figure 756, 文件頁 691-692, PDF 頁 717-718</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base756-2">Base756-2</span><span class="paragraph-text">Device Configuration Block byte2=02h：PWPC=1、WPUPCC=0，所以只開放進入永久狀態的這項控制條件。重設後 byte2 的這兩個 bit 清零，先前已成功設為 3 的 namespace 仍是 3。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-rpmb-control">欄位、條件與相關細節：WPC 的位置、兩個許可與重設後結果 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-nwp-configure"><summary>圖表組 04 · 把查詢、設定與成功完成接起來 · 7 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.10">07.10.</span><span class="paragraph-text">Figure 93 定位 NSID 與 CDW；Figures 198／201 分開查詢選擇與回覆，Figures 464／541 接上設定參數。</span></p>
+<a class="reading-link" href="#module-nwp-configure">回到本節的解釋與範例</a>
+
+<!-- figure-table:NWP-BASE-FIG-093 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-093"><h4>Base Figure 93 · Common Command Format</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-093-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-1">Base93-1</span><span class="paragraph-text">NSID 選對象，CDW10 選 Feature，CDW11 放 WPS；序號與欄位值不可混淆。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.1.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.1.1, Figure 93, 文件頁 140-142, PDF 頁 166-168</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base93-2">Base93-2</span><span class="paragraph-text">namespace7 的 NSID 位於 bytes7:4；WPS=1 位於 CDW11 bits2:0，CDW11 的 byte offset 是 11×4=44。offset44 是欄位的位置，不是 namespace ID 或狀態。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>offset</dt><dd>相對於資料結構起點的位移；本篇byte offset以byte計算，從0起算。</dd></div></dl></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-command-envelope">欄位、條件與相關細節：把目標、外框與功能參數放到正確位置 →</a></div></article>
+<section class="field-guide" id="fields-nwp-query"><h4 id="fields-heading-nwp-query">先看 SEL，再決定如何解讀 DW0</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.11">07.11.</span><span class="paragraph-text">以下非零 SEL 的討論以控制器支援 SSFS 為前提。成功 Get 的回覆格式不能只根據 DW0 數字猜測。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-query"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>CDW10 FID bits7:0、SEL bits10:8</td><td>FID84h；SEL0問current，1問default，2問saved，3問capabilities；4～7保留，bits31:11保留。</td><td>SEL3需左移8位：00000384h。</td></tr><tr><td>SEL0／1／2 與 DPTR</td><td>0成功回WPS；1因沒有default回Invalid Field in Command。2因不可保存轉問default，所以也不能取得WPS。沒有屬性結構，忽略DPTR。</td><td>需要目前保護狀態就用SEL0，不使用default或saved猜測。</td></tr><tr><td>SEL3 DW0 bit2：CHANG</td><td>只要此Feature任一屬性有可變更值，就回1，即使目前值不可改。</td><td>不能因CHANG1就畫出Permanent的解除箭頭。</td></tr><tr><td>SEL3 DW0 bit1：NSSPEC</td><td>1表示namespace 作用範圍。</td><td>WPS針對所選namespace，其他控制器也須遵守。</td></tr><tr><td>SEL3 DW0 bit0：SVBL；bits31:3保留</td><td>FID84h不可保存，SVBL0。</td><td>6 = 4 + 2；能力三位元與WPS三位元剛好同寬，但語意不同。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-197">Base 197</a><a href="#figure-NWP-BASE-FIG-198">Base 198</a><a href="#figure-NWP-BASE-FIG-201">Base 201</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.12 · Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-197 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-197"><h4>Base Figure 197 · Get Features – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-197-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-1">Base197-1</span><span class="paragraph-text">Get 不需要資料 buffer，也可以在完成項目裡回報 WPS。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 197, 文件頁 209, PDF 頁 235</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base197-2">Base197-2</span><span class="paragraph-text">讀 namespace7 的 WPS 時，成功 CQE DW0=1 就是結果；預先配置的 buffer 未被寫入不代表控制器沒有回答。Figure197 規定無資料結構時忽略 DPTR。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-query">欄位、條件與相關細節：先看 SEL，再決定如何解讀 DW0 →</a></div></article>
+
+<!-- figure-table:NWP-BASE-FIG-198 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-198"><h4>Base Figure 198 · Get Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-198-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-1">Base198-1</span><span class="paragraph-text">SEL 選的是要問的問題，本功能不提供每一種選項的有效值。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12, Figure 198, 文件頁 209-210, PDF 頁 235-236</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base198-2">Base198-2</span><span class="paragraph-text">FID84h 的 CDW10=00000084h 問 current；00000184h 問 default，卻因沒有 default 被拒絕。SEL=2 也不代表查前一次 WPS，因為它問的是通用 saved 值。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-query">欄位、條件與相關細節：先看 SEL，再決定如何解讀 DW0 →</a></div></article>
+
+<!-- figure-table:NWP-BASE-FIG-201 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-201"><h4>Base Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-201-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-1">Base201-1</span><span class="paragraph-text">CHANG 可以為 1，即使 namespace 目前已在不可改變的永久狀態。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.12.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12.2, Figure 201, 文件頁 212, PDF 頁 238</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base201-2">Base201-2</span><span class="paragraph-text">SEL3 成功回 DW0=6：bit2 CHANG=1、bit1 NSSPEC=1、bit0 SVBL=0。表示功能有可變更值、屬 namespace 作用範圍、不可保存；不是允許把目前 WPS3 解除，也不是第6種保護狀態。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-query">欄位、條件與相關細節：先看 SEL，再決定如何解讀 DW0 →</a></div></article>
+
+<!-- figure-table:NWP-BASE-FIG-463 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-463"><h4>Base Figure 463 · Set Features – Data Pointer</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-463-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-1">Base463-1</span><span class="paragraph-text">Set 是否使用 DPTR 取決於 Feature 是否需要資料結構；FID84h 不需要。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 463, 文件頁 456, PDF 頁 482</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base463-2">Base463-2</span><span class="paragraph-text">設定 WPS=1 的 1 直接放 CDW11，不配置一個含 1 的資料 buffer 再把地址放 DPTR。Figure466 的 FID84h 列標示 Uses Data Buffer=No。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-command-envelope">欄位、條件與相關細節：把目標、外框與功能參數放到正確位置 →</a></div></article>
+
+<!-- figure-table:NWP-BASE-FIG-464 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-464"><h4>Base Figure 464 · Set Features – Command Dword 10</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-464-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-1">Base464-1</span><span class="paragraph-text">SV 是保存請求，FID 是功能識別值；不使用 SV 不代表保護會在斷電後消失。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30, Figure 464, 文件頁 457, PDF 頁 483</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base464-2">Base464-2</span><span class="paragraph-text">SV=0、FID84h 得 CDW10=00000084h；把 bit31 設為 1 得 80000084h，卻會對此不可保存的功能提出無效的保存要求。WPS=1 的跨斷電持續性仍由狀態規則決定。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-command-envelope">欄位、條件與相關細節：把目標、外框與功能參數放到正確位置 →</a></div></article>
+<section class="field-guide" id="fields-nwp-wps"><h4 id="fields-heading-nwp-wps">把名稱、bit 編碼與回覆位置連起來</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.12">07.12.</span><span class="paragraph-text">Set 的參數與 Get 的回覆共用 WPS 格式，但所在的位置不同。只有命令成功時，才按該次 SEL 的回覆格式解讀結果。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-wps"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>bits2:0：WPS=000b／001b</td><td>0：No Write Protect；1：Write Protect。</td><td>Set CDW11=00000001h 要求進入一般保護。</td></tr><tr><td>WPS=010b／011b</td><td>2：Until Power Cycle；3：Permanent。</td><td>3 是狀態代碼，不是兩個可獨立開關的保護 flags。</td></tr><tr><td>WPS=100b～111b；bits31:3</td><td>4～7 是保留代碼，高 29 bits 也是保留。</td><td>能力查詢 DW0=6 不用此表；用此表硬解會讀到保留代碼。</td></tr><tr><td>Get 成功且 SEL≠3：CQE DW0</td><td>以 Figure541 格式回覆；本功能沒有 default，實務查目前值使用 SEL=0。</td><td>Get 命令不以 CDW11 的舊內容作為回覆，主機讀的是 completion DW0。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-541">Base 541</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.38, Figure 541, 文件頁 512, PDF 頁 538</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-541 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-541"><h4>Base Figure 541 · Write Protection – Command Dword 11</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-541-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base541-1">Base541-1</span><span class="paragraph-text">WPS 是低 3 bits 的狀態代碼；成功的非能力查詢把同一格式放在 CQE DW0。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.1.38</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.38, Figure 541, 文件頁 512, PDF 頁 538</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base541-2">Base541-2</span><span class="paragraph-text">CDW11=00000003h 表示 Permanent，雖然二進位是 011b，仍只選一個狀態。Get SEL=0 成功回 DW0=00000002h 才表示目前 Until Power Cycle；它不是 NWPC bit1 的能力回報。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-wps">欄位、條件與相關細節：把名稱、bit 編碼與回覆位置連起來 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-nwp-commands"><summary>圖表組 05 · 保護後，哪些命令仍能做什麼 · 1 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.13">07.13.</span><span class="paragraph-text">Figure 737 的兩個命令集合與三項註腳一起讀；Figure 103 再確認保護錯誤的含義。</span></p>
+<a class="reading-link" href="#module-nwp-commands">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-nwp-allowed-commands"><h4 id="fields-heading-nwp-allowed-commands">把兩個命令集合與三項註腳讀完整</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.14">07.14.</span><span class="paragraph-text">Figure737 不是 bit 表。左右兩欄分別屬 Admin 與 NVM Command Set；上下相鄰的命令沒有一一配對或執行先後關係。以下按共同限制重新編排，保留全部列出的命令。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>Admin</dt><dd>Administrative，建立、設定、查詢或管理 controller 與 queue 的控制路徑。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-allowed-commands"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>Admin：無特別上標的列</td><td>Device Self-test、Get Features、Get Log Page、Identify、Namespace Attachment，依各命令規則正常處理。</td><td>正常處理仍可能因其他原因失敗，不保證每筆成功。</td></tr><tr><td>Admin：註腳1</td><td>Directive Send、Security Receive、Security Send、Set Features、Vendor Specific；若指定動作嘗試修改該 namespace 非揮發媒體，必須失敗。</td><td>Set Features列在表內不代表可以略過WPS轉換限制。</td></tr><tr><td>Admin：Directive Receive／註腳3</td><td>嘗試配置Streams資源時，以Namespace is Write Protected中止。</td><td>同一命令的其他操作仍需按自己的定義處理。</td></tr><tr><td>NVM：無特別上標的列</td><td>Compare、Read、Reservation Register、Reservation Report、Reservation Acquire、Reservation Release、Verify，正常處理。</td><td>保護媒體不等於完全禁止查詢或存取協調。</td></tr><tr><td>NVM：註腳1</td><td>Dataset Management、Vendor Specific；嘗試修改該namespace非揮發媒體的動作必須失敗。</td><td>不能僅看到Dataset Management在表中就說所有動作都允許。</td></tr><tr><td>NVM：Flush／註腳2</td><td>必須成功且無作用；該namespace所有volatile write cache資料與metadata已在進入保護時提交到非揮發媒體。</td><td>不是讓Flush在已保護的媒體上繼續寫回舊資料。</td></tr><tr><td>表後三種拒絕條件</td><td>未列出的命令：指定受保護NSID，或指定未受保護NSID但會改到受保護namespace，或未指定NSID卻會改到受保護namespace。</td><td>依次可用Write、跨namespace的Format NVM、會影響受保護namespace的Sanitize理解。</td></tr></tbody></table></div><dl class="term-note" aria-label="本段名詞"><div><dt>volatile write cache</dt><dd>揮發性寫入快取；尚未提交到非揮發媒體的資料可能暫存在這裡。</dd></div></dl>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-737">Base 737</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §8.1.18.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18.2, Figure 737, 文件頁 665-666, PDF 頁 691-692</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-737 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-737"><h4>Base Figure 737 · Commands Allowed when Specifying a Write Protected NSID</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-737-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base737-1">Base737-1</span><span class="paragraph-text">先找命令名稱，再看上標註腳，最後判斷這次動作會不會修改受保護媒體。</span></p><details class="source-note"><summary>來源：Base 2.4 §8.1.18.2</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18.2, Figure 737, 文件頁 665-666, PDF 頁 691-692</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base737-2">Base737-2</span><span class="paragraph-text">Dataset Management 在右欄卻帶註腳1；若該次動作嘗試修改受保護 namespace 的非揮發媒體，必須失敗。Flush 的註腳2則明確規定成功且不產生作用，兩者不能用同一句「允許」概括。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-allowed-commands">欄位、條件與相關細節：把兩個命令集合與三項註腳讀完整 →</a></div></article>
+</details>
+<details open class="figure-reading-group" id="reading-nwp-observe"><summary>圖表組 06 · 用正確的狀態與錯誤解釋結果 · 3 張圖表</summary>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.15">07.15.</span><span class="paragraph-text">Figure 213 只取 AMRO；Figures 103／554 比較錯誤原因，不把健康 bit 當成 WPS。</span></p>
+<a class="reading-link" href="#module-nwp-observe">回到本節的解釋與範例</a>
+<section class="field-guide" id="fields-nwp-status"><h4 id="fields-heading-nwp-status">以狀態類型與代碼區分三種失敗</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.16">07.16.</span><span class="paragraph-text">本篇只取Figure103的20h與Figure554的0Dh、0Eh。SCT是狀態碼類型，SC是該類型內的代碼；以下不是整個CQE Status欄的16-bit編碼。</span></p><dl class="term-note" aria-label="本段名詞"><div><dt>SCT</dt><dd>Status Code Type，完成狀態碼所屬的類型。</dd></div><div><dt>SC</dt><dd>Status Code，在指定SCT類型內的完成狀態代碼。</dd></div></dl>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-status"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>SCT0／SC20h：Namespace is Write Protected</td><td>命令受到本狀態機的寫入保護禁止。</td><td>Write指定已受保護的namespace，不能只用另一控制器重送來繞過。</td></tr><tr><td>SCT1／SC0Dh：Feature Identifier Not Saveable</td><td>所選Feature不支援保存值。</td><td>FID84h搭SV1，不能解讀成「永久保護能力不支援」。</td></tr><tr><td>SCT1／SC0Eh：Feature Not Changeable</td><td>Feature值不支援變更，或此時該值不能改。</td><td>原WPS2／3的改變請求、WPC不允許的進入要求、MDS1下進入2，都屬本篇相關情境。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-103">Base 103</a><a href="#figure-NWP-BASE-FIG-554">Base 554</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §4.2.1 · Base 2.4 §5.2.30.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 103, 文件頁 149, PDF 頁 175</p><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.4, Figure 554, 文件頁 519, PDF 頁 545</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-103 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-103"><h4>Base Figure 103 · Status Code – Generic Command Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-103-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base103-1">Base103-1</span><span class="paragraph-text">Namespace is Write Protected 表示命令被保護限制，不是進入保護的要求被拒絕。</span></p><details class="source-note"><summary>來源：Base 2.4 §4.2.1</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 103, 文件頁 149, PDF 頁 175</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base103-2">Base103-2</span><span class="paragraph-text">受保護namespace的Write回SCT=0、SC=20h；要求把WPS2改成0則用Figure554的Feature Not Changeable。先辨認原命令在做什麼，再比較完成狀態。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-status">欄位、條件與相關細節：以狀態類型與代碼區分三種失敗 →</a></div></article>
+<section class="field-guide" id="fields-nwp-health"><h4 id="fields-heading-nwp-health">只讀 SMART 的相關位元，不借用它代表設定</h4>
+<p class="reader-paragraph"><span class="paragraph-number" aria-label="07.17">07.17.</span><span class="paragraph-text">Figure213 只取 byte0 Critical Warning 的 bit3。此處不把其他健康欄位納入教學範圍。</span></p>
+<div class="table-wrap"><table aria-labelledby="fields-heading-nwp-health"><thead><tr><th scope="col">欄位或圖上標示</th><th scope="col">讀值與條件</th><th scope="col">帶入例子後的結論</th></tr></thead><tbody><tr><td>byte0 bit3：All Media Read-Only (AMRO)</td><td>1回報全部媒體處於唯讀狀況，但不可僅因Namespace Write Protection狀態改變造成唯讀就設1。</td><td>AMRO0不能證明namespace7的WPS是0。</td></tr><tr><td>健康欄位與Feature的界線</td><td>用Get FID84h查WPS；不要把AMRO當另一份WPS或狀態機的事件旗標。</td><td>WPS0也只表示本機制未設保護，不保證媒體健康且所有Write成功。</td></tr></tbody></table></div>
+<nav class="figure-crossrefs" aria-label="對照本組規格圖表"><a href="#figure-NWP-BASE-FIG-213">Base 213</a></nav>
+<details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 213, 文件頁 221, PDF 頁 247</p></details>
+</section>
+<!-- figure-table:NWP-BASE-FIG-213 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-213"><h4>Base Figure 213 · SMART / Health Information Log</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-213-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base213-1">Base213-1</span><span class="paragraph-text">AMRO 是健康警告，不是「有人把 namespace 設成 Write Protect」的通知。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.13.1.3</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 213, 文件頁 221, PDF 頁 247</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base213-2">Base213-2</span><span class="paragraph-text">namespace7 的 WPS=1 且 SMART Critical Warning bit3=0 並不矛盾。即使所有namespace都用本功能保護，也不能只因此把AMRO設為1。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-health">欄位、條件與相關細節：只讀 SMART 的相關位元，不借用它代表設定 →</a></div></article>
+
+<!-- figure-table:NWP-BASE-FIG-554 -->
+<article class="field-note" id="figure-NWP-BASE-FIG-554"><h4>Base Figure 554 · Set Features – Command Specific Status Values</h4>
+<div class="figure-takeaway"><h5>一句話重點</h5><!-- claim:NWP-BASE-FIG-554-CLAIM -->
+<p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base554-1">Base554-1</span><span class="paragraph-text">Feature Not Saveable 與 Not Changeable 分別拒絕保存要求與當下不可執行的值變更。</span></p><details class="source-note"><summary>來源：Base 2.4 §5.2.30.4</summary><p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.4, Figure 554, 文件頁 519, PDF 頁 545</p></details></div>
+<div class="figure-example"><h5>用例子讀懂</h5><p class="reader-paragraph"><span class="paragraph-number figure-paragraph-number" aria-label="Base554-2">Base554-2</span><span class="paragraph-text">WPS0時錯送SV1：不可保存；WPS2時要求改成0：不可改變。兩者都不是用重送相同參數就能證明已設好狀態。</span></p></div>
+<div class="figure-detail"><a class="reading-link" href="#fields-nwp-status">欄位、條件與相關細節：以狀態類型與代碼區分三種失敗 →</a></div></article>
+</details>
+</section>
+<section id="knowledge-check"><h2 id="review-questions">學完後想一想</h2>
+<!-- qa:nwp-reset -->
+<details class="review-question" id="qa-nwp-reset"><summary>1. WPS=2，沒有斷電的控制器重設後，能用 Set WPS=0 解除嗎？</summary>
+<div data-qa-answer="nwp-reset"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="08.01">08.01.</span><span class="paragraph-text">不能。這種重設維持狀態2，Set不能改變它；power cycle才沿著圖上的特殊箭頭回到0。WPUPCC清零只是關閉之後的進入許可，不是解除現有保護。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18; 5.2.30.1.38, 文件頁 512-513,664-665, PDF 頁 538-539,690-691</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.24, 文件頁 691-692, PDF 頁 717-718</p>
+</details></details>
+<!-- qa:nwp-support -->
+<details class="review-question" id="qa-nwp-support"><summary>2. NWPC=07h、PWPC=1，是否代表任何 namespace 現在都能進入永久保護？</summary>
+<div data-qa-answer="nwp-support"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="08.02">08.02.</span><span class="paragraph-text">還要看目前狀態。0或1才有進入3的Set路徑；原本在2時，改成3仍會被拒絕。NWPC是支援，PWPC是許可，兩者都不取代狀態機。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18; 5.2.30.1.38, 文件頁 512-513,664-665, PDF 頁 538-539,690-691</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18; 5.2.30.1.38, 文件頁 512-513,664-665, PDF 頁 538-539,690-691</p>
+</details></details>
+<!-- qa:nwp-capability -->
+<details class="review-question" id="qa-nwp-capability"><summary>3. 成功的能力查詢回 DW0=6，能否說目前 WPS=6，而且可解除永久保護？</summary>
+<div data-qa-answer="nwp-capability"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="08.03">08.03.</span><span class="paragraph-text">兩個結論都不對。SEL3的6解成CHANG1、NSSPEC1、SVBL0；CHANG表示此Feature有可變更的值，不保證目前值可改。查WPS要另用SEL0。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.12; 5.2.12.2; 5.2.30.1.38, 文件頁 209-212,512, PDF 頁 235-238,538</p>
+</details></details>
+<!-- qa:nwp-flush -->
+<details class="review-question" id="qa-nwp-flush"><summary>4. 保護後 Flush 為什麼成功卻不寫回資料？</summary>
+<div data-qa-answer="nwp-flush"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="08.04">08.04.</span><span class="paragraph-text">轉入保護時已要求提交該namespace全部揮發性寫入快取資料與metadata。因此這裡的成功不代表還有一次額外寫入，也不能反推其他未受保護namespace的Flush同樣無作用。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.38, 文件頁 512-513, PDF 頁 538-539</p>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18.2, 文件頁 665-666, PDF 頁 691-692</p>
+</details></details>
+<!-- qa:nwp-scope -->
+<details class="review-question" id="qa-nwp-scope"><summary>5. 7受保護、8未受保護，把 Format NVM 的 NSID 填8就一定能執行嗎？</summary>
+<div data-qa-answer="nwp-scope"><p class="reader-paragraph review-answer"><span class="paragraph-number" aria-label="08.05">08.05.</span><span class="paragraph-text">不一定。還要判斷這次format真正涵蓋哪些namespace；若也會修改7，就必須因保護而拒絕。保護依實際影響判斷，不只看命令上的目標編號。</span></p></div>
+<details class="source-note"><summary>來源</summary>
+<p>來源：NVME-BASE-2.4, Rev. 2.4, §8.1.18.2, 文件頁 665-666, PDF 頁 691-692</p>
+</details></details>
+</section>
+<footer class="reference-editions"><details class="source-note"><summary>採用的規格版本</summary><p>NVM Express Base Specification, Revision 2.4</p></details></footer></main></div></body></html>

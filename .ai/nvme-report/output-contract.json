@@ -790,6 +790,44 @@
         "NVME-BASE-2.4"
       ],
       "parity_group": "ege-bilingual"
+    },
+    {
+      "id": "nwp-tutorial-html",
+      "report_id": "base-namespace-write-protection",
+      "path": "DOCS/nvme-spec-report/base-namespace-write-protection/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文獨立漸進教學與逐圖欄位解說",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ]
+    },
+    {
+      "id": "nwp-zh-md",
+      "report_id": "base-namespace-write-protection",
+      "path": "_posts/2026-09-23-nvme-namespace-write-protection-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；順向 Spec 路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "nwp-bilingual"
+    },
+    {
+      "id": "nwp-en-md",
+      "report_id": "base-namespace-write-protection",
+      "path": "_posts/2026-09-23-nvme-namespace-write-protection-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；順向 Spec 路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4"
+      ],
+      "parity_group": "nwp-bilingual"
     }
   ],
   "source_markers": {
@@ -859,7 +897,8 @@
     "lockdown-tutorial-html",
     "rrl-tutorial-html",
     "sqa-tutorial-html",
-    "ege-tutorial-html"
+    "ege-tutorial-html",
+    "nwp-tutorial-html"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -883,5 +922,5 @@
     "per_figure_takeaway_example_details": true,
     "post_purpose": "global view before opening the specification"
   },
-  "report_count": 20
+  "report_count": 21
 }

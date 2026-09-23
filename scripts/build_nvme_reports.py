@@ -651,6 +651,8 @@ from scripts.nvme_sqa import install as install_sqa
 install_sqa(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
 from scripts.nvme_endurance import install as install_endurance
 install_endurance(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
+from scripts.nvme_nwp import install as install_nwp
+install_nwp(REPORTS, CORE_TITLES, REPORT_MODULES, REPORT_GLOSSARIES, POST_IMAGES)
 for new_id, (old_id, *_) in SPLITS.items():
     POST_IMAGES[new_id] = POST_IMAGES[old_id]
     REPORTS[new_id]['date'] = '2026-09-11'
@@ -661,6 +663,8 @@ except ModuleNotFoundError:
 
 
 def artifact_ids(report_id: str) -> list[str]:
+    if report_id == "base-namespace-write-protection":
+        return ["nwp-tutorial-html", "nwp-zh-md", "nwp-en-md"]
     if report_id == "base-endurance-group-events":
         return ["ege-tutorial-html", "ege-zh-md", "ege-en-md"]
     if report_id == "base-sq-associations":
@@ -715,6 +719,10 @@ def cite(item: dict, language: str, figure: int | None = None) -> str:
 def figure_explanation(figure: dict, language: str) -> dict[str, str]:
     """Return a source-specific, non-verbatim guide for one Figure."""
 
+    if figure['report_id'] == 'base-namespace-write-protection':
+        from scripts.nvme_nwp_figures import lesson
+        teaching = lesson(figure)
+        return dict(purpose=teaching['en' if language == 'en' else 'takeaway'], example=teaching['example'])
     if figure['report_id'] == 'base-endurance-group-events':
         from scripts.nvme_endurance_figures import lesson
         teaching = lesson(figure)
@@ -1388,6 +1396,7 @@ def frontmatter(
     slugs['base-sq-associations'] = 'sq-associations'
     slugs['base-read-recovery-level'] = 'read-recovery-level'
     slugs['base-command-feature-lockdown'] = 'command-feature-lockdown'
+    slugs['base-namespace-write-protection'] = 'namespace-write-protection'
     slugs['base-endurance-group-events'] = 'endurance-group-events'
     slugs['base-flexible-data-placement'] = 'flexible-data-placement'
     slugs['base-directives-streams'] = 'directives-streams'
@@ -1495,7 +1504,7 @@ def main() -> int:
     artifacts = {item["id"]: item for item in contract["artifacts"]}
     all_claims = []
 
-    priority = ['base-endurance-group-events', 'base-sq-associations', 'base-read-recovery-level', 'base-command-feature-lockdown', 'base-flexible-data-placement', 'base-directives-streams', 'admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
+    priority = ['base-namespace-write-protection', 'base-endurance-group-events', 'base-sq-associations', 'base-read-recovery-level', 'base-command-feature-lockdown', 'base-flexible-data-placement', 'base-directives-streams', 'admin-io-spec-walkthrough', 'nvm-command-set-1.3', 'base-boot-partitions', 'base-telemetry', 'base-sanitize']
     order = priority + [key for key in reversed(REPORTS) if key not in priority]
     for report_id in order:
         report = REPORTS[report_id]
