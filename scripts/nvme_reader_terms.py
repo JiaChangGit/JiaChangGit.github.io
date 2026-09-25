@@ -104,6 +104,9 @@ for term, full, zh, en in [
 
 def definitions(report_id, language):
     selected = dict(COMMON)
+    if report_id == 'base-persistent-event-log':
+        from scripts.nvme_pel_terms import TERMS
+        selected.update({term:b(*values) for term,values in TERMS.items()})
     if report_id == 'base-namespace-write-protection':
         from scripts.nvme_nwp_terms import TERMS
         selected.update({term:b(*values) for term,values in TERMS.items()})

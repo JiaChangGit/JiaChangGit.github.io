@@ -6,6 +6,9 @@ from scripts.nvme_figure_examples_pcie import LESSONS as PCIE
 CATALOG = {'NVME-BASE-2.4':BASE,'NVME-NVM-CS-1.3':NVM,'NVME-PCIE-TRANSPORT-1.4':PCIE}
 
 def lesson(figure):
+    if figure['report_id'] == 'base-persistent-event-log':
+        from scripts.nvme_pel_figures import lesson as selected
+        return selected(figure)
     if figure['report_id'] == 'base-namespace-write-protection':
         from scripts.nvme_nwp_figures import lesson as selected
         return selected(figure)

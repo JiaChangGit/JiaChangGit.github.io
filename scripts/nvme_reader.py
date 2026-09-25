@@ -362,8 +362,10 @@ class Reading:
         if remainder:
             raise ValueError(f'{self.id}: figures lack a teaching home: {[f["id"] for f in remainder]}')
         self.begin_section(len(self.modules) + 1)
-        if not self.tutorial and self.id in {'base-sq-associations', 'base-endurance-group-events', 'base-namespace-write-protection'}:
-            if self.id == 'base-namespace-write-protection':
+        if not self.tutorial and self.id in {'base-sq-associations', 'base-endurance-group-events', 'base-namespace-write-protection', 'base-persistent-event-log'}:
+            if self.id == 'base-persistent-event-log':
+                from scripts.nvme_pel import render_route
+            elif self.id == 'base-namespace-write-protection':
                 from scripts.nvme_nwp import render_route
             elif self.id == 'base-endurance-group-events':
                 from scripts.nvme_endurance import render_route

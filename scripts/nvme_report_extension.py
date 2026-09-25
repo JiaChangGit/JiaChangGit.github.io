@@ -43,7 +43,7 @@ def install_report(config, units, terms, reports, titles, modules, glossaries, i
             example=unit['example'],pitfall=bi('','')))
         LESSONS[mid]=dict(headers=bi(['問題','欄位與條件','解讀'],['Question','Fields and conditions','Interpretation']),
             teaching=[text for _,text in unit['steps']],reading=unit['reading'])
-        COURSES[mid]=dict(title=unit['title']['zh'],steps=unit['steps'],outcome=unit['example']['zh'])
+        COURSES[mid]=dict(title=unit['title']['zh'],steps=unit['steps'],outcome=unit.get('tutorial_outcome',unit['example']['zh']))
     reports[rid]=report
     glossaries[rid]=[(term,'') for term in terms]
     images[rid]=dict(zh='posts/2026/dogMC_title.jpg',en='posts/2026/cat_title.jpg')

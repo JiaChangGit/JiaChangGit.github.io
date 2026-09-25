@@ -6,6 +6,11 @@ nvme_notes: true
 ---
 <div class="nvme-note">
 <h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>
+<section><h2>NVMe Persistent Event Log：讀取流程、事件格式與歷史判讀</h2><p>裝置重設後，如何知道之前發生過什麼？Persistent Event Log 保存跨重設的重要事件，將健康快照、韌體更新、電源、namespace 與設定變更放進共同的紀錄格式。本篇先說明如何讀出同一份資料，再學會把時間、對象、參數與結果連起來，同時分辨紀錄能證明什麼、不能證明什麼。</p><ul>
+<li><a href="/DOCS/nvme-spec-report/base-persistent-event-log/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
+<li><a href="{% post_url 2026-09-25-nvme-persistent-event-log-zh-tw %}">中文全局報告</a></li>
+<li><a href="{% post_url 2026-09-25-nvme-persistent-event-log-en %}">English overview</a></li>
+</ul></section>
 <section><h2>NVMe Namespace Write Protection：狀態、控制與命令行為</h2><p>一份已寫好的資料要繼續提供讀取，又要避免後續命令改動它，可以對所在的 namespace 設定寫入保護。Namespace Write Protection 不只是一個開關：它有可解除、直到斷電、永久等不同狀態，並把裝置支援、進入許可與實際保護分開。本篇把這些關係接到 FID 84h，最後說明保護如何改變命令處理。</p><ul>
 <li><a href="/DOCS/nvme-spec-report/base-namespace-write-protection/tutorial-zh-tw.html">完整中文教學 HTML（iPad／電腦）</a></li>
 <li><a href="{% post_url 2026-09-23-nvme-namespace-write-protection-zh-tw %}">中文全局報告</a></li>

@@ -19,6 +19,9 @@ def guide(source, numbers, key, title, relation, rows):
 
 
 def get(figure):
+    if figure['report_id'] == 'base-persistent-event-log':
+        from scripts.nvme_pel_figures import guide as selected
+        return selected(figure)
     if figure['report_id'] == 'base-namespace-write-protection':
         from scripts.nvme_nwp_figures import guide as selected
         return selected(figure)

@@ -38341,6 +38341,2222 @@
         "Base §5.2.30.1.38"
       ],
       "dependency_focus": "本篇只取Figure103的20h與Figure554的0Dh、0Eh。SCT是狀態碼類型，SC是該類型內的代碼；以下不是整個CQE Status欄的16-bit編碼。"
+    },
+    {
+      "id": "PEL-BASE-FIG-232",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "232",
+      "title": "Persistent Event Log Specific Parameter Field",
+      "section": "5.2.13.1.14",
+      "printed_pages": "246",
+      "pdf_pages": "272",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "ACT"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "116bd1203ee4d5704b05cdac7372ab4638537b2063e3776be97348814848f08c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-233",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "233",
+      "title": "Persistent Event Log Page",
+      "section": "5.2.13.1.14",
+      "printed_pages": "247-249",
+      "pdf_pages": "273-275",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "LID",
+        "TNEV",
+        "LREV",
+        "LHL",
+        "RCE",
+        "RCI",
+        "RCPIT",
+        "TCG"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "d7b7d5e3876e7da96f0d5b63a953ed85cea33c3efa20fa3ba24c62f730db1b17",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-layout",
+      "role": "primary",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "所有位置相對log起點；本版header共512 bytes。未展開的識別資料仍佔原位，不能刪掉其bytes後重算後續offset。"
+    },
+    {
+      "id": "PEL-BASE-FIG-234",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "234",
+      "title": "Persistent Event Format",
+      "section": "5.2.13.1.14",
+      "printed_pages": "249-250",
+      "pdf_pages": "275-276",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "PIT",
+        "VSIL",
+        "EL",
+        "TLL"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "35b156dd92a51e4d927a4ca7c5246097c11b19fb817042de3eebae2cfa17838a",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-layout",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-235",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "235",
+      "title": "Persistent Event LID Specific Parameter Field",
+      "section": "5.2.13.1.14.1",
+      "printed_pages": "251",
+      "pdf_pages": "277",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "235"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f3330d76d4f48beae0077cee76c78e2ed69121c89139a4dfba0c3bf5713c6b20",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-236",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "236",
+      "title": "Persistent Event Log Event Types",
+      "section": "5.2.13.1.14.2",
+      "printed_pages": "251",
+      "pdf_pages": "277",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SMART"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "f3330d76d4f48beae0077cee76c78e2ed69121c89139a4dfba0c3bf5713c6b20",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-purpose",
+      "role": "primary",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "M/O的前提是支援PEL；本篇只呈現PCIe相關要求。事件子類的記錄門檻與廠商抑制規則仍同時適用。"
+    },
+    {
+      "id": "PEL-BASE-FIG-237",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "237",
+      "title": "SMART / Health Log Snapshot Event Data Format (Event Type 01h)",
+      "section": "5.2.13.1.14.2.1",
+      "printed_pages": "252",
+      "pdf_pages": "278",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "237"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "475d35a16f0b95f7406af7cd09e663c5e35ab9c1dabb8725e0443dcdc2b9b1de",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-238",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "238",
+      "title": "Firmware Commit Event Data Format (Event Type 02h)",
+      "section": "5.2.13.1.14.2.2",
+      "printed_pages": "252",
+      "pdf_pages": "278",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FSLT"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "475d35a16f0b95f7406af7cd09e663c5e35ab9c1dabb8725e0443dcdc2b9b1de",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-239",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "239",
+      "title": "Timestamp Change Event Format (Event Type 03h)",
+      "section": "5.2.13.1.14.2.3",
+      "printed_pages": "253",
+      "pdf_pages": "279",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "239"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "5ebcf546bd5831bb390f349972b4dfc5e02e66a139faebe83e6760a31e4780bf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-240",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "240",
+      "title": "Power-on or Reset Event (Event Type 04h)",
+      "section": "5.2.13.1.14.2.4",
+      "printed_pages": "253",
+      "pdf_pages": "279",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FREV",
+        "CC",
+        "RDNF"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "5ebcf546bd5831bb390f349972b4dfc5e02e66a139faebe83e6760a31e4780bf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-241",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "241",
+      "title": "Controller Reset Information descriptor",
+      "section": "5.2.13.1.14.2.4",
+      "printed_pages": "253-254",
+      "pdf_pages": "279-280",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FREV",
+        "CC",
+        "RDNF"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4076e391acd9da4f382dbe18ad5231e9eddb0ce6bca47e4ad903b6d0475328eb",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-242",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "242",
+      "title": "NVM Subsystem Hardware Error Event Format (Event Type 05h)",
+      "section": "5.2.13.1.14.2.5",
+      "printed_pages": "254",
+      "pdf_pages": "280",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "AHEI",
+        "ID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "25b613368b7c3a6df3af18dd1d48c296a40f94fd8d796db87958e715715434f7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-243",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "243",
+      "title": "NVM Subsystem Hardware Error Event Codes",
+      "section": "5.2.13.1.14.2.5",
+      "printed_pages": "254-255",
+      "pdf_pages": "280-281",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "AHEI",
+        "ID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4948edc1dcf604533b6a5522bbaaa6f3e4463dc3792eae309d8540574919969d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-244",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "244",
+      "title": "Additional Hardware Error Information for Unexpected Power Loss Errors",
+      "section": "5.2.13.1.14.2.5",
+      "printed_pages": "256",
+      "pdf_pages": "282",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "UPL",
+        "UPLI",
+        "UPLOA"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "5971bf97b8fa0244422a9c1eb74c2025970e10be0370190cb60d679c59fcd661",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-245",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "245",
+      "title": "Additional Hardware Error Information for correctable and uncorrectable PCIe",
+      "section": "5.2.13.1.14.2.5",
+      "printed_pages": "256-257",
+      "pdf_pages": "282-283",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "PCIEAERS",
+        "PCIEAS"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "bc0b8e407312295152e48d8ae609756fe2a36b9e0e1d5a30044a4faaca327701",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-246",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "246",
+      "title": "Additional Hardware Error Information for Controller Ready Timeout Exceeded errors",
+      "section": "5.2.13.1.14.2.5",
+      "printed_pages": "258",
+      "pdf_pages": "284",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CST",
+        "CNR",
+        "ACMNR",
+        "NNR",
+        "CRIME"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "6cbc7cebcb8fcb05d1ca9dfacaac837e82cf1d1fa0cb8330b1aab2c33b379cbf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-247",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "247",
+      "title": "Change Namespace Event Data Format (Event Type 06h)",
+      "section": "5.2.13.1.14.2.6",
+      "printed_pages": "258-259",
+      "pdf_pages": "284-285",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NMCDW10",
+        "NSZE",
+        "FLBAS",
+        "LBA",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "eb6cd063dee717f6668f93fe80f16a9d3ae185b3ce89fcb17af065e901ca550e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-248",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "248",
+      "title": "Format NVM Start Event Data Format (Event Type 07h)",
+      "section": "5.2.13.1.14.2.7",
+      "printed_pages": "260",
+      "pdf_pages": "286",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FMCDW10",
+        "FNA",
+        "NVM",
+        "CDW10",
+        "INCPLTF",
+        "FNVME"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "222b84f3ba13d9a8ab545dc4f8bbfb20b16bdee9f6d03ccb257497913844b6d7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-249",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "249",
+      "title": "Format NVM Completion Event Data Format (Event Type 08h)",
+      "section": "5.2.13.1.14.2.8",
+      "printed_pages": "260-261",
+      "pdf_pages": "286-287",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FMCDW10",
+        "FNA",
+        "NVM",
+        "CDW10",
+        "INCPLTF",
+        "FNVME",
+        "INFO"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d1855c76025a7bead7ce8490e0f4e57e94ac9834cd06b6889b6b0409a18c8f57",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-250",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "250",
+      "title": "Sanitize Start Event Data Format (Event Type 09h)",
+      "section": "5.2.13.1.14.2.9",
+      "printed_pages": "261",
+      "pdf_pages": "287",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SCDW11"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "e0d1e98ac32e6b9463eb2328978b957b456fee67397c12657ddc1710f2fb378d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-sanitize",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-251",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "251",
+      "title": "Sanitize Completion Event Data Format (Event Type 0Ah)",
+      "section": "5.2.13.1.14.2.10",
+      "printed_pages": "261-262",
+      "pdf_pages": "287-288",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SCDW11",
+        "SSTAT"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "524e68e8d095a3639435bd860cc232a6f120f4db1c6daa45d636a712957b5559",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-sanitize",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-252",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "252",
+      "title": "Feature Persistent Event Logging Requirements",
+      "section": "5.2.13.1.14.2.11",
+      "printed_pages": "262-263",
+      "pdf_pages": "288-289",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "252"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "67a8d6bed92ff08638b16ac326faf3baa94dffc614a1a9a9adcc5d1dc4efdaee",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-features",
+      "role": "primary",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "本表只呈現I/O與Admin兩欄。O選用、P禁止、NR不建議；M代表必備但這些列沒有M。成功且改值、又支援該Feature記錄時須記；同值成功時可記。"
+    },
+    {
+      "id": "PEL-BASE-FIG-253",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "253",
+      "title": "Set Feature Event Data Format",
+      "section": "5.2.13.1.14.2.11",
+      "printed_pages": "264",
+      "pdf_pages": "290",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SFEL",
+        "LCCDW0",
+        "MBC"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d6803b650f189fcb6b8be109387e1644ab68efa5c1514ab0b1eba81c3d21a3a7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-features",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-254",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "254",
+      "title": "Telemetry Log Created Event Data Format (Event Type 0Ch)",
+      "section": "5.2.13.1.14.2.12",
+      "printed_pages": "264",
+      "pdf_pages": "290",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "254"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "d6803b650f189fcb6b8be109387e1644ab68efa5c1514ab0b1eba81c3d21a3a7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-255",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "255",
+      "title": "Thermal Excursion Event Data Format (Event Type 0Dh)",
+      "section": "5.2.13.1.14.2.13",
+      "printed_pages": "265-266",
+      "pdf_pages": "291-292",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "OTMP"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "9d7b61a4028eeb093f02946a0af627fdabc84ee576c23518089c43dcb1bded6e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-256",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "256",
+      "title": "CDP Change Event Data Format (Event Type 0Fh)",
+      "section": "5.2.13.1.14.2.15",
+      "printed_pages": "267",
+      "pdf_pages": "293",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CDPRFS",
+        "CDPCE"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "e2f5afb5c475ad4db2fd0562968bbd64f5ac7ec3945e87b0c90df535d122c25f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-features",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-257",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "257",
+      "title": "Exported NVM Subsystem Change Event Data Format (Event Type 10h)",
+      "section": "5.2.13.1.14.2.16",
+      "printed_pages": "267-268",
+      "pdf_pages": "293-294",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "257"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "4de36935d67fe78311e6d1691ebabd80daa215b51dbd1cc0ab9b695ee86b6c2e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-extensions",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-258",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "258",
+      "title": "Vendor Specific Event Format (Event Type DEh)",
+      "section": "5.2.13.1.14.2.17",
+      "printed_pages": "269",
+      "pdf_pages": "295",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "VSEDL",
+        "ASCII"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "b0a389586f2cc25f6d07306c36893229a6621cc5c58042958800384a69be0931",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-extensions",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-259",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "259",
+      "title": "Vendor Specific Event Descriptor Format",
+      "section": "5.2.13.1.14.2.17",
+      "printed_pages": "269",
+      "pdf_pages": "295",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "VSEDL",
+        "ASCII"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "b0a389586f2cc25f6d07306c36893229a6621cc5c58042958800384a69be0931",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-extensions",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-260",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "260",
+      "title": "Vendor Specific Event Data Type Codes",
+      "section": "5.2.13.1.14.2.17",
+      "printed_pages": "269-270",
+      "pdf_pages": "295-296",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "VSEDL",
+        "ASCII"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "912d11b14beae8bba62fdc5a4dd4b7532afef6b9032b2de0592b6b42a1472c98",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-extensions",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-NVM-FIG-112",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "112",
+      "title": "Change Namespace Event Data Format (Event Type 06h)",
+      "section": "4.1.4.4",
+      "printed_pages": "77",
+      "pdf_pages": "77",
+      "scope_entry_id": "PEL-NVM-INCLUDE",
+      "scope_status": "INCLUDE",
+      "mode": "full",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FLBAS",
+        "LBA",
+        "DPS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "299a764f1580d40696b24404d00812f5ef046bc5f2c5a7faf6e9f505780171f4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "primary"
+    },
+    {
+      "id": "PEL-BASE-FIG-338",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "338",
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "printed_pages": "355,357,361-362,364,373",
+      "pdf_pages": "381,383,387-388,390,399",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "LPA",
+        "PES",
+        "LPEDS",
+        "PELS",
+        "FNA",
+        "OWS",
+        "BES",
+        "CES",
+        "SANICAP",
+        "VERS",
+        "NVERS",
+        "SPRRS",
+        "NDI"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "e823ff9fed60860512a887639161a6f78077b44e0535c41e717b3b81635333c0",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-purpose",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure338是長表，本篇只取LPA／PELS、溫度門檻、FNA及SANICAP；其他能力未因此全部納入。"
+    },
+    {
+      "id": "PEL-BASE-FIG-203",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "203",
+      "title": "Get Log Page – Data Pointer",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "NUMDU",
+        "NUMDL",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-204",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "204",
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "DPTR",
+        "NUMDU",
+        "NUMDL",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-205",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "205",
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-206",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "206",
+      "title": "Get Log Page – Command Dword 12",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-207",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "207",
+      "title": "Get Log Page – Command Dword 13",
+      "section": "5.2.13",
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-208",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "208",
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8cb0acdbd8a5752d0805867233e556d419934da159c0da658d66e5cd0f26bc0f",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-209",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "209",
+      "title": "Get Log Page – Log Page Identifiers",
+      "section": "5.2.13",
+      "printed_pages": "215-217",
+      "pdf_pages": "241-243",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CDW14"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "15a2f8dbd58ac819b2889ae059c76412f2ec52ebb4b346a55592661252d8e9ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-210",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "210",
+      "title": "Supported Log Pages Log Page",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217",
+      "pdf_pages": "243",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "210"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8402e78afe2007eaacf90da7e7710de8d5f17d0d62fcf854f1eae1096b7acea9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-211",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "211",
+      "title": "LID Supported and Effects Data Structure",
+      "section": "5.2.13.1.1",
+      "printed_pages": "217-218",
+      "pdf_pages": "243-244",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "LSUPP",
+        "IOS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "884149517c986e5c11e53b88a5a273bd5f3527c293a0161cfed7c40584b221eb",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-context",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures203～211只取PEL所需格式與LID0Dh列。byte offset、Dword計數、事件index是三種不同單位。"
+    },
+    {
+      "id": "PEL-BASE-FIG-213",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "213",
+      "title": "SMART / Health Information Log Page",
+      "section": "5.2.13.1.3",
+      "printed_pages": "221-225",
+      "pdf_pages": "247-251",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CW",
+        "EGCWS",
+        "INFW",
+        "AVSP",
+        "CCTEMP",
+        "TSEN1",
+        "TTTMT1",
+        "TTTMT2",
+        "IPM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "8338f435e3aa194b6240747e3470eb1d08b05994c761d232be0fbb8d46d817c1",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure237的ED bytes511:0整份依Figure213；這裡按讀值用途分組，不要求以表內順序背誦。保留區不能當成額外sensor。"
+    },
+    {
+      "id": "PEL-BASE-FIG-214",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "214",
+      "title": "Temperature Sensor Data Structure",
+      "section": "5.2.13.1.3",
+      "printed_pages": "225",
+      "pdf_pages": "251",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "IPM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "54a6030defad55f9940e13bcb4a80409859b0a29cd84987f78f4ee248cefbdbf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure237的ED bytes511:0整份依Figure213；這裡按讀值用途分組，不要求以表內順序背誦。保留區不能當成額外sensor。"
+    },
+    {
+      "id": "PEL-BASE-FIG-221",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "221",
+      "title": "Telemetry Host-Initiated Log Page",
+      "section": "5.2.13.1.8",
+      "printed_pages": "234",
+      "pdf_pages": "260",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "221"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "58de4cded438ad8d4caf7f83b54797ad43f0c3e6b65ed7c085b5c3c050e88f1d",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures221／223只取前512 bytes，正好是Figure254保留的TIL；原始後續資料blocks不納入本事件。"
+    },
+    {
+      "id": "PEL-BASE-FIG-223",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "223",
+      "title": "Telemetry Controller-Initiated Log Page",
+      "section": "5.2.13.1.9",
+      "printed_pages": "236-237",
+      "pdf_pages": "262-263",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "223"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "898bab4bfb85c27bfa93e48565bce2d96ac303d070fb20988ab57ce3882b8e1e",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures221／223只取前512 bytes，正好是Figure254保留的TIL；原始後續資料blocks不納入本事件。"
+    },
+    {
+      "id": "PEL-BASE-FIG-480",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "480",
+      "title": "Timestamp – Data Structure for Get Features",
+      "section": "5.2.30.1.8",
+      "printed_pages": "470-471",
+      "pdf_pages": "496-497",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SYNC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "ff4b05c6429756664042bc29469b6b1651d575313fca16b60a7fcee14cc5aac3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure239只存前一時間與MSR；事件後時間在共同header。Figure480同時解釋TSTMP、ETSTP、PTSTP與CTSTP。"
+    },
+    {
+      "id": "PEL-BASE-FIG-187",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "187",
+      "title": "Firmware Commit – Command Dword 10",
+      "section": "5.2.9",
+      "printed_pages": "203",
+      "pdf_pages": "229",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "187"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "ccb68cd244d086ec8db43b3f1b2418563920bf17f83d06352685cf68208aca6b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure238的ED長22 bytes；版本欄是8-byte版本資料，不能把它們當整數比較新舊。"
+    },
+    {
+      "id": "PEL-BASE-FIG-189",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "189",
+      "title": "Firmware Commit – Command Specific Status Values",
+      "section": "5.2.9",
+      "printed_pages": "204",
+      "pdf_pages": "230",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "189"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "9ccb6351df4b47a9ced33415f4eeba5736b3115ce5e03ac9abfeb1a16aafaa02",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-time",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure238的ED長22 bytes；版本欄是8-byte版本資料，不能把它們當整數比較新舊。"
+    },
+    {
+      "id": "PEL-BASE-FIG-446",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "446",
+      "title": "Namespace Management – Command Dword 10",
+      "section": "5.2.25",
+      "printed_pages": "446-447",
+      "pdf_pages": "472-473",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SEL",
+        "NSID"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "f34a58d138bc2d2f8f3903f15b179da402b452887923ea17307634a3e56d4c62",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure247給位置與來源，NVM112補byte32／33；NVM123與134只取本事件用到的欄位，不展開整份長結構。"
+    },
+    {
+      "id": "PEL-NVM-FIG-123",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "123",
+      "title": "Identify – Identify Namespace Data Structure, NVM Command Set",
+      "section": "4.1.5.1",
+      "printed_pages": "85-87",
+      "pdf_pages": "85-87",
+      "scope_entry_id": "PEL-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NSZE",
+        "FLBAS",
+        "FIDXU",
+        "FIDXL",
+        "LBA",
+        "DPS",
+        "PIT",
+        "NMIC"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "72ed7ed51e141e3264882ecf6d7a7887a8eea315f7b83834ffe4d7b2561a74f9",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure247給位置與來源，NVM112補byte32／33；NVM123與134只取本事件用到的欄位，不展開整份長結構。"
+    },
+    {
+      "id": "PEL-NVM-FIG-134",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "134",
+      "title": "Namespace Management – Host Specified Fields",
+      "section": "4.1.6",
+      "printed_pages": "112-113",
+      "pdf_pages": "112-113",
+      "scope_entry_id": "PEL-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NSZE",
+        "FLBAS",
+        "LBA",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "4087b37795cd3ddef1a56907900f593e24e775ffb67a7e936c82b5c3786320ce",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure247給位置與來源，NVM112補byte32／33；NVM123與134只取本事件用到的欄位，不展開整份長結構。"
+    },
+    {
+      "id": "PEL-BASE-FIG-195",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "195",
+      "title": "Format NVM – Command Dword 10",
+      "section": "5.2.11",
+      "printed_pages": "208-209",
+      "pdf_pages": "234-235",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "FNA",
+        "FNVMBS",
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "495ca3f0919973f85d988375173956b94a349606a8cef8cf8585e794dceb30e3",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure248 ED共12 bytes，249新版ED也12 bytes，但相同offset並不是相同欄位。Figures195／NVM91只用來解保存的FMCDW10。"
+    },
+    {
+      "id": "PEL-NVM-FIG-091",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "type": "Figure",
+      "number": "91",
+      "title": "Format NVM – Command Dword 10 – NVM Command Set Specific Fields",
+      "section": "4.1.1",
+      "printed_pages": "63",
+      "pdf_pages": "63",
+      "scope_entry_id": "PEL-NVM-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "NVM"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "9ba5ce9bcc9f2b97f81dba3db5414c47afef9aa44afe89db735735145b340be7",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-namespace",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure248 ED共12 bytes，249新版ED也12 bytes，但相同offset並不是相同欄位。Figures195／NVM91只用來解保存的FMCDW10。"
+    },
+    {
+      "id": "PEL-BASE-FIG-451",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "451",
+      "title": "Sanitize – Command Dword 10",
+      "section": "5.2.26",
+      "printed_pages": "450",
+      "pdf_pages": "476",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "GDE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "38b54a96a99a79dc2f4349ac682cf6b6406817c3792650607ad8f028c219a4ff",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-sanitize",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "先以subsystem目標解Figures451／452的啟動參數，namespace目標另用Figure454；Figure312取SPROG／SSTAT，供250／251事件解碼。ET0E無ED的規則見共同外框與事件類型組。"
+    },
+    {
+      "id": "PEL-BASE-FIG-452",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "452",
+      "title": "Sanitize – Command Dword 11",
+      "section": "5.2.26",
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "452"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "d7235f608ec0e4a3c797b66bff99138a1abac4b5f1ef5e97a7b12674d6ac449b",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-sanitize",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "先以subsystem目標解Figures451／452的啟動參數，namespace目標另用Figure454；Figure312取SPROG／SSTAT，供250／251事件解碼。ET0E無ED的規則見共同外框與事件類型組。"
+    },
+    {
+      "id": "PEL-BASE-FIG-454",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "454",
+      "title": "Sanitize Namespace – Command Dword 10",
+      "section": "5.2.27",
+      "printed_pages": "453",
+      "pdf_pages": "479",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "EMVS"
+      ],
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "evidence_digest": "46c14c5a8f8569e681fa3de77123b14d3777e656c94b0d83ea2465204aabd7cf",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-sanitize",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure250同時記錄namespace與subsystem清除。遇到namespace目標，要補用Figure454解原始命令，不把Figure451的overwrite欄位套過來。"
+    },
+    {
+      "id": "PEL-BASE-FIG-312",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "312",
+      "title": "Sanitize Status Log Page",
+      "section": "5.2.13.1.38",
+      "printed_pages": "314-316",
+      "pdf_pages": "340-342",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SSTAT",
+        "GDE"
+      ],
+      "source_keywords": [
+        "shall"
+      ],
+      "evidence_digest": "a276d931e6c17a296499d2e6c43e1fab3a3b23437c813c9c2046c73328bf19c4",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-sanitize",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "先以subsystem目標解Figures451／452的啟動參數，namespace目標另用Figure454；Figure312取SPROG／SSTAT，供250／251事件解碼。ET0E無ED的規則見共同外框與事件類型組。"
+    },
+    {
+      "id": "PEL-BASE-FIG-097",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "97",
+      "title": "Common Completion Queue Entry Layout – Admin and All I/O Command Sets",
+      "section": "4.2.1",
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "DW1",
+        "DW2",
+        "DW3"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "60dbf653ffccce14e70d0ecc6bf0706eb3f7ae73698e078c0e917ee0509e3839",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures97～99只取PCIe共同CQE；Figure101的bit號相對CQE DW3。Format INFO則保存高半部，包括Status與可能的Phase。"
+    },
+    {
+      "id": "PEL-BASE-FIG-098",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "98",
+      "title": "Completion Queue Entry: DW 2",
+      "section": "4.2.1",
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "DW1",
+        "DW2",
+        "DW3"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "60dbf653ffccce14e70d0ecc6bf0706eb3f7ae73698e078c0e917ee0509e3839",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures97～99只取PCIe共同CQE；Figure101的bit號相對CQE DW3。Format INFO則保存高半部，包括Status與可能的Phase。"
+    },
+    {
+      "id": "PEL-BASE-FIG-099",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "99",
+      "title": "Completion Queue Entry: DW 3",
+      "section": "4.2.1",
+      "printed_pages": "145",
+      "pdf_pages": "171",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CQE"
+      ],
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "evidence_digest": "62c4e4c1f455149bd744c4f4402fb7e3816c264d37153562c820dc487c4c6b70",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures97～99只取PCIe共同CQE；Figure101的bit號相對CQE DW3。Format INFO則保存高半部，包括Status與可能的Phase。"
+    },
+    {
+      "id": "PEL-BASE-FIG-101",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "101",
+      "title": "Completion Queue Entry: Status Field",
+      "section": "4.2.3",
+      "printed_pages": "145-146",
+      "pdf_pages": "171-172",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "CQE"
+      ],
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "evidence_digest": "8caab5160c15e3e1a23d11f1e73d85abcdf0bc707d41b44d37d9cd89baed01d2",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-hardware",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figures97～99只取PCIe共同CQE；Figure101的bit號相對CQE DW3。Format INFO則保存高半部，包括Status與可能的Phase。"
+    },
+    {
+      "id": "PEL-BASE-FIG-745",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "type": "Figure",
+      "number": "745",
+      "title": "Power Measurement Types",
+      "section": "8.1.20",
+      "printed_pages": "678",
+      "pdf_pages": "704",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "scope_status": "INCLUDE",
+      "mode": "scope-reduced",
+      "required_artifact_ids": [
+        "pel-tutorial-html"
+      ],
+      "introduced_in": [
+        "pel-tutorial-html"
+      ],
+      "key_items": [
+        "745"
+      ],
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "evidence_digest": "718f979e84aae67c9beae33132584624b910ea206b314ff0fc3900aee7c69501",
+      "evidence_method": "sha256 of pdftotext -layout source PDF pages, joined with newline",
+      "teaching_module": "pel-health",
+      "role": "dependency",
+      "scope_reduced": true,
+      "referenced_from": [
+        "Base §5.2.13.1.14",
+        "NVM §4.1.4.4"
+      ],
+      "dependency_focus": "Figure745只補SMART IPM的PMT。其他power measurement機制不在本篇展開。"
     }
   ]
 }

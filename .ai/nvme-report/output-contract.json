@@ -828,6 +828,47 @@
         "NVME-BASE-2.4"
       ],
       "parity_group": "nwp-bilingual"
+    },
+    {
+      "id": "pel-tutorial-html",
+      "report_id": "base-persistent-event-log",
+      "path": "DOCS/nvme-spec-report/base-persistent-event-log/tutorial-zh-tw.html",
+      "language": "zh-Hant-TW",
+      "format": "html",
+      "claim_coverage": "all",
+      "purpose": "中文獨立漸進教學與逐圖欄位解說",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ]
+    },
+    {
+      "id": "pel-zh-md",
+      "report_id": "base-persistent-event-log",
+      "path": "_posts/2026-09-25-nvme-persistent-event-log-zh-tw.md",
+      "language": "zh-Hant-TW",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；Base到NVM順向Spec路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "pel-bilingual"
+    },
+    {
+      "id": "pel-en-md",
+      "report_id": "base-persistent-event-log",
+      "path": "_posts/2026-09-25-nvme-persistent-event-log-en.md",
+      "language": "en",
+      "format": "markdown",
+      "claim_coverage": "overview",
+      "purpose": "全局觀念、流程與案例；Base到NVM順向Spec路徑；中英文對等",
+      "required_source_ids": [
+        "NVME-BASE-2.4",
+        "NVME-NVM-CS-1.3"
+      ],
+      "parity_group": "pel-bilingual"
     }
   ],
   "source_markers": {
@@ -898,7 +939,8 @@
     "rrl-tutorial-html",
     "sqa-tutorial-html",
     "ege-tutorial-html",
-    "nwp-tutorial-html"
+    "nwp-tutorial-html",
+    "pel-tutorial-html"
   ],
   "question_policy": {
     "selection": "distinct concepts and reasoning; no fixed quota",
@@ -922,5 +964,5 @@
     "per_figure_takeaway_example_details": true,
     "post_purpose": "global view before opening the specification"
   },
-  "report_count": 21
+  "report_count": 22
 }

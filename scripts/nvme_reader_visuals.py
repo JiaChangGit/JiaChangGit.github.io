@@ -38,6 +38,9 @@ def steps(title, values, caption):
 
 def module_illustration(report_id, module, language):
     key = module['id']
+    if report_id == 'base-persistent-event-log':
+        from scripts.nvme_pel_visuals import illustration
+        return illustration(key, language)
     if report_id == 'base-namespace-write-protection':
         from scripts.nvme_nwp_visuals import illustration
         return illustration(key, language)

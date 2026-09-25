@@ -14,6 +14,1994 @@
   ],
   "claims": [
     {
+      "id": "PEL-PURPOSE",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "244-245",
+      "pdf_pages": "270-271",
+      "normative_keyword": "none",
+      "zh_tw": "Persistent Event Log（PEL，LID 0Dh）保存 NVM subsystem 的重要事件，跨 power cycle 與 reset 保留。它不是每筆 I/O 的流水帳，也不是永遠不會遺失的完整歷史：容量、同類事件數量、頻率抑制與淘汰策略由廠商決定，Sanitize 也可能移除或修改紀錄。",
+      "en": "Persistent Event Log (PEL, LID 0Dh) retains significant NVM subsystem events across power cycles and resets. It is not a trace of every I/O or a guaranteed complete history: vendors define capacity, per-type limits, frequency suppression and eviction, and Sanitize may remove or modify records.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "先分清事件歷史、目前狀態與完整性",
+      "heading_en": "Distinguish history, current state and completeness",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, 文件頁 244-245, PDF 頁 270-271",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, printed pages 244-245, PDF pages 270-271"
+    },
+    {
+      "id": "PEL-PURPOSE-2",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.14.2.1; 5.2.13.1.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "247-249,355,364",
+      "pdf_pages": "273-275,381,390",
+      "normative_keyword": "none",
+      "zh_tw": "先用 Identify Controller 的 LPA.PES 確認支援，PELS 以 64 KiB 為單位回報最大空間；本次實際回報長度則是 PEL header 的 TLL。SEB 宣告事件種類支援，TNEV 計算這次回報有多少筆，兩者不能互相代替。",
+      "en": "LPA.PES advertises PEL support and PELS reports maximum space in 64 KiB units. TLL is the actual reported length. SEB advertises supported event types, whereas TNEV counts records in this report.",
+      "scope_entry_id": "PEL-BASE-PREREQUISITES",
+      "heading_zh_tw": "先分清事件歷史、目前狀態與完整性",
+      "heading_en": "Distinguish history, current state and completeness",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1; 5.2.13.1.14, 文件頁 247-249,355,364, PDF 頁 273-275,381,390",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1; 5.2.13.1.14, printed pages 247-249,355,364, PDF pages 273-275,381,390"
+    },
+    {
+      "id": "PEL-CONTEXT",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "245-246,251",
+      "pdf_pages": "271-272,277",
+      "normative_keyword": "none",
+      "zh_tw": "Reporting context 固定本次回報的事件集合；之後新增的事件仍須記錄，但不加入既有 context。ACT=1 建立並讀取，已有 context 時失敗；ACT=0 讀取既有 context，沒有時失敗；ACT=2 釋放，沒有也不是錯誤。受支援的 ACT=3 建立或沿用 context，一律回傳 offset 0 的 512-byte header。",
+      "en": "A reporting context fixes the event set for this report; later events are still logged but excluded from that context. ACT=1 establishes and reads, failing if a context exists; ACT=0 reads an existing context, failing if absent; ACT=2 releases and tolerates absence. Supported ACT=3 establishes or reuses a context and always returns the 512-byte header at offset zero.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "用 reporting context 取得同一份紀錄",
+      "heading_en": "Use a reporting context to retrieve one consistent report",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, 文件頁 245-246,251, PDF 頁 271-272,277",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, printed pages 245-246,251, PDF pages 271-272,277"
+    },
+    {
+      "id": "PEL-CONTEXT-2",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "245-248",
+      "pdf_pages": "271-274",
+      "normative_keyword": "none",
+      "zh_tw": "ACT=3 回覆的 RCE 表示處理命令前是否已有 context；RCE=0 不表示建立失敗。分段讀取應先記下 GNUM，完成後重讀比較；不同表示資料可能來自不同 context，應重新取得。GNUM 只有建立新 context 且內容與上次不同才遞增，16-bit 值會回捲。",
+      "en": "For ACT=3, RCE reports whether a context already existed when the command was processed; zero is not creation failure. For multipart reads, record GNUM first and compare it after retrieval; a mismatch indicates potentially invalid data and calls for rereading. GNUM increments when a newly established context differs from the previous contents and wraps as a 16-bit value.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "用 reporting context 取得同一份紀錄",
+      "heading_en": "Use a reporting context to retrieve one consistent report",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, 文件頁 245-248, PDF 頁 271-274",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, printed pages 245-248, PDF pages 271-274"
+    },
+    {
+      "id": "PEL-CONTEXT-3",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13; 5.2.13.1.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "213-217,246",
+      "pdf_pages": "239-243,272",
+      "normative_keyword": "none",
+      "zh_tw": "Get Log Page 的 NUMD 是從 0 計數的 Dword 長度；512 bytes 對應 NUMD=127。PEL 是 subsystem 範圍，NSID 使用 0 或 FFFFFFFFh。一般以 OT=0 使用 byte offset；ACT=2 忽略長度與 offset，ACT=3 也忽略它們而固定回 512 bytes，因此 buffer 至少配置 512 bytes。",
+      "en": "Get Log Page NUMD is a zero-based Dword count, so 512 bytes corresponds to 127. PEL has subsystem scope and uses NSID zero or FFFFFFFFh. Normal OT=0 requests use byte offsets; ACT=2 ignores length/offset and ACT=3 overrides them with a fixed 512-byte transfer, requiring a buffer of at least that size.",
+      "scope_entry_id": "PEL-BASE-PREREQUISITES",
+      "heading_zh_tw": "用 reporting context 取得同一份紀錄",
+      "heading_en": "Use a reporting context to retrieve one consistent report",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13; 5.2.13.1.14, 文件頁 213-217,246, PDF 頁 239-243,272",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13; 5.2.13.1.14, printed pages 213-217,246, PDF pages 239-243,272"
+    },
+    {
+      "id": "PEL-LAYOUT",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "247-251",
+      "pdf_pages": "273-277",
+      "normative_keyword": "none",
+      "zh_tw": "LHL 的計數不含前 20 bytes，因此 log header 大小是 LHL+20；EHL 不含事件前 3 bytes，因此事件 header 大小是 EHL+3。EL 已包含 VSIL 指出的廠商資料，事件總大小為 EHL+3+EL，真正 ED 大小為 EL−VSIL。LREV 描述外層格式，ET 與 ETR 決定事件內容的格式。",
+      "en": "The log header occupies LHL+20 bytes and an event header occupies EHL+3 bytes. EL already includes the VSIL vendor-information bytes: total record size is EHL+3+EL and ED size is EL−VSIL. LREV describes the outer format; ET and ETR select the payload format.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "從 header 走到每筆事件的邊界",
+      "heading_en": "Walk from the header to each event boundary",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, 文件頁 247-251, PDF 頁 273-277",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, printed pages 247-251, PDF pages 273-277"
+    },
+    {
+      "id": "PEL-HEALTH",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.1; 5.2.13.1.14.2.12; 5.2.13.1.14.2.13",
+      "figure": null,
+      "table": null,
+      "printed_pages": "252,264-266",
+      "pdf_pages": "278,290-292",
+      "normative_keyword": "none",
+      "zh_tw": "ET=01h 保存 512-byte SMART 快照，記錄間隔不得超過 24 power-on hours；ET=0Ch 可保存新建 Telemetry 的前 512 bytes，並不包含完整診斷資料。ET=0Dh 記錄溫度門檻事件，其 OTMP 是相對門檻的 Kelvin 差值，不是絕對溫度。這些都是事件當時的資料。",
+      "en": "ET=01h stores a 512-byte SMART snapshot at intervals no greater than 24 power-on hours. ET=0Ch may record the first 512 bytes of newly created telemetry, not its complete diagnostic data. ET=0Dh records thermal-threshold events; OTMP is a Kelvin difference from a threshold, not an absolute temperature. These are historical observations.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "健康、Telemetry 與溫度各留下什麼證據",
+      "heading_en": "Interpret health snapshots, telemetry references and temperature events",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.1; 5.2.13.1.14.2.12; 5.2.13.1.14.2.13, 文件頁 252,264-266, PDF 頁 278,290-292",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.1; 5.2.13.1.14.2.12; 5.2.13.1.14.2.13, printed pages 252,264-266, PDF pages 278,290-292"
+    },
+    {
+      "id": "PEL-HEALTH-2",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.3; 5.2.13.1.8; 5.2.13.1.9",
+      "figure": null,
+      "table": null,
+      "printed_pages": "221-225,234-237",
+      "pdf_pages": "247-251,260-263",
+      "normative_keyword": "none",
+      "zh_tw": "SMART 的 Data Units Read／Written 使用 1000×512-byte 單位、向上取整；Composite Temperature 使用 Kelvin。Telemetry 的 Last Block 是由 block 1 開始之資料區的最後編號，各資料區是由同一起點擴大的集合，不是要相加的四段。",
+      "en": "SMART Data Units Read/Written use rounded-up units of 1000×512 bytes; Composite Temperature uses Kelvin. Telemetry Last Block is the final block number of an area beginning at block 1. The areas expand from the same start rather than forming four disjoint segments to add together.",
+      "scope_entry_id": "PEL-BASE-PREREQUISITES",
+      "heading_zh_tw": "健康、Telemetry 與溫度各留下什麼證據",
+      "heading_en": "Interpret health snapshots, telemetry references and temperature events",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3; 5.2.13.1.8; 5.2.13.1.9, 文件頁 221-225,234-237, PDF 頁 247-251,260-263",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3; 5.2.13.1.8; 5.2.13.1.9, printed pages 221-225,234-237, PDF pages 247-251,260-263"
+    },
+    {
+      "id": "PEL-TIME",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.2; 5.2.13.1.14.2.3; 5.2.13.1.14.2.4; 5.2.30.1.8",
+      "figure": null,
+      "table": null,
+      "printed_pages": "252-254,470-471",
+      "pdf_pages": "278-280,496-497",
+      "normative_keyword": "none",
+      "zh_tw": "Firmware Commit 完成時記錄 ET02，不代表新韌體已啟用；ET04 在 power-on 或 reset 完成後，提供成為有效版本的 FREV 與各控制器資訊。ET03 保存時間戳變更前的 PTSTP，而共同 header 的 ETSTP 是變更後的時間。時間戳可能由重設起算、由主機設定，也可能有停止計時區間。",
+      "en": "ET02 is logged when Firmware Commit completes and does not by itself prove activation. ET04 records completed power-on/reset with the effective FREV and per-controller information. ET03 stores the previous timestamp in PTSTP and the new timestamp in the event header ETSTP. Timestamps may originate at reset, be host-set, or include periods when counting stopped.",
+      "scope_entry_id": "PEL-BASE-PREREQUISITES",
+      "heading_zh_tw": "韌體、時間戳與重設要連著讀",
+      "heading_en": "Connect firmware, timestamps and reset records",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.2; 5.2.13.1.14.2.3; 5.2.13.1.14.2.4; 5.2.30.1.8, 文件頁 252-254,470-471, PDF 頁 278-280,496-497",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.2; 5.2.13.1.14.2.3; 5.2.13.1.14.2.4; 5.2.30.1.8, printed pages 252-254,470-471, PDF pages 278-280,496-497"
+    },
+    {
+      "id": "PEL-NAMESPACE",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.4.4",
+      "figure": null,
+      "table": null,
+      "printed_pages": "76-77",
+      "pdf_pages": "76-77",
+      "normative_keyword": "none",
+      "zh_tw": "ET06 記錄成功的 Namespace Management 命令。Base Figure247 定義整體內容與欄位來源；NVM Figure112 補定 byte32 的 FLBAS 與 byte33 的 DPS：建立時取主機指定值，刪除單一 namespace 時取該 namespace 的 Identify 值，刪除全部時這兩個欄位保留。",
+      "en": "ET06 records successful Namespace Management commands. Base Figure247 defines the payload and field origins; NVM Figure112 specializes byte32 FLBAS and byte33 DPS: host-specified values for creation, Identify values for single-namespace deletion, and reserved fields for deletion of all namespaces.",
+      "scope_entry_id": "PEL-NVM-INCLUDE",
+      "heading_zh_tw": "把 namespace 變更接到 NVM 格式欄位",
+      "heading_en": "Connect namespace changes to NVM format fields",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.4, 文件頁 76-77, PDF 頁 76-77",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.4, printed pages 76-77, PDF pages 76-77"
+    },
+    {
+      "id": "PEL-NAMESPACE-2",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.6; 5.2.13.1.14.2.7; 5.2.13.1.14.2.8",
+      "figure": null,
+      "table": null,
+      "printed_pages": "258-261",
+      "pdf_pages": "284-287",
+      "normative_keyword": "none",
+      "zh_tw": "ET07 在 Format 參數驗證後、修改媒體前記錄；ET08 在已修改媒體的 Format 完成時記錄，完成可以失敗。FNVMS 的 INCPLTF=1 表示已修改部分或全部資料卻未成功，也要求 FNVME=1。SFPI 是曾回報的最小剩餘百分比；全體 namespace 的 Format 則為0，不能單憑0判成功。",
+      "en": "ET07 is recorded after Format parameter validation and before media modification; ET08 records completion of a Format that modified media, which may fail. INCPLTF=1 means some or all data was modified without successful completion and requires FNVME=1. SFPI is the smallest reported remaining percentage; an all-namespace Format reports zero, so zero alone is not success.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "把 namespace 變更接到 NVM 格式欄位",
+      "heading_en": "Connect namespace changes to NVM format fields",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.6; 5.2.13.1.14.2.7; 5.2.13.1.14.2.8, 文件頁 258-261, PDF 頁 284-287",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.6; 5.2.13.1.14.2.7; 5.2.13.1.14.2.8, printed pages 258-261, PDF pages 284-287"
+    },
+    {
+      "id": "PEL-NAMESPACE-3",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.5.1; 4.1.6",
+      "figure": null,
+      "table": null,
+      "printed_pages": "85-87,112-113",
+      "pdf_pages": "85-87,112-113",
+      "normative_keyword": "none",
+      "zh_tw": "FLBAS 的 format index 由 bits6:5 與 bits3:0 組合，bit4 選 metadata 傳輸方式；DPS bits2:0 選保護資訊類型。NVM 1.3 的 DPS.PIP 必須為0，把啟用的保護資訊放在 metadata 尾端。Format index 只是格式表的編號，本身不是 byte 大小。",
+      "en": "FLBAS combines bits6:5 and bits3:0 into a format index, with bit4 selecting metadata transfer. DPS bits2:0 select the protection-information type. NVM 1.3 requires DPS.PIP=0, placing enabled protection information at the end of metadata. A format index names a format-table entry, not a byte size.",
+      "scope_entry_id": "PEL-NVM-PREREQUISITES",
+      "heading_zh_tw": "把 namespace 變更接到 NVM 格式欄位",
+      "heading_en": "Connect namespace changes to NVM format fields",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.1; 4.1.6, 文件頁 85-87,112-113, PDF 頁 85-87,112-113",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.1; 4.1.6, printed pages 85-87,112-113, PDF pages 85-87,112-113"
+    },
+    {
+      "id": "PEL-SANITIZE",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.9; 5.2.13.1.14.2.10; 5.2.13.1.14.2.14",
+      "figure": null,
+      "table": null,
+      "printed_pages": "261-262,266",
+      "pdf_pages": "287-288,292",
+      "normative_keyword": "none",
+      "zh_tw": "ET09 記錄 sanitize 進入處理狀態，ET0A 記錄進入 Idle 或失敗狀態；成功的命令完成不等於長時間清除已完成。ET0E 記錄進入 Media Verification，ETR=1、EL=0，沒有 ED。Start／Completion 的 NSID 指定清除對象，FFFFFFFFh 表示整個 subsystem。",
+      "en": "ET09 records entry into sanitize processing; ET0A records entry into Idle or a failure state. Successful command completion is not completion of the long-running operation. ET0E marks entry into Media Verification with ETR=1 and EL=0, carrying no ED. Start/completion NSID identifies the target; FFFFFFFFh means the subsystem.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "把清除開始、完成與媒體驗證分開",
+      "heading_en": "Separate sanitize start, completion and media verification",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.9; 5.2.13.1.14.2.10; 5.2.13.1.14.2.14, 文件頁 261-262,266, PDF 頁 287-288,292",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.9; 5.2.13.1.14.2.10; 5.2.13.1.14.2.14, printed pages 261-262,266, PDF pages 287-288,292"
+    },
+    {
+      "id": "PEL-SANITIZE-2",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.38",
+      "figure": null,
+      "table": null,
+      "printed_pages": "314-316",
+      "pdf_pages": "340-342",
+      "normative_keyword": "none",
+      "zh_tw": "SPROG 的進度刻度是65536；FFFFh也可能出現在 Media Verification 或非處理狀態，所以要同時讀SSTAT.SOS。SOS=3表示失敗，1表示成功完成，4表示成功但發生了未要求的deallocation，2涵蓋處理中、驗證與驗證後deallocation。",
+      "en": "SPROG uses a scale of 65536. FFFFh also appears during Media Verification or outside processing, so interpret SSTAT.SOS alongside it: 3 is failure, 1 successful completion, 4 success with unexpected deallocation, and 2 covers processing, verification and post-verification deallocation.",
+      "scope_entry_id": "PEL-BASE-PREREQUISITES",
+      "heading_zh_tw": "把清除開始、完成與媒體驗證分開",
+      "heading_en": "Separate sanitize start, completion and media verification",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, 文件頁 314-316, PDF 頁 340-342",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, printed pages 314-316, PDF pages 340-342"
+    },
+    {
+      "id": "PEL-HARDWARE",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.5",
+      "figure": null,
+      "table": null,
+      "printed_pages": "254-258",
+      "pdf_pages": "280-284",
+      "normative_keyword": "none",
+      "zh_tw": "ET05 的 NSHEEC 選擇硬體錯誤種類，AHEI 的格式與長度跟著種類改變。01h～03h 是 PCIe 錯誤資訊，08h 是非預期斷電資訊，0Bh 是控制器就緒逾時資訊；某些種類沒有 AHEI。硬體事件子類的支援由廠商決定，不能把固定的一張表套到所有 ET05。",
+      "en": "In ET05, NSHEEC selects the hardware-error kind and thereby the AHEI layout and length. Codes01h–03h carry PCIe error information, 08h unexpected-power-loss information, and 0Bh controller-ready timeout information; some kinds have no AHEI. Vendors select supported subtypes, so one fixed layout cannot decode every ET05.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "先選硬體錯誤代碼，再選附加資料格式",
+      "heading_en": "Select the hardware-error code before its additional format",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, 文件頁 254-258, PDF 頁 280-284",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, printed pages 254-258, PDF pages 280-284"
+    },
+    {
+      "id": "PEL-FEATURES",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.11",
+      "figure": null,
+      "table": null,
+      "printed_pages": "262-264",
+      "pdf_pages": "288-290",
+      "normative_keyword": "none",
+      "zh_tw": "ET0B 在成功 Set Features、值確實改變且支援記錄時必須記錄；成功但同值時可記錄。Figure252 的 O／P／NR 是各 Feature 在指定控制器類型上的記錄要求，不是該 Feature 的支援能力。SFEL 決定連續 CDW、可選資料 buffer 與可選 CQE DW0 的位置。",
+      "en": "ET0B must be logged for successful value-changing Set Features when logging is supported; successful same-value requests may be logged. Figure252 O/P/NR describes logging requirements for a feature/controller type, not feature support. SFEL locates consecutive command Dwords, an optional data buffer and optional completion DW0.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "設定事件如何保留命令與資料",
+      "heading_en": "How feature events preserve commands and data",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.11, 文件頁 262-264, PDF 頁 288-290",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.11, printed pages 262-264, PDF pages 288-290"
+    },
+    {
+      "id": "PEL-FEATURES-2",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.15",
+      "figure": null,
+      "table": null,
+      "printed_pages": "266-267",
+      "pdf_pages": "292-293",
+      "normative_keyword": "none",
+      "zh_tw": "ET0F 是 Configurable Device Personality 的專屬事件，描述設定變更、freeze／unfreeze或安全條件造成的freeze。CDPRFS記錄要求的freeze狀態，CDPCE表示變更錯誤；不能因requested bit=1就宣稱已成功freeze。Manufacturing Default請求只記一筆，不逐personality拆成多筆。",
+      "en": "ET0F is the dedicated Configurable Device Personality event for changes, freeze/unfreeze and security-triggered freezing. CDPRFS records the requested freeze state and CDPCE a change error; a requested bit alone does not prove successful freezing. A Manufacturing Default request produces one event rather than one per personality.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "設定事件如何保留命令與資料",
+      "heading_en": "How feature events preserve commands and data",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.15, 文件頁 266-267, PDF 頁 292-293",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.15, printed pages 266-267, PDF pages 292-293"
+    },
+    {
+      "id": "PEL-EXTENSIONS",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.16; 5.2.13.1.14.2.17; 5.2.13.1.14.2.18",
+      "figure": null,
+      "table": null,
+      "printed_pages": "267-270",
+      "pdf_pages": "293-296",
+      "normative_keyword": "none",
+      "zh_tw": "ET10 記錄 Exported NVM Subsystem 的建立、刪除或實體變更；OTYP 決定 EEID／UEID 代表namespace、controller、port或其他對象。ETDE 的 ED 是一串廠商資料描述子，每筆長度為6+VSEDL，依VSEDT選資料型別；廠商事件與任何事件皆可能有的VSI並不是同一層。ETDF的內容格式由TCG保留定義。",
+      "en": "ET10 records creation, deletion or entity changes of an Exported NVM Subsystem; OTYP determines whether EEID/UEID identify a namespace, controller, port or another object. ETDE ED contains vendor descriptors, each 6+VSEDL bytes and interpreted by VSEDT. A vendor event differs from the optional VSI attached to any event. ETDF payload formatting is reserved for TCG definition.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "heading_zh_tw": "識別值映射與廠商擴充如何讀到正確邊界",
+      "heading_en": "Read identifier mappings and vendor extensions within their boundaries",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.16; 5.2.13.1.14.2.17; 5.2.13.1.14.2.18, 文件頁 267-270, PDF 頁 293-296",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.16; 5.2.13.1.14.2.17; 5.2.13.1.14.2.18, printed pages 267-270, PDF pages 293-296"
+    },
+    {
+      "id": "PEL-NVM-FIG-091-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.1",
+      "figure": "91",
+      "table": null,
+      "printed_pages": "63",
+      "pdf_pages": "63",
+      "normative_keyword": "none",
+      "zh_tw": "NVM補定Format命令的bits8:4，沒有改變Base的SES和格式編號位置。",
+      "en": "Figure 91, \"Format NVM – Command Dword 10 – NVM Command Set Specific Fields\": NVM defines Format command bits8:4 without changing Base SES or index positions.",
+      "scope_entry_id": "PEL-NVM-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NVM"
+      ],
+      "evidence_digest": "9ba5ce9bcc9f2b97f81dba3db5414c47afef9aa44afe89db735735145b340be7",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.1, Figure 91, 文件頁 63, PDF 頁 63",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.1, Figure 91, printed pages 63, PDF pages 63"
+    },
+    {
+      "id": "PEL-BASE-FIG-097-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "4.2.1",
+      "figure": "97",
+      "table": null,
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "normative_keyword": "none",
+      "zh_tw": "完整CQE至少16bytes，命令專屬回覆與通用狀態分開。",
+      "en": "Figure 97, \"Common Completion Queue Entry Layout – Admin and All I/O Command Sets\": A full CQE separates command-specific results from common completion metadata.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "DW1",
+        "DW2",
+        "DW3"
+      ],
+      "evidence_digest": "60dbf653ffccce14e70d0ecc6bf0706eb3f7ae73698e078c0e917ee0509e3839",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, 文件頁 144, PDF 頁 170",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 97, printed pages 144, PDF pages 170"
+    },
+    {
+      "id": "PEL-BASE-FIG-098-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "4.2.1",
+      "figure": "98",
+      "table": null,
+      "printed_pages": "144",
+      "pdf_pages": "170",
+      "normative_keyword": "none",
+      "zh_tw": "SQID與SQHD各回答命令從哪個queue來與當時消耗到哪裡。",
+      "en": "Figure 98, \"Completion Queue Entry: DW 2\": SQID identifies the source queue; SQHD captures its consumption position.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "CQE",
+        "DW0",
+        "DW1",
+        "DW2",
+        "DW3"
+      ],
+      "evidence_digest": "60dbf653ffccce14e70d0ecc6bf0706eb3f7ae73698e078c0e917ee0509e3839",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, 文件頁 144, PDF 頁 170",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 98, printed pages 144, PDF pages 170"
+    },
+    {
+      "id": "PEL-BASE-FIG-099-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "4.2.1",
+      "figure": "99",
+      "table": null,
+      "printed_pages": "145",
+      "pdf_pages": "171",
+      "normative_keyword": "none",
+      "zh_tw": "CID要配SQID識別命令，Phase只用來辨認queue entry更新。",
+      "en": "Figure 99, \"Completion Queue Entry: DW 3\": Combine CID with SQID; Phase describes queue-entry freshness rather than operation success.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "CQE"
+      ],
+      "evidence_digest": "62c4e4c1f455149bd744c4f4402fb7e3816c264d37153562c820dc487c4c6b70",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, 文件頁 145, PDF 頁 171",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.1, Figure 99, printed pages 145, PDF pages 171"
+    },
+    {
+      "id": "PEL-BASE-FIG-101-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "4.2.3",
+      "figure": "101",
+      "table": null,
+      "printed_pages": "145-146",
+      "pdf_pages": "171-172",
+      "normative_keyword": "none",
+      "zh_tw": "Status先拆SCT與SC，再讀重試及更多資訊位元。",
+      "en": "Figure 101, \"Completion Queue Entry: Status Field\": Decode SCT/SC together, then retry and additional-information flags.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "CQE"
+      ],
+      "evidence_digest": "8caab5160c15e3e1a23d11f1e73d85abcdf0bc707d41b44d37d9cd89baed01d2",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, 文件頁 145-146, PDF 頁 171-172",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §4.2.3, Figure 101, printed pages 145-146, PDF pages 171-172"
+    },
+    {
+      "id": "PEL-NVM-FIG-112-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.4.4",
+      "figure": "112",
+      "table": null,
+      "printed_pages": "77",
+      "pdf_pages": "77",
+      "normative_keyword": "none",
+      "zh_tw": "NVM只補定事件byte32／33的來源與格式，沒有再加一個namespace header。",
+      "en": "Figure 112, \"Change Namespace Event Data Format (Event Type 06h)\": NVM specializes event bytes32/33 without adding another namespace header.",
+      "scope_entry_id": "PEL-NVM-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "FLBAS",
+        "LBA",
+        "DPS"
+      ],
+      "evidence_digest": "299a764f1580d40696b24404d00812f5ef046bc5f2c5a7faf6e9f505780171f4",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.4, Figure 112, 文件頁 77, PDF 頁 77",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.4.4, Figure 112, printed pages 77, PDF pages 77"
+    },
+    {
+      "id": "PEL-NVM-FIG-123-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.5.1",
+      "figure": "123",
+      "table": null,
+      "printed_pages": "85-87",
+      "pdf_pages": "85-87",
+      "normative_keyword": "none",
+      "zh_tw": "FLBAS的格式編號與metadata方式共用一個byte，DPS另外選PI類型。",
+      "en": "Figure 123, \"Identify – Identify Namespace Data Structure, NVM Command Set\": FLBAS packs the format index and metadata mode; DPS separately selects protection information.",
+      "scope_entry_id": "PEL-NVM-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "NSZE",
+        "FLBAS",
+        "FIDXU",
+        "FIDXL",
+        "LBA",
+        "DPS",
+        "PIT",
+        "NMIC"
+      ],
+      "evidence_digest": "72ed7ed51e141e3264882ecf6d7a7887a8eea315f7b83834ffe4d7b2561a74f9",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.1, Figure 123, 文件頁 85-87, PDF 頁 85-87",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.5.1, Figure 123, printed pages 85-87, PDF pages 85-87"
+    },
+    {
+      "id": "PEL-NVM-FIG-134-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-NVM-CS-1.3",
+      "revision": "1.3",
+      "section": "4.1.6",
+      "figure": "134",
+      "table": null,
+      "printed_pages": "112-113",
+      "pdf_pages": "112-113",
+      "normative_keyword": "none",
+      "zh_tw": "Create輸入與事件輸出的位置不同，而且不是整個輸入buffer都會留在事件裡。",
+      "en": "Figure 134, \"Namespace Management – Host Specified Fields\": Create inputs move to different offsets in the event; the entire input buffer is not preserved.",
+      "scope_entry_id": "PEL-NVM-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NSZE",
+        "FLBAS",
+        "LBA",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID"
+      ],
+      "evidence_digest": "4087b37795cd3ddef1a56907900f593e24e775ffb67a7e936c82b5c3786320ce",
+      "citation_zh_tw": "來源：NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6, Figure 134, 文件頁 112-113, PDF 頁 112-113",
+      "citation_en": "Source: NVME-NVM-CS-1.3, Rev. 1.3, §4.1.6, Figure 134, printed pages 112-113, PDF pages 112-113"
+    },
+    {
+      "id": "PEL-BASE-FIG-187-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.9",
+      "figure": "187",
+      "table": null,
+      "printed_pages": "203",
+      "pdf_pages": "229",
+      "normative_keyword": "none",
+      "zh_tw": "CA／FS先從命令bit欄取值，再分別放入韌體事件的整個bytes。",
+      "en": "Figure 187, \"Firmware Commit – Command Dword 10\": CA and FS are extracted from command bits before being stored as separate event bytes.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "187"
+      ],
+      "evidence_digest": "ccb68cd244d086ec8db43b3f1b2418563920bf17f83d06352685cf68208aca6b",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, Figure 187, 文件頁 203, PDF 頁 229",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, Figure 187, printed pages 203, PDF pages 229"
+    },
+    {
+      "id": "PEL-BASE-FIG-189-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.9",
+      "figure": "189",
+      "table": null,
+      "printed_pages": "204",
+      "pdf_pages": "230",
+      "normative_keyword": "none",
+      "zh_tw": "需要reset的完成碼可表示提交成功，但啟用尚待指定reset。",
+      "en": "Figure 189, \"Firmware Commit – Command Specific Status Values\": A reset-required completion may mean successful commitment but deferred activation.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "189"
+      ],
+      "evidence_digest": "9ccb6351df4b47a9ced33415f4eeba5736b3115ce5e03ac9abfeb1a16aafaa02",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.9, Figure 189, 文件頁 204, PDF 頁 230",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.9, Figure 189, printed pages 204, PDF pages 230"
+    },
+    {
+      "id": "PEL-BASE-FIG-195-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.11",
+      "figure": "195",
+      "table": null,
+      "printed_pages": "208-209",
+      "pdf_pages": "234-235",
+      "normative_keyword": "none",
+      "zh_tw": "Format index被拆成高低欄位，SES則另選安全清除動作。",
+      "en": "Figure 195, \"Format NVM – Command Dword 10\": Format index spans upper/lower fields; SES separately selects secure erase.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "FNA",
+        "FNVMBS",
+        "NVM"
+      ],
+      "evidence_digest": "495ca3f0919973f85d988375173956b94a349606a8cef8cf8585e794dceb30e3",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.11, Figure 195, 文件頁 208-209, PDF 頁 234-235",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.11, Figure 195, printed pages 208-209, PDF pages 234-235"
+    },
+    {
+      "id": "PEL-BASE-FIG-203-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "203",
+      "table": null,
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "normative_keyword": "none",
+      "zh_tw": "DPTR指向接收資料的buffer，不是PEL內的事件offset。",
+      "en": "Figure 203, \"Get Log Page – Data Pointer\": DPTR addresses host output memory rather than selecting an offset inside PEL.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "DPTR",
+        "NUMDU",
+        "NUMDL",
+        "IOS"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, 文件頁 213, PDF 頁 239",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 203, printed pages 213, PDF pages 239"
+    },
+    {
+      "id": "PEL-BASE-FIG-204-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "204",
+      "table": null,
+      "printed_pages": "213",
+      "pdf_pages": "239",
+      "normative_keyword": "none",
+      "zh_tw": "NUMDL用Dwords且從0計數，LSP則放本log的ACT。",
+      "en": "Figure 204, \"Get Log Page – Command Dword 10\": NUMDL is a zero-based Dword count, while LSP carries the log-specific action.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "DPTR",
+        "NUMDU",
+        "NUMDL",
+        "IOS"
+      ],
+      "evidence_digest": "d48a113332de647555fccd27e29c9444376b9aeb6a42dc3da1dc0edf7f375ba4",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, 文件頁 213, PDF 頁 239",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 204, printed pages 213, PDF pages 239"
+    },
+    {
+      "id": "PEL-BASE-FIG-205-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "205",
+      "table": null,
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "normative_keyword": "none",
+      "zh_tw": "NUMDU補長度高位，LSI是另一個log專屬選擇欄。",
+      "en": "Figure 205, \"Get Log Page – Command Dword 11\": NUMDU extends length; LSI is a separate log-specific selector.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, 文件頁 214, PDF 頁 240",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 205, printed pages 214, PDF pages 240"
+    },
+    {
+      "id": "PEL-BASE-FIG-206-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "206",
+      "table": null,
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "normative_keyword": "none",
+      "zh_tw": "OT0時LPOL是byte位置，OT1才是表內項目編號。",
+      "en": "Figure 206, \"Get Log Page – Command Dword 12\": With OT0, LPOL is a byte position, not a Dword count or entry index.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, 文件頁 214, PDF 頁 240",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 206, printed pages 214, PDF pages 240"
+    },
+    {
+      "id": "PEL-BASE-FIG-207-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "207",
+      "table": null,
+      "printed_pages": "214",
+      "pdf_pages": "240",
+      "normative_keyword": "none",
+      "zh_tw": "LPOU是同一個64-bit位置的高32bits，不是第二個獨立offset。",
+      "en": "Figure 207, \"Get Log Page – Command Dword 13\": LPOU supplies the upper half of one 64-bit position.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "evidence_digest": "c0d43e90a0f54900e84e3cc5c45f2d73fc9577358979b1c117e655384ae0327c",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, 文件頁 214, PDF 頁 240",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 207, printed pages 214, PDF pages 240"
+    },
+    {
+      "id": "PEL-BASE-FIG-208-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "208",
+      "table": null,
+      "printed_pages": "214-215",
+      "pdf_pages": "240-241",
+      "normative_keyword": "none",
+      "zh_tw": "OT與UIDX各有用途，CSI也不是PEL事件種類。",
+      "en": "Figure 208, \"Get Log Page – Command Dword 14\": OT and UIDX select offset interpretation and UUID context, not event type.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "NUMDU",
+        "LPOL",
+        "LPOU",
+        "IOS"
+      ],
+      "evidence_digest": "8cb0acdbd8a5752d0805867233e556d419934da159c0da658d66e5cd0f26bc0f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, 文件頁 214-215, PDF 頁 240-241",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 208, printed pages 214-215, PDF pages 240-241"
+    },
+    {
+      "id": "PEL-BASE-FIG-209-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13",
+      "figure": "209",
+      "table": null,
+      "printed_pages": "215-217",
+      "pdf_pages": "241-243",
+      "normative_keyword": "none",
+      "zh_tw": "LID0Dh屬subsystem範圍，不由CSI挑事件格式。",
+      "en": "Figure 209, \"Get Log Page – Log Page Identifiers\": LID0Dh has subsystem scope and does not use CSI as an event-format selector.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "CDW14"
+      ],
+      "evidence_digest": "15a2f8dbd58ac819b2889ae059c76412f2ec52ebb4b346a55592661252d8e9ce",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, 文件頁 215-217, PDF 頁 241-243",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13, Figure 209, printed pages 215-217, PDF pages 241-243"
+    },
+    {
+      "id": "PEL-BASE-FIG-210-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.1",
+      "figure": "210",
+      "table": null,
+      "printed_pages": "217",
+      "pdf_pages": "243",
+      "normative_keyword": "none",
+      "zh_tw": "支援清單每LID固定4bytes，可用LID算出描述子位置。",
+      "en": "Figure 210, \"Supported Log Pages Log Page\": The supported-log list has four bytes per LID, making descriptor location computable.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "210"
+      ],
+      "evidence_digest": "8402e78afe2007eaacf90da7e7710de8d5f17d0d62fcf854f1eae1096b7acea9",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.1, Figure 210, 文件頁 217, PDF 頁 243",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.1, Figure 210, printed pages 217, PDF pages 243"
+    },
+    {
+      "id": "PEL-BASE-FIG-211-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.1",
+      "figure": "211",
+      "table": null,
+      "printed_pages": "217-218",
+      "pdf_pages": "243-244",
+      "normative_keyword": "none",
+      "zh_tw": "先確認LSUPP，再看IOS與LIDSP，不能把未支援列的其他bits當能力。",
+      "en": "Figure 211, \"LID Supported and Effects Data Structure\": Check LSUPP before interpreting IOS and log-specific capability bits.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "LSUPP",
+        "IOS"
+      ],
+      "evidence_digest": "884149517c986e5c11e53b88a5a273bd5f3527c293a0161cfed7c40584b221eb",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.1, Figure 211, 文件頁 217-218, PDF 頁 243-244",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.1, Figure 211, printed pages 217-218, PDF pages 243-244"
+    },
+    {
+      "id": "PEL-BASE-FIG-213-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.3",
+      "figure": "213",
+      "table": null,
+      "printed_pages": "221-225",
+      "pdf_pages": "247-251",
+      "normative_keyword": "none",
+      "zh_tw": "SMART同時有狀態、累計量與時間，零值與單位必須逐欄判斷。",
+      "en": "Figure 213, \"SMART / Health Information Log Page\": SMART mixes status, counters and durations, each with its own units and zero semantics.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "CW",
+        "EGCWS",
+        "INFW",
+        "AVSP",
+        "CCTEMP",
+        "TSEN1",
+        "TTTMT1",
+        "TTTMT2",
+        "IPM"
+      ],
+      "evidence_digest": "8338f435e3aa194b6240747e3470eb1d08b05994c761d232be0fbb8d46d817c1",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 213, 文件頁 221-225, PDF 頁 247-251",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 213, printed pages 221-225, PDF pages 247-251"
+    },
+    {
+      "id": "PEL-BASE-FIG-214-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.3",
+      "figure": "214",
+      "table": null,
+      "printed_pages": "225",
+      "pdf_pages": "251",
+      "normative_keyword": "none",
+      "zh_tw": "每個溫度sensor是16-bit Kelvin值，0代表沒有實作。",
+      "en": "Figure 214, \"Temperature Sensor Data Structure\": A sensor is a 16-bit Kelvin value; zero means unimplemented, not a physical absolute-zero reading.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "IPM"
+      ],
+      "evidence_digest": "54a6030defad55f9940e13bcb4a80409859b0a29cd84987f78f4ee248cefbdbf",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 214, 文件頁 225, PDF 頁 251",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.3, Figure 214, printed pages 225, PDF pages 251"
+    },
+    {
+      "id": "PEL-BASE-FIG-221-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.8",
+      "figure": "221",
+      "table": null,
+      "printed_pages": "234",
+      "pdf_pages": "260",
+      "normative_keyword": "none",
+      "zh_tw": "Host-Initiated header的scope在byte380，generation在381。",
+      "en": "Figure 221, \"Telemetry Host-Initiated Log Page\": Host-Initiated scope is at byte380 and its generation at381; areas share the same starting block.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "221"
+      ],
+      "evidence_digest": "58de4cded438ad8d4caf7f83b54797ad43f0c3e6b65ed7c085b5c3c050e88f1d",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, 文件頁 234, PDF 頁 260",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.8, Figure 221, printed pages 234, PDF pages 260"
+    },
+    {
+      "id": "PEL-BASE-FIG-223-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.9",
+      "figure": "223",
+      "table": null,
+      "printed_pages": "236-237",
+      "pdf_pages": "262-263",
+      "normative_keyword": "none",
+      "zh_tw": "Controller-Initiated的scope在381，TCDA是更新是否已確認，不能當資料大小。",
+      "en": "Figure 223, \"Telemetry Controller-Initiated Log Page\": Controller-Initiated scope is at381; TCDA tracks update acknowledgement, not payload size.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "223"
+      ],
+      "evidence_digest": "898bab4bfb85c27bfa93e48565bce2d96ac303d070fb20988ab57ce3882b8e1e",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, Figure 223, 文件頁 236-237, PDF 頁 262-263",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.9, Figure 223, printed pages 236-237, PDF pages 262-263"
+    },
+    {
+      "id": "PEL-BASE-FIG-232-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": "232",
+      "table": null,
+      "printed_pages": "246",
+      "pdf_pages": "272",
+      "normative_keyword": "none",
+      "zh_tw": "ACT選擇的是context動作，不是想讀哪一種事件。",
+      "en": "Figure 232, \"Persistent Event Log Specific Parameter Field\": ACT selects a context operation, not an event type.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "ACT"
+      ],
+      "evidence_digest": "116bd1203ee4d5704b05cdac7372ab4638537b2063e3776be97348814848f08c",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, Figure 232, 文件頁 246, PDF 頁 272",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, Figure 232, printed pages 246, PDF pages 272"
+    },
+    {
+      "id": "PEL-BASE-FIG-233-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": "233",
+      "table": null,
+      "printed_pages": "247-249",
+      "pdf_pages": "273-275",
+      "normative_keyword": "none",
+      "zh_tw": "TLL是整份長度，TNEV是事件筆數，LHL要加20才是header大小。",
+      "en": "Figure 233, \"Persistent Event Log Page\": TLL measures the report, TNEV counts events, and LHL excludes the first twenty header bytes.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "LID",
+        "TNEV",
+        "LREV",
+        "LHL",
+        "RCE",
+        "RCI",
+        "RCPIT",
+        "TCG"
+      ],
+      "evidence_digest": "d7b7d5e3876e7da96f0d5b63a953ed85cea33c3efa20fa3ba24c62f730db1b17",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, Figure 233, 文件頁 247-249, PDF 頁 273-275",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, Figure 233, printed pages 247-249, PDF pages 273-275"
+    },
+    {
+      "id": "PEL-BASE-FIG-234-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14",
+      "figure": "234",
+      "table": null,
+      "printed_pages": "249-250",
+      "pdf_pages": "275-276",
+      "normative_keyword": "none",
+      "zh_tw": "EL已包含VSI；用EHL+3+EL前進，才會落在下一筆事件開頭。",
+      "en": "Figure 234, \"Persistent Event Format\": EL includes VSI; advance by EHL+3+EL to reach the next record.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "PIT",
+        "VSIL",
+        "EL",
+        "TLL"
+      ],
+      "evidence_digest": "35b156dd92a51e4d927a4ca7c5246097c11b19fb817042de3eebae2cfa17838a",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, Figure 234, 文件頁 249-250, PDF 頁 275-276",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14, Figure 234, printed pages 249-250, PDF pages 275-276"
+    },
+    {
+      "id": "PEL-BASE-FIG-235-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.1",
+      "figure": "235",
+      "table": null,
+      "printed_pages": "251",
+      "pdf_pages": "277",
+      "normative_keyword": "none",
+      "zh_tw": "ECRH在Supported Log Pages的能力描述子內，並不放在PEL事件header。",
+      "en": "Figure 235, \"Persistent Event LID Specific Parameter Field\": ECRH belongs to the Supported Log Pages capability descriptor, not an event header.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "235"
+      ],
+      "evidence_digest": "f3330d76d4f48beae0077cee76c78e2ed69121c89139a4dfba0c3bf5713c6b20",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.1, Figure 235, 文件頁 251, PDF 頁 277",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.1, Figure 235, printed pages 251, PDF pages 277"
+    },
+    {
+      "id": "PEL-BASE-FIG-236-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2",
+      "figure": "236",
+      "table": null,
+      "printed_pages": "251",
+      "pdf_pages": "277",
+      "normative_keyword": "none",
+      "zh_tw": "支援要求與ETR分別回答「要不要有」和「怎麼解」。",
+      "en": "Figure 236, \"Persistent Event Log Event Types\": Support requirements and ETR answer whether a type is required and how to decode it.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "SMART"
+      ],
+      "evidence_digest": "f3330d76d4f48beae0077cee76c78e2ed69121c89139a4dfba0c3bf5713c6b20",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2, Figure 236, 文件頁 251, PDF 頁 277",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2, Figure 236, printed pages 251, PDF pages 277"
+    },
+    {
+      "id": "PEL-BASE-FIG-237-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.1",
+      "figure": "237",
+      "table": null,
+      "printed_pages": "252",
+      "pdf_pages": "278",
+      "normative_keyword": "none",
+      "zh_tw": "這512 bytes是事件當時的完整SMART資料，不是取PEL當下的健康值。",
+      "en": "Figure 237, \"SMART / Health Log Snapshot Event Data Format (Event Type 01h)\": These 512 bytes are the historical SMART snapshot, not current health at PEL retrieval.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "237"
+      ],
+      "evidence_digest": "475d35a16f0b95f7406af7cd09e663c5e35ab9c1dabb8725e0443dcdc2b9b1de",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.1, Figure 237, 文件頁 252, PDF 頁 278",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.1, Figure 237, printed pages 252, PDF pages 278"
+    },
+    {
+      "id": "PEL-BASE-FIG-238-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.2",
+      "figure": "238",
+      "table": null,
+      "printed_pages": "252",
+      "pdf_pages": "278",
+      "normative_keyword": "none",
+      "zh_tw": "韌體事件保留提交要求與完成狀態；NFR不是已啟用版本的證明。",
+      "en": "Figure 238, \"Firmware Commit Event Data Format (Event Type 02h)\": The firmware event records a commit request and completion, not proof that NFR is already active.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "FSLT"
+      ],
+      "evidence_digest": "475d35a16f0b95f7406af7cd09e663c5e35ab9c1dabb8725e0443dcdc2b9b1de",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.2, Figure 238, 文件頁 252, PDF 頁 278",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.2, Figure 238, printed pages 252, PDF pages 278"
+    },
+    {
+      "id": "PEL-BASE-FIG-239-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.3",
+      "figure": "239",
+      "table": null,
+      "printed_pages": "253",
+      "pdf_pages": "279",
+      "normative_keyword": "none",
+      "zh_tw": "PTSTP是變更前，外層ETSTP是變更後，MSR才是從reset起算的間隔。",
+      "en": "Figure 239, \"Timestamp Change Event Format (Event Type 03h)\": PTSTP is the previous time, the enclosing ETSTP is the new time, and MSR measures time since reset.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "239"
+      ],
+      "evidence_digest": "5ebcf546bd5831bb390f349972b4dfc5e02e66a139faebe83e6760a31e4780bf",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.3, Figure 239, 文件頁 253, PDF 頁 279",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.3, Figure 239, printed pages 253, PDF pages 279"
+    },
+    {
+      "id": "PEL-BASE-FIG-240-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.4",
+      "figure": "240",
+      "table": null,
+      "printed_pages": "253",
+      "pdf_pages": "279",
+      "normative_keyword": "none",
+      "zh_tw": "FREV後面接的是多份reset描述子，不是只有一個controller狀態。",
+      "en": "Figure 240, \"Power-on or Reset Event (Event Type 04h)\": FREV is followed by a list of reset descriptors, potentially covering several controllers.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "FREV",
+        "CC",
+        "RDNF"
+      ],
+      "evidence_digest": "5ebcf546bd5831bb390f349972b4dfc5e02e66a139faebe83e6760a31e4780bf",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.4, Figure 240, 文件頁 253, PDF 頁 279",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.4, Figure 240, printed pages 253, PDF pages 279"
+    },
+    {
+      "id": "PEL-BASE-FIG-241-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.4",
+      "figure": "241",
+      "table": null,
+      "printed_pages": "253-254",
+      "pdf_pages": "279-280",
+      "normative_keyword": "none",
+      "zh_tw": "FA描述這個controller的韌體啟用結果，POM則是累積通電時間。",
+      "en": "Figure 241, \"Controller Reset Information descriptor\": FA describes firmware activation for this controller; POM is lifetime power-on time, not reset latency.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "FREV",
+        "CC",
+        "RDNF"
+      ],
+      "evidence_digest": "4076e391acd9da4f382dbe18ad5231e9eddb0ce6bca47e4ad903b6d0475328eb",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.4, Figure 241, 文件頁 253-254, PDF 頁 279-280",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.4, Figure 241, printed pages 253-254, PDF pages 279-280"
+    },
+    {
+      "id": "PEL-BASE-FIG-242-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.5",
+      "figure": "242",
+      "table": null,
+      "printed_pages": "254",
+      "pdf_pages": "280",
+      "normative_keyword": "none",
+      "zh_tw": "ET05的ED先有子類代碼，再有由子類選定的AHEI。",
+      "en": "Figure 242, \"NVM Subsystem Hardware Error Event Format (Event Type 05h)\": ET05 ED starts with a subtype code that determines its AHEI layout.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "AHEI",
+        "ID"
+      ],
+      "evidence_digest": "25b613368b7c3a6df3af18dd1d48c296a40f94fd8d796db87958e715715434f7",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 242, 文件頁 254, PDF 頁 280",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 242, printed pages 254, PDF pages 280"
+    },
+    {
+      "id": "PEL-BASE-FIG-243-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.5",
+      "figure": "243",
+      "table": null,
+      "printed_pages": "254-255",
+      "pdf_pages": "280-281",
+      "normative_keyword": "none",
+      "zh_tw": "子類表是格式分派表，不是錯誤嚴重程度由小排到大。",
+      "en": "Figure 243, \"NVM Subsystem Hardware Error Event Codes\": The subtype table selects layouts, not a numeric ranking of severity.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "AHEI",
+        "ID"
+      ],
+      "evidence_digest": "4948edc1dcf604533b6a5522bbaaa6f3e4463dc3792eae309d8540574919969d",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 243, 文件頁 254-255, PDF 頁 280-281",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 243, printed pages 254-255, PDF pages 280-281"
+    },
+    {
+      "id": "PEL-BASE-FIG-244-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.5",
+      "figure": "244",
+      "table": null,
+      "printed_pages": "256",
+      "pdf_pages": "282",
+      "normative_keyword": "none",
+      "zh_tw": "UPLOA只標一種帶外管理造成的特殊掉電條件，不是所有非預期掉電的總開關。",
+      "en": "Figure 244, \"Additional Hardware Error Information for Unexpected Power Loss Errors\": UPLOA marks a specific out-of-band condition, not whether all unexpected power loss occurred.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "UPL",
+        "UPLI",
+        "UPLOA"
+      ],
+      "evidence_digest": "5971bf97b8fa0244422a9c1eb74c2025970e10be0370190cb60d679c59fcd661",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 244, 文件頁 256, PDF 頁 282",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 244, printed pages 256, PDF pages 282"
+    },
+    {
+      "id": "PEL-BASE-FIG-245-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.5",
+      "figure": "245",
+      "table": null,
+      "printed_pages": "256-257",
+      "pdf_pages": "282-283",
+      "normative_keyword": "none",
+      "zh_tw": "PCIEAERS決定AER資訊能否讀；error code再決定correctable或uncorrectable的register。",
+      "en": "Figure 245, \"Additional Hardware Error Information for correctable and uncorrectable PCIe\": PCIEAERS gates AER data, while the subtype selects correctable or uncorrectable registers.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "PCIEAERS",
+        "PCIEAS"
+      ],
+      "evidence_digest": "bc0b8e407312295152e48d8ae609756fe2a36b9e0e1d5a30044a4faaca327701",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 245, 文件頁 256-257, PDF 頁 282-283",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 245, printed pages 256-257, PDF pages 282-283"
+    },
+    {
+      "id": "PEL-BASE-FIG-246-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.5",
+      "figure": "246",
+      "table": null,
+      "printed_pages": "258",
+      "pdf_pages": "284",
+      "normative_keyword": "none",
+      "zh_tw": "CRIME保存當時ready模式，其他位元描述各範圍是否超過等待限制。",
+      "en": "Figure 246, \"Additional Hardware Error Information for Controller Ready Timeout Exceeded errors\": CRIME captures ready mode; other bits describe which readiness deadlines were exceeded.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "CST",
+        "CNR",
+        "ACMNR",
+        "NNR",
+        "CRIME"
+      ],
+      "evidence_digest": "6cbc7cebcb8fcb05d1ca9dfacaac837e82cf1d1fa0cb8330b1aab2c33b379cbf",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 246, 文件頁 258, PDF 頁 284",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.5, Figure 246, printed pages 258, PDF pages 284"
+    },
+    {
+      "id": "PEL-BASE-FIG-247-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.6",
+      "figure": "247",
+      "table": null,
+      "printed_pages": "258-259",
+      "pdf_pages": "284-285",
+      "normative_keyword": "none",
+      "zh_tw": "先看NMCDW10的動作與NSID，才能決定容量和格式欄位是否有效。",
+      "en": "Figure 247, \"Change Namespace Event Data Format (Event Type 06h)\": The management action and NSID determine whether capacity and format fields are meaningful.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "NMCDW10",
+        "NSZE",
+        "FLBAS",
+        "LBA",
+        "DPS",
+        "NMIC",
+        "ANAGRPID",
+        "NVMSETID",
+        "NSID"
+      ],
+      "evidence_digest": "eb6cd063dee717f6668f93fe80f16a9d3ae185b3ce89fcb17af065e901ca550e",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.6, Figure 247, 文件頁 258-259, PDF 頁 284-285",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.6, Figure 247, printed pages 258-259, PDF pages 284-285"
+    },
+    {
+      "id": "PEL-BASE-FIG-248-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.7",
+      "figure": "248",
+      "table": null,
+      "printed_pages": "260",
+      "pdf_pages": "286",
+      "normative_keyword": "none",
+      "zh_tw": "Format開始事件保存已通過參數驗證的要求與當時能力，還沒有修改結果。",
+      "en": "Figure 248, \"Format NVM Start Event Data Format (Event Type 07h)\": The Format-start event preserves a validated request and capabilities, before modification results exist.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "FMCDW10",
+        "FNA",
+        "NVM",
+        "CDW10",
+        "INCPLTF",
+        "FNVME"
+      ],
+      "evidence_digest": "222b84f3ba13d9a8ab545dc4f8bbfb20b16bdee9f6d03ccb257497913844b6d7",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.7, Figure 248, 文件頁 260, PDF 頁 286",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.7, Figure 248, printed pages 260, PDF pages 286"
+    },
+    {
+      "id": "PEL-BASE-FIG-249-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.8",
+      "figure": "249",
+      "table": null,
+      "printed_pages": "260-261",
+      "pdf_pages": "286-287",
+      "normative_keyword": "none",
+      "zh_tw": "完成事件的INCPLTF和FNVME一起區分「改過資料卻失敗」。",
+      "en": "Figure 249, \"Format NVM Completion Event Data Format (Event Type 08h)\": INCPLTF and FNVME distinguish a failed operation that already modified data.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "FMCDW10",
+        "FNA",
+        "NVM",
+        "CDW10",
+        "INCPLTF",
+        "FNVME",
+        "INFO"
+      ],
+      "evidence_digest": "d1855c76025a7bead7ce8490e0f4e57e94ac9834cd06b6889b6b0409a18c8f57",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.8, Figure 249, 文件頁 260-261, PDF 頁 286-287",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.8, Figure 249, printed pages 260-261, PDF pages 286-287"
+    },
+    {
+      "id": "PEL-BASE-FIG-250-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.9",
+      "figure": "250",
+      "table": null,
+      "printed_pages": "261",
+      "pdf_pages": "287",
+      "normative_keyword": "none",
+      "zh_tw": "Sanitize Start保存啟動參數與清除對象，不回報完成進度。",
+      "en": "Figure 250, \"Sanitize Start Event Data Format (Event Type 09h)\": Sanitize Start preserves initiation parameters and target, not completion progress.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SCDW11"
+      ],
+      "evidence_digest": "e0d1e98ac32e6b9463eb2328978b957b456fee67397c12657ddc1710f2fb378d",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.9, Figure 250, 文件頁 261, PDF 頁 287",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.9, Figure 250, printed pages 261, PDF pages 287"
+    },
+    {
+      "id": "PEL-BASE-FIG-251-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.10",
+      "figure": "251",
+      "table": null,
+      "printed_pages": "261-262",
+      "pdf_pages": "287-288",
+      "normative_keyword": "none",
+      "zh_tw": "Sanitize Completion要讀SOS；SPROG最大值不等於成功。",
+      "en": "Figure 251, \"Sanitize Completion Event Data Format (Event Type 0Ah)\": Sanitize Completion requires SOS; maximum SPROG does not establish success.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SCDW11",
+        "SSTAT"
+      ],
+      "evidence_digest": "524e68e8d095a3639435bd860cc232a6f120f4db1c6daa45d636a712957b5559",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.10, Figure 251, 文件頁 261-262, PDF 頁 287-288",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.10, Figure 251, printed pages 261-262, PDF pages 287-288"
+    },
+    {
+      "id": "PEL-BASE-FIG-252-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.11",
+      "figure": "252",
+      "table": null,
+      "printed_pages": "262-263",
+      "pdf_pages": "288-289",
+      "normative_keyword": "none",
+      "zh_tw": "每一格說的是Feature事件的記錄政策，不是在宣告能否使用Feature。",
+      "en": "Figure 252, \"Feature Persistent Event Logging Requirements\": Each cell specifies feature-event logging policy, not whether the feature itself is supported.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "252"
+      ],
+      "evidence_digest": "67a8d6bed92ff08638b16ac326faf3baa94dffc614a1a9a9adcc5d1dc4efdaee",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.11, Figure 252, 文件頁 262-263, PDF 頁 288-289",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.11, Figure 252, printed pages 262-263, PDF pages 288-289"
+    },
+    {
+      "id": "PEL-BASE-FIG-253-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.11",
+      "figure": "253",
+      "table": null,
+      "printed_pages": "264",
+      "pdf_pages": "290",
+      "normative_keyword": "none",
+      "zh_tw": "DWC算Dwords、MBC算bytes、LCCDW0只決定是否再有4 bytes。",
+      "en": "Figure 253, \"Set Feature Event Data Format\": DWC counts Dwords, MBC counts bytes, and LCCDW0 adds an optional four-byte result.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "SFEL",
+        "LCCDW0",
+        "MBC"
+      ],
+      "evidence_digest": "d6803b650f189fcb6b8be109387e1644ab68efa5c1514ab0b1eba81c3d21a3a7",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.11, Figure 253, 文件頁 264, PDF 頁 290",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.11, Figure 253, printed pages 264, PDF pages 290"
+    },
+    {
+      "id": "PEL-BASE-FIG-254-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.12",
+      "figure": "254",
+      "table": null,
+      "printed_pages": "264",
+      "pdf_pages": "290",
+      "normative_keyword": "none",
+      "zh_tw": "Telemetry事件只複製header，資料區的最後block編號不是事件內的資料。",
+      "en": "Figure 254, \"Telemetry Log Created Event Data Format (Event Type 0Ch)\": The telemetry event copies only the header; advertised data blocks are not included.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "254"
+      ],
+      "evidence_digest": "d6803b650f189fcb6b8be109387e1644ab68efa5c1514ab0b1eba81c3d21a3a7",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.12, Figure 254, 文件頁 264, PDF 頁 290",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.12, Figure 254, printed pages 264, PDF pages 290"
+    },
+    {
+      "id": "PEL-BASE-FIG-255-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.13",
+      "figure": "255",
+      "table": null,
+      "printed_pages": "265-266",
+      "pdf_pages": "291-292",
+      "normative_keyword": "none",
+      "zh_tw": "THRESH決定事件類型，OTMP只是相對門檻的溫差。",
+      "en": "Figure 255, \"Thermal Excursion Event Data Format (Event Type 0Dh)\": THRESH selects the thermal event; OTMP is a difference relative to the relevant threshold.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "OTMP"
+      ],
+      "evidence_digest": "9d7b61a4028eeb093f02946a0af627fdabc84ee576c23518089c43dcb1bded6e",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.13, Figure 255, 文件頁 265-266, PDF 頁 291-292",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.13, Figure 255, printed pages 265-266, PDF pages 291-292"
+    },
+    {
+      "id": "PEL-BASE-FIG-256-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.15",
+      "figure": "256",
+      "table": null,
+      "printed_pages": "267",
+      "pdf_pages": "293",
+      "normative_keyword": "none",
+      "zh_tw": "PS的requested freeze與change error要合讀，PED再依PERID解。",
+      "en": "Figure 256, \"CDP Change Event Data Format (Event Type 0Fh)\": Read requested freeze alongside change error, then interpret PED by PERID.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "CDPRFS",
+        "CDPCE"
+      ],
+      "evidence_digest": "e2f5afb5c475ad4db2fd0562968bbd64f5ac7ec3945e87b0c90df535d122c25f",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.15, Figure 256, 文件頁 267, PDF 頁 293",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.15, Figure 256, printed pages 267, PDF pages 293"
+    },
+    {
+      "id": "PEL-BASE-FIG-257-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.16",
+      "figure": "257",
+      "table": null,
+      "printed_pages": "267-268",
+      "pdf_pages": "293-294",
+      "normative_keyword": "none",
+      "zh_tw": "EEID與UEID分別是呈現出去與底層的識別值，寬度還要看OTYP。",
+      "en": "Figure 257, \"Exported NVM Subsystem Change Event Data Format (Event Type 10h)\": EEID and UEID identify exported and underlying objects, with widths selected by OTYP.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "257"
+      ],
+      "evidence_digest": "4de36935d67fe78311e6d1691ebabd80daa215b51dbd1cc0ab9b695ee86b6c2e",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.16, Figure 257, 文件頁 267-268, PDF 頁 293-294",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.16, Figure 257, printed pages 267-268, PDF pages 293-294"
+    },
+    {
+      "id": "PEL-BASE-FIG-258-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.17",
+      "figure": "258",
+      "table": null,
+      "printed_pages": "269",
+      "pdf_pages": "295",
+      "normative_keyword": "none",
+      "zh_tw": "ETDE的ED是描述子串列，描述子數量由長度走到末端而得。",
+      "en": "Figure 258, \"Vendor Specific Event Format (Event Type DEh)\": ETDE ED is a descriptor list whose end follows from lengths, not a separate count field.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "VSEDL",
+        "ASCII"
+      ],
+      "evidence_digest": "b0a389586f2cc25f6d07306c36893229a6621cc5c58042958800384a69be0931",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.17, Figure 258, 文件頁 269, PDF 頁 295",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.17, Figure 258, printed pages 269, PDF pages 295"
+    },
+    {
+      "id": "PEL-BASE-FIG-259-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.17",
+      "figure": "259",
+      "table": null,
+      "printed_pages": "269",
+      "pdf_pages": "295",
+      "normative_keyword": "none",
+      "zh_tw": "每個描述子有6-byte前綴，VSEDL只計後面的資料。",
+      "en": "Figure 259, \"Vendor Specific Event Descriptor Format\": Each descriptor has a six-byte prefix excluded from VSEDL.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "VSEDL",
+        "ASCII"
+      ],
+      "evidence_digest": "b0a389586f2cc25f6d07306c36893229a6621cc5c58042958800384a69be0931",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.17, Figure 259, 文件頁 269, PDF 頁 295",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.17, Figure 259, printed pages 269, PDF pages 295"
+    },
+    {
+      "id": "PEL-BASE-FIG-260-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.14.2.17",
+      "figure": "260",
+      "table": null,
+      "printed_pages": "269-270",
+      "pdf_pages": "295-296",
+      "normative_keyword": "none",
+      "zh_tw": "相同bytes可以因VSEDT不同而有完全不同的讀法。",
+      "en": "Figure 260, \"Vendor Specific Event Data Type Codes\": Identical bytes can mean different things under different VSEDT types.",
+      "scope_entry_id": "PEL-BASE-INCLUDE",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "VSEDL",
+        "ASCII"
+      ],
+      "evidence_digest": "912d11b14beae8bba62fdc5a4dd4b7532afef6b9032b2de0592b6b42a1472c98",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.17, Figure 260, 文件頁 269-270, PDF 頁 295-296",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.14.2.17, Figure 260, printed pages 269-270, PDF pages 295-296"
+    },
+    {
+      "id": "PEL-BASE-FIG-312-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.13.1.38",
+      "figure": "312",
+      "table": null,
+      "printed_pages": "314-316",
+      "pdf_pages": "340-342",
+      "normative_keyword": "none",
+      "zh_tw": "SSTAT把作業結果、覆寫輪次、驗證與清除範圍狀態放在不同bits。",
+      "en": "Figure 312, \"Sanitize Status Log Page\": SSTAT separates outcome, overwrite passes, verification and erased-scope state.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "SCDW10",
+        "SSTAT",
+        "GDE"
+      ],
+      "evidence_digest": "a276d931e6c17a296499d2e6c43e1fab3a3b23437c813c9c2046c73328bf19c4",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, Figure 312, 文件頁 314-316, PDF 頁 340-342",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.13.1.38, Figure 312, printed pages 314-316, PDF pages 340-342"
+    },
+    {
+      "id": "PEL-BASE-FIG-338-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.14.2.1",
+      "figure": "338",
+      "table": null,
+      "printed_pages": "355,357,361-362,364,373",
+      "pdf_pages": "381,383,387-388,390,399",
+      "normative_keyword": "none",
+      "zh_tw": "Identify提供的是能力與上限；事件內保存的副本則反映當時值。",
+      "en": "Figure 338, \"Identify – Identify Controller Data Structure, I/O Command Set Independent\": Identify supplies capabilities and limits; copies embedded in events describe the captured state.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "LPA",
+        "PES",
+        "LPEDS",
+        "PELS",
+        "FNA",
+        "OWS",
+        "BES",
+        "CES",
+        "SANICAP",
+        "VERS",
+        "NVERS",
+        "SPRRS",
+        "NDI"
+      ],
+      "evidence_digest": "e823ff9fed60860512a887639161a6f78077b44e0535c41e717b3b81635333c0",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, 文件頁 355,357,361-362,364,373, PDF 頁 381,383,387-388,390,399",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.14.2.1, Figure 338, printed pages 355,357,361-362,364,373, PDF pages 381,383,387-388,390,399"
+    },
+    {
+      "id": "PEL-BASE-FIG-446-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.25",
+      "figure": "446",
+      "table": null,
+      "printed_pages": "446-447",
+      "pdf_pages": "472-473",
+      "normative_keyword": "none",
+      "zh_tw": "SEL是低4-bit的管理動作，不是NSID，也不是Get Features的SEL。",
+      "en": "Figure 446, \"Namespace Management – Command Dword 10\": The low four-bit SEL is a management action, distinct from NSID and Get Features selection.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "SEL",
+        "NSID"
+      ],
+      "evidence_digest": "f34a58d138bc2d2f8f3903f15b179da402b452887923ea17307634a3e56d4c62",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 446, 文件頁 446-447, PDF 頁 472-473",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.25, Figure 446, printed pages 446-447, PDF pages 472-473"
+    },
+    {
+      "id": "PEL-BASE-FIG-451-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.26",
+      "figure": "451",
+      "table": null,
+      "printed_pages": "450",
+      "pdf_pages": "476",
+      "normative_keyword": "none",
+      "zh_tw": "SANACT先選清除方法，OWPASS與OIPBP只在overwrite有意義。",
+      "en": "Figure 451, \"Sanitize – Command Dword 10\": SANACT selects the method; overwrite pass count and inversion apply only to overwrite.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "GDE"
+      ],
+      "evidence_digest": "38b54a96a99a79dc2f4349ac682cf6b6406817c3792650607ad8f028c219a4ff",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, 文件頁 450, PDF 頁 476",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 451, printed pages 450, PDF pages 476"
+    },
+    {
+      "id": "PEL-BASE-FIG-452-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.26",
+      "figure": "452",
+      "table": null,
+      "printed_pages": "451",
+      "pdf_pages": "477",
+      "normative_keyword": "none",
+      "zh_tw": "SCDW11保存overwrite pattern，不是byte長度或完成碼。",
+      "en": "Figure 452, \"Sanitize – Command Dword 11\": SCDW11 is the overwrite pattern, not a transfer length or completion code.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall"
+      ],
+      "key_items": [
+        "452"
+      ],
+      "evidence_digest": "d7235f608ec0e4a3c797b66bff99138a1abac4b5f1ef5e97a7b12674d6ac449b",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 452, 文件頁 451, PDF 頁 477",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.26, Figure 452, printed pages 451, PDF pages 477"
+    },
+    {
+      "id": "PEL-BASE-FIG-454-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.27",
+      "figure": "454",
+      "table": null,
+      "printed_pages": "453",
+      "pdf_pages": "479",
+      "normative_keyword": "none",
+      "zh_tw": "Namespace Sanitize的PREQ在bit4，不在一般Sanitize的bit11。",
+      "en": "Figure 454, \"Sanitize Namespace – Command Dword 10\": Namespace Sanitize places PREQ at bit4 rather than ordinary Sanitize bit11.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should"
+      ],
+      "key_items": [
+        "EMVS"
+      ],
+      "evidence_digest": "46c14c5a8f8569e681fa3de77123b14d3777e656c94b0d83ea2465204aabd7cf",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.27, Figure 454, 文件頁 453, PDF 頁 479",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.27, Figure 454, printed pages 453, PDF pages 479"
+    },
+    {
+      "id": "PEL-BASE-FIG-480-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "5.2.30.1.8",
+      "figure": "480",
+      "table": null,
+      "printed_pages": "470-471",
+      "pdf_pages": "496-497",
+      "normative_keyword": "none",
+      "zh_tw": "48-bit毫秒值需要連同Origin與SYNC讀，不能一律當UTC。",
+      "en": "Figure 480, \"Timestamp – Data Structure for Get Features\": Interpret the 48-bit millisecond value with Origin and SYNC rather than assuming UTC.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "should",
+        "may"
+      ],
+      "key_items": [
+        "SYNC"
+      ],
+      "evidence_digest": "ff4b05c6429756664042bc29469b6b1651d575313fca16b60a7fcee14cc5aac3",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.8, Figure 480, 文件頁 470-471, PDF 頁 496-497",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §5.2.30.1.8, Figure 480, printed pages 470-471, PDF pages 496-497"
+    },
+    {
+      "id": "PEL-BASE-FIG-745-CLAIM",
+      "report_id": "base-persistent-event-log",
+      "source_id": "NVME-BASE-2.4",
+      "revision": "2.4",
+      "section": "8.1.20",
+      "figure": "745",
+      "table": null,
+      "printed_pages": "678",
+      "pdf_pages": "704",
+      "normative_keyword": "none",
+      "zh_tw": "Power Measurement Type說明量哪個對象，不決定Watt縮放倍率。",
+      "en": "Figure 745, \"Power Measurement Types\": Power Measurement Type selects the measured object, independently of the Watt scale.",
+      "scope_entry_id": "PEL-BASE-DEPENDENCY",
+      "source_keywords": [
+        "shall",
+        "may"
+      ],
+      "key_items": [
+        "745"
+      ],
+      "evidence_digest": "718f979e84aae67c9beae33132584624b910ea206b314ff0fc3900aee7c69501",
+      "citation_zh_tw": "來源：NVME-BASE-2.4, Rev. 2.4, §8.1.20, Figure 745, 文件頁 678, PDF 頁 704",
+      "citation_en": "Source: NVME-BASE-2.4, Rev. 2.4, §8.1.20, Figure 745, printed pages 678, PDF pages 704"
+    },
+    {
       "id": "NWP-MODEL",
       "report_id": "base-namespace-write-protection",
       "source_id": "NVME-BASE-2.4",
