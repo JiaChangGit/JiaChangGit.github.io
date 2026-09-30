@@ -1,0 +1,55 @@
+/* Independently scoped quick-reference layout. All text follows explicit theme colors. */
+.nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; color:var(--qr-ink); background:var(--qr-paper); font:17px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; -webkit-text-size-adjust:100%; padding:clamp(16px,3vw,36px); border-radius:12px; }
+.nvme-quickref * { box-sizing:border-box; }
+@media(prefers-color-scheme:dark) { .nvme-quickref { --qr-paper:#111923; --qr-surface:#172330; --qr-ink:#e4eef5; --qr-muted:#b2c3d0; --qr-line:#3a5060; --qr-accent:#66d8c5; --qr-soft:#173b39; } }
+html[data-theme="dark"] .nvme-quickref { --qr-paper:#111923; --qr-surface:#172330; --qr-ink:#e4eef5; --qr-muted:#b2c3d0; --qr-line:#3a5060; --qr-accent:#66d8c5; --qr-soft:#173b39; }
+html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; }
+.qr-standalone { margin:0; background:#e8eef2; }
+@media(prefers-color-scheme:dark) { .qr-standalone { background:#0d141c; } }
+.qr-standalone .nvme-quickref { max-width:1120px; margin:auto; border-radius:0; min-height:100vh; padding-top:max(24px,env(safe-area-inset-top)); }
+.nvme-quickref main { min-width:0; max-width:900px; margin:auto; }
+.nvme-quickref h1,.nvme-quickref h2,.nvme-quickref h3,.nvme-quickref p,.nvme-quickref li,.nvme-quickref td,.nvme-quickref th,.nvme-quickref summary,.nvme-quickref strong { color:var(--qr-ink); }
+.nvme-quickref h1 { font-size:clamp(27px,4vw,39px); line-height:1.4; margin:14px 0 22px; }
+.nvme-quickref h2 { font-size:clamp(21px,2.8vw,28px); line-height:1.5; margin:0 0 16px; }
+.nvme-quickref h3 { font-size:19px; line-height:1.6; margin:24px 0 10px; }
+.nvme-quickref p { margin:0 0 20px; max-width:80ch; overflow-wrap:anywhere; }
+.nvme-quickref a { color:var(--qr-accent); text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; min-height:44px; display:inline-flex; align-items:center; }
+.nvme-quickref a:focus-visible,.nvme-quickref summary:focus-visible { outline:3px solid var(--qr-accent); outline-offset:3px; }
+.nvme-quickref [id] { scroll-margin-top:24px; }
+.nvme-quickref :target { outline:2px solid var(--qr-accent); outline-offset:5px; }
+.nvme-quickref .qr-top { display:flex; gap:8px 22px; flex-wrap:wrap; font-size:15px; margin-bottom:18px; }
+.nvme-quickref .qr-eyebrow,.nvme-quickref .qr-number { color:var(--qr-accent); font:700 14px/1.6 ui-monospace,monospace; }
+.nvme-quickref .qr-number { display:block; margin-bottom:8px; }
+.nvme-quickref .qr-intro { font-size:19px; }
+.nvme-quickref .qr-note { background:var(--qr-soft); padding:18px 20px; border-left:4px solid var(--qr-accent); margin:24px 0; }
+.nvme-quickref .qr-note p:last-child { margin-bottom:0; }
+.nvme-quickref .qr-toc { padding:20px; background:var(--qr-surface); border:1px solid var(--qr-line); border-radius:8px; margin:28px 0; }
+.nvme-quickref .qr-toc ol { padding-left:24px; margin:0; columns:2; column-gap:30px; }
+.nvme-quickref .qr-toc li { break-inside:avoid; padding:0 0 4px; }
+.nvme-quickref .qr-card { background:var(--qr-surface); padding:clamp(18px,3vw,30px); margin:28px 0; border:1px solid var(--qr-line); border-radius:10px; }
+.nvme-quickref .qr-original { font-size:15px; color:var(--qr-muted); line-height:1.65; margin-bottom:10px; }
+.nvme-quickref .qr-location { font-size:15px; color:var(--qr-muted); border-bottom:1px solid var(--qr-line); padding-bottom:14px; margin-bottom:22px; }
+.nvme-quickref .qr-step { font:700 13px/1.7 ui-monospace,monospace; color:var(--qr-accent); display:block; margin-bottom:6px; }
+.nvme-quickref .qr-tags { font-size:14px; color:var(--qr-muted); overflow-wrap:anywhere; }
+.nvme-quickref .qr-related { border-top:1px solid var(--qr-line); padding-top:10px; font-size:15px; }
+.nvme-quickref .qr-related a { margin-right:18px; }
+.nvme-quickref .qr-table { overflow-x:auto; border:1px solid var(--qr-line); border-radius:6px; margin:20px 0; }
+.nvme-quickref table { width:100%; border-collapse:collapse; background:var(--qr-surface); font-size:15px; margin:0; }
+.nvme-quickref th,.nvme-quickref td { text-align:left; vertical-align:top; padding:12px 14px; border:0; border-bottom:1px solid var(--qr-line); min-width:100px; overflow-wrap:anywhere; }
+.nvme-quickref th { background:var(--qr-soft); position:sticky; top:0; }
+.nvme-quickref tr:last-child td { border-bottom:0; }
+.nvme-quickref code { background:var(--qr-soft); color:var(--qr-ink); white-space:normal; overflow-wrap:anywhere; }
+.nvme-quickref .qr-catalog td:first-child { width:28%; }
+.nvme-quickref .qr-catalog td:last-child { width:40%; }
+.nvme-quickref .qr-sources { font-size:14px; overflow-wrap:anywhere; }
+.nvme-quickref .qr-sources li { padding:10px 0; }
+.nvme-quickref .qr-series { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.nvme-quickref .qr-series article { padding:20px; background:var(--qr-surface); border:1px solid var(--qr-line); border-radius:8px; }
+.nvme-quickref .qr-series h2 { font-size:20px; margin:0; }
+.nvme-quickref .qr-series p { font-size:16px; }
+.nvme-quickref footer { padding:24px 0; border-top:1px solid var(--qr-line); }
+@media(max-width:900px) { .nvme-quickref .qr-toc ol { columns:1; } }
+@media(max-width:620px) { .nvme-quickref .qr-series { grid-template-columns:1fr; } .nvme-quickref .qr-card { padding:16px; } .nvme-quickref .qr-catalog { min-width:620px; } }
+@media(prefers-reduced-motion:reduce) { .nvme-quickref * { scroll-behavior:auto!important; } }
+@media(forced-colors:active) { .nvme-quickref,.nvme-quickref .qr-card { background:Canvas; color:CanvasText; } .nvme-quickref a { color:LinkText; } }
+@media print { .nvme-quickref { --qr-paper:#fff!important; --qr-surface:#fff!important; --qr-ink:#000!important; --qr-muted:#333!important; --qr-line:#999!important; --qr-accent:#000!important; --qr-soft:#fff!important; font-size:11pt; padding:0; } .nvme-quickref .qr-top,.nvme-quickref .qr-toc { display:none; } .nvme-quickref .qr-card { border:0; border-top:1px solid #999; border-radius:0; } .nvme-quickref h2,.nvme-quickref h3 { break-after:avoid; } .nvme-quickref p { orphans:3; widows:3; } .nvme-quickref .qr-table { overflow:visible; } }

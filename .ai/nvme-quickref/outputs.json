@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "path": "DOCS/nvme-quick-reference/index.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/index.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-index-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-index-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/init.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/init.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-init-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/init/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-init-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/init/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/command.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/command.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-command-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/command/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-command-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/command/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/identify.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/identify.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-identify-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/identify/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-identify-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/identify/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/io.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/io.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-io-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/io/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-io-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/io/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/features.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/features.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-features-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/features/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-features-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/features/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/logs.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/logs.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-logs-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/logs/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-logs-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/logs/en/"
+    },
+    {
+      "path": "DOCS/nvme-quick-reference/maintenance.html",
+      "format": "html",
+      "url": "/DOCS/nvme-quick-reference/maintenance.html"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-maintenance-zh-tw.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/maintenance/zh-tw/"
+    },
+    {
+      "path": "_posts/2026-09-29-nvme-figure-reference-maintenance-en.md",
+      "format": "markdown",
+      "url": "/nvme/figure-reference/maintenance/en/"
+    }
+  ]
+}

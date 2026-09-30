@@ -1,5 +1,11 @@
 # AGENTS.md — Jia’s Blog 專案規則
 
+## 2026-09-29 圖表速查系列
+
+使用者另行核准三份來源規格的重點圖表速查，僅排除 Fabrics 及其專用內容，不繼承舊專篇的章節／FID／LID／CNS 排除清單。此系列分為 7 個主題，各有繁中 HTML 與內容對等的中英文 Pages，另有三版總索引；與下列 22 篇既有教學報告分開管理。用途是反覆查詢、除錯與驗證，因此允許按問題與欄位編排查詢入口；不套用舊教材「不設症狀索引」的限制。
+
+每張入選原圖須有獨立的用途、欄位／關係、具體判讀及完整原文定位。只挑有明確查詢價值的圖，數量不是品質門檻。大型表按欄位群標實際頁碼，不能把表頭首尾頁當成完整跨頁範圍。繁中 HTML 加入查詢方法與串接案例；中英文 Pages 保留相同的逐圖速查內容。共用索引由 `.ai/nvme-quickref/` 與 `scripts/nvme_quickref_*.py` 管理，生成器為 `scripts/build_nvme_quickref.py`。出版前檢查來源定位、雙語順序、交叉連結、可離線閱讀、明暗版面與同一 commit 的兩個 workflow。
+
 本專案為 Jekyll GitHub Pages 與離線 NVMe 教材。若相鄰的 `../ai-dev-platform/AGENTS.md` 與 `registry/workflow.yaml` 存在，先讀平台規則並選 documentation workflow。本文件依使用者 2026-09-06 的對齊結果更新，優先於舊規則。
 
 ## 讀者與 3 版交付物

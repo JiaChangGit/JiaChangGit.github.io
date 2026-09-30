@@ -1,0 +1,1879 @@
+{
+  "schema_version": 1,
+  "verified_date": "2026-09-30",
+  "evidence": "SHA-256 of whitespace-normalized pdftotext -layout pages; full page ranges include continuations",
+  "figures": {
+    "B34": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 34,
+      "title": "Memory-Based Property Definition",
+      "section": "3.1.4",
+      "pdf_pages": [
+        80,
+        80
+      ],
+      "printed_pages": [
+        54,
+        54
+      ],
+      "group": "init",
+      "page_text_sha256": "5f9dbd39f1e6400843bb1bf3253c4a9674759f034c73948aacbf43e1b46f99b3"
+    },
+    "B36": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 36,
+      "title": "Offset 0h: CAP – Controller Capabilities",
+      "section": "3.1.4.1",
+      "pdf_pages": [
+        81,
+        84
+      ],
+      "printed_pages": [
+        55,
+        58
+      ],
+      "group": "init",
+      "page_text_sha256": "6c12601e577b4188234dfe7ac45f2003b69bd4164f1d5128e63024e301154555"
+    },
+    "B41": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 41,
+      "title": "Offset 14h: CC – Controller Configuration",
+      "section": "3.1.4.5",
+      "pdf_pages": [
+        86,
+        89
+      ],
+      "printed_pages": [
+        60,
+        63
+      ],
+      "group": "init",
+      "page_text_sha256": "39db072f1ffd55a60cb266851aaf848c0b4eddf3a3c9080b24147cdf7a3139a6"
+    },
+    "B42": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 42,
+      "title": "Offset 1Ch: CSTS – Controller Status",
+      "section": "3.1.4.6",
+      "pdf_pages": [
+        89,
+        91
+      ],
+      "printed_pages": [
+        63,
+        65
+      ],
+      "group": "init",
+      "page_text_sha256": "4431984f1568d054c201856d8e24d8b1605f09f2d686dcbdde85708a75e43ba2"
+    },
+    "B43": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 43,
+      "title": "Offset 20h: NSSR – NVM Subsystem Reset",
+      "section": "3.1.4.7",
+      "pdf_pages": [
+        92,
+        92
+      ],
+      "printed_pages": [
+        66,
+        66
+      ],
+      "group": "init",
+      "page_text_sha256": "6a420a23e741e4695e7cc1270f8953ea502263bd43f9d223705deadeee90d934"
+    },
+    "B44": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 44,
+      "title": "Offset 24h: AQA – Admin Queue Attributes",
+      "section": "3.1.4.8",
+      "pdf_pages": [
+        92,
+        92
+      ],
+      "printed_pages": [
+        66,
+        66
+      ],
+      "group": "init",
+      "page_text_sha256": "6a420a23e741e4695e7cc1270f8953ea502263bd43f9d223705deadeee90d934"
+    },
+    "B45": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 45,
+      "title": "Offset 28h: ASQ – Admin Submission Queue Base Address",
+      "section": "3.1.4.9",
+      "pdf_pages": [
+        92,
+        92
+      ],
+      "printed_pages": [
+        66,
+        66
+      ],
+      "group": "init",
+      "page_text_sha256": "6a420a23e741e4695e7cc1270f8953ea502263bd43f9d223705deadeee90d934"
+    },
+    "B46": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 46,
+      "title": "Offset 30h: ACQ – Admin Completion Queue Base Address",
+      "section": "3.1.4.10",
+      "pdf_pages": [
+        93,
+        93
+      ],
+      "printed_pages": [
+        67,
+        67
+      ],
+      "group": "init",
+      "page_text_sha256": "a8fe4d05398758f3c998009d1bd6ec4e6f9b08c7136bae1a45668a62607c0e04"
+    },
+    "B57": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 57,
+      "title": "Offset 68h: CRTO – Controller Ready Timeouts",
+      "section": "3.1.4.21",
+      "pdf_pages": [
+        99,
+        99
+      ],
+      "printed_pages": [
+        73,
+        73
+      ],
+      "group": "init",
+      "page_text_sha256": "c79491d99e3301f0f0277ac9feb368be32e4ddbac33aa4f3cd2beca8024ca8dd"
+    },
+    "B92": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 92,
+      "title": "Command Dword 0",
+      "section": "4.1.1",
+      "pdf_pages": [
+        165,
+        166
+      ],
+      "printed_pages": [
+        139,
+        140
+      ],
+      "group": "command",
+      "page_text_sha256": "a13b09211fdfe4744bb00507d6bbc20b3ae762bef352032fc8c0f69878f98b5c"
+    },
+    "B93": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 93,
+      "title": "Common Command Format",
+      "section": "4.1.1",
+      "pdf_pages": [
+        166,
+        168
+      ],
+      "printed_pages": [
+        140,
+        142
+      ],
+      "group": "command",
+      "page_text_sha256": "7e7eba277cd803cbef231f13e05d7684258847cfbb1b9e706d098bc1c72b2ecf"
+    },
+    "B97": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 97,
+      "title": "Common Completion Queue Entry Layout – Admin and All I/O Command Sets",
+      "section": "4.2.1",
+      "pdf_pages": [
+        170,
+        170
+      ],
+      "printed_pages": [
+        144,
+        144
+      ],
+      "group": "command",
+      "page_text_sha256": "c9cbca87bc308f0035d6c3eae931692f139e5f82af5af007047197778bdea591"
+    },
+    "B98": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 98,
+      "title": "Completion Queue Entry: DW 2",
+      "section": "4.2.1",
+      "pdf_pages": [
+        170,
+        170
+      ],
+      "printed_pages": [
+        144,
+        144
+      ],
+      "group": "command",
+      "page_text_sha256": "c9cbca87bc308f0035d6c3eae931692f139e5f82af5af007047197778bdea591"
+    },
+    "B99": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 99,
+      "title": "Completion Queue Entry: DW 3",
+      "section": "4.2.1",
+      "pdf_pages": [
+        171,
+        171
+      ],
+      "printed_pages": [
+        145,
+        145
+      ],
+      "group": "command",
+      "page_text_sha256": "e452050f851f8248d6a88b9a4b429e17daeff61609f63f86d1c5ea025bec90b9"
+    },
+    "B101": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 101,
+      "title": "Completion Queue Entry: Status Field",
+      "section": "4.2.3",
+      "pdf_pages": [
+        171,
+        172
+      ],
+      "printed_pages": [
+        145,
+        146
+      ],
+      "group": "command",
+      "page_text_sha256": "52048fbcfefc16c5bed2223ba1024ca4de3b527e38a298378456883a26924d78"
+    },
+    "B102": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 102,
+      "title": "Status Code – Status Code Type Values",
+      "section": "4.2.3",
+      "pdf_pages": [
+        172,
+        172
+      ],
+      "printed_pages": [
+        146,
+        146
+      ],
+      "group": "command",
+      "page_text_sha256": "ab5b4e03c45470487299620e15ff145c5774f270f3a76326002ce828b79d5ef6"
+    },
+    "B103": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 103,
+      "title": "Status Code – Generic Command Status Values",
+      "section": "4.2.3.1",
+      "pdf_pages": [
+        173,
+        176
+      ],
+      "printed_pages": [
+        147,
+        150
+      ],
+      "group": "command",
+      "page_text_sha256": "86ab7f3ee92ef5d9fd8a1ed2b59ced73f3b8bfe84f7ef53471bc285190e76aba"
+    },
+    "B104": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 104,
+      "title": "Status Code – Command Specific Status Values",
+      "section": "4.2.3.2",
+      "pdf_pages": [
+        177,
+        178
+      ],
+      "printed_pages": [
+        151,
+        152
+      ],
+      "group": "command",
+      "page_text_sha256": "48eebdee15d25db6cfe45153cc91ec21e5fabf2c2b98dd00c19ac7e52fb1dc0c"
+    },
+    "B107": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 107,
+      "title": "Status Code – Media and Data Integrity Error Values",
+      "section": "4.2.3.3",
+      "pdf_pages": [
+        180,
+        181
+      ],
+      "printed_pages": [
+        154,
+        155
+      ],
+      "group": "command",
+      "page_text_sha256": "ff9f4b3b4b8f4b421b7df816a148b672d836c275414b25361a95cbd9ace6faca"
+    },
+    "B110": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 110,
+      "title": "PRP Entry Layout",
+      "section": "4.3.1",
+      "pdf_pages": [
+        184,
+        184
+      ],
+      "printed_pages": [
+        158,
+        158
+      ],
+      "group": "command",
+      "page_text_sha256": "3e6ff28b4382bac2b281867bf3cb1b642bb09b19220b56a7dc73ff6d863fcd15"
+    },
+    "B111": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 111,
+      "title": "PRP Entry – Page Base Address and Offset",
+      "section": "4.3.1",
+      "pdf_pages": [
+        184,
+        184
+      ],
+      "printed_pages": [
+        158,
+        158
+      ],
+      "group": "command",
+      "page_text_sha256": "3e6ff28b4382bac2b281867bf3cb1b642bb09b19220b56a7dc73ff6d863fcd15"
+    },
+    "B113": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 113,
+      "title": "PRP List Layout for Physically Non-Contiguous Memory Pages",
+      "section": "4.3.1",
+      "pdf_pages": [
+        185,
+        185
+      ],
+      "printed_pages": [
+        159,
+        159
+      ],
+      "group": "command",
+      "page_text_sha256": "1d21ebad77b7278eb4f17404be63d4e2491e9dda8dd9835ad7da23f456c187ac"
+    },
+    "B114": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 114,
+      "title": "SGL Validation Error Conditions",
+      "section": "4.3.2",
+      "pdf_pages": [
+        187,
+        187
+      ],
+      "printed_pages": [
+        161,
+        161
+      ],
+      "group": "command",
+      "page_text_sha256": "7f2b6c3babec39efdd322397b4448e8be1f81dd2816bbfa3b06f9a8460170a90"
+    },
+    "B116": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 116,
+      "title": "Generic SGL Descriptor Format",
+      "section": "4.3.2",
+      "pdf_pages": [
+        187,
+        187
+      ],
+      "printed_pages": [
+        161,
+        161
+      ],
+      "group": "command",
+      "page_text_sha256": "7f2b6c3babec39efdd322397b4448e8be1f81dd2816bbfa3b06f9a8460170a90"
+    },
+    "B119": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 119,
+      "title": "SGL Data Block descriptor",
+      "section": "4.3.2",
+      "pdf_pages": [
+        188,
+        189
+      ],
+      "printed_pages": [
+        162,
+        163
+      ],
+      "group": "command",
+      "page_text_sha256": "0146cf7d0c81c2658729a1eeaf1b0ccf3fd1851bdd5e7ae3da1f5c5c9dc90682"
+    },
+    "B121": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 121,
+      "title": "SGL Segment descriptor",
+      "section": "4.3.2",
+      "pdf_pages": [
+        189,
+        189
+      ],
+      "printed_pages": [
+        163,
+        163
+      ],
+      "group": "command",
+      "page_text_sha256": "d7fb19d3fd44be8ba268966bf1baefda414d171c134f42416f7345c3d73b33e4"
+    },
+    "B122": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 122,
+      "title": "SGL Last Segment descriptor",
+      "section": "4.3.2",
+      "pdf_pages": [
+        190,
+        190
+      ],
+      "printed_pages": [
+        164,
+        164
+      ],
+      "group": "command",
+      "page_text_sha256": "70901564517bc48685410b12f4144d98df72a0870788f7510066d5589c6c587d"
+    },
+    "B333": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 333,
+      "title": "Identify – Command Dword 10",
+      "section": "5.2.14",
+      "pdf_pages": [
+        363,
+        363
+      ],
+      "printed_pages": [
+        337,
+        337
+      ],
+      "group": "identify",
+      "page_text_sha256": "214bcb069b3ea043a2626d46d1b868065d9fa4faed21b902ca5850421f782aee"
+    },
+    "B336": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 336,
+      "title": "Identify – CNS Values",
+      "section": "5.2.14",
+      "pdf_pages": [
+        364,
+        365
+      ],
+      "printed_pages": [
+        338,
+        339
+      ],
+      "group": "identify",
+      "page_text_sha256": "822d0a2e9c7121a442b9c4352b1497206acf3d3f5efb5ec83ef38678aa7f043e"
+    },
+    "B338": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 338,
+      "title": "Identify – Identify Controller Data Structure, I/O Command Set Independent",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        366,
+        408
+      ],
+      "printed_pages": [
+        340,
+        382
+      ],
+      "group": "identify",
+      "page_text_sha256": "feba575267a5e47942ba3dd0db8b59d9ed88c0f3b53624d48884f62cc2df1866"
+    },
+    "B342": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 342,
+      "title": "Identify – Namespace Identification Descriptor",
+      "section": "5.2.14.2.3",
+      "pdf_pages": [
+        414,
+        414
+      ],
+      "printed_pages": [
+        388,
+        388
+      ],
+      "group": "identify",
+      "page_text_sha256": "41689031a5b9a7e7fd8b2d3493e11234ce77f0c6a52a9526006b8d21816c0927"
+    },
+    "B346": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 346,
+      "title": "Identify – I/O Command Set Independent Identify Namespace Data Structure",
+      "section": "5.2.14.2.8",
+      "pdf_pages": [
+        417,
+        420
+      ],
+      "printed_pages": [
+        391,
+        394
+      ],
+      "group": "identify",
+      "page_text_sha256": "2de967f458185b74203e9857fa034d61d34f02e7bc04f8a1ed6c59b7c20b3e91"
+    },
+    "B198": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 198,
+      "title": "Get Features – Command Dword 10",
+      "section": "5.2.12",
+      "pdf_pages": [
+        235,
+        236
+      ],
+      "printed_pages": [
+        209,
+        210
+      ],
+      "group": "features",
+      "page_text_sha256": "0c3208fd970a568ec39d8f3e48d3e0f301e7fec7cea0a19c520e5a4299c8487f"
+    },
+    "B201": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 201,
+      "title": "Completion Queue Entry Dword 0 when Select is set to 11b",
+      "section": "5.2.12",
+      "pdf_pages": [
+        238,
+        238
+      ],
+      "printed_pages": [
+        212,
+        212
+      ],
+      "group": "features",
+      "page_text_sha256": "70b8f7340f05cdb70ee3ff9111fff5d36bec060590bb62e5b486c6dd8cc5f613"
+    },
+    "B464": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 464,
+      "title": "Set Features – Command Dword 10",
+      "section": "5.2.30",
+      "pdf_pages": [
+        483,
+        483
+      ],
+      "printed_pages": [
+        457,
+        457
+      ],
+      "group": "features",
+      "page_text_sha256": "f4c93d8823da12731ea6c8f2662dd7b28e75f75fad119f156c99b13a0da10c93"
+    },
+    "B466": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 466,
+      "title": "Set Features – Feature Identifiers",
+      "section": "5.2.30",
+      "pdf_pages": [
+        483,
+        485
+      ],
+      "printed_pages": [
+        457,
+        459
+      ],
+      "group": "features",
+      "page_text_sha256": "485aef49e92b8f8b661dc4891baf0c678fb9d000fa5490d445b7734b78206c9e"
+    },
+    "B340": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 340,
+      "title": "Identify – Power State Descriptor Data Structure",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        410,
+        412
+      ],
+      "printed_pages": [
+        384,
+        386
+      ],
+      "group": "features",
+      "page_text_sha256": "b607a38950307b260028aa7ebd616a36fdc088bc39a7275b51d097b165802af8"
+    },
+    "B467": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 467,
+      "title": "Arbitration & Command Processing – Command Dword 11",
+      "section": "5.2.30.1.1",
+      "pdf_pages": [
+        486,
+        486
+      ],
+      "printed_pages": [
+        460,
+        460
+      ],
+      "group": "features",
+      "page_text_sha256": "8d1978feffe967b4d83654fb072c4598803f81f0d3a991a2261bfb33302ef9a7"
+    },
+    "B468": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 468,
+      "title": "Power Management – Command Dword 11",
+      "section": "5.2.30.1.2",
+      "pdf_pages": [
+        487,
+        487
+      ],
+      "printed_pages": [
+        461,
+        461
+      ],
+      "group": "features",
+      "page_text_sha256": "e181bdfce91cbb9188c8521e9048d3f0a6eb36289656101f3d7302144804a268"
+    },
+    "B471": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 471,
+      "title": "Volatile Write Cache – Command Dword 11",
+      "section": "5.2.30.1.4",
+      "pdf_pages": [
+        490,
+        491
+      ],
+      "printed_pages": [
+        464,
+        465
+      ],
+      "group": "features",
+      "page_text_sha256": "1097d4b43764eb793a45f08afa8e7bf0d5a972adf8e3abcafce845e8dc298850"
+    },
+    "B472": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 472,
+      "title": "Number of Queues – Command Dword 11",
+      "section": "5.2.30.1.5",
+      "pdf_pages": [
+        491,
+        491
+      ],
+      "printed_pages": [
+        465,
+        465
+      ],
+      "group": "features",
+      "page_text_sha256": "746ef1ab2efc0ebc7517f0a6232f9ce67a83aee77fbbc5f52a2989b5fbd3c314"
+    },
+    "B473": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 473,
+      "title": "Number of Queues – Completion Queue Entry Dword 0",
+      "section": "5.2.30.1.5",
+      "pdf_pages": [
+        492,
+        492
+      ],
+      "printed_pages": [
+        466,
+        466
+      ],
+      "group": "features",
+      "page_text_sha256": "635b65bb06fde49ca0b0681c764fe1cdf4314c74050d5865e81a74f6021e8941"
+    },
+    "B475": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 475,
+      "title": "Autonomous Power State Transition – Command Dword 11",
+      "section": "5.2.30.1.7",
+      "pdf_pages": [
+        494,
+        494
+      ],
+      "printed_pages": [
+        468,
+        468
+      ],
+      "group": "features",
+      "page_text_sha256": "24b7c151db603607ef3e560320dc7c4b19e4764f9e25a64d9e62c1c5830ecd01"
+    },
+    "B477": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 477,
+      "title": "Autonomous Power State Transition Data Structure Entry",
+      "section": "5.2.30.1.7",
+      "pdf_pages": [
+        495,
+        495
+      ],
+      "printed_pages": [
+        469,
+        469
+      ],
+      "group": "features",
+      "page_text_sha256": "49f4eb589895d161d11f8bcd6c1f6566f164fd4d441402a6c5b3da8853fd1b38"
+    },
+    "B482": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 482,
+      "title": "HCTM – Command Dword 11",
+      "section": "5.2.30.1.10",
+      "pdf_pages": [
+        498,
+        498
+      ],
+      "printed_pages": [
+        472,
+        472
+      ],
+      "group": "features",
+      "page_text_sha256": "fcc11ec21b14f88faa2814a145ccc5aaa7530c53e22b6e876c97fcde5c8fa3d8"
+    },
+    "B543": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 543,
+      "title": "Interrupt Coalescing – Command Dword 11",
+      "section": "5.2.30.2.1",
+      "pdf_pages": [
+        541,
+        541
+      ],
+      "printed_pages": [
+        515,
+        515
+      ],
+      "group": "features",
+      "page_text_sha256": "a2fe7ec32541ca804a52f5eca24b48bd2c8513447aab7c85ef591f4f5ceb6854"
+    },
+    "B545": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 545,
+      "title": "Host Memory Buffer – Command Dword 11",
+      "section": "5.2.30.2.3",
+      "pdf_pages": [
+        542,
+        543
+      ],
+      "printed_pages": [
+        516,
+        517
+      ],
+      "group": "features",
+      "page_text_sha256": "07066b515eb374a7915218c1e71bd880cbd1c16936a5f07acf7dbfa133b5b81c"
+    },
+    "B294": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 294,
+      "title": "FDP Configuration Descriptor",
+      "section": "5.2.13.1.29",
+      "pdf_pages": [
+        319,
+        321
+      ],
+      "printed_pages": [
+        293,
+        295
+      ],
+      "group": "features",
+      "page_text_sha256": "94ee22edfa59d6f12bb2ac8644d172897cbe96e96bd70239b257e25a79f59f12"
+    },
+    "B204": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 204,
+      "title": "Get Log Page – Command Dword 10",
+      "section": "5.2.13",
+      "pdf_pages": [
+        239,
+        239
+      ],
+      "printed_pages": [
+        213,
+        213
+      ],
+      "group": "logs",
+      "page_text_sha256": "581f38c1f0f1e52aac6fb33b12f55a45a8e2d649f0e86c238913c5442209c668"
+    },
+    "B205": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 205,
+      "title": "Get Log Page – Command Dword 11",
+      "section": "5.2.13",
+      "pdf_pages": [
+        240,
+        240
+      ],
+      "printed_pages": [
+        214,
+        214
+      ],
+      "group": "logs",
+      "page_text_sha256": "5d51da8246b27fc396ec8ca9a937c2318b01bef48788ed41eec1f7b41ae34e73"
+    },
+    "B208": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 208,
+      "title": "Get Log Page – Command Dword 14",
+      "section": "5.2.13",
+      "pdf_pages": [
+        240,
+        241
+      ],
+      "printed_pages": [
+        214,
+        215
+      ],
+      "group": "logs",
+      "page_text_sha256": "2938156106f16c862b1246ee827eeeda47633fab3c33d0f7ab406977b482d233"
+    },
+    "B211": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 211,
+      "title": "LID Supported and Effects Data Structure",
+      "section": "5.2.13.1.1",
+      "pdf_pages": [
+        243,
+        244
+      ],
+      "printed_pages": [
+        217,
+        218
+      ],
+      "group": "logs",
+      "page_text_sha256": "b82c23373b726f6aa4857a260e23bf0ea0795cd617550120a8e48ceac7c8545c"
+    },
+    "B212": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 212,
+      "title": "Error Information Log Entry Data Structure",
+      "section": "5.2.13.1.2",
+      "pdf_pages": [
+        244,
+        246
+      ],
+      "printed_pages": [
+        218,
+        220
+      ],
+      "group": "logs",
+      "page_text_sha256": "b95148c88d411f9668c202746bc9d3d291d3a1095e288ae7cc1d74de9b2234ca"
+    },
+    "B213": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 213,
+      "title": "SMART / Health Information Log Page",
+      "section": "5.2.13.1.3",
+      "pdf_pages": [
+        247,
+        251
+      ],
+      "printed_pages": [
+        221,
+        225
+      ],
+      "group": "logs",
+      "page_text_sha256": "34ac5e19b0b2073b531ed450e4d8944adefbd6875236ac3420b77228d160271b"
+    },
+    "B217": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 217,
+      "title": "Commands Supported and Effects Data Structure",
+      "section": "5.2.13.1.6",
+      "pdf_pages": [
+        254,
+        255
+      ],
+      "printed_pages": [
+        228,
+        229
+      ],
+      "group": "logs",
+      "page_text_sha256": "4abc9b5413a846481e2db70d37b58ec1abc8692ec344336ea53904e218540005"
+    },
+    "B221": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 221,
+      "title": "Telemetry Host-Initiated Log Page",
+      "section": "5.2.13.1.8",
+      "pdf_pages": [
+        260,
+        261
+      ],
+      "printed_pages": [
+        234,
+        235
+      ],
+      "group": "logs",
+      "page_text_sha256": "707a0f427139a850718e76383c06cdcb187d3b02fd31f03d6718efa42bda3c45"
+    },
+    "B223": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 223,
+      "title": "Telemetry Controller-Initiated Log Page",
+      "section": "5.2.13.1.9",
+      "pdf_pages": [
+        262,
+        263
+      ],
+      "printed_pages": [
+        236,
+        237
+      ],
+      "group": "logs",
+      "page_text_sha256": "97229ea87c48ba11e01c3c8bae42de4250571bc34f1bd19866e318fb4c82bf49"
+    },
+    "B225": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 225,
+      "title": "Endurance Group Information Log Page",
+      "section": "5.2.13.1.10",
+      "pdf_pages": [
+        264,
+        265
+      ],
+      "printed_pages": [
+        238,
+        239
+      ],
+      "group": "logs",
+      "page_text_sha256": "c86d634c0028acb419d8e16258435d0b571c79c535f5f5dfc2f953fc6398604b"
+    },
+    "B232": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 232,
+      "title": "Persistent Event Log Specific Parameter Field",
+      "section": "5.2.13.1.14",
+      "pdf_pages": [
+        272,
+        272
+      ],
+      "printed_pages": [
+        246,
+        246
+      ],
+      "group": "logs",
+      "page_text_sha256": "4357d48ab19c8d32ce2adfdacf5e7bd95533411c76211a0b02ef9bd0db2c224c"
+    },
+    "B233": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 233,
+      "title": "Persistent Event Log Page",
+      "section": "5.2.13.1.14",
+      "pdf_pages": [
+        273,
+        275
+      ],
+      "printed_pages": [
+        247,
+        249
+      ],
+      "group": "logs",
+      "page_text_sha256": "c3ec34108a863a32978e2327f10a3ebaf3047630f95676de198d05cd6154dd2a"
+    },
+    "B234": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 234,
+      "title": "Persistent Event Format",
+      "section": "5.2.13.1.14",
+      "pdf_pages": [
+        275,
+        276
+      ],
+      "printed_pages": [
+        249,
+        250
+      ],
+      "group": "logs",
+      "page_text_sha256": "f736f16b0d0287ecf510ce215b38d2a93177b6841df1969d43b8f8f213cb1a40"
+    },
+    "B236": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 236,
+      "title": "Persistent Event Log Event Types",
+      "section": "5.2.13.1.14.2",
+      "pdf_pages": [
+        277,
+        277
+      ],
+      "printed_pages": [
+        251,
+        251
+      ],
+      "group": "logs",
+      "page_text_sha256": "85bd778cc80844bf2610626ef7114744ea1983163e7d5cfa18a9bc6a4c56d5ee"
+    },
+    "B187": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 187,
+      "title": "Firmware Commit – Command Dword 10",
+      "section": "5.2.9",
+      "pdf_pages": [
+        229,
+        229
+      ],
+      "printed_pages": [
+        203,
+        203
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "0bc6545a945b6bf5ceff751ea7de7ac30c26e5056c3db0ddfcd96fe375b001ad"
+    },
+    "B191": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 191,
+      "title": "Firmware Image Download – Command Dword 10",
+      "section": "5.2.10",
+      "pdf_pages": [
+        231,
+        231
+      ],
+      "printed_pages": [
+        205,
+        205
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "be9e03b202673c9a6393e962181a95c6b3a4c07f4376eccfc0d74275bc2d0fc6"
+    },
+    "B215": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 215,
+      "title": "Firmware Slot Information Log Page",
+      "section": "5.2.13.1.4",
+      "pdf_pages": [
+        252,
+        252
+      ],
+      "printed_pages": [
+        226,
+        226
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "9867ec7012d7ebf2a7122a0e5df3c2e5ebd11ccc90538bd2d49f0a9b2635eca4"
+    },
+    "B177": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 177,
+      "title": "Device Self-test – Command Dword 10",
+      "section": "5.2.6",
+      "pdf_pages": [
+        225,
+        225
+      ],
+      "printed_pages": [
+        199,
+        199
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "3dcb98a36dda9a795adb657e876e00083810e17843830fdbeed15440f84a4b95"
+    },
+    "B218": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 218,
+      "title": "Device Self-test Log Page",
+      "section": "5.2.13.1.7",
+      "pdf_pages": [
+        256,
+        256
+      ],
+      "printed_pages": [
+        230,
+        230
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "cf6173fc8ffdbb9b8b81011c046dc811d592e0ba4ea0731b65e221931b079848"
+    },
+    "B219": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 219,
+      "title": "Self-test Result Data Structure",
+      "section": "5.2.13.1.7",
+      "pdf_pages": [
+        257,
+        258
+      ],
+      "printed_pages": [
+        231,
+        232
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "b25cf6e1bcac6d65ad8326cacc33039a576b064179889043f408bcf2491c74a1"
+    },
+    "B443": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 443,
+      "title": "Namespace Attachment – Command Dword 10",
+      "section": "5.2.24",
+      "pdf_pages": [
+        471,
+        471
+      ],
+      "printed_pages": [
+        445,
+        445
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "27aa41445797c37c35ea137a490897aea17114badb10a92dad576f1a6da95928"
+    },
+    "B446": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 446,
+      "title": "Namespace Management – Command Dword 10",
+      "section": "5.2.25",
+      "pdf_pages": [
+        472,
+        473
+      ],
+      "printed_pages": [
+        446,
+        447
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "96427772b70e56b3a680a4576066819716fec3d359badbf2cc121eab19abbf74"
+    },
+    "B195": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 195,
+      "title": "Format NVM – Command Dword 10",
+      "section": "5.2.11",
+      "pdf_pages": [
+        234,
+        235
+      ],
+      "printed_pages": [
+        208,
+        209
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "aea908b95c33f0e16c558d1b8f6e019d9e868b432b227fec8b2adaba7c7c5ade"
+    },
+    "B451": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 451,
+      "title": "Sanitize – Command Dword 10",
+      "section": "5.2.26",
+      "pdf_pages": [
+        476,
+        477
+      ],
+      "printed_pages": [
+        450,
+        451
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "11db31a8941fde43a97df2ef00dc95b43f86cbfdcc3f939bb3d67d5b87c27b2e"
+    },
+    "B454": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 454,
+      "title": "Sanitize Namespace – Command Dword 10",
+      "section": "5.2.27",
+      "pdf_pages": [
+        479,
+        479
+      ],
+      "printed_pages": [
+        453,
+        453
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "54ba45cc57db6bf8ab628f1c637faf629dab53e4838913613ee34bff8789c975"
+    },
+    "B312": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 312,
+      "title": "Sanitize Status Log Page",
+      "section": "5.2.13.1.38",
+      "pdf_pages": [
+        340,
+        345
+      ],
+      "printed_pages": [
+        314,
+        319
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "00633fc0cd0aa4bd1412adf61a498d1aa116d042873eff8d3d7f6610285bebd6"
+    },
+    "B541": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 541,
+      "title": "Write Protection – Command Dword 11",
+      "section": "5.2.30.1.38",
+      "pdf_pages": [
+        538,
+        538
+      ],
+      "printed_pages": [
+        512,
+        512
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "c09d30649c47c951d11f2753c3995119afbe753aa36d845e8bc7fc83b8fe1d7c"
+    },
+    "B542": {
+      "source_id": "NVME-BASE-2.4",
+      "number": 542,
+      "title": "Boot Partition Write Protection Config - Command Dword 11",
+      "section": "5.2.30.1.39",
+      "pdf_pages": [
+        539,
+        540
+      ],
+      "printed_pages": [
+        513,
+        514
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "d6151075b858e8a7926f7dd90ac9ef95c9817b77db29b2944267d16498c120bc"
+    },
+    "N18": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 18,
+      "title": "Status Code – Generic Command Status Values",
+      "section": "3.1.2",
+      "pdf_pages": [
+        25,
+        25
+      ],
+      "printed_pages": [
+        25,
+        25
+      ],
+      "group": "command",
+      "page_text_sha256": "d150b6acc321b6a70f322496d682bd6ae0345537205602647bd05f3e190cc428"
+    },
+    "N19": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 19,
+      "title": "Status Code – Command Specific Status Values",
+      "section": "3.1.2",
+      "pdf_pages": [
+        25,
+        25
+      ],
+      "printed_pages": [
+        25,
+        25
+      ],
+      "group": "command",
+      "page_text_sha256": "d150b6acc321b6a70f322496d682bd6ae0345537205602647bd05f3e190cc428"
+    },
+    "N20": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 20,
+      "title": "Status Code – Media and Data Integrity Error Values",
+      "section": "3.1.2",
+      "pdf_pages": [
+        26,
+        26
+      ],
+      "printed_pages": [
+        26,
+        26
+      ],
+      "group": "command",
+      "page_text_sha256": "5fdc0d7a67ef5d3ce9dca5b80524b97636afaebfc82cb8a5c33400095b31df63"
+    },
+    "N123": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 123,
+      "title": "Identify – Identify Namespace Data Structure, NVM Command Set",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        85,
+        93
+      ],
+      "printed_pages": [
+        85,
+        93
+      ],
+      "group": "identify",
+      "page_text_sha256": "305a63912c0b8b59a749171c2fce48fcdc7de7ddd5e42dbcc8e430a8afca9267"
+    },
+    "N125": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 125,
+      "title": "LBA Format Data Structure, NVM Command Set Specific",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        94,
+        94
+      ],
+      "printed_pages": [
+        94,
+        94
+      ],
+      "group": "identify",
+      "page_text_sha256": "97706904bf4590d4d22c634f9fbb8043b500f681692bcbbda2042da1a73d6075"
+    },
+    "N127": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 127,
+      "title": "NVM Command Set I/O Command Set Specific Identify Namespace Data Structure",
+      "section": "4.1.5.3",
+      "pdf_pages": [
+        97,
+        101
+      ],
+      "printed_pages": [
+        97,
+        101
+      ],
+      "group": "identify",
+      "page_text_sha256": "889d969aa1a2714311ead87e5b313c3595252e83412eca2bd2cd3b8bfff4312d"
+    },
+    "N128": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 128,
+      "title": "Extended LBA Format Data Structure, NVM Command Set Specific",
+      "section": "4.1.5.3",
+      "pdf_pages": [
+        101,
+        102
+      ],
+      "printed_pages": [
+        101,
+        102
+      ],
+      "group": "identify",
+      "page_text_sha256": "d33068ec1df6eb947d72b8a65330b2480c1e083ff8fd9d3816b6c75d77b11812"
+    },
+    "N129": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 129,
+      "title": "I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set",
+      "section": "4.1.5.4",
+      "pdf_pages": [
+        103,
+        106
+      ],
+      "printed_pages": [
+        103,
+        106
+      ],
+      "group": "identify",
+      "page_text_sha256": "5b10a44d1480c86e06562854afb165451326b296a57b356c9d74a613b278a366"
+    },
+    "N4": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 4,
+      "title": "Atomicity Parameters for Single Atomicity Mode",
+      "section": "2.1.4",
+      "pdf_pages": [
+        15,
+        16
+      ],
+      "printed_pages": [
+        15,
+        16
+      ],
+      "group": "io",
+      "page_text_sha256": "0bcbe4e97d796f8299306cc0901d5e529e961fb69d6f1c44e6e866a3bb42880b"
+    },
+    "N8": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 8,
+      "title": "Atomic Boundaries Example",
+      "section": "2.1.4.4",
+      "pdf_pages": [
+        19,
+        19
+      ],
+      "printed_pages": [
+        19,
+        19
+      ],
+      "group": "io",
+      "page_text_sha256": "8d00dc3bc4e2c62517b9554b046861f1638ec51ebcf250df3719668974eaf6ae"
+    },
+    "N22": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 22,
+      "title": "Opcodes for NVM Commands",
+      "section": "3.3",
+      "pdf_pages": [
+        27,
+        27
+      ],
+      "printed_pages": [
+        27,
+        27
+      ],
+      "group": "io",
+      "page_text_sha256": "9d35417a1b9ad0d972b8e364fcbee102e8693006af0133385f735e689587a3a1"
+    },
+    "N53": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 53,
+      "title": "Read – Command Dword 10 and Command Dword 11",
+      "section": "3.3.4",
+      "pdf_pages": [
+        49,
+        49
+      ],
+      "printed_pages": [
+        49,
+        49
+      ],
+      "group": "io",
+      "page_text_sha256": "4d67e9f1a2e5c1c48d2474c71e0166a7685784cb1b9e38d4b8d9ed21bc3fc368"
+    },
+    "N54": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 54,
+      "title": "Read – Command Dword 12",
+      "section": "3.3.4",
+      "pdf_pages": [
+        49,
+        49
+      ],
+      "printed_pages": [
+        49,
+        49
+      ],
+      "group": "io",
+      "page_text_sha256": "4d67e9f1a2e5c1c48d2474c71e0166a7685784cb1b9e38d4b8d9ed21bc3fc368"
+    },
+    "N70": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 70,
+      "title": "Write – Command Dword 10 and Command Dword 11",
+      "section": "3.3.6",
+      "pdf_pages": [
+        54,
+        54
+      ],
+      "printed_pages": [
+        54,
+        54
+      ],
+      "group": "io",
+      "page_text_sha256": "17be527988a31a5841b3649bee136bfca219ca522fa35aca35c423881b9b8701"
+    },
+    "N71": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 71,
+      "title": "Write – Command Dword 12",
+      "section": "3.3.6",
+      "pdf_pages": [
+        54,
+        54
+      ],
+      "printed_pages": [
+        54,
+        54
+      ],
+      "group": "io",
+      "page_text_sha256": "17be527988a31a5841b3649bee136bfca219ca522fa35aca35c423881b9b8701"
+    },
+    "N39": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 39,
+      "title": "Copy – Copy Descriptor Formats",
+      "section": "3.3.2",
+      "pdf_pages": [
+        32,
+        32
+      ],
+      "printed_pages": [
+        32,
+        32
+      ],
+      "group": "io",
+      "page_text_sha256": "f14f043b96729e9dc66060109798e6e4fffd2054a30fc9cacc6152e40b560e94"
+    },
+    "N47": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 47,
+      "title": "Dataset Management – Range Definition",
+      "section": "3.3.3",
+      "pdf_pages": [
+        45,
+        45
+      ],
+      "printed_pages": [
+        45,
+        45
+      ],
+      "group": "io",
+      "page_text_sha256": "fbe2e27c3b5723b85100c3e5af1d74499d89c94ad469babdbe5050fef7746b7a"
+    },
+    "N83": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 83,
+      "title": "Write Zeroes – Command Dword 12",
+      "section": "3.3.8",
+      "pdf_pages": [
+        59,
+        60
+      ],
+      "printed_pages": [
+        59,
+        60
+      ],
+      "group": "io",
+      "page_text_sha256": "edb0699831b910f91d5cbaf5318b1796fdc64580434143b7017c4020e153197e"
+    },
+    "N153": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 153,
+      "title": "Metadata – Contiguous with LBA Data, Forming Extended LBA",
+      "section": "5.2.3",
+      "pdf_pages": [
+        129,
+        129
+      ],
+      "printed_pages": [
+        129,
+        129
+      ],
+      "group": "io",
+      "page_text_sha256": "2c494df2def6c801a34f63f822889f1568f48dbe46a29f021d8f00d2c3affbd0"
+    },
+    "N154": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 154,
+      "title": "Metadata – Transferred as Separate Buffer",
+      "section": "5.2.3",
+      "pdf_pages": [
+        130,
+        130
+      ],
+      "printed_pages": [
+        130,
+        130
+      ],
+      "group": "io",
+      "page_text_sha256": "2c541cd29d368501d98eaef553346085d775dfa6d36b4d386e9a876cd9e3b469"
+    },
+    "N155": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 155,
+      "title": "16b Guard Protection Information Format when STS field is cleared to 0h",
+      "section": "5.3.1.1",
+      "pdf_pages": [
+        131,
+        131
+      ],
+      "printed_pages": [
+        131,
+        131
+      ],
+      "group": "io",
+      "page_text_sha256": "1490dc41728c9e3cfcb432767f0874c7b6265fa787dcab815c44275f25504f53"
+    },
+    "N157": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 157,
+      "title": "32b Guard Protection Information Format",
+      "section": "5.3.1.2",
+      "pdf_pages": [
+        133,
+        133
+      ],
+      "printed_pages": [
+        133,
+        133
+      ],
+      "group": "io",
+      "page_text_sha256": "516e4b11f89745d41c0d639ead77ab17e07fca21d0a232b21453fd7cc96fa77f"
+    },
+    "N159": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 159,
+      "title": "64b Guard Protection Information Format",
+      "section": "5.3.1.3",
+      "pdf_pages": [
+        134,
+        134
+      ],
+      "printed_pages": [
+        134,
+        134
+      ],
+      "group": "io",
+      "page_text_sha256": "abc2a5a6d829c0c19aef36888fe7c8aeb5f2b8bbc9446c0215be93065a99cd73"
+    },
+    "N174": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 174,
+      "title": "Write Command 16b Guard Protection Information Processing",
+      "section": "5.3.2.1",
+      "pdf_pages": [
+        143,
+        143
+      ],
+      "printed_pages": [
+        143,
+        143
+      ],
+      "group": "io",
+      "page_text_sha256": "2b9fbc04398e53ac503865552c4952d4e3ceb2243ef1f9293b18b51a78a27730"
+    },
+    "N175": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 175,
+      "title": "Read 16b Guard Command Protection Information Processing",
+      "section": "5.3.2.2",
+      "pdf_pages": [
+        145,
+        145
+      ],
+      "printed_pages": [
+        145,
+        145
+      ],
+      "group": "io",
+      "page_text_sha256": "c2a950b2dc63c2aad247205cd29bcd29ac41988e20825f479730397962082a76"
+    },
+    "N21": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 21,
+      "title": "Reclaim Unit Handle Status Descriptor",
+      "section": "3.2.1.1",
+      "pdf_pages": [
+        26,
+        26
+      ],
+      "printed_pages": [
+        26,
+        26
+      ],
+      "group": "features",
+      "page_text_sha256": "5fdc0d7a67ef5d3ce9dca5b80524b97636afaebfc82cb8a5c33400095b31df63"
+    },
+    "N134": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 134,
+      "title": "Namespace Management – Host Specified Fields",
+      "section": "4.1.6",
+      "pdf_pages": [
+        112,
+        113
+      ],
+      "printed_pages": [
+        112,
+        113
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "8025e2226c3c15e1bdcd5afb026f2f0d35bc10c6aace5736f7c0a6d391aed5a4"
+    },
+    "N91": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "number": 91,
+      "title": "Format NVM – Command Dword 10 – NVM Command Set Specific Fields",
+      "section": "4.1.1",
+      "pdf_pages": [
+        63,
+        63
+      ],
+      "printed_pages": [
+        63,
+        63
+      ],
+      "group": "maintenance",
+      "page_text_sha256": "9304815df97d8019d78b325c24781e6b49d3c138212509d1768a4872be41f24b"
+    },
+    "P5": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 5,
+      "title": "Offset (1000h + ((2y) * (4 << CAP.DSTRD))): SQyTDBL – Submission Queue y Tail Doorbell",
+      "section": "3.1.2.1",
+      "pdf_pages": [
+        10,
+        10
+      ],
+      "printed_pages": [
+        10,
+        10
+      ],
+      "group": "init",
+      "page_text_sha256": "ef739a02822a731f5d7ba75506796e1eb51fa5468435351a1c8a5eb2033c049f"
+    },
+    "P6": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 6,
+      "title": "Offset (1000h + ((2y + 1) * (4 << CAP.DSTRD))): CQyHDBL – Completion Queue y Head Doorbell",
+      "section": "3.1.2.2",
+      "pdf_pages": [
+        10,
+        11
+      ],
+      "printed_pages": [
+        10,
+        11
+      ],
+      "group": "init",
+      "page_text_sha256": "c6da863fbecbaa12e803f8c26601c373ffb81fca147c93a5551de913c95852c9"
+    },
+    "P12": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 12,
+      "title": "Offset 04h: CMD - Command",
+      "section": "3.8.1.2",
+      "pdf_pages": [
+        17,
+        17
+      ],
+      "printed_pages": [
+        17,
+        17
+      ],
+      "group": "init",
+      "page_text_sha256": "94917f85d0c1b4ec58e5a0846c7512d2dc025149b103f38f9b32d8623da2195f"
+    },
+    "P20": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 20,
+      "title": "Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits",
+      "section": "3.8.1.10",
+      "pdf_pages": [
+        19,
+        19
+      ],
+      "printed_pages": [
+        19,
+        19
+      ],
+      "group": "init",
+      "page_text_sha256": "6e6c52e96af9395d6da487544d984abfb2a722e2845a5ccbced7a8eed768cf07"
+    },
+    "P21": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 21,
+      "title": "Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits",
+      "section": "3.8.1.11",
+      "pdf_pages": [
+        19,
+        19
+      ],
+      "printed_pages": [
+        19,
+        19
+      ],
+      "group": "init",
+      "page_text_sha256": "6e6c52e96af9395d6da487544d984abfb2a722e2845a5ccbced7a8eed768cf07"
+    },
+    "P44": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 44,
+      "title": "Offset MSIXCAP + 2h: MXC – MSI-X Message Control",
+      "section": "3.8.4.2",
+      "pdf_pages": [
+        24,
+        25
+      ],
+      "printed_pages": [
+        24,
+        25
+      ],
+      "group": "init",
+      "page_text_sha256": "814bf881f1b9d9f571d90d58f7f92351af7d2bd72afe7611b1d5e28e3e53be36"
+    },
+    "P45": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 45,
+      "title": "Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR",
+      "section": "3.8.4.3",
+      "pdf_pages": [
+        25,
+        25
+      ],
+      "printed_pages": [
+        25,
+        25
+      ],
+      "group": "init",
+      "page_text_sha256": "3a4b3da542636e9c2764e3118904299215b6f33cb683ffc103963fb20e8ccf49"
+    },
+    "P46": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 46,
+      "title": "Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR",
+      "section": "3.8.4.4",
+      "pdf_pages": [
+        25,
+        25
+      ],
+      "printed_pages": [
+        25,
+        25
+      ],
+      "group": "init",
+      "page_text_sha256": "3a4b3da542636e9c2764e3118904299215b6f33cb683ffc103963fb20e8ccf49"
+    },
+    "P55": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 55,
+      "title": "Offset PXCAP + 12h: PXLS – PCI Express Link Status",
+      "section": "3.8.5.8",
+      "pdf_pages": [
+        29,
+        29
+      ],
+      "printed_pages": [
+        29,
+        29
+      ],
+      "group": "init",
+      "page_text_sha256": "7858b70a9abd005611907dea390232e24cdc6448acea6131467c2980ce5b04ed"
+    },
+    "P60": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 60,
+      "title": "Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register",
+      "section": "3.8.6.2",
+      "pdf_pages": [
+        31,
+        32
+      ],
+      "printed_pages": [
+        31,
+        32
+      ],
+      "group": "init",
+      "page_text_sha256": "18270ddcf1dbe25c79aa9d222181dd66a9a6589f9669ac22fd2fe8b132177827"
+    },
+    "P63": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 63,
+      "title": "Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register",
+      "section": "3.8.6.5",
+      "pdf_pages": [
+        33,
+        33
+      ],
+      "printed_pages": [
+        33,
+        33
+      ],
+      "group": "init",
+      "page_text_sha256": "609611ca24bc508517ccb62fb65a35fc9af5cd88630d8286c985ef7d5a335887"
+    },
+    "P75": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 75,
+      "title": "EOM Header",
+      "section": "3.9.1.1",
+      "pdf_pages": [
+        42,
+        43
+      ],
+      "printed_pages": [
+        42,
+        43
+      ],
+      "group": "logs",
+      "page_text_sha256": "d32a75e5a5e83a39684c723ad43b7cec03a9bee473e78368da4bd85362d3a56b"
+    },
+    "P76": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "number": 76,
+      "title": "EOM Lane Descriptor",
+      "section": "3.9.1.1",
+      "pdf_pages": [
+        43,
+        45
+      ],
+      "printed_pages": [
+        43,
+        45
+      ],
+      "group": "logs",
+      "page_text_sha256": "b9abb1b9f60851ce5ccc094cf996a71f38b3cdc2c9eea3050d101ec4114702bb"
+    }
+  }
+}

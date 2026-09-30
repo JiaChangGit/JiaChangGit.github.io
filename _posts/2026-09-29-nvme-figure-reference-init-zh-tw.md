@@ -1,0 +1,241 @@
+---
+layout: "post"
+title: "NVMe 圖表速查 01 · 初始化、佇列與 PCIe"
+date: "2026-09-29 09:00:00 +0800"
+categories: ["nvme"]
+tags: ["NVMe", "Reference"]
+permalink: "/nvme/figure-reference/init/zh-tw/"
+nvme_quickref: true
+lang: "zh-Hant-TW"
+description: "NVMe 原圖用途、欄位與判讀速查，附完整 Spec 位置。"
+---
+
+<div class="nvme-quickref">
+<nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/init/en/">English</a><a href="/DOCS/nvme-quick-reference/init.html">繁中 HTML</a></nav>
+<main id="content">
+<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表速查 01 · 初始化、佇列與 PCIe</h1><p class="qr-intro">先確認位址與能力，再看啟用狀態、佇列位置與中斷。PCIe link 和錯誤暫存器用來區分傳輸問題與命令回覆。</p></header>
+<aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
+<li><a href="#figure-b34">Base 2.4 Figure 34 · Doorbell 在記憶體映射中的位置</a></li>
+<li><a href="#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a></li>
+<li><a href="#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a></li>
+<li><a href="#figure-b42">Base 2.4 Figure 42 · CSTS：啟用與關機進度回報</a></li>
+<li><a href="#figure-b43">Base 2.4 Figure 43 · NSSR：辨識 subsystem reset 要求</a></li>
+<li><a href="#figure-b44">Base 2.4 Figure 44 · AQA：Admin 佇列深度</a></li>
+<li><a href="#figure-b45">Base 2.4 Figure 45 · ASQ：Admin 命令佇列基底</a></li>
+<li><a href="#figure-b46">Base 2.4 Figure 46 · ACQ：Admin 完成佇列基底</a></li>
+<li><a href="#figure-b57">Base 2.4 Figure 57 · CRTO：控制器與媒體就緒的等待時間</a></li>
+<li><a href="#figure-p5">PCIe Transport 1.4 Figure 5 · SQ doorbell：告知新的提交位置</a></li>
+<li><a href="#figure-p6">PCIe Transport 1.4 Figure 6 · CQ doorbell：歸還已讀取的位置</a></li>
+<li><a href="#figure-p12">PCIe Transport 1.4 Figure 12 · PCI CMD：MMIO 與 Bus Master 的入口</a></li>
+<li><a href="#figure-p20">PCIe Transport 1.4 Figure 20 · BAR0：暫存器基底的低位與屬性</a></li>
+<li><a href="#figure-p21">PCIe Transport 1.4 Figure 21 · BAR1：64-bit 暫存器地址的高位</a></li>
+<li><a href="#figure-p44">PCIe Transport 1.4 Figure 44 · MSI-X：總開關、遮罩與向量數</a></li>
+<li><a href="#figure-p45">PCIe Transport 1.4 Figure 45 · MSI-X Table：先找 BAR，再加 offset</a></li>
+<li><a href="#figure-p46">PCIe Transport 1.4 Figure 46 · MSI-X PBA：待處理中斷的資料位置</a></li>
+<li><a href="#figure-p55">PCIe Transport 1.4 Figure 55 · PCIe Link：目前談成的速度與寬度</a></li>
+<li><a href="#figure-p60">PCIe Transport 1.4 Figure 60 · PCIe AER：不可更正錯誤狀態</a></li>
+<li><a href="#figure-p63">PCIe Transport 1.4 Figure 63 · PCIe AER：已更正錯誤與重傳線索</a></li>
+</ol></nav>
+<article class="qr-card" id="figure-b34" data-figure="B34">
+<h2><span class="qr-number">01</span>Doorbell 在記憶體映射中的位置</h2>
+<p class="qr-original">Base 2.4 · Figure 34 · Memory-Based Property Definition</p>
+<p class="qr-location">§3.1.4 · 文件頁 54 · PDF 80</p>
+<p class="qr-explanation" data-paragraph="B34-1"><span class="qr-step">01.1 · 用途</span>查 controller properties 後面的空間怎麼排列時，用這張表找傳輸專用區的起點。PCIe 的 doorbell 區從 offset 1000h 開始；這是相對暫存器基底的位置，不是主機實體位址 1000h。</p>
+<p class="qr-explanation" data-paragraph="B34-2"><span class="qr-step">01.2 · 欄位與關係</span>表的 OFST 是位元組偏移，Size 是佔用大小，T 表示由傳輸規格定義。Variable 表示大小隨配置而變，不能假設整區只佔 4 KiB；個別 SQ／CQ doorbell 位址還要用 CAP.DSTRD 計算。</p>
+<p class="qr-explanation" data-paragraph="B34-3"><span class="qr-step">01.3 · 判讀與例子</span>例如 BAR 映射基底為 80000000h，doorbell 區起點就是 80001000h。要找 queue 2 的 doorbell，繼續查 PCIe Figures 5、6，不能直接在這個起點寫入 queue ID。</p>
+<p class="qr-tags">搜尋詞：MMIO · doorbell · OFST</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p5">PCIe Transport 1.4 Figure 5 · SQ doorbell：告知新的提交位置</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p6">PCIe Transport 1.4 Figure 6 · CQ doorbell：歸還已讀取的位置</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p20">PCIe Transport 1.4 Figure 20 · BAR0：暫存器基底的低位與屬性</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b36" data-figure="B36">
+<h2><span class="qr-number">02</span>CAP：設定前先查硬體能力</h2>
+<p class="qr-original">Base 2.4 · Figure 36 · Offset 0h: CAP – Controller Capabilities</p>
+<p class="qr-location">§3.1.4.1 · 文件頁 55–58 · PDF 81–84</p>
+<p class="qr-explanation" data-paragraph="B36-1"><span class="qr-step">02.1 · 用途</span>建立佇列、選記憶體頁大小或判斷 ready timeout 前，先查 CAP。它是能力回報，不是目前 CC 的設定值；讀到某能力不代表主機已啟用它。</p>
+<p class="qr-explanation" data-paragraph="B36-2"><span class="qr-step">02.2 · 欄位與關係</span>常查的群組是 MQES bits15:0（最大 queue entries 減 1）、CQR bit16（I/O queue 連續記憶體要求）、DSTRD bits35:32（doorbell 間距 2^(2+DSTRD) bytes）、MPSMIN／MPSMAX bits51:48／55:52（頁大小指數）。CSS bits44:37、NSSRS bit36、CRMS bits60:59 分別查命令集、subsystem reset 與 ready 模式；TO bits31:24 以 500 ms 計。</p>
+<p class="qr-explanation" data-paragraph="B36-3"><span class="qr-step">02.3 · 判讀與例子</span>例如 MQES=03FFh 是最多 1024 entries，DSTRD=1 是間距 8 bytes；兩個值都不能直接當 bytes 使用。選頁大小時還要核對 CC.MPS，等待 ready 則搭配 CC.CRIME、CRTO 與啟用流程。</p>
+<p class="qr-tags">搜尋詞：CAP · MQES · MPSMIN · MPSMAX · DSTRD · TO · CRMS · CSS</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b57">Base 2.4 Figure 57 · CRTO：控制器與媒體就緒的等待時間</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p5">PCIe Transport 1.4 Figure 5 · SQ doorbell：告知新的提交位置</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b41" data-figure="B41">
+<h2><span class="qr-number">03</span>CC：主機實際選了什麼</h2>
+<p class="qr-original">Base 2.4 · Figure 41 · Offset 14h: CC – Controller Configuration</p>
+<p class="qr-location">§3.1.4.5 · 文件頁 60–63 · PDF 86–89</p>
+<p class="qr-explanation" data-paragraph="B41-1"><span class="qr-step">03.1 · 用途</span>當能力看來足夠，controller 卻無法正常啟用，查 CC 可核對主機真正寫入的設定。它同時包含啟用、命令集、頁大小、佇列項目大小和 shutdown 通知。</p>
+<p class="qr-explanation" data-paragraph="B41-2"><span class="qr-step">03.2 · 欄位與關係</span>EN bit0 控制啟用；CSS bits6:4 選命令集；MPS bits10:7 指定 2^(12+MPS) bytes；AMS bits13:11 選排程；SHN bits15:14 發 shutdown 通知。IOSQES bits19:16／IOCQES bits23:20 是每項 bytes 的 2 次方指數，CRIME bit24 決定啟用時的 ready 模式。</p>
+<p class="qr-explanation" data-paragraph="B41-3"><span class="qr-step">03.3 · 判讀與例子</span>IOSQES=6、IOCQES=4 分別是 64-byte SQE、16-byte CQE，不是 queue 深度。EN 由 1 清為 0 會引發 Controller Reset；MPS、CSS 等設定有停用時才能修改的條件，不能把這個暫存器當任意時點都能重寫的設定表。</p>
+<p class="qr-tags">搜尋詞：CC · EN · MPS · IOSQES · IOCQES · SHN · CRIME</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b42">Base 2.4 Figure 42 · CSTS：啟用與關機進度回報</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b44">Base 2.4 Figure 44 · AQA：Admin 佇列深度</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b42" data-figure="B42">
+<h2><span class="qr-number">04</span>CSTS：啟用與關機進度回報</h2>
+<p class="qr-original">Base 2.4 · Figure 42 · Offset 1Ch: CSTS – Controller Status</p>
+<p class="qr-location">§3.1.4.6 · 文件頁 63–65 · PDF 89–91</p>
+<p class="qr-explanation" data-paragraph="B42-1"><span class="qr-step">04.1 · 用途</span>CC 表示主機要求什麼，CSTS 表示控制器回報什麼。啟用卡住、命令無完成結果或 shutdown 尚未結束時，先把這兩邊對起來。</p>
+<p class="qr-explanation" data-paragraph="B42-2"><span class="qr-step">04.2 · 欄位與關係</span>RDY bit0 表示已準備處理 submission entries；CFS bit1 表示無法由適當 CQ 回報的致命錯誤；SHST bits3:2 區分未開始、進行中與完成；ST bit6 區分 controller 與 subsystem shutdown。NSSRO bit4、PP bit5 另提供 reset 發生與處理暫停資訊。</p>
+<p class="qr-explanation" data-paragraph="B42-3"><span class="qr-step">04.3 · 判讀與例子</span>SHST=10b 表示 shutdown 完成，不是一般 I/O 成功。RDY=1 的可用範圍還受 ready 模式影響；在 media-independent 模式下，不能據此假設所有 namespace 的媒體都已就緒。</p>
+<p class="qr-tags">搜尋詞：CSTS · RDY · CFS · SHST · ST</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b57">Base 2.4 Figure 57 · CRTO：控制器與媒體就緒的等待時間</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b43" data-figure="B43">
+<h2><span class="qr-number">05</span>NSSR：辨識 subsystem reset 要求</h2>
+<p class="qr-original">Base 2.4 · Figure 43 · Offset 20h: NSSR – NVM Subsystem Reset</p>
+<p class="qr-location">§3.1.4.7 · 文件頁 66 · PDF 92</p>
+<p class="qr-explanation" data-paragraph="B43-1"><span class="qr-step">05.1 · 用途</span>分析重設紀錄時，這張表用來辨識是否要求了整個 NVM subsystem reset。支援由 CAP.NSSRS 回報，與只清除單一 controller 的 CC.EN 不同。</p>
+<p class="qr-explanation" data-paragraph="B43-2"><span class="qr-step">05.2 · 欄位與關係</span>offset20h 的 NSSRC bits31:0 只有寫入 4E564D65h 才啟動此 reset；其他值沒有這個功能效果。讀回固定為 0，不能靠讀值找回主機最後寫入的要求。</p>
+<p class="qr-explanation" data-paragraph="B43-3"><span class="qr-step">05.3 · 判讀與例子</span>若 trace 顯示曾寫入 4E564D65h，之後讀 NSSR 得 0 是規格定義行為，不能據此認為寫入沒發生。確認重設完成與影響範圍，仍要搭配狀態與 §3.7.1 的流程。</p>
+<p class="qr-tags">搜尋詞：NSSR · NSSRC · NSSRS · 4E564D65h</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b42">Base 2.4 Figure 42 · CSTS：啟用與關機進度回報</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b44" data-figure="B44">
+<h2><span class="qr-number">06</span>AQA：Admin 佇列深度</h2>
+<p class="qr-original">Base 2.4 · Figure 44 · Offset 24h: AQA – Admin Queue Attributes</p>
+<p class="qr-location">§3.1.4.8 · 文件頁 66 · PDF 92</p>
+<p class="qr-explanation" data-paragraph="B44-1"><span class="qr-step">06.1 · 用途</span>Admin commands 一開始就無法提交或回收時，用 AQA 核對兩個 Admin queues 的大小。這裡記的是 entry 數量，不是記憶體容量。</p>
+<p class="qr-explanation" data-paragraph="B44-2"><span class="qr-step">06.2 · 欄位與關係</span>ASQS bits11:0 與 ACQS bits27:16 分別是 submission／completion 深度減 1；中間與高位保留。每個 queue 至少 2、最多 4096 entries，啟用時把其中一個欄位留為 0 會產生未定義結果。</p>
+<p class="qr-explanation" data-paragraph="B44-3"><span class="qr-step">06.3 · 判讀與例子</span>要配置兩個各 64 entries 的 Admin queues，ASQS=63、ACQS=63，AQA=003F003Fh。SQ 與 CQ 的 entry 大小不同，所以相同深度不代表相同 buffer bytes。</p>
+<p class="qr-tags">搜尋詞：AQA · ASQS · ACQS · queue depth</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b45">Base 2.4 Figure 45 · ASQ：Admin 命令佇列基底</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b46">Base 2.4 Figure 46 · ACQ：Admin 完成佇列基底</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b45" data-figure="B45">
+<h2><span class="qr-number">07</span>ASQ：Admin 命令佇列基底</h2>
+<p class="qr-original">Base 2.4 · Figure 45 · Offset 28h: ASQ – Admin Submission Queue Base Address</p>
+<p class="qr-location">§3.1.4.9 · 文件頁 66 · PDF 92</p>
+<p class="qr-explanation" data-paragraph="B45-1"><span class="qr-step">07.1 · 用途</span>這張表回答 controller 要從哪裡取 Admin 命令。ASQ 是 Admin Submission Queue 的基底，不是目前待執行命令的地址，也不是 SQ tail。</p>
+<p class="qr-explanation" data-paragraph="B45-2"><span class="qr-step">07.2 · 欄位與關係</span>ASQB bits63:12 保存實體位址的高 52 bits；bits11:0 保留為 0。完整地址還必須依 CC.MPS 的頁大小對齊，因此最低 12 bits 為 0 只是最低要求。</p>
+<p class="qr-explanation" data-paragraph="B45-3"><span class="qr-step">07.3 · 判讀與例子</span>例如 CC.MPS=1 代表 8 KiB pages；地址 00101000h 雖然 4 KiB 對齊，仍不符合這個設定。先核對 AQA 的深度和實際配置範圍，再比較 SQ doorbell 更新。</p>
+<p class="qr-tags">搜尋詞：ASQ · ASQB · Admin SQ · alignment</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b44">Base 2.4 Figure 44 · AQA：Admin 佇列深度</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p5">PCIe Transport 1.4 Figure 5 · SQ doorbell：告知新的提交位置</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b46" data-figure="B46">
+<h2><span class="qr-number">08</span>ACQ：Admin 完成佇列基底</h2>
+<p class="qr-original">Base 2.4 · Figure 46 · Offset 30h: ACQ – Admin Completion Queue Base Address</p>
+<p class="qr-location">§3.1.4.10 · 文件頁 67 · PDF 93</p>
+<p class="qr-explanation" data-paragraph="B46-1"><span class="qr-step">08.1 · 用途</span>Admin 命令已被取走，但主機在錯誤位置等完成結果時，查 ACQ。所有經 Admin SQ 提交的命令，其完成項目都送到這個 Admin CQ。</p>
+<p class="qr-explanation" data-paragraph="B46-2"><span class="qr-step">08.2 · 欄位與關係</span>ACQB bits63:12 是地址高位，低 12 bits 保留；地址按 CC.MPS 對齊。Admin CQ 固定關聯 interrupt vector0，不能把任意 I/O CQ 的向量設定套用過來。</p>
+<p class="qr-explanation" data-paragraph="B46-3"><span class="qr-step">08.3 · 判讀與例子</span>ACQ 基底正確仍不保證每個 entry 都是新結果；讀取端還要看 CQE 的 phase tag，再更新 CQ head doorbell。ACQ 不會隨每筆完成而加 16。</p>
+<p class="qr-tags">搜尋詞：ACQ · ACQB · Admin CQ · interrupt vector 0</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/command/zh-tw/#figure-b99">Base 2.4 Figure 99 · CQE DW3：新舊判別、CID 與狀態</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p6">PCIe Transport 1.4 Figure 6 · CQ doorbell：歸還已讀取的位置</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-b57" data-figure="B57">
+<h2><span class="qr-number">09</span>CRTO：控制器與媒體就緒的等待時間</h2>
+<p class="qr-original">Base 2.4 · Figure 57 · Offset 68h: CRTO – Controller Ready Timeouts</p>
+<p class="qr-location">§3.1.4.21 · 文件頁 73 · PDF 99</p>
+<p class="qr-explanation" data-paragraph="B57-1"><span class="qr-step">09.1 · 用途</span>這張表用來區分「先能處理不依賴媒體的命令」與「全部必要媒體就緒」兩種等待目標。排查初始化慢，先確定自己正在等待哪一件事。</p>
+<p class="qr-explanation" data-paragraph="B57-2"><span class="qr-step">09.2 · 欄位與關係</span>CRIMT bits31:16 與 CRWMT bits15:0 均以 500 ms 計。前者在支援並啟用 media-independent ready 模式時使用；CRWMT 描述 controller 及必要媒體全部就緒的最長等待時間，且不得小於 CRIMT。</p>
+<p class="qr-explanation" data-paragraph="B57-3"><span class="qr-step">09.3 · 判讀與例子</span>若 CRIMT=4、CRWMT=20，分別是 2 秒與 10 秒。2 秒後某些 Admin 命令已可執行，不代表讀 namespace 應立即成功；仍要看 CC.CRIME 與該命令是否需要媒體。</p>
+<p class="qr-tags">搜尋詞：CRTO · CRIMT · CRWMT · ready timeout</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b42">Base 2.4 Figure 42 · CSTS：啟用與關機進度回報</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p5" data-figure="P5">
+<h2><span class="qr-number">10</span>SQ doorbell：告知新的提交位置</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 5 · Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL – Submission Queue y Tail Doorbell</p>
+<p class="qr-location">§3.1.2.1 · 文件頁 10 · PDF 10</p>
+<p class="qr-explanation" data-paragraph="P5-1"><span class="qr-step">10.1 · 用途</span>主機把命令放入 SQ 後，用此 doorbell 告知新的 tail。表內的 y 是 queue ID；offset 從 controller register base 起算，不是 SQ buffer 起算。</p>
+<p class="qr-explanation" data-paragraph="P5-2"><span class="qr-step">10.2 · 欄位與關係</span>地址公式為 1000h+(2y)×(4&lt;&lt;CAP.DSTRD)，SQT 在 bits15:0，bits31:16 保留。寫入的是環形佇列的新索引，新增命令數要由前後 tail 差值並考慮回繞計算。</p>
+<p class="qr-explanation" data-paragraph="P5-3"><span class="qr-step">10.3 · 判讀與例子</span>DSTRD=1、y=2 時，offset=1020h。深度 64 的 SQ 若 tail 從 62 走到 1，新增的是 3 項；寫 1 不代表只新增 1 項。</p>
+<p class="qr-tags">搜尋詞：SQyTDBL · SQT · DSTRD · tail · wrap</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p6">PCIe Transport 1.4 Figure 6 · CQ doorbell：歸還已讀取的位置</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p6" data-figure="P6">
+<h2><span class="qr-number">11</span>CQ doorbell：歸還已讀取的位置</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL – Completion Queue y Head Doorbell</p>
+<p class="qr-location">§3.1.2.2 · 文件頁 10–11 · PDF 10–11</p>
+<p class="qr-explanation" data-paragraph="P6-1"><span class="qr-step">11.1 · 用途</span>主機讀完 CQE 後，更新 CQ head doorbell，告知哪些位置可供 controller 重用。這個動作不是提交新命令，也不是讀取目前 CQ head。</p>
+<p class="qr-explanation" data-paragraph="P6-2"><span class="qr-step">11.2 · 欄位與關係</span>offset=1000h+(2y+1)×(4&lt;&lt;CAP.DSTRD)，CQH 位於 bits15:0，高位保留。寫入新 head，前後差值需考慮環形回繞；doorbell 讀回值由廠商定義，不適合作為狀態查詢。</p>
+<p class="qr-explanation" data-paragraph="P6-3"><span class="qr-step">11.3 · 判讀與例子</span>DSTRD=1、queue2 的 CQ doorbell 在 1028h，與 SQ 的 1020h 相隔 8 bytes。若只處理完成項目卻沒適時歸還空間，controller 可能沒有可重用的 CQ 位置。</p>
+<p class="qr-tags">搜尋詞：CQyHDBL · CQH · head · wrap</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p5">PCIe Transport 1.4 Figure 5 · SQ doorbell：告知新的提交位置</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b99">Base 2.4 Figure 99 · CQE DW3：新舊判別、CID 與狀態</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p12" data-figure="P12">
+<h2><span class="qr-number">12</span>PCI CMD：MMIO 與 Bus Master 的入口</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 12 · Offset 04h: CMD - Command</p>
+<p class="qr-location">§3.8.1.2 · 文件頁 17 · PDF 17</p>
+<p class="qr-explanation" data-paragraph="P12-1"><span class="qr-step">12.1 · 用途</span>PCIe 裝置可被枚舉，卻不能正常存取暫存器或搬移主機資料時，這張 PCI configuration 表是起點。這裡的 CMD 不是 NVMe command，也不是 NVMe CC。</p>
+<p class="qr-explanation" data-paragraph="P12-2"><span class="qr-step">12.2 · 欄位與關係</span>常查 BME bit2（Bus Master Enable，允許裝置主動發起存取）、MSE bit1（Memory Space Enable，記憶體空間存取啟用）及 IOSE bit0。bit10 為 Interrupt Disable，其餘欄位依 PCI 用途分開判讀。</p>
+<p class="qr-explanation" data-paragraph="P12-3"><span class="qr-step">12.3 · 判讀與例子</span>看見 BAR 地址已配置，不能因此認定 BME／MSE 也已啟用。先核對 PCI 設定，再查 NVMe 佇列地址；把 PCI CMD 與 NVMe CC 的 offset 混用會讀到完全不同資料。</p>
+<p class="qr-tags">搜尋詞：PCI CMD · BME · MSE · IOSE · MMIO · DMA</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p20">PCIe Transport 1.4 Figure 20 · BAR0：暫存器基底的低位與屬性</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p20" data-figure="P20">
+<h2><span class="qr-number">13</span>BAR0：暫存器基底的低位與屬性</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits</p>
+<p class="qr-location">§3.8.1.10 · 文件頁 19 · PDF 19</p>
+<p class="qr-explanation" data-paragraph="P20-1"><span class="qr-step">13.1 · 用途</span>從 PCI configuration 找到 NVMe 暫存器映射時，先讀 BAR0 的位址與類型，再判斷是否需要 BAR1 高位。此表也說明位址低位不是全部都能當地址使用。</p>
+<p class="qr-explanation" data-paragraph="P20-2"><span class="qr-step">13.2 · 欄位與關係</span>BA bits31:14 保存低 32-bit 地址中的可設定部分；bits13:4 保留。PF bit3 說明不允許 prefetch，TP bits2:1 表示映射類型，RTE bit0 表示 memory space。更大的映射空間可以使更多地址位唯讀。</p>
+<p class="qr-explanation" data-paragraph="P20-3"><span class="qr-step">13.3 · 判讀與例子</span>組合地址前要去掉屬性位，並確認 TP 所指類型。64-bit 映射時只取 BAR0 會截斷 4 GiB 以上地址；反過來也不能不看類型便把任意下一個 BAR 當高 32bits。</p>
+<p class="qr-tags">搜尋詞：BAR0 · MLBAR · BA · TP · PF · RTE</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p21">PCIe Transport 1.4 Figure 21 · BAR1：64-bit 暫存器地址的高位</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b34">Base 2.4 Figure 34 · Doorbell 在記憶體映射中的位置</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p21" data-figure="P21">
+<h2><span class="qr-number">14</span>BAR1：64-bit 暫存器地址的高位</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 21 · Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits</p>
+<p class="qr-location">§3.8.1.11 · 文件頁 19 · PDF 19</p>
+<p class="qr-explanation" data-paragraph="P21-1"><span class="qr-step">14.1 · 用途</span>確認使用 64-bit 暫存器映射後，這張表提供地址高 32bits。它和 BAR0 是一組地址，不是另一個 NVMe 暫存器區。</p>
+<p class="qr-explanation" data-paragraph="P21-2"><span class="qr-step">14.2 · 欄位與關係</span>BA bits31:0 直接對應完整地址 bits63:32。地址的低位與屬性仍來自 BAR0；主機可用的地址範圍還受到平台與橋接器資源配置限制。</p>
+<p class="qr-explanation" data-paragraph="P21-3"><span class="qr-step">14.3 · 判讀與例子</span>例如有效高位為 1、低位地址部分為 80000000h，組合為 0000000180000000h。忽略高位會誤存取 80000000h，兩者相差 4 GiB。</p>
+<p class="qr-tags">搜尋詞：BAR1 · MUBAR · BA · 64-bit address</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p20">PCIe Transport 1.4 Figure 20 · BAR0：暫存器基底的低位與屬性</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p44" data-figure="P44">
+<h2><span class="qr-number">15</span>MSI-X：總開關、遮罩與向量數</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 44 · Offset MSIXCAP + 2h: MXC – MSI-X Message Control</p>
+<p class="qr-location">§3.8.4.2 · 文件頁 24–25 · PDF 24–25</p>
+<p class="qr-explanation" data-paragraph="P44-1"><span class="qr-step">15.1 · 用途</span>CQ 已產生完成項目但未收到中斷時，這張表可確認 MSI-X 是否啟用、是否被整體遮罩，以及硬體提供多少向量。</p>
+<p class="qr-explanation" data-paragraph="P44-2"><span class="qr-step">15.2 · 欄位與關係</span>MXE bit15 為 MSI-X enable，FM bit14 遮罩全部向量，TS bits10:0 為 table entries 減 1。使用 MSI-X 還要求 MSI enable 清 0；FM 清 0 後，個別 vector mask 仍各自有效。</p>
+<p class="qr-explanation" data-paragraph="P44-3"><span class="qr-step">15.3 · 判讀與例子</span>TS=3 表示 4 個向量，不是向量 3 已被啟用。FM 由 1 改 0 也不會自動清除每個向量自己的 mask，還要配合 CQ 指定的 interrupt vector 查表。</p>
+<p class="qr-tags">搜尋詞：MSI-X · MXE · FM · TS · interrupt</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p45">PCIe Transport 1.4 Figure 45 · MSI-X Table：先找 BAR，再加 offset</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p46">PCIe Transport 1.4 Figure 46 · MSI-X PBA：待處理中斷的資料位置</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p45" data-figure="P45">
+<h2><span class="qr-number">16</span>MSI-X Table：先找 BAR，再加 offset</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 45 · Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR</p>
+<p class="qr-location">§3.8.4.3 · 文件頁 25 · PDF 25</p>
+<p class="qr-explanation" data-paragraph="P45-1"><span class="qr-step">16.1 · 用途</span>要定位 MSI-X table 以核對向量配置，先由這張表找 BAR，再加 table offset。BAR index 和位址偏移是兩個欄位。</p>
+<p class="qr-explanation" data-paragraph="P45-2"><span class="qr-step">16.2 · 欄位與關係</span>TBIR bits2:0 選 BAR；TO bits31:3 保存 8-byte 對齊的偏移。形成 offset 時清除低 3bits，不能把整個 32-bit 值直接加到 BAR 基底。64-bit BAR 以低 Dword 的 BAR 識別。</p>
+<p class="qr-explanation" data-paragraph="P45-3"><span class="qr-step">16.3 · 判讀與例子</span>若 MTAB=00002004h，TBIR=4、offset=2000h，表示 BAR4 所映射基底加 2000h，而不是 BAR0 加 2004h。可用 BIR 編碼須依本表判斷。</p>
+<p class="qr-tags">搜尋詞：MTAB · TBIR · TO · MSI-X</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p44">PCIe Transport 1.4 Figure 44 · MSI-X：總開關、遮罩與向量數</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p46">PCIe Transport 1.4 Figure 46 · MSI-X PBA：待處理中斷的資料位置</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p46" data-figure="P46">
+<h2><span class="qr-number">17</span>MSI-X PBA：待處理中斷的資料位置</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 46 · Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR</p>
+<p class="qr-location">§3.8.4.4 · 文件頁 25 · PDF 25</p>
+<p class="qr-explanation" data-paragraph="P46-1"><span class="qr-step">17.1 · 用途</span>這張表定位 Pending Bit Array，讓你檢查向量是否有待處理的中斷狀態。PBA 與 MSI-X table 是不同結構，不能因為都屬 MSI-X 就使用同一個 offset。</p>
+<p class="qr-explanation" data-paragraph="P46-2"><span class="qr-step">17.2 · 欄位與關係</span>PBIR bits2:0 選 BAR，PBAO bits31:3 給 8-byte 對齊的偏移；算法類似 MTAB，但欄位內容可以不同。這裡描述的是 PBA 位置，並不是各 vector 的 pending bits 本身。</p>
+<p class="qr-explanation" data-paragraph="P46-3"><span class="qr-step">17.3 · 判讀與例子</span>MPBA=00003000h 表示由 BAR0 映射基底加 3000h 取得 PBA。是否已出現 CQE 仍要讀 CQ；一個 pending bit 不能代替 CQ 裡每筆命令的 status。</p>
+<p class="qr-tags">搜尋詞：MPBA · PBA · PBIR · PBAO · pending</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p45">PCIe Transport 1.4 Figure 45 · MSI-X Table：先找 BAR，再加 offset</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b99">Base 2.4 Figure 99 · CQE DW3：新舊判別、CID 與狀態</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p55" data-figure="P55">
+<h2><span class="qr-number">18</span>PCIe Link：目前談成的速度與寬度</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 55 · Offset PXCAP + 12h: PXLS – PCI Express Link Status</p>
+<p class="qr-location">§3.8.5.8 · 文件頁 29 · PDF 29</p>
+<p class="qr-explanation" data-paragraph="P55-1"><span class="qr-step">18.1 · 用途</span>頻寬低於預期時，查這張表確認目前協商出的 link speed 和 width。裝置宣告的最大能力不能代替目前結果。</p>
+<p class="qr-explanation" data-paragraph="P55-2"><span class="qr-step">18.2 · 欄位與關係</span>NLW bits9:4 是 Negotiated Link Width，CLS bits3:0 是 Current Link Speed 編碼；link 未 up 時兩者未定義。SCC bit12 描述是否使用平台提供的共同參考時鐘，不是 link 速度。</p>
+<p class="qr-explanation" data-paragraph="P55-3"><span class="qr-step">18.3 · 判讀與例子</span>若 NLW=2，表示目前是 x2，不能因產品標示 x4 就假設四條 lane 都在用。CLS 需用對應 PCIe 版本的速度編碼解讀；本表沒有完整定義外部 PCIe 速度表，不把編碼值直接當 GT/s。</p>
+<p class="qr-tags">搜尋詞：PXLS · NLW · CLS · SCC · link speed · link width</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p60">PCIe Transport 1.4 Figure 60 · PCIe AER：不可更正錯誤狀態</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p63">PCIe Transport 1.4 Figure 63 · PCIe AER：已更正錯誤與重傳線索</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p60" data-figure="P60">
+<h2><span class="qr-number">19</span>PCIe AER：不可更正錯誤狀態</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 60 · Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register</p>
+<p class="qr-location">§3.8.6.2 · 文件頁 31–32 · PDF 31–32</p>
+<p class="qr-explanation" data-paragraph="P60-1"><span class="qr-step">19.1 · 用途</span>查 PCIe 交易或連結異常時，這張表列出不可更正錯誤狀態。這裡 AER 是 Advanced Error Reporting，不是 NVMe 的 Asynchronous Event Request。</p>
+<p class="qr-explanation" data-paragraph="P60-2"><span class="qr-step">19.2 · 欄位與關係</span>常用欄位包含 CTS bit14（Completion Timeout）、UCS bit16（Unexpected Completion）、MTS bit18（Malformed TLP）、URES bit20（Unsupported Request）及 DLPES bit4（Data Link Protocol Error）。TLP 是交易層封包；多個狀態可同時置位。另有 mask 與 severity 暫存器決定回報和嚴重程度。</p>
+<p class="qr-explanation" data-paragraph="P60-3"><span class="qr-step">19.3 · 判讀與例子</span>CTS=1 只能證明記錄了 PCIe completion timeout，不能直接判定是哪筆 NVMe CID 失敗。保存狀態與 header log 後再對時間、佇列及 CQE；應先保存原始狀態，再進行錯誤復原，避免丟失用來對照的資訊。</p>
+<p class="qr-tags">搜尋詞：AERUCES · CTS · URES · MTS · UCS · DLPES · PCIe AER</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p63">PCIe Transport 1.4 Figure 63 · PCIe AER：已更正錯誤與重傳線索</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Status：類別、錯誤碼與重試提示</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b212">Base 2.4 Figure 212 · Error Information：把錯誤對回命令與欄位</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<article class="qr-card" id="figure-p63" data-figure="P63">
+<h2><span class="qr-number">20</span>PCIe AER：已更正錯誤與重傳線索</h2>
+<p class="qr-original">PCIe Transport 1.4 · Figure 63 · Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register</p>
+<p class="qr-location">§3.8.6.5 · 文件頁 33 · PDF 33</p>
+<p class="qr-explanation" data-paragraph="P63-1"><span class="qr-step">20.1 · 用途</span>鏈路仍能運作但效能或穩定性下降時，可查已更正錯誤狀態。已更正表示該類錯誤有修復機制，不表示出現頻率不值得觀察。</p>
+<p class="qr-explanation" data-paragraph="P63-2"><span class="qr-step">20.2 · 欄位與關係</span>RES bit0 為 Receiver Error，BTS6／BDS7 為 Bad TLP／Bad DLLP，RRS8 為 replay 編號回捲，RTS12 為 Replay Timer Timeout。這些是狀態位，不是發生次數；遮罩另由 AERCEM 控制。</p>
+<p class="qr-explanation" data-paragraph="P63-3"><span class="qr-step">20.3 · 判讀與例子</span>兩次快照都看到 RTS=1，若中間沒清除，不能推論又新增一次 timeout。要分析發生頻率，需記錄取樣時間、清除行為與重現條件，再與當時的 link 狀態對照。</p>
+<p class="qr-tags">搜尋詞：AERCES · RES · BTS · BDS · RTS · RRS · correctable</p>
+<div class="qr-related">接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p55">PCIe Transport 1.4 Figure 55 · PCIe Link：目前談成的速度與寬度</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p60">PCIe Transport 1.4 Figure 60 · PCIe AER：不可更正錯誤狀態</a></div>
+<a href="#figure-index">回本冊圖表索引</a></article>
+<footer id="source-files"><h2>原始文件</h2><p>頁碼採本次提供的 ratified PDF；Base 的 PDF 頁＝文件頁＋26，另兩份相同。圖號與英文原名保留，可用 PDF 搜尋定位。公開網站不附原始 PDF。</p><ul class="qr-sources"><li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li><li>NVM Express NVM Command Set Specification · Revision 1.3 · 2026-07-31<br><code>NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf</code></li><li>NVM Express NVMe over PCIe Transport Specification · Revision 1.4 · 2026-07-31<br><code>NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf</code></li></ul></footer>
+</main></div>

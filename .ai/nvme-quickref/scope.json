@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "status": "approved",
+  "sources": [
+    "NVME-BASE-2.4",
+    "NVME-NVM-CS-1.3",
+    "NVME-PCIE-TRANSPORT-1.4"
+  ],
+  "exclude": [
+    "Fabrics and Fabrics-only content"
+  ],
+  "inherit_previous_report_exclusions": false,
+  "selection_basis": "Repeated lookup, debugging or verification value; selected important figures, not an exhaustive transcription",
+  "editions": [
+    "standalone-zh-tw",
+    "pages-zh-tw",
+    "pages-en"
+  ],
+  "topics": [
+    {
+      "id": "init",
+      "title_zh": "初始化、佇列與 PCIe",
+      "title_en": "Initialization, Queues, and PCIe",
+      "figures": [
+        "B34",
+        "B36",
+        "B41",
+        "B42",
+        "B43",
+        "B44",
+        "B45",
+        "B46",
+        "B57",
+        "P5",
+        "P6",
+        "P12",
+        "P20",
+        "P21",
+        "P44",
+        "P45",
+        "P46",
+        "P55",
+        "P60",
+        "P63"
+      ]
+    },
+    {
+      "id": "command",
+      "title_zh": "命令格式、資料指標與完成狀態",
+      "title_en": "Commands, Data Pointers, and Completion Status",
+      "figures": [
+        "B92",
+        "B93",
+        "B97",
+        "B98",
+        "B99",
+        "B101",
+        "B102",
+        "B103",
+        "B104",
+        "B107",
+        "B110",
+        "B111",
+        "B113",
+        "B114",
+        "B116",
+        "B119",
+        "B121",
+        "B122",
+        "N18",
+        "N19",
+        "N20"
+      ]
+    },
+    {
+      "id": "identify",
+      "title_zh": "Identify、Namespace 與資料格式",
+      "title_en": "Identify, Namespaces, and Data Formats",
+      "figures": [
+        "B333",
+        "B336",
+        "B338",
+        "B342",
+        "B346",
+        "N123",
+        "N125",
+        "N127",
+        "N128",
+        "N129"
+      ]
+    },
+    {
+      "id": "io",
+      "title_zh": "I/O 命令與資料完整性",
+      "title_en": "I/O Commands and Data Integrity",
+      "figures": [
+        "N4",
+        "N8",
+        "N22",
+        "N53",
+        "N54",
+        "N70",
+        "N71",
+        "N39",
+        "N47",
+        "N83",
+        "N153",
+        "N154",
+        "N155",
+        "N157",
+        "N159",
+        "N174",
+        "N175"
+      ]
+    },
+    {
+      "id": "features",
+      "title_zh": "Features、電源、效能與資源",
+      "title_en": "Features, Power, Performance, and Resources",
+      "figures": [
+        "B198",
+        "B201",
+        "B464",
+        "B466",
+        "B340",
+        "B467",
+        "B468",
+        "B471",
+        "B472",
+        "B473",
+        "B475",
+        "B477",
+        "B482",
+        "B543",
+        "B545",
+        "B294",
+        "N21"
+      ]
+    },
+    {
+      "id": "logs",
+      "title_zh": "健康、事件與診斷紀錄",
+      "title_en": "Health, Events, and Diagnostic Logs",
+      "figures": [
+        "B204",
+        "B205",
+        "B208",
+        "B211",
+        "B212",
+        "B213",
+        "B217",
+        "B221",
+        "B223",
+        "B225",
+        "B232",
+        "B233",
+        "B234",
+        "B236",
+        "P75",
+        "P76"
+      ]
+    },
+    {
+      "id": "maintenance",
+      "title_zh": "維護與管理操作",
+      "title_en": "Maintenance and Management",
+      "figures": [
+        "B187",
+        "B191",
+        "B215",
+        "B177",
+        "B218",
+        "B219",
+        "B443",
+        "B446",
+        "N134",
+        "B195",
+        "N91",
+        "B451",
+        "B454",
+        "B312",
+        "B541",
+        "B542"
+      ]
+    }
+  ]
+}
