@@ -1,20 +1,105 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 01 · Initialization, Queues, and PCIe"
+title: "NVMe Figures and Scenarios 01 · Initialization, Queues, and PCIe"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/init/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/init/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/init.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 01 · Initialization, Queues, and PCIe</h1><p class="qr-intro">Start with addresses and capabilities, then readiness, queue locations and interrupts. Link and PCIe error registers distinguish transport observations from command completions.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 01 · Initialization, Queues, and PCIe</h1><p class="qr-intro">Start with addresses and capabilities, then readiness, queue locations and interrupts. Link and PCIe error registers distinguish transport observations from command completions.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-init-01">Why does PCIe enumeration not establish I/O readiness?</a></li>
+<li><a href="#exercise-init-02">How do a 64-bit BAR and doorbell offset combine?</a></li>
+<li><a href="#exercise-init-03">Why does RDY=1 not always establish media readiness?</a></li>
+<li><a href="#exercise-init-04">Can an x4-capable device currently operate at x2?</a></li>
+<li><a href="#exercise-init-05">Why might a CQE appear without an MSI-X notification?</a></li>
+<li><a href="#exercise-init-06">Are PCIe AER and NVMe AER the same mechanism?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-init-01" data-scenario="init-01"><h3><span class="qr-number">EXERCISE 01</span>Why does PCIe enumeration not establish I/O readiness?</h3>
+<p class="qr-case-question">The system reads PCI Vendor ID and Device ID and declares NVMe ready. Which evidence layers are still missing?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>PCI configuration CMD has MSE=0 and BME=0; BARs have assigned values.</li>
+<li>NVMe CAP, CC and CSTS have not been verified; there is no successful Admin Queue or Identify trace.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>PCI configuration → BARs and PCI CMD → NVMe memory-mapped properties → Admin Queue/Identify → I/O queues and namespaces.</p>
+<p data-reasoning="init-01-1"><span class="qr-step">Step 1</span>Readable PCI configuration establishes access to that function’s configuration, not full operation. MSE controls memory-space access and BME concerns device-initiated memory transactions; these operating conditions are not established here.</p>
+<p data-reasoning="init-01-2"><span class="qr-step">Step 2</span>Next come NVMe CAP capabilities, CC configuration, CSTS status and queue-memory locations. PCI CMD, NVMe CC and Identify Controller belong to different interfaces; one field cannot substitute for the other layers.</p>
+<p data-reasoning="init-01-3"><span class="qr-step">Step 3</span>This exercise establishes an inspection sequence without enabling hardware. PCI IDs alone do not answer LBA formats, Sanitize methods or namespace capacity; those require NVMe command responses.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-p12">PCIe Transport 1.4 Figure 12 · Offset 04h: CMD - Command</a><a href="/nvme/figure-reference/init/en/#figure-p20">PCIe Transport 1.4 Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits</a><a href="/nvme/figure-reference/init/en/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a><a href="/nvme/figure-reference/init/en/#figure-b41">Base 2.4 Figure 41 · Offset 14h: CC – Controller Configuration</a><a href="/nvme/figure-reference/init/en/#figure-b42">Base 2.4 Figure 42 · Offset 1Ch: CSTS – Controller Status</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.1.2 · Figure 12 · Offset 04h: CMD - Command · Printed pages 17 · PDF 17</li><li>PCIe Transport 1.4 · §3.8.1.10 · Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits · Printed pages 19 · PDF 19</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · Printed pages 55–58 · PDF 81–84</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · Printed pages 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.6 · Figure 42 · Offset 1Ch: CSTS – Controller Status · Printed pages 63–65 · PDF 89–91</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-init-02" data-scenario="init-02"><h3><span class="qr-number">EXERCISE 02</span>How do a 64-bit BAR and doorbell offset combine?</h3>
+<p class="qr-case-question">A trace tool retains only BAR0 and places queue 3’s doorbell below 4 GiB. Reconstruct the address from configuration.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>BAR0=40000004h, confirmed as a 64-bit memory BAR; BAR1=00000002h.</li>
+<li>CAP.DSTRD=2; target queue identifier y=3 for SQ tail and CQ head doorbells.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>PCI configuration BAR0/BAR1 → register base → CAP.DSTRD → SQ/CQ doorbell offsets for the queue ID.</p>
+<p data-reasoning="init-02-1"><span class="qr-step">Step 1</span>Remove BAR0 attribute bits before combining: base=(2&lt;&lt;32)|40000000h=0000000240000000h. The trailing four in BAR0 is an attribute, not four extra address bytes.</p>
+<p data-reasoning="init-02-2"><span class="qr-step">Step 2</span>Stride is 4&lt;&lt;2=16 bytes. SQ3 offset is 1000h+(2×3)×16=1060h; CQ3 offset is 1000h+(2×3+1)×16=1070h. Three is the queue ID, not a current ring-entry index.</p>
+<p data-reasoning="init-02-3"><span class="qr-step">Step 3</span>The addresses are 0000000240001060h and 0000000240001070h. This locates registers only; tail/head values come from queue state, not from register addresses or byte offsets.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-p20">PCIe Transport 1.4 Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits</a><a href="/nvme/figure-reference/init/en/#figure-p21">PCIe Transport 1.4 Figure 21 · Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits</a><a href="/nvme/figure-reference/init/en/#figure-p5">PCIe Transport 1.4 Figure 5 · Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL – Submission Queue y Tail Doorbell</a><a href="/nvme/figure-reference/init/en/#figure-p6">PCIe Transport 1.4 Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL – Completion Queue y Head Doorbell</a><a href="/nvme/figure-reference/init/en/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.1.10 · Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits · Printed pages 19 · PDF 19</li><li>PCIe Transport 1.4 · §3.8.1.11 · Figure 21 · Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits · Printed pages 19 · PDF 19</li><li>PCIe Transport 1.4 · §3.1.2.1 · Figure 5 · Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL – Submission Queue y Tail Doorbell · Printed pages 10 · PDF 10</li><li>PCIe Transport 1.4 · §3.1.2.2 · Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL – Completion Queue y Head Doorbell · Printed pages 10–11 · PDF 10–11</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · Printed pages 55–58 · PDF 81–84</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-init-03" data-scenario="init-03"><h3><span class="qr-number">EXERCISE 03</span>Why does RDY=1 not always establish media readiness?</h3>
+<p class="qr-case-question">An initialization trace sees RDY=1 after one second and requires every namespace command to work immediately. Which mode did it overlook?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Media-independent readiness is supported and enabled: CC.CRIME=1; CSTS.RDY=1, CFS=0.</li>
+<li>CRTO.CRIMT=3, CRWMT=12; readiness of all required media has not been established.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Read CAP readiness capabilities, CC.CRIME, CSTS and CRTO; distinguish media-independent readiness from readiness with required media.</p>
+<p data-reasoning="init-03-1"><span class="qr-step">Step 1</span>CRIMT=3 and CRWMT=12 use 500 ms units, giving 1.5 seconds and six seconds. They describe timeout bounds for their conditions, not mandatory durations for every initialization.</p>
+<p data-reasoning="init-03-2"><span class="qr-step">Step 2</span>In this enabled mode, RDY can first establish readiness for media-independent commands. A test must distinguish commands requiring media rather than extending that observation to every data path.</p>
+<p data-reasoning="init-03-3"><span class="qr-step">Step 3</span>Identify CNS=08h additionally reports target namespace NSTAT.NRDY: one means that namespace is ready. Retain the CC.EN=1 timing origin and actual command status when assessing the corresponding timeout. CFS=0 means no reported controller-fatal status, not proof of media readiness.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a><a href="/nvme/figure-reference/init/en/#figure-b41">Base 2.4 Figure 41 · Offset 14h: CC – Controller Configuration</a><a href="/nvme/figure-reference/init/en/#figure-b42">Base 2.4 Figure 42 · Offset 1Ch: CSTS – Controller Status</a><a href="/nvme/figure-reference/init/en/#figure-b57">Base 2.4 Figure 57 · Offset 68h: CRTO – Controller Ready Timeouts</a><a href="/nvme/figure-reference/identify/en/#figure-b346">Base 2.4 Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · Printed pages 55–58 · PDF 81–84</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · Printed pages 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.6 · Figure 42 · Offset 1Ch: CSTS – Controller Status · Printed pages 63–65 · PDF 89–91</li><li>Base 2.4 · §3.1.4.21 · Figure 57 · Offset 68h: CRTO – Controller Ready Timeouts · Printed pages 73 · PDF 99</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · Printed pages 394 · PDF 420</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-init-04" data-scenario="init-04"><h3><span class="qr-number">EXERCISE 04</span>Can an x4-capable device currently operate at x2?</h3>
+<p class="qr-case-question">The device and its capability report x4 support, yet performance is lower. Where is the actual lane count reported?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>The PCIe link is up; Link Capabilities reports maximum x4, while Link Status NLW=2.</li>
+<li>CLS is retained, but complete path, payload and workload throughput evidence is unavailable.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Locate PCI Express Capability in PCI configuration, then read Link Capabilities and Link Status; this is not an Identify CNS response.</p>
+<p data-reasoning="init-04-1"><span class="qr-step">Step 1</span>Capability describes supported maximum width; NLW describes negotiated width. The values are consistent: the device can support x4 while this link uses x2.</p>
+<p data-reasoning="init-04-2"><span class="qr-step">Step 2</span>This establishes fewer negotiated lanes than the maximum, but endpoint fields alone cannot locate the cause among slot, upstream port, platform configuration or other factors. Compare capabilities and negotiated states along the path.</p>
+<p data-reasoning="init-04-3"><span class="qr-step">Step 3</span>CLS is a speed encoding, not a raw GT/s quantity; x2 is not measured bandwidth either. Separate capability from negotiation before applying the applicable speed definition and throughput measurements.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-p55">PCIe Transport 1.4 Figure 55 · Offset PXCAP + 12h: PXLS – PCI Express Link Status</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.5.6 · Printed pages 28–29 · PDF 28–29</li><li>PCIe Transport 1.4 · §3.8.5.8 · Figure 55 · Offset PXCAP + 12h: PXLS – PCI Express Link Status · Printed pages 29 · PDF 29</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-init-05" data-scenario="init-05"><h3><span class="qr-number">EXERCISE 05</span>Why might a CQE appear without an MSI-X notification?</h3>
+<p class="qr-case-question">Polling finds a new CQE, but the interrupt handler does not run. Should the first check concern media or interrupt configuration?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>MSI-X: MXE=1, FM=0, TS=7; the CQ uses vector five, whose individual mask is one.</li>
+<li>The new CQE phase and successful status are verified; PBA and coalescing have not yet been inspected.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>CQ interrupt-vector association → PCI MSI-X Message Control → table-entry mask/PBA → FID=08h and per-vector settings where relevant.</p>
+<p data-reasoning="init-05-1"><span class="qr-step">Step 1</span>TS=7 means eight table entries, so vector five is within range. FM=0 removes the function-wide mask, not individual vector masks.</p>
+<p data-reasoning="init-05-2"><span class="qr-step">Step 2</span>Vector five remains masked, directly explaining suppressed delivery. Successful completion and interrupt notification are separate observations; an absent handler invocation does not negate the observed CQE.</p>
+<p data-reasoning="init-05-3"><span class="qr-step">Step 3</span>If the individual mask is also clear, inspect pending state, coalescing and host routing. This branch does not explain every missing interrupt, and vector count must not be equated with queue count.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-p44">PCIe Transport 1.4 Figure 44 · Offset MSIXCAP + 2h: MXC – MSI-X Message Control</a><a href="/nvme/figure-reference/init/en/#figure-p45">PCIe Transport 1.4 Figure 45 · Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR</a><a href="/nvme/figure-reference/init/en/#figure-p46">PCIe Transport 1.4 Figure 46 · Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR</a><a href="/nvme/figure-reference/features/en/#figure-b543">Base 2.4 Figure 543 · Interrupt Coalescing – Command Dword 11</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.4.2 · Figure 44 · Offset MSIXCAP + 2h: MXC – MSI-X Message Control · Printed pages 24–25 · PDF 24–25</li><li>PCIe Transport 1.4 · §3.8.4.3 · Figure 45 · Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR · Printed pages 25 · PDF 25</li><li>PCIe Transport 1.4 · §3.8.4.4 · Figure 46 · Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR · Printed pages 25 · PDF 25</li><li>Base 2.4 · §5.2.30.2.1 · Figure 543 · Interrupt Coalescing – Command Dword 11 · Printed pages 515 · PDF 541</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-init-06" data-scenario="init-06"><h3><span class="qr-number">EXERCISE 06</span>Are PCIe AER and NVMe AER the same mechanism?</h3>
+<p class="qr-case-question">A trace says AER without naming the interface. Can two PCIe status samples equal to one establish two new NVMe errors?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>PCIe AERCES.RTS is one in both samples, with no clearing or reset between them.</li>
+<li>An NVMe Asynchronous Event Request completion also exists, but its timing and notification contents are not correlated.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>First identify whether the data comes from the PCIe Advanced Error Reporting extended capability or an NVMe Asynchronous Event Request completion.</p>
+<p data-reasoning="init-06-1"><span class="qr-step">Step 1</span>PCIe AER means Advanced Error Reporting, with RTS here reporting Replay Timer Timeout status. NVMe AER is an asynchronous event command. Shared initials do not imply the same structure, target or event semantics.</p>
+<p data-reasoning="init-06-2"><span class="qr-step">Step 2</span>RTS is a status bit, not a counter. Without clearing, repeated ones may reflect one retained state; two samples do not establish two occurrences or two failed NVMe commands.</p>
+<p data-reasoning="init-06-3"><span class="qr-step">Step 3</span>Correlation needs complete records, timing and device identity from both interfaces. PCIe status can inform transport diagnosis but does not identify an SQID/CID or replace CQE and NVMe-log outcomes.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-p60">PCIe Transport 1.4 Figure 60 · Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register</a><a href="/nvme/figure-reference/init/en/#figure-p63">PCIe Transport 1.4 Figure 63 · Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register</a><a href="/nvme/figure-reference/command/en/#figure-b99">Base 2.4 Figure 99 · Completion Queue Entry: DW 3</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.6.2 · Figure 60 · Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register · Printed pages 31–32 · PDF 31–32</li><li>PCIe Transport 1.4 · §3.8.6.5 · Figure 63 · Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register · Printed pages 33 · PDF 33</li><li>Base 2.4 · §5.2.2 · Printed pages 183–190 · PDF 209–216</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-b34">Base 2.4 Figure 34 · Memory-Based Property Definition</a></li>
 <li><a href="#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a></li>

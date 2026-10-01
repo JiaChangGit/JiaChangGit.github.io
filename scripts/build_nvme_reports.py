@@ -1605,7 +1605,7 @@ def main() -> int:
     from scripts.nvme_reader_context import REPORT_CONTEXT
     hub=['---\nlayout: menu-page\ntitle: NVMe 教學與報告\npermalink: /nvme-notes/\nnvme_notes: true\n---\n<div class="nvme-note">',
          '<h1>NVMe 教學與報告</h1><p>先用中英文報告理解主軸、流程與案例，再打開 Spec 閱讀精確定義。中文教學 HTML 提供由淺入深的解釋，以及每張範圍內圖表的重點、案例與細節。</p>']
-    hub.append('<section><h2>NVMe 圖表速查：七冊與總索引</h2><p>從問題、欄位或原圖號定位常用規格資訊；各圖附用途、欄位、判讀例子與文件／PDF 頁碼。</p><ul><li><a href="/DOCS/nvme-quick-reference/index.html">繁中 HTML 速查總索引</a></li><li><a href="/nvme/figure-reference/zh-tw/">中文版速查總索引</a></li><li><a href="/nvme/figure-reference/en/">English reference index</a></li></ul></section>')
+    hub.append('<section><h2>NVMe 圖表判讀與情境練習：七冊與總索引</h2><p>45 道情境練習串接 117 張重點圖表；先做題，再展開查詢路徑與推導，並保留文件／PDF 定位。</p><ul><li><a href="/DOCS/nvme-quick-reference/index.html">繁中 HTML 速查總索引</a></li><li><a href="/nvme/figure-reference/zh-tw/">中文版速查總索引</a></li><li><a href="/nvme/figure-reference/en/">English reference index</a></li></ul></section>')
     for rid in order:
         editions=[a for a in contract['artifacts'] if a['report_id']==rid]
         hub.append('<section><h2>'+html.escape(REPORTS[rid]['title_zh'])+'</h2><p>'+html.escape(REPORT_CONTEXT[rid]['intro']['zh'])+'</p><ul>')

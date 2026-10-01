@@ -1,20 +1,120 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 04 · I/O Commands and Data Integrity"
+title: "NVMe Figures and Scenarios 04 · I/O Commands and Data Integrity"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/io/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/io/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/io.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 04 · I/O Commands and Data Integrity</h1><p class="qr-intro">Follow command addresses and counts into metadata, protection information and atomicity. Equal field widths do not imply equal counting rules; command success alone does not establish every persistence or atomicity guarantee.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 04 · I/O Commands and Data Integrity</h1><p class="qr-intro">Follow command addresses and counts into metadata, protection information and atomicity. Equal field widths do not imply equal counting rules; command success alone does not establish every persistence or atomicity guarantee.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-io-01">Is an eight-block Write also atomic across power failure?</a></li>
+<li><a href="#exercise-io-02">Why does NAWUPF=0 not necessarily mean one block?</a></li>
+<li><a href="#exercise-io-03">Does a size-compliant Write remain atomic across a boundary?</a></li>
+<li><a href="#exercise-io-04">Does a successful Write already establish persistence?</a></li>
+<li><a href="#exercise-io-05">Why order data and index Writes if both use FUA?</a></li>
+<li><a href="#exercise-io-06">How does PRACT=1 affect metadata larger than PI?</a></li>
+<li><a href="#exercise-io-07">Is FFh after deallocation a failure?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-io-01" data-scenario="io-01"><h3><span class="qr-number">EXERCISE 01</span>Is an eight-block Write also atomic across power failure?</h3>
+<p class="qr-case-question">A colleague sees AWUN=7 and claims that an eight-block Write cannot be partially updated by power failure. What is missing?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>AWUN=7, AWUPF=1; NSFEAT.NSABP=0 and MAM=0; current Write Atomicity Normal has DN=0.</li>
+<li>LBA data size is 4096 bytes; this is one ordinary Write with NLB=7.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for the NVM-defined AWUN/AWUPF fields; CNS=00h for namespace NSFEAT; Get Features FID=0Ah, SEL=0 to confirm normal atomicity is not disabled.</p>
+<p data-reasoning="io-01-1"><span class="qr-step">Step 1</span>AWUN and AWUPF encode block counts minus one. Seven provides an eight-block normal-operation guarantee; one provides a two-block power-failure/error guarantee. NLB=7 requests eight blocks, or 32768 bytes.</p>
+<p data-reasoning="io-01-2"><span class="qr-step">Step 2</span>Under these assumptions the Write fits the normal atomic limit but exceeds the power-failure limit. Exceeding a guarantee does not mean a torn write must occur; it means AWUPF cannot guarantee the whole eight-block update.</p>
+<p data-reasoning="io-01-3"><span class="qr-step">Step 3</span>If the application needs an indivisible 32 KiB update across power loss, it needs an appropriate supported configuration or higher-level protection. FUA=1 adds a persistence requirement before completion; it does not expand AWUPF from two blocks to eight.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/io/en/#figure-n4">NVM Command Set 1.3 Figure 4 · Atomicity Parameters for Single Atomicity Mode</a><a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a><a href="/nvme/figure-reference/io/en/#figure-n71">NVM Command Set 1.3 Figure 71 · Write – Command Dword 12</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.2 · Printed pages 94–96 · PDF 94–96</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 85–86, 88 · PDF 85–86, 88</li><li>NVM Command Set 1.3 · §2.1.4 · Printed pages 15–18 · PDF 15–18</li><li>NVM Command Set 1.3 · §4.1.3.4 · Printed pages 67 · PDF 67</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · Printed pages 54 · PDF 54</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-io-02" data-scenario="io-02"><h3><span class="qr-number">EXERCISE 02</span>Why does NAWUPF=0 not necessarily mean one block?</h3>
+<p class="qr-case-question">A decoder adds one to every atomic-unit field. Which result does it get wrong here?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Controller: AWUN=7, AWUPF=3. Namespace: NSABP=1, NAWUN=15, NAWUPF=0, NABSN=0, NABSPF=0, MAM=0.</li>
+<li>Normal atomicity is enabled; LBA data size=4096 bytes.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Pair Identify CNS=01h with CNS=00h to obtain the controller baseline and namespace-specific values.</p>
+<p data-reasoning="io-02-1"><span class="qr-step">Step 1</span>Check NSABP before interpreting namespace atomic fields. NAWUN=15 is nonzero, providing 16 blocks, or 64 KiB, for normal operation rather than only the controller’s eight-block baseline.</p>
+<p data-reasoning="io-02-2"><span class="qr-step">Step 2</span>NAWUPF=0 has a special meaning here: use controller AWUPF rather than adding one to zero. AWUPF=3 provides four blocks, or 16 KiB, for power-failure atomicity.</p>
+<p data-reasoning="io-02-3"><span class="qr-step">Step 3</span>NABSN=NABSPF=0 specifies no corresponding atomic boundaries. These zeros, NAWUPF’s fallback zero and controller AWUPF=0 meaning one block have different semantics. A decoder needs field-specific rules.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/io/en/#figure-n4">NVM Command Set 1.3 Figure 4 · Atomicity Parameters for Single Atomicity Mode</a><a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.2 · Printed pages 94–96 · PDF 94–96</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 85–86, 88–89 · PDF 85–86, 88–89</li><li>NVM Command Set 1.3 · §2.1.4 · Printed pages 16–19 · PDF 16–19</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-io-03" data-scenario="io-03"><h3><span class="qr-number">EXERCISE 03</span>Does a size-compliant Write remain atomic across a boundary?</h3>
+<p class="qr-case-question">Two Writes each contain four blocks. Why can their starting LBAs change the namespace atomicity guarantee?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>AWUN=0, AWUPF=0; NSABP=1, NAWUN=7, NAWUPF=7; NABSN=7, NABSPF=7, NABO=0; DN=0.</li>
+<li>First consider MAM=0. Write A: SLBA=8, NLB=3. Write B: SLBA=6, NLB=3.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=00h for units, boundaries, offset and NSFEAT.MAM; convert commands into actual LBA intervals before comparing.</p>
+<p data-reasoning="io-03-1"><span class="qr-step">Step 1</span>A nonzero encoded boundary size of seven represents eight blocks. With NABO=0, boundaries occur at 0, 8, 16 and so on. A covers LBAs 8–11 within one interval; B covers 6–9 and crosses eight. Equal lengths do not make their positions equivalent.</p>
+<p data-reasoning="io-03-2"><span class="qr-step">Step 2</span>MAM=0 selects Single Atomicity Mode. A satisfies the namespace whole-Write conditions here; B crosses a boundary and cannot claim the same four-block guarantee. Boundary and unit-size checks belong together.</p>
+<p data-reasoning="io-03-3"><span class="qr-step">Step 3</span>With a valid MAM=1 configuration, B is divided into atomic LBA subranges 6–7 and 8–9. Each subrange receives its own guarantee; the two combined are still not one indivisible update.</p>
+<div class="qr-table"><table class=""><thead><tr><th scope="col">Command</th><th scope="col">Actual LBA range</th><th scope="col">Boundary at LBA 8</th></tr></thead><tbody><tr><td>A</td><td>8–11</td><td>8 9 10 11: one interval</td></tr><tr><td>B</td><td>6–9</td><td>6 7 | 8 9: crosses the boundary</td></tr></tbody></table></div>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/io/en/#figure-n8">NVM Command Set 1.3 Figure 8 · Atomic Boundaries Example</a><a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a><a href="/nvme/figure-reference/io/en/#figure-n4">NVM Command Set 1.3 Figure 4 · Atomicity Parameters for Single Atomicity Mode</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §2.1.4.4 · Printed pages 19 · PDF 19</li><li>NVM Command Set 1.3 · §2.1.4.5 · Printed pages 19–20 · PDF 19–20</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 85, 88–89 · PDF 85, 88–89</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-io-04" data-scenario="io-04"><h3><span class="qr-number">EXERCISE 04</span>Does a successful Write already establish persistence?</h3>
+<p class="qr-case-question">With capability data, feature values and a command trace, how can you assess persistence of a successful Write?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>A volatile write cache is confirmed present and enabled for this namespace; Get Features FID=06h reports WCE=1.</li>
+<li>A: ordinary Write, FUA=0, successful, with no later Flush. B: Write, FUA=1, successful.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for VWC, CNS=08h for VWCNP and the applicable FDP configuration → Get Features FID=06h, SEL=0 → command FUA and subsequent Flush trace.</p>
+<p data-reasoning="io-04-1"><span class="qr-step">Step 1</span>A may already be on nonvolatile media or may still depend on volatile cache. Its successful completion alone does not distinguish those states, so neither definite persistence nor definite cache-only residency follows.</p>
+<p data-reasoning="io-04-2"><span class="qr-step">Step 2</span>B’s FUA=1 requires this command’s data and metadata to reach nonvolatile media before completion. Persistence concerns retention after completion; atomicity concerns whether an update can be partial. They are separate questions.</p>
+<p data-reasoning="io-04-3"><span class="qr-step">Step 3</span>Another route is to wait for A to complete, then submit a covering Flush and verify its successful completion. Flush covers completed commands for its target namespace before Flush submission. Concurrent submission would lack that ordering condition.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b471">Base 2.4 Figure 471 · Volatile Write Cache – Command Dword 11</a><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/identify/en/#figure-b346">Base 2.4 Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure</a><a href="/nvme/figure-reference/io/en/#figure-n71">NVM Command Set 1.3 Figure 71 · Write – Command Dword 12</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 374 · PDF 400</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · Printed pages 391–394 · PDF 417–420</li><li>Base 2.4 · §5.2.30.1.4 · Figure 471 · Volatile Write Cache – Command Dword 11 · Printed pages 464–465 · PDF 490–491</li><li>Base 2.4 · §7.2 · Printed pages 567 · PDF 593</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · Printed pages 54 · PDF 54</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-io-05" data-scenario="io-05"><h3><span class="qr-number">EXERCISE 05</span>Why order data and index Writes if both use FUA?</h3>
+<p class="qr-case-question">An application places a data Write and then its index Write in the same SQ. Both use FUA=1. Is the index prevented from becoming persistent first?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Data and index use different LBA ranges and are not a fused operation.</li>
+<li>Both are submitted without waiting for the first completion. The goal is to avoid a new index pointing at data not yet persisted after power loss.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Inspect FUA in the SQEs and the submission/completion timeline; apply NVM command-ordering and Write FUA rules.</p>
+<p data-reasoning="io-05-1"><span class="qr-step">Step 1</span>SQ position does not enforce this data dependency. FUA=1 imposes persistence before each command completes; it does not add an ordering guarantee between separate commands.</p>
+<p data-reasoning="io-05-2"><span class="qr-step">Step 2</span>A suitable illustrative sequence is: submit data Write with FUA=1 → verify successful completion → submit index Write with FUA=1 → verify successful completion. The first completion establishes data persistence before index submission.</p>
+<p data-reasoning="io-05-3"><span class="qr-step">Step 3</span>This resolves the stated dependency, not a multi-command transaction. Requiring data and index to revert together or update together needs a fuller transaction or recovery design.</p>
+<div class="qr-table"><table class=""><thead><tr><th scope="col">Order</th><th scope="col">Host observation/action</th></tr></thead><tbody><tr><td>1</td><td>Submit data Write, FUA=1</td></tr><tr><td>2</td><td>Wait for and verify data Write success</td></tr><tr><td>3</td><td>Only then submit index Write, FUA=1</td></tr><tr><td>4</td><td>Wait for and verify index Write success</td></tr></tbody></table></div>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/io/en/#figure-n71">NVM Command Set 1.3 Figure 71 · Write – Command Dword 12</a><a href="/nvme/figure-reference/io/en/#figure-n4">NVM Command Set 1.3 Figure 4 · Atomicity Parameters for Single Atomicity Mode</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §2.1.2 · Printed pages 14 · PDF 14</li><li>NVM Command Set 1.3 · §3.3.6 · Figure 71 · Write – Command Dword 12 · Printed pages 54 · PDF 54</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-io-06" data-scenario="io-06"><h3><span class="qr-number">EXERCISE 06</span>How does PRACT=1 affect metadata larger than PI?</h3>
+<p class="qr-case-question">A port subtracts eight metadata bytes per LBA whenever PRACT=1. Is that correct here?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>16-bit Guard with PI enabled; LBA data=4096 bytes, MS=16, separate metadata buffer.</li>
+<li>Write has PRACT=1 and NLB=3; other protection settings are valid.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=00h for LBAF, DPS and metadata settings, plus CNS=05h with CSI=00h for ELBAF where needed → apply Write 16-bit Guard processing rules.</p>
+<p data-reasoning="io-06-1"><span class="qr-step">Step 1</span>NLB=3 requests four blocks. The data buffer is 4×4096=16384 bytes. In this metadata-greater-than-eight branch, the host still transfers 4×16=64 metadata bytes, not 32.</p>
+<p data-reasoning="io-06-2"><span class="qr-step">Step 2</span>PRACT controls PI generation and processing, not a universal subtract-eight buffer rule. Exactly eight metadata bytes uses a different branch in the processing table; it cannot be applied to MS=16.</p>
+<p data-reasoning="io-06-3"><span class="qr-step">Step 3</span>Beyond length, align separate versus extended placement, PI type and Guard format. Only with matching conditions is a byte-level comparison between transfers meaningful.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-n125">NVM Command Set 1.3 Figure 125 · LBA Format Data Structure, NVM Command Set Specific</a><a href="/nvme/figure-reference/identify/en/#figure-n128">NVM Command Set 1.3 Figure 128 · Extended LBA Format Data Structure, NVM Command Set Specific</a><a href="/nvme/figure-reference/io/en/#figure-n154">NVM Command Set 1.3 Figure 154 · Metadata – Transferred as Separate Buffer</a><a href="/nvme/figure-reference/io/en/#figure-n174">NVM Command Set 1.3 Figure 174 · Write Command 16b Guard Protection Information Processing</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · Printed pages 94 · PDF 94</li><li>NVM Command Set 1.3 · §4.1.5.3 · Figure 128 · Extended LBA Format Data Structure, NVM Command Set Specific · Printed pages 101–102 · PDF 101–102</li><li>NVM Command Set 1.3 · §5.2.3 · Figure 154 · Metadata – Transferred as Separate Buffer · Printed pages 130 · PDF 130</li><li>NVM Command Set 1.3 · §5.3.2.1 · Figure 174 · Write Command 16b Guard Protection Information Processing · Printed pages 143 · PDF 143</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-io-07" data-scenario="io-07"><h3><span class="qr-number">EXERCISE 07</span>Is FFh after deallocation a failure?</h3>
+<p class="qr-case-question">A validator requires every deallocated LBA to return zero. Could it reject permitted behavior?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>The range is confirmed deallocated; DLFEAT.DRB=010b; Get Features FID=05h reports DULBE=0.</li>
+<li>PI is disabled in this example; Read succeeds and all data bytes are FFh.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=00h for DLFEAT and relevant capabilities; Get Features FID=05h, SEL=0 for the target NSID to read DULBE; then assess Read results.</p>
+<p data-reasoning="io-07-1"><span class="qr-step">Step 1</span>DRB=010b describes FFh contents for deallocated reads, so this example agrees with the reported behavior. Successful Read does not inherently require zero; the validator should derive its expectation from DRB.</p>
+<p data-reasoning="io-07-2"><span class="qr-step">Step 2</span>If DULBE is supported and enabled, deallocated/unwritten reads can instead take the error-reporting path. Preserve the feature state when comparing devices rather than only comparing returned bytes.</p>
+<p data-reasoning="io-07-3"><span class="qr-step">Step 3</span>This tests logical-interface deallocation behavior, not secure erasure of every physical-media copy. Sanitize claims require evidence about that operation’s support, target and completion state.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a><a href="/nvme/figure-reference/io/en/#figure-n47">NVM Command Set 1.3 Figure 47 · Dataset Management – Range Definition</a><a href="/nvme/figure-reference/features/en/#figure-b198">Base 2.4 Figure 198 · Get Features – Command Dword 10</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 88 · PDF 88</li><li>NVM Command Set 1.3 · §3.3.3.2.1 · Printed pages 48 · PDF 48</li><li>NVM Command Set 1.3 · §4.1.3.3 · Printed pages 66 · PDF 66</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-n4">NVM Command Set 1.3 Figure 4 · Atomicity Parameters for Single Atomicity Mode</a></li>
 <li><a href="#figure-n8">NVM Command Set 1.3 Figure 8 · Atomic Boundaries Example</a></li>

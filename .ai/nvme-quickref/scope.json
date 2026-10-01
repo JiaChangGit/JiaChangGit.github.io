@@ -183,5 +183,16 @@
         "B542"
       ]
     }
-  ]
+  ],
+  "scenario_practice": {
+    "status": "approved",
+    "date": "2026-09-30",
+    "integration": "existing eight pages; no separate series",
+    "answer_mode": "collapsed worked answers",
+    "tools": "Spec commands and field reasoning only; no CLI; no hardware access",
+    "editions": "existing Traditional Chinese standalone HTML plus equivalent Chinese/English Pages",
+    "canonical_cases": 45,
+    "fabrics_excluded": true,
+    "publish": "commit and push after validation"
+  }
 }

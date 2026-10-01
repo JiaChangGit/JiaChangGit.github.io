@@ -1,20 +1,106 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 05 · Features, Power, Performance, and Resources"
+title: "NVMe Figures and Scenarios 05 · Features, Power, Performance, and Resources"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/features/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/features/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/features.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 05 · Features, Power, Performance, and Resources</h1><p class="qr-intro">Separate support, current, default and saved values before interpreting individual features. Power latency, scheduling weights, queue counts and reclamation resources use different units.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 05 · Features, Power, Performance, and Resources</h1><p class="qr-intro">Separate support, current, default and saved values before interpreting individual features. Power latency, scheduling weights, queue counts and reclamation resources use different units.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-features-01">Why can a successful Get Features leave the current value unknown?</a></li>
+<li><a href="#exercise-features-02">How many queues follow from a request for sixteen?</a></li>
+<li><a href="#exercise-features-03">What do two APST transitions imply after 700 ms idle?</a></li>
+<li><a href="#exercise-features-04">Does a slowdown at high temperature establish HCTM activity?</a></li>
+<li><a href="#exercise-features-05">Does an unchanged HMB address establish an intact return?</a></li>
+<li><a href="#exercise-features-06">Do weights seven and three guarantee a two-to-one IOPS ratio?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-features-01" data-scenario="features-01"><h3><span class="qr-number">EXERCISE 01</span>Why can a successful Get Features leave the current value unknown?</h3>
+<p class="qr-case-question">A tool displays DW0=5 as a feature’s current setting. Which interpretation layer did it miss?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>The controller supports Save/Select; SEL=3 targets a valid FID; CQE reports success and DW0=00000005h.</li>
+<li>Current, default and saved values have not been retrieved.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Retain FID/SEL/NSID from the request → interpret SEL=3 capabilities → query the same FID and correct target with SEL=0 for the current value.</p>
+<p data-reasoning="features-01-1"><span class="qr-step">Step 1</span>Five is binary 101: CHANG=1, NSSPEC=0, SVBL=1. This reports changeable attributes, non-namespace-specific scope and saveability, not a current value of five or proof of enablement.</p>
+<p data-reasoning="features-01-2"><span class="qr-step">Step 2</span>SEL=0, 1 and 2 retrieve Current, Default and Saved respectively; they can differ. NSSPEC=0 also does not by itself establish controller-only scope; the feature definition determines that.</p>
+<p data-reasoning="features-01-3"><span class="qr-step">Step 3</span>If a report retains DW0 but discards SEL, the meaning cannot be reliably reconstructed. Features with a data buffer also require that buffer; successful completion does not mean DW0 contains the complete response.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b198">Base 2.4 Figure 198 · Get Features – Command Dword 10</a><a href="/nvme/figure-reference/features/en/#figure-b201">Base 2.4 Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</a><a href="/nvme/figure-reference/features/en/#figure-b466">Base 2.4 Figure 466 · Set Features – Feature Identifiers</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.12 · Figure 198 · Get Features – Command Dword 10 · Printed pages 209–210 · PDF 235–236</li><li>Base 2.4 · §5.2.12 · Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b · Printed pages 212 · PDF 238</li><li>Base 2.4 · §5.2.30 · Figure 466 · Set Features – Feature Identifiers · Printed pages 457–459 · PDF 483–485</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-features-02" data-scenario="features-02"><h3><span class="qr-number">EXERCISE 02</span>How many queues follow from a request for sixteen?</h3>
+<p class="qr-case-question">A driver requests sixteen SQs and sixteen CQs, then creates QIDs 1 through 16. Does the response allow that?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Set Features FID=07h requests NSQR=15 and NCQR=15; successful DW0=00030007h.</li>
+<li>CAP.MQES=1023; no Create I/O CQ/SQ commands have been issued.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Decode NCQA/NSQA in the FID=07h completion; read CAP.MQES separately before planning queue creation and depths.</p>
+<p data-reasoning="features-02-1"><span class="qr-step">Step 1</span>DW0 has upper half three and lower half seven, allocating four CQs and eight SQs. A request for sixteen is not an allocation of sixteen; the response governs the result.</p>
+<p data-reasoning="features-02-2"><span class="qr-step">Step 2</span>MQES=1023 allows up to 1024 entries per I/O queue, distinct from the number of queues. Multiple SQs may share a CQ under valid configuration, so the allocated counts need not match.</p>
+<p data-reasoning="features-02-3"><span class="qr-step">Step 3</span>Resources have been allocated, but queues do not yet exist. Establish an appropriate CQ before its SQ and verify each Create completion. Queue counts also do not directly specify MSI-X vector counts.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b472">Base 2.4 Figure 472 · Number of Queues – Command Dword 11</a><a href="/nvme/figure-reference/features/en/#figure-b473">Base 2.4 Figure 473 · Number of Queues – Completion Queue Entry Dword 0</a><a href="/nvme/figure-reference/init/en/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.5 · Figure 472 · Number of Queues – Command Dword 11 · Printed pages 465 · PDF 491</li><li>Base 2.4 · §5.2.30.1.5 · Figure 473 · Number of Queues – Completion Queue Entry Dword 0 · Printed pages 466 · PDF 492</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · Printed pages 55–58 · PDF 81–84</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-features-03" data-scenario="features-03"><h3><span class="qr-number">EXERCISE 03</span>What do two APST transitions imply after 700 ms idle?</h3>
+<p class="qr-case-question">You need to explain the autonomous power path, not merely list the lowest-power state. How do the entries define source states and timing?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>APSTE=1; PS0 entry: ITPT=100, ITPS=2; PS2 entry: ITPT=500, ITPS=3.</li>
+<li>PS2 and PS3 are supported non-operational states; other relevant entries are disabled. Start in PS0 with 700 ms of uninterrupted idle.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for APST capability and power-state descriptors → Get Features FID=0Ch, SEL=0 for both APSTE and the full APST buffer.</p>
+<p data-reasoning="features-03-1"><span class="qr-step">Step 1</span>The entry index selects the source; ITPS selects the destination. The path is PS0 → after its 100 ms idle threshold, PS2 → after the 500 ms threshold in PS2, PS3. The second timer is not simply counted from the initial PS0 idle instant.</p>
+<p data-reasoning="features-03-2"><span class="qr-step">Step 2</span>Ignoring transition time for illustration, 700 ms allows the two thresholds to be reached in sequence. This timeline is not a measurement of the current state: actual transition time and controller behavior matter, and the table is configuration evidence.</p>
+<p data-reasoning="features-03-3"><span class="qr-step">Step 3</span>To assess the next I/O’s exit cost, inspect the destination descriptor’s EXLAT. Zero means unreported, not zero latency. Work that interrupts idle also invalidates this uninterrupted-idle timeline.</p>
+<div class="qr-table"><table class=""><thead><tr><th scope="col">Source entry</th><th scope="col">Condition</th><th scope="col">Destination state</th></tr></thead><tbody><tr><td>PS0</td><td>Reach the 100 ms idle threshold in PS0</td><td>PS2</td></tr><tr><td>PS2</td><td>Reach the 500 ms idle threshold in PS2</td><td>PS3</td></tr></tbody></table></div>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b475">Base 2.4 Figure 475 · Autonomous Power State Transition – Command Dword 11</a><a href="/nvme/figure-reference/features/en/#figure-b477">Base 2.4 Figure 477 · Autonomous Power State Transition Data Structure Entry</a><a href="/nvme/figure-reference/features/en/#figure-b340">Base 2.4 Figure 340 · Identify – Power State Descriptor Data Structure</a><a href="/nvme/figure-reference/features/en/#figure-b468">Base 2.4 Figure 468 · Power Management – Command Dword 11</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.7 · Figure 475 · Autonomous Power State Transition – Command Dword 11 · Printed pages 468 · PDF 494</li><li>Base 2.4 · §5.2.30.1.7 · Figure 477 · Autonomous Power State Transition Data Structure Entry · Printed pages 469 · PDF 495</li><li>Base 2.4 · §5.2.14.2.1 · Figure 340 · Identify – Power State Descriptor Data Structure · Printed pages 384–386 · PDF 410–412</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-features-04" data-scenario="features-04"><h3><span class="qr-number">EXERCISE 04</span>Does a slowdown at high temperature establish HCTM activity?</h3>
+<p class="qr-case-question">Performance falls while temperature is above TMT1. Which reports strengthen the thermal-management interpretation, and what remains unproven?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Get Features FID=10h: TMT1=340 K, TMT2=350 K; Identify limits permit these settings.</li>
+<li>SMART composite temperature is 345 K; during the test, Thermal Management Temperature 1 Transition Count rises by one and Total Time by 20 seconds.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for HCTM capability and valid temperature limits → Get Features FID=10h, SEL=0 → compare two LID=02h SMART samples.</p>
+<p data-reasoning="features-04-1"><span class="qr-step">Step 1</span>345 K is about 71.85°C, between the configured thresholds. Confirm units for settings and measurements; Kelvin is not Celsius, and a feature threshold is not the current temperature.</p>
+<p data-reasoning="features-04-2"><span class="qr-step">Step 2</span>The counter and time increases support stage-one host-controlled thermal management activity during the interval. This is stronger than a high-temperature snapshot, but remains interval evidence rather than per-I/O timing.</p>
+<p data-reasoning="features-04-3"><span class="qr-step">Step 3</span>You can report that thermal management was active, but cannot attribute the entire slowdown to it. Align measurement intervals, workloads, power states and PCIe link observations to investigate contributions.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b482">Base 2.4 Figure 482 · HCTM – Command Dword 11</a><a href="/nvme/figure-reference/logs/en/#figure-b213">Base 2.4 Figure 213 · SMART / Health Information Log Page</a><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.10 · Figure 482 · HCTM – Command Dword 11 · Printed pages 472 · PDF 498</li><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · Printed pages 221–225 · PDF 247–251</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 359–360 · PDF 385–386</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-features-05" data-scenario="features-05"><h3><span class="qr-number">EXERCISE 05</span>Does an unchanged HMB address establish an intact return?</h3>
+<p class="qr-case-question">After reset, the host clears an HMB at the same address and declares MR=1. Is address equality enough?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Descriptor address and total size match the previous allocation, but buffer contents have been cleared.</li>
+<li>The proposed Host Memory Buffer feature has EHM=1, MR=1. This exercise only interprets the trace; no setting is applied.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for HMB capability; inspect FID=0Dh and retained descriptors/buffer records from before disablement.</p>
+<p data-reasoning="features-05-1"><span class="qr-step">Step 1</span>MR=1 declares return of the previous HMB, requiring more than matching address and size: descriptors and buffer contents must also remain consistent. Clearing the buffer breaks that condition.</p>
+<p data-reasoning="features-05-2"><span class="qr-step">Step 2</span>EHM=1 requests enablement but cannot validate MR. Observing an enabled feature cannot reconstruct whether the host preserved every byte; lifecycle and memory-management records are needed.</p>
+<p data-reasoning="features-05-3"><span class="qr-step">Step 3</span>Newly allocated memory must follow the new-HMB configuration path rather than treating an identical address as preserved contents. Controller capability and host compliance require different evidence.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b545">Base 2.4 Figure 545 · Host Memory Buffer – Command Dword 11</a><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.2.3 · Figure 545 · Host Memory Buffer – Command Dword 11 · Printed pages 516–517 · PDF 542–543</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 357, 362 · PDF 383, 388</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-features-06" data-scenario="features-06"><h3><span class="qr-number">EXERCISE 06</span>Do weights seven and three guarantee a two-to-one IOPS ratio?</h3>
+<p class="qr-case-question">Measured high- and low-priority IOPS do not match configured weights. Does that prove an arbitration defect?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>CC.AMS selects a supported weighted arbitration mode; FID=01h reports HPW=7, MPW=3, LPW=3, AB=2.</li>
+<li>High- and low-priority workloads use different I/O sizes and read/write mixes.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Read CAP and CC.AMS → Get Features FID=01h, SEL=0 → correlate SQ priorities and actual workloads.</p>
+<p data-reasoning="features-06-1"><span class="qr-step">Step 1</span>HPW=7 and LPW=3 encode per-round weights of eight and four commands. AB=2 instead encodes a burst of 2^2=4. Similar-looking numbers do not necessarily use the same encoding.</p>
+<p data-reasoning="features-06-2"><span class="qr-step">Step 2</span>Weights describe command-service opportunities, not equal work for commands with different sizes and execution costs. Eight-to-four weights do not directly guarantee a steady two-to-one IOPS or bandwidth ratio.</p>
+<p data-reasoning="features-06-3"><span class="qr-step">Step 3</span>Arbitration validation needs the mode, SQ priorities, pending work and observation interval, evaluated against the specified service rules. An application throughput chart alone does not establish a violation.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/features/en/#figure-b467">Base 2.4 Figure 467 · Arbitration &amp; Command Processing – Command Dword 11</a><a href="/nvme/figure-reference/init/en/#figure-b41">Base 2.4 Figure 41 · Offset 14h: CC – Controller Configuration</a><a href="/nvme/figure-reference/init/en/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.1 · Figure 467 · Arbitration &amp; Command Processing – Command Dword 11 · Printed pages 460 · PDF 486</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · Printed pages 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · Printed pages 55–58 · PDF 81–84</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-b198">Base 2.4 Figure 198 · Get Features – Command Dword 10</a></li>
 <li><a href="#figure-b201">Base 2.4 Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</a></li>

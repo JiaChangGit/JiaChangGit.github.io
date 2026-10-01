@@ -8,6 +8,7 @@ import re
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from scripts.nvme_quickref_data import load, TOPICS
+from scripts.nvme_scenario_render import CASES, index_html, cases_html
 
 ROOT=Path(__file__).resolve().parents[1]
 CONTROL=ROOT/'.ai/nvme-quickref'
@@ -48,53 +49,6 @@ def nav(topic,lang,standalone):
         links=[(url('index',lang),tr('總索引','Index',lang)),(url(topic,'en' if lang=='zh' else 'zh'),tr('English','繁體中文',lang)),('/DOCS/nvme-quick-reference/'+('index' if topic=='index' else topic)+'.html',tr('繁中 HTML','Chinese HTML',lang))]
     return '<nav class="qr-top" aria-label="'+tr('版本與索引','Editions and index',lang)+'"><a href="#content">'+tr('跳到內容','Skip to content',lang)+'</a>'+''.join(f'<a href="{u}">{l}</a>' for u,l in links)+'</nav>'
 
-ROUTES=[
- ('啟用後一直沒有 ready','Controller never becomes ready','P12 B36 B41 B42 B57'),
- ('完成結果對不到原命令','Completion does not match the command','B97 B98 B99 B101'),
- ('Invalid Field 不知道是哪個欄位','Locate an invalid command field','B101 B103 B212 B93'),
- ('資料傳輸長度或地址不對','Incorrect transfer length or address','B92 B93 B111 B113 B119'),
- ('讀寫範圍或容量不符合預期','Unexpected range or capacity','N123 N125 N53 N54 N18'),
- ('PI 檢查失敗或 metadata 錯位','PI failure or misplaced metadata','N127 N128 N155 N174 N175'),
- ('空閒後第一筆 I/O 特別慢','First I/O after idle is slow','B340 B468 B475 B477'),
- ('有 CQE 卻收不到中斷','CQE exists but interrupt is absent','B99 P44 P45 P46 B543'),
- ('效能下降或溫度升高','Performance drops or temperature rises','P55 B213 B482 B225'),
- ('把不同時間的 log 拼在一起','Avoid combining different log captures','B204 B208 B221 B223 B232 B233'),
- ('韌體更新後還是舊版本','Firmware update still reports old revision','B191 B187 B215'),
- ('新建 namespace 卻無法存取','Created namespace is inaccessible','B446 N134 B443 B346'),
- ('Sanitize 已接受但不確定結果','Sanitize accepted but outcome is unclear','B451 B454 B312'),
- ('寫入被保護或 Boot 更新被拒絕','Protected writes or rejected Boot updates','B201 B541 B542'),
-]
-WORKED={
-'init':('主機看見裝置，CC.EN 已設 1，但沒有正常處理命令。','P12 B36 B41 B42 B57',[
- '先確認 PCI memory space 與 Bus Master 設定，再核對 BAR 映射、CAP 支援及 CC 選值。這一步排除「能枚舉就一定已完成所有設定」的誤判。',
- '同時記錄 CC.CRIME、CSTS.RDY／CFS 與 elapsed time。ready 模式不同，能處理的命令範圍與等待目標也不同。',
- '最後依 CRIMT／CRWMT 的單位核對等待時間；若已有 CQE，改走命令狀態查詢，而不是把所有失敗都留在初始化問題。']),
-'command':('工具回報一筆非零 completion，還不知道是參數錯誤或媒體失敗。','B98 B99 B101 B102 B212',[
- '保留完整 DW2／DW3，先用 phase 判新項目，再用 SQID／CID 對回命令；這樣才知道應查哪種 opcode。',
- '把 SCT 和 SC 分開。SCT 選表，SC 查細項；如果工具已將 status 移位，先記錄工具格式，再使用原圖 bit 編號。',
- 'M=1 時查 Error Information。把 BYTLOC／BITLOC 對回 SQE 原始 bytes，而非只留下翻譯後的錯誤名稱。']),
-'identify':('應用程式說要讀 32 KiB，但原始命令與 buffer 長度看來不同。','B333 N123 N125 N54 N153 N154',[
- '先確認 Identify CNS 與 namespace，從 FLBAS 選到正確 LBAF。LBAF 的 LBADS 是資料大小指數，MS 是每 block 的 metadata bytes。',
- '用 NLB+1 求 blocks，再乘資料大小；32 KiB 在 4 KiB 格式是 8 blocks，Read 的 NLB 應為 7。',
- '另依 metadata 是交錯或分開、PI 的 PRACT 行為計傳輸 buffer，不能把 namespace 資料容量與實際傳輸 bytes 混用。']),
-'io':('同一份資料換成帶 PI 的格式後，Read／Write 開始發生保護或長度錯誤。','N125 N128 N153 N154 N174 N175',[
- '先由 LBAF 與 ELBAF 確认資料大小、metadata 大小、Guard 格式和 tag 位數。不能因為 metadata 都是 16 bytes，就沿用相同 PI 配置。',
- '再對每筆命令確認 PRACT／PRCHK。16-bit Guard 圖裡，8-byte metadata 和大於 8-byte metadata 的 host 傳輸規則不同。',
- '最後檢查交錯／分開 buffer 的位置及 PI byte order。只有位置和格式都一致，才適合比較 Guard 或 tags 的數值。']),
-'features':('空閒兩秒後裝置省電，但下一次 I/O 的延遲突然增加。','B198 B340 B475 B477 B468',[
- '用 Get Features SEL=0讀目前 APST 開關與條目，避免把預設或保存值誤當實際設定。',
- '找出當時來源 state 的 entry，ITPT=2000 以毫秒計，ITPS 選目的 state。再到該 state 描述子看 NOPS 及 EXLAT。',
- 'EXLAT 以微秒計，0 是未回報。若比較 idle I/O exit limit，另查 FID02h 的 IIELL；它和 APST 等待時間不是同一個延遲。']),
-'logs':('在持久事件中看到某次錯誤，希望保留可供後續核對的同一份歷史。','B232 B233 B234 B236',[
- '使用支援的 context 建立動作，讀 header 保存 TLL、TNEV、LREV、GNUM 與來源資訊；不要每個 chunk 都重新建立。',
- '以 ACT0讀資料並按 EHL+3+EL走事件。VSIL 已包含在 EL 中，只用來切開 vendor 資訊與 Event Data。',
- '每筆先依 ET／ETR 找格式，再記時間、對象及結果。最後確認整份長度、事件數及 context 一致性；缺少某事件不能直接證明那件事沒發生。']),
-'maintenance':('Sanitize 命令成功，但驗證程式不確定是否可以宣告清除完成。','B451 B454 B312',[
- '先確認命令是 subsystem 或 namespace Sanitize，保存其目標與 CDW10。兩者 PREQ 的 bit 位置不同。',
- '命令成功只表示要求已被接受；接著查目標的 Sanitize Status，把 SOS、SPROG 和 sanitize state 一起讀。',
- '例如 SPROG=FFFFh 但 SOS=3，結果仍是失敗。若有 Media Verification，要將該狀態與正常完成分開，不用單一百分比作結論。']),
-}
-
 def render_card(key,ordinal,lang,standalone):
     c=CARDS[key];r=REG[key];title=c['title'] if lang=='zh' else r['title']
     out=[f'<article class="qr-card" id="figure-{key.lower()}" data-figure="{key}">',
@@ -118,14 +72,14 @@ def introduction(lang):
 def body(topic,lang,standalone=False):
     out=['<div class="nvme-quickref">',nav(topic,lang,standalone),'<main id="content">']
     if topic=='index':
-        title=tr('NVMe 圖表速查總索引','NVMe Figure Reference Index',lang)
-        out+=['<header><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4</p><h1>'+title+'</h1><p class="qr-intro">'+tr('從問題、欄位或圖號，找到需要核對的原始定義。七冊收錄 117 張常用圖表，優先處理能力、參數、結果與異常判讀；每張只在一冊保留完整介紹，其他位置連回。','Find original definitions by question, field or figure number. Seven volumes cover 117 selected figures for capabilities, parameters, results and abnormal behavior. Each has one canonical explanation, linked from other locations.',lang)+'</p></header>',introduction(lang),'<section class="qr-series">']
+        title=tr('NVMe 圖表判讀與情境練習總索引','NVMe Figure Reference and Scenario Index',lang)
+        out+=['<header><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4</p><h1>'+title+'</h1><p class="qr-intro">'+tr('從問題、欄位或圖號，找到需要核對的原始定義。七冊整合 45 道情境練習與 117 張常用圖表，從需求走到查詢介面、欄位與可驗證的結論。每題及每張圖均有固定位置，其他入口直接連回。','Find original definitions by question, field or figure number. Seven volumes combine 45 scenarios with 117 selected figures, connecting requirements to query interfaces, fields and defensible conclusions. Each exercise and figure has one canonical location.',lang)+'</p></header>',introduction(lang),'<section class="qr-series">']
         for i,(slug,zh,en,iz,ie) in enumerate(TOPICS,1):
             count=sum(r['group']==slug for r in REG.values())
             out.append('<article><h2><a href="'+url(slug,lang,standalone)+'">'+f'{i:02d} · '+E(zh if lang=='zh' else en)+'</a></h2><p>'+E(iz if lang=='zh' else ie)+'</p><p class="qr-tags">'+str(count)+tr(' 張原圖',' source figures',lang)+'</p></article>')
-        out.append('</section><section id="questions"><h2>'+tr('手上有問題：從這條查詢路徑開始','Start with the question at hand',lang)+'</h2>')
-        out.append(table(tr(['要確認的問題','建議依次查閱'],['Question','Suggested lookup sequence'],lang),[[E(r[0 if lang=='zh' else 1]),'<br>'.join(anchor(k,lang,standalone) for k in r[2].split())] for r in ROUTES]))
-        out.append('</section><section id="figure-index"><h2>'+tr('手上有欄位或圖號：完整索引','Complete field and figure index',lang)+'</h2>')
+        out.append('</section>')
+        out.append(index_html(lang,standalone,TOPICS,url,table))
+        out.append('<section id="figure-index"><h2>'+tr('手上有欄位或圖號：完整索引','Complete field and figure index',lang)+'</h2>')
         rows=[]
         for key in sorted(REG,key=lambda k:('BNP'.index(k[0]),int(k[1:]))):
             r=REG[key];rows.append([anchor(key,lang,standalone),'§'+r['section']+'<br>PDF '+numrange(r['pdf_pages']),E(' · '.join(CARDS[key]['tags']))])
@@ -133,18 +87,15 @@ def body(topic,lang,standalone=False):
         out.append('</section>')
     else:
         row=TOPIC[topic];ordinal=next(i for i,t in enumerate(TOPICS,1) if t[0]==topic)
-        title=tr('NVMe 圖表速查 ','NVMe Figure Reference ',lang)+f'{ordinal:02d} · '+row[1 if lang=='zh' else 2]
+        title=tr('NVMe 圖表判讀與情境練習 ','NVMe Figures and Scenarios ',lang)+f'{ordinal:02d} · '+row[1 if lang=='zh' else 2]
         keys=[k for k in CARDS if REG[k]['group']==topic]
         out+=['<header><p class="qr-eyebrow">'+tr('反覆查詢 · 欄位判讀 · 原文定位','LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS',lang)+'</p><h1>'+E(title)+'</h1><p class="qr-intro">'+row[3 if lang=='zh' else 4]+'</p></header>',introduction(lang)]
+        out.append('<nav class="qr-top" aria-label="'+tr('本冊閱讀入口','Volume entry points',lang)+'"><a href="#exercises">'+tr('從情境練習開始','Start with scenarios',lang)+'</a><a href="#figure-index">'+tr('直接查圖表','Go to figures',lang)+'</a></nav>')
+        out.append(cases_html(topic,lang,standalone,anchor,REG,table))
         out.append('<nav class="qr-toc" id="figure-index" aria-label="'+tr('本冊圖表索引','Volume figure index',lang)+'"><h2>'+tr('本冊圖表','Figures in this volume',lang)+'</h2><ol>')
         out.extend('<li><a href="#figure-'+k.lower()+'">'+SHORT[k[0]]+' Figure '+str(REG[k]['number'])+' · '+E(CARDS[k]['title'] if lang=='zh' else REG[k]['title'])+'</a></li>' for k in keys)
         out.append('</ol></nav>')
         for i,k in enumerate(keys,1):out.append(render_card(k,i,lang,standalone))
-        if standalone:
-            question,links,steps=WORKED[topic]
-            out.append('<section class="qr-note" id="worked-route"><h2>把幾張圖接成一次查詢</h2><p>'+E(question)+'</p>')
-            for i,text in enumerate(steps,1):out.append('<p><span class="qr-step">R'+str(i)+'</span>'+E(text)+'</p>')
-            out.append('<div class="qr-related">'+''.join(anchor(k,lang,True) for k in links.split())+'</div></section>')
     out+=[source_list(lang),'</main></div>']
     return title,'\n'.join(out)
 
@@ -156,7 +107,7 @@ def generated():
         for lang in ['zh','en']:
             title,content=body(topic,lang)
             suffix='zh-tw' if lang=='zh' else 'en'
-            front={'layout':'post','title':title,'date':DATE+' 09:00:00 +0800','categories':['nvme'],'tags':['NVMe','Reference'],'permalink':url(topic,lang),'nvme_quickref':True,'lang':'zh-Hant-TW' if lang=='zh' else 'en','description':tr('NVMe 原圖用途、欄位與判讀速查，附完整 Spec 位置。','NVMe source figures: uses, fields and interpretation with precise specification locations.',lang)}
+            front={'layout':'post','title':title,'date':DATE+' 09:00:00 +0800','categories':['nvme'],'tags':['NVMe','Reference'],'permalink':url(topic,lang),'nvme_quickref':True,'last_modified_at':'2026-10-01','lang':'zh-Hant-TW' if lang=='zh' else 'en','description':tr('NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。','NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations.',lang)}
             header='---\n'+'\n'.join(k+': '+json.dumps(v,ensure_ascii=False) for k,v in front.items())+'\n---\n\n'
             outputs[f'_posts/{DATE}-nvme-figure-reference-{topic}-{suffix}.md']=header+content+'\n'
     return outputs

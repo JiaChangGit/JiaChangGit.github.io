@@ -1,0 +1,1484 @@
+{
+  "schema_version": 1,
+  "scenarios": [
+    {
+      "id": "identify-01",
+      "topic": "identify",
+      "sources": [
+        "B338:379,396,404",
+        "B@3.2.1:104-106",
+        "B336:364-365",
+        "B446:472-473",
+        "N134:112-113"
+      ]
+    },
+    {
+      "id": "identify-02",
+      "topic": "identify",
+      "sources": [
+        "B@3.2.1:104-106",
+        "B336:364",
+        "B@5.2.14.2.2:413",
+        "B@5.2.14.2.9:421",
+        "B@5.2.14.2.11:421"
+      ]
+    },
+    {
+      "id": "identify-03",
+      "topic": "identify",
+      "sources": [
+        "B@3.2.1:106",
+        "B342:414",
+        "B346:417-420"
+      ]
+    },
+    {
+      "id": "identify-04",
+      "topic": "identify",
+      "sources": [
+        "N123:85-87",
+        "N125:94"
+      ]
+    },
+    {
+      "id": "identify-05",
+      "topic": "identify",
+      "sources": [
+        "B36:81-84",
+        "B338:368,371",
+        "N123:86-87",
+        "N125:94"
+      ]
+    },
+    {
+      "id": "identify-06",
+      "topic": "identify",
+      "sources": [
+        "B338:398",
+        "N129:103-106",
+        "N@3.3.3.1:45-47"
+      ]
+    },
+    {
+      "id": "identify-07",
+      "topic": "identify",
+      "sources": [
+        "B211:243-244",
+        "B204:239",
+        "B205:240",
+        "B208:240-241"
+      ]
+    },
+    {
+      "id": "io-01",
+      "topic": "io",
+      "sources": [
+        "N@4.1.5.2:94-96",
+        "N123:85-86,88",
+        "N@2.1.4:15-18",
+        "N@4.1.3.4:67",
+        "N71:54"
+      ]
+    },
+    {
+      "id": "io-02",
+      "topic": "io",
+      "sources": [
+        "N@4.1.5.2:94-96",
+        "N123:85-86,88-89",
+        "N@2.1.4:16-19"
+      ]
+    },
+    {
+      "id": "io-03",
+      "topic": "io",
+      "sources": [
+        "N@2.1.4.4:19",
+        "N@2.1.4.5:19-20",
+        "N123:85,88-89"
+      ]
+    },
+    {
+      "id": "io-04",
+      "topic": "io",
+      "sources": [
+        "B338:400",
+        "B346:417-420",
+        "B471:490-491",
+        "B@7.2:593",
+        "N71:54"
+      ]
+    },
+    {
+      "id": "io-05",
+      "topic": "io",
+      "sources": [
+        "N@2.1.2:14",
+        "N71:54"
+      ]
+    },
+    {
+      "id": "io-06",
+      "topic": "io",
+      "sources": [
+        "N125:94",
+        "N128:101-102",
+        "N154:130",
+        "N174:143"
+      ]
+    },
+    {
+      "id": "io-07",
+      "topic": "io",
+      "sources": [
+        "N123:88",
+        "N@3.3.3.2.1:48",
+        "N@4.1.3.3:66"
+      ]
+    },
+    {
+      "id": "features-01",
+      "topic": "features",
+      "sources": [
+        "B198:235-236",
+        "B201:238",
+        "B466:483-485"
+      ]
+    },
+    {
+      "id": "features-02",
+      "topic": "features",
+      "sources": [
+        "B472:491",
+        "B473:492",
+        "B36:81-84"
+      ]
+    },
+    {
+      "id": "features-03",
+      "topic": "features",
+      "sources": [
+        "B475:494",
+        "B477:495",
+        "B340:410-412"
+      ]
+    },
+    {
+      "id": "features-04",
+      "topic": "features",
+      "sources": [
+        "B482:498",
+        "B213:247-251",
+        "B338:385-386"
+      ]
+    },
+    {
+      "id": "features-05",
+      "topic": "features",
+      "sources": [
+        "B545:542-543",
+        "B338:383,388"
+      ]
+    },
+    {
+      "id": "features-06",
+      "topic": "features",
+      "sources": [
+        "B467:486",
+        "B41:86-89",
+        "B36:81-84"
+      ]
+    },
+    {
+      "id": "logs-01",
+      "topic": "logs",
+      "sources": [
+        "B213:247-251"
+      ]
+    },
+    {
+      "id": "logs-02",
+      "topic": "logs",
+      "sources": [
+        "B213:247-251",
+        "N54:49",
+        "N125:94"
+      ]
+    },
+    {
+      "id": "logs-03",
+      "topic": "logs",
+      "sources": [
+        "B338:381-382",
+        "B213:247-251",
+        "B225:264-265"
+      ]
+    },
+    {
+      "id": "logs-04",
+      "topic": "logs",
+      "sources": [
+        "B225:264-265",
+        "B205:240",
+        "N123:90-93"
+      ]
+    },
+    {
+      "id": "logs-05",
+      "topic": "logs",
+      "sources": [
+        "B218:256",
+        "B219:257-258"
+      ]
+    },
+    {
+      "id": "logs-06",
+      "topic": "logs",
+      "sources": [
+        "B223:262-263",
+        "B204:239",
+        "B208:240-241"
+      ]
+    },
+    {
+      "id": "logs-07",
+      "topic": "logs",
+      "sources": [
+        "B232:272",
+        "B233:273-275",
+        "B234:275-276"
+      ]
+    },
+    {
+      "id": "init-01",
+      "topic": "init",
+      "sources": [
+        "P12:17",
+        "P20:19",
+        "B36:81-84",
+        "B41:86-89",
+        "B42:89-91"
+      ]
+    },
+    {
+      "id": "init-02",
+      "topic": "init",
+      "sources": [
+        "P20:19",
+        "P21:19",
+        "P5:10",
+        "P6:10-11",
+        "B36:81-84"
+      ]
+    },
+    {
+      "id": "init-03",
+      "topic": "init",
+      "sources": [
+        "B36:81-84",
+        "B41:86-89",
+        "B42:89-91",
+        "B57:99",
+        "B346:420"
+      ]
+    },
+    {
+      "id": "init-04",
+      "topic": "init",
+      "sources": [
+        "P@3.8.5.6:28-29",
+        "P55:29"
+      ]
+    },
+    {
+      "id": "init-05",
+      "topic": "init",
+      "sources": [
+        "P44:24-25",
+        "P45:25",
+        "P46:25",
+        "B543:541"
+      ]
+    },
+    {
+      "id": "init-06",
+      "topic": "init",
+      "sources": [
+        "P60:31-32",
+        "P63:33",
+        "B@5.2.2:209-216"
+      ]
+    },
+    {
+      "id": "command-01",
+      "topic": "command",
+      "sources": [
+        "B92:165-166",
+        "B97:170",
+        "B98:170",
+        "B99:171"
+      ]
+    },
+    {
+      "id": "command-02",
+      "topic": "command",
+      "sources": [
+        "B212:244-246",
+        "B93:166-168",
+        "B101:171-172",
+        "B103:173-176"
+      ]
+    },
+    {
+      "id": "command-03",
+      "topic": "command",
+      "sources": [
+        "B111:184",
+        "B113:185",
+        "B@4.3.1:184-186",
+        "B41:86-89"
+      ]
+    },
+    {
+      "id": "command-04",
+      "topic": "command",
+      "sources": [
+        "B114:187",
+        "B116:187",
+        "B119:188-189",
+        "B121:189"
+      ]
+    },
+    {
+      "id": "command-05",
+      "topic": "command",
+      "sources": [
+        "B204:239",
+        "B205:240",
+        "B208:240-241",
+        "B232:272"
+      ]
+    },
+    {
+      "id": "command-06",
+      "topic": "command",
+      "sources": [
+        "B217:254-255",
+        "B336:364-365"
+      ]
+    },
+    {
+      "id": "maintenance-01",
+      "topic": "maintenance",
+      "sources": [
+        "B@5.2.27:478-479",
+        "B454:479",
+        "B338:387-388",
+        "B451:476-477",
+        "B217:254-255"
+      ]
+    },
+    {
+      "id": "maintenance-02",
+      "topic": "maintenance",
+      "sources": [
+        "B312:340-345",
+        "B@5.2.27:478-479"
+      ]
+    },
+    {
+      "id": "maintenance-03",
+      "topic": "maintenance",
+      "sources": [
+        "B215:252",
+        "B187:229",
+        "B338:366-367,380",
+        "B@5.2.9:228-231"
+      ]
+    },
+    {
+      "id": "maintenance-04",
+      "topic": "maintenance",
+      "sources": [
+        "B338:379,399",
+        "B195:234-235",
+        "N91:63"
+      ]
+    },
+    {
+      "id": "maintenance-05",
+      "topic": "maintenance",
+      "sources": [
+        "B541:538",
+        "B201:238",
+        "B338:401",
+        "B@8.1.18:690-692"
+      ]
+    },
+    {
+      "id": "maintenance-06",
+      "topic": "maintenance",
+      "sources": [
+        "B542:539-540",
+        "B541:538"
+      ]
+    }
+  ],
+  "evidence": {
+    "B101:171-172": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.2.3",
+      "pdf_pages": [
+        171,
+        172
+      ],
+      "page_text_sha256": "52048fbcfefc16c5bed2223ba1024ca4de3b527e38a298378456883a26924d78"
+    },
+    "B103:173-176": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.2.3.1",
+      "pdf_pages": [
+        173,
+        174,
+        175,
+        176
+      ],
+      "page_text_sha256": "86ab7f3ee92ef5d9fd8a1ed2b59ced73f3b8bfe84f7ef53471bc285190e76aba"
+    },
+    "B111:184": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.1",
+      "pdf_pages": [
+        184
+      ],
+      "page_text_sha256": "3e6ff28b4382bac2b281867bf3cb1b642bb09b19220b56a7dc73ff6d863fcd15"
+    },
+    "B113:185": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.1",
+      "pdf_pages": [
+        185
+      ],
+      "page_text_sha256": "1d21ebad77b7278eb4f17404be63d4e2491e9dda8dd9835ad7da23f456c187ac"
+    },
+    "B114:187": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.2",
+      "pdf_pages": [
+        187
+      ],
+      "page_text_sha256": "7f2b6c3babec39efdd322397b4448e8be1f81dd2816bbfa3b06f9a8460170a90"
+    },
+    "B116:187": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.2",
+      "pdf_pages": [
+        187
+      ],
+      "page_text_sha256": "7f2b6c3babec39efdd322397b4448e8be1f81dd2816bbfa3b06f9a8460170a90"
+    },
+    "B119:188-189": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.2",
+      "pdf_pages": [
+        188,
+        189
+      ],
+      "page_text_sha256": "0146cf7d0c81c2658729a1eeaf1b0ccf3fd1851bdd5e7ae3da1f5c5c9dc90682"
+    },
+    "B121:189": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.2",
+      "pdf_pages": [
+        189
+      ],
+      "page_text_sha256": "d7fb19d3fd44be8ba268966bf1baefda414d171c134f42416f7345c3d73b33e4"
+    },
+    "B187:229": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.9",
+      "pdf_pages": [
+        229
+      ],
+      "page_text_sha256": "0bc6545a945b6bf5ceff751ea7de7ac30c26e5056c3db0ddfcd96fe375b001ad"
+    },
+    "B195:234-235": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.11",
+      "pdf_pages": [
+        234,
+        235
+      ],
+      "page_text_sha256": "aea908b95c33f0e16c558d1b8f6e019d9e868b432b227fec8b2adaba7c7c5ade"
+    },
+    "B198:235-236": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.12",
+      "pdf_pages": [
+        235,
+        236
+      ],
+      "page_text_sha256": "0c3208fd970a568ec39d8f3e48d3e0f301e7fec7cea0a19c520e5a4299c8487f"
+    },
+    "B201:238": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.12",
+      "pdf_pages": [
+        238
+      ],
+      "page_text_sha256": "70b8f7340f05cdb70ee3ff9111fff5d36bec060590bb62e5b486c6dd8cc5f613"
+    },
+    "B204:239": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13",
+      "pdf_pages": [
+        239
+      ],
+      "page_text_sha256": "581f38c1f0f1e52aac6fb33b12f55a45a8e2d649f0e86c238913c5442209c668"
+    },
+    "B205:240": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13",
+      "pdf_pages": [
+        240
+      ],
+      "page_text_sha256": "5d51da8246b27fc396ec8ca9a937c2318b01bef48788ed41eec1f7b41ae34e73"
+    },
+    "B208:240-241": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13",
+      "pdf_pages": [
+        240,
+        241
+      ],
+      "page_text_sha256": "2938156106f16c862b1246ee827eeeda47633fab3c33d0f7ab406977b482d233"
+    },
+    "B211:243-244": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.1",
+      "pdf_pages": [
+        243,
+        244
+      ],
+      "page_text_sha256": "b82c23373b726f6aa4857a260e23bf0ea0795cd617550120a8e48ceac7c8545c"
+    },
+    "B212:244-246": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.2",
+      "pdf_pages": [
+        244,
+        245,
+        246
+      ],
+      "page_text_sha256": "b95148c88d411f9668c202746bc9d3d291d3a1095e288ae7cc1d74de9b2234ca"
+    },
+    "B213:247-251": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.3",
+      "pdf_pages": [
+        247,
+        248,
+        249,
+        250,
+        251
+      ],
+      "page_text_sha256": "34ac5e19b0b2073b531ed450e4d8944adefbd6875236ac3420b77228d160271b"
+    },
+    "B215:252": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.4",
+      "pdf_pages": [
+        252
+      ],
+      "page_text_sha256": "9867ec7012d7ebf2a7122a0e5df3c2e5ebd11ccc90538bd2d49f0a9b2635eca4"
+    },
+    "B217:254-255": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.6",
+      "pdf_pages": [
+        254,
+        255
+      ],
+      "page_text_sha256": "4abc9b5413a846481e2db70d37b58ec1abc8692ec344336ea53904e218540005"
+    },
+    "B218:256": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.7",
+      "pdf_pages": [
+        256
+      ],
+      "page_text_sha256": "cf6173fc8ffdbb9b8b81011c046dc811d592e0ba4ea0731b65e221931b079848"
+    },
+    "B219:257-258": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.7",
+      "pdf_pages": [
+        257,
+        258
+      ],
+      "page_text_sha256": "b25cf6e1bcac6d65ad8326cacc33039a576b064179889043f408bcf2491c74a1"
+    },
+    "B223:262-263": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.9",
+      "pdf_pages": [
+        262,
+        263
+      ],
+      "page_text_sha256": "97229ea87c48ba11e01c3c8bae42de4250571bc34f1bd19866e318fb4c82bf49"
+    },
+    "B225:264-265": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.10",
+      "pdf_pages": [
+        264,
+        265
+      ],
+      "page_text_sha256": "c86d634c0028acb419d8e16258435d0b571c79c535f5f5dfc2f953fc6398604b"
+    },
+    "B232:272": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.14",
+      "pdf_pages": [
+        272
+      ],
+      "page_text_sha256": "4357d48ab19c8d32ce2adfdacf5e7bd95533411c76211a0b02ef9bd0db2c224c"
+    },
+    "B233:273-275": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.14",
+      "pdf_pages": [
+        273,
+        274,
+        275
+      ],
+      "page_text_sha256": "c3ec34108a863a32978e2327f10a3ebaf3047630f95676de198d05cd6154dd2a"
+    },
+    "B234:275-276": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.14",
+      "pdf_pages": [
+        275,
+        276
+      ],
+      "page_text_sha256": "f736f16b0d0287ecf510ce215b38d2a93177b6841df1969d43b8f8f213cb1a40"
+    },
+    "B312:340-345": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.13.1.38",
+      "pdf_pages": [
+        340,
+        341,
+        342,
+        343,
+        344,
+        345
+      ],
+      "page_text_sha256": "00633fc0cd0aa4bd1412adf61a498d1aa116d042873eff8d3d7f6610285bebd6"
+    },
+    "B336:364": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14",
+      "pdf_pages": [
+        364
+      ],
+      "page_text_sha256": "421105e3b4f911c2a577a7b1aabd68e583790d727af192a3bb70ef1667655792"
+    },
+    "B336:364-365": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14",
+      "pdf_pages": [
+        364,
+        365
+      ],
+      "page_text_sha256": "822d0a2e9c7121a442b9c4352b1497206acf3d3f5efb5ec83ef38678aa7f043e"
+    },
+    "B338:366-367,380": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        366,
+        367,
+        380
+      ],
+      "page_text_sha256": "b355dfbb605ee9e12c5841b56dc7bad06057249ca6a72d9616d78f2335bec064"
+    },
+    "B338:368,371": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        368,
+        371
+      ],
+      "page_text_sha256": "344fa235154727e3b5ac35b4fdb36b8104652ce0f85af049a75470fbdc8fbad9"
+    },
+    "B338:379,396,404": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        379,
+        396,
+        404
+      ],
+      "page_text_sha256": "8b8c34128b89a26856d8ca3067041549f8afcf35bcb72bce47d98d77e12834cd"
+    },
+    "B338:379,399": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        379,
+        399
+      ],
+      "page_text_sha256": "f19056dd0452c661e3c89a7e6c974d11d5e1472f8badb166fc3c5560cd67edda"
+    },
+    "B338:381-382": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        381,
+        382
+      ],
+      "page_text_sha256": "20169c9891961ebd5e1c71ec87da9b81e7c7b86e3eace5a0f24b2e472a6566c5"
+    },
+    "B338:383,388": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        383,
+        388
+      ],
+      "page_text_sha256": "b107427c48d81389d41442455a6bef02c86573478663ba7547d8c87f1ad8ebd1"
+    },
+    "B338:385-386": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        385,
+        386
+      ],
+      "page_text_sha256": "460b028204b1e5f7ab1783ef6c68d68e8d77d85407c3961509917525f7a67da4"
+    },
+    "B338:387-388": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        387,
+        388
+      ],
+      "page_text_sha256": "6c4d2f6751ad02f4ea3c8736f397b1a9824eaf4c65488a6a8096077e2609953c"
+    },
+    "B338:398": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        398
+      ],
+      "page_text_sha256": "ae01b630a676abe906c2e1cbb922012e71a3943a54da524a85b5a34337814cb4"
+    },
+    "B338:400": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        400
+      ],
+      "page_text_sha256": "f37e584e043768a47b565175cb256825f899b747a096bbb2708b7a82523573dc"
+    },
+    "B338:401": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        401
+      ],
+      "page_text_sha256": "9401ee5780984d3c43257f415ff22dfd80c3c677027167c17c5e3d11eed2a640"
+    },
+    "B340:410-412": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.1",
+      "pdf_pages": [
+        410,
+        411,
+        412
+      ],
+      "page_text_sha256": "b607a38950307b260028aa7ebd616a36fdc088bc39a7275b51d097b165802af8"
+    },
+    "B342:414": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.3",
+      "pdf_pages": [
+        414
+      ],
+      "page_text_sha256": "41689031a5b9a7e7fd8b2d3493e11234ce77f0c6a52a9526006b8d21816c0927"
+    },
+    "B346:417-420": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.8",
+      "pdf_pages": [
+        417,
+        418,
+        419,
+        420
+      ],
+      "page_text_sha256": "2de967f458185b74203e9857fa034d61d34f02e7bc04f8a1ed6c59b7c20b3e91"
+    },
+    "B346:420": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.8",
+      "pdf_pages": [
+        420
+      ],
+      "page_text_sha256": "639d8bb599530f54931ce6c64079fb60b4e6cfd9e8b6d2e350f78fa45158975d"
+    },
+    "B36:81-84": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "3.1.4.1",
+      "pdf_pages": [
+        81,
+        82,
+        83,
+        84
+      ],
+      "page_text_sha256": "6c12601e577b4188234dfe7ac45f2003b69bd4164f1d5128e63024e301154555"
+    },
+    "B41:86-89": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "3.1.4.5",
+      "pdf_pages": [
+        86,
+        87,
+        88,
+        89
+      ],
+      "page_text_sha256": "39db072f1ffd55a60cb266851aaf848c0b4eddf3a3c9080b24147cdf7a3139a6"
+    },
+    "B42:89-91": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "3.1.4.6",
+      "pdf_pages": [
+        89,
+        90,
+        91
+      ],
+      "page_text_sha256": "4431984f1568d054c201856d8e24d8b1605f09f2d686dcbdde85708a75e43ba2"
+    },
+    "B446:472-473": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.25",
+      "pdf_pages": [
+        472,
+        473
+      ],
+      "page_text_sha256": "96427772b70e56b3a680a4576066819716fec3d359badbf2cc121eab19abbf74"
+    },
+    "B451:476-477": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.26",
+      "pdf_pages": [
+        476,
+        477
+      ],
+      "page_text_sha256": "11db31a8941fde43a97df2ef00dc95b43f86cbfdcc3f939bb3d67d5b87c27b2e"
+    },
+    "B454:479": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.27",
+      "pdf_pages": [
+        479
+      ],
+      "page_text_sha256": "54ba45cc57db6bf8ab628f1c637faf629dab53e4838913613ee34bff8789c975"
+    },
+    "B466:483-485": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30",
+      "pdf_pages": [
+        483,
+        484,
+        485
+      ],
+      "page_text_sha256": "485aef49e92b8f8b661dc4891baf0c678fb9d000fa5490d445b7734b78206c9e"
+    },
+    "B467:486": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.1",
+      "pdf_pages": [
+        486
+      ],
+      "page_text_sha256": "8d1978feffe967b4d83654fb072c4598803f81f0d3a991a2261bfb33302ef9a7"
+    },
+    "B471:490-491": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.4",
+      "pdf_pages": [
+        490,
+        491
+      ],
+      "page_text_sha256": "1097d4b43764eb793a45f08afa8e7bf0d5a972adf8e3abcafce845e8dc298850"
+    },
+    "B472:491": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.5",
+      "pdf_pages": [
+        491
+      ],
+      "page_text_sha256": "746ef1ab2efc0ebc7517f0a6232f9ce67a83aee77fbbc5f52a2989b5fbd3c314"
+    },
+    "B473:492": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.5",
+      "pdf_pages": [
+        492
+      ],
+      "page_text_sha256": "635b65bb06fde49ca0b0681c764fe1cdf4314c74050d5865e81a74f6021e8941"
+    },
+    "B475:494": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.7",
+      "pdf_pages": [
+        494
+      ],
+      "page_text_sha256": "24b7c151db603607ef3e560320dc7c4b19e4764f9e25a64d9e62c1c5830ecd01"
+    },
+    "B477:495": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.7",
+      "pdf_pages": [
+        495
+      ],
+      "page_text_sha256": "49f4eb589895d161d11f8bcd6c1f6566f164fd4d441402a6c5b3da8853fd1b38"
+    },
+    "B482:498": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.10",
+      "pdf_pages": [
+        498
+      ],
+      "page_text_sha256": "fcc11ec21b14f88faa2814a145ccc5aaa7530c53e22b6e876c97fcde5c8fa3d8"
+    },
+    "B541:538": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.38",
+      "pdf_pages": [
+        538
+      ],
+      "page_text_sha256": "c09d30649c47c951d11f2753c3995119afbe753aa36d845e8bc7fc83b8fe1d7c"
+    },
+    "B542:539-540": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.1.39",
+      "pdf_pages": [
+        539,
+        540
+      ],
+      "page_text_sha256": "d6151075b858e8a7926f7dd90ac9ef95c9817b77db29b2944267d16498c120bc"
+    },
+    "B543:541": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.2.1",
+      "pdf_pages": [
+        541
+      ],
+      "page_text_sha256": "a2fe7ec32541ca804a52f5eca24b48bd2c8513447aab7c85ef591f4f5ceb6854"
+    },
+    "B545:542-543": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.30.2.3",
+      "pdf_pages": [
+        542,
+        543
+      ],
+      "page_text_sha256": "07066b515eb374a7915218c1e71bd880cbd1c16936a5f07acf7dbfa133b5b81c"
+    },
+    "B57:99": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "3.1.4.21",
+      "pdf_pages": [
+        99
+      ],
+      "page_text_sha256": "c79491d99e3301f0f0277ac9feb368be32e4ddbac33aa4f3cd2beca8024ca8dd"
+    },
+    "B92:165-166": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.1.1",
+      "pdf_pages": [
+        165,
+        166
+      ],
+      "page_text_sha256": "a13b09211fdfe4744bb00507d6bbc20b3ae762bef352032fc8c0f69878f98b5c"
+    },
+    "B93:166-168": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.1.1",
+      "pdf_pages": [
+        166,
+        167,
+        168
+      ],
+      "page_text_sha256": "7e7eba277cd803cbef231f13e05d7684258847cfbb1b9e706d098bc1c72b2ecf"
+    },
+    "B97:170": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.2.1",
+      "pdf_pages": [
+        170
+      ],
+      "page_text_sha256": "c9cbca87bc308f0035d6c3eae931692f139e5f82af5af007047197778bdea591"
+    },
+    "B98:170": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.2.1",
+      "pdf_pages": [
+        170
+      ],
+      "page_text_sha256": "c9cbca87bc308f0035d6c3eae931692f139e5f82af5af007047197778bdea591"
+    },
+    "B99:171": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.2.1",
+      "pdf_pages": [
+        171
+      ],
+      "page_text_sha256": "e452050f851f8248d6a88b9a4b429e17daeff61609f63f86d1c5ea025bec90b9"
+    },
+    "B@3.2.1:104-106": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "3.2.1",
+      "pdf_pages": [
+        104,
+        105,
+        106
+      ],
+      "page_text_sha256": "a153988b56c7c9ea33fb989659a29519afeffcb6f4ed9ededc16f6cdcb610e12"
+    },
+    "B@3.2.1:106": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "3.2.1",
+      "pdf_pages": [
+        106
+      ],
+      "page_text_sha256": "ebaf87d29ca52d7ceb5eb3641af32523710509edcac42a1ad3e835498e351e6d"
+    },
+    "B@4.3.1:184-186": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "4.3.1",
+      "pdf_pages": [
+        184,
+        185,
+        186
+      ],
+      "page_text_sha256": "8799b3a4c3838fe2a6f1c3e156468244715f13527d18147e16e13f8f2fa36eba"
+    },
+    "B@5.2.14.2.11:421": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.11",
+      "pdf_pages": [
+        421
+      ],
+      "page_text_sha256": "cdbf82c36b5dd88d4181efae140c4303561b2416d3c406e19bfb85b3a2ae96b3"
+    },
+    "B@5.2.14.2.2:413": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.2",
+      "pdf_pages": [
+        413
+      ],
+      "page_text_sha256": "8301208eb4bc3d7efef77f70f8b97edacd539caed9fcdbc5085f984f3d7a70cf"
+    },
+    "B@5.2.14.2.9:421": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.14.2.9",
+      "pdf_pages": [
+        421
+      ],
+      "page_text_sha256": "cdbf82c36b5dd88d4181efae140c4303561b2416d3c406e19bfb85b3a2ae96b3"
+    },
+    "B@5.2.27:478-479": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.27",
+      "pdf_pages": [
+        478,
+        479
+      ],
+      "page_text_sha256": "fd7e24383699c6b449c132405d42fb4f2c1297628fa401e3f2ab1049f1b0cc67"
+    },
+    "B@5.2.2:209-216": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.2",
+      "pdf_pages": [
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216
+      ],
+      "page_text_sha256": "92c849b0fc180453a9bafddea005090103e227d5e6d894441300c9bac5e2ce25"
+    },
+    "B@5.2.9:228-231": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "5.2.9",
+      "pdf_pages": [
+        228,
+        229,
+        230,
+        231
+      ],
+      "page_text_sha256": "336b273fdc295d182da1210d7e81d7630946c78aa4e59193953d7178acd6ed93"
+    },
+    "B@7.2:593": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "7.2",
+      "pdf_pages": [
+        593
+      ],
+      "page_text_sha256": "406a78738bf627a47dfe1ab747dd4ac5c251f7c1a98db2670c14cb3dcb6a631e"
+    },
+    "B@8.1.18:690-692": {
+      "source_id": "NVME-BASE-2.4",
+      "section": "8.1.18",
+      "pdf_pages": [
+        690,
+        691,
+        692
+      ],
+      "page_text_sha256": "6575c5b3f0219efb45f8c52d04bd011d24764de55419e761c321b83333b3e78f"
+    },
+    "N123:85,88-89": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        85,
+        88,
+        89
+      ],
+      "page_text_sha256": "2d1057060b3dd6e1400314b21fe34a0820e5039a14eec8c939bc350c2cf2f4ca"
+    },
+    "N123:85-86,88": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        85,
+        86,
+        88
+      ],
+      "page_text_sha256": "4c3a30bd10075fa864d36da9b3fef9bb13a9d54e20beb76b3e62248a46b04c64"
+    },
+    "N123:85-86,88-89": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        85,
+        86,
+        88,
+        89
+      ],
+      "page_text_sha256": "9c2f0091b643e4d84aff3b469bb2cf1a4d5160b4b2f508e11fcb14d9242a85d9"
+    },
+    "N123:85-87": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        85,
+        86,
+        87
+      ],
+      "page_text_sha256": "b6e32e6f81cf69e1b7bb719f27747005abbd2b62fe254deb51942551a1870cd9"
+    },
+    "N123:86-87": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        86,
+        87
+      ],
+      "page_text_sha256": "8119bd8352c05f53c990e0d476ddaff316ed2ba1a5e6d60b5aa3969692606934"
+    },
+    "N123:88": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        88
+      ],
+      "page_text_sha256": "b123bc8f9c035d0a6b2a06377091d23e19a0c4d179bffb5a20e8e46cb3885fcf"
+    },
+    "N123:90-93": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        90,
+        91,
+        92,
+        93
+      ],
+      "page_text_sha256": "a23f5a5ca194d40b0c030f4220a3ce11420d3f7559da06f77d80d357d3bbd97f"
+    },
+    "N125:94": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.1",
+      "pdf_pages": [
+        94
+      ],
+      "page_text_sha256": "97706904bf4590d4d22c634f9fbb8043b500f681692bcbbda2042da1a73d6075"
+    },
+    "N128:101-102": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.3",
+      "pdf_pages": [
+        101,
+        102
+      ],
+      "page_text_sha256": "d33068ec1df6eb947d72b8a65330b2480c1e083ff8fd9d3816b6c75d77b11812"
+    },
+    "N129:103-106": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.4",
+      "pdf_pages": [
+        103,
+        104,
+        105,
+        106
+      ],
+      "page_text_sha256": "5b10a44d1480c86e06562854afb165451326b296a57b356c9d74a613b278a366"
+    },
+    "N134:112-113": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.6",
+      "pdf_pages": [
+        112,
+        113
+      ],
+      "page_text_sha256": "8025e2226c3c15e1bdcd5afb026f2f0d35bc10c6aace5736f7c0a6d391aed5a4"
+    },
+    "N154:130": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "5.2.3",
+      "pdf_pages": [
+        130
+      ],
+      "page_text_sha256": "2c541cd29d368501d98eaef553346085d775dfa6d36b4d386e9a876cd9e3b469"
+    },
+    "N174:143": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "5.3.2.1",
+      "pdf_pages": [
+        143
+      ],
+      "page_text_sha256": "2b9fbc04398e53ac503865552c4952d4e3ceb2243ef1f9293b18b51a78a27730"
+    },
+    "N54:49": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "3.3.4",
+      "pdf_pages": [
+        49
+      ],
+      "page_text_sha256": "4d67e9f1a2e5c1c48d2474c71e0166a7685784cb1b9e38d4b8d9ed21bc3fc368"
+    },
+    "N71:54": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "3.3.6",
+      "pdf_pages": [
+        54
+      ],
+      "page_text_sha256": "17be527988a31a5841b3649bee136bfca219ca522fa35aca35c423881b9b8701"
+    },
+    "N91:63": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.1",
+      "pdf_pages": [
+        63
+      ],
+      "page_text_sha256": "9304815df97d8019d78b325c24781e6b49d3c138212509d1768a4872be41f24b"
+    },
+    "N@2.1.2:14": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "2.1.2",
+      "pdf_pages": [
+        14
+      ],
+      "page_text_sha256": "139d96c123a2e5b7a22f805f5cec05d940e5833b34006b85226359dc67a53af0"
+    },
+    "N@2.1.4.4:19": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "2.1.4.4",
+      "pdf_pages": [
+        19
+      ],
+      "page_text_sha256": "8d00dc3bc4e2c62517b9554b046861f1638ec51ebcf250df3719668974eaf6ae"
+    },
+    "N@2.1.4.5:19-20": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "2.1.4.5",
+      "pdf_pages": [
+        19,
+        20
+      ],
+      "page_text_sha256": "f809c82099a06daa1b9f2a414c6ef525b7dd4a8c7ba43592889ef9cd2f605ca6"
+    },
+    "N@2.1.4:15-18": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "2.1.4",
+      "pdf_pages": [
+        15,
+        16,
+        17,
+        18
+      ],
+      "page_text_sha256": "f7629afcf067506fca89702355f4962631481627283269690324a23bfbce20b3"
+    },
+    "N@2.1.4:16-19": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "2.1.4",
+      "pdf_pages": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "page_text_sha256": "1ca8b9d139890ddc09db7e4d6f08a59995992a2e50f11c5fb976c968877b93ad"
+    },
+    "N@3.3.3.1:45-47": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "3.3.3.1",
+      "pdf_pages": [
+        45,
+        46,
+        47
+      ],
+      "page_text_sha256": "3117651f213f15fe8517e03641e50448476aff9e3c8c576237bc2ff0793d3d00"
+    },
+    "N@3.3.3.2.1:48": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "3.3.3.2.1",
+      "pdf_pages": [
+        48
+      ],
+      "page_text_sha256": "d494327e9562fb6a6f36235a79f1e7c0eda6954b37567773aa988ec96947bed5"
+    },
+    "N@4.1.3.3:66": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.3.3",
+      "pdf_pages": [
+        66
+      ],
+      "page_text_sha256": "43494bea30c71afb9600bb24aaa70654d284101e2b3873060596b4687d687263"
+    },
+    "N@4.1.3.4:67": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.3.4",
+      "pdf_pages": [
+        67
+      ],
+      "page_text_sha256": "29cd6d4f68279486c7b0c9ab70e3efaa0a145ce5f8d13976342abf42a1785acb"
+    },
+    "N@4.1.5.2:94-96": {
+      "source_id": "NVME-NVM-CS-1.3",
+      "section": "4.1.5.2",
+      "pdf_pages": [
+        94,
+        95,
+        96
+      ],
+      "page_text_sha256": "5ddb452e65157a31d2f21468278b1b62b0c72a70c00e7dafc6e4755ed3118bc9"
+    },
+    "P12:17": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.1.2",
+      "pdf_pages": [
+        17
+      ],
+      "page_text_sha256": "94917f85d0c1b4ec58e5a0846c7512d2dc025149b103f38f9b32d8623da2195f"
+    },
+    "P20:19": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.1.10",
+      "pdf_pages": [
+        19
+      ],
+      "page_text_sha256": "6e6c52e96af9395d6da487544d984abfb2a722e2845a5ccbced7a8eed768cf07"
+    },
+    "P21:19": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.1.11",
+      "pdf_pages": [
+        19
+      ],
+      "page_text_sha256": "6e6c52e96af9395d6da487544d984abfb2a722e2845a5ccbced7a8eed768cf07"
+    },
+    "P44:24-25": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.4.2",
+      "pdf_pages": [
+        24,
+        25
+      ],
+      "page_text_sha256": "814bf881f1b9d9f571d90d58f7f92351af7d2bd72afe7611b1d5e28e3e53be36"
+    },
+    "P45:25": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.4.3",
+      "pdf_pages": [
+        25
+      ],
+      "page_text_sha256": "3a4b3da542636e9c2764e3118904299215b6f33cb683ffc103963fb20e8ccf49"
+    },
+    "P46:25": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.4.4",
+      "pdf_pages": [
+        25
+      ],
+      "page_text_sha256": "3a4b3da542636e9c2764e3118904299215b6f33cb683ffc103963fb20e8ccf49"
+    },
+    "P55:29": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.5.8",
+      "pdf_pages": [
+        29
+      ],
+      "page_text_sha256": "7858b70a9abd005611907dea390232e24cdc6448acea6131467c2980ce5b04ed"
+    },
+    "P5:10": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.1.2.1",
+      "pdf_pages": [
+        10
+      ],
+      "page_text_sha256": "ef739a02822a731f5d7ba75506796e1eb51fa5468435351a1c8a5eb2033c049f"
+    },
+    "P60:31-32": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.6.2",
+      "pdf_pages": [
+        31,
+        32
+      ],
+      "page_text_sha256": "18270ddcf1dbe25c79aa9d222181dd66a9a6589f9669ac22fd2fe8b132177827"
+    },
+    "P63:33": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.6.5",
+      "pdf_pages": [
+        33
+      ],
+      "page_text_sha256": "609611ca24bc508517ccb62fb65a35fc9af5cd88630d8286c985ef7d5a335887"
+    },
+    "P6:10-11": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.1.2.2",
+      "pdf_pages": [
+        10,
+        11
+      ],
+      "page_text_sha256": "c6da863fbecbaa12e803f8c26601c373ffb81fca147c93a5551de913c95852c9"
+    },
+    "P@3.8.5.6:28-29": {
+      "source_id": "NVME-PCIE-TRANSPORT-1.4",
+      "section": "3.8.5.6",
+      "pdf_pages": [
+        28,
+        29
+      ],
+      "page_text_sha256": "a0fd8eae3459e63aec7923a67050f51db6af0424650b65f904f8848b6edc5870"
+    }
+  }
+}

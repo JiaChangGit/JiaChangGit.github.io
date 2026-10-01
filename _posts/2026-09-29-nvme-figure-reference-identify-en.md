@@ -1,20 +1,118 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 03 · Identify, Namespaces, and Data Formats"
+title: "NVMe Figures and Scenarios 03 · Identify, Namespaces, and Data Formats"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/identify/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/identify/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/identify.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 03 · Identify, Namespaces, and Data Formats</h1><p class="qr-intro">CNS selects the Identify structure. Look up controller capabilities, namespace configuration and selected-format sizes separately, then combine them into a valid configuration.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 03 · Identify, Namespaces, and Data Formats</h1><p class="qr-intro">CNS selects the Identify structure. Look up controller capabilities, namespace configuration and selected-format sizes separately, then combine them into a valid configuration.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-identify-01">How many more namespaces can be created?</a></li>
+<li><a href="#exercise-identify-02">Why is an existing namespace absent from this controller?</a></li>
+<li><a href="#exercise-identify-03">Did a changed NSID identify the same namespace?</a></li>
+<li><a href="#exercise-identify-04">Which capacity does each namespace field describe?</a></li>
+<li><a href="#exercise-identify-05">How can 128 KiB of data exceed MDTS?</a></li>
+<li><a href="#exercise-identify-06">Do zero Dataset Management limits mean unsupported?</a></li>
+<li><a href="#exercise-identify-07">Does a defined LID guarantee an available log?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-identify-01" data-scenario="identify-01"><h3><span class="qr-number">EXERCISE 01</span>How many more namespaces can be created?</h3>
+<p class="qr-case-question">A management tool treats NN as the namespace creation limit. How should it answer how many more can be created now?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>OACS.NMS=1; NN=1000; MNAN=16; MAXCNA=8.</li>
+<li>The complete allocated list has 10 entries; this controller’s active list has 6. Remaining capacity and creation parameters have not been checked.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h → complete allocated list with CNS=10h → this controller’s active list with CNS=02h; then inspect capacity and Namespace Management parameters.</p>
+<p data-reasoning="identify-01-1"><span class="qr-step">Step 1</span>NN is the largest valid NSID; MNAN gives the subsystem namespace count limit in this example. Sparse IDs mean a highest valid ID of 1000 does not imply 1000 namespaces. MAXCNA=8 separately limits attachments to this I/O controller.</p>
+<p data-reasoning="identify-01-2"><span class="qr-step">Step 2</span>The count limits leave 16−10=6 creation slots and 8−6=2 attachment slots on this controller. Creation and attachment are distinct: creating a third new namespace would not establish that it can also attach here.</p>
+<p data-reasoning="identify-01-3"><span class="qr-step">Step 3</span>This does not guarantee six successful creations. Required capacity, formats, resources and concurrent management operations still matter. If MNAN=0, NN still bounds the allocated namespace count; for example, NN=1000 does not allow an unlimited namespace count.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/identify/en/#figure-b336">Base 2.4 Figure 336 · Identify – CNS Values</a><a href="/nvme/figure-reference/maintenance/en/#figure-b446">Base 2.4 Figure 446 · Namespace Management – Command Dword 10</a><a href="/nvme/figure-reference/maintenance/en/#figure-n134">NVM Command Set 1.3 Figure 134 · Namespace Management – Host Specified Fields</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 353, 370, 378 · PDF 379, 396, 404</li><li>Base 2.4 · §3.2.1 · Printed pages 78–80 · PDF 104–106</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · Printed pages 338–339 · PDF 364–365</li><li>Base 2.4 · §5.2.25 · Figure 446 · Namespace Management – Command Dword 10 · Printed pages 446–447 · PDF 472–473</li><li>NVM Command Set 1.3 · §4.1.6 · Figure 134 · Namespace Management – Host Specified Fields · Printed pages 112–113 · PDF 112–113</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-identify-02" data-scenario="identify-02"><h3><span class="qr-number">EXERCISE 02</span>Why is an existing namespace absent from this controller?</h3>
+<p class="qr-case-question">Inventory finds NSID=27 in the subsystem but no accessible namespace on this controller. Does that establish data loss?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>NN=100; CNS=10h returns [2, 9, 27]; CNS=02h returns [2, 9]. Both lists are complete.</li>
+<li>Namespace Management is supported, and inventory remains stable during the queries.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for bounds and capability; CNS=10h and 02h for the two lists; CNS=12h with NSID=27 to inspect its controller attachments.</p>
+<p data-reasoning="identify-02-1"><span class="qr-step">Step 1</span>27 is valid and allocated, so the namespace exists. Its absence from this controller’s active list means it is not attached here; it does not establish nonexistence or media data loss.</p>
+<p data-reasoning="identify-02-2"><span class="qr-step">Step 2</span>CNS=12h identifies the controllers to which it is attached. This distinguishes attachment elsewhere from creation without attachment. Whether to change that configuration is a separate decision.</p>
+<p data-reasoning="identify-02-3"><span class="qr-step">Step 3</span>For large inventories, a list holds at most 1024 NSIDs. Continue from the last nonzero NSID to obtain greater IDs; absence from the first page alone does not establish absence from the inventory.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b336">Base 2.4 Figure 336 · Identify – CNS Values</a><a href="/nvme/figure-reference/maintenance/en/#figure-b443">Base 2.4 Figure 443 · Namespace Attachment – Command Dword 10</a><a href="/nvme/figure-reference/identify/en/#figure-b346">Base 2.4 Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.2.1 · Printed pages 78–80 · PDF 104–106</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · Printed pages 338 · PDF 364</li><li>Base 2.4 · §5.2.14.2.2 · Printed pages 387 · PDF 413</li><li>Base 2.4 · §5.2.14.2.9 · Printed pages 395 · PDF 421</li><li>Base 2.4 · §5.2.14.2.11 · Printed pages 395 · PDF 421</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-identify-03" data-scenario="identify-03"><h3><span class="qr-number">EXERCISE 03</span>Did a changed NSID identify the same namespace?</h3>
+<p class="qr-case-question">A namespace used NSID=3 before a power cycle and NSID=9 afterward. Would you compare capacity, NSID or another identifier?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>CNS=03h returns the same nonzero Namespace UUID before and after, from the same verified subsystem.</li>
+<li>Capacity matches, but user data has not been read.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=03h for the respective NSIDs; parse identifier descriptors using NIDT and NIDL and retain the identifier values.</p>
+<p data-reasoning="identify-03-1"><span class="qr-step">Step 1</span>An NSID selects a namespace in commands and may change across power loss. The matching Namespace UUID supports identifying the same namespace; a changed NSID alone does not make it a new object.</p>
+<p data-reasoning="identify-03-2"><span class="qr-step">Step 2</span>Use NIDT to select the identifier type and NIDL to extract its bytes. Do not compare a descriptor header as part of a UUID. When using NGUID or EUI64, account for the reuse characteristics reported through UIDREUSE.</p>
+<p data-reasoning="identify-03-3"><span class="qr-step">Step 3</span>Identity does not prove unchanged contents or integrity of every LBA. Data-change questions need separate verification. If no usable unique identifier is available, matching capacity alone is insufficient.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b342">Base 2.4 Figure 342 · Identify – Namespace Identification Descriptor</a><a href="/nvme/figure-reference/identify/en/#figure-b346">Base 2.4 Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.2.1 · Printed pages 80 · PDF 106</li><li>Base 2.4 · §5.2.14.2.3 · Figure 342 · Identify – Namespace Identification Descriptor · Printed pages 388 · PDF 414</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · Printed pages 391–394 · PDF 417–420</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-identify-04" data-scenario="identify-04"><h3><span class="qr-number">EXERCISE 04</span>Which capacity does each namespace field describe?</h3>
+<p class="qr-case-question">A capacity report adds NSZE, NCAP and NUSE. Explain why that is incorrect using these observations.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>The selected LBAF has LBADS=12 and MS=0; NSZE=8192, NCAP=4096 and NUSE=1024.</li>
+<li>This is a thin-provisioned NVM namespace with valid values, not values cleared by an inaccessible state.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=00h for the target NSID → select the LBAF through FLBAS → read NSZE, NCAP and NUSE together.</p>
+<p data-reasoning="identify-04-1"><span class="qr-step">Step 1</span>LBADS=12 means 2^12=4096 data bytes per LBA. NSZE=8192 describes a 32 MiB addressable data range, with LBAs 0 through 8191, not through 8192.</p>
+<p data-reasoning="identify-04-2"><span class="qr-step">Step 2</span>NCAP=4096 represents at most 16 MiB of allocatable logical blocks; NUSE=1024 represents 4 MiB currently allocated. These are different properties of one namespace, not three independent spaces to add.</p>
+<p data-reasoning="identify-04-3"><span class="qr-step">Step 3</span>NUSE is not filesystem used space. File deletion, deallocation, allocation granularity and update timing can make them differ. Filesystem free-space questions require filesystem evidence, not a reinterpretation of NSZE.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a><a href="/nvme/figure-reference/identify/en/#figure-n125">NVM Command Set 1.3 Figure 125 · LBA Format Data Structure, NVM Command Set Specific</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 85–87 · PDF 85–87</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · Printed pages 94 · PDF 94</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-identify-05" data-scenario="identify-05"><h3><span class="qr-number">EXERCISE 05</span>How can 128 KiB of data exceed MDTS?</h3>
+<p class="qr-case-question">The host plans to transfer 32 logical blocks of 4 KiB each. Can interleaved metadata make the command exceed its limit?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>CAP.MPSMIN=0; CC.MPS=1; Identify Controller reports MDTS=5 and CTRATT.MEM=0.</li>
+<li>Selected LBAF: LBADS=12, MS=16. Metadata is interleaved, with all 16 metadata bytes per LBA included in this transfer.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Read CAP.MPSMIN → Identify CNS=01h for MDTS/CTRATT.MEM → CNS=00h for the active format; also check command-specific limits.</p>
+<p data-reasoning="identify-05-1"><span class="qr-step">Step 1</span>MDTS uses the minimum memory page size, not current CC.MPS. The limit is 2^5 × 2^(12+0)=131072 bytes, or 128 KiB. Selecting 8 KiB host pages does not raise it to 256 KiB.</p>
+<p data-reasoning="identify-05-2"><span class="qr-step">Step 2</span>With MEM=0, MDTS includes interleaved metadata. 32 × (4096+16)=131584 bytes exceeds 131072; under these assumptions, only 31 complete blocks fit this limit.</p>
+<p data-reasoning="identify-05-3"><span class="qr-step">Step 3</span>With MEM=1, this MDTS comparison excludes metadata, so 32 blocks pass this check while other command and buffer rules still apply. MDTS=0 removes this reported limit, not every limit on every command.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/init/en/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a><a href="/nvme/figure-reference/identify/en/#figure-n125">NVM Command Set 1.3 Figure 125 · LBA Format Data Structure, NVM Command Set Specific</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · Printed pages 55–58 · PDF 81–84</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 342, 345 · PDF 368, 371</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 86–87 · PDF 86–87</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · Printed pages 94 · PDF 94</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-identify-06" data-scenario="identify-06"><h3><span class="qr-number">EXERCISE 06</span>Do zero Dataset Management limits mean unsupported?</h3>
+<p class="qr-case-question">Two controllers both report DMRL=0. Is that enough to disable Dataset Management in software?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>A: ONCS.NVMDSMSV=1; DMRL=0, DMRSL=0, DMSL=0.</li>
+<li>B: ONCS.NVMDSMSV=0; DMRL=0, DMRSL=0, DMSL=0.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for ONCS; CNS=06h with CSI=00h for NVM-specific controller data; interpret DMRL/DMRSL/DMSL with the support variant.</p>
+<p data-reasoning="identify-06-1"><span class="qr-step">Step 1</span>A reports command support through NVMDSMSV=1; the three zero fields do not specify corresponding processing limits. DMRL=0 does not mean zero ranges are allowed.</p>
+<p data-reasoning="identify-06-2"><span class="qr-step">Step 2</span>B uses the other support interpretation: with NVMDSMSV=0, support depends on the nonzero limit conditions. This all-zero combination does not indicate Dataset Management support; A’s conclusion cannot be reused.</p>
+<p data-reasoning="identify-06-3"><span class="qr-step">Step 3</span>Even on A, command encoding, namespace bounds and range definitions still apply. The key is to interpret the capability variant before its numeric fields; zero has no universal meaning across fields.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/identify/en/#figure-n129">NVM Command Set 1.3 Figure 129 · I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set</a><a href="/nvme/figure-reference/io/en/#figure-n47">NVM Command Set 1.3 Figure 47 · Dataset Management – Range Definition</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 372 · PDF 398</li><li>NVM Command Set 1.3 · §4.1.5.4 · Figure 129 · I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set · Printed pages 103–106 · PDF 103–106</li><li>NVM Command Set 1.3 · §3.3.3.1 · Printed pages 45–47 · PDF 45–47</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-identify-07" data-scenario="identify-07"><h3><span class="qr-number">EXERCISE 07</span>Does a defined LID guarantee an available log?</h3>
+<p class="qr-case-question">Software recognizes an LID, but a controller may not support it. What evidence separates a known name from an implemented log?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>The target entry in Supported Log Pages has LSUPP=0; another entry has LSUPP=1.</li>
+<li>Assume Supported Log Pages can be retrieved successfully; target-specific namespace, CSI and LSP rules still require checking.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page with LID=00h; locate the supported-and-effects entry indexed by the target LID, then consult that log’s retrieval rules.</p>
+<p data-reasoning="identify-07-1"><span class="qr-step">Step 1</span>LSUPP reports this controller’s support for the log. A software decoder does not turn a zero entry into support; a one entry passes that support check.</p>
+<p data-reasoning="identify-07-2"><span class="qr-step">Step 2</span>Support does not imply existing events or measurements. An empty log, a capture not yet generated and an unsupported log are different states that a report should distinguish.</p>
+<p data-reasoning="identify-07-3"><span class="qr-step">Step 3</span>Subsequent requests must follow the log’s NSID, CSI, LSP, LSI, length and offset rules. LSUPP=1 does not legalize incorrect selectors or replace payload-format and revision checks.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b211">Base 2.4 Figure 211 · LID Supported and Effects Data Structure</a><a href="/nvme/figure-reference/logs/en/#figure-b204">Base 2.4 Figure 204 · Get Log Page – Command Dword 10</a><a href="/nvme/figure-reference/logs/en/#figure-b208">Base 2.4 Figure 208 · Get Log Page – Command Dword 14</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.1 · Figure 211 · LID Supported and Effects Data Structure · Printed pages 217–218 · PDF 243–244</li><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · Printed pages 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · Printed pages 214 · PDF 240</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · Printed pages 214–215 · PDF 240–241</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-b333">Base 2.4 Figure 333 · Identify – Command Dword 10</a></li>
 <li><a href="#figure-b336">Base 2.4 Figure 336 · Identify – CNS Values</a></li>

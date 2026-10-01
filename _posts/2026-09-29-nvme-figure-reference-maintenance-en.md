@@ -1,20 +1,105 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 07 · Maintenance and Management"
+title: "NVMe Figures and Scenarios 07 · Maintenance and Management"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/maintenance/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/maintenance/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/maintenance.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 07 · Maintenance and Management</h1><p class="qr-intro">Separate the requested action, command completion and background result. Firmware commitment, namespace creation and acceptance of a Sanitize command each require different follow-up observations.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 07 · Maintenance and Management</h1><p class="qr-intro">Separate the requested action, command completion and background result. Firmware commitment, namespace creation and acceptance of a Sanitize command each require different follow-up observations.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-maintenance-01">Can a single namespace support Overwrite Sanitize?</a></li>
+<li><a href="#exercise-maintenance-02">Does one sanitized namespace establish subsystem-wide sanitization?</a></li>
+<li><a href="#exercise-maintenance-03">Does firmware stored in slot two mean it is running?</a></li>
+<li><a href="#exercise-maintenance-04">Does a Format NSID always confine its effects to one namespace?</a></li>
+<li><a href="#exercise-maintenance-05">Does an unsaveable protection feature clear on reset?</a></li>
+<li><a href="#exercise-maintenance-06">Does zero mean the same for Boot and namespace protection?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-maintenance-01" data-scenario="maintenance-01"><h3><span class="qr-number">EXERCISE 01</span>Can a single namespace support Overwrite Sanitize?</h3>
+<p class="qr-case-question">The requirement is to sanitize only NSID=7 using Sanitize Namespace with Overwrite. Is Identify OWS=1 sufficient?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Base Revision 2.4; SANICAP.OWS=1 and CES=1; assume Commands Supported and Effects also reports Sanitize Namespace support.</li>
+<li>The requested target is one namespace; expanding sanitization to the entire NVM subsystem is not permitted.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>First check operations defined by Base §5.2.27 → Identify CNS=01h SANICAP → command support in Commands Supported and Effects → target namespace state.</p>
+<p data-reasoning="maintenance-01-1"><span class="qr-step">Step 1</span>This revision defines only Crypto Erase as a starting operation for Sanitize Namespace. In Figure 454, SANACT=011b—the value used for Overwrite in the other command—is reserved. The requested combination is therefore not provided by this standard command.</p>
+<p data-reasoning="maintenance-01-2"><span class="qr-step">Step 2</span>SANICAP.OWS=1 reports Overwrite sanitize support; it does not add a legal action to Sanitize Namespace. Distinguish command and target scope before interpreting the capability.</p>
+<p data-reasoning="maintenance-01-3"><span class="qr-step">Step 3</span>Report that single-namespace Overwrite Sanitize is not defined by this revision, then resolve whether an alternative such as namespace Crypto Erase satisfies the requirement. Do not silently substitute subsystem Overwrite or claim ordinary Writes provide Sanitize guarantees.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/maintenance/en/#figure-b454">Base 2.4 Figure 454 · Sanitize Namespace – Command Dword 10</a><a href="/nvme/figure-reference/maintenance/en/#figure-b451">Base 2.4 Figure 451 · Sanitize – Command Dword 10</a><a href="/nvme/figure-reference/logs/en/#figure-b217">Base 2.4 Figure 217 · Commands Supported and Effects Data Structure</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.27 · Printed pages 452–453 · PDF 478–479</li><li>Base 2.4 · §5.2.27 · Figure 454 · Sanitize Namespace – Command Dword 10 · Printed pages 453 · PDF 479</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 361–362 · PDF 387–388</li><li>Base 2.4 · §5.2.26 · Figure 451 · Sanitize – Command Dword 10 · Printed pages 450–451 · PDF 476–477</li><li>Base 2.4 · §5.2.13.1.6 · Figure 217 · Commands Supported and Effects Data Structure · Printed pages 228–229 · PDF 254–255</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-02" data-scenario="maintenance-02"><h3><span class="qr-number">EXERCISE 02</span>Does one sanitized namespace establish subsystem-wide sanitization?</h3>
+<p class="qr-case-question">A validator uses NSID=7’s success to claim subsystem sanitization and capacity for four additional concurrent operations. Which claims exceed the evidence?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>LID=81h, NSID=7: STNSID=7, SOS=1, MNSOIP=FFFFFFFFh.</li>
+<li>A separate subsystem-target query (NSID=0) reports MNSOIP=4; other ongoing namespace sanitizations have not been inventoried.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page LID=81h, distinguishing subsystem targets NSID=0/FFFFFFFFh from allocated-NSID namespace targets.</p>
+<p data-reasoning="maintenance-02-1"><span class="qr-step">Step 1</span>STNSID=7 confirms the namespace target. SOS=1 reports successful sanitization for that target with its state machine in Idle; it says nothing equivalent about other namespaces.</p>
+<p data-reasoning="maintenance-02-2"><span class="qr-step">Step 2</span>For a namespace target, MNSOIP is required to be FFFFFFFFh; it does not permit billions of concurrent operations. The subsystem value four limits total concurrent operations, not four remaining slots.</p>
+<p data-reasoning="maintenance-02-3"><span class="qr-step">Step 3</span>Remaining capacity requires complete, time-consistent information about ongoing operations and concurrent management changes. Even an available slot and accepted command still require target-specific final-result verification.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/maintenance/en/#figure-b312">Base 2.4 Figure 312 · Sanitize Status Log Page</a><a href="/nvme/figure-reference/maintenance/en/#figure-b454">Base 2.4 Figure 454 · Sanitize Namespace – Command Dword 10</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.38 · Figure 312 · Sanitize Status Log Page · Printed pages 314–319 · PDF 340–345</li><li>Base 2.4 · §5.2.27 · Printed pages 452–453 · PDF 478–479</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-03" data-scenario="maintenance-03"><h3><span class="qr-number">EXERCISE 03</span>Does firmware stored in slot two mean it is running?</h3>
+<p class="qr-case-question">An updater sees a new version string in slot two and marks activation complete. Reinterpret current and next-active fields.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Firmware Slot Information: CAFS=1, NAFS=2; FRS1=&quot;A100&quot;, FRS2=&quot;B200&quot;.</li>
+<li>Identify Controller.FR=&quot;A100&quot;; FRMW.FAWR=0; no later reset capable of activation is recorded.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h FR/FRMW → LID=03h AFI and slot revisions → Firmware Commit action/status and reset trace.</p>
+<p data-reasoning="maintenance-03-1"><span class="qr-step">Step 1</span>CAFS=1 and FR=A100 support that slot one’s revision is still running. FRS2=B200 identifies a revision in slot two, not that it is currently executing.</p>
+<p data-reasoning="maintenance-03-2"><span class="qr-step">Step 2</span>NAFS=2 identifies the slot scheduled for the next Controller Level Reset capable of activation. FAWR=0 means no reset-free activation support; an unspecified reset is not enough to establish activation.</p>
+<p data-reasoning="maintenance-03-3"><span class="qr-step">Step 3</span>After the applicable activation step, reread FR and CAFS and compare against the intended revision. This exercise identifies evidence of pending activation without performing a reset or download.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/maintenance/en/#figure-b215">Base 2.4 Figure 215 · Firmware Slot Information Log Page</a><a href="/nvme/figure-reference/maintenance/en/#figure-b187">Base 2.4 Figure 187 · Firmware Commit – Command Dword 10</a><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.4 · Figure 215 · Firmware Slot Information Log Page · Printed pages 226 · PDF 252</li><li>Base 2.4 · §5.2.9 · Figure 187 · Firmware Commit – Command Dword 10 · Printed pages 203 · PDF 229</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 340–341, 354 · PDF 366–367, 380</li><li>Base 2.4 · §5.2.9 · Printed pages 202–205 · PDF 228–231</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-04" data-scenario="maintenance-04"><h3><span class="qr-number">EXERCISE 04</span>Does a Format NSID always confine its effects to one namespace?</h3>
+<p class="qr-case-question">A request intends secure erase only for NSID=7. Review checks the command NSID and accepts it. Which scope evidence is missing?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>OACS.FNVMS=1; FNA.FNS=0, SENS=1, FNVMBS=0.</li>
+<li>Proposed Format NVM: NSID=7, SES=1; other format fields are valid. The command is not executed in this exercise.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h OACS/FNA → Format NVM NSID, SES and format parameters.</p>
+<p data-reasoning="maintenance-04-1"><span class="qr-step">Step 1</span>FNS and SENS answer different questions: formatting scope and secure-erase scope. FNS=0 does not cancel SENS=1; the requested secure erase affects all namespaces in the subsystem.</p>
+<p data-reasoning="maintenance-04-2"><span class="qr-step">Step 2</span>The combination fails the requirement to erase only namespace seven. An explicit command NSID must still be interpreted with controller attributes; it does not by itself bound every effect.</p>
+<p data-reasoning="maintenance-04-3"><span class="qr-step">Step 3</span>FNVMBS also uses an easily misread direction: one means FFFFFFFFh broadcast is unsupported. Establish scope before deciding whether an operation meets the requirement.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/maintenance/en/#figure-b195">Base 2.4 Figure 195 · Format NVM – Command Dword 10</a><a href="/nvme/figure-reference/maintenance/en/#figure-n91">NVM Command Set 1.3 Figure 91 · Format NVM – Command Dword 10 – NVM Command Set Specific Fields</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 353, 373 · PDF 379, 399</li><li>Base 2.4 · §5.2.11 · Figure 195 · Format NVM – Command Dword 10 · Printed pages 208–209 · PDF 234–235</li><li>NVM Command Set 1.3 · §4.1.1 · Figure 91 · Format NVM – Command Dword 10 – NVM Command Set Specific Fields · Printed pages 63 · PDF 63</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-05" data-scenario="maintenance-05"><h3><span class="qr-number">EXERCISE 05</span>Does an unsaveable protection feature clear on reset?</h3>
+<p class="qr-case-question">A tool sees SVBL=0 for FID=84h and claims a reset clears all namespace write protection. Compare two namespaces.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Get Features FID=84h, SEL=0: NSID=2 has WPS=2; NSID=9 has WPS=3.</li>
+<li>These states are supported; the planned action is only a Controller Level Reset, without a power cycle.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h NWPC → Get Features FID=84h, SEL=0 for each current WPS → apply §8.1.18 state-persistence rules.</p>
+<p data-reasoning="maintenance-05-1"><span class="qr-step">Step 1</span>WPS=2 is Write Protect Until Power Cycle and persists across Controller Level Reset without power cycling. The stated reset does not unprotect NSID=2; an actual power cycle is the defined release condition.</p>
+<p data-reasoning="maintenance-05-2"><span class="qr-step">Step 2</span>WPS=3 is Permanent Write Protect; a power cycle is not its release mechanism. Supported protection states, permission to enter them and current state are separate questions.</p>
+<p data-reasoning="maintenance-05-3"><span class="qr-step">Step 3</span>SVBL=0 describes whether the feature accepts a save request, not state persistence. Retain NWPC, relevant WPC permissions and WPS rather than deriving recovery behavior from one saveability bit.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/maintenance/en/#figure-b541">Base 2.4 Figure 541 · Write Protection – Command Dword 11</a><a href="/nvme/figure-reference/features/en/#figure-b201">Base 2.4 Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b</a><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.38 · Figure 541 · Write Protection – Command Dword 11 · Printed pages 512 · PDF 538</li><li>Base 2.4 · §5.2.12 · Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b · Printed pages 212 · PDF 238</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 375 · PDF 401</li><li>Base 2.4 · §8.1.18 · Printed pages 664–666 · PDF 690–692</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-06" data-scenario="maintenance-06"><h3><span class="qr-number">EXERCISE 06</span>Does zero mean the same for Boot and namespace protection?</h3>
+<p class="qr-case-question">A shared decoder displays every protection state zero as unprotected. Which interpretation fails for this command and response?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>A prior Set Features FID=85h used BP0WPS=0 and BP1WPS=0 and succeeded.</li>
+<li>Current Get Features FID=85h, SEL=0 reports BP0WPS=2 and BP1WPS=4.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Distinguish Namespace Write Protection FID=84h from Boot Partition Write Protection FID=85h, then distinguish Set requests from Get responses.</p>
+<p data-reasoning="maintenance-06-1"><span class="qr-step">Step 1</span>For FID=85h, Set value zero requests no change for that partition, not unlocking. A successful all-zero request may leave both unchanged and is not evidence of protection removal.</p>
+<p data-reasoning="maintenance-06-2"><span class="qr-step">Step 2</span>Current BP0WPS=2 means partition zero is Write Locked; BP1WPS=4 means partition one’s protection is controlled by RPMB. Four is a reportable state, not a general Set request value.</p>
+<p data-reasoning="maintenance-06-3"><span class="qr-step">Step 3</span>Get does not return zero as either partition’s state, so a decoder needs at least FID and direction. Shared multi-domain partitions have additional specific restrictions; the namespace WPS table cannot stand in for them.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/maintenance/en/#figure-b542">Base 2.4 Figure 542 · Boot Partition Write Protection Config - Command Dword 11</a><a href="/nvme/figure-reference/maintenance/en/#figure-b541">Base 2.4 Figure 541 · Write Protection – Command Dword 11</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.39 · Figure 542 · Boot Partition Write Protection Config - Command Dword 11 · Printed pages 513–514 · PDF 539–540</li><li>Base 2.4 · §5.2.30.1.38 · Figure 541 · Write Protection – Command Dword 11 · Printed pages 512 · PDF 538</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-b187">Base 2.4 Figure 187 · Firmware Commit – Command Dword 10</a></li>
 <li><a href="#figure-b191">Base 2.4 Figure 191 · Firmware Image Download – Command Dword 10</a></li>

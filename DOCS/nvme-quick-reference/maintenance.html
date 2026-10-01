@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>NVMe 圖表速查 07 · 維護與管理操作</title><style>
+<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>NVMe 圖表判讀與情境練習 07 · 維護與管理操作</title><style>
 /* Independently scoped quick-reference layout. All text follows explicit theme colors. */
 .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; color:var(--qr-ink); background:var(--qr-paper); font:17px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; -webkit-text-size-adjust:100%; padding:clamp(16px,3vw,36px); border-radius:12px; }
 .nvme-quickref * { box-sizing:border-box; }
@@ -45,6 +45,17 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-quickref .qr-catalog td:last-child { width:40%; }
 .nvme-quickref .qr-sources { font-size:14px; overflow-wrap:anywhere; }
 .nvme-quickref .qr-sources li { padding:10px 0; }
+.nvme-quickref .qr-case h3 { margin:0 0 18px; font-size:22px; }
+.nvme-quickref h4 { color:var(--qr-ink); font-size:16px; margin:18px 0 10px; }
+.nvme-quickref .qr-observations { background:var(--qr-soft); padding:1px 18px 12px; border-left:4px solid var(--qr-accent); margin:20px 0; }
+.nvme-quickref .qr-observations li { margin:8px 0; overflow-wrap:anywhere; }
+.nvme-quickref .qr-answer { border-top:1px solid var(--qr-line); margin:20px 0 6px; }
+.nvme-quickref .qr-answer summary { cursor:pointer; min-height:48px; padding:14px 0; font-weight:650; color:var(--qr-accent); }
+.nvme-quickref .qr-answer[open] summary { margin-bottom:18px; }
+.nvme-quickref .qr-route { border-bottom:1px solid var(--qr-line); padding-bottom:18px; }
+.nvme-quickref .qr-case-sources { font-size:14px; padding-left:20px; line-height:1.8; }
+.nvme-quickref .qr-case-sources li { margin:10px 0; overflow-wrap:anywhere; }
+.nvme-quickref .qr-exercise-list { padding-left:24px; }
 .nvme-quickref .qr-series { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
 .nvme-quickref .qr-series article { padding:20px; background:var(--qr-surface); border:1px solid var(--qr-line); border-radius:8px; }
 .nvme-quickref .qr-series h2 { font-size:20px; margin:0; }
@@ -60,8 +71,93 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="index.html">總索引</a><a href="/nvme/figure-reference/maintenance/zh-tw/">GitHub Pages 中文</a><a href="/nvme/figure-reference/maintenance/en/">English</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表速查 07 · 維護與管理操作</h1><p class="qr-intro">把要求的動作、命令完成與背景操作結果分開看。韌體提交、namespace 建立和 Sanitize 接受命令，各自都還有不同的後續狀態需要核對。</p></header>
+<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 07 · 維護與管理操作</h1><p class="qr-intro">把要求的動作、命令完成與背景操作結果分開看。韌體提交、namespace 建立和 Sanitize 接受命令，各自都還有不同的後續狀態需要核對。</p></header>
 <aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
+<section id="exercises"><h2>先做情境練習</h2>
+<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<aside class="qr-note"><p>練習方法：先不要急著解每個 bit。把需求寫成一句能驗證的話，例如「這個 namespace 的這筆 Write，在什麼條件下具有哪種保證」。作答時分開記錄「已知」「推導結果」「仍缺的證據」。解答中的三段依序帶你走過判讀；不熟的欄位可由末尾連結回本冊原圖介紹。</p></aside>
+<nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
+<li><a href="#exercise-maintenance-01">如何查詢單一 namespace 是否支援 Overwrite Sanitize？</a></li>
+<li><a href="#exercise-maintenance-02">一個 namespace 已清除，是否整台都清除了？</a></li>
+<li><a href="#exercise-maintenance-03">新韌體已在 slot 2，現在跑的就是它嗎？</a></li>
+<li><a href="#exercise-maintenance-04">Format 指定 NSID，就只會影響那一個嗎？</a></li>
+<li><a href="#exercise-maintenance-05">不可保存的保護狀態，reset 後就會解除嗎？</a></li>
+<li><a href="#exercise-maintenance-06">Boot protection 的 0，和 namespace 的 0 一樣嗎？</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-maintenance-01" data-scenario="maintenance-01"><h3><span class="qr-number">練習 01</span>如何查詢單一 namespace 是否支援 Overwrite Sanitize？</h3>
+<p class="qr-case-question">需求是「只清除 NSID=7，使用 Sanitize Namespace with Overwrite」。Identify 顯示 OWS=1，是否已足夠？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>Base Revision 2.4；SANICAP.OWS=1、CES=1；假設 Commands Supported and Effects 亦回報 Sanitize Namespace 受支援。</li>
+<li>需求明確限制單一 namespace，不允許把清除範圍擴大成整個 NVM subsystem。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>先查 Base §5.2.27 允許的操作 → Identify CNS=01h 的 SANICAP → Commands Supported and Effects 的命令支援 → 目標 namespace 狀態。</p>
+<p data-reasoning="maintenance-01-1"><span class="qr-step">推導 1</span>這版規格的 Sanitize Namespace 只有 Crypto Erase 這一種開始清除的操作。Figure 454 的 SANACT=011b（Overwrite 在另一個命令使用的值）在此屬於 Reserved。因此原需求無法由此標準命令組合實現。</p>
+<p data-reasoning="maintenance-01-2"><span class="qr-step">推導 2</span>SANICAP.OWS=1 表示支援 Overwrite sanitize，不會替 Sanitize Namespace 增加新的合法 action。Subsystem Sanitize 與 Sanitize Namespace 必須先分清命令與作用範圍，再解能力。</p>
+<p data-reasoning="maintenance-01-3"><span class="qr-step">推導 3</span>應回報「單一 namespace 的 Overwrite Sanitize 不在此版標準命令定義內」，並請需求端決定是否接受單一 namespace Crypto Erase 等其他方式。不能偷偷改送 subsystem Overwrite，也不能用一般 Write 覆寫冒充 Sanitize 保證。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="maintenance.html#figure-b454">Base 2.4 Figure 454 · Namespace Sanitize：PREQ 的 bit 位置不同</a><a href="maintenance.html#figure-b451">Base 2.4 Figure 451 · Subsystem Sanitize：動作與完成模式</a><a href="logs.html#figure-b217">Base 2.4 Figure 217 · Command Effects：支援與執行影響</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.27 · 文件頁 452–453 · PDF 478–479</li><li>Base 2.4 · §5.2.27 · Figure 454 · Sanitize Namespace – Command Dword 10 · 文件頁 453 · PDF 479</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 361–362 · PDF 387–388</li><li>Base 2.4 · §5.2.26 · Figure 451 · Sanitize – Command Dword 10 · 文件頁 450–451 · PDF 476–477</li><li>Base 2.4 · §5.2.13.1.6 · Figure 217 · Commands Supported and Effects Data Structure · 文件頁 228–229 · PDF 254–255</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-02" data-scenario="maintenance-02"><h3><span class="qr-number">練習 02</span>一個 namespace 已清除，是否整台都清除了？</h3>
+<p class="qr-case-question">驗證程式拿 NSID=7 的成功結果，宣稱整個 subsystem 已清除，而且還能再啟動 4 個並行操作。哪些推論越過了資料範圍？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>LID=81h、NSID=7：STNSID=7、SOS=1；MNSOIP=FFFFFFFFh。</li>
+<li>另讀 subsystem target（NSID=0）的 log：MNSOIP=4；尚未盤點其他進行中的 namespace sanitize。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Get Log Page LID=81h，分清 NSID=0／FFFFFFFFh 的 subsystem target 與 allocated NSID 的 namespace target。</p>
+<p data-reasoning="maintenance-02-1"><span class="qr-step">推導 1</span>STNSID=7 確認這份回覆是 namespace 7 的狀態；SOS=1 表示相應最近 sanitize 已成功且 state machine 回到 Idle。它沒有宣告其他 namespace 也完成相同操作。</p>
+<p data-reasoning="maintenance-02-2"><span class="qr-step">推導 2</span>namespace target 的 MNSOIP 按規則為 FFFFFFFFh，不能解成可並行數十億次。並行上限需讀 subsystem target；其值 4 是最多同時進行 4 個，不是現在剩餘 4 個。</p>
+<p data-reasoning="maintenance-02-3"><span class="qr-step">推導 3</span>要算目前餘額，還需完整且時間一致的進行中操作資訊，並考慮並行管理造成的變動。即使有名額，命令被接受也仍須另查目標 log 的最終結果。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="maintenance.html#figure-b312">Base 2.4 Figure 312 · Sanitize Status：進度、結果與目前狀態</a><a href="maintenance.html#figure-b454">Base 2.4 Figure 454 · Namespace Sanitize：PREQ 的 bit 位置不同</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.38 · Figure 312 · Sanitize Status Log Page · 文件頁 314–319 · PDF 340–345</li><li>Base 2.4 · §5.2.27 · 文件頁 452–453 · PDF 478–479</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-03" data-scenario="maintenance-03"><h3><span class="qr-number">練習 03</span>新韌體已在 slot 2，現在跑的就是它嗎？</h3>
+<p class="qr-case-question">更新工具看到 slot 2 的新版本字串，便把升級標示為已生效。請用目前與下一次啟用欄位重新判讀。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>Firmware Slot Information：CAFS=1、NAFS=2；FRS1=&quot;A100&quot;、FRS2=&quot;B200&quot;。</li>
+<li>Identify Controller.FR=&quot;A100&quot;；FRMW.FAWR=0；沒有後續可啟用該版本的 reset 紀錄。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 的 FR／FRMW → Get Log Page LID=03h 的 AFI 與 slot revisions → Firmware Commit 的 action／status 與 reset 紀錄。</p>
+<p data-reasoning="maintenance-03-1"><span class="qr-step">推導 1</span>CAFS=1 與 FR=A100 支持目前仍執行 slot 1 的版本。FRS2=B200 證明 slot 2 有該 revision，不等於 controller 現在已執行它。</p>
+<p data-reasoning="maintenance-03-2"><span class="qr-step">推導 2</span>NAFS=2 指向下一次能造成啟用的 Controller Level Reset 所要啟用的 slot。FAWR=0 表示不支援無 reset 啟用；不能把任何未分類的 reset 都當作已滿足啟用條件。</p>
+<p data-reasoning="maintenance-03-3"><span class="qr-step">推導 3</span>完整驗證應在適用的啟用步驟之後重新讀 FR 與 CAFS，再與預期版本比對。本題只指出尚未生效的證據，不要求現在執行 reset 或下載韌體。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="maintenance.html#figure-b215">Base 2.4 Figure 215 · Firmware Slot Log：目前版本與待啟用 slot</a><a href="maintenance.html#figure-b187">Base 2.4 Figure 187 · Firmware Commit：放進 slot 與啟用的差別</a><a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.4 · Figure 215 · Firmware Slot Information Log Page · 文件頁 226 · PDF 252</li><li>Base 2.4 · §5.2.9 · Figure 187 · Firmware Commit – Command Dword 10 · 文件頁 203 · PDF 229</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 340–341, 354 · PDF 366–367, 380</li><li>Base 2.4 · §5.2.9 · 文件頁 202–205 · PDF 228–231</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-04" data-scenario="maintenance-04"><h3><span class="qr-number">練習 04</span>Format 指定 NSID，就只會影響那一個嗎？</h3>
+<p class="qr-case-question">要求是只對 NSID=7 做 secure erase；審查時看到命令 NSID=7 就放行。還少查哪一組 scope？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>OACS.FNVMS=1；FNA.FNS=0、SENS=1、FNVMBS=0。</li>
+<li>擬定 Format NVM：NSID=7、SES=1；其他格式欄位均合法，本題不執行命令。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 的 OACS／FNA → Format NVM 的 NSID、SES 與格式參數。</p>
+<p data-reasoning="maintenance-04-1"><span class="qr-step">推導 1</span>FNS 與 SENS 回答不同問題：格式變更的範圍與 secure erase 的範圍。本例 FNS=0 不能抵消 SENS=1；所要求的 secure erase 會作用於 subsystem 所有 namespaces。</p>
+<p data-reasoning="maintenance-04-2"><span class="qr-step">推導 2</span>因此這組參數不符合「只清除 namespace 7」的需求。NSID 看起來很精確，仍須與 controller attributes 合併判讀，不能只憑命令目標欄位推定所有副作用的範圍。</p>
+<p data-reasoning="maintenance-04-3"><span class="qr-step">推導 3</span>FNVMBS 的位值方向也要照定義：1 表示不支援 FFFFFFFFh broadcast，不是支援。這題的重點是先做範圍判定，再決定是否有符合需求的操作方式。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="maintenance.html#figure-b195">Base 2.4 Figure 195 · Format CDW10：格式編號與清除選項</a><a href="maintenance.html#figure-n91">NVM Command Set 1.3 Figure 91 · NVM Format 補充：PI 類型與 metadata 放置</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 353, 373 · PDF 379, 399</li><li>Base 2.4 · §5.2.11 · Figure 195 · Format NVM – Command Dword 10 · 文件頁 208–209 · PDF 234–235</li><li>NVM Command Set 1.3 · §4.1.1 · Figure 91 · Format NVM – Command Dword 10 – NVM Command Set Specific Fields · 文件頁 63 · PDF 63</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-05" data-scenario="maintenance-05"><h3><span class="qr-number">練習 05</span>不可保存的保護狀態，reset 後就會解除嗎？</h3>
+<p class="qr-case-question">工具看到 FID=84h 的 SVBL=0，就說 reset 會解除所有 namespace write protection。請比較兩個 namespace。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>Get Features FID=84h、SEL=0：NSID=2 的 WPS=2；NSID=9 的 WPS=3。</li>
+<li>controller 支援這些狀態；計畫中的動作只是 Controller Level Reset，沒有斷電。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 查 NWPC → Get Features FID=84h、SEL=0 查各 namespace 目前 WPS → 對照 §8.1.18 的狀態持續規則。</p>
+<p data-reasoning="maintenance-05-1"><span class="qr-step">推導 1</span>WPS=2 是 Write Protect Until Power Cycle，會跨沒有斷電的 Controller Level Reset 持續。因此題目的 reset 不能使 NSID=2 回到未保護；真正 power cycle 才是該狀態定義的解除條件。</p>
+<p data-reasoning="maintenance-05-2"><span class="qr-step">推導 2</span>WPS=3 是 Permanent Write Protect，不能把 power cycle 當解除方法。可支援某種保護、允許進入保護、目前處在什麼狀態，是三個不同問題。</p>
+<p data-reasoning="maintenance-05-3"><span class="qr-step">推導 3</span>SVBL=0 描述 Feature 是否接受保存要求，不改寫狀態本身的持續規則。報告應保留 NWPC、必要的 WPC 許可與 WPS，不能由單一 saveable 位推論復原行為。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="maintenance.html#figure-b541">Base 2.4 Figure 541 · Namespace Write Protection：目前保護狀態</a><a href="features.html#figure-b201">Base 2.4 Figure 201 · Feature 能力：可改、可保存及 namespace 範圍</a><a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.38 · Figure 541 · Write Protection – Command Dword 11 · 文件頁 512 · PDF 538</li><li>Base 2.4 · §5.2.12 · Figure 201 · Completion Queue Entry Dword 0 when Select is set to 11b · 文件頁 212 · PDF 238</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 375 · PDF 401</li><li>Base 2.4 · §8.1.18 · 文件頁 664–666 · PDF 690–692</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-maintenance-06" data-scenario="maintenance-06"><h3><span class="qr-number">練習 06</span>Boot protection 的 0，和 namespace 的 0 一樣嗎？</h3>
+<p class="qr-case-question">一個共用解碼器把所有 protection state=0 都顯示為未保護。用以下歷史命令與讀取結果，判斷會誤解哪裡。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>先前 Set Features FID=85h：BP0WPS=0、BP1WPS=0，成功。</li>
+<li>現在 Get Features FID=85h、SEL=0：BP0WPS=2、BP1WPS=4。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>按 FID 區分 Namespace Write Protection（84h）與 Boot Partition Write Protection（85h），再區分 Set 要求與 Get 回報。</p>
+<p data-reasoning="maintenance-06-1"><span class="qr-step">推導 1</span>FID=85h 的 Set 值 0 是「不要求改變該 partition」，不是解鎖。兩個 0 的成功命令可能保持兩者原狀，不能拿它當作解除保護的證據。</p>
+<p data-reasoning="maintenance-06-2"><span class="qr-step">推導 2</span>目前 BP0WPS=2 表示 partition 0 為 Write Locked；BP1WPS=4 表示 partition 1 的保護由 RPMB 控制。4 是可回報的狀態，不能原樣當一般 Set 的要求值。</p>
+<p data-reasoning="maintenance-06-3"><span class="qr-step">推導 3</span>Get 不會以 0 表示這兩個 partition 的狀態，因此共用函式至少需要 FID 與方向。若還涉及 shared multi-domain partition，必須另查其特定限制，不能只套 namespace 的 WPS 表。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="maintenance.html#figure-b542">Base 2.4 Figure 542 · Boot Partition 保護：兩個 partition 的獨立欄位</a><a href="maintenance.html#figure-b541">Base 2.4 Figure 541 · Namespace Write Protection：目前保護狀態</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.30.1.39 · Figure 542 · Boot Partition Write Protection Config - Command Dword 11 · 文件頁 513–514 · PDF 539–540</li><li>Base 2.4 · §5.2.30.1.38 · Figure 541 · Write Protection – Command Dword 11 · 文件頁 512 · PDF 538</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
 <li><a href="#figure-b187">Base 2.4 Figure 187 · Firmware Commit：放進 slot 與啟用的差別</a></li>
 <li><a href="#figure-b191">Base 2.4 Figure 191 · Firmware Download：每個 chunk 的大小</a></li>
@@ -240,11 +336,6 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qr-tags">搜尋詞：FID 85h · BP0WPS · BP1WPS · RPMB · Boot Partition</p>
 <div class="qr-related">接著查：<a href="maintenance.html#figure-b541">Base 2.4 Figure 541 · Namespace Write Protection：目前保護狀態</a><a href="maintenance.html#figure-b187">Base 2.4 Figure 187 · Firmware Commit：放進 slot 與啟用的差別</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
-<section class="qr-note" id="worked-route"><h2>把幾張圖接成一次查詢</h2><p>Sanitize 命令成功，但驗證程式不確定是否可以宣告清除完成。</p>
-<p><span class="qr-step">R1</span>先確認命令是 subsystem 或 namespace Sanitize，保存其目標與 CDW10。兩者 PREQ 的 bit 位置不同。</p>
-<p><span class="qr-step">R2</span>命令成功只表示要求已被接受；接著查目標的 Sanitize Status，把 SOS、SPROG 和 sanitize state 一起讀。</p>
-<p><span class="qr-step">R3</span>例如 SPROG=FFFFh 但 SOS=3，結果仍是失敗。若有 Media Verification，要將該狀態與正常完成分開，不用單一百分比作結論。</p>
-<div class="qr-related"><a href="maintenance.html#figure-b451">Base 2.4 Figure 451 · Subsystem Sanitize：動作與完成模式</a><a href="maintenance.html#figure-b454">Base 2.4 Figure 454 · Namespace Sanitize：PREQ 的 bit 位置不同</a><a href="maintenance.html#figure-b312">Base 2.4 Figure 312 · Sanitize Status：進度、結果與目前狀態</a></div></section>
 <footer id="source-files"><h2>原始文件</h2><p>頁碼採本次提供的 ratified PDF；Base 的 PDF 頁＝文件頁＋26，另兩份相同。圖號與英文原名保留，可用 PDF 搜尋定位。公開網站不附原始 PDF。</p><ul class="qr-sources"><li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li><li>NVM Express NVM Command Set Specification · Revision 1.3 · 2026-07-31<br><code>NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf</code></li><li>NVM Express NVMe over PCIe Transport Specification · Revision 1.4 · 2026-07-31<br><code>NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf</code></li></ul></footer>
 </main></div>
 </body></html>

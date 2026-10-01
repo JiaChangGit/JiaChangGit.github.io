@@ -1,20 +1,118 @@
 ---
 layout: "post"
-title: "NVMe 圖表速查 06 · 健康、事件與診斷紀錄"
+title: "NVMe 圖表判讀與情境練習 06 · 健康、事件與診斷紀錄"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/logs/zh-tw/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "zh-Hant-TW"
-description: "NVMe 原圖用途、欄位與判讀速查，附完整 Spec 位置。"
+description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。"
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/logs/en/">English</a><a href="/DOCS/nvme-quick-reference/logs.html">繁中 HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表速查 06 · 健康、事件與診斷紀錄</h1><p class="qr-intro">先確認讀取參數與支援，再分清目前狀態、累計數與歷史快照。Telemetry 和持久事件的版本、長度與讀取生命週期，會決定資料能否正確串接。</p></header>
+<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 06 · 健康、事件與診斷紀錄</h1><p class="qr-intro">先確認讀取參數與支援，再分清目前狀態、累計數與歷史快照。Telemetry 和持久事件的版本、長度與讀取生命週期，會決定資料能否正確串接。</p></header>
 <aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
+<section id="exercises"><h2>先做情境練習</h2>
+<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
+<li><a href="#exercise-logs-01">SMART 顯示 120%，是不是已經不能用了？</a></li>
+<li><a href="#exercise-logs-02">Data Units Written 增加 4，實際寫了多少？</a></li>
+<li><a href="#exercise-logs-03">指定 NSID，就能得到該 namespace 的 SMART 嗎？</a></li>
+<li><a href="#exercise-logs-04">兩個 namespace 的警告其實來自同一個 group？</a></li>
+<li><a href="#exercise-logs-05">Self-test 沒有在跑，FLBA=0 就表示 LBA 0 壞了？</a></li>
+<li><a href="#exercise-logs-06">分段 Telemetry 可以把兩個 generation 拼在一起嗎？</a></li>
+<li><a href="#exercise-logs-07">Persistent Event Log 的下一筆應從哪裡開始？</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-logs-01" data-scenario="logs-01"><h3><span class="qr-number">練習 01</span>SMART 顯示 120%，是不是已經不能用了？</h3>
+<p class="qr-case-question">健康報告只顯示一個紅色「120%」。請把真正能從 SMART 得到的結論拆開。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>LID=02h：Percentage Used=120；Available Spare=9；Available Spare Threshold=10；Critical Warning 的 spare 位=1。</li>
+<li>Composite Temperature=300 K；本次沒有提供近期 I/O 成敗紀錄。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Get Log Page LID=02h 取得 SMART／Health；保留 warning bitmap 與各自的數值欄位，不合併成一個「健康分數」。</p>
+<p data-reasoning="logs-01-1"><span class="qr-step">推導 1</span>Percentage Used 是預估壽命耗用，容許超過 100；120 不等於已損壞 120%，也不能單獨證明裝置現在不能讀寫。</p>
+<p data-reasoning="logs-01-2"><span class="qr-step">推導 2</span>Available Spare=9 低於門檻 10，且對應 warning 已置位，這才是本例可直接說明的備援空間警告。300 K 約為 26.85°C，屬另一種量測，不應與百分比相加。</p>
+<p data-reasoning="logs-01-3"><span class="qr-step">推導 3</span>完整報告應分列壽命估計、目前警告及近期錯誤／I/O 行為。要判定能否繼續服務，還需要系統需求與實際行為資料；這份 log 不提供一個能替代全部判斷的總分。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b213">Base 2.4 Figure 213 · SMART：警告、累計量、溫度與時間</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · 文件頁 221–225 · PDF 247–251</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-logs-02" data-scenario="logs-02"><h3><span class="qr-number">練習 02</span>Data Units Written 增加 4，實際寫了多少？</h3>
+<p class="qr-case-question">監控程式將 SMART 的 Data Units Written 差值乘以 512，得到很小的寫入量。這少算了什麼？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>相同對象的兩次 DUW：1000 → 1004；計數有效，無重置或飽和；取樣相隔 60 seconds。</li>
+<li>Host Write Commands 同期增加 80；沒有完整命令大小清單。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>兩次 Get Log Page LID=02h；同時保存 NSID、取樣時間、DUW 與 Host Write Commands。</p>
+<p data-reasoning="logs-02-1"><span class="qr-step">推導 1</span>DUW 以 1000 個 512-byte units 為一個回報單位，並向上取整。差值 4 對應約 4×1000×512=2048000 bytes 的量級，不是 2048 bytes。</p>
+<p data-reasoning="logs-02-2"><span class="qr-step">推導 2</span>兩個端點都經過取整，因此這不是精確的 60 秒 payload byte 數。拿它除以 80，也只能得到粗略平均，不能反推每個 Write 都是同樣大小。</p>
+<p data-reasoning="logs-02-3"><span class="qr-step">推導 3</span>要驗證某筆命令的長度，回到命令 NLB 與使用中 LBA 格式；要看长期趨勢，才使用這種累計差值。也不要把 host 寫入量直接當作 NAND 實際寫入量。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b213">Base 2.4 Figure 213 · SMART：警告、累計量、溫度與時間</a><a href="/nvme/figure-reference/io/zh-tw/#figure-n54">NVM Command Set 1.3 Figure 54 · Read CDW12：範圍、重試與保護要求</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n125">NVM Command Set 1.3 Figure 125 · LBAF：資料大小、metadata 大小與相對效能</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · 文件頁 221–225 · PDF 247–251</li><li>NVM Command Set 1.3 · §3.3.4 · Figure 54 · Read – Command Dword 12 · 文件頁 49 · PDF 49</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · 文件頁 94 · PDF 94</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-logs-03" data-scenario="logs-03"><h3><span class="qr-number">練習 03</span>指定 NSID，就能得到該 namespace 的 SMART 嗎？</h3>
+<p class="qr-case-question">報表把同一張 SMART 複製到每個 namespace，並聲稱是各自的使用量。能力資料是否支持這樣標示？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>Identify Controller 的 LPA：per-namespace SMART／Health 支援位=0。</li>
+<li>目前讀取的是 NSID=FFFFFFFFh 的 LID=02h；controller 有 4 個 active namespaces。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 查 LPA；按 SMART 定義選擇 NSID；能力不提供的細分資訊不能靠改報表標籤補出來。</p>
+<p data-reasoning="logs-03-1"><span class="qr-step">推導 1</span>此份資料不是 4 份獨立的 per-namespace 統計。NSID=FFFFFFFFh 的回報應依該 log 的總體範圍標示，不能複製後再相加，否則同一份量會被重複算 4 次。</p>
+<p data-reasoning="logs-03-2"><span class="qr-step">推導 2</span>想改用特定 NSID，先要有 per-namespace SMART 支援，並遵守該 log 的 namespace 規則。不能因 Get Log Page 有 NSID 欄位，就假設每個 LID 都提供任意層級的統計。</p>
+<p data-reasoning="logs-03-3"><span class="qr-step">推導 3</span>若需要區分 Endurance Group，可再查 namespace 的 ENDGID 與 LID=09h；那仍是 group 統計，不是自動變成單一 namespace 或檔案系統統計。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b213">Base 2.4 Figure 213 · SMART：警告、累計量、溫度與時間</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b225">Base 2.4 Figure 225 · Endurance Group：逐組健康與容量</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 355–356 · PDF 381–382</li><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · 文件頁 221–225 · PDF 247–251</li><li>Base 2.4 · §5.2.13.1.10 · Figure 225 · Endurance Group Information Log Page · 文件頁 238–239 · PDF 264–265</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-logs-04" data-scenario="logs-04"><h3><span class="qr-number">練習 04</span>兩個 namespace 的警告其實來自同一個 group？</h3>
+<p class="qr-case-question">管理系統對 NSID=2、NSID=9 各發出一次耐久度警告。要怎麼判斷是否重複通報同一個對象？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>兩個 namespace 的 Identify 資料均為 ENDGID=3；LID=09h、LSI=3 的 Critical Warning 非零。</li>
+<li>沒有 group 4 的查詢結果，也沒有證據顯示 namespace 配置在期間變更。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h、各自 NSID → ENDGID → Get Log Page LID=09h、LSI=ENDGID。</p>
+<p data-reasoning="logs-04-1"><span class="qr-step">推導 1</span>兩個 namespace 都指向 group 3，因此同一份 group log 可以影響兩個 namespace 的風險呈現；但警告來源只有一個 group。報表應保留 namespace 與 group 的對應，不把它算成兩個獨立 group 故障。</p>
+<p data-reasoning="logs-04-2"><span class="qr-step">推導 2</span>LSI 在這個 LID 用來選 Endurance Group，不是 NSID，也不是傳輸長度的高位。把 NSID=9 填成 LSI=9，會查另一個對象，無法回答 group 3 的問題。</p>
+<p data-reasoning="logs-04-3"><span class="qr-step">推導 3</span>group 3 的警告也不能延伸成所有 group 都有警告。若要比較 group 4，必須先確認其存在並取得同時段、相同欄位的資料。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b225">Base 2.4 Figure 225 · Endurance Group：逐組健康與容量</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b205">Base 2.4 Figure 205 · Get Log CDW11：長度高位與目標識別</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.10 · Figure 225 · Endurance Group Information Log Page · 文件頁 238–239 · PDF 264–265</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · 文件頁 214 · PDF 240</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 90–93 · PDF 90–93</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-logs-05" data-scenario="logs-05"><h3><span class="qr-number">練習 05</span>Self-test 沒有在跑，FLBA=0 就表示 LBA 0 壞了？</h3>
+<p class="qr-case-question">工具同時顯示「測試卡在 45%」及「LBA 0 故障」。請用欄位有效性找出兩個誤判。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>LID=06h：目前 DSTOS=0，完成百分比 bytes 留著 45。最新結果 DSTR=2。</li>
+<li>最新結果的 VDINFO.FVLD=0，而 FLBA 原始 bytes 全為 0。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Get Log Page LID=06h；先讀目前 operation，再讀最新 Result 的 DSTR 與 VDINFO，最後才使用診斷欄位。</p>
+<p data-reasoning="logs-05-1"><span class="qr-step">推導 1</span>DSTOS=0 表示沒有正在執行的 self-test，進度欄應忽略。它不是一個仍有效但停住的 45% 進度，不能拿來計算「已經卡住多久」。</p>
+<p data-reasoning="logs-05-2"><span class="qr-step">推導 2</span>DSTR=2 表示操作因 Controller Level Reset 中止，與測試發現媒體失敗不同。應報告中止原因，而不是將所有非零結果統稱為測試失敗。</p>
+<p data-reasoning="logs-05-3"><span class="qr-step">推導 3</span>FVLD=0 使 FLBA 無效；零只是無效欄位中的原始值，不是有效的故障 LBA 0。對 NSID、SCT、SC 也要依各自有效位判斷，不能從填充 bytes 編造診斷。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/maintenance/zh-tw/#figure-b218">Base 2.4 Figure 218 · Self-test Log：目前進度與最近 20 筆結果</a><a href="/nvme/figure-reference/maintenance/zh-tw/#figure-b219">Base 2.4 Figure 219 · Self-test Result：先看有效位再讀失敗位置</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.7 · Figure 218 · Device Self-test Log Page · 文件頁 230 · PDF 256</li><li>Base 2.4 · §5.2.13.1.7 · Figure 219 · Self-test Result Data Structure · 文件頁 231–232 · PDF 257–258</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-logs-06" data-scenario="logs-06"><h3><span class="qr-number">練習 06</span>分段 Telemetry 可以把兩個 generation 拼在一起嗎？</h3>
+<p class="qr-case-question">你要保存一次 controller-initiated telemetry，讀完後才發現前後 header 不同。這份合併檔還能當同一次快照嗎？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>LID=08h 首次 header：TCDGN=10、TCDA=1、DA1LB=3；最後重讀：TCDGN=11、TCDA=1。</li>
+<li>兩次 header 之間分段讀取資料；無完整紀錄證明各 chunk 屬於哪一代。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Get Log Page LID=08h，保留 RAE、header 與每次 offset；對照 TCDGN、TCDA 及 Data Area 邊界。</p>
+<p data-reasoning="logs-06-1"><span class="qr-step">推導 1</span>generation 改變表示不能直接把這些 chunks 宣稱為同一份 capture。應標示一致性未確認，重新按該 log 的擷取與確認流程取得一份可追蹤的資料，而非只保留最後的 header。</p>
+<p data-reasoning="logs-06-2"><span class="qr-step">推導 2</span>DA1LB=3 表示 Data Area 1 到 block 3；block 0 是 512-byte header，因此 header 加 Area 1 的範圍是 4×512=2048 bytes。這個長度資訊不會消除 generation 不一致。</p>
+<p data-reasoning="logs-06-3"><span class="qr-step">推導 3</span>TCDA 是更新確認相關狀態，不是 payload 格式解碼器。即使完整取到同一代資料，內部內容仍可能由廠商定義；不能從共同 header 推測每個 vendor byte 的意義。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b223">Base 2.4 Figure 223 · Controller Telemetry：更新通知與 generation</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b204">Base 2.4 Figure 204 · Get Log CDW10：讀哪份、讀多少、是否確認事件</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b208">Base 2.4 Figure 208 · Get Log offset：byte 位置或清單 index</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.9 · Figure 223 · Telemetry Controller-Initiated Log Page · 文件頁 236–237 · PDF 262–263</li><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · 文件頁 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · 文件頁 214–215 · PDF 240–241</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-logs-07" data-scenario="logs-07"><h3><span class="qr-number">練習 07</span>Persistent Event Log 的下一筆應從哪裡開始？</h3>
+<p class="qr-case-question">解析器讀完第一筆就錯位，而且重新建立 context 後遇到 Command Sequence Error。請分別檢查生命週期與長度計算。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>ACT=3 成功回傳 header，RCE=0；未釋放 context。第一筆 offset=512、EHL=21、EL=28、VSIL=8。</li>
+<li>header 的總長度足以容納此筆；ET／ETR 已確認為支援的格式。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Get Log Page LID=0Dh，以 ACT 管理 context；讀 header 後使用 ACT=0 讀取同一份 report，按 event header 走訪。</p>
+<p data-reasoning="logs-07-1"><span class="qr-step">推導 1</span>ACT=3 的 RCE=0 表示命令處理前沒有 reporting context，不表示成功後仍沒有。此時再送 ACT=1 去建立，會與已存在的 context 衝突；後續讀取應沿用它。</p>
+<p data-reasoning="logs-07-2"><span class="qr-step">推導 2</span>共同 header 長度為 EHL+3=24 bytes；EL=28 已包括 VSIL=8。Event Data 為 28−8=20 bytes，下一筆起點為 512+24+28=564，不能再加一次 VSIL。</p>
+<p data-reasoning="logs-07-3"><span class="qr-step">推導 3</span>每筆仍要檢查長度是否超出 TLL、ET／ETR 是否可解，再繼續讀。完成後按規則釋放 context；讀完整個報告並不代表其中一定保存了系統歷史上每件事。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/logs/zh-tw/#figure-b232">Base 2.4 Figure 232 · Persistent Event Log：建立、讀取與釋放 context</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b233">Base 2.4 Figure 233 · Persistent Event header：總長、筆數與讀取版本</a><a href="/nvme/figure-reference/logs/zh-tw/#figure-b234">Base 2.4 Figure 234 · Persistent Event：下一筆從哪裡開始</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.14 · Figure 232 · Persistent Event Log Specific Parameter Field · 文件頁 246 · PDF 272</li><li>Base 2.4 · §5.2.13.1.14 · Figure 233 · Persistent Event Log Page · 文件頁 247–249 · PDF 273–275</li><li>Base 2.4 · §5.2.13.1.14 · Figure 234 · Persistent Event Format · 文件頁 249–250 · PDF 275–276</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
 <li><a href="#figure-b204">Base 2.4 Figure 204 · Get Log CDW10：讀哪份、讀多少、是否確認事件</a></li>
 <li><a href="#figure-b205">Base 2.4 Figure 205 · Get Log CDW11：長度高位與目標識別</a></li>

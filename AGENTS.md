@@ -1,5 +1,11 @@
 # AGENTS.md — Jia’s Blog 專案規則
 
+## 2026-09-30 情境練習整合
+
+使用者要求直接修改既有八篇圖表速查（七冊＋總索引），不另建重複系列。三份來源與 Fabrics-only 排除不變。題目先顯示需求與教學假設的回傳資料，完整查詢路徑及逐步推導以 details 收合；只用 Spec 命令與欄位，不加入 nvme-cli／lspci 指令或存取實體裝置。三版本維持既有 URL，每題只有一個固定位置，解答連回既有圖表，取代原先七段簡短的串接案例。此明確授權優先於舊教材不設模擬／除錯單元的限制。
+
+來源為 `scripts/nvme_scenarios*.py`，呈現由 `nvme_scenario_render.py` 整合進既有 generator。每題說明查詢介面、目標、假設值、推導與證據限制，區分支援／設定／結果及原子性／持久性／順序。Base 2.4 §5.2.27 的 Sanitize Namespace 只允許 Crypto Erase，SANICAP.OWS 不會讓 namespace Overwrite 變成合法操作。新增來源頁由 `.ai/nvme-quickref/scenario-evidence.json` 追蹤，與原始 PDF 雜湊一併驗證。
+
 ## 2026-09-29 圖表速查系列
 
 使用者另行核准三份來源規格的重點圖表速查，僅排除 Fabrics 及其專用內容，不繼承舊專篇的章節／FID／LID／CNS 排除清單。此系列分為 7 個主題，各有繁中 HTML 與內容對等的中英文 Pages，另有三版總索引；與下列 22 篇既有教學報告分開管理。用途是反覆查詢、除錯與驗證，因此允許按問題與欄位編排查詢入口；不套用舊教材「不設症狀索引」的限制。

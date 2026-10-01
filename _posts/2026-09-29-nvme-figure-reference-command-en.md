@@ -1,20 +1,105 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 02 · Commands, Data Pointers, and Completion Status"
+title: "NVMe Figures and Scenarios 02 · Commands, Data Pointers, and Completion Status"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/command/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/command/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/command.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 02 · Commands, Data Pointers, and Completion Status</h1><p class="qr-intro">Match the command using SQID/CID before decoding SCT/SC. For data-transfer problems, distinguish PRP pages from SGL addresses, lengths and descriptor types.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 02 · Commands, Data Pointers, and Completion Status</h1><p class="qr-intro">Match the command using SQID/CID before decoding SCT/SC. For data-transfer problems, distinguish PRP pages from SGL addresses, lengths and descriptor types.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-command-01">Does the same CID twice imply duplicate completion?</a></li>
+<li><a href="#exercise-command-02">Which bit does Invalid Field identify?</a></li>
+<li><a href="#exercise-command-03">Is PRP2 a data page or a list address?</a></li>
+<li><a href="#exercise-command-04">Can correct SGL addresses still describe too little data?</a></li>
+<li><a href="#exercise-command-05">Which NUMD retrieves 3 KiB from offset 1024?</a></li>
+<li><a href="#exercise-command-06">Does an effects flag prove that a namespace was just created?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-command-01" data-scenario="command-01"><h3><span class="qr-number">EXERCISE 01</span>Does the same CID twice imply duplicate completion?</h3>
+<p class="qr-case-question">A debugger matches commands only by CID and reports two entries with CID=12h as duplicate completions. What is the correct matching order?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Two new CQEs have SQID=2 and SQID=5, both CID=12h; each SQ has one matching outstanding command.</li>
+<li>Another CQ slot has a phase different from the host’s expected phase for this traversal; memory synchronization requirements are satisfied.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Check expected phase → read SQID/CID only from new CQEs → recover the SQE → decode SCT/SC.</p>
+<p data-reasoning="command-01-1"><span class="qr-step">Step 1</span>CID uniqueness applies to outstanding commands within an SQ, not a controller-wide permanent sequence. Thus (SQID=2, CID=12h) and (SQID=5, CID=12h) can identify different commands.</p>
+<p data-reasoning="command-01-2"><span class="qr-step">Step 2</span>A slot with the wrong phase is not a new completion in this traversal. Scanning CID before phase can mistake previous contents for a duplicate, and the host must update expected phase on CQ wrap.</p>
+<p data-reasoning="command-01-3"><span class="qr-step">Step 3</span>Even matching SQID/CID requires lifecycle and timing context across queue recreation or later CID reuse. Preserve complete SQEs/CQEs and queue identity for reliable correlation.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/command/en/#figure-b92">Base 2.4 Figure 92 · Command Dword 0</a><a href="/nvme/figure-reference/command/en/#figure-b97">Base 2.4 Figure 97 · Common Completion Queue Entry Layout – Admin and All I/O Command Sets</a><a href="/nvme/figure-reference/command/en/#figure-b98">Base 2.4 Figure 98 · Completion Queue Entry: DW 2</a><a href="/nvme/figure-reference/command/en/#figure-b99">Base 2.4 Figure 99 · Completion Queue Entry: DW 3</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §4.1.1 · Figure 92 · Command Dword 0 · Printed pages 139–140 · PDF 165–166</li><li>Base 2.4 · §4.2.1 · Figure 97 · Common Completion Queue Entry Layout – Admin and All I/O Command Sets · Printed pages 144 · PDF 170</li><li>Base 2.4 · §4.2.1 · Figure 98 · Completion Queue Entry: DW 2 · Printed pages 144 · PDF 170</li><li>Base 2.4 · §4.2.1 · Figure 99 · Completion Queue Entry: DW 3 · Printed pages 145 · PDF 171</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-command-02" data-scenario="command-02"><h3><span class="qr-number">EXERCISE 02</span>Which bit does Invalid Field identify?</h3>
+<p class="qr-case-question">CQE reports Invalid Field in Command. How do you map the Error Information location into a 64-byte SQE?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>SQID/CID identify the same command; Error Information has nonzero ECNT and a valid location, BYTLOC=52, BITLOC=6.</li>
+<li>The original SQE, opcode, CSI and full completion status are retained.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Use CQE SCT/SC to identify the error class → Get Log Page LID=01h for the matching entry → map its byte offset into that command’s format.</p>
+<p data-reasoning="command-02-1"><span class="qr-step">Step 1</span>Each Dword has four bytes, so byte 52 is the first byte of CDW13; BITLOC=6 identifies CDW13 bit six. BYTLOC is neither a Dword index nor byte 52 of the data buffer.</p>
+<p data-reasoning="command-02-2"><span class="qr-step">Step 2</span>Next use opcode and command set to interpret CDW13 and identify the containing field. The common SQE layout supplies a location, not the command-specific meaning of that location.</p>
+<p data-reasoning="command-02-3"><span class="qr-step">Step 3</span>A reported location identifies a parameter to inspect, not an instruction to flip that bit. It may contain a reserved value, unsupported choice or invalid combination; a correction requires the command’s conditions.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b212">Base 2.4 Figure 212 · Error Information Log Entry Data Structure</a><a href="/nvme/figure-reference/command/en/#figure-b93">Base 2.4 Figure 93 · Common Command Format</a><a href="/nvme/figure-reference/command/en/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a><a href="/nvme/figure-reference/command/en/#figure-b103">Base 2.4 Figure 103 · Status Code – Generic Command Status Values</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.2 · Figure 212 · Error Information Log Entry Data Structure · Printed pages 218–220 · PDF 244–246</li><li>Base 2.4 · §4.1.1 · Figure 93 · Common Command Format · Printed pages 140–142 · PDF 166–168</li><li>Base 2.4 · §4.2.3 · Figure 101 · Completion Queue Entry: Status Field · Printed pages 145–146 · PDF 171–172</li><li>Base 2.4 · §4.2.3.1 · Figure 103 · Status Code – Generic Command Status Values · Printed pages 147–150 · PDF 173–176</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-command-03" data-scenario="command-03"><h3><span class="qr-number">EXERCISE 03</span>Is PRP2 a data page or a list address?</h3>
+<p class="qr-case-question">Why can changing transfer length from 5120 to 6144 bytes change the interpretation of PRP2 at the same starting address?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Current memory page size is 4096 bytes; PRP1 has offset=3072 within its first page and meets alignment requirements.</li>
+<li>Data pages are noncontiguous; PRPs are used, with no metadata affecting these lengths.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Read CC.MPS for page size → calculate transfer bytes from command and format → calculate first-page space before interpreting PRP2.</p>
+<p data-reasoning="command-03-1"><span class="qr-step">Step 1</span>The first page has 4096−3072=1024 bytes remaining. A 5120-byte transfer leaves exactly 4096 bytes, so PRP2 directly identifies the one additional data page.</p>
+<p data-reasoning="command-03-2"><span class="qr-step">Step 2</span>A 6144-byte transfer leaves 5120 bytes requiring two additional data pages. PRP2 then points to a PRP list whose entries identify those pages, rather than directly pointing to the first subsequent data buffer.</p>
+<p data-reasoning="command-03-3"><span class="qr-step">Step 3</span>The deciding factor is pages spanned, not whether total length exceeds a fixed constant. Moving the same 6144-byte transfer to a page-aligned start spans only two pages and changes PRP2’s role.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/command/en/#figure-b111">Base 2.4 Figure 111 · PRP Entry – Page Base Address and Offset</a><a href="/nvme/figure-reference/command/en/#figure-b113">Base 2.4 Figure 113 · PRP List Layout for Physically Non-Contiguous Memory Pages</a><a href="/nvme/figure-reference/init/en/#figure-b41">Base 2.4 Figure 41 · Offset 14h: CC – Controller Configuration</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §4.3.1 · Figure 111 · PRP Entry – Page Base Address and Offset · Printed pages 158 · PDF 184</li><li>Base 2.4 · §4.3.1 · Figure 113 · PRP List Layout for Physically Non-Contiguous Memory Pages · Printed pages 159 · PDF 185</li><li>Base 2.4 · §4.3.1 · Printed pages 158–160 · PDF 184–186</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · Printed pages 60–63 · PDF 86–89</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-command-04" data-scenario="command-04"><h3><span class="qr-number">EXERCISE 04</span>Can correct SGL addresses still describe too little data?</h3>
+<p class="qr-case-question">Buffer addresses are accessible, but the command has a transfer-length problem. What can descriptor inspection establish before reading memory?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>The command requires 8192 data bytes; its complete SGL contains two valid Data Block descriptors with Length=4096 and 2048.</li>
+<li>There are no Bit Bucket, metadata or additional descriptors; support and SGL arrangement are valid.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Compute required bytes from command and LBA format → traverse the complete SGL by descriptor type → sum Data Block lengths.</p>
+<p data-reasoning="command-04-1"><span class="qr-step">Step 1</span>The descriptors total 6144 bytes, 2048 short of the required 8192. Address validity identifies where memory is; Length defines the described extent. One cannot substitute for the other.</p>
+<p data-reasoning="command-04-2"><span class="qr-step">Step 2</span>A Segment descriptor’s Length describes a segment of descriptors, not payload bytes to add to the data total. Distinguish data descriptors from list-segment descriptors before summing.</p>
+<p data-reasoning="command-04-3"><span class="qr-step">Step 3</span>The described payload is insufficient here. Retain actual SCT/SC and compare with SGL validation rules; identifying one length problem does not rule out concurrent format errors.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/command/en/#figure-b114">Base 2.4 Figure 114 · SGL Validation Error Conditions</a><a href="/nvme/figure-reference/command/en/#figure-b116">Base 2.4 Figure 116 · Generic SGL Descriptor Format</a><a href="/nvme/figure-reference/command/en/#figure-b119">Base 2.4 Figure 119 · SGL Data Block descriptor</a><a href="/nvme/figure-reference/command/en/#figure-b121">Base 2.4 Figure 121 · SGL Segment descriptor</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §4.3.2 · Figure 114 · SGL Validation Error Conditions · Printed pages 161 · PDF 187</li><li>Base 2.4 · §4.3.2 · Figure 116 · Generic SGL Descriptor Format · Printed pages 161 · PDF 187</li><li>Base 2.4 · §4.3.2 · Figure 119 · SGL Data Block descriptor · Printed pages 162–163 · PDF 188–189</li><li>Base 2.4 · §4.3.2 · Figure 121 · SGL Segment descriptor · Printed pages 163 · PDF 189</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-command-05" data-scenario="command-05"><h3><span class="qr-number">EXERCISE 05</span>Which NUMD retrieves 3 KiB from offset 1024?</h3>
+<p class="qr-case-question">A conventional byte-offset log supports this range. Encode length and starting position separately rather than putting a byte count in NUMD.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Required length is 3072 bytes, starting 1024 bytes from the log origin; OT=0, with no special length override.</li>
+<li>LID, NSID, CSI, LSP and LSI are correctly selected for the target log.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page uses NUMDU/NUMDL for length and LPO with OT for position; first check for log-specific exceptions.</p>
+<p data-reasoning="command-05-1"><span class="qr-step">Step 1</span>3072÷4=768 Dwords; subtracting one gives NUMD=767=02FFh, so NUMDU=0 and NUMDL=02FFh. Encoding 3072 directly requests a different Dword count, not 3072 bytes.</p>
+<p data-reasoning="command-05-2"><span class="qr-step">Step 2</span>With OT=0, LPO=1024 is a byte offset, yielding bytes 1024–4095. With OT=1 it is a structure index, usable only by supporting logs; the same number does not identify the same position.</p>
+<p data-reasoning="command-05-3"><span class="qr-step">Step 3</span>Also choose RAE deliberately because retrieval may acknowledge notifications. Persistent Event Log ACT=3 has a fixed-header rule, so this ordinary length calculation does not control its returned range.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b204">Base 2.4 Figure 204 · Get Log Page – Command Dword 10</a><a href="/nvme/figure-reference/logs/en/#figure-b205">Base 2.4 Figure 205 · Get Log Page – Command Dword 11</a><a href="/nvme/figure-reference/logs/en/#figure-b208">Base 2.4 Figure 208 · Get Log Page – Command Dword 14</a><a href="/nvme/figure-reference/logs/en/#figure-b232">Base 2.4 Figure 232 · Persistent Event Log Specific Parameter Field</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · Printed pages 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · Printed pages 214 · PDF 240</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · Printed pages 214–215 · PDF 240–241</li><li>Base 2.4 · §5.2.13.1.14 · Figure 232 · Persistent Event Log Specific Parameter Field · Printed pages 246 · PDF 272</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-command-06" data-scenario="command-06"><h3><span class="qr-number">EXERCISE 06</span>Does an effects flag prove that a namespace was just created?</h3>
+<p class="qr-case-question">After an operation, a tool increments its namespace count solely because NIC=1. Is that interpreting capability data or history?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Commands Supported and Effects reports CSUPP=1 and NIC=1 for the target Admin opcode.</li>
+<li>A command with that opcode completed, but its action, status and updated Identify lists were not retained.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page LID=05h for the correct Admin/I/O opcode table; then obtain the actual request/completion and refresh Identify where necessary.</p>
+<p data-reasoning="command-06-1"><span class="qr-step">Step 1</span>CSUPP reports support and NIC possible namespace-inventory change. Neither is an event timeline nor proof of success or a Create action in this execution.</p>
+<p data-reasoning="command-06-2"><span class="qr-step">Step 2</span>Use the action and completion status to decide when to refresh allocated/active inventories. Unconditionally adding one corrupts cached inventory for Delete, failed Create or non-changing operations.</p>
+<p data-reasoning="command-06-3"><span class="qr-step">Step 3</span>Interpret I/O opcodes in the correct command set. The same numeric opcode in another table need not name the same command; effects scope and coordination rules do not replace outcome evidence.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b217">Base 2.4 Figure 217 · Commands Supported and Effects Data Structure</a><a href="/nvme/figure-reference/identify/en/#figure-b336">Base 2.4 Figure 336 · Identify – CNS Values</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.6 · Figure 217 · Commands Supported and Effects Data Structure · Printed pages 228–229 · PDF 254–255</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · Printed pages 338–339 · PDF 364–365</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-b92">Base 2.4 Figure 92 · Command Dword 0</a></li>
 <li><a href="#figure-b93">Base 2.4 Figure 93 · Common Command Format</a></li>

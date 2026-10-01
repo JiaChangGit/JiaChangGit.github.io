@@ -1,20 +1,118 @@
 ---
 layout: "post"
-title: "NVMe Figure Reference 06 · Health, Events, and Diagnostic Logs"
+title: "NVMe Figures and Scenarios 06 · Health, Events, and Diagnostic Logs"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/logs/en/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "en"
-description: "NVMe source figures: uses, fields and interpretation with precise specification locations."
+description: "NVMe scenarios and source figures: lookup routes, field reasoning, worked answers and precise specification locations."
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="Editions and index"><a href="#content">Skip to content</a><a href="/nvme/figure-reference/en/">Index</a><a href="/nvme/figure-reference/logs/zh-tw/">繁體中文</a><a href="/DOCS/nvme-quick-reference/logs.html">Chinese HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figure Reference 06 · Health, Events, and Diagnostic Logs</h1><p class="qr-intro">Validate retrieval parameters and support, then distinguish current state, cumulative counters and historical snapshots. Telemetry and persistent-event versions, lengths and retrieval lifecycles determine whether records can be combined.</p></header>
+<header><p class="qr-eyebrow">LOOKUP · FIELD INTERPRETATION · SOURCE LOCATIONS</p><h1>NVMe Figures and Scenarios 06 · Health, Events, and Diagnostic Logs</h1><p class="qr-intro">Validate retrieval parameters and support, then distinguish current state, cumulative counters and historical snapshots. Telemetry and persistent-event versions, lengths and retrieval lifecycles determine whether records can be combined.</p></header>
 <aside class="qr-note"><p>Each source figure has a use, field guide and worked interpretation. Example numbers are illustrative, not assumed device settings. Apply the conditions belonging to the field and command.</p><p>Use browser Find for fields, FID, LID, CNS or Figure. Positions follow the source: a byte is 8 bits and a Dword is 4 bytes. An index counts entries; an offset measures displacement from an origin in the specified unit.</p><p>FID (Feature Identifier) selects a feature; LID (Log Page Identifier) selects a log page; CNS (Controller or Namespace Structure) selects the structure returned by Identify.</p></aside>
+<nav class="qr-top" aria-label="Volume entry points"><a href="#exercises">Start with scenarios</a><a href="#figure-index">Go to figures</a></nav>
+<section id="exercises"><h2>Try the scenarios first</h2>
+<p>All observations are hypothetical, not device measurements. Before opening an answer, identify the interface, target, fields and supported conclusion. These are specification exercises; no commands are executed.</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="Exercise index"><ol>
+<li><a href="#exercise-logs-01">Does 120% Percentage Used mean the drive has failed?</a></li>
+<li><a href="#exercise-logs-02">How much data does a four-unit DUW increase represent?</a></li>
+<li><a href="#exercise-logs-03">Does specifying an NSID guarantee per-namespace SMART?</a></li>
+<li><a href="#exercise-logs-04">Do two namespace alerts describe one shared group?</a></li>
+<li><a href="#exercise-logs-05">Does FLBA=0 identify a failed LBA when self-test is idle?</a></li>
+<li><a href="#exercise-logs-06">Can Telemetry chunks from different generations be combined?</a></li>
+<li><a href="#exercise-logs-07">Where does the next Persistent Event Log record begin?</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-logs-01" data-scenario="logs-01"><h3><span class="qr-number">EXERCISE 01</span>Does 120% Percentage Used mean the drive has failed?</h3>
+<p class="qr-case-question">A health report shows only a red “120%.” Separate the conclusions that SMART actually supports.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>LID=02h: Percentage Used=120; Available Spare=9; Available Spare Threshold=10; the spare critical-warning bit is one.</li>
+<li>Composite Temperature=300 K; no recent I/O success/failure trace is provided.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page LID=02h for SMART/Health; retain the warning bitmap and individual measurements instead of combining them into one health score.</p>
+<p data-reasoning="logs-01-1"><span class="qr-step">Step 1</span>Percentage Used estimates endurance consumption and may exceed 100. A value of 120 is not 120% damaged and does not alone establish inability to read or write.</p>
+<p data-reasoning="logs-01-2"><span class="qr-step">Step 2</span>Available Spare=9 is below threshold 10 with the corresponding warning asserted. That is a directly supported spare warning. Temperature 300 K is about 26.85°C, a different measurement that cannot be added to percentages.</p>
+<p data-reasoning="logs-01-3"><span class="qr-step">Step 3</span>Report endurance estimate, current warnings and recent error/I/O behavior separately. Continued service decisions also need system requirements and observed behavior; the log does not supply one universal decision score.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b213">Base 2.4 Figure 213 · SMART / Health Information Log Page</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · Printed pages 221–225 · PDF 247–251</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-logs-02" data-scenario="logs-02"><h3><span class="qr-number">EXERCISE 02</span>How much data does a four-unit DUW increase represent?</h3>
+<p class="qr-case-question">Monitoring multiplies a SMART Data Units Written delta by 512 and reports a tiny workload. What is missing?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>DUW for the same target changes from 1000 to 1004; counters are valid, without reset or saturation; samples are 60 seconds apart.</li>
+<li>Host Write Commands rises by 80; no complete list of command lengths is available.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Take two LID=02h samples, retaining NSID, timestamps, DUW and Host Write Commands.</p>
+<p data-reasoning="logs-02-1"><span class="qr-step">Step 1</span>DUW reports thousands of 512-byte units, rounded up. A delta of four corresponds to roughly 4×1000×512=2048000 bytes, not 2048 bytes.</p>
+<p data-reasoning="logs-02-2"><span class="qr-step">Step 2</span>Both endpoints are rounded, so this is not the exact payload byte count for those 60 seconds. Dividing by 80 yields only an approximate average, not proof that all Writes had the same size.</p>
+<p data-reasoning="logs-02-3"><span class="qr-step">Step 3</span>For one command’s length, use its NLB and active LBA format; cumulative deltas serve longer-term trends. Host-written data also must not be equated directly with physical NAND writes.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b213">Base 2.4 Figure 213 · SMART / Health Information Log Page</a><a href="/nvme/figure-reference/io/en/#figure-n54">NVM Command Set 1.3 Figure 54 · Read – Command Dword 12</a><a href="/nvme/figure-reference/identify/en/#figure-n125">NVM Command Set 1.3 Figure 125 · LBA Format Data Structure, NVM Command Set Specific</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · Printed pages 221–225 · PDF 247–251</li><li>NVM Command Set 1.3 · §3.3.4 · Figure 54 · Read – Command Dword 12 · Printed pages 49 · PDF 49</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · Printed pages 94 · PDF 94</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-logs-03" data-scenario="logs-03"><h3><span class="qr-number">EXERCISE 03</span>Does specifying an NSID guarantee per-namespace SMART?</h3>
+<p class="qr-case-question">A report copies one SMART page to every namespace and labels each as individual usage. Does capability data support that?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Identify Controller LPA reports no per-namespace SMART/Health support.</li>
+<li>The current LID=02h sample uses NSID=FFFFFFFFh; the controller has four active namespaces.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=01h for LPA; select NSID according to SMART rules. A report label cannot create a granularity the capability does not provide.</p>
+<p data-reasoning="logs-03-1"><span class="qr-step">Step 1</span>This is not four independent per-namespace measurements. Label the FFFFFFFFh report by its aggregate scope; copying and summing it would count the same measurement four times.</p>
+<p data-reasoning="logs-03-2"><span class="qr-step">Step 2</span>A specific-NSID request requires per-namespace SMART support and the log’s namespace rules. The existence of an NSID field in Get Log Page does not grant every LID arbitrary reporting granularity.</p>
+<p data-reasoning="logs-03-3"><span class="qr-step">Step 3</span>For Endurance Group granularity, inspect namespace ENDGID and LID=09h. Those remain group statistics, not automatically individual namespace or filesystem measurements.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a><a href="/nvme/figure-reference/logs/en/#figure-b213">Base 2.4 Figure 213 · SMART / Health Information Log Page</a><a href="/nvme/figure-reference/logs/en/#figure-b225">Base 2.4 Figure 225 · Endurance Group Information Log Page</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · Printed pages 355–356 · PDF 381–382</li><li>Base 2.4 · §5.2.13.1.3 · Figure 213 · SMART / Health Information Log Page · Printed pages 221–225 · PDF 247–251</li><li>Base 2.4 · §5.2.13.1.10 · Figure 225 · Endurance Group Information Log Page · Printed pages 238–239 · PDF 264–265</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-logs-04" data-scenario="logs-04"><h3><span class="qr-number">EXERCISE 04</span>Do two namespace alerts describe one shared group?</h3>
+<p class="qr-case-question">Management issues endurance alerts for NSID=2 and NSID=9. How can you determine whether they duplicate one group-level condition?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Both namespaces identify ENDGID=3; LID=09h with LSI=3 has a nonzero Critical Warning.</li>
+<li>No result is available for group 4, and no inventory change is observed during the interval.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Identify CNS=00h for each NSID → ENDGID → Get Log Page LID=09h with LSI=ENDGID.</p>
+<p data-reasoning="logs-04-1"><span class="qr-step">Step 1</span>Both namespaces map to group 3. One group condition can affect how both namespaces are presented, but it remains one group-level source. Retain the mapping rather than counting two independent group failures.</p>
+<p data-reasoning="logs-04-2"><span class="qr-step">Step 2</span>For this LID, LSI selects the Endurance Group, not an NSID or high transfer-length bits. Substituting NSID=9 into LSI would select another target rather than answer the group-3 question.</p>
+<p data-reasoning="logs-04-3"><span class="qr-step">Step 3</span>A warning in group 3 does not establish a warning in every group. To compare group 4, verify its existence and obtain corresponding measurements from the same interval.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b225">Base 2.4 Figure 225 · Endurance Group Information Log Page</a><a href="/nvme/figure-reference/logs/en/#figure-b205">Base 2.4 Figure 205 · Get Log Page – Command Dword 11</a><a href="/nvme/figure-reference/identify/en/#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.10 · Figure 225 · Endurance Group Information Log Page · Printed pages 238–239 · PDF 264–265</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · Printed pages 214 · PDF 240</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · Printed pages 90–93 · PDF 90–93</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-logs-05" data-scenario="logs-05"><h3><span class="qr-number">EXERCISE 05</span>Does FLBA=0 identify a failed LBA when self-test is idle?</h3>
+<p class="qr-case-question">A tool reports both “test stuck at 45%” and “LBA 0 failed.” Find the two validity errors.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>LID=06h: current DSTOS=0, with percentage bytes containing 45; newest result DSTR=2.</li>
+<li>The latest result has VDINFO.FVLD=0 and all-zero raw FLBA bytes.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page LID=06h; read current operation, then newest-result DSTR and VDINFO, and only then interpret diagnostic fields.</p>
+<p data-reasoning="logs-05-1"><span class="qr-step">Step 1</span>DSTOS=0 means no self-test is in progress, so ignore the percentage field. It is not a valid stalled 45% progress measurement from which to calculate a stall duration.</p>
+<p data-reasoning="logs-05-2"><span class="qr-step">Step 2</span>DSTR=2 identifies termination by Controller Level Reset, distinct from a test detecting media failure. Report the termination reason rather than collapsing every nonzero result into a detected media defect.</p>
+<p data-reasoning="logs-05-3"><span class="qr-step">Step 3</span>FVLD=0 makes FLBA invalid. Zero is merely raw content in an invalid field, not evidence of failed LBA zero. Apply the respective validity bits to NSID, SCT and SC as well.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/maintenance/en/#figure-b218">Base 2.4 Figure 218 · Device Self-test Log Page</a><a href="/nvme/figure-reference/maintenance/en/#figure-b219">Base 2.4 Figure 219 · Self-test Result Data Structure</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.7 · Figure 218 · Device Self-test Log Page · Printed pages 230 · PDF 256</li><li>Base 2.4 · §5.2.13.1.7 · Figure 219 · Self-test Result Data Structure · Printed pages 231–232 · PDF 257–258</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-logs-06" data-scenario="logs-06"><h3><span class="qr-number">EXERCISE 06</span>Can Telemetry chunks from different generations be combined?</h3>
+<p class="qr-case-question">You collect controller-initiated Telemetry in chunks and then notice different headers. Is the combined file one coherent capture?</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>Initial LID=08h header: TCDGN=10, TCDA=1, DA1LB=3; final reread: TCDGN=11, TCDA=1.</li>
+<li>Data is read in chunks between the headers; there is no complete record assigning each chunk to a generation.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page LID=08h, retaining RAE, headers and each offset; compare TCDGN, TCDA and Data Area boundaries.</p>
+<p data-reasoning="logs-06-1"><span class="qr-step">Step 1</span>The generation change prevents claiming these chunks as one coherent capture. Mark consistency as unverified and reacquire through the log’s capture/acknowledgment process rather than merely replacing the file header.</p>
+<p data-reasoning="logs-06-2"><span class="qr-step">Step 2</span>DA1LB=3 places the Area 1 endpoint at block three; block zero is the 512-byte header. Header plus Area 1 therefore spans 4×512=2048 bytes. Correct length does not resolve generation inconsistency.</p>
+<p data-reasoning="logs-06-3"><span class="qr-step">Step 3</span>TCDA concerns update acknowledgment, not payload decoding. Even a coherent capture can contain vendor-defined internals; a common header does not define every vendor byte.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b223">Base 2.4 Figure 223 · Telemetry Controller-Initiated Log Page</a><a href="/nvme/figure-reference/logs/en/#figure-b204">Base 2.4 Figure 204 · Get Log Page – Command Dword 10</a><a href="/nvme/figure-reference/logs/en/#figure-b208">Base 2.4 Figure 208 · Get Log Page – Command Dword 14</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.9 · Figure 223 · Telemetry Controller-Initiated Log Page · Printed pages 236–237 · PDF 262–263</li><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · Printed pages 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · Printed pages 214–215 · PDF 240–241</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+<article class="qr-card qr-case" id="exercise-logs-07" data-scenario="logs-07"><h3><span class="qr-number">EXERCISE 07</span>Where does the next Persistent Event Log record begin?</h3>
+<p class="qr-case-question">A parser loses alignment after its first record and gets Command Sequence Error when establishing context again. Inspect lifecycle and length separately.</p><div class="qr-observations"><h4>Hypothetical observations and assumptions</h4><ul>
+<li>ACT=3 succeeds with header RCE=0; the context has not been released. First record: offset=512, EHL=21, EL=28, VSIL=8.</li>
+<li>The header’s total length accommodates this record; ET/ETR identify a supported format.</li>
+</ul></div><details class="qr-answer"><summary>Show answer: lookup route and reasoning</summary>
+<p class="qr-route"><strong>Lookup sequence: </strong>Get Log Page LID=0Dh with ACT-controlled context; after the header, use ACT=0 on the same report and traverse event headers.</p>
+<p data-reasoning="logs-07-1"><span class="qr-step">Step 1</span>For ACT=3, RCE=0 means no reporting context existed before processing, not that none exists after success. A subsequent ACT=1 establishment conflicts with that context; subsequent reads should use it.</p>
+<p data-reasoning="logs-07-2"><span class="qr-step">Step 2</span>The common header is EHL+3=24 bytes. EL=28 already includes VSIL=8, leaving 20 bytes of Event Data. The next record begins at 512+24+28=564; do not add VSIL again.</p>
+<p data-reasoning="logs-07-3"><span class="qr-step">Step 3</span>For each record, check bounds against TLL and whether ET/ETR can be decoded before continuing. Release the context when finished. A complete report does not imply that every event in system history was retained.</p>
+<div class="qr-related">Revisit the field explanations: <a href="/nvme/figure-reference/logs/en/#figure-b232">Base 2.4 Figure 232 · Persistent Event Log Specific Parameter Field</a><a href="/nvme/figure-reference/logs/en/#figure-b233">Base 2.4 Figure 233 · Persistent Event Log Page</a><a href="/nvme/figure-reference/logs/en/#figure-b234">Base 2.4 Figure 234 · Persistent Event Format</a></div>
+<h4>Source locations for this exercise</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.14 · Figure 232 · Persistent Event Log Specific Parameter Field · Printed pages 246 · PDF 272</li><li>Base 2.4 · §5.2.13.1.14 · Figure 233 · Persistent Event Log Page · Printed pages 247–249 · PDF 273–275</li><li>Base 2.4 · §5.2.13.1.14 · Figure 234 · Persistent Event Format · Printed pages 249–250 · PDF 275–276</li></ul></details>
+<a href="#exercise-toc">Back to exercise index</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="Volume figure index"><h2>Figures in this volume</h2><ol>
 <li><a href="#figure-b204">Base 2.4 Figure 204 · Get Log Page – Command Dword 10</a></li>
 <li><a href="#figure-b205">Base 2.4 Figure 205 · Get Log Page – Command Dword 11</a></li>

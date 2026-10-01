@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>NVMe 圖表速查 03 · Identify、Namespace 與資料格式</title><style>
+<html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>NVMe 圖表判讀與情境練習 03 · Identify、Namespace 與資料格式</title><style>
 /* Independently scoped quick-reference layout. All text follows explicit theme colors. */
 .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; color:var(--qr-ink); background:var(--qr-paper); font:17px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; -webkit-text-size-adjust:100%; padding:clamp(16px,3vw,36px); border-radius:12px; }
 .nvme-quickref * { box-sizing:border-box; }
@@ -45,6 +45,17 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-quickref .qr-catalog td:last-child { width:40%; }
 .nvme-quickref .qr-sources { font-size:14px; overflow-wrap:anywhere; }
 .nvme-quickref .qr-sources li { padding:10px 0; }
+.nvme-quickref .qr-case h3 { margin:0 0 18px; font-size:22px; }
+.nvme-quickref h4 { color:var(--qr-ink); font-size:16px; margin:18px 0 10px; }
+.nvme-quickref .qr-observations { background:var(--qr-soft); padding:1px 18px 12px; border-left:4px solid var(--qr-accent); margin:20px 0; }
+.nvme-quickref .qr-observations li { margin:8px 0; overflow-wrap:anywhere; }
+.nvme-quickref .qr-answer { border-top:1px solid var(--qr-line); margin:20px 0 6px; }
+.nvme-quickref .qr-answer summary { cursor:pointer; min-height:48px; padding:14px 0; font-weight:650; color:var(--qr-accent); }
+.nvme-quickref .qr-answer[open] summary { margin-bottom:18px; }
+.nvme-quickref .qr-route { border-bottom:1px solid var(--qr-line); padding-bottom:18px; }
+.nvme-quickref .qr-case-sources { font-size:14px; padding-left:20px; line-height:1.8; }
+.nvme-quickref .qr-case-sources li { margin:10px 0; overflow-wrap:anywhere; }
+.nvme-quickref .qr-exercise-list { padding-left:24px; }
 .nvme-quickref .qr-series { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
 .nvme-quickref .qr-series article { padding:20px; background:var(--qr-surface); border:1px solid var(--qr-line); border-radius:8px; }
 .nvme-quickref .qr-series h2 { font-size:20px; margin:0; }
@@ -60,8 +71,106 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="index.html">總索引</a><a href="/nvme/figure-reference/identify/zh-tw/">GitHub Pages 中文</a><a href="/nvme/figure-reference/identify/en/">English</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表速查 03 · Identify、Namespace 與資料格式</h1><p class="qr-intro">CNS 決定回傳哪一種 Identify 結構；controller 能力、namespace 格式和選定格式的大小要分開查，再組合成可用設定。</p></header>
+<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 03 · Identify、Namespace 與資料格式</h1><p class="qr-intro">CNS 決定回傳哪一種 Identify 結構；controller 能力、namespace 格式和選定格式的大小要分開查，再組合成可用設定。</p></header>
 <aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
+<section id="exercises"><h2>先做情境練習</h2>
+<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<aside class="qr-note"><p>練習方法：先不要急著解每個 bit。把需求寫成一句能驗證的話，例如「這個 namespace 的這筆 Write，在什麼條件下具有哪種保證」。作答時分開記錄「已知」「推導結果」「仍缺的證據」。解答中的三段依序帶你走過判讀；不熟的欄位可由末尾連結回本冊原圖介紹。</p></aside>
+<nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
+<li><a href="#exercise-identify-01">最多還能建立幾個 namespace？</a></li>
+<li><a href="#exercise-identify-02">namespace 存在，為什麼這個 controller 看不到？</a></li>
+<li><a href="#exercise-identify-03">重開機後 NSID 改了，還是同一份資料嗎？</a></li>
+<li><a href="#exercise-identify-04">容量是位址範圍、可配置量，還是已使用量？</a></li>
+<li><a href="#exercise-identify-05">128 KiB 資料為什麼可能超過 MDTS？</a></li>
+<li><a href="#exercise-identify-06">Dataset Management 的限制是 0，代表不支援嗎？</a></li>
+<li><a href="#exercise-identify-07">有 LID 編號，就一定能讀那張 log 嗎？</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-identify-01" data-scenario="identify-01"><h3><span class="qr-number">練習 01</span>最多還能建立幾個 namespace？</h3>
+<p class="qr-case-question">管理程式把 NN 當成可建立的 namespace 數量。你要怎麼修正它，並回答「現在還能建立幾個」？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>OACS.NMS=1；NN=1000；MNAN=16；MAXCNA=8。</li>
+<li>完整 Allocated Namespace ID list 有 10 筆；此 controller 的 Active list 有 6 筆。剩餘容量與建立參數尚未查詢。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h → CNS=10h 完整已配置清單 → CNS=02h 此 controller 的活動清單；必要時再查容量與 Namespace Management 參數。</p>
+<p data-reasoning="identify-01-1"><span class="qr-step">推導 1</span>NN 是有效 NSID 的最大值；MNAN 才是此例的 subsystem namespace 數量上限。NSID 可以不連續，所以最大編號 1000 不代表存在 1000 個 namespace。MAXCNA=8 則限制此 I/O controller 可附接的數量，不能拿來取代 MNAN。</p>
+<p data-reasoning="identify-01-2"><span class="qr-step">推導 2</span>只看數量，上限還有 16−10=6 個名額；此 controller 的附接名額還有 8−6=2 個。建立與附接是不同步驟，建立第 3 個新 namespace 不等於也能把它附接到這個 controller。</p>
+<p data-reasoning="identify-01-3"><span class="qr-step">推導 3</span>這不是保證能成功建立 6 個：每個 namespace 所需容量、格式、資源及同時發生的管理操作仍會影響結果。若 MNAN=0，NN 仍是可配置 namespace 數量的上限依據；例如 NN=1000 不能解成可建立無限個 namespace。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="identify.html#figure-b336">Base 2.4 Figure 336 · CNS 總表：查結構及有效參數</a><a href="maintenance.html#figure-b446">Base 2.4 Figure 446 · Namespace Management：Create、Delete 或 Restore</a><a href="maintenance.html#figure-n134">NVM Command Set 1.3 Figure 134 · Create Namespace buffer：哪些欄位由主機填</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 353, 370, 378 · PDF 379, 396, 404</li><li>Base 2.4 · §3.2.1 · 文件頁 78–80 · PDF 104–106</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · 文件頁 338–339 · PDF 364–365</li><li>Base 2.4 · §5.2.25 · Figure 446 · Namespace Management – Command Dword 10 · 文件頁 446–447 · PDF 472–473</li><li>NVM Command Set 1.3 · §4.1.6 · Figure 134 · Namespace Management – Host Specified Fields · 文件頁 112–113 · PDF 112–113</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-identify-02" data-scenario="identify-02"><h3><span class="qr-number">練習 02</span>namespace 存在，為什麼這個 controller 看不到？</h3>
+<p class="qr-case-question">盤點程式在 subsystem 找到 NSID=27，卻沒有對應的可存取 namespace。這足以判定資料遺失嗎？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>NN=100；CNS=10h 回傳 [2, 9, 27]；CNS=02h 回傳 [2, 9]；兩張清單均已讀完。</li>
+<li>裝置支援 Namespace Management；查詢期間沒有變更 namespace 配置。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 確認範圍與能力；分別讀 CNS=10h、02h；若需確認附接對象，使用 CNS=12h、NSID=27。</p>
+<p data-reasoning="identify-02-1"><span class="qr-step">推導 1</span>27 在有效範圍，而且出現在 Allocated list，表示該 namespace 已存在。它不在此 controller 的 Active list，只能得出它未附接到此 controller；不能說它不存在，更不能說媒體上的資料已遺失。</p>
+<p data-reasoning="identify-02-2"><span class="qr-step">推導 2</span>CNS=12h 回答該 namespace 附接到哪些 controller。這可區分「附接在別處」與「已建立但尚未附接」；是否應改配置是後續決策，不是盤點查詢本身的結論。</p>
+<p data-reasoning="identify-02-3"><span class="qr-step">推導 3</span>大量 namespace 時，每次清單最多容納 1024 個 NSID。下一次以最後一個非零 NSID 作為起點，取得大於該值的項目；不能只讀第一頁就把後面的 namespace 判成不存在。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-b336">Base 2.4 Figure 336 · CNS 總表：查結構及有效參數</a><a href="maintenance.html#figure-b443">Base 2.4 Figure 443 · Namespace Attachment：建立後還要附加到 controller</a><a href="identify.html#figure-b346">Base 2.4 Figure 346 · Namespace 共通狀態：可用、受保護與儲存歸屬</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.2.1 · 文件頁 78–80 · PDF 104–106</li><li>Base 2.4 · §5.2.14 · Figure 336 · Identify – CNS Values · 文件頁 338 · PDF 364</li><li>Base 2.4 · §5.2.14.2.2 · 文件頁 387 · PDF 413</li><li>Base 2.4 · §5.2.14.2.9 · 文件頁 395 · PDF 421</li><li>Base 2.4 · §5.2.14.2.11 · 文件頁 395 · PDF 421</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-identify-03" data-scenario="identify-03"><h3><span class="qr-number">練習 03</span>重開機後 NSID 改了，還是同一份資料嗎？</h3>
+<p class="qr-case-question">開機前的 NSID=3，開機後變成 NSID=9。你會比容量、NSID，還是另一種識別資訊？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>前後 CNS=03h 的非零 Namespace UUID 相同；兩次都來自同一個已確認的 subsystem。</li>
+<li>容量相同，但尚未讀取使用者資料。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=03h，分別指定當時 NSID；依 NIDT、NIDL 解析識別描述子，保留識別值。</p>
+<p data-reasoning="identify-03-1"><span class="qr-step">推導 1</span>NSID 是命令選擇 namespace 的編號，可能跨斷電改變。Namespace UUID 是用來辨識 namespace 的資訊；本例相同的 UUID 支持它是同一個 namespace，不能只因 NSID 改變就視為新建物件。</p>
+<p data-reasoning="identify-03-2"><span class="qr-step">推導 2</span>解析時先看 NIDT 指定識別種類，再依 NIDL 取出該種類的 bytes；不要把整個描述子連同表頭直接當作 UUID 比較。若改用 NGUID 或 EUI64，也要考慮 UIDREUSE 所描述的重用特性。</p>
+<p data-reasoning="identify-03-3"><span class="qr-step">推導 3</span>識別相同不代表內容從未變動，也不能證明每個 LBA 都完整。若問題改成「資料有沒有改過」，需要另訂資料校驗方法；如果沒有可用的唯一識別資訊，僅靠相同容量不足以下定論。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-b342">Base 2.4 Figure 342 · Namespace 識別描述子：不要把 NSID 當永久身分</a><a href="identify.html#figure-b346">Base 2.4 Figure 346 · Namespace 共通狀態：可用、受保護與儲存歸屬</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.2.1 · 文件頁 80 · PDF 106</li><li>Base 2.4 · §5.2.14.2.3 · Figure 342 · Identify – Namespace Identification Descriptor · 文件頁 388 · PDF 414</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · 文件頁 391–394 · PDF 417–420</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-identify-04" data-scenario="identify-04"><h3><span class="qr-number">練習 04</span>容量是位址範圍、可配置量，還是已使用量？</h3>
+<p class="qr-case-question">容量報告把 NSZE、NCAP、NUSE 三個數字相加。請用這份回傳值解釋為什麼不對。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>目前 LBAF 的 LBADS=12、MS=0；NSZE=8192、NCAP=4096、NUSE=1024。</li>
+<li>這是支援 thin provisioning 的 NVM namespace，數值有效，沒有不可存取狀態造成的清零。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=00h、目標 NSID → 由 FLBAS 選取 LBAF → 同時讀 NSZE、NCAP、NUSE。</p>
+<p data-reasoning="identify-04-1"><span class="qr-step">推導 1</span>LBADS=12 表示每個 LBA 的資料大小是 2^12=4096 bytes。NSZE=8192 給出 32 MiB 的可定址資料範圍，合法 LBA 是 0 到 8191，不是到 8192。</p>
+<p data-reasoning="identify-04-2"><span class="qr-step">推導 2</span>NCAP=4096 是最多可配置的 logical blocks，換算為 16 MiB；NUSE=1024 是目前已配置的 logical blocks，換算為 4 MiB。它們從不同角度描述同一 namespace，並不是三塊可相加的獨立空間。</p>
+<p data-reasoning="identify-04-3"><span class="qr-step">推導 3</span>NUSE 也不是檔案系統的已用容量。檔案刪除、deallocation、控制器的配置粒度與更新時機可能使兩者不同；要回答檔案還能存多少，需要檔案系統資訊，而不是改寫 NSZE 的意義。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="identify.html#figure-n125">NVM Command Set 1.3 Figure 125 · LBAF：資料大小、metadata 大小與相對效能</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 85–87 · PDF 85–87</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · 文件頁 94 · PDF 94</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-identify-05" data-scenario="identify-05"><h3><span class="qr-number">練習 05</span>128 KiB 資料為什麼可能超過 MDTS？</h3>
+<p class="qr-case-question">主機準備一次傳輸 32 個 4 KiB logical blocks。請判斷 interleaved metadata 會不會讓這筆命令超限。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>CAP.MPSMIN=0；CC.MPS=1；Identify Controller 的 MDTS=5、CTRATT.MEM=0。</li>
+<li>使用中 LBAF：LBADS=12、MS=16；metadata 與資料交錯，這筆傳輸包含全部 16 metadata bytes／LBA。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>讀取 CAP.MPSMIN → Identify CNS=01h 的 MDTS／CTRATT.MEM → CNS=00h 的使用中格式；再檢查命令本身的限制。</p>
+<p data-reasoning="identify-05-1"><span class="qr-step">推導 1</span>MDTS 以最小記憶體頁大小為基準，並非目前 CC.MPS。此例上限是 2^5 × 2^(12+0)=131072 bytes，即 128 KiB；不能因主機選了 8 KiB 頁，就把上限放大為 256 KiB。</p>
+<p data-reasoning="identify-05-2"><span class="qr-step">推導 2</span>MEM=0 時，MDTS 計算包括交錯的 metadata。32 × (4096+16)=131584 bytes，已超出 131072；在本例條件下，31 個完整 blocks 才能放進此上限。</p>
+<p data-reasoning="identify-05-3"><span class="qr-step">推導 3</span>若 MEM=1，這個 MDTS 比較只算資料，32 blocks 可通過這項檢查，但仍要滿足其他命令與 buffer 條件。MDTS=0 也只表示這個欄位未設最大值，不能推成每種命令都能接受任意長度。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="init.html#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a><a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="identify.html#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="identify.html#figure-n125">NVM Command Set 1.3 Figure 125 · LBAF：資料大小、metadata 大小與相對效能</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 342, 345 · PDF 368, 371</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set · 文件頁 86–87 · PDF 86–87</li><li>NVM Command Set 1.3 · §4.1.5.1 · Figure 125 · LBA Format Data Structure, NVM Command Set Specific · 文件頁 94 · PDF 94</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-identify-06" data-scenario="identify-06"><h3><span class="qr-number">練習 06</span>Dataset Management 的限制是 0，代表不支援嗎？</h3>
+<p class="qr-case-question">兩個 controller 的 DMRL 都是 0。請判斷能否只靠這個值關閉 Dataset Management 功能。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>A：ONCS.NVMDSMSV=1；DMRL=0、DMRSL=0、DMSL=0。</li>
+<li>B：ONCS.NVMDSMSV=0；DMRL=0、DMRSL=0、DMSL=0。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Identify CNS=01h 讀 ONCS；CNS=06h、CSI=00h 讀 NVM 專屬 controller 資料，再一起解 DMRL／DMRSL／DMSL。</p>
+<p data-reasoning="identify-06-1"><span class="qr-step">推導 1</span>A 的 NVMDSMSV=1 已表示支援此命令；三個 0 表示這些欄位沒有報出相應的處理限制。不能把 DMRL=0 解成「允許 0 個 range」。</p>
+<p data-reasoning="identify-06-2"><span class="qr-step">推導 2</span>B 使用另一種支援判斷：在 NVMDSMSV=0 的情況，必須連同這些 limit 的非零條件判讀。此組全 0 不提供 Dataset Management 支援，不能照搬 A 的結論。</p>
+<p data-reasoning="identify-06-3"><span class="qr-step">推導 3</span>即使 A 支援，仍須遵守命令格式、namespace 範圍與每個 range 的定義。這題要練的是先讀能力版本，再解數值；0 沒有跨所有欄位通用的意思。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="identify.html#figure-n129">NVM Command Set 1.3 Figure 129 · NVM 專屬 Controller：命令大小限制及其有效條件</a><a href="io.html#figure-n47">NVM Command Set 1.3 Figure 47 · Dataset Management：每段 LBA 範圍如何排列</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.14.2.1 · Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent · 文件頁 372 · PDF 398</li><li>NVM Command Set 1.3 · §4.1.5.4 · Figure 129 · I/O Command Set Specific Identify Controller Data Structure for the NVM Command Set · 文件頁 103–106 · PDF 103–106</li><li>NVM Command Set 1.3 · §3.3.3.1 · 文件頁 45–47 · PDF 45–47</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-identify-07" data-scenario="identify-07"><h3><span class="qr-number">練習 07</span>有 LID 編號，就一定能讀那張 log 嗎？</h3>
+<p class="qr-case-question">軟體認得某個 LID，但裝置可能不支援。應查哪一種資料，才不會把「軟體有名稱」當成「controller 有功能」？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>Supported Log Pages 的目標項目 LSUPP=0；另一个項目 LSUPP=1。</li>
+<li>本題先假設可成功讀取 Supported Log Pages；各目標 log 的 namespace、CSI 與 LSP 要求仍須另外確認。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>Get Log Page，LID=00h；找到以目標 LID 編排的 supported-and-effects 項目，再讀該 log 的定義。</p>
+<p data-reasoning="identify-07-1"><span class="qr-step">推導 1</span>LSUPP 是這個 controller 對該 log 的支援回報。0 的項目不能因軟體已有解碼器就視為受支援；1 的項目則通過支援檢查。</p>
+<p data-reasoning="identify-07-2"><span class="qr-step">推導 2</span>支援並不表示 log 裡一定已有事件或量測結果。空紀錄、尚未產生的 Telemetry、以及不支援的 log 是不同狀態，報告應分開顯示。</p>
+<p data-reasoning="identify-07-3"><span class="qr-step">推導 3</span>後續要依各 log 的 NSID、CSI、LSP、LSI、長度及 offset 規則送命令。LSUPP=1 不能讓錯誤的讀取參數自動變合法，也不能替代內容格式或版本檢查。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="logs.html#figure-b211">Base 2.4 Figure 211 · Supported Log Pages：這個 LID 能不能用</a><a href="logs.html#figure-b204">Base 2.4 Figure 204 · Get Log CDW10：讀哪份、讀多少、是否確認事件</a><a href="logs.html#figure-b208">Base 2.4 Figure 208 · Get Log offset：byte 位置或清單 index</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §5.2.13.1.1 · Figure 211 · LID Supported and Effects Data Structure · 文件頁 217–218 · PDF 243–244</li><li>Base 2.4 · §5.2.13 · Figure 204 · Get Log Page – Command Dword 10 · 文件頁 213 · PDF 239</li><li>Base 2.4 · §5.2.13 · Figure 205 · Get Log Page – Command Dword 11 · 文件頁 214 · PDF 240</li><li>Base 2.4 · §5.2.13 · Figure 208 · Get Log Page – Command Dword 14 · 文件頁 214–215 · PDF 240–241</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
 <li><a href="#figure-b333">Base 2.4 Figure 333 · Identify CDW10：選資料結構，不是選欄位</a></li>
 <li><a href="#figure-b336">Base 2.4 Figure 336 · CNS 總表：查結構及有效參數</a></li>
@@ -180,11 +289,6 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qr-tags">搜尋詞：CNS 06h · CSI 00h · VSL · WZSL · WUSL · DMRL · DMRSL · DMSL · NVMDSMSV</p>
 <div class="qr-related">接著查：<a href="identify.html#figure-b338">Base 2.4 Figure 338 · Identify Controller：能力與限制的主要入口</a><a href="io.html#figure-n47">NVM Command Set 1.3 Figure 47 · Dataset Management：每段 LBA 範圍如何排列</a><a href="io.html#figure-n83">NVM Command Set 1.3 Figure 83 · Write Zeroes：清零範圍與 deallocate 要求</a></div>
 <a href="#figure-index">回本冊圖表索引</a></article>
-<section class="qr-note" id="worked-route"><h2>把幾張圖接成一次查詢</h2><p>應用程式說要讀 32 KiB，但原始命令與 buffer 長度看來不同。</p>
-<p><span class="qr-step">R1</span>先確認 Identify CNS 與 namespace，從 FLBAS 選到正確 LBAF。LBAF 的 LBADS 是資料大小指數，MS 是每 block 的 metadata bytes。</p>
-<p><span class="qr-step">R2</span>用 NLB+1 求 blocks，再乘資料大小；32 KiB 在 4 KiB 格式是 8 blocks，Read 的 NLB 應為 7。</p>
-<p><span class="qr-step">R3</span>另依 metadata 是交錯或分開、PI 的 PRACT 行為計傳輸 buffer，不能把 namespace 資料容量與實際傳輸 bytes 混用。</p>
-<div class="qr-related"><a href="identify.html#figure-b333">Base 2.4 Figure 333 · Identify CDW10：選資料結構，不是選欄位</a><a href="identify.html#figure-n123">NVM Command Set 1.3 Figure 123 · NVM Namespace：容量、格式、原子性與建議粒度</a><a href="identify.html#figure-n125">NVM Command Set 1.3 Figure 125 · LBAF：資料大小、metadata 大小與相對效能</a><a href="io.html#figure-n54">NVM Command Set 1.3 Figure 54 · Read CDW12：範圍、重試與保護要求</a><a href="io.html#figure-n153">NVM Command Set 1.3 Figure 153 · Extended LBA：資料與 metadata 交錯</a><a href="io.html#figure-n154">NVM Command Set 1.3 Figure 154 · Separate Metadata：兩個 buffer 依 LBA 配對</a></div></section>
 <footer id="source-files"><h2>原始文件</h2><p>頁碼採本次提供的 ratified PDF；Base 的 PDF 頁＝文件頁＋26，另兩份相同。圖號與英文原名保留，可用 PDF 搜尋定位。公開網站不附原始 PDF。</p><ul class="qr-sources"><li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li><li>NVM Express NVM Command Set Specification · Revision 1.3 · 2026-07-31<br><code>NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf</code></li><li>NVM Express NVMe over PCIe Transport Specification · Revision 1.4 · 2026-07-31<br><code>NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf</code></li></ul></footer>
 </main></div>
 </body></html>

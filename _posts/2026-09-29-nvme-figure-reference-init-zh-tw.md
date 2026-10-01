@@ -1,20 +1,105 @@
 ---
 layout: "post"
-title: "NVMe 圖表速查 01 · 初始化、佇列與 PCIe"
+title: "NVMe 圖表判讀與情境練習 01 · 初始化、佇列與 PCIe"
 date: "2026-09-29 09:00:00 +0800"
 categories: ["nvme"]
 tags: ["NVMe", "Reference"]
 permalink: "/nvme/figure-reference/init/zh-tw/"
 nvme_quickref: true
+last_modified_at: "2026-10-01"
 lang: "zh-Hant-TW"
-description: "NVMe 原圖用途、欄位與判讀速查，附完整 Spec 位置。"
+description: "NVMe 情境練習與圖表速查：查詢路徑、欄位推導、完整解答及 Spec 位置。"
 ---
 
 <div class="nvme-quickref">
 <nav class="qr-top" aria-label="版本與索引"><a href="#content">跳到內容</a><a href="/nvme/figure-reference/zh-tw/">總索引</a><a href="/nvme/figure-reference/init/en/">English</a><a href="/DOCS/nvme-quick-reference/init.html">繁中 HTML</a></nav>
 <main id="content">
-<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表速查 01 · 初始化、佇列與 PCIe</h1><p class="qr-intro">先確認位址與能力，再看啟用狀態、佇列位置與中斷。PCIe link 和錯誤暫存器用來區分傳輸問題與命令回覆。</p></header>
+<header><p class="qr-eyebrow">反覆查詢 · 欄位判讀 · 原文定位</p><h1>NVMe 圖表判讀與情境練習 01 · 初始化、佇列與 PCIe</h1><p class="qr-intro">先確認位址與能力，再看啟用狀態、佇列位置與中斷。PCIe link 和錯誤暫存器用來區分傳輸問題與命令回覆。</p></header>
 <aside class="qr-note"><p>每張原圖都有用途、欄位和判讀例子。例子中的數值用於說明，不代表你的裝置設定；原文另有條件時，依該欄位與命令定義判斷。</p><p>用瀏覽器「在頁面中尋找」搜尋欄位、FID、LID、CNS 或 Figure。bit／byte 位置沿用原圖：bit 是位元，byte 是 8 bits，Dword 是 4 bytes；index 是第幾筆，offset 是相對起點的偏移，須看當處使用的單位。</p><p>FID（Feature Identifier）選擇功能；LID（Log Page Identifier）選擇紀錄頁；CNS（Controller or Namespace Structure）選擇 Identify 回傳的資料結構。</p></aside>
+<nav class="qr-top" aria-label="本冊閱讀入口"><a href="#exercises">從情境練習開始</a><a href="#figure-index">直接查圖表</a></nav>
+<section id="exercises"><h2>先做情境練習</h2>
+<p>每題資料均為教學假設，不是實際裝置回傳。先寫下查詢介面、目標、欄位與可支持的結論，再展開解答。題目只做 Spec 推導，不會執行命令。</p>
+<nav class="qr-toc" id="exercise-toc" aria-label="情境索引"><ol>
+<li><a href="#exercise-init-01">能枚舉 PCIe 裝置，為什麼還不能開始 I/O？</a></li>
+<li><a href="#exercise-init-02">64-bit BAR 與 doorbell offset 要怎麼合起來？</a></li>
+<li><a href="#exercise-init-03">RDY=1，為什麼不能直接說所有媒體已準備好？</a></li>
+<li><a href="#exercise-init-04">裝置支援 x4，現在卻只有 x2？</a></li>
+<li><a href="#exercise-init-05">CQE 已出現，為什麼 MSI-X 沒通知？</a></li>
+<li><a href="#exercise-init-06">PCIe AER 與 NVMe AER 是同一種錯誤紀錄嗎？</a></li>
+</ol></nav>
+<article class="qr-card qr-case" id="exercise-init-01" data-scenario="init-01"><h3><span class="qr-number">練習 01</span>能枚舉 PCIe 裝置，為什麼還不能開始 I/O？</h3>
+<p class="qr-case-question">系統已讀到 PCI Vendor ID、Device ID，便宣稱 NVMe 已就緒。還缺哪些層次的證據？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>PCI configuration 的 CMD.MSE=0、CMD.BME=0；BAR 已有配置值。</li>
+<li>尚未確認 NVMe CAP、CC、CSTS，也沒有 Admin Queue 或 Identify 成功紀錄。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>PCI configuration → BAR 與 PCI CMD → NVMe memory-mapped properties → Admin Queue／Identify → I/O queues 與 namespace。</p>
+<p data-reasoning="init-01-1"><span class="qr-step">推導 1</span>PCI configuration 能被讀取，只證明目前可取得該 function 的組態資訊。MSE 控制 memory space 存取，BME 關係到裝置發起的 memory transactions；本例仍未完成這些正常操作條件。</p>
+<p data-reasoning="init-01-2"><span class="qr-step">推導 2</span>接著才是 NVMe 自己的 CAP 能力、CC 配置與 CSTS 狀態，以及 queue 記憶體位置。PCI CMD、NVMe CC、Identify Controller 是不同介面的資料，不能用其中一個欄位替代另外兩層。</p>
+<p data-reasoning="init-01-3"><span class="qr-step">推導 3</span>這題不要求實際啟用硬體，而是建立盤點順序。只讀識別碼無法回答可用 LBA 格式、Sanitize 方法或 namespace 數量；那些問題還需要 NVMe 命令回覆。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p12">PCIe Transport 1.4 Figure 12 · PCI CMD：MMIO 與 Bus Master 的入口</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p20">PCIe Transport 1.4 Figure 20 · BAR0：暫存器基底的低位與屬性</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b42">Base 2.4 Figure 42 · CSTS：啟用與關機進度回報</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.1.2 · Figure 12 · Offset 04h: CMD - Command · 文件頁 17 · PDF 17</li><li>PCIe Transport 1.4 · §3.8.1.10 · Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits · 文件頁 19 · PDF 19</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · 文件頁 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.6 · Figure 42 · Offset 1Ch: CSTS – Controller Status · 文件頁 63–65 · PDF 89–91</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-init-02" data-scenario="init-02"><h3><span class="qr-number">練習 02</span>64-bit BAR 與 doorbell offset 要怎麼合起來？</h3>
+<p class="qr-case-question">記錄工具只保存 BAR0，將 queue 3 的 doorbell 算到 4 GiB 以下。請從原始配置重新定位。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>BAR0=40000004h，類型已確認為 64-bit memory BAR；BAR1=00000002h。</li>
+<li>CAP.DSTRD=2；查詢 queue identifier y=3 的 SQ tail 與 CQ head doorbell。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>PCI configuration BAR0／BAR1 → 組成 register base → CAP.DSTRD → 依 queue ID 算 SQ／CQ doorbell offset。</p>
+<p data-reasoning="init-02-1"><span class="qr-step">推導 1</span>先去掉 BAR0 屬性位再組合：base=(2&lt;&lt;32)|40000000h=0000000240000000h。BAR0 末尾的 4 表示屬性，不是映射起點多 4 bytes。</p>
+<p data-reasoning="init-02-2"><span class="qr-step">推導 2</span>stride=4&lt;&lt;2=16 bytes。SQ3 offset=1000h+(2×3)×16=1060h；CQ3 offset=1000h+(2×3+1)×16=1070h。這裡 3 是 queue ID，不是 ring 目前第幾個 entry。</p>
+<p data-reasoning="init-02-3"><span class="qr-step">推導 3</span>所以兩個地址是 0000000240001060h 與 0000000240001070h。這只定位暫存器；寫入的 tail／head 數值要由 queue 狀態決定，不能把地址或 byte offset 當作 doorbell 值。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p20">PCIe Transport 1.4 Figure 20 · BAR0：暫存器基底的低位與屬性</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p21">PCIe Transport 1.4 Figure 21 · BAR1：64-bit 暫存器地址的高位</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p5">PCIe Transport 1.4 Figure 5 · SQ doorbell：告知新的提交位置</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p6">PCIe Transport 1.4 Figure 6 · CQ doorbell：歸還已讀取的位置</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.1.10 · Figure 20 · Offset 10h: MLBAR (BAR0) – Memory Register Base Address, lower 32-bits · 文件頁 19 · PDF 19</li><li>PCIe Transport 1.4 · §3.8.1.11 · Figure 21 · Offset 14h: MUBAR (BAR1) – Memory Register Base Address, upper 32-bits · 文件頁 19 · PDF 19</li><li>PCIe Transport 1.4 · §3.1.2.1 · Figure 5 · Offset (1000h + ((2y) * (4 &lt;&lt; CAP.DSTRD))): SQyTDBL – Submission Queue y Tail Doorbell · 文件頁 10 · PDF 10</li><li>PCIe Transport 1.4 · §3.1.2.2 · Figure 6 · Offset (1000h + ((2y + 1) * (4 &lt;&lt; CAP.DSTRD))): CQyHDBL – Completion Queue y Head Doorbell · 文件頁 10–11 · PDF 10–11</li><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-init-03" data-scenario="init-03"><h3><span class="qr-number">練習 03</span>RDY=1，為什麼不能直接說所有媒體已準備好？</h3>
+<p class="qr-case-question">初始化紀錄在 1 秒時看到 RDY=1，測試便要求所有 namespace 命令立即可用。這忽略了哪個模式？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>Controller 支援並啟用 media-independent ready：CC.CRIME=1；CSTS.RDY=1、CFS=0。</li>
+<li>CRTO.CRIMT=3、CRWMT=12；尚無證據顯示必要媒體均已就緒。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>讀 CAP 的 ready 能力、CC.CRIME、CSTS 與 CRTO；將等待目標分為 media-independent ready 與 required-media ready。</p>
+<p data-reasoning="init-03-1"><span class="qr-step">推導 1</span>CRIMT=3 與 CRWMT=12 使用 500 ms 單位，對應 1.5 seconds 與 6 seconds。它們是對應模式下的等待上限資訊，不是聲稱每次都必須花滿這些時間。</p>
+<p data-reasoning="init-03-2"><span class="qr-step">推導 2</span>在本題啟用的模式，RDY 可先表示 controller 已能處理不依賴媒體的命令。測試必須區分哪些命令需要媒體，而不是把這個 RDY 觀察延伸成所有資料路徑皆已就緒。</p>
+<p data-reasoning="init-03-3"><span class="qr-step">推導 3</span>可再用 Identify CNS=08h 讀目標 namespace 的 NSTAT.NRDY：1 才表示該 namespace 已就緒。保存 CC.EN 設為 1 的起點及實際 command status，再與對應 timeout 比較。CFS=0 只是未回報 controller fatal status，不能補足缺少的媒體就緒證據。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · CC：主機實際選了什麼</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b42">Base 2.4 Figure 42 · CSTS：啟用與關機進度回報</a><a href="/nvme/figure-reference/init/zh-tw/#figure-b57">Base 2.4 Figure 57 · CRTO：控制器與媒體就緒的等待時間</a><a href="/nvme/figure-reference/identify/zh-tw/#figure-b346">Base 2.4 Figure 346 · Namespace 共通狀態：可用、受保護與儲存歸屬</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>Base 2.4 · §3.1.4.1 · Figure 36 · Offset 0h: CAP – Controller Capabilities · 文件頁 55–58 · PDF 81–84</li><li>Base 2.4 · §3.1.4.5 · Figure 41 · Offset 14h: CC – Controller Configuration · 文件頁 60–63 · PDF 86–89</li><li>Base 2.4 · §3.1.4.6 · Figure 42 · Offset 1Ch: CSTS – Controller Status · 文件頁 63–65 · PDF 89–91</li><li>Base 2.4 · §3.1.4.21 · Figure 57 · Offset 68h: CRTO – Controller Ready Timeouts · 文件頁 73 · PDF 99</li><li>Base 2.4 · §5.2.14.2.8 · Figure 346 · Identify – I/O Command Set Independent Identify Namespace Data Structure · 文件頁 394 · PDF 420</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-init-04" data-scenario="init-04"><h3><span class="qr-number">練習 04</span>裝置支援 x4，現在卻只有 x2？</h3>
+<p class="qr-case-question">產品與能力欄位都說支援 x4，效能卻較低。要到哪裡查目前實際 lane 數？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>PCIe link 已 up；Link Capabilities 表示最大 x4；Link Status 的 NLW=2。</li>
+<li>CLS 已記錄，但沒有完整路徑、payload 或 workload 的吞吐資料。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>沿 PCI capability 結構找到 PCI Express Capability，讀 Link Capabilities 與 Link Status；這不是 Identify CNS 的回覆。</p>
+<p data-reasoning="init-04-1"><span class="qr-step">推導 1</span>能力欄位描述可以支援的最大寬度，NLW 描述目前協商的寬度。因此兩個值並不矛盾：裝置能支援 x4，這次 link 使用 x2。</p>
+<p data-reasoning="init-04-2"><span class="qr-step">推導 2</span>這足以指出可用 lane 數低於最大值，但無法單靠 endpoint 的欄位定位是 slot、上游 port、平台配置或其他原因。下一步應比對整條路徑的能力與協商結果。</p>
+<p data-reasoning="init-04-3"><span class="qr-step">推導 3</span>CLS 是速度編碼，不能把原始代碼直接當成 GT/s；x2 也不是實測 bandwidth。應先把協商結果與能力分開，再用適用的速度定義及實際測量分析吞吐。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p55">PCIe Transport 1.4 Figure 55 · PCIe Link：目前談成的速度與寬度</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.5.6 · 文件頁 28–29 · PDF 28–29</li><li>PCIe Transport 1.4 · §3.8.5.8 · Figure 55 · Offset PXCAP + 12h: PXLS – PCI Express Link Status · 文件頁 29 · PDF 29</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-init-05" data-scenario="init-05"><h3><span class="qr-number">練習 05</span>CQE 已出現，為什麼 MSI-X 沒通知？</h3>
+<p class="qr-case-question">主機輪詢看到新 CQE，但中斷處理常式沒有執行。請判斷應先查媒體還是 interrupt 設定。</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>MSI-X：MXE=1、FM=0、TS=7；目標 CQ 使用 vector 5，該 vector 的個別 mask=1。</li>
+<li>新 CQE phase 與成功 status 均已確認；尚未解讀 PBA 或 coalescing 設定。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>CQ 的 interrupt vector 關聯 → PCI MSI-X Message Control → Table entry mask／PBA → 必要時 Get Features FID=08h 與 per-vector 設定。</p>
+<p data-reasoning="init-05-1"><span class="qr-step">推導 1</span>TS=7 表示 8 個 table entries，所以 vector 5 在範圍內。FM=0 只解除整體 function mask，沒有把個別 vector 的 mask 一併清掉。</p>
+<p data-reasoning="init-05-2"><span class="qr-step">推導 2</span>vector 5 仍被遮罩，已提供中斷未送達的一個直接解釋。CQE 的成功 status 與中斷通知是不同觀察：不能因 handler 沒跑，就否定已經看見的完成結果。</p>
+<p data-reasoning="init-05-3"><span class="qr-step">推導 3</span>若個別 mask 也已解除，才進一步看 pending、coalescing、主機路由等條件。不要把這個單一分支寫成「所有沒中斷都由 mask 引起」，也不要把 vector 數當成 queue 數。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p44">PCIe Transport 1.4 Figure 44 · MSI-X：總開關、遮罩與向量數</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p45">PCIe Transport 1.4 Figure 45 · MSI-X Table：先找 BAR，再加 offset</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p46">PCIe Transport 1.4 Figure 46 · MSI-X PBA：待處理中斷的資料位置</a><a href="/nvme/figure-reference/features/zh-tw/#figure-b543">Base 2.4 Figure 543 · Interrupt Coalescing：延後中斷的時間與數量</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.4.2 · Figure 44 · Offset MSIXCAP + 2h: MXC – MSI-X Message Control · 文件頁 24–25 · PDF 24–25</li><li>PCIe Transport 1.4 · §3.8.4.3 · Figure 45 · Offset MSIXCAP + 4h: MTAB – MSI-X Table Offset / Table BIR · 文件頁 25 · PDF 25</li><li>PCIe Transport 1.4 · §3.8.4.4 · Figure 46 · Offset MSIXCAP + 8h: MPBA – MSI-X PBA Offset / PBA BIR · 文件頁 25 · PDF 25</li><li>Base 2.4 · §5.2.30.2.1 · Figure 543 · Interrupt Coalescing – Command Dword 11 · 文件頁 515 · PDF 541</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+<article class="qr-card qr-case" id="exercise-init-06" data-scenario="init-06"><h3><span class="qr-number">練習 06</span>PCIe AER 與 NVMe AER 是同一種錯誤紀錄嗎？</h3>
+<p class="qr-case-question">追蹤檔寫著 AER，但沒註明介面。兩次 PCIe status 都是 1，又能否說新增兩次 NVMe 錯誤？</p><div class="qr-observations"><h4>模擬回傳與已知條件</h4><ul>
+<li>PCIe AERCES.RTS 兩次取樣均為 1；兩次之間沒有清除或 reset。</li>
+<li>另有 NVMe Asynchronous Event Request 的完成紀錄，但尚未比對時間與通知內容。</li>
+</ul></div><details class="qr-answer"><summary>展開解答：查詢路徑與完整推導</summary>
+<p class="qr-route"><strong>查詢次序：</strong>先辨識資料來自 PCIe Advanced Error Reporting extended capability，還是 NVMe Asynchronous Event Request completion。</p>
+<p data-reasoning="init-06-1"><span class="qr-step">推導 1</span>PCIe 的 AER 是 Advanced Error Reporting，這裡的 RTS 是 Replay Timer Timeout 狀態位；NVMe 的 AER 是非同步事件命令。縮寫相同，不代表資料結構、對象或事件意義相同。</p>
+<p data-reasoning="init-06-2"><span class="qr-step">推導 2</span>RTS 是狀態位而非次數。未清除時連續看到 1，可能只是同一個仍保留的狀態，不能由兩次取樣算成發生兩次，更不能算成兩筆 NVMe command failure。</p>
+<p data-reasoning="init-06-3"><span class="qr-step">推導 3</span>要關聯兩邊，需要各自完整紀錄、時間與裝置身分。PCIe 錯誤可幫忙分析傳輸問題，但不能直接指定是哪個 SQID／CID，也不能代替 CQE 或 NVMe log 的結果。</p>
+<div class="qr-related">需要重看欄位時，接著查：<a href="/nvme/figure-reference/init/zh-tw/#figure-p60">PCIe Transport 1.4 Figure 60 · PCIe AER：不可更正錯誤狀態</a><a href="/nvme/figure-reference/init/zh-tw/#figure-p63">PCIe Transport 1.4 Figure 63 · PCIe AER：已更正錯誤與重傳線索</a><a href="/nvme/figure-reference/command/zh-tw/#figure-b99">Base 2.4 Figure 99 · CQE DW3：新舊判別、CID 與狀態</a></div>
+<h4>本題原文定位</h4><ul class="qr-case-sources"><li>PCIe Transport 1.4 · §3.8.6.2 · Figure 60 · Offset AERCAP + 4: AERUCES – AER Uncorrectable Error Status Register · 文件頁 31–32 · PDF 31–32</li><li>PCIe Transport 1.4 · §3.8.6.5 · Figure 63 · Offset AERCAP + 10h: AERCES – AER Correctable Error Status Register · 文件頁 33 · PDF 33</li><li>Base 2.4 · §5.2.2 · 文件頁 183–190 · PDF 209–216</li></ul></details>
+<a href="#exercise-toc">回情境索引</a></article>
+</section>
 <nav class="qr-toc" id="figure-index" aria-label="本冊圖表索引"><h2>本冊圖表</h2><ol>
 <li><a href="#figure-b34">Base 2.4 Figure 34 · Doorbell 在記憶體映射中的位置</a></li>
 <li><a href="#figure-b36">Base 2.4 Figure 36 · CAP：設定前先查硬體能力</a></li>
