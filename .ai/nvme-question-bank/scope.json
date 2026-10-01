@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "status": "approved",
+  "approved_date": "2026-10-01",
+  "purpose": "Learn the specification and judge firmware behavior against its requirements",
+  "question_range": [
+    1,
+    68
+  ],
+  "volumes": 6,
+  "answer_items": 17,
+  "sources": [
+    "NVME-BASE-2.4",
+    "NVME-PCIE-TRANSPORT-1.4",
+    "NVME-NVM-CS-1.3"
+  ],
+  "exclude": [
+    "NVMe over Fabrics",
+    "PCIe link training and packet details"
+  ],
+  "retain": [
+    "PCIe configuration needed for NVMe",
+    "BAR",
+    "MSI and MSI-X",
+    "NVMe registers",
+    "queues",
+    "doorbells"
+  ],
+  "editions": [
+    "standalone Traditional Chinese HTML",
+    "Traditional Chinese GitHub Pages",
+    "English GitHub Pages"
+  ],
+  "relationship_to_quick_reference": "Independent series with links to existing canonical figure explanations",
+  "future_only": {
+    "get_log_page": [
+      69,
+      81
+    ],
+    "asynchronous_events": [
+      82,
+      92
+    ],
+    "error_status_and_log": [
+      93,
+      106
+    ],
+    "abort_timeout_recovery": [
+      107,
+      117
+    ],
+    "format_sanitize": [
+      118,
+      135
+    ],
+    "firmware_boot": [
+      136,
+      148
+    ],
+    "self_test": [
+      149,
+      156
+    ],
+    "namespace_management": [
+      157,
+      173
+    ],
+    "reset_shutdown": [
+      174,
+      187
+    ],
+    "power_thermal_health": [
+      188,
+      204
+    ],
+    "persistent_events_timestamp": [
+      205,
+      216
+    ],
+    "keep_alive": [
+      217,
+      222
+    ],
+    "hmb_cmb_pmr": [
+      223,
+      236
+    ],
+    "security_lockdown": [
+      237,
+      245
+    ],
+    "multi_controller_virtualization": [
+      246,
+      255
+    ],
+    "nvm_set_endurance_capacity": [
+      256,
+      267
+    ],
+    "domain_reclaim_media": [
+      268,
+      275
+    ],
+    "prp_sgl": [
+      276,
+      285
+    ],
+    "interrupt_features": [
+      286,
+      296
+    ],
+    "integrated_validation": [
+      297,
+      320
+    ]
+  },
+  "editorial_authorization": {
+    "question_rewording": "May correct unreasonable premises while retaining original topics and IDs",
+    "additional_questions": "Allowed for genuine gaps; avoid overlap with any of the 320 supplied questions",
+    "this_delivery_additions": []
+  }
+}

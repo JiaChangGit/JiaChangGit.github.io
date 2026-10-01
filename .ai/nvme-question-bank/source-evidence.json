@@ -1,0 +1,2515 @@
+{
+  "schema_version": 1,
+  "questions": [
+    {
+      "id": 1,
+      "refs": [
+        "cap",
+        "crto",
+        "init",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 2,
+      "refs": [
+        "adminreg",
+        "cc",
+        "init",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 3,
+      "refs": [
+        "cap",
+        "crto",
+        "ready",
+        "init",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 4,
+      "refs": [
+        "cc",
+        "cap",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 5,
+      "refs": [
+        "qattr",
+        "queue",
+        "cc",
+        "pcie",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 6,
+      "refs": [
+        "cc",
+        "fatal",
+        "ready",
+        "reset",
+        "pel",
+        "virtual"
+      ]
+    },
+    {
+      "id": 7,
+      "refs": [
+        "ready",
+        "crto",
+        "cc",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 8,
+      "refs": [
+        "cc",
+        "shutdown",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 9,
+      "refs": [
+        "reset",
+        "feature",
+        "setfeat",
+        "adminreg",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 10,
+      "refs": [
+        "adminreg",
+        "init",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 11,
+      "refs": [
+        "adminreg",
+        "cap",
+        "qattr",
+        "create",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 12,
+      "refs": [
+        "create",
+        "queue",
+        "number",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 13,
+      "refs": [
+        "queue",
+        "create",
+        "cqe",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 14,
+      "refs": [
+        "cap",
+        "adminreg",
+        "create",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 15,
+      "refs": [
+        "create",
+        "status",
+        "irq",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 16,
+      "refs": [
+        "number",
+        "create",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 17,
+      "refs": [
+        "queue",
+        "delete",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 18,
+      "refs": [
+        "delete",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 19,
+      "refs": [
+        "delete",
+        "create",
+        "queue",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 20,
+      "refs": [
+        "reset",
+        "delete",
+        "create",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 21,
+      "refs": [
+        "reset",
+        "init",
+        "number",
+        "create",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 22,
+      "refs": [
+        "queue",
+        "pcie",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 23,
+      "refs": [
+        "queue",
+        "pcie",
+        "aer",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 24,
+      "refs": [
+        "cap",
+        "pcie",
+        "pciconfig",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 25,
+      "refs": [
+        "pcie",
+        "queue",
+        "qattr",
+        "delete",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 26,
+      "refs": [
+        "queue",
+        "pcie",
+        "reset",
+        "pel",
+        "fatal"
+      ]
+    },
+    {
+      "id": 27,
+      "refs": [
+        "cqe",
+        "queue",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 28,
+      "refs": [
+        "queue",
+        "order",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 29,
+      "refs": [
+        "queue",
+        "pcie",
+        "order",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 30,
+      "refs": [
+        "cqe",
+        "queue",
+        "sqe",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 31,
+      "refs": [
+        "sqe",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 32,
+      "refs": [
+        "conventions",
+        "sqe",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 33,
+      "refs": [
+        "sqe",
+        "nsid",
+        "feature",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 34,
+      "refs": [
+        "cqe",
+        "queue",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 35,
+      "refs": [
+        "status",
+        "cqe",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 36,
+      "refs": [
+        "status",
+        "error",
+        "behavior",
+        "fatal",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 37,
+      "refs": [
+        "cqe",
+        "pcie",
+        "irq",
+        "irqfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 38,
+      "refs": [
+        "order",
+        "nvmatomic",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 39,
+      "refs": [
+        "order",
+        "create",
+        "delete",
+        "setfeat",
+        "nvmatomic",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 40,
+      "refs": [
+        "queue",
+        "order",
+        "cqe",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 41,
+      "refs": [
+        "order",
+        "arbit",
+        "cap",
+        "create",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 42,
+      "refs": [
+        "order",
+        "create",
+        "arbit",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 43,
+      "refs": [
+        "order",
+        "arbit",
+        "create",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 44,
+      "refs": [
+        "idcmd",
+        "idctrl",
+        "idns",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 45,
+      "refs": [
+        "idlist",
+        "nsid",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 46,
+      "refs": [
+        "idlist",
+        "idcmd",
+        "uuid",
+        "profile",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 47,
+      "refs": [
+        "idlist",
+        "virtual",
+        "idctrl",
+        "idns",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 48,
+      "refs": [
+        "idcmd",
+        "idlist",
+        "uuid",
+        "status",
+        "idns",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 49,
+      "refs": [
+        "idctrl",
+        "cap",
+        "conventions",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 50,
+      "refs": [
+        "effects",
+        "idctrl",
+        "idcmd",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 51,
+      "refs": [
+        "idlist",
+        "idns",
+        "nsmanage",
+        "effects",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "nschange"
+      ]
+    },
+    {
+      "id": 52,
+      "refs": [
+        "idctrl",
+        "identity",
+        "idns",
+        "reset",
+        "effects",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 53,
+      "refs": [
+        "idcmd",
+        "effects",
+        "feature",
+        "getfeat",
+        "error",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 54,
+      "refs": [
+        "feature",
+        "getfeat",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 55,
+      "refs": [
+        "feature",
+        "setfeat",
+        "getfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 56,
+      "refs": [
+        "feature",
+        "setfeat",
+        "getfeat",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 57,
+      "refs": [
+        "feature",
+        "getfeat",
+        "setfeat",
+        "nvmfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 58,
+      "refs": [
+        "arbit",
+        "number",
+        "profile",
+        "idlist",
+        "setcomplete",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 59,
+      "refs": [
+        "irqfeat",
+        "irq",
+        "create",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 60,
+      "refs": [
+        "vwc",
+        "nvmfeat",
+        "nvmatomic",
+        "idns",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 61,
+      "refs": [
+        "aec",
+        "aer",
+        "idctrl",
+        "nvmfeat",
+        "reset",
+        "status",
+        "error",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 62,
+      "refs": [
+        "power",
+        "thermal",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects",
+        "powerstates",
+        "thermalpel"
+      ]
+    },
+    {
+      "id": 63,
+      "refs": [
+        "timestamp",
+        "keepalive",
+        "hmb",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 64,
+      "refs": [
+        "behavior",
+        "nvmfeat",
+        "rrl",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 65,
+      "refs": [
+        "nwp",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 66,
+      "refs": [
+        "getfeat",
+        "setfeat",
+        "setcomplete",
+        "keepalive",
+        "number",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 67,
+      "refs": [
+        "feature",
+        "setfeat",
+        "timestamp",
+        "hmb",
+        "nwp",
+        "nsmanage",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "featureeffects"
+      ]
+    },
+    {
+      "id": 68,
+      "refs": [
+        "feature",
+        "getfeat",
+        "setfeat",
+        "setcomplete",
+        "irqfeat",
+        "effects",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "featureeffects"
+      ]
+    }
+  ],
+  "locators": {
+    "conventions": "B|1.4.1|28-29|",
+    "cap": "B|3.1.4 (CAP, VS)|80-85|36–37",
+    "cc": "B|3.1.4 (CC, CSTS, NSSR)|86-92|41–43",
+    "adminreg": "B|3.1.4 (AQA, ASQ, ACQ, CMBLOC)|92-94|44–47",
+    "crto": "B|3.1.4 (CRTO)|98-99|57",
+    "init": "B|3.5.1|131-132|",
+    "ready": "B|3.5.3–3.5.4|135-139|84–85",
+    "shutdown": "B|3.6.1|140-141|",
+    "reset": "B|3.7.1–3.7.4|146-150|",
+    "queue": "B|3.3.1|114-117|73–74",
+    "qattr": "B|3.3.3–3.4.1|127|",
+    "order": "B|3.4.1–3.4.5|127-131|80–81",
+    "sqe": "B|4.1.1|165-168|92–93",
+    "cqe": "B|4.2.1, 4.2.3–4.2.4|170-183|97–105, 109",
+    "status": "B|4.2.3|171-181|101–105",
+    "error": "B|5.2.13.1.2|244-246|212",
+    "aer": "B|5.2.2|209-216|150–156",
+    "pel": "B|5.2.13.1.14 (header, reset, hardware, Set Feature events)|270-282,284,288-290|232–244, 246, 252–253",
+    "fatal": "B|9.1–9.6.1|851-852|",
+    "create": "B|5.3.1–5.3.2|553-557|571–579",
+    "delete": "B|5.3.3–5.3.4|557-558|580–583",
+    "number": "B|5.2.30.1.5|491-492|472–473",
+    "arbit": "B|5.2.30.1.1|486|467",
+    "idcmd": "B|5.2.14.1|362-366|332–337",
+    "idctrl": "B|5.2.14.2.1|366-413|338–341",
+    "idlist": "B|5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2|413-425,428-430|342–355, 360–362",
+    "idns": "N|4.1.5.1–4.1.5.4|84-107|123–130",
+    "nsid": "B|3.2.1|104-107|",
+    "identity": "B|4.7.1|199-201|",
+    "uuid": "B|8.1.31.1–8.1.31.2|763-764|782",
+    "virtual": "B|8.2.7|780-785|796",
+    "nsmanage": "B|5.2.24–5.2.25, 8.1.17|468-474,686-690|442–450",
+    "effects": "B|5.2.13.1.5|252-256|216–218",
+    "feature": "B|4.4|192-195|126–127",
+    "getfeat": "B|5.2.12|235-238|197–202",
+    "setfeat": "B|5.2.30.1 (common fields, scope and persistence)|482-486|463–466",
+    "setcomplete": "B|5.2.30 (Command Completion)|545|554",
+    "vwc": "B|5.2.30.1.4|490-491|471",
+    "aec": "B|5.2.30.1.6|492-494|474",
+    "power": "B|5.2.30.1.2, 5.2.30.1.7|486-488,494-495|468–469, 475–478",
+    "powerstates": "B|8.1.19|692-698|738–740",
+    "thermal": "B|5.2.30.1.10|497-498|482",
+    "timestamp": "B|5.2.30.1.8|495-497|479–480",
+    "keepalive": "B|3.9 (common and PCIe rules), 5.2.30.1.9|155-161,497|481",
+    "rrl": "B|5.2.30.1.12, 8.1.23|499,715-716|484–485, 755",
+    "behavior": "B|5.2.30.1.15|501-503|491",
+    "profile": "B|5.2.30.1.18|504-505|494–495",
+    "irqfeat": "B|5.2.30.2.1–5.2.30.2.2|540-541|543–544",
+    "hmb": "B|5.2.30.2.3, 8.2.4|541-545,770|545–553",
+    "nwp": "B|5.2.30.1.38, 8.1.18|538,690-692|541, 735–737",
+    "nvmfeat": "N|4.1.3.1–4.1.3.7|64-69|92–101",
+    "nvmatomic": "N|2.1.2–2.1.4|14-20|3–9",
+    "pcie": "P|3.1–3.4|9-13|3–8",
+    "irq": "P|3.5|13-16|9",
+    "pciconfig": "P|3.8.1 (NVMe configuration access)|16-18|10–17",
+    "featureeffects": "B|5.2.13.1.18|302-304|270–271",
+    "nschange": "B|5.2.13.1.4, 5.2.13.1.14.2.6–5.2.13.1.14.2.8|251-252,284-287|215, 247–249",
+    "thermalpel": "B|5.2.13.1.14.2.13|291-292|255"
+  },
+  "teaching": {
+    "initialization": [
+      "cc",
+      "cap",
+      "adminreg",
+      "crto",
+      "init",
+      "ready"
+    ],
+    "queues": [
+      "number",
+      "create",
+      "delete",
+      "queue"
+    ],
+    "doorbells": [
+      "queue",
+      "cqe",
+      "pcie"
+    ],
+    "commands": [
+      "sqe",
+      "cqe",
+      "order",
+      "vwc",
+      "nvmatomic"
+    ],
+    "identify": [
+      "idcmd",
+      "idctrl",
+      "idlist",
+      "idns",
+      "nsmanage"
+    ],
+    "features": [
+      "feature",
+      "getfeat",
+      "setfeat",
+      "nwp"
+    ]
+  },
+  "evidence": {
+    "conventions": {
+      "pdf_pages": [
+        28,
+        29
+      ],
+      "page_text_sha256": "2d6ba583ce94620227cd8c8b7caacb7a5085766362b2bf896529d30573ecedbb",
+      "figure_headings": {}
+    },
+    "cap": {
+      "pdf_pages": [
+        80,
+        81,
+        82,
+        83,
+        84,
+        85
+      ],
+      "page_text_sha256": "be294f705464da99ccc1dd1cf3fa7b01adad61efda150bccc0852848cd1c0c97",
+      "figure_headings": {
+        "36": [
+          81,
+          82,
+          83,
+          84
+        ],
+        "37": [
+          84
+        ]
+      }
+    },
+    "cc": {
+      "pdf_pages": [
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92
+      ],
+      "page_text_sha256": "d2206adcb318d0951cdd4fe6f6ac15b35ba4727bacdca4e147428ab7da4dfd3c",
+      "figure_headings": {
+        "41": [
+          86,
+          87,
+          88,
+          89
+        ],
+        "42": [
+          89,
+          90,
+          91
+        ],
+        "43": [
+          92
+        ]
+      }
+    },
+    "adminreg": {
+      "pdf_pages": [
+        92,
+        93,
+        94
+      ],
+      "page_text_sha256": "2faf9a1a4df944c47740a890fa39bf93f13748ce21387d9fa688606308ba53e1",
+      "figure_headings": {
+        "44": [
+          92
+        ],
+        "45": [
+          92
+        ],
+        "46": [
+          93
+        ],
+        "47": [
+          93,
+          94
+        ]
+      }
+    },
+    "crto": {
+      "pdf_pages": [
+        98,
+        99
+      ],
+      "page_text_sha256": "ba44f19994be1745cac3ba8a5374d0d9c960f94c88a4ddb311e63d4fe6dc08b6",
+      "figure_headings": {
+        "57": [
+          99
+        ]
+      }
+    },
+    "init": {
+      "pdf_pages": [
+        131,
+        132
+      ],
+      "page_text_sha256": "f25ba2565ad3eb34fd04ea16069b3742d9695b090f740127ceec56846786720d",
+      "figure_headings": {}
+    },
+    "ready": {
+      "pdf_pages": [
+        135,
+        136,
+        137,
+        138,
+        139
+      ],
+      "page_text_sha256": "b9ba28c3561c5a368661496793814b66ac50df3c1eca7f30b3e4441458e42e35",
+      "figure_headings": {
+        "84": [
+          136,
+          137
+        ],
+        "85": [
+          139
+        ]
+      }
+    },
+    "shutdown": {
+      "pdf_pages": [
+        140,
+        141
+      ],
+      "page_text_sha256": "92e2f24790338f6dbb3c3e9d931001b667d48d7f7daa7eb82b3f7c72e9366b84",
+      "figure_headings": {}
+    },
+    "reset": {
+      "pdf_pages": [
+        146,
+        147,
+        148,
+        149,
+        150
+      ],
+      "page_text_sha256": "3166886eb1e4f4e56dd0e23f2ed9269bc41b5c97062a743d128489c244a975a1",
+      "figure_headings": {}
+    },
+    "queue": {
+      "pdf_pages": [
+        114,
+        115,
+        116,
+        117
+      ],
+      "page_text_sha256": "1352f668b39c732028addeb99dae4c384eb03305fa02205fa51b51005d3873e3",
+      "figure_headings": {
+        "73": [
+          117
+        ],
+        "74": [
+          117
+        ]
+      }
+    },
+    "qattr": {
+      "pdf_pages": [
+        127
+      ],
+      "page_text_sha256": "e61fc7d4662c61a8b60d5920aefae47728e141ab97b4c21f6c3653081e7f67ad",
+      "figure_headings": {}
+    },
+    "order": {
+      "pdf_pages": [
+        127,
+        128,
+        129,
+        130,
+        131
+      ],
+      "page_text_sha256": "c4ba7cb59cc11eb5c302109f98ca72752cab2d15d5da132134fb3825498d2696",
+      "figure_headings": {
+        "80": [
+          129
+        ],
+        "81": [
+          130
+        ]
+      }
+    },
+    "sqe": {
+      "pdf_pages": [
+        165,
+        166,
+        167,
+        168
+      ],
+      "page_text_sha256": "6dbfe8016d8a509b9cea336f22faaf440d4fabbb341b4f50db605c8785af7424",
+      "figure_headings": {
+        "92": [
+          165,
+          166
+        ],
+        "93": [
+          166,
+          167,
+          168
+        ]
+      }
+    },
+    "cqe": {
+      "pdf_pages": [
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183
+      ],
+      "page_text_sha256": "486af8011f827a86267accd8133c87cda2002a56580e57d573e72f6619c427a1",
+      "figure_headings": {
+        "97": [
+          170
+        ],
+        "98": [
+          170
+        ],
+        "99": [
+          171
+        ],
+        "100": [
+          171
+        ],
+        "101": [
+          171,
+          172
+        ],
+        "102": [
+          172
+        ],
+        "103": [
+          173,
+          174,
+          175,
+          176
+        ],
+        "104": [
+          177,
+          178
+        ],
+        "105": [
+          178,
+          179
+        ],
+        "109": [
+          182,
+          183
+        ]
+      }
+    },
+    "status": {
+      "pdf_pages": [
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181
+      ],
+      "page_text_sha256": "a9196e065627bc7e4a70a84d0e298dcea4f1cab7257ca6cdb1b3c9bbbe2fcd65",
+      "figure_headings": {
+        "101": [
+          171,
+          172
+        ],
+        "102": [
+          172
+        ],
+        "103": [
+          173,
+          174,
+          175,
+          176
+        ],
+        "104": [
+          177,
+          178
+        ],
+        "105": [
+          178,
+          179
+        ]
+      }
+    },
+    "error": {
+      "pdf_pages": [
+        244,
+        245,
+        246
+      ],
+      "page_text_sha256": "b95148c88d411f9668c202746bc9d3d291d3a1095e288ae7cc1d74de9b2234ca",
+      "figure_headings": {
+        "212": [
+          244,
+          245,
+          246
+        ]
+      }
+    },
+    "aer": {
+      "pdf_pages": [
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216
+      ],
+      "page_text_sha256": "92c849b0fc180453a9bafddea005090103e227d5e6d894441300c9bac5e2ce25",
+      "figure_headings": {
+        "150": [
+          210
+        ],
+        "151": [
+          210,
+          211
+        ],
+        "152": [
+          211
+        ],
+        "153": [
+          211
+        ],
+        "154": [
+          211
+        ],
+        "155": [
+          212,
+          213,
+          214,
+          215
+        ],
+        "156": [
+          215,
+          216
+        ]
+      }
+    },
+    "pel": {
+      "pdf_pages": [
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        284,
+        288,
+        289,
+        290
+      ],
+      "page_text_sha256": "cc312de8aa9363c92f1cb1e27a9f197a85b9d3bf6376d656c09a3cad257f040e",
+      "figure_headings": {
+        "232": [
+          272
+        ],
+        "233": [
+          273,
+          274,
+          275
+        ],
+        "234": [
+          275,
+          276
+        ],
+        "235": [
+          277
+        ],
+        "236": [
+          277
+        ],
+        "237": [
+          278
+        ],
+        "238": [
+          278
+        ],
+        "239": [
+          279
+        ],
+        "240": [
+          279
+        ],
+        "241": [
+          279,
+          280
+        ],
+        "242": [
+          280
+        ],
+        "243": [
+          280,
+          281,
+          282
+        ],
+        "244": [
+          282
+        ],
+        "246": [
+          284
+        ],
+        "252": [
+          288,
+          289
+        ],
+        "253": [
+          290
+        ]
+      }
+    },
+    "fatal": {
+      "pdf_pages": [
+        851,
+        852
+      ],
+      "page_text_sha256": "3d2246dc9dae9573ac51e5ae3a92915a7eb35a40ecc67e4ef92388aee94e80a2",
+      "figure_headings": {}
+    },
+    "create": {
+      "pdf_pages": [
+        553,
+        554,
+        555,
+        556,
+        557
+      ],
+      "page_text_sha256": "d10d1bb21eb27816c31b68eb016ef27f127d75b33e9a5a8fac4631c29acb57dc",
+      "figure_headings": {
+        "571": [
+          553
+        ],
+        "572": [
+          554
+        ],
+        "573": [
+          554
+        ],
+        "574": [
+          554
+        ],
+        "575": [
+          555
+        ],
+        "576": [
+          555
+        ],
+        "577": [
+          555,
+          556
+        ],
+        "578": [
+          556
+        ],
+        "579": [
+          556,
+          557
+        ]
+      }
+    },
+    "delete": {
+      "pdf_pages": [
+        557,
+        558
+      ],
+      "page_text_sha256": "a9f4e1b41b241a5a6dd109e2810d9fa4f385f87e1dbf66ec09bc274a2624eb4b",
+      "figure_headings": {
+        "580": [
+          557
+        ],
+        "581": [
+          557
+        ],
+        "582": [
+          558
+        ],
+        "583": [
+          558
+        ]
+      }
+    },
+    "number": {
+      "pdf_pages": [
+        491,
+        492
+      ],
+      "page_text_sha256": "624116b917ffaab1ea72094eccb136b98e008789979d90d8581a40d4d5907303",
+      "figure_headings": {
+        "472": [
+          491
+        ],
+        "473": [
+          492
+        ]
+      }
+    },
+    "arbit": {
+      "pdf_pages": [
+        486
+      ],
+      "page_text_sha256": "8d1978feffe967b4d83654fb072c4598803f81f0d3a991a2261bfb33302ef9a7",
+      "figure_headings": {
+        "467": [
+          486
+        ]
+      }
+    },
+    "idcmd": {
+      "pdf_pages": [
+        362,
+        363,
+        364,
+        365,
+        366
+      ],
+      "page_text_sha256": "116d1e8e3bf928e0edebe50c0d91871a45cce3d495da69999b622e4ec2cdba52",
+      "figure_headings": {
+        "332": [
+          362
+        ],
+        "333": [
+          363
+        ],
+        "334": [
+          363
+        ],
+        "335": [
+          363
+        ],
+        "336": [
+          364,
+          365
+        ],
+        "337": [
+          366
+        ]
+      }
+    },
+    "idctrl": {
+      "pdf_pages": [
+        366,
+        367,
+        368,
+        369,
+        370,
+        371,
+        372,
+        373,
+        374,
+        375,
+        376,
+        377,
+        378,
+        379,
+        380,
+        381,
+        382,
+        383,
+        384,
+        385,
+        386,
+        387,
+        388,
+        389,
+        390,
+        391,
+        392,
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        403,
+        404,
+        405,
+        406,
+        407,
+        408,
+        409,
+        410,
+        411,
+        412,
+        413
+      ],
+      "page_text_sha256": "3acb9574bec7b08c035f557870f6e468f2f1e7054333306abd7dba23d673fdde",
+      "figure_headings": {
+        "338": [
+          366,
+          367,
+          368,
+          369,
+          370,
+          371,
+          372,
+          373,
+          374,
+          375,
+          376,
+          377,
+          378,
+          379,
+          380,
+          382,
+          383,
+          384,
+          385,
+          386,
+          388,
+          389,
+          390,
+          391,
+          392,
+          393,
+          394,
+          395,
+          396,
+          399,
+          400,
+          401,
+          402,
+          404,
+          405,
+          406,
+          407,
+          408
+        ],
+        "339": [
+          409
+        ],
+        "340": [
+          410,
+          411,
+          412
+        ],
+        "341": [
+          413
+        ]
+      }
+    },
+    "idlist": {
+      "pdf_pages": [
+        413,
+        414,
+        415,
+        416,
+        417,
+        418,
+        419,
+        420,
+        421,
+        422,
+        423,
+        424,
+        425,
+        428,
+        429,
+        430
+      ],
+      "page_text_sha256": "4fab6f309de5ac981cfba1d3343b23762924111a1bd87a11ab384b1a92a76eb3",
+      "figure_headings": {
+        "342": [
+          414
+        ],
+        "343": [
+          414
+        ],
+        "344": [
+          415
+        ],
+        "345": [
+          415
+        ],
+        "346": [
+          417,
+          418,
+          419,
+          420
+        ],
+        "347": [
+          422
+        ],
+        "348": [
+          422
+        ],
+        "349": [
+          422
+        ],
+        "350": [
+          422,
+          423
+        ],
+        "351": [
+          423
+        ],
+        "352": [
+          423
+        ],
+        "353": [
+          423
+        ],
+        "354": [
+          424,
+          425
+        ],
+        "355": [
+          425
+        ],
+        "360": [
+          428,
+          429
+        ],
+        "361": [
+          429
+        ],
+        "362": [
+          429,
+          430
+        ]
+      }
+    },
+    "nsid": {
+      "pdf_pages": [
+        104,
+        105,
+        106,
+        107
+      ],
+      "page_text_sha256": "16dd0b3dbf1501cd1efe5e7748eaac3881d260f6b2d7646ab2ca90903e0d42a7",
+      "figure_headings": {}
+    },
+    "identity": {
+      "pdf_pages": [
+        199,
+        200,
+        201
+      ],
+      "page_text_sha256": "8490725df06b6141896159dacf01f144dece8a0bcc3c80984d429cc552b07266",
+      "figure_headings": {}
+    },
+    "uuid": {
+      "pdf_pages": [
+        763,
+        764
+      ],
+      "page_text_sha256": "a07ed0e87c49893389d62ca3063d9f465f1a9313c3f3e2fddd6a3f8107d6d6fa",
+      "figure_headings": {
+        "782": [
+          764
+        ]
+      }
+    },
+    "virtual": {
+      "pdf_pages": [
+        780,
+        781,
+        782,
+        783,
+        784,
+        785
+      ],
+      "page_text_sha256": "9da256406565f98038552f1b56c96def416fb4d336756037d1931770624ef6e5",
+      "figure_headings": {
+        "796": [
+          781
+        ]
+      }
+    },
+    "nsmanage": {
+      "pdf_pages": [
+        468,
+        469,
+        470,
+        471,
+        472,
+        473,
+        474,
+        686,
+        687,
+        688,
+        689,
+        690
+      ],
+      "page_text_sha256": "8b082d42522cdfde971352a9ae8577fed6859d5423de61cf60548b2912159e11",
+      "figure_headings": {
+        "442": [
+          471
+        ],
+        "443": [
+          471
+        ],
+        "444": [
+          471
+        ],
+        "445": [
+          472
+        ],
+        "446": [
+          472,
+          473
+        ],
+        "447": [
+          473
+        ],
+        "448": [
+          473
+        ],
+        "449": [
+          474
+        ],
+        "450": [
+          474
+        ]
+      }
+    },
+    "effects": {
+      "pdf_pages": [
+        252,
+        253,
+        254,
+        255,
+        256
+      ],
+      "page_text_sha256": "677182a5d7789b35d68071ea7e36f85587e0821babd6cfa6bd68c4874d130868",
+      "figure_headings": {
+        "216": [
+          253
+        ],
+        "217": [
+          254,
+          255
+        ],
+        "218": [
+          256
+        ]
+      }
+    },
+    "feature": {
+      "pdf_pages": [
+        192,
+        193,
+        194,
+        195
+      ],
+      "page_text_sha256": "3a670587cdb73e85d2eaea58f2610adc6853df06eaced9e542e61771359acdcf",
+      "figure_headings": {
+        "126": [
+          193
+        ],
+        "127": [
+          194
+        ]
+      }
+    },
+    "getfeat": {
+      "pdf_pages": [
+        235,
+        236,
+        237,
+        238
+      ],
+      "page_text_sha256": "fcc09f9dbc05b4c38cd6fd1860aa7293f33c6f0ee2dbc9324f9a70452c128bd1",
+      "figure_headings": {
+        "197": [
+          235
+        ],
+        "198": [
+          235,
+          236
+        ],
+        "199": [
+          236
+        ],
+        "200": [
+          236,
+          237
+        ],
+        "201": [
+          238
+        ],
+        "202": [
+          238
+        ]
+      }
+    },
+    "setfeat": {
+      "pdf_pages": [
+        482,
+        483,
+        484,
+        485,
+        486
+      ],
+      "page_text_sha256": "5182efdf88b513c324ffcbfa33ce927dbe6a3679b95af2e5a409528372b17e51",
+      "figure_headings": {
+        "463": [
+          482
+        ],
+        "464": [
+          483
+        ],
+        "465": [
+          483
+        ],
+        "466": [
+          483,
+          484,
+          485
+        ]
+      }
+    },
+    "setcomplete": {
+      "pdf_pages": [
+        545
+      ],
+      "page_text_sha256": "9a44213a7d4e76392068f2bb8287b157f7a2ef3411e445212ff9c16e2f35c811",
+      "figure_headings": {
+        "554": [
+          545
+        ]
+      }
+    },
+    "vwc": {
+      "pdf_pages": [
+        490,
+        491
+      ],
+      "page_text_sha256": "1097d4b43764eb793a45f08afa8e7bf0d5a972adf8e3abcafce845e8dc298850",
+      "figure_headings": {
+        "471": [
+          490,
+          491
+        ]
+      }
+    },
+    "aec": {
+      "pdf_pages": [
+        492,
+        493,
+        494
+      ],
+      "page_text_sha256": "a0999328103388d4993ec40e582b50f53990288701ddfbcef8ff1e09f277252c",
+      "figure_headings": {
+        "474": [
+          492,
+          493,
+          494
+        ]
+      }
+    },
+    "power": {
+      "pdf_pages": [
+        486,
+        487,
+        488,
+        494,
+        495
+      ],
+      "page_text_sha256": "4cfe7707e66de1df847babd253566e247b88b702df91b65872f2dee44ef620ba",
+      "figure_headings": {
+        "468": [
+          487
+        ],
+        "469": [
+          488
+        ],
+        "475": [
+          494
+        ],
+        "476": [
+          495
+        ],
+        "477": [
+          495
+        ],
+        "478": [
+          495
+        ]
+      }
+    },
+    "powerstates": {
+      "pdf_pages": [
+        692,
+        693,
+        694,
+        695,
+        696,
+        697,
+        698
+      ],
+      "page_text_sha256": "7b45f52f172b1421d4400553fc51bdd220cc6ef01f245975759975991b92025b",
+      "figure_headings": {
+        "738": [
+          692
+        ],
+        "739": [
+          693
+        ],
+        "740": [
+          695
+        ]
+      }
+    },
+    "thermal": {
+      "pdf_pages": [
+        497,
+        498
+      ],
+      "page_text_sha256": "6f106f925f20fa087dca26397414c247e1b0af7acd66c94458cdcda9670269a0",
+      "figure_headings": {
+        "482": [
+          498
+        ]
+      }
+    },
+    "timestamp": {
+      "pdf_pages": [
+        495,
+        496,
+        497
+      ],
+      "page_text_sha256": "9224f6fa0d25a628101c6425c163d5694c5adf2ab009f9a5863e858dc4a908b6",
+      "figure_headings": {
+        "479": [
+          496
+        ],
+        "480": [
+          496,
+          497
+        ]
+      }
+    },
+    "keepalive": {
+      "pdf_pages": [
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        497
+      ],
+      "page_text_sha256": "c582191eda5b4043583bcef635e7c9c76866be371bd74dfae72c5d022b0ba218",
+      "figure_headings": {
+        "481": [
+          497
+        ]
+      }
+    },
+    "rrl": {
+      "pdf_pages": [
+        499,
+        715,
+        716
+      ],
+      "page_text_sha256": "9ab05bed3cbfcd87550de876162756eef880cfbab9ddf36197138c46a1916f8a",
+      "figure_headings": {
+        "484": [
+          499
+        ],
+        "485": [
+          499
+        ],
+        "755": [
+          716
+        ]
+      }
+    },
+    "behavior": {
+      "pdf_pages": [
+        501,
+        502,
+        503
+      ],
+      "page_text_sha256": "e8de2ddd84f4ea535eebcc25428b4207d8090af7d8ec17e2b48b8d1e89abd9d1",
+      "figure_headings": {
+        "491": [
+          502,
+          503
+        ]
+      }
+    },
+    "profile": {
+      "pdf_pages": [
+        504,
+        505
+      ],
+      "page_text_sha256": "64946dc18f7deaab9fe06ff6ea45e4f159f085a3148ebbedb0f26445e82e5585",
+      "figure_headings": {
+        "494": [
+          505
+        ],
+        "495": [
+          505
+        ]
+      }
+    },
+    "irqfeat": {
+      "pdf_pages": [
+        540,
+        541
+      ],
+      "page_text_sha256": "9bb8ee3f4f0d1453d8490c5e1d32783627b525932ee29981f8dfd401d16cf19c",
+      "figure_headings": {
+        "543": [
+          541
+        ],
+        "544": [
+          541
+        ]
+      }
+    },
+    "hmb": {
+      "pdf_pages": [
+        541,
+        542,
+        543,
+        544,
+        545,
+        770
+      ],
+      "page_text_sha256": "1e5c7278a43c1ab14a3a9f6fb0177b3634dc2c7bb7040b0af7dbabacfe855916",
+      "figure_headings": {
+        "545": [
+          542,
+          543
+        ],
+        "546": [
+          543
+        ],
+        "547": [
+          543
+        ],
+        "548": [
+          543
+        ],
+        "549": [
+          544
+        ],
+        "550": [
+          544
+        ],
+        "551": [
+          544
+        ],
+        "552": [
+          544,
+          545
+        ],
+        "553": [
+          545
+        ]
+      }
+    },
+    "nwp": {
+      "pdf_pages": [
+        538,
+        690,
+        691,
+        692
+      ],
+      "page_text_sha256": "e9691d8225540dbd769b02a9f7d84a9575e35ec096ba82a564d26792968da993",
+      "figure_headings": {
+        "541": [
+          538
+        ],
+        "735": [
+          690
+        ],
+        "736": [
+          690
+        ],
+        "737": [
+          691,
+          692
+        ]
+      }
+    },
+    "featureeffects": {
+      "pdf_pages": [
+        302,
+        303,
+        304
+      ],
+      "page_text_sha256": "ee81df36a16bf99cad0cfdaa1e5e688229a993f519aad66c8965789efc92b441",
+      "figure_headings": {
+        "270": [
+          302
+        ],
+        "271": [
+          303,
+          304
+        ]
+      }
+    },
+    "nschange": {
+      "pdf_pages": [
+        251,
+        252,
+        284,
+        285,
+        286,
+        287
+      ],
+      "page_text_sha256": "f795faab90e0c97f14f572317ed604b4c7ec8b4ac76a26ac9c59688666c9e478",
+      "figure_headings": {
+        "215": [
+          252
+        ],
+        "247": [
+          284,
+          285
+        ],
+        "248": [
+          286
+        ],
+        "249": [
+          286,
+          287
+        ]
+      }
+    },
+    "thermalpel": {
+      "pdf_pages": [
+        291,
+        292
+      ],
+      "page_text_sha256": "a62bd1da4dab7789348444400504a0722ec48413e234bbb7e5cd81e7f871d1b7",
+      "figure_headings": {
+        "255": [
+          291,
+          292
+        ]
+      }
+    },
+    "idns": {
+      "pdf_pages": [
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107
+      ],
+      "page_text_sha256": "ec9b319f520e0c3eb6b946eff11054f5fd32eb217b0b4a2dfe2163899714eb5c",
+      "figure_headings": {
+        "123": [
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93
+        ],
+        "124": [
+          94
+        ],
+        "125": [
+          94
+        ],
+        "126": [
+          94,
+          95,
+          96
+        ],
+        "127": [
+          97,
+          98,
+          99,
+          100,
+          101
+        ],
+        "128": [
+          101,
+          102
+        ],
+        "129": [
+          103
+        ],
+        "130": [
+          107
+        ]
+      }
+    },
+    "nvmfeat": {
+      "pdf_pages": [
+        64,
+        65,
+        66,
+        67,
+        68,
+        69
+      ],
+      "page_text_sha256": "db4e699272d77c655bd862962b6d22f0018dff788c3c535f4b840e564fc380bb",
+      "figure_headings": {
+        "92": [
+          64
+        ],
+        "93": [
+          64
+        ],
+        "94": [
+          65
+        ],
+        "95": [
+          65
+        ],
+        "96": [
+          65,
+          66
+        ],
+        "97": [
+          66
+        ],
+        "98": [
+          66,
+          67
+        ],
+        "99": [
+          67
+        ],
+        "100": [
+          68
+        ],
+        "101": [
+          68
+        ]
+      }
+    },
+    "nvmatomic": {
+      "pdf_pages": [
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "page_text_sha256": "da29d8d54eeb87caf60172da1170ba7ba4eac65fada1e34a3d3e399fa86d023b",
+      "figure_headings": {
+        "3": [
+          14
+        ],
+        "4": [
+          15,
+          16
+        ],
+        "5": [
+          17
+        ],
+        "6": [
+          18
+        ],
+        "7": [
+          18
+        ],
+        "8": [
+          19
+        ],
+        "9": [
+          20
+        ]
+      }
+    },
+    "pcie": {
+      "pdf_pages": [
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "page_text_sha256": "ad6126eaaef4282301fa3fc80a878948114484d2ae9a03a708e446e66618168e",
+      "figure_headings": {
+        "3": [
+          9
+        ],
+        "4": [
+          9,
+          10
+        ],
+        "5": [
+          10
+        ],
+        "6": [
+          10,
+          11
+        ],
+        "7": [
+          11
+        ],
+        "8": [
+          13
+        ]
+      }
+    },
+    "irq": {
+      "pdf_pages": [
+        13,
+        14,
+        15,
+        16
+      ],
+      "page_text_sha256": "c78fd8a80ded3d23f44718968a1e9503d99a0eb9c8ee6c15389bfc26ea7d3730",
+      "figure_headings": {
+        "9": [
+          15
+        ]
+      }
+    },
+    "pciconfig": {
+      "pdf_pages": [
+        16,
+        17,
+        18
+      ],
+      "page_text_sha256": "21e59b01bdcf0a5ede5387fdec4c304d1f7927155f08aacf68a18d6996bd9775",
+      "figure_headings": {
+        "10": [
+          16,
+          17
+        ],
+        "11": [
+          17
+        ],
+        "12": [
+          17
+        ],
+        "13": [
+          18
+        ],
+        "14": [
+          18
+        ],
+        "15": [
+          18
+        ],
+        "16": [
+          18
+        ],
+        "17": [
+          18
+        ]
+      }
+    }
+  },
+  "source_hashes": {
+    "B": "fe7647532c06859f2952d9db1f90165aa3e9375343d588d5444253f7dbb2c9bd",
+    "N": "a5c192fe239777c3c7a70417c16317fcfc24445a8cd72832286651ce76cefc4b",
+    "P": "2f6dc41d529c03e0596219fb2a734221ba3261837e14bab61168cde5a3226c30"
+  }
+}

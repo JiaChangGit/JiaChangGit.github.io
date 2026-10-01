@@ -1,0 +1,42 @@
+/* All rules are scoped; the shared reference theme provides explicit light/dark tokens. */
+.nvme-qa { --qr-fg:var(--qr-ink); --qr-bg:var(--qr-paper); --qr-border:var(--qr-line); }
+.nvme-qa .qa-glossary {padding:1.2rem 1.5rem;border-left:4px solid var(--qr-accent);background:var(--qr-soft);margin:2rem 0;}
+.nvme-qa dl {margin:0;}
+.nvme-qa dt {font-weight:700;color:var(--qr-fg);margin-top:1rem;}
+.nvme-qa dd {margin:.3rem 0 0;color:var(--qr-muted);}
+.nvme-qa .qa-overview {padding:1.2rem 0;border-bottom:1px solid var(--qr-border);}
+.nvme-qa .qa-takeaway {font-size:1.15em;font-weight:600;color:var(--qr-accent);}
+.nvme-qa .qa-lesson article {margin:1.5rem 0;padding-left:1.2rem;border-left:2px solid var(--qr-border);}
+.nvme-qa .qa-state {display:flex;flex-direction:column;align-items:center;justify-content:center;flex-wrap:wrap;gap:.8rem;margin:2rem 0;}
+.nvme-qa .qa-state span:not(.qa-arrow) {padding:.8rem 1.2rem;border:1px solid var(--qr-accent);border-radius:12px;background:var(--qr-soft);text-align:center;}
+.nvme-qa .qa-arrow {font-size:.85rem;color:var(--qr-muted);text-align:center;}
+.nvme-qa .qa-index {list-style:none;padding:0;display:grid;gap:.5rem;}
+.nvme-qa .qa-index li {border-bottom:1px solid var(--qr-border);padding:.5rem 0;}
+.nvme-qa .qa-index a {display:block;text-decoration:none;}
+.nvme-qa .qa-question {border:1px solid var(--qr-border);border-radius:14px;padding:1.5rem;margin:2rem 0;background:var(--qr-surface);scroll-margin-top:2rem;}
+.nvme-qa .qa-question h2 {font-size:1.28em;margin-top:0;line-height:1.6;}
+.nvme-qa .qa-qid {font-family:ui-monospace,monospace;font-size:.85em;font-weight:700;display:inline-block;margin-right:.5rem;}
+.nvme-qa .qa-prompt,.nvme-qa .qa-back {font-size:.88em;color:var(--qr-muted);}
+.nvme-qa .qa-answer {border:0;padding:0;background:transparent;}
+.nvme-qa summary {cursor:pointer;color:var(--qr-accent);font-weight:650;line-height:1.7;}
+.nvme-qa .qa-answer>summary {padding:.8rem 0;}
+.nvme-qa .qa-items {list-style:none;margin:0;padding:0;}
+.nvme-qa .qa-items>li {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-items h3 {font-size:1em;line-height:1.65;margin:0 0 .6rem;}
+.nvme-qa .qa-items h3 span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
+.nvme-qa .qa-items p {margin:.4rem 0;}
+.nvme-qa .qa-rule-link {white-space:normal;font-size:.9em;}
+.nvme-qa .qa-common article {padding:1rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-common h3 {font-size:1em;}
+.nvme-qa .qa-citations {font-size:.8em;line-height:1.7;overflow-wrap:anywhere;color:var(--qr-muted);}
+.nvme-qa .qa-references {padding-left:1.2rem;font-size:.87em;}
+.nvme-qa .qa-references li {margin:1rem 0;scroll-margin-top:2rem;}
+.nvme-qa .qa-controls {padding:1rem;background:var(--qr-soft);border-radius:12px;display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin:2rem 0;}
+.nvme-qa .qa-controls[hidden],.nvme-qa [hidden] {display:none!important;}
+.nvme-qa input {display:block;font:inherit;color:var(--qr-fg);background:var(--qr-bg);border:1px solid var(--qr-border);border-radius:5px;padding:.4rem .6rem;max-width:100%;width:18rem;box-sizing:border-box;}
+.nvme-qa button {font:inherit;font-size:.88em;background:var(--qr-surface);color:var(--qr-fg);border:1px solid var(--qr-border);border-radius:7px;padding:.5rem .8rem;cursor:pointer;}
+.nvme-qa .qa-theme {margin:0 1rem;}
+.nvme-qa output {font-size:.85em;color:var(--qr-muted);}
+.nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
+@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-items h3 span{display:inline}.nvme-qa .qa-state{flex-direction:column}}
+@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-items>li{break-inside:avoid}}

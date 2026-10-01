@@ -1,5 +1,11 @@
 # AGENTS.md — Jia’s Blog 專案規則
 
+## 2026-10-01 獨立自問自答題庫
+
+使用者確認此題庫主要用於學習並判斷韌體符合性，本次僅完成 Q1–Q68，分六冊加總索引，各有繁中教學 HTML、中英文 Pages。後續 Q69–Q320 已收到但不納入本次。此系列獨立於前八篇圖表／情境速查，可連回其固定圖解位置，不重複生成。每題保留使用者的 17 個觀察面向，預設收合完整解答；共通規則在同冊完整解釋一次，題目保留適用結論及本地連結。繁中 HTML 另有逐步課程，不只是展開 post。
+
+來源仍為三份 ratified 規格；本次排除 Fabrics、PCIe Link 與封包細節，保留必要的設定空間、中斷與 NVMe Register／queue／doorbell。不可將 MMIO 操作編造為有 CQE；should 不提升成 shall，undefined 不強行指定 Status，More=0 不等於禁止 Error Log，DNR=0 不保證可以原樣立即重試。範圍與來源證據為 `.ai/nvme-question-bank/`，內容為 `scripts/nvme_qa_*.py`，生成器為 `scripts/build_nvme_question_bank.py`；出版檢查含 `--check`、`nvme_qa_sources.py --check`、測試、三版瀏覽器驗證及相同 commit 的兩個 CI。來源差異與後續範圍見 `docs/nvme-question-bank-maintenance.md`。
+
 ## 2026-09-30 情境練習整合
 
 使用者要求直接修改既有八篇圖表速查（七冊＋總索引），不另建重複系列。三份來源與 Fabrics-only 排除不變。題目先顯示需求與教學假設的回傳資料，完整查詢路徑及逐步推導以 details 收合；只用 Spec 命令與欄位，不加入 nvme-cli／lspci 指令或存取實體裝置。三版本維持既有 URL，每題只有一個固定位置，解答連回既有圖表，取代原先七段簡短的串接案例。此明確授權優先於舊教材不設模擬／除錯單元的限制。

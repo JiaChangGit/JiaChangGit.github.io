@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>NVMe 自問自答題庫：Identify 與能力探索</title><style>/* Independently scoped quick-reference layout. All text follows explicit theme colors. */
+.nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; color:var(--qr-ink); background:var(--qr-paper); font:17px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; -webkit-text-size-adjust:100%; padding:clamp(16px,3vw,36px); border-radius:12px; }
+.nvme-quickref * { box-sizing:border-box; }
+@media(prefers-color-scheme:dark) { .nvme-quickref { --qr-paper:#111923; --qr-surface:#172330; --qr-ink:#e4eef5; --qr-muted:#b2c3d0; --qr-line:#3a5060; --qr-accent:#66d8c5; --qr-soft:#173b39; } }
+html[data-theme="dark"] .nvme-quickref { --qr-paper:#111923; --qr-surface:#172330; --qr-ink:#e4eef5; --qr-muted:#b2c3d0; --qr-line:#3a5060; --qr-accent:#66d8c5; --qr-soft:#173b39; }
+html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; }
+.qr-standalone { margin:0; background:#e8eef2; }
+@media(prefers-color-scheme:dark) { .qr-standalone { background:#0d141c; } }
+.qr-standalone .nvme-quickref { max-width:1120px; margin:auto; border-radius:0; min-height:100vh; padding-top:max(24px,env(safe-area-inset-top)); }
+.nvme-quickref main { min-width:0; max-width:900px; margin:auto; }
+.nvme-quickref h1,.nvme-quickref h2,.nvme-quickref h3,.nvme-quickref p,.nvme-quickref li,.nvme-quickref td,.nvme-quickref th,.nvme-quickref summary,.nvme-quickref strong { color:var(--qr-ink); }
+.nvme-quickref h1 { font-size:clamp(27px,4vw,39px); line-height:1.4; margin:14px 0 22px; }
+.nvme-quickref h2 { font-size:clamp(21px,2.8vw,28px); line-height:1.5; margin:0 0 16px; }
+.nvme-quickref h3 { font-size:19px; line-height:1.6; margin:24px 0 10px; }
+.nvme-quickref p { margin:0 0 20px; max-width:80ch; overflow-wrap:anywhere; }
+.nvme-quickref a { color:var(--qr-accent); text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; min-height:44px; display:inline-flex; align-items:center; }
+.nvme-quickref a:focus-visible,.nvme-quickref summary:focus-visible { outline:3px solid var(--qr-accent); outline-offset:3px; }
+.nvme-quickref [id] { scroll-margin-top:24px; }
+.nvme-quickref :target { outline:2px solid var(--qr-accent); outline-offset:5px; }
+.nvme-quickref .qr-top { display:flex; gap:8px 22px; flex-wrap:wrap; font-size:15px; margin-bottom:18px; }
+.nvme-quickref .qr-eyebrow,.nvme-quickref .qr-number { color:var(--qr-accent); font:700 14px/1.6 ui-monospace,monospace; }
+.nvme-quickref .qr-number { display:block; margin-bottom:8px; }
+.nvme-quickref .qr-intro { font-size:19px; }
+.nvme-quickref .qr-note { background:var(--qr-soft); padding:18px 20px; border-left:4px solid var(--qr-accent); margin:24px 0; }
+.nvme-quickref .qr-note p:last-child { margin-bottom:0; }
+.nvme-quickref .qr-toc { padding:20px; background:var(--qr-surface); border:1px solid var(--qr-line); border-radius:8px; margin:28px 0; }
+.nvme-quickref .qr-toc ol { padding-left:24px; margin:0; columns:2; column-gap:30px; }
+.nvme-quickref .qr-toc li { break-inside:avoid; padding:0 0 4px; }
+.nvme-quickref .qr-card { background:var(--qr-surface); padding:clamp(18px,3vw,30px); margin:28px 0; border:1px solid var(--qr-line); border-radius:10px; }
+.nvme-quickref .qr-original { font-size:15px; color:var(--qr-muted); line-height:1.65; margin-bottom:10px; }
+.nvme-quickref .qr-location { font-size:15px; color:var(--qr-muted); border-bottom:1px solid var(--qr-line); padding-bottom:14px; margin-bottom:22px; }
+.nvme-quickref .qr-step { font:700 13px/1.7 ui-monospace,monospace; color:var(--qr-accent); display:block; margin-bottom:6px; }
+.nvme-quickref .qr-tags { font-size:14px; color:var(--qr-muted); overflow-wrap:anywhere; }
+.nvme-quickref .qr-related { border-top:1px solid var(--qr-line); padding-top:10px; font-size:15px; }
+.nvme-quickref .qr-related a { margin-right:18px; }
+.nvme-quickref .qr-table { overflow-x:auto; border:1px solid var(--qr-line); border-radius:6px; margin:20px 0; }
+.nvme-quickref table { width:100%; border-collapse:collapse; background:var(--qr-surface); font-size:15px; margin:0; }
+.nvme-quickref th,.nvme-quickref td { text-align:left; vertical-align:top; padding:12px 14px; border:0; border-bottom:1px solid var(--qr-line); min-width:100px; overflow-wrap:anywhere; }
+.nvme-quickref th { background:var(--qr-soft); position:sticky; top:0; }
+.nvme-quickref tr:last-child td { border-bottom:0; }
+.nvme-quickref code { background:var(--qr-soft); color:var(--qr-ink); white-space:normal; overflow-wrap:anywhere; }
+.nvme-quickref .qr-catalog td:first-child { width:28%; }
+.nvme-quickref .qr-catalog td:last-child { width:40%; }
+.nvme-quickref .qr-sources { font-size:14px; overflow-wrap:anywhere; }
+.nvme-quickref .qr-sources li { padding:10px 0; }
+.nvme-quickref .qr-case h3 { margin:0 0 18px; font-size:22px; }
+.nvme-quickref h4 { color:var(--qr-ink); font-size:16px; margin:18px 0 10px; }
+.nvme-quickref .qr-observations { background:var(--qr-soft); padding:1px 18px 12px; border-left:4px solid var(--qr-accent); margin:20px 0; }
+.nvme-quickref .qr-observations li { margin:8px 0; overflow-wrap:anywhere; }
+.nvme-quickref .qr-answer { border-top:1px solid var(--qr-line); margin:20px 0 6px; }
+.nvme-quickref .qr-answer summary { cursor:pointer; min-height:48px; padding:14px 0; font-weight:650; color:var(--qr-accent); }
+.nvme-quickref .qr-answer[open] summary { margin-bottom:18px; }
+.nvme-quickref .qr-route { border-bottom:1px solid var(--qr-line); padding-bottom:18px; }
+.nvme-quickref .qr-case-sources { font-size:14px; padding-left:20px; line-height:1.8; }
+.nvme-quickref .qr-case-sources li { margin:10px 0; overflow-wrap:anywhere; }
+.nvme-quickref .qr-exercise-list { padding-left:24px; }
+.nvme-quickref .qr-series { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.nvme-quickref .qr-series article { padding:20px; background:var(--qr-surface); border:1px solid var(--qr-line); border-radius:8px; }
+.nvme-quickref .qr-series h2 { font-size:20px; margin:0; }
+.nvme-quickref .qr-series p { font-size:16px; }
+.nvme-quickref footer { padding:24px 0; border-top:1px solid var(--qr-line); }
+@media(max-width:900px) { .nvme-quickref .qr-toc ol { columns:1; } }
+@media(max-width:620px) { .nvme-quickref .qr-series { grid-template-columns:1fr; } .nvme-quickref .qr-card { padding:16px; } .nvme-quickref .qr-catalog { min-width:620px; } }
+@media(prefers-reduced-motion:reduce) { .nvme-quickref * { scroll-behavior:auto!important; } }
+@media(forced-colors:active) { .nvme-quickref,.nvme-quickref .qr-card { background:Canvas; color:CanvasText; } .nvme-quickref a { color:LinkText; } }
+@media print { .nvme-quickref { --qr-paper:#fff!important; --qr-surface:#fff!important; --qr-ink:#000!important; --qr-muted:#333!important; --qr-line:#999!important; --qr-accent:#000!important; --qr-soft:#fff!important; font-size:11pt; padding:0; } .nvme-quickref .qr-top,.nvme-quickref .qr-toc { display:none; } .nvme-quickref .qr-card { border:0; border-top:1px solid #999; border-radius:0; } .nvme-quickref h2,.nvme-quickref h3 { break-after:avoid; } .nvme-quickref p { orphans:3; widows:3; } .nvme-quickref .qr-table { overflow:visible; } }
+
+/* All rules are scoped; the shared reference theme provides explicit light/dark tokens. */
+.nvme-qa { --qr-fg:var(--qr-ink); --qr-bg:var(--qr-paper); --qr-border:var(--qr-line); }
+.nvme-qa .qa-glossary {padding:1.2rem 1.5rem;border-left:4px solid var(--qr-accent);background:var(--qr-soft);margin:2rem 0;}
+.nvme-qa dl {margin:0;}
+.nvme-qa dt {font-weight:700;color:var(--qr-fg);margin-top:1rem;}
+.nvme-qa dd {margin:.3rem 0 0;color:var(--qr-muted);}
+.nvme-qa .qa-overview {padding:1.2rem 0;border-bottom:1px solid var(--qr-border);}
+.nvme-qa .qa-takeaway {font-size:1.15em;font-weight:600;color:var(--qr-accent);}
+.nvme-qa .qa-lesson article {margin:1.5rem 0;padding-left:1.2rem;border-left:2px solid var(--qr-border);}
+.nvme-qa .qa-state {display:flex;flex-direction:column;align-items:center;justify-content:center;flex-wrap:wrap;gap:.8rem;margin:2rem 0;}
+.nvme-qa .qa-state span:not(.qa-arrow) {padding:.8rem 1.2rem;border:1px solid var(--qr-accent);border-radius:12px;background:var(--qr-soft);text-align:center;}
+.nvme-qa .qa-arrow {font-size:.85rem;color:var(--qr-muted);text-align:center;}
+.nvme-qa .qa-index {list-style:none;padding:0;display:grid;gap:.5rem;}
+.nvme-qa .qa-index li {border-bottom:1px solid var(--qr-border);padding:.5rem 0;}
+.nvme-qa .qa-index a {display:block;text-decoration:none;}
+.nvme-qa .qa-question {border:1px solid var(--qr-border);border-radius:14px;padding:1.5rem;margin:2rem 0;background:var(--qr-surface);scroll-margin-top:2rem;}
+.nvme-qa .qa-question h2 {font-size:1.28em;margin-top:0;line-height:1.6;}
+.nvme-qa .qa-qid {font-family:ui-monospace,monospace;font-size:.85em;font-weight:700;display:inline-block;margin-right:.5rem;}
+.nvme-qa .qa-prompt,.nvme-qa .qa-back {font-size:.88em;color:var(--qr-muted);}
+.nvme-qa .qa-answer {border:0;padding:0;background:transparent;}
+.nvme-qa summary {cursor:pointer;color:var(--qr-accent);font-weight:650;line-height:1.7;}
+.nvme-qa .qa-answer>summary {padding:.8rem 0;}
+.nvme-qa .qa-items {list-style:none;margin:0;padding:0;}
+.nvme-qa .qa-items>li {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-items h3 {font-size:1em;line-height:1.65;margin:0 0 .6rem;}
+.nvme-qa .qa-items h3 span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
+.nvme-qa .qa-items p {margin:.4rem 0;}
+.nvme-qa .qa-rule-link {white-space:normal;font-size:.9em;}
+.nvme-qa .qa-common article {padding:1rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-common h3 {font-size:1em;}
+.nvme-qa .qa-citations {font-size:.8em;line-height:1.7;overflow-wrap:anywhere;color:var(--qr-muted);}
+.nvme-qa .qa-references {padding-left:1.2rem;font-size:.87em;}
+.nvme-qa .qa-references li {margin:1rem 0;scroll-margin-top:2rem;}
+.nvme-qa .qa-controls {padding:1rem;background:var(--qr-soft);border-radius:12px;display:flex;gap:.7rem;flex-wrap:wrap;align-items:center;margin:2rem 0;}
+.nvme-qa .qa-controls[hidden],.nvme-qa [hidden] {display:none!important;}
+.nvme-qa input {display:block;font:inherit;color:var(--qr-fg);background:var(--qr-bg);border:1px solid var(--qr-border);border-radius:5px;padding:.4rem .6rem;max-width:100%;width:18rem;box-sizing:border-box;}
+.nvme-qa button {font:inherit;font-size:.88em;background:var(--qr-surface);color:var(--qr-fg);border:1px solid var(--qr-border);border-radius:7px;padding:.5rem .8rem;cursor:pointer;}
+.nvme-qa .qa-theme {margin:0 1rem;}
+.nvme-qa output {font-size:.85em;color:var(--qr-muted);}
+.nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
+@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-items h3 span{display:inline}.nvme-qa .qa-state{flex-direction:column}}
+@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-items>li{break-inside:avoid}}
+</style></head><body class="qr-standalone">
+<div class="nvme-quickref nvme-qa">
+<nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/identify/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/identify/en/">English</a></nav>
+<button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–68</p>
+<header><p class="qa-range">Q44–Q53</p><h1>Identify 與能力探索</h1><p class="qr-intro">把 Identify 當成多個不同的查詢入口。先問「查誰、查哪一種資料」，再選 CNS、CSI、NSID 及其他 selector。能力、目前配置與清單變更分開核對，才能找出真正矛盾。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
+<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可以指定的一份邏輯儲存空間。多個 controller 可以屬於同一 NVM subsystem（包含 controller 與非揮發儲存資源的整體）。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue 是提交佇列，Completion Queue 是完成佇列；SQE／CQE 是其中的一筆 entry。QID 識別 queue，CID 識別同一 SQ 內尚未完成的命令，NSID 識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 是可存取的控制或狀態欄位；Identify 查物件能力與屬性；Feature 查／設工作設定；Log Page 回報指定種類的狀態或紀錄。FID、LID、CNS、CSI 分別選 Feature、Log、Identify 結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 是第幾筆，通常由 0 起算；offset 是離起點多遠，要看單位。zero-based 數量欄位的實際數量＝編碼＋1，但不是每個寫 0 的欄位都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 指一項操作影響的物件範圍。retention 是狀態是否保留。Controller Reset（清 CC.EN）是一種 Controller Level Reset，簡稱 CLR；同一類 CLR 的不同觸發方式，Register 保留規則仍可能不同。</dd></dl></aside>
+<section id="overview" class="qa-overview"><h2>先選問題，再選 Identify 結構</h2><p class="qa-takeaway">不同 CNS 回答不同問題；「已配置」不能直接推論成「這個 controller 現在可存取」。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">想知道什麼</th><th scope="col">查詢入口</th><th scope="col">回覆如何使用</th></tr></thead><tbody><tr><td>controller 宣告的能力</td><td>CNS=01h</td><td>讀 OACS、ONCS、MDTS 等，再配合該欄位條件</td></tr><tr><td>目前可存取的 namespaces</td><td>CNS=02h</td><td>取得 active list；不是所有已配置容量</td></tr><tr><td>已配置的 namespaces</td><td>支援 Namespace Management 時用 CNS=10h</td><td>清單可包含未 attach 到此 controller 的 namespace</td></tr><tr><td>單一 NVM namespace 的格式</td><td>CNS=00h；需要時加 CNS=05h、CSI=00h</td><td>NSZE／NCAP、FLBAS、LBAF 與 PI 格式共同解讀</td></tr><tr><td>不依賴命令集的 namespace 屬性</td><td>CNS=08h</td><td>與 NVM 特定的 LBA 格式結構分開</td></tr></tbody></table></div>
+<p><strong>舉例看懂：</strong>假設 Allocated List={1,2}，目前 controller 的 Active List={1}。這只能證明 namespace 2 未出現在此 controller 的 active list；不能直接判定它被刪除。下一步查 attachment 與適用的狀態，並留下 controller 身分及查詢時間。</p>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a></p>
+</section>
+<section class="qa-lesson"><h2>先把觀念接起來</h2>
+<article><h3>教學 1 · 從裝置、容量到可見性，分三次問</h3><p>Identify Controller 描述這個 controller；Identify Namespace 描述指定 namespace 的格式與容量；Active List 描述目前能透過這個 controller 使用的 namespace 集合。這三份回覆互補，不能靠 Controller.NN 就認定從 NSID=1 到 NN 全都存在並可存取。</p></article>
+<article><h3>教學 2 · 欄位是位元遮罩還是索引，會改變算式</h3><p>CNS 選資料結構；CSI 選命令集；某些欄位是能力 bitmap，某些是陣列 index。以 LBAF 為例，先從 FLBAS 解出正確索引，再去讀那一筆格式描述，不能把 FLBAS 原始值直接當 bytes 數。對比型別通常比死背十六進位值更有用。</p></article>
+<article><h3>教學 3 · 查詢結果也有時間</h3><p>Create 成功後才查 Allocated List，Attach 成功後才查該 controller 的 Active List。若另一個管理者同時改配置，前後清單可能屬於不同時間。先釐清順序與觀察對象，再判斷是不是韌體沒有更新回覆。</p></article>
+</section>
+<div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
+<section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
+<li><a href="#q-044">Q44 · Identify Controller 與 Identify Namespace 分別提供哪些重要資訊？</a></li>
+<li><a href="#q-045">Q45 · Active Namespace ID List、Allocated Namespace ID List 及 Namespace Descriptor List 有什麼差異？</a></li>
+<li><a href="#q-046">Q46 · Controller List、UUID List 及 I/O Command Set Identify 資料分別有什麼用途？</a></li>
+<li><a href="#q-047">Q47 · NVM Set、Endurance Group、Domain 及 Secondary Controller 資訊應從哪種 Identify 資料取得？</a></li>
+<li><a href="#q-048">Q48 · CNS、CSI、NSID 或 UUID Index 不支援或不合法時，Controller 應如何回應？</a></li>
+<li><a href="#q-049">Q49 · Serial Number、Model Number、Firmware Revision、MDTS 及 Optional Admin Command 欄位應如何解讀？</a></li>
+<li><a href="#q-050">Q50 · Identify 宣告支援某功能後，應如何透過對應 Command 及 Commands Supported and Effects Log 驗證？</a></li>
+<li><a href="#q-051">Q51 · Namespace 建立、刪除、Attach、Detach 或 Format 後，哪些 Identify 資料與 Namespace List 應更新？</a></li>
+<li><a href="#q-052">Q52 · Firmware Activation、Reset 及 Power Cycle 後，哪些 Identify 資料可能改變，哪些應保持不變？</a></li>
+<li><a href="#q-053">Q53 · Identify、Feature、Log Page 與實際 Command 行為不一致時，應如何定位問題？</a></li>
+</ol></section>
+<article class="qa-question" id="q-044" data-question="44"><h2><a class="qa-qid" href="#q-044">Q44</a> Identify Controller 與 Identify Namespace 分別提供哪些重要資訊？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-044-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-044-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>先分清 controller 能做什麼，與特定 namespace 採用什麼容量、格式和保護設定。</p>
+</li>
+<li id="q-044-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>Controller 資料以接收命令的 controller 為觀察入口；Namespace 資料由 NSID／CNS／CSI 指定。</p>
+</li>
+<li id="q-044-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>基本入口為 CNS01h Controller、CNS00h NVM Namespace；CNS05h／06h 為 command-set specific，CNS08h 為 command-set independent Namespace。</p>
+</li>
+<li id="q-044-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Controller 看 SN、MN、FR、MDTS、OACS、ONCS、LPA、SQES／CQES；NVM Namespace 看 NSZE／NCAP／NUSE、FLBAS／LBAF、MC／DPC／DPS、原子性及群組識別。</p>
+</li>
+<li id="q-044-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先查 Controller 和 active list，再逐 namespace 查適用的幾種結構；用目前選定 LBA format 將 block 數轉成 bytes。</p>
+</li>
+<li id="q-044-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>Identify 回傳 4096-byte 結構與成功 CQE。例：NSZE=8192、LBADS=12，邏輯位址空間為 8192×4096=32 MiB。</p>
+</li>
+<li id="q-044-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>不支援 CNS：Invalid Field（0/02h）；namespace 所屬 command set 不支援該 CNS：Invalid I/O Command Set（1/2Ch）。NSID 情況依該 CNS。</p>
+</li>
+<li id="q-044-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-044-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>「Controller 支援某命令」不代表每個 namespace 都有適合的格式或目前可存取；能力與 namespace 條件須相交檢查。</p>
+</li>
+<li id="q-044-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查拿到哪個 CNS 的 buffer，再依那個結構解碼，避免把 CNS08h 當 CNS00h。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-045" data-question="45"><h2><a class="qa-qid" href="#q-045">Q45</a> Active Namespace ID List、Allocated Namespace ID List 及 Namespace Descriptor List 有什麼差異？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-045-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-045-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>分開「可由此 controller 使用」「已配置存在」與「這個 namespace 的識別資料」。</p>
+</li>
+<li id="q-045-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>Active list 是 controller 的視角；Allocated list 可包含未附加的 namespace；Descriptor list 是單一 NSID 的屬性集合。</p>
+</li>
+<li id="q-045-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>CNS02h 查 Active，10h 查 Allocated，03h 查 Namespace Identification Descriptors；Allocated 查詢還依 Namespace Management 支援。</p>
+</li>
+<li id="q-045-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>List 的 NSID 是分頁起點，回傳大於起點的 IDs；Descriptor 有 NIDT／NIDL／NID，描述例如 EUI64、NGUID、UUID、CSI。</p>
+</li>
+<li id="q-045-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>從 NSID=0 讀起，依遞增 ID 繼續下一批；查單一 namespace 的 Descriptor 時，NSID 則是目標。不要把兩種用途混淆。</p>
+</li>
+<li id="q-045-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>例：Allocated={1,3,8}、Active={1,8}，表示 3 已配置但不在此 controller 的 active list；不是 namespace3 必然損壞。</p>
+</li>
+<li id="q-045-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>CNS02h／10h 的起點 FFFFFFFEh 或 FFFFFFFFh 須回 Invalid Namespace or Format（0/0Bh）。未支援 CNS 則為 0/02h。</p>
+</li>
+<li id="q-045-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-045-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>用 Descriptor 的穩定識別關聯裝置，而非永遠假設 NSID 不變；分頁期間若配置改變，需重新取得一致的清單。</p>
+</li>
+<li id="q-045-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認 NSID 在此次命令中代表目標，還是「從這個 ID 之後開始列」。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-046" data-question="46"><h2><a class="qa-qid" href="#q-046">Q46</a> Controller List、UUID List 及 I/O Command Set Identify 資料分別有什麼用途？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-046-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-046-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>回答「由哪些 controller 存取」「用哪套 vendor 定義解讀」「哪些 command sets 能同時使用」三種不同問題。</p>
+</li>
+<li id="q-046-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>Controller List 是關係清單；UUID List 是 vendor-specific 資訊的選擇表，不等於 namespace 的 UUID Descriptor。</p>
+</li>
+<li id="q-046-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>CNS12h 查某 namespace 附加的 controllers，13h 查 subsystem I/O controllers，17h 查 UUID List，1Ch 查 command-set combinations。</p>
+</li>
+<li id="q-046-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>CNTID 是 Controller List 的起點或特定 CNS 的目標；UIDX=0 不指定 UUID。CNS1Ch 的每個 vector 是一組可同時使用的 CSI。</p>
+</li>
+<li id="q-046-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先依問題選 CNS，再用正確 selector；CNS1Ch 選出組合後，FID19h 的 IOCSCI 使用該組合的 index，不是直接填 CSI bitmap。</p>
+</li>
+<li id="q-046-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>Controller List 回識別值與數量；UUID List 回有定義順序的 entries；command-set vectors 告訴 Host 可選配置，不自動啟用它們。</p>
+</li>
+<li id="q-046-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>未支援 CNS 回 0/02h；CNS12h 的 NSID=FFFFFFFFh 回 0/02h。UUID selector 的非法狀態另依 §8.1.31，不能當成 namespace 不存在。</p>
+</li>
+<li id="q-046-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-046-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>核對 CNTID 與 NSID 各自作用，不將 controller list 當 active namespace list；核對 FID19h Current 是否選到預期 vector。</p>
+</li>
+<li id="q-046-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認 UIDX 是 UUID List 的索引，不是 UUID 本體，也不是 namespace ID。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-047" data-question="47"><h2><a class="qa-qid" href="#q-047">Q47</a> NVM Set、Endurance Group、Domain 及 Secondary Controller 資訊應從哪種 Identify 資料取得？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-047-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-047-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>建立資源歸屬關係，避免把 Set、Group、Domain 和 controller 當成同一層物件。</p>
+</li>
+<li id="q-047-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>每種清單有自己的 ID、容量或資源欄位；本題只探索資料，不執行容量或虛擬化修改。</p>
+</li>
+<li id="q-047-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>先查 CTRATT 的相關能力與 OACS.VMS；CNS04h、19h、18h、14h／15h 分別對應 Set、Endurance Group、Domain、Primary／Secondary Controller。</p>
+</li>
+<li id="q-047-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>NVM Set Attributes 帶 ENDGID；Namespace 資料帶 NVMSETID／ENDGID；Domain entry 帶 DID、TDC、UDC；Secondary entry 帶 SCID、PCID、狀態與 VQ／VI 資源數。</p>
+</li>
+<li id="q-047-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>從 namespace 群組識別向上查 Set／Group；以 Domain list 看容量歸屬；從 Primary capabilities 與 Secondary list 看已分配的 queue／interrupt 資源。</p>
+</li>
+<li id="q-047-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>得到可關聯的 ID 與屬性，不是所有零欄位都代表資源數為零；須先確認該能力與欄位在此配置中有效。</p>
+</li>
+<li id="q-047-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>未支援的 CNS 是 0/02h；某些清單起點超過現有 ID 會得到空清單，不能一律要求錯誤。</p>
+</li>
+<li id="q-047-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-047-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>比較清單的資源數與 Number of Queues、可建立 QID／可用 IV；Primary 能力與 Secondary 已配置資源不是同一個數。</p>
+</li>
+<li id="q-047-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查查詢的是哪個 Primary controller，以及 list 的起點是否正確。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-048" data-question="48"><h2><a class="qa-qid" href="#q-048">Q48</a> CNS、CSI、NSID 或 UUID Index 不支援或不合法時，Controller 應如何回應？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-048-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-048-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>依 selector 的實際用途判斷錯誤，不能把所有 Identify 失敗都寫成 Invalid Namespace。</p>
+</li>
+<li id="q-048-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>同一個 NSID／CSI 對不同 CNS 可以有不同合法性；測例需固定 CNS 與前提。</p>
+</li>
+<li id="q-048-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>Figure 336 指定每個 CNS 是否使用 NSID、CNTID、CSI；UIDX 使用還受 UUID 選擇能力控制。</p>
+</li>
+<li id="q-048-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>未使用 CNTID 時 Host 清零、controller 忽略；未使用 CSI 時 Host 應清零，controller 應忽略，但非零時也可回 Invalid Field。</p>
+</li>
+<li id="q-048-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>一次固定其他 selector，只改待測欄位；先寫出該 CNS 的專用規則，再用通則補足。</p>
+</li>
+<li id="q-048-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>有效查詢回 4096 bytes；例如 CNS11h 對符合定義的 unallocated NSID 可回全零，與 invalid NSID 的錯誤不同。</p>
+</li>
+<li id="q-048-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>未支援 CNS：0/02h；namespace command set 不支援該 CNS：1/2Ch；CNS02h／10h 的非法末端起點：0/0Bh。若命令使用 UUID 選擇，UIDX 指向不支援該資料的 UUID、全零 UUID 或 NVMe Invalid UUID，須回 0/02h；CSI 則依該 CNS 是否使用它及 namespace 的命令集判斷。</p>
+</li>
+<li id="q-048-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-048-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>將 CQE 與原 CDW10、11、14 一起保存；同樣的 0/02h 可由不同欄位造成。</p>
+</li>
+<li id="q-048-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查這個 CNS 是否真的使用被測欄位；忽略未使用欄位不等於漏驗合法性。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-uuid">Base 2.4 §8.1.31.1–8.1.31.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-049" data-question="49"><h2><a class="qa-qid" href="#q-049">Q49</a> Serial Number、Model Number、Firmware Revision、MDTS 及 Optional Admin Command 欄位應如何解讀？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-049-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-049-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>同一張 Identify 大表同時含識別字串、傳輸限制與能力 bitmap，不能用相同數字解碼方法處理。</p>
+</li>
+<li id="q-049-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>SN／MN 識別 subsystem，FR 表示目前啟用韌體；MDTS 限定單次資料傳輸；OACS 表示選配 Admin 能力。</p>
+</li>
+<li id="q-049-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>CNS01h：SN bytes23:4、MN63:24、FR71:64、MDTS byte77、OACS bytes257:256。</p>
+</li>
+<li id="q-049-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>字串依 ASCII 與空白填補解讀；MDTS 非零時上限=2^MDTS×2^(12+CAP.MPSMIN) bytes，不是乘 CC.MPS。MDTS=0 表示此欄不設上限，仍有命令自己的限制。</p>
+</li>
+<li id="q-049-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先確定結構與欄位偏移，分別抽字串／位元／指數。算資料長度時另核對 CTRATT.MEM 是否排除 metadata。</p>
+</li>
+<li id="q-049-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>例：MPSMIN=0、MDTS=5，限制 128 KiB；若 MEM=0，32 個 4096-byte 資料加每塊 16-byte metadata 會超過此值。</p>
+</li>
+<li id="q-049-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>超過 MDTS 的命令回 Invalid Field（0/02h）；選配 opcode 未支援通常為 0/01h，不能用「版本很新」主張必須成功。</p>
+</li>
+<li id="q-049-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-049-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>FR 對照 Firmware Slot Information 的目前 active slot，不要拿 pending slot 比；OACS 對照相應 Commands Supported entry。</p>
+</li>
+<li id="q-049-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查 MDTS 是否被當成 bytes 或以錯誤 page size 計算。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-conventions">Base 2.4 §1.4.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-050" data-question="50"><h2><a class="qa-qid" href="#q-050">Q50</a> Identify 宣告支援某功能後，應如何透過對應 Command 及 Commands Supported and Effects Log 驗證？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-050-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-050-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>確認能力宣告能接到合法操作，而不是只驗證 Identify 的某個 bit 為 1。</p>
+</li>
+<li id="q-050-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>測試限定同一 controller、command set、namespace 配置與時間，避免比較不同上下文。</p>
+</li>
+<li id="q-050-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>先看 Identify 的功能能力，再看 LPA.CELP 及 LID05h 中正確 Admin／I/O opcode 的 CSUPP 與 effects。</p>
+</li>
+<li id="q-050-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>除了 CSUPP，讀 LBCC、NCC、NIC、CCC、CSE 等欄位，確認資料、能力、清單及執行限制的可能影響。</p>
+</li>
+<li id="q-050-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>建立合法前提→查支援→準備合法參數與資源→執行→驗 CQE 與結果→重新探索 effects 指出的資訊。</p>
+</li>
+<li id="q-050-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>支援代表有合法使用方式，不代表任意參數／目前狀態都會成功；完成還需達到該命令定義的效果。</p>
+</li>
+<li id="q-050-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>0/01h 可能與 opcode 支援矛盾；但 0/02h、Namespace Not Ready、Lockdown 等要先核對參數及狀態，不能立刻判支援宣告錯誤。</p>
+</li>
+<li id="q-050-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-050-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>Commands Supported and Effects 是能力／影響描述，不是「這個命令最近執行過」的歷史紀錄。</p>
+</li>
+<li id="q-050-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查拿的是 Admin 還是 I/O opcode entry，以及 CSI 是否選對。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-effects">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-051" data-question="51"><h2><a class="qa-qid" href="#q-051">Q51</a> Namespace 建立、刪除、Attach、Detach 或 Format 後，哪些 Identify 資料與 Namespace List 應更新？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-051-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-051-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>把配置變更連回 Host 應重新探索的資料，避免使用舊容量、格式或附加清單。</p>
+</li>
+<li id="q-051-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>Create／Delete 改存在狀態；Attach／Detach 改 controller 可見性；Format 改該操作範圍內的資料格式。</p>
+</li>
+<li id="q-051-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>OACS.NMS 確認管理支援；Format 還看 OACS／FNA 及 NVM 支援格式。</p>
+</li>
+<li id="q-051-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Allocated list、Active list、CNS12h attached controller list，及 Namespace 的 FLBAS、DPS、NSZE／NCAP 等欄位分開檢查。</p>
+</li>
+<li id="q-051-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>記錄操作前快照，等管理命令完成，再查受影響清單與 namespace。Create 成功不自動等於 Attach 成功。</p>
+</li>
+<li id="q-051-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>Create 後出現在 Allocated；Attach 後出現在目標 controller 的 Active；Detach 後從該 Active 移除但仍可 Allocated；Format 後檢查選定格式而非預期 NSID 必變。</p>
+</li>
+<li id="q-051-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>若管理命令失敗，不能一律假設全部資料已更新或全部未變；先看該命令的失敗及部分操作規則，再重新查詢。</p>
+</li>
+<li id="q-051-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-051-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Identify 查詢本身不產生變更事件。Create、Delete、Attach、Detach 或 Format 所造成的 namespace attribute 變化，須按影響對象、支援與 AEC 設定判斷 Namespace Attribute Changed 通知；不同 controller 不一定看到相同變更。</p>
+</li>
+<li id="q-051-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>檢查 Changed Namespace List（LID 04h）與重新讀取的 Identify；前者通知哪些 NSID 曾變更，不取代目前配置。讀取的 RAE 設定會影響通知確認，先保存原事件與清單，再做後續查詢。</p>
+</li>
+<li id="q-051-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>支援 PEL 時，Create／Delete 的 Change Namespace Event 與 Format Start／Completion 是不同事件。Attach／Detach 不可直接當成 Create／Delete 記錄；Identify 本身也不要求新增這些事件。</p>
+</li>
+<li id="q-051-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-051-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-051-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-051-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-051-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>將管理結果、清單、namespace 結構及適用的 Changed Namespace 通知核對；事件不是取代 Identify 的完整配置副本。</p>
+</li>
+<li id="q-051-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認查詢的是受 Attach／Detach 影響的 controller，並等待前一管理命令完成。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-nsmanage">Base 2.4 §5.2.24–5.2.25, 8.1.17</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-nschange">Base 2.4 §5.2.13.1.4, 5.2.13.1.14.2.6–5.2.13.1.14.2.8</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-052" data-question="52"><h2><a class="qa-qid" href="#q-052">Q52</a> Firmware Activation、Reset 及 Power Cycle 後，哪些 Identify 資料可能改變，哪些應保持不變？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-052-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-052-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>依欄位性質判斷變更，而不是把整個 4096-byte buffer 都要求完全相同。</p>
+</li>
+<li id="q-052-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>分固定身分、韌體宣告能力、持續配置與動態狀態；這四種資料有不同變更原因。</p>
+</li>
+<li id="q-052-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>保存 SN／MN、namespace 穩定識別、FR、能力位、容量／格式／附加關係及動態欄位作比較基準。</p>
+</li>
+<li id="q-052-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>FR 應描述目前 active firmware；MDTS／能力需在更新後重新確認；NUSE 等動態數值不能當固定識別值。</p>
+</li>
+<li id="q-052-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先記錄改變來源：只是 Reset、Power Cycle，還是同時 Activation／管理配置；恢復後用相同 CNS／NSID／CSI 讀取，再逐欄對照定義。</p>
+</li>
+<li id="q-052-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>普通 Reset 不是重新命名裝置、刪除 namespace 或 Format 的操作；但若同時啟用新韌體，FR 與其可合法變更的能力不能要求沿用舊值。</p>
+</li>
+<li id="q-052-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>比較工作沒有新的 CQE Status；若 post-reset Identify 失敗，先分初始化未完成、無效 NSID 與選錯 CNS，不把全部差異定義成韌體錯誤。</p>
+</li>
+<li id="q-052-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-052-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>使用 stable ID 確認比較的是同一物件；保留 raw bytes，同時把 padding、reserved、動態欄位與真正語意差異分開。</p>
+</li>
+<li id="q-052-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查 Reset 是否同時觸發 pending firmware activation，或查到了另一個 controller／namespace。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-identity">Base 2.4 §4.7.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-053" data-question="53"><h2><a class="qa-qid" href="#q-053">Q53</a> Identify、Feature、Log Page 與實際 Command 行為不一致時，應如何定位問題？</h2>
+<p class="qa-prompt">先試著說明正常流程與一個不符合前提的例子，再展開核對。</p>
+<details class="qa-answer" id="q-053-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-053-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>用完整證據鏈判斷不一致，而不是因某個介面顯示支援就忽略當下條件。</p>
+</li>
+<li id="q-053-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>限定 controller、NSID、CSI、時間與配置；跨 controller 或不同時點的快照未必描述相同狀態。</p>
+</li>
+<li id="q-053-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>Identify 查能力，Get Features 查設定，Log 查狀態／事件或效果宣告；三者用途不同。</p>
+</li>
+<li id="q-053-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>保存原 SQE、CQE、Identify 原始 buffer、FID 的 SEL 值、LID 與其他 selectors；明確區分 Current 和 Supported Capabilities。</p>
+</li>
+<li id="q-053-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先檢查版本／解碼→scope／selectors→合法參數→目前狀態與先後→結果；必要時用單一控制變因的教學測例重現。</p>
+</li>
+<li id="q-053-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>一致的意思是各介面的規範關係成立，不是所有回傳值相同；例如 CHANG=1 與 Current=0 可以同時正確。</p>
+</li>
+<li id="q-053-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>原命令的 SCT／SC 決定下一步；More=1 再找可關聯的 Error Information。沒有 Status 的 Host timeout 需先定位提交／完成階段。</p>
+</li>
+<li id="q-053-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>有 CQE 才適用。本題未另指定固定的 DNR／More 覆寫值，使用本冊 CQE 位元判讀規則。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>此題的正常完成本身不保證 AER；另有指定事件時，確認支援、設定及 pending request。 <a class="qa-rule-link" href="#common-command-9">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>對照本題的完成結果與錯誤紀錄；新增 Entry 的條件使用本冊共用規則，不以失敗次數直接推算。 <a class="qa-rule-link" href="#common-command-10">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>這不是逐命令歷史；只有支援且符合記錄條件的指定事件需要 PEL 紀錄。 <a class="qa-rule-link" href="#common-command-11">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>未完成查詢須重新送出；按欄位區分固定身分、配置與動態狀態。 <a class="qa-rule-link" href="#common-identify-12">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>重新探索受影響對象；重設本身不代表 namespace 被刪除或恢復出廠配置。 <a class="qa-rule-link" href="#common-identify-13">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新查詢並比較；須把韌體啟用、管理變更與單純斷電分開。 <a class="qa-rule-link" href="#common-identify-14">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Identify 是唯讀；不同 controller 的 active list 可能不同，應按查詢對象比較。 <a class="qa-rule-link" href="#common-identify-15">本冊完整規則</a></p>
+</li>
+<li id="q-053-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>只有把必要前提、同一物件與時序都固定後，仍違反明确要求，才能提出可驗證的不合規結論。</p>
+</li>
+<li id="q-053-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>第一個檢查是這幾份證據是否來自同一 controller／namespace、同一設定時期及相同 selector。</p>
+</li>
+</ol><details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-idcmd">Base 2.4 §5.2.14.1</a> · <a href="#ref-effects">Base 2.4 §5.2.13.1.5</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
+<article id="common-command-8"><h3>命令完成、事件與紀錄 · DNR 與 More 應如何設定？</h3><p>有 CQE 時，DNR=1 表示相同命令再送到此 NVM subsystem 的任一 controller 仍預期失敗；DNR=0 只表示可能成功。除非本題錯誤另有明定，不把某個 Status 固定綁成 DNR=1。More=1 表示 Error Information Log 有這筆命令的補充資訊。SCT=SC=0 時 DNR 應為 0。</p></article>
+<article id="common-command-9"><h3>命令完成、事件與紀錄 · 是否產生 Asynchronous Event？</h3><p>命令完成與非同步通知是兩件事；本題操作成功本身不保證有事件。若操作引起規範列出的事件，還要核對事件支援、適用的通知設定、是否已遮蔽，以及 Host 是否掛入 Asynchronous Event Request。</p></article>
+<article id="common-command-10"><h3>命令完成、事件與紀錄 · 是否更新 Error Information Log 或其他 Log？</h3><p>成功 CQE 不是要求新增 Error Information 的理由。錯誤有 More=1 時，查 LID 01h 並用 SQID、CID 和 Error Count 對應；不能把每個非成功 CQE 都當成必須新增一筆。操作改變的狀態則由本題列出的查詢介面重新讀取。</p></article>
+<article id="common-command-11"><h3>命令完成、事件與紀錄 · 是否記錄於 Persistent Event Log？</h3><p>Persistent Event Log 是選配的事件歷史，不是所有命令的執行清單。先查 LPA 的支援與 Supported Events Bitmap，再判斷本次是否符合指定事件的記錄條件；不能只因命令成功或失敗就要求新增一筆。</p></article>
+<article id="common-identify-12"><h3>查詢的重設與影響範圍 · Controller Reset 後是否保留或繼續？</h3><p>Controller Reset 中止尚未完成的查詢；不要把沒有收到的回覆當成全零資料。重新建立查詢路徑後再讀取，按欄位判斷固定識別、目前配置及動態狀態；Reset 本身不代表 namespace 被刪除。</p></article>
+<article id="common-identify-13"><h3>查詢的重設與影響範圍 · NVM Subsystem Reset 後是否保留或繼續？</h3><p>重設完成後重新探索受影響 controller 與 namespace。NVM Subsystem Reset 是通訊與控制狀態的重設，不能直接推論所有儲存配置回到出廠值；另有管理操作時，依那個操作確認變更。</p></article>
+<article id="common-identify-14"><h3>查詢的重設與影響範圍 · Power Cycle 後是否保留或繼續？</h3><p>Power Cycle 後重新查詢版本、能力、目前格式及附加清單。固定識別資訊與持續配置不應被當成一般暫存 Feature；但韌體啟用或配置變更可能有不同結果，必須留下前後快照及事件時間。</p></article>
+<article id="common-identify-15"><h3>查詢的重設與影響範圍 · 是否影響其他 Controller 或 Namespace？</h3><p>Identify 只讀資料，不會建立、格式化或附加 namespace。回覆的觀察範圍依 CNS 與選擇欄位決定；另一個 controller 看到的 active list 可以不同，不能因清單不同就判定資料損壞。</p></article>
+</section>
+<section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁＝PDF 頁−26；另兩份相同。以下依本次提供的 PDF 本文定位，保留 Figure 編號；共享頁只引用本題需要的定義，不納入 Fabrics 或 PCIe Link／封包內容。</p><ul class="qa-references">
+<li id="ref-conventions"><strong>Base 2.4 · §1.4.1</strong><br>文件頁 2–3 · PDF 28–29</li>
+<li id="ref-cap"><strong>Base 2.4 · §3.1.4 (CAP, VS)</strong><br>文件頁 54–59 · PDF 80–85 · Figure 36–37</li>
+<li id="ref-nsid"><strong>Base 2.4 · §3.2.1</strong><br>文件頁 78–81 · PDF 104–107</li>
+<li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>文件頁 120–124 · PDF 146–150</li>
+<li id="ref-status"><strong>Base 2.4 · §4.2.3</strong><br>文件頁 145–155 · PDF 171–181 · Figure 101–105</li>
+<li id="ref-feature"><strong>Base 2.4 · §4.4</strong><br>文件頁 166–169 · PDF 192–195 · Figure 126–127</li>
+<li id="ref-identity"><strong>Base 2.4 · §4.7.1</strong><br>文件頁 173–175 · PDF 199–201</li>
+<li id="ref-aer"><strong>Base 2.4 · §5.2.2</strong><br>文件頁 183–190 · PDF 209–216 · Figure 150–156</li>
+<li id="ref-getfeat"><strong>Base 2.4 · §5.2.12</strong><br>文件頁 209–212 · PDF 235–238 · Figure 197–202</li>
+<li id="ref-error"><strong>Base 2.4 · §5.2.13.1.2</strong><br>文件頁 218–220 · PDF 244–246 · Figure 212</li>
+<li id="ref-nschange"><strong>Base 2.4 · §5.2.13.1.4, 5.2.13.1.14.2.6–5.2.13.1.14.2.8</strong><br>文件頁 225–226, 258–261 · PDF 251–252, 284–287 · Figure 215, 247–249</li>
+<li id="ref-effects"><strong>Base 2.4 · §5.2.13.1.5</strong><br>文件頁 226–230 · PDF 252–256 · Figure 216–218</li>
+<li id="ref-pel"><strong>Base 2.4 · §5.2.13.1.14 (header, reset, hardware, Set Feature events)</strong><br>文件頁 244–256, 258, 262–264 · PDF 270–282, 284, 288–290 · Figure 232–244, 246, 252–253</li>
+<li id="ref-idcmd"><strong>Base 2.4 · §5.2.14.1</strong><br>文件頁 336–340 · PDF 362–366 · Figure 332–337</li>
+<li id="ref-idctrl"><strong>Base 2.4 · §5.2.14.2.1</strong><br>文件頁 340–387 · PDF 366–413 · Figure 338–341</li>
+<li id="ref-idlist"><strong>Base 2.4 · §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</strong><br>文件頁 387–399, 402–404 · PDF 413–425, 428–430 · Figure 342–355, 360–362</li>
+<li id="ref-nsmanage"><strong>Base 2.4 · §5.2.24–5.2.25, 8.1.17</strong><br>文件頁 442–448, 660–664 · PDF 468–474, 686–690 · Figure 442–450</li>
+<li id="ref-profile"><strong>Base 2.4 · §5.2.30.1.18</strong><br>文件頁 478–479 · PDF 504–505 · Figure 494–495</li>
+<li id="ref-uuid"><strong>Base 2.4 · §8.1.31.1–8.1.31.2</strong><br>文件頁 737–738 · PDF 763–764 · Figure 782</li>
+<li id="ref-virtual"><strong>Base 2.4 · §8.2.7</strong><br>文件頁 754–759 · PDF 780–785 · Figure 796</li>
+<li id="ref-idns"><strong>NVM Command Set 1.3 · §4.1.5.1–4.1.5.4</strong><br>文件頁 84–107 · PDF 84–107 · Figure 123–130</li>
+</ul><h3>需要看欄位圖時</h3><p>既有圖表教學各有固定位置。這裡連回相關圖，不複製另一份圖解。</p><ul>
+<li><a href="../nvme-quick-reference/command.html#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>
+<li><a href="../nvme-quick-reference/command.html#figure-b104">Base 2.4 Figure 104 · Status Code – Command Specific Status Values</a></li>
+<li><a href="../nvme-quick-reference/identify.html#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></li>
+<li><a href="../nvme-quick-reference/init.html#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a></li>
+<li><a href="../nvme-quick-reference/identify.html#figure-n123">NVM Command Set 1.3 Figure 123 · Identify – Identify Namespace Data Structure, NVM Command Set</a></li>
+</ul><details><summary>使用的原始文件</summary><ul class="qr-sources">
+<li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li>
+<li>NVM Express NVM Command Set Specification · Revision 1.3 · 2026-07-31<br><code>NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf</code></li>
+<li>NVM Express NVMe over PCIe Transport Specification · Revision 1.4 · 2026-07-31<br><code>NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf</code></li>
+</ul></details></section>
+</main>
+<nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/identify/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/identify/en/">English</a></nav>
+</div>
+<script>
+(function(){
+ const root=document.querySelector('.nvme-qa'); if(!root)return;
+ root.querySelectorAll('.qa-controls').forEach(x=>x.hidden=false);
+ root.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>root.querySelectorAll('.qa-answer').forEach(d=>d.open=b.dataset.expand==='true')));
+ const input=root.querySelector('#qa-search'),items=[...root.querySelectorAll('.qa-question,.qa-search-item')],output=root.querySelector('#qa-count');
+ if(input)input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let n=0;items.forEach(el=>{el.hidden=!el.textContent.toLowerCase().includes(q);if(!el.hidden)n++;});output.textContent=n+' / '+items.length;});
+ function reveal(){let el=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(el){for(let p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}el.hidden=false;}}
+ addEventListener('hashchange',reveal);reveal();
+ let printState=[];addEventListener('beforeprint',()=>{printState=[...root.querySelectorAll('details')].map(d=>[d,d.open]);printState.forEach(([d])=>d.open=true);});addEventListener('afterprint',()=>printState.forEach(([d,open])=>d.open=open));
+ const toggle=root.querySelector('[data-theme-toggle]');if(toggle)toggle.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'light':'dark';});
+})();
+</script>
+</body></html>
