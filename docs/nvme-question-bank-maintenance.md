@@ -96,6 +96,34 @@ deep answer links, explicit theme toggle and offline standalone navigation teste
 Representative source page 541 and both-language rendered screenshots inspected.
 The final wording updates are followed by a targeted browser check and rebuild.
 
+## 2026-10-01 Chinese editorial review
+
+The user reaffirmed that Q69–Q320 remain future scope. This revision reviews
+Q1–Q68, their Chinese introductions, teaching examples, tables and shared rules.
+The persistent writing requirements are recorded at the top of `AGENTS.md`:
+use natural Taiwan Traditional Chinese, check connective words against the actual
+logical relationship, make pronoun references and changes of actor explicit, and
+prefer complete explanations over compressed fragments. Longer text is acceptable
+when it supplies a missing condition, action or consequence; repetition is not.
+
+The review revised 561 authored answer passages and 103 shared/teaching strings,
+plus reader instructions. For example, “通知已消費完成” now identifies the Host,
+the CQ Head Doorbell and the completion positions being released. State changes
+and reset rules now name which value or object changes before explaining the result.
+Numerical formulas and compact field mappings remain where they aid lookup.
+Question IDs, the 17-item structure, source locators, status-code exceptions and
+all seven generated English files are unchanged. No new topic or technical
+requirement was added by this language revision.
+
+Editorial validation: 117 tests passed, 58 source locator groups verified, old report
+and quick-reference contracts unchanged, and production Jekyll build passed.
+All 14 Chinese outputs passed 168 browser states (three viewport sizes, both themes,
+collapsed/expanded), with no overflow, missing anchors, duplicate IDs or contrast
+failures. Search, keyboard disclosure, deep links and offline navigation also passed.
+Representative light/dark screenshots were inspected. After the final queue-example and
+APST wording cleanup, the 11 question-bank tests and 48 targeted browser states
+passed again, and the production site was rebuilt.
+
 ## Publication pitfalls
 
 Do not set a post's timestamp later than the actual publication time. A noon time
