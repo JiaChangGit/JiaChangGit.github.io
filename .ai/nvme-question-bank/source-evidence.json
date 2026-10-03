@@ -908,6 +908,3790 @@
         "pel",
         "featureeffects"
       ]
+    },
+    {
+      "id": 69,
+      "refs": [
+        "getlog",
+        "idctrl",
+        "profile",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 70,
+      "refs": [
+        "getlog",
+        "error",
+        "smart",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 71,
+      "refs": [
+        "fwlog",
+        "changedlog",
+        "commandseffects",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 72,
+      "refs": [
+        "dstlog",
+        "pel",
+        "getlog",
+        "reset",
+        "status",
+        "error",
+        "aer"
+      ]
+    },
+    {
+      "id": 73,
+      "refs": [
+        "getlog",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 74,
+      "refs": [
+        "getlog",
+        "smart",
+        "uuid",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 75,
+      "refs": [
+        "getlog",
+        "telemetrylog",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 76,
+      "refs": [
+        "getlog",
+        "uuid",
+        "aer",
+        "reset",
+        "status",
+        "error",
+        "pel"
+      ]
+    },
+    {
+      "id": 77,
+      "refs": [
+        "getlog",
+        "telemetrylog",
+        "pel",
+        "reset",
+        "status",
+        "error",
+        "aer"
+      ]
+    },
+    {
+      "id": 78,
+      "refs": [
+        "error",
+        "pel",
+        "reset",
+        "status",
+        "aer"
+      ]
+    },
+    {
+      "id": 79,
+      "refs": [
+        "getlog",
+        "error",
+        "smart",
+        "pel",
+        "reset",
+        "status",
+        "aer"
+      ]
+    },
+    {
+      "id": 80,
+      "refs": [
+        "getlog",
+        "commandseffects",
+        "idctrl",
+        "profile",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 81,
+      "refs": [
+        "commandseffects",
+        "idctrl",
+        "profile",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 82,
+      "refs": [
+        "aerfull",
+        "idctrl",
+        "aec",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 83,
+      "refs": [
+        "aerfull",
+        "cqe",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 84,
+      "refs": [
+        "aerfull",
+        "getlog",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 85,
+      "refs": [
+        "aerfull",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 86,
+      "refs": [
+        "aerfull",
+        "getlog",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 87,
+      "refs": [
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 88,
+      "refs": [
+        "aec",
+        "aerfull",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 89,
+      "refs": [
+        "aerfull",
+        "smart",
+        "dstlog",
+        "pel",
+        "reset",
+        "status",
+        "error",
+        "aer"
+      ]
+    },
+    {
+      "id": 90,
+      "refs": [
+        "aerfull",
+        "getlog",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 91,
+      "refs": [
+        "aerfull",
+        "abort",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 92,
+      "refs": [
+        "aerfull",
+        "getlog",
+        "smart",
+        "error",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 93,
+      "refs": [
+        "status",
+        "sqe",
+        "order",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 94,
+      "refs": [
+        "status",
+        "create",
+        "delete",
+        "getlog",
+        "nsid",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 95,
+      "refs": [
+        "status",
+        "idctrl",
+        "nsmanage",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 96,
+      "refs": [
+        "status",
+        "fatal",
+        "ready",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 97,
+      "refs": [
+        "status",
+        "abort",
+        "delete",
+        "order",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 98,
+      "refs": [
+        "status",
+        "behavior",
+        "idctrl",
+        "fatal",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 99,
+      "refs": [
+        "error",
+        "status",
+        "aerfull",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 100,
+      "refs": [
+        "error",
+        "sqe",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 101,
+      "refs": [
+        "error",
+        "cqe",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 102,
+      "refs": [
+        "error",
+        "idctrl",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 103,
+      "refs": [
+        "error",
+        "status",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 104,
+      "refs": [
+        "fatal",
+        "status",
+        "delete",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 105,
+      "refs": [
+        "fatal",
+        "cc",
+        "virtual",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 106,
+      "refs": [
+        "cqe",
+        "error",
+        "pel",
+        "timestamp",
+        "reset",
+        "status",
+        "aer"
+      ]
+    },
+    {
+      "id": 107,
+      "refs": [
+        "abort",
+        "sqe",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 108,
+      "refs": [
+        "abort",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 109,
+      "refs": [
+        "abort",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 110,
+      "refs": [
+        "abort",
+        "order",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 111,
+      "refs": [
+        "abort",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 112,
+      "refs": [
+        "abort",
+        "cqe",
+        "queue",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 113,
+      "refs": [
+        "abort",
+        "fatal",
+        "reset",
+        "commrecovery",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 114,
+      "refs": [
+        "fatal",
+        "abort",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 115,
+      "refs": [
+        "reset",
+        "queue",
+        "cqe",
+        "commrecovery",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 116,
+      "refs": [
+        "cap",
+        "crto",
+        "ready",
+        "abort",
+        "aerfull",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 117,
+      "refs": [
+        "sqe",
+        "cqe",
+        "queue",
+        "pcie",
+        "irq",
+        "fatal",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 118,
+      "refs": [
+        "idctrl",
+        "commandseffects",
+        "sanitizecmd",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 119,
+      "refs": [
+        "sanitizecmd",
+        "sanitizestate",
+        "nvmsanitize",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 120,
+      "refs": [
+        "idns",
+        "behavior",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 121,
+      "refs": [
+        "status",
+        "nwp",
+        "idctrl",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 122,
+      "refs": [
+        "sanitizerestrict",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 123,
+      "refs": [
+        "reset",
+        "idns",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 124,
+      "refs": [
+        "idns",
+        "nvmformat",
+        "changedlog",
+        "format",
+        "formatpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 125,
+      "refs": [
+        "error",
+        "status",
+        "format",
+        "nvmformat",
+        "formatpel",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 126,
+      "refs": [
+        "idctrl",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 127,
+      "refs": [
+        "sanitizeconfig",
+        "nvmsanitize",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 128,
+      "refs": [
+        "nvmsanitize",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 129,
+      "refs": [
+        "sanitizerestrict",
+        "nvmsanitize",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 130,
+      "refs": [
+        "reset",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 131,
+      "refs": [
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 132,
+      "refs": [
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 133,
+      "refs": [
+        "aerfull",
+        "aec",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 134,
+      "refs": [
+        "sanitizerestrict",
+        "idctrl",
+        "nsid",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 135,
+      "refs": [
+        "status",
+        "nsid",
+        "nwp",
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 136,
+      "refs": [
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 137,
+      "refs": [
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 138,
+      "refs": [
+        "boot",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 139,
+      "refs": [
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 140,
+      "refs": [
+        "reset",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 141,
+      "refs": [
+        "aerfull",
+        "aec",
+        "cc",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 142,
+      "refs": [
+        "reset",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 143,
+      "refs": [
+        "aerfull",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 144,
+      "refs": [
+        "commandseffects",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 145,
+      "refs": [
+        "feature",
+        "reset",
+        "uuid",
+        "idns",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 146,
+      "refs": [
+        "boot",
+        "bootreg",
+        "bootlog",
+        "bootprotect",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 147,
+      "refs": [
+        "boot",
+        "bootprotect",
+        "bootreg",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 148,
+      "refs": [
+        "boot",
+        "bootprotect",
+        "firmware",
+        "fwlog",
+        "idctrl",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 149,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 150,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 151,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 152,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 153,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 154,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 155,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 156,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "idctrl",
+        "aerfull",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 157,
+      "refs": [
+        "commandseffects",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 158,
+      "refs": [
+        "nvmcreate",
+        "idns",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 159,
+      "refs": [
+        "nvmcreate",
+        "status",
+        "error",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 160,
+      "refs": [
+        "nsid",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 161,
+      "refs": [
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 162,
+      "refs": [
+        "idlist",
+        "nsattach",
+        "idctrl",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 163,
+      "refs": [
+        "status",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 164,
+      "refs": [
+        "sqe",
+        "nsid",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 165,
+      "refs": [
+        "sqe",
+        "nsid",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 166,
+      "refs": [
+        "sqe",
+        "nsid",
+        "nwp",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 167,
+      "refs": [
+        "aerfull",
+        "aec",
+        "changedlog",
+        "nspelevent",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 168,
+      "refs": [
+        "changedlog",
+        "getlog",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 169,
+      "refs": [
+        "reset",
+        "nsid",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 170,
+      "refs": [
+        "idns",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 171,
+      "refs": [
+        "nwp",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 172,
+      "refs": [
+        "nwp",
+        "feature",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 173,
+      "refs": [
+        "nwp",
+        "format",
+        "sanitizecmd",
+        "nsattach",
+        "idctrl",
+        "idlist",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 174,
+      "refs": [
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 175,
+      "refs": [
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 176,
+      "refs": [
+        "sanitizecmd",
+        "selftest",
+        "firmware",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 177,
+      "refs": [
+        "cap",
+        "crto",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 178,
+      "refs": [
+        "feature",
+        "adminreg",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 179,
+      "refs": [
+        "commrecovery",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 180,
+      "refs": [
+        "feature",
+        "firmware",
+        "sanitizelog",
+        "dstlog",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 181,
+      "refs": [
+        "fatal",
+        "cap",
+        "crto",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 182,
+      "refs": [
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 183,
+      "refs": [
+        "cap",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 184,
+      "refs": [
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 185,
+      "refs": [
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 186,
+      "refs": [
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 187,
+      "refs": [
+        "error",
+        "pel",
+        "reset",
+        "cc",
+        "shutdownfull",
+        "pciereset",
+        "smart",
+        "status",
+        "aer"
+      ]
+    },
+    {
+      "id": 188,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 189,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 190,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 191,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 192,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 193,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 194,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 195,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 196,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 197,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 198,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 199,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 200,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 201,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 202,
+      "refs": [
+        "aerfull",
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 203,
+      "refs": [
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 204,
+      "refs": [
+        "pel",
+        "smart",
+        "powerdetail",
+        "psd",
+        "power",
+        "thermal",
+        "aec",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer"
+      ]
+    },
+    {
+      "id": 205,
+      "refs": [
+        "idctrl",
+        "getlog",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 206,
+      "refs": [
+        "getlog",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 207,
+      "refs": [
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 208,
+      "refs": [
+        "fwpel",
+        "smart",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 209,
+      "refs": [
+        "nspelevent",
+        "formatpel",
+        "sanitizepel",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 210,
+      "refs": [
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 211,
+      "refs": [
+        "aerfull",
+        "aec",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 212,
+      "refs": [
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 213,
+      "refs": [
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 214,
+      "refs": [
+        "feature",
+        "getfeat",
+        "setfeat",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 215,
+      "refs": [
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "feature",
+        "setfeat"
+      ]
+    },
+    {
+      "id": 216,
+      "refs": [
+        "feature",
+        "pelcontext",
+        "timestamp",
+        "nvmpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel",
+        "setfeat"
+      ]
+    },
+    {
+      "id": 217,
+      "refs": [
+        "keepalive",
+        "idctrl",
+        "feature",
+        "setfeat",
+        "commrecovery",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 218,
+      "refs": [
+        "keepalive",
+        "idctrl",
+        "feature",
+        "setfeat",
+        "commrecovery",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 219,
+      "refs": [
+        "keepalive",
+        "idctrl",
+        "feature",
+        "setfeat",
+        "commrecovery",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 220,
+      "refs": [
+        "keepalive",
+        "idctrl",
+        "feature",
+        "setfeat",
+        "commrecovery",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 221,
+      "refs": [
+        "keepalive",
+        "idctrl",
+        "feature",
+        "setfeat",
+        "commrecovery",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 222,
+      "refs": [
+        "keepalive",
+        "idctrl",
+        "feature",
+        "setfeat",
+        "commrecovery",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 223,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 224,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 225,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 226,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 227,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 228,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 229,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 230,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 231,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 232,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 233,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 234,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 235,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 236,
+      "refs": [
+        "hmb",
+        "cmb",
+        "cmbreg",
+        "pmr",
+        "pmrreg",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 237,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 238,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 239,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 240,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 241,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 242,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 243,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 244,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 245,
+      "refs": [
+        "security",
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "idctrl",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 246,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 247,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 248,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 249,
+      "refs": [
+        "ana",
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 250,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 251,
+      "refs": [
+        "changedlog",
+        "aerfull",
+        "analog",
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 252,
+      "refs": [
+        "ana",
+        "analog",
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 253,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 254,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 255,
+      "refs": [
+        "multipath",
+        "virtual",
+        "virtualcmd",
+        "virtualid",
+        "nsattach",
+        "idlist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 256,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 257,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 258,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 259,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 260,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 261,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 262,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 263,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 264,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 265,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 266,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 267,
+      "refs": [
+        "capacitymodel",
+        "capacitycmd",
+        "capacityop",
+        "eghealth",
+        "egevents",
+        "idctrl",
+        "idlist",
+        "nvmcreate",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 268,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 269,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 270,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 271,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 272,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 273,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 274,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 275,
+      "refs": [
+        "capacitymodel",
+        "mediaunit",
+        "fdpmodel",
+        "fdpcontrol",
+        "fdpnvm",
+        "idctrl",
+        "idns",
+        "idlist",
+        "ana",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 276,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 277,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 278,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 279,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 280,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 281,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 282,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 283,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 284,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 285,
+      "refs": [
+        "pointers",
+        "sgls",
+        "retirement",
+        "status",
+        "error",
+        "create",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 286,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 287,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 288,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 289,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 290,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 291,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 292,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 293,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 294,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 295,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 296,
+      "refs": [
+        "interruptfull",
+        "interruptmask",
+        "interruptfeature",
+        "create",
+        "delete",
+        "cqe",
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 297,
+      "refs": [
+        "idctrl",
+        "commandseffects",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 298,
+      "refs": [
+        "idctrl",
+        "commandseffects",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 299,
+      "refs": [
+        "feature",
+        "setfeat",
+        "featureeffects",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 300,
+      "refs": [
+        "aerfull",
+        "getlog",
+        "smart",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 301,
+      "refs": [
+        "status",
+        "error",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 302,
+      "refs": [
+        "status",
+        "error",
+        "pelcontext",
+        "reset",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 303,
+      "refs": [
+        "feature",
+        "setfeat",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 304,
+      "refs": [
+        "nsattach",
+        "changedlog",
+        "aerfull",
+        "nspelevent",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 305,
+      "refs": [
+        "firmware",
+        "fwlog",
+        "fwpel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 306,
+      "refs": [
+        "sanitizecmd",
+        "sanitizelog",
+        "sanitizestate",
+        "sanitizepel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 307,
+      "refs": [
+        "selftest",
+        "dstlog",
+        "nvmselftest",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 308,
+      "refs": [
+        "smart",
+        "shutdownfull",
+        "pciereset",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 309,
+      "refs": [
+        "smart",
+        "aerfull",
+        "feature",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 310,
+      "refs": [
+        "pelcontext",
+        "nvmpel",
+        "timestamp",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 311,
+      "refs": [
+        "cc",
+        "ready",
+        "error",
+        "smart",
+        "pelcontext",
+        "virtual",
+        "commrecovery",
+        "reset",
+        "status",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 312,
+      "refs": [
+        "abort",
+        "cqe",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 313,
+      "refs": [
+        "delete",
+        "create",
+        "retirement",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 314,
+      "refs": [
+        "reset",
+        "cqe",
+        "pciereset",
+        "commrecovery",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 315,
+      "refs": [
+        "nsattach",
+        "idlist",
+        "status",
+        "reset",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 316,
+      "refs": [
+        "lockdown",
+        "locklog",
+        "lockpersist",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 317,
+      "refs": [
+        "powerdetail",
+        "psd",
+        "power",
+        "smart",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 318,
+      "refs": [
+        "reset",
+        "pciereset",
+        "feature",
+        "setfeat",
+        "shutdownfull",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 319,
+      "refs": [
+        "commandseffects",
+        "idctrl",
+        "idlist",
+        "capacitymodel",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 320,
+      "refs": [
+        "idctrl",
+        "commandseffects",
+        "feature",
+        "getlog",
+        "aerfull",
+        "status",
+        "error",
+        "pelcontext",
+        "reset",
+        "aer",
+        "pel"
+      ]
     }
   ],
   "locators": {
@@ -941,9 +4725,9 @@
     "nsid": "B|3.2.1|104-107|",
     "identity": "B|4.7.1|199-201|",
     "uuid": "B|8.1.31.1–8.1.31.2|763-764|782",
-    "virtual": "B|8.2.7|780-785|796",
+    "virtual": "B|8.2.7|780-784|796",
     "nsmanage": "B|5.2.24–5.2.25, 8.1.17|468-474,686-690|442–450",
-    "effects": "B|5.2.13.1.5|252-256|216–218",
+    "effects": "B|5.2.13.1.6|252-255|216–217",
     "feature": "B|4.4|192-195|126–127",
     "getfeat": "B|5.2.12|235-238|197–202",
     "setfeat": "B|5.2.30.1 (common fields, scope and persistence)|482-486|463–466",
@@ -967,8 +4751,73 @@
     "irq": "P|3.5|13-16|9",
     "pciconfig": "P|3.8.1 (NVMe configuration access)|16-18|10–17",
     "featureeffects": "B|5.2.13.1.18|302-304|270–271",
-    "nschange": "B|5.2.13.1.4, 5.2.13.1.14.2.6–5.2.13.1.14.2.8|251-252,284-287|215, 247–249",
-    "thermalpel": "B|5.2.13.1.14.2.13|291-292|255"
+    "nschange": "B|5.2.13.1.5, 5.2.13.1.14.2.6–5.2.13.1.14.2.8|252,284-287|247–249",
+    "thermalpel": "B|5.2.13.1.14.2.13|291-292|255",
+    "firmware": "B|3.11–3.11.1, 5.2.9–5.2.10|161-164,228-232|187–193",
+    "fwpel": "B|5.2.13.1.14.2.2, 5.2.13.1.14.2.4|278-281|238, 240–241",
+    "boot": "B|8.1.3–8.1.3.3.3|612-618|679–683",
+    "bootreg": "B|3.1.4 (BPINFO, BPRSEL, BPMBL)|95-96|49–51",
+    "bootlog": "B|5.2.13.1.21|309-310|279–280",
+    "bootprotect": "B|5.2.30.1.39|538-540|542",
+    "selftest": "B|5.2.6, 8.1.8|225-227,640-642|176–180, 700–701",
+    "nvmselftest": "N|4.1.4.3|75-76|111",
+    "nvmcreate": "N|4.1.5.8, 4.1.6, 5.8|108,110-113,162-163|132–134",
+    "nsattach": "B|5.2.24–5.2.25, 8.1.17–8.1.17.2|470-474,686-689|442–450",
+    "nspelevent": "B|5.2.13.1.14.2.6|284-285|247",
+    "getlog": "B|5.2.13–5.2.13.1.1|238-244|203–211",
+    "smart": "B|5.2.13.1.3|246-251|213–214",
+    "fwlog": "B|5.2.13.1.4|251-252|215",
+    "changedlog": "B|5.2.13.1.5|252|",
+    "commandseffects": "B|5.2.13.1.6|252-255|216–217",
+    "dstlog": "B|5.2.13.1.7|255-258|218–219",
+    "telemetrylog": "B|5.2.13.1.8–5.2.13.1.9|258-263|220–223",
+    "aerfull": "B|5.2.2 (PCIe-applicable events)|209-217|150–160",
+    "abort": "B|5.2.1|207-208|147–149",
+    "pciereset": "P|3.3|11-12|",
+    "shutdownfull": "B|3.6–3.6.1 (memory-based scope and shutdown)|139-141|85",
+    "commrecovery": "B|9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)|851-854|",
+    "format": "B|5.1.1, 5.2.11|204-205,232-235|144, 194–196",
+    "nvmformat": "N|4.1.2|62-63|91",
+    "sanitizecmd": "B|5.2.26–5.2.27|474-480|451–455",
+    "sanitizelog": "B|5.2.13.1.38|339-346|312",
+    "sanitizestate": "B|8.1.27.1–8.1.27.5|737-758|770–779",
+    "sanitizerestrict": "B|5.1.1–5.1.2 (PCIe commands)|204-207|144–146",
+    "sanitizeconfig": "B|5.2.30.1.16|503-504|492",
+    "nvmsanitize": "N|4.1.7, 5.12|113,173-175|200–201",
+    "formatpel": "B|5.2.13.1.14.2.7–5.2.13.1.14.2.8|285-287|248–249",
+    "sanitizepel": "B|5.2.13.1.14.2.9–5.2.13.1.14.2.10|287-288|250–251",
+    "powerdetail": "B|8.1.19.1–8.1.19.5|692-697|738–741",
+    "psd": "B|5.2.14.2.1 (Power State Descriptor)|410-413|340–341",
+    "pelcontext": "B|5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)|270-282,284|232–244, 246",
+    "nvmpel": "N|4.1.4.4|76-77|112",
+    "cmb": "B|8.2.1 (memory placement and lifetime)|768-770|",
+    "cmbreg": "B|3.1.4 (CMBLOC, CMBSZ, CMBMSC, CMBSTS)|93-95,96-98|47–48, 52–55",
+    "pmr": "B|8.2.5 (memory behavior; exclude PCIe packet detail)|771-772|",
+    "pmrreg": "B|3.1.4 (PMR properties)|99-103|58–64",
+    "security": "B|5.2.28–5.2.29|480-482|456–462",
+    "lockdown": "B|5.2.16, 8.1.5|431-434,623-625|365–367",
+    "locklog": "B|5.2.13.1.20|305-309|274–278",
+    "lockpersist": "B|5.2.30.1.25.4–5.2.30.1.25.4.1|519-520|518–519",
+    "multipath": "B|2.4.1–2.4.2 (PCIe topology)|60-63|19–22",
+    "virtualcmd": "B|5.3.6|559-561|587–590",
+    "virtualid": "B|5.2.14.3.1–5.2.14.3.2 (Primary Capabilities, Secondary List)|428-430|360–362",
+    "ana": "B|2.4.2, 8.1.1 (PCIe namespace access)|63,604-610|675–678",
+    "analog": "B|5.2.13.1.13|267-270|229–231",
+    "capacitymodel": "B|3.2.2–3.2.3, 3.8|106-110,151-155|67–69, 86–89",
+    "capacitycmd": "B|5.2.3|217-221|162–166",
+    "capacityop": "B|8.1.4|620-623|",
+    "eghealth": "B|5.2.13.1.10|263-265|224–225",
+    "egevents": "B|3.2.3.1, 5.2.13.1.15, 5.2.30.1.17|110,296,504|261, 493",
+    "mediaunit": "B|5.2.13.1.16|296-298|262–264",
+    "fdpmodel": "B|3.2.4, 8.1.12|110-113,674-678|70–72, 730–732",
+    "fdpcontrol": "B|5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4|319-327,506-509,594-597|293–303, 499–506, 650–657",
+    "fdpnvm": "N|3.2, 4.1.4.6–4.1.4.7|26,79|21, 116",
+    "pointers": "B|4.2.1, 4.3.1–4.3.2 (PCIe-applicable layouts)|166-168,184-190|93, 110–122",
+    "sgls": "B|5.2.14.2.1 (SGLS)|403-404|338",
+    "retirement": "P|3.4 (Command Related Resource Retirement)|13|",
+    "interruptfull": "P|3.5–3.5.2 (interrupt delivery and masks), 3.8.4|13-16,24-26|9, 42–48",
+    "interruptmask": "B|3.1.4 (INTMS, INTMC)|85|39–40",
+    "interruptfeature": "B|5.2.30.2.1–5.2.30.2.2|540-541|543–544"
   },
   "teaching": {
     "initialization": [
@@ -1009,6 +4858,129 @@
       "getfeat",
       "setfeat",
       "nwp"
+    ],
+    "logs": [
+      "getlog",
+      "smart",
+      "error",
+      "pelcontext"
+    ],
+    "asynchronous-events": [
+      "aerfull",
+      "getlog",
+      "aec"
+    ],
+    "errors": [
+      "status",
+      "error",
+      "pelcontext"
+    ],
+    "recovery": [
+      "abort",
+      "commrecovery",
+      "reset",
+      "cqe"
+    ],
+    "format-sanitize": [
+      "format",
+      "nvmformat",
+      "sanitizecmd",
+      "sanitizelog",
+      "sanitizestate"
+    ],
+    "firmware-boot": [
+      "firmware",
+      "fwlog",
+      "boot",
+      "bootreg",
+      "bootprotect"
+    ],
+    "self-test": [
+      "selftest",
+      "dstlog",
+      "nvmselftest"
+    ],
+    "namespace-management": [
+      "nsattach",
+      "nvmcreate",
+      "idlist",
+      "nwp"
+    ],
+    "reset-shutdown": [
+      "reset",
+      "shutdownfull",
+      "pciereset",
+      "smart"
+    ],
+    "health": [
+      "powerdetail",
+      "psd",
+      "power",
+      "thermal",
+      "smart"
+    ],
+    "persistent-events": [
+      "pelcontext",
+      "nvmpel",
+      "timestamp"
+    ],
+    "keep-alive": [
+      "keepalive",
+      "idctrl",
+      "feature"
+    ],
+    "memory": [
+      "hmb",
+      "cmb",
+      "cmbreg",
+      "pmr",
+      "pmrreg"
+    ],
+    "security": [
+      "security",
+      "lockdown",
+      "locklog",
+      "lockpersist"
+    ],
+    "virtualization": [
+      "multipath",
+      "virtual",
+      "virtualcmd",
+      "virtualid",
+      "ana",
+      "analog"
+    ],
+    "capacity": [
+      "capacitymodel",
+      "capacitycmd",
+      "capacityop",
+      "eghealth",
+      "egevents"
+    ],
+    "media": [
+      "fdpmodel",
+      "fdpcontrol",
+      "fdpnvm",
+      "mediaunit"
+    ],
+    "pointers": [
+      "pointers",
+      "sgls",
+      "retirement"
+    ],
+    "interrupts": [
+      "interruptfeature",
+      "interruptmask",
+      "interruptfull",
+      "create"
+    ],
+    "integration": [
+      "status",
+      "commandseffects",
+      "feature",
+      "getlog",
+      "aerfull",
+      "pelcontext"
     ]
   },
   "evidence": {
@@ -1796,10 +5768,9 @@
         781,
         782,
         783,
-        784,
-        785
+        784
       ],
-      "page_text_sha256": "9da256406565f98038552f1b56c96def416fb4d336756037d1931770624ef6e5",
+      "page_text_sha256": "98f2d1854f03dc89b421b4d30204da62726daed0bf497144a9afb66070b2547b",
       "figure_headings": {
         "796": [
           781
@@ -1858,10 +5829,9 @@
         252,
         253,
         254,
-        255,
-        256
+        255
       ],
-      "page_text_sha256": "677182a5d7789b35d68071ea7e36f85587e0821babd6cfa6bd68c4874d130868",
+      "page_text_sha256": "68a7ea136d0ad9fe95ca8aac96dd65ce4c884ca7d25594724d0f892c4f7f45bb",
       "figure_headings": {
         "216": [
           253
@@ -1869,9 +5839,6 @@
         "217": [
           254,
           255
-        ],
-        "218": [
-          256
         ]
       }
     },
@@ -2236,18 +6203,14 @@
     },
     "nschange": {
       "pdf_pages": [
-        251,
         252,
         284,
         285,
         286,
         287
       ],
-      "page_text_sha256": "f795faab90e0c97f14f572317ed604b4c7ec8b4ac76a26ac9c59688666c9e478",
+      "page_text_sha256": "31406b0082294db777adf4e987850b590e70edb5398af42e75cd3c0f8d62d5cf",
       "figure_headings": {
-        "215": [
-          252
-        ],
         "247": [
           284,
           285
@@ -2271,6 +6234,1480 @@
         "255": [
           291,
           292
+        ]
+      }
+    },
+    "firmware": {
+      "pdf_pages": [
+        161,
+        162,
+        163,
+        164,
+        228,
+        229,
+        230,
+        231,
+        232
+      ],
+      "page_text_sha256": "06c76bf5e7729b436b4ef175b8e9145f8119e1295e498f68e0f1215ee4697ebb",
+      "figure_headings": {
+        "187": [
+          229
+        ],
+        "188": [
+          230
+        ],
+        "189": [
+          230,
+          231
+        ],
+        "190": [
+          231
+        ],
+        "191": [
+          231
+        ],
+        "192": [
+          232
+        ],
+        "193": [
+          232
+        ]
+      }
+    },
+    "fwpel": {
+      "pdf_pages": [
+        278,
+        279,
+        280,
+        281
+      ],
+      "page_text_sha256": "7bef8cc4e8205a9951e4d662c8dc75d218ac06f4db7cac45bd42c108c1d492d0",
+      "figure_headings": {
+        "238": [
+          278
+        ],
+        "240": [
+          279
+        ],
+        "241": [
+          279,
+          280
+        ]
+      }
+    },
+    "boot": {
+      "pdf_pages": [
+        612,
+        613,
+        614,
+        615,
+        616,
+        617,
+        618
+      ],
+      "page_text_sha256": "1bed61ad9da19bc47d4f3519cd52906583a982fa976f06fc9a1868f9ca19a4e7",
+      "figure_headings": {
+        "679": [
+          613
+        ],
+        "680": [
+          615
+        ],
+        "681": [
+          616
+        ],
+        "682": [
+          617
+        ],
+        "683": [
+          617
+        ]
+      }
+    },
+    "bootreg": {
+      "pdf_pages": [
+        95,
+        96
+      ],
+      "page_text_sha256": "e954e0f85c00e793f6034da8cb251b0dcf6bbfce991d9c545f5c8a71a14fb677",
+      "figure_headings": {
+        "49": [
+          95
+        ],
+        "50": [
+          95,
+          96
+        ],
+        "51": [
+          96
+        ]
+      }
+    },
+    "bootlog": {
+      "pdf_pages": [
+        309,
+        310
+      ],
+      "page_text_sha256": "a512e916c7405b3ca6f9efe76c8cfe5e4545a4843094b550e96103548a27ccce",
+      "figure_headings": {
+        "279": [
+          309
+        ],
+        "280": [
+          310
+        ]
+      }
+    },
+    "bootprotect": {
+      "pdf_pages": [
+        538,
+        539,
+        540
+      ],
+      "page_text_sha256": "43c532e0a5b5b44e910a5cd5a8832fddc9186d8195bcba4d76e1453c59b3333e",
+      "figure_headings": {
+        "542": [
+          539,
+          540
+        ]
+      }
+    },
+    "selftest": {
+      "pdf_pages": [
+        225,
+        226,
+        227,
+        640,
+        641,
+        642
+      ],
+      "page_text_sha256": "d2cf5ba69a1564ae398001ee6ae8c291e404951e38f0ea07ebbf6ff8349640db",
+      "figure_headings": {
+        "176": [
+          225
+        ],
+        "177": [
+          225
+        ],
+        "178": [
+          226
+        ],
+        "179": [
+          226
+        ],
+        "180": [
+          227
+        ],
+        "700": [
+          641
+        ],
+        "701": [
+          642
+        ]
+      }
+    },
+    "nsattach": {
+      "pdf_pages": [
+        470,
+        471,
+        472,
+        473,
+        474,
+        686,
+        687,
+        688,
+        689
+      ],
+      "page_text_sha256": "dd41515da0eaace30a65e9a2ba58a74b03bf0283b5d44e0aa524d7227ff41e5c",
+      "figure_headings": {
+        "442": [
+          471
+        ],
+        "443": [
+          471
+        ],
+        "444": [
+          471
+        ],
+        "445": [
+          472
+        ],
+        "446": [
+          472,
+          473
+        ],
+        "447": [
+          473
+        ],
+        "448": [
+          473
+        ],
+        "449": [
+          474
+        ],
+        "450": [
+          474
+        ]
+      }
+    },
+    "nspelevent": {
+      "pdf_pages": [
+        284,
+        285
+      ],
+      "page_text_sha256": "59a5247d85e9d74c022e632810f860da0cb454aa204dad5228e9daaabff5ec0e",
+      "figure_headings": {
+        "247": [
+          284,
+          285
+        ]
+      }
+    },
+    "getlog": {
+      "pdf_pages": [
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244
+      ],
+      "page_text_sha256": "9f68836b68fbe6613ea68c5e64a07736cae4dd10ea079b3693fad392555f4173",
+      "figure_headings": {
+        "203": [
+          239
+        ],
+        "204": [
+          239
+        ],
+        "205": [
+          240
+        ],
+        "206": [
+          240
+        ],
+        "207": [
+          240
+        ],
+        "208": [
+          240,
+          241
+        ],
+        "209": [
+          241,
+          242
+        ],
+        "210": [
+          243
+        ],
+        "211": [
+          243,
+          244
+        ]
+      }
+    },
+    "smart": {
+      "pdf_pages": [
+        246,
+        247,
+        248,
+        249,
+        250,
+        251
+      ],
+      "page_text_sha256": "3a51b773be42ae579b20e130ddfc41c89e162d68534d97a8db0df8415881f2e0",
+      "figure_headings": {
+        "213": [
+          247,
+          248,
+          249,
+          250,
+          251
+        ],
+        "214": [
+          251
+        ]
+      }
+    },
+    "fwlog": {
+      "pdf_pages": [
+        251,
+        252
+      ],
+      "page_text_sha256": "6d235858aade47ac1d8766295604e48dadaaac0c70e5c93992984545820030ed",
+      "figure_headings": {
+        "215": [
+          252
+        ]
+      }
+    },
+    "changedlog": {
+      "pdf_pages": [
+        252
+      ],
+      "page_text_sha256": "9867ec7012d7ebf2a7122a0e5df3c2e5ebd11ccc90538bd2d49f0a9b2635eca4",
+      "figure_headings": {}
+    },
+    "commandseffects": {
+      "pdf_pages": [
+        252,
+        253,
+        254,
+        255
+      ],
+      "page_text_sha256": "68a7ea136d0ad9fe95ca8aac96dd65ce4c884ca7d25594724d0f892c4f7f45bb",
+      "figure_headings": {
+        "216": [
+          253
+        ],
+        "217": [
+          254,
+          255
+        ]
+      }
+    },
+    "dstlog": {
+      "pdf_pages": [
+        255,
+        256,
+        257,
+        258
+      ],
+      "page_text_sha256": "2835be6712594efe20c77580ee5682e4a66acd542e0cbe7dbee698ff9e62e9de",
+      "figure_headings": {
+        "218": [
+          256
+        ],
+        "219": [
+          257,
+          258
+        ]
+      }
+    },
+    "telemetrylog": {
+      "pdf_pages": [
+        258,
+        259,
+        260,
+        261,
+        262,
+        263
+      ],
+      "page_text_sha256": "b1107531179968a0e24d80978034a4114410b5128871ed76953b6e91d33c404e",
+      "figure_headings": {
+        "220": [
+          258,
+          259
+        ],
+        "221": [
+          260,
+          261
+        ],
+        "222": [
+          261
+        ],
+        "223": [
+          262,
+          263
+        ]
+      }
+    },
+    "aerfull": {
+      "pdf_pages": [
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217
+      ],
+      "page_text_sha256": "4bd7fafc666d5e448c57ee9f3c3a645667a2d00f73f193b92661cc5f17c2eb33",
+      "figure_headings": {
+        "150": [
+          210
+        ],
+        "151": [
+          210,
+          211
+        ],
+        "152": [
+          211
+        ],
+        "153": [
+          211
+        ],
+        "154": [
+          211
+        ],
+        "155": [
+          212,
+          213,
+          214,
+          215
+        ],
+        "156": [
+          215,
+          216
+        ],
+        "157": [
+          216
+        ],
+        "158": [
+          216
+        ],
+        "159": [
+          216,
+          217
+        ],
+        "160": [
+          217
+        ]
+      }
+    },
+    "abort": {
+      "pdf_pages": [
+        207,
+        208
+      ],
+      "page_text_sha256": "2845f9e8d4599de5d0e363eda80df7509855a91360775aa9b9a3674aa4af675e",
+      "figure_headings": {
+        "147": [
+          208
+        ],
+        "148": [
+          208
+        ],
+        "149": [
+          208
+        ]
+      }
+    },
+    "shutdownfull": {
+      "pdf_pages": [
+        139,
+        140,
+        141
+      ],
+      "page_text_sha256": "7ad910ae1d71fae24fddbf458b0024d02798002e1fc022a1f73ad236dfe40b2e",
+      "figure_headings": {
+        "85": [
+          139
+        ]
+      }
+    },
+    "commrecovery": {
+      "pdf_pages": [
+        851,
+        852,
+        853,
+        854
+      ],
+      "page_text_sha256": "bb23e67eaba41af60221507b931c1ab8a6a5a27b49967d73bc3a4d2c1a6f0adf",
+      "figure_headings": {}
+    },
+    "format": {
+      "pdf_pages": [
+        204,
+        205,
+        232,
+        233,
+        234,
+        235
+      ],
+      "page_text_sha256": "50e44615f979ba68653fd6d7364bff33cc06e7a35897f0065e384f3f1b0bb413",
+      "figure_headings": {
+        "144": [
+          204,
+          205
+        ],
+        "194": [
+          233
+        ],
+        "195": [
+          234,
+          235
+        ],
+        "196": [
+          235
+        ]
+      }
+    },
+    "sanitizecmd": {
+      "pdf_pages": [
+        474,
+        475,
+        476,
+        477,
+        478,
+        479,
+        480
+      ],
+      "page_text_sha256": "06d9fc7f051b7a8d51aa60691b66fce9819dd4e556b63f69484fd34eb568e11e",
+      "figure_headings": {
+        "451": [
+          476,
+          477
+        ],
+        "452": [
+          477
+        ],
+        "453": [
+          477
+        ],
+        "454": [
+          479
+        ],
+        "455": [
+          480
+        ]
+      }
+    },
+    "sanitizelog": {
+      "pdf_pages": [
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346
+      ],
+      "page_text_sha256": "9b21484ebee9e08ddab54c8a90d424cbdace7dee9d7b3769fc67bf660d3ef849",
+      "figure_headings": {
+        "312": [
+          340,
+          342,
+          343,
+          344,
+          345
+        ]
+      }
+    },
+    "sanitizestate": {
+      "pdf_pages": [
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758
+      ],
+      "page_text_sha256": "8980051e9eb404e0555f09fcf4069a3d94e9fec268e791a6ff7faf8d2a1bfcba",
+      "figure_headings": {
+        "770": [
+          737,
+          738
+        ],
+        "771": [
+          743
+        ],
+        "772": [
+          746
+        ],
+        "773": [
+          747
+        ],
+        "774": [
+          748
+        ],
+        "775": [
+          750
+        ],
+        "776": [
+          751
+        ],
+        "777": [
+          753
+        ],
+        "778": [
+          754
+        ],
+        "779": [
+          755
+        ]
+      }
+    },
+    "sanitizerestrict": {
+      "pdf_pages": [
+        204,
+        205,
+        206,
+        207
+      ],
+      "page_text_sha256": "be3b7950042b09a33f633bb1bcd0a2a7d51e2ead8196cbb4ee77bf67ac27dd4c",
+      "figure_headings": {
+        "144": [
+          204,
+          205
+        ],
+        "145": [
+          205,
+          206
+        ],
+        "146": [
+          206,
+          207
+        ]
+      }
+    },
+    "sanitizeconfig": {
+      "pdf_pages": [
+        503,
+        504
+      ],
+      "page_text_sha256": "8ce6e564732e0c102be922e02707cfac7cf2ee96b32e445c2c7bb8e4f5cdcca9",
+      "figure_headings": {
+        "492": [
+          503,
+          504
+        ]
+      }
+    },
+    "formatpel": {
+      "pdf_pages": [
+        285,
+        286,
+        287
+      ],
+      "page_text_sha256": "db35dad04eecf2d76cabb5ac548b72ddf8906dba119aa2a3b803689ab11978a1",
+      "figure_headings": {
+        "248": [
+          286
+        ],
+        "249": [
+          286,
+          287
+        ]
+      }
+    },
+    "sanitizepel": {
+      "pdf_pages": [
+        287,
+        288
+      ],
+      "page_text_sha256": "c1bfb79b168c32f45ae7500e4f419d08cc3bb26564bfea89d0bc67113d6935d2",
+      "figure_headings": {
+        "250": [
+          287
+        ],
+        "251": [
+          287,
+          288
+        ]
+      }
+    },
+    "powerdetail": {
+      "pdf_pages": [
+        692,
+        693,
+        694,
+        695,
+        696,
+        697
+      ],
+      "page_text_sha256": "7dab5e30ddc15fde964d1ba7a85e3aa33e5d305ed2e354659e2ace6a64d020bc",
+      "figure_headings": {
+        "738": [
+          692
+        ],
+        "739": [
+          693
+        ],
+        "740": [
+          695
+        ],
+        "741": [
+          697
+        ]
+      }
+    },
+    "psd": {
+      "pdf_pages": [
+        410,
+        411,
+        412,
+        413
+      ],
+      "page_text_sha256": "83789fdf481db8d226b8298b91c06a6f56883708b402c8c28f30521aff7e714a",
+      "figure_headings": {
+        "340": [
+          410,
+          411,
+          412
+        ],
+        "341": [
+          413
+        ]
+      }
+    },
+    "pelcontext": {
+      "pdf_pages": [
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        284
+      ],
+      "page_text_sha256": "438a2c45d8bcb994cf8c3668b19700875f25e031465920aa53f8cd427b2d4956",
+      "figure_headings": {
+        "232": [
+          272
+        ],
+        "233": [
+          273,
+          274,
+          275
+        ],
+        "234": [
+          275,
+          276
+        ],
+        "235": [
+          277
+        ],
+        "236": [
+          277
+        ],
+        "237": [
+          278
+        ],
+        "238": [
+          278
+        ],
+        "239": [
+          279
+        ],
+        "240": [
+          279
+        ],
+        "241": [
+          279,
+          280
+        ],
+        "242": [
+          280
+        ],
+        "243": [
+          280,
+          281,
+          282
+        ],
+        "244": [
+          282
+        ],
+        "246": [
+          284
+        ]
+      }
+    },
+    "cmb": {
+      "pdf_pages": [
+        768,
+        769,
+        770
+      ],
+      "page_text_sha256": "6532456a22565789219a295909f8080755f767dc9fc5b5ad3cc4218743b4ec26",
+      "figure_headings": {}
+    },
+    "cmbreg": {
+      "pdf_pages": [
+        93,
+        94,
+        95,
+        96,
+        97,
+        98
+      ],
+      "page_text_sha256": "6aaa8343188a1e0957bb38e9a2fccb04d1169523006f94576c4b8df5802ede6e",
+      "figure_headings": {
+        "47": [
+          93,
+          94
+        ],
+        "48": [
+          94,
+          95
+        ],
+        "52": [
+          96,
+          97
+        ],
+        "53": [
+          97
+        ],
+        "54": [
+          97
+        ],
+        "55": [
+          98
+        ]
+      }
+    },
+    "pmr": {
+      "pdf_pages": [
+        771,
+        772
+      ],
+      "page_text_sha256": "6d9de596eef4b772a0d2f50fe3945c7ea66ef5bb992c5e61023ba08237b8409e",
+      "figure_headings": {}
+    },
+    "pmrreg": {
+      "pdf_pages": [
+        99,
+        100,
+        101,
+        102,
+        103
+      ],
+      "page_text_sha256": "a907f4c7a023462a0c2d64b5f078cadb55f31bcb8285260b15564996c0ba4e26",
+      "figure_headings": {
+        "58": [
+          99,
+          100
+        ],
+        "59": [
+          100
+        ],
+        "60": [
+          101
+        ],
+        "61": [
+          102
+        ],
+        "62": [
+          102
+        ],
+        "63": [
+          103
+        ],
+        "64": [
+          103
+        ]
+      }
+    },
+    "security": {
+      "pdf_pages": [
+        480,
+        481,
+        482
+      ],
+      "page_text_sha256": "e4a96f267d3b653ea49e6a852093839ffc4df7cc8f4cf71fd819786a5ec9928f",
+      "figure_headings": {
+        "456": [
+          480
+        ],
+        "457": [
+          480,
+          481
+        ],
+        "458": [
+          481
+        ],
+        "459": [
+          481
+        ],
+        "460": [
+          482
+        ],
+        "461": [
+          482
+        ],
+        "462": [
+          482
+        ]
+      }
+    },
+    "lockdown": {
+      "pdf_pages": [
+        431,
+        432,
+        433,
+        434,
+        623,
+        624,
+        625
+      ],
+      "page_text_sha256": "ee1c0f939c7a0528403a6cd876d72e6cd221945e1304f22c63693e6819c84732",
+      "figure_headings": {
+        "365": [
+          431,
+          432
+        ],
+        "366": [
+          433
+        ],
+        "367": [
+          434
+        ]
+      }
+    },
+    "locklog": {
+      "pdf_pages": [
+        305,
+        306,
+        307,
+        308,
+        309
+      ],
+      "page_text_sha256": "8514be10053871dda2eced1b15733abfffce96dceb9c6e0b9c9bf2ccecbcb33a",
+      "figure_headings": {
+        "274": [
+          306
+        ],
+        "275": [
+          306
+        ],
+        "276": [
+          307
+        ],
+        "277": [
+          308,
+          309
+        ],
+        "278": [
+          309
+        ]
+      }
+    },
+    "lockpersist": {
+      "pdf_pages": [
+        519,
+        520
+      ],
+      "page_text_sha256": "948478178f171b5f28ada8b0d2f4d72b3f396fec3fe545b46ede235e85bd3c4f",
+      "figure_headings": {
+        "518": [
+          519
+        ],
+        "519": [
+          520
+        ]
+      }
+    },
+    "multipath": {
+      "pdf_pages": [
+        60,
+        61,
+        62,
+        63
+      ],
+      "page_text_sha256": "823f3cad855bc0194a5fff606eafd74f48485816c72d4918babeea9ae2ac7ec2",
+      "figure_headings": {
+        "19": [
+          61
+        ],
+        "20": [
+          61
+        ],
+        "21": [
+          62
+        ],
+        "22": [
+          63
+        ]
+      }
+    },
+    "virtualcmd": {
+      "pdf_pages": [
+        559,
+        560,
+        561
+      ],
+      "page_text_sha256": "3644a0e380f42738760e6b3d458b08a50dacc67435c8c8da6905a0cd10ad6165",
+      "figure_headings": {
+        "587": [
+          559,
+          560
+        ],
+        "588": [
+          560
+        ],
+        "589": [
+          561
+        ],
+        "590": [
+          561
+        ]
+      }
+    },
+    "virtualid": {
+      "pdf_pages": [
+        428,
+        429,
+        430
+      ],
+      "page_text_sha256": "785bb7d9e6d474ee744972f7dd48e179c3497a9f129dbaf392b2234889f02577",
+      "figure_headings": {
+        "360": [
+          428,
+          429
+        ],
+        "361": [
+          429
+        ],
+        "362": [
+          429,
+          430
+        ]
+      }
+    },
+    "ana": {
+      "pdf_pages": [
+        63,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609,
+        610
+      ],
+      "page_text_sha256": "b7ae35f8c9b7be4b750976dcc938effcab6a5cae63abee15ac37a01fcf37807b",
+      "figure_headings": {
+        "675": [
+          605
+        ],
+        "676": [
+          606
+        ],
+        "677": [
+          607
+        ],
+        "678": [
+          609,
+          610
+        ]
+      }
+    },
+    "analog": {
+      "pdf_pages": [
+        267,
+        268,
+        269,
+        270
+      ],
+      "page_text_sha256": "fab55d55988ba502626ebf01635f5153abb25578dac9261d0b47521a236f4433",
+      "figure_headings": {
+        "229": [
+          268
+        ],
+        "230": [
+          268,
+          269
+        ],
+        "231": [
+          269,
+          270
+        ]
+      }
+    },
+    "capacitymodel": {
+      "pdf_pages": [
+        106,
+        107,
+        108,
+        109,
+        110,
+        151,
+        152,
+        153,
+        154,
+        155
+      ],
+      "page_text_sha256": "239fa10ede3f7263ff2a04af406998da1bee0ed187c634221b4a5a56688e3644",
+      "figure_headings": {
+        "67": [
+          107
+        ],
+        "68": [
+          107
+        ],
+        "69": [
+          109
+        ],
+        "86": [
+          152
+        ],
+        "87": [
+          153
+        ],
+        "88": [
+          154
+        ],
+        "89": [
+          155
+        ]
+      }
+    },
+    "capacitycmd": {
+      "pdf_pages": [
+        217,
+        218,
+        219,
+        220,
+        221
+      ],
+      "page_text_sha256": "60ce23b0c19390ea0ab2964fc86ccec53fa1077f9f99448d9c5a9315e9e7cccd",
+      "figure_headings": {
+        "162": [
+          217,
+          218
+        ],
+        "163": [
+          218
+        ],
+        "164": [
+          218
+        ],
+        "165": [
+          221
+        ],
+        "166": [
+          221
+        ]
+      }
+    },
+    "capacityop": {
+      "pdf_pages": [
+        620,
+        621,
+        622,
+        623
+      ],
+      "page_text_sha256": "bf6fb8da31f4e17c01447852f296b137f817bf0b6ec7626484294051d7053cd0",
+      "figure_headings": {}
+    },
+    "eghealth": {
+      "pdf_pages": [
+        263,
+        264,
+        265
+      ],
+      "page_text_sha256": "12fe56fc2d40827e22e702771bf316a2d71ad8f9ae138ff390364459f35c845c",
+      "figure_headings": {
+        "224": [
+          263
+        ],
+        "225": [
+          264,
+          265
+        ]
+      }
+    },
+    "egevents": {
+      "pdf_pages": [
+        110,
+        296,
+        504
+      ],
+      "page_text_sha256": "9e6f443658c00b0ac37cf665268061806519a1090cc2e6c7617d913cf2e9d8b6",
+      "figure_headings": {
+        "261": [
+          296
+        ],
+        "493": [
+          504
+        ]
+      }
+    },
+    "mediaunit": {
+      "pdf_pages": [
+        296,
+        297,
+        298
+      ],
+      "page_text_sha256": "d95e6ed2c478c5f8383253a908a6234ccbe8db1471b5b86118d3ce031025fc62",
+      "figure_headings": {
+        "262": [
+          297
+        ],
+        "263": [
+          297
+        ],
+        "264": [
+          298
+        ]
+      }
+    },
+    "fdpmodel": {
+      "pdf_pages": [
+        110,
+        111,
+        112,
+        113,
+        674,
+        675,
+        676,
+        677,
+        678
+      ],
+      "page_text_sha256": "ed3b523fa1df097a59c8e8f5c667911c0ab1fa0d084e70b83a68006e0e43bc20",
+      "figure_headings": {
+        "70": [
+          111
+        ],
+        "71": [
+          112
+        ],
+        "72": [
+          113
+        ],
+        "730": [
+          675
+        ],
+        "731": [
+          676
+        ],
+        "732": [
+          676
+        ]
+      }
+    },
+    "fdpcontrol": {
+      "pdf_pages": [
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        506,
+        507,
+        508,
+        509,
+        594,
+        595,
+        596,
+        597
+      ],
+      "page_text_sha256": "a399e743d0a25e584b908baccdf8a981a6787603fd06031c2cf57447d04793b4",
+      "figure_headings": {
+        "293": [
+          319
+        ],
+        "294": [
+          319,
+          320,
+          321
+        ],
+        "295": [
+          321
+        ],
+        "296": [
+          321
+        ],
+        "297": [
+          322
+        ],
+        "298": [
+          322
+        ],
+        "299": [
+          322,
+          323
+        ],
+        "300": [
+          323
+        ],
+        "301": [
+          324
+        ],
+        "302": [
+          324
+        ],
+        "303": [
+          325,
+          326
+        ],
+        "499": [
+          506
+        ],
+        "500": [
+          506,
+          507
+        ],
+        "501": [
+          507
+        ],
+        "502": [
+          507,
+          508
+        ],
+        "503": [
+          508
+        ],
+        "504": [
+          508
+        ],
+        "505": [
+          508
+        ],
+        "506": [
+          508,
+          509
+        ],
+        "650": [
+          594
+        ],
+        "651": [
+          594
+        ],
+        "652": [
+          594
+        ],
+        "653": [
+          595
+        ],
+        "654": [
+          595
+        ],
+        "655": [
+          595,
+          596
+        ],
+        "656": [
+          596
+        ],
+        "657": [
+          597
+        ]
+      }
+    },
+    "pointers": {
+      "pdf_pages": [
+        166,
+        167,
+        168,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190
+      ],
+      "page_text_sha256": "a31571107fd7acbabf1dab5e666449faa64e292bbf96359c1a1f657fccba23fe",
+      "figure_headings": {
+        "93": [
+          166,
+          167,
+          168
+        ],
+        "110": [
+          184
+        ],
+        "111": [
+          184
+        ],
+        "112": [
+          185
+        ],
+        "113": [
+          185
+        ],
+        "114": [
+          187
+        ],
+        "115": [
+          187
+        ],
+        "116": [
+          187
+        ],
+        "117": [
+          187,
+          188
+        ],
+        "118": [
+          188
+        ],
+        "119": [
+          188,
+          189
+        ],
+        "120": [
+          189
+        ],
+        "121": [
+          189
+        ],
+        "122": [
+          190
+        ]
+      }
+    },
+    "sgls": {
+      "pdf_pages": [
+        403,
+        404
+      ],
+      "page_text_sha256": "5d10315c065fd79c28e1f4570a7389ad982f0a192778086509bfd943fce872ff",
+      "figure_headings": {
+        "338": [
+          404
+        ]
+      }
+    },
+    "interruptmask": {
+      "pdf_pages": [
+        85
+      ],
+      "page_text_sha256": "2a68cef9b9a4426f72c2491667abd7c9850d7f16de186bed62710ffeba411ccf",
+      "figure_headings": {
+        "39": [
+          85
+        ],
+        "40": [
+          85
+        ]
+      }
+    },
+    "interruptfeature": {
+      "pdf_pages": [
+        540,
+        541
+      ],
+      "page_text_sha256": "9bb8ee3f4f0d1453d8490c5e1d32783627b525932ee29981f8dfd401d16cf19c",
+      "figure_headings": {
+        "543": [
+          541
+        ],
+        "544": [
+          541
         ]
       }
     },
@@ -2425,6 +7862,98 @@
         ]
       }
     },
+    "nvmselftest": {
+      "pdf_pages": [
+        75,
+        76
+      ],
+      "page_text_sha256": "5e7ec2e486af8f0f12a156678f04133e9d087a18d7a63c5f3bc10c65d9651f94",
+      "figure_headings": {
+        "111": [
+          76
+        ]
+      }
+    },
+    "nvmcreate": {
+      "pdf_pages": [
+        108,
+        110,
+        111,
+        112,
+        113,
+        162,
+        163
+      ],
+      "page_text_sha256": "239ec70e89e416988ff81a69cfd56f39d263e9cfe652e0f1494cf46fd1b652f5",
+      "figure_headings": {
+        "132": [
+          108
+        ],
+        "133": [
+          108
+        ],
+        "134": [
+          112,
+          113
+        ]
+      }
+    },
+    "nvmformat": {
+      "pdf_pages": [
+        62,
+        63
+      ],
+      "page_text_sha256": "cc6326be588bf78aa618ebaf6442876afcd34cb34e07917ce9cc4374f7e8b209",
+      "figure_headings": {
+        "91": [
+          63
+        ]
+      }
+    },
+    "nvmsanitize": {
+      "pdf_pages": [
+        113,
+        173,
+        174,
+        175
+      ],
+      "page_text_sha256": "ef27d8b2953bc2e0ce5475e078149e4d8400b01b84aae85f0a7e7bb8eab46826",
+      "figure_headings": {
+        "200": [
+          173
+        ],
+        "201": [
+          174
+        ]
+      }
+    },
+    "nvmpel": {
+      "pdf_pages": [
+        76,
+        77
+      ],
+      "page_text_sha256": "05774a755c823d8b02529821eec3fc9062174faf21b154995fe9acf70253f580",
+      "figure_headings": {
+        "112": [
+          77
+        ]
+      }
+    },
+    "fdpnvm": {
+      "pdf_pages": [
+        26,
+        79
+      ],
+      "page_text_sha256": "2a6a7dcca9dff0b8183976a773929194cdc27b852f1c87365480df9e34252b56",
+      "figure_headings": {
+        "21": [
+          26
+        ],
+        "116": [
+          79
+        ]
+      }
+    },
     "pcie": {
       "pdf_pages": [
         9,
@@ -2503,6 +8032,60 @@
         ],
         "17": [
           18
+        ]
+      }
+    },
+    "pciereset": {
+      "pdf_pages": [
+        11,
+        12
+      ],
+      "page_text_sha256": "165f0dcfc3ab03d4d7743fa7982589f54e0b1b239d69a515041272d8db1382cc",
+      "figure_headings": {}
+    },
+    "retirement": {
+      "pdf_pages": [
+        13
+      ],
+      "page_text_sha256": "aeacfe812036532777b79d6841ca947ad9aac97dcb48935465fe32f3be13ee3b",
+      "figure_headings": {}
+    },
+    "interruptfull": {
+      "pdf_pages": [
+        13,
+        14,
+        15,
+        16,
+        24,
+        25,
+        26
+      ],
+      "page_text_sha256": "ef316a61d0421e3b0017374eeda3a99d0dd1c318b424aad382705c035b0699ba",
+      "figure_headings": {
+        "9": [
+          15
+        ],
+        "42": [
+          24
+        ],
+        "43": [
+          24
+        ],
+        "44": [
+          24,
+          25
+        ],
+        "45": [
+          25
+        ],
+        "46": [
+          25
+        ],
+        "47": [
+          26
+        ],
+        "48": [
+          26
         ]
       }
     }

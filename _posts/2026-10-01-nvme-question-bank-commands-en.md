@@ -11,7 +11,7 @@ nvme_qa: true
 
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/commands/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/commands.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–68</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
 <header><p class="qa-range">Q31–Q43</p><h1>Commands, completions and processing order</h1><p class="qr-intro">Follow submission, consumption, processing, completion and host reclamation to learn what each field proves. Ordering, arbitration, fairness and interrupts answer different questions; completion order alone cannot establish them all.</p><p>Practice first, then reveal 17 answer items per question. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
 <aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>Five observations during one command lifetime</h2><p class="qa-takeaway">Evidence of progress is not evidence of success; identify the stage you actually observed.</p>
@@ -89,7 +89,8 @@ nvme_qa: true
 <li id="q-031-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First identify whether the SQ is Admin or I/O and which command set decodes it.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-032" data-question="32"><h2><a class="qa-qid" href="#q-032">Q32</a> How are nonzero reserved fields, illegal field combinations and unsupported opcodes handled?</h2>
@@ -146,7 +147,8 @@ nvme_qa: true
 <li id="q-032-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First ask whether the modified item is a reserved bit or a reserved encoding within a defined field.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-conventions">Base 2.4 §1.4.1</a> · <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-033" data-question="33"><h2><a class="qa-qid" href="#q-033">Q33</a> Which statuses apply to invalid, inactive, unused and improperly broadcast NSIDs?</h2>
@@ -203,7 +205,8 @@ nvme_qa: true
 <li id="q-033-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether the command uses the generic rule or defines an explicit exception.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-sqe">Base 2.4 §4.1.1</a> · <a href="#ref-nsid">Base 2.4 §3.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-034" data-question="34"><h2><a class="qa-qid" href="#q-034">Q34</a> What are SQHD, SQID, CID, phase and status used for in a CQE?</h2>
@@ -260,7 +263,8 @@ nvme_qa: true
 <li id="q-034-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First establish a new phase before interpreting the remaining fields, avoiding stale-memory completions.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-035" data-question="35"><h2><a class="qa-qid" href="#q-035">Q35</a> How should Status Code Type and Status Code be decoded?</h2>
@@ -317,7 +321,8 @@ nvme_qa: true
 <li id="q-035-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check accidental inclusion of P or use of DW3 bit positions on a 16-bit status word.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-036" data-question="36"><h2><a class="qa-qid" href="#q-036">Q36</a> What do More and DNR mean, and does DNR=0 guarantee an immediate safe retry?</h2>
@@ -374,7 +379,8 @@ nvme_qa: true
 <li id="q-036-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First distinguish an actual error completion from a host timeout; without a CQE there is no DNR to interpret.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-behavior">Base 2.4 §5.2.30.1.15</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-037" data-question="37"><h2><a class="qa-qid" href="#q-037">Q37</a> Why might a posted completion remain unprocessed by the host?</h2>
@@ -431,7 +437,8 @@ nvme_qa: true
 <li id="q-037-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check CQ/slot selection and expected phase before assuming interrupt loss.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-irqfeat">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-038" data-question="38"><h2><a class="qa-qid" href="#q-038">Q38</a> Must outstanding commands complete in submission order?</h2>
@@ -488,7 +495,8 @@ nvme_qa: true
 <li id="q-038-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First identify a specification-defined or host-established dependency.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-nvmatomic">NVM Command Set 1.3 §2.1.2–2.1.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-039" data-question="39"><h2><a class="qa-qid" href="#q-039">Q39</a> Which commands have ordering dependencies, and why is universal ordered completion unsafe to assume?</h2>
@@ -545,7 +553,8 @@ nvme_qa: true
 <li id="q-039-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether the host waited for successful completion rather than merely submission-function return.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-nvmatomic">NVM Command Set 1.3 §2.1.2–2.1.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-040" data-question="40"><h2><a class="qa-qid" href="#q-040">Q40</a> How do outstanding limits and CQ Full constrain further command handling?</h2>
@@ -602,7 +611,8 @@ nvme_qa: true
 <li id="q-040-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First determine whether the SQ, CQ or only the host outstanding limit is full.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-041" data-question="41"><h2><a class="qa-qid" href="#q-041">Q41</a> How do Round Robin and Weighted Round Robin arbitration differ?</h2>
@@ -659,7 +669,8 @@ nvme_qa: true
 <li id="q-041-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First confirm CC.AMS actually selects WRR before interpreting priorities and weights.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-042" data-question="42"><h2><a class="qa-qid" href="#q-042">Q42</a> When do Urgent, High, Medium and Low queue priorities take effect?</h2>
@@ -716,7 +727,8 @@ nvme_qa: true
 <li id="q-042-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First rule out operation under RR.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-043" data-question="43"><h2><a class="qa-qid" href="#q-043">Q43</a> How can arbitration be evaluated when multiple queues compete?</h2>
@@ -773,7 +785,8 @@ nvme_qa: true
 <li id="q-043-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First verify continuously eligible high-priority candidates and available CQ space.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-order">Base 2.4 §3.4.1–3.4.5</a> · <a href="#ref-arbit">Base 2.4 §5.2.30.1.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <section id="common-rules" class="qa-common"><h2>Shared rules linked from the answers</h2><p>Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.</p>

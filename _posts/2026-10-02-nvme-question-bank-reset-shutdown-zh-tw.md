@@ -1,0 +1,911 @@
+---
+layout: post
+title: "NVMe 自問自答題庫：Reset 與 Shutdown"
+date: 2026-10-02 00:00:00 +0800
+categories: [nvme]
+permalink: /nvme/question-bank/reset-shutdown/zh-tw/
+lang: zh-TW
+nvme_quickref: true
+nvme_qa: true
+---
+
+<div class="nvme-quickref nvme-qa">
+<nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/reset-shutdown/en/">English</a><a href="/DOCS/nvme-question-bank/reset-shutdown.html">繁中教學 HTML</a></nav>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<header><p class="qa-range">Q174–Q187</p><h1>Reset 與 Shutdown</h1><p class="qr-intro">Reset 結束操作環境，Shutdown 準備安全停止；兩者的目的和完成證據不同。先看影響範圍，再分辨哪些狀態需要重建，哪些操作仍持續。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
+<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<section id="overview" class="qa-overview"><h2>停止的要求與停止的完成</h2><p class="qa-takeaway">Host 寫入要求不等於 controller 已完成；等待條件必須看回報狀態。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">動作</th><th scope="col">要求</th><th scope="col">完成後的主要處理</th></tr></thead><tbody><tr><td>Controller Reset</td><td>CC.EN→0</td><td>等 RDY=0，重建 queues</td></tr><tr><td>Subsystem Reset</td><td>適用的 reset 介面</td><td>確認全部受影響 controller</td></tr><tr><td>Normal Shutdown</td><td>CC.SHN=01b</td><td>等 SHST=10b，核對斷電範圍</td></tr><tr><td>Abrupt Shutdown</td><td>CC.SHN=10b</td><td>仍觀察完成狀態</td></tr></tbody></table></div>
+<p><strong>舉例看懂：</strong>Normal 要求送出後若 SHST 還未完成就掉電，仍可能增加 UPL；Abrupt 已完成後才掉電則不必然增加。關鍵是掉電當時狀態。</p>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a></p>
+</section>
+<div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
+<section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
+<li><a href="#q-174">Q174 · Controller、Subsystem 與 Queue Level Reset 範圍有何不同？</a></li>
+<li><a href="#q-175">Q175 · Conventional、FLR、Hot 與 Fundamental Reset 如何對應 NVMe？</a></li>
+<li><a href="#q-176">Q176 · Reset 發生在 Idle、命令或背景操作中，如何判斷結果？</a></li>
+<li><a href="#q-177">Q177 · Reset 期間 CSTS.RDY 應如何變化？</a></li>
+<li><a href="#q-178">Q178 · Reset 後哪些 Register、Feature 與 Queue 要重建？</a></li>
+<li><a href="#q-179">Q179 · Reset 後舊 Outstanding 與 Completion 應如何處理？</a></li>
+<li><a href="#q-180">Q180 · Reset 後如何確認 Feature、Log、Namespace 與 Firmware？</a></li>
+<li><a href="#q-181">Q181 · Reset 超時或 CFS 未清除時怎麼辦？</a></li>
+<li><a href="#q-182">Q182 · Host 如何用 CC.SHN 做 Normal Shutdown？</a></li>
+<li><a href="#q-183">Q183 · 何時算 Shutdown Complete，可以移除電源？</a></li>
+<li><a href="#q-184">Q184 · Normal、Abrupt Shutdown 與直接斷電有何不同？</a></li>
+<li><a href="#q-185">Q185 · Shutdown 期間能否繼續新命令或保留 Outstanding？</a></li>
+<li><a href="#q-186">Q186 · Normal／Abrupt 如何影響 Unsafe Shutdowns？</a></li>
+<li><a href="#q-187">Q187 · 非正常失電後為何查 SMART、Error 與 PEL？</a></li>
+</ol></section>
+<article class="qa-question" id="q-174" data-question="174"><h2><a class="qa-qid" href="#q-174">Q174</a> Controller、Subsystem 與 Queue Level Reset 範圍有何不同？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-174-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-174-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>選擇合適的範圍，才能恢復故障並掌握哪些工作會被中止。</p>
+</li>
+<li id="q-174-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>Queue Reset 刪除重建指定 I/O queue；CLR 重設一個 controller 的命令環境；Subsystem Reset 涵蓋一個或全部 domains。</p>
+</li>
+<li id="q-174-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>查 CAP.NSSRS、controller／domain 拓樸與 queue 相依關係。</p>
+</li>
+<li id="q-174-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Queue Reset 用 Delete／Create；Controller Reset 清 CC.EN；NSSR.NSSRC 寫 4E564D65h 請求支援的 Subsystem Reset。</p>
+</li>
+<li id="q-174-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>停止受影響提交，選擇範圍，完成等待與重建，再恢復命令。重建 CQ 前先處理依賴它的 SQ。</p>
+</li>
+<li id="q-174-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>新 queue 或 controller 恢復可用，原使用期間的追蹤不再沿用。</p>
+</li>
+<li id="q-174-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>Register 觸發 Reset 沒有 CQE；Delete／Create 才有其命令完成。</p>
+</li>
+<li id="q-174-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>Queue Level Reset 若透過 Delete／Create 命令處理，要解讀各命令的 CQE；CC.EN 與 NSSR 等 Register 操作沒有 NVMe CQE，因此沒有 DNR／More。不能將這幾種機制的回報方式混用。</p>
+</li>
+<li id="q-174-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-174-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>用實際被刪除的 queues 與受影響 controllers 驗證範圍，不能只看 Host 函式名稱。</p>
+</li>
+<li id="q-174-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認這次所說的 Reset 具體是哪一種。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-175" data-question="175"><h2><a class="qa-qid" href="#q-175">Q175</a> Conventional、FLR、Hot 與 Fundamental Reset 如何對應 NVMe？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-175-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-175-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>本題只教 NVMe 可觀察的重設效果，不展開 Link 或封包。不同來源會影響 Register 保留與韌體啟用。</p>
+</li>
+<li id="q-175-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>FLR 針對 function；Conventional Reset 包含適用的 Hot／Fundamental 形式，實際影響須依裝置拓樸確認。</p>
+</li>
+<li id="q-175-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>確認 PCIe reset 支援、CAP 與待啟用 Firmware Commit 要求。</p>
+</li>
+<li id="q-175-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>PCIe Transport3.3 將 Conventional 與 FLR 列為 CLR 來源；CC.EN 的 Controller Reset 不重設 PCI configuration space。</p>
+</li>
+<li id="q-175-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>記錄實際來源，恢復適用 PCI 配置，再執行 NVMe 初始化。</p>
+</li>
+<li id="q-175-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>受影響 NVMe queues 依 CLR 重建；不能期待 FLR 保留 I/O queues。</p>
+</li>
+<li id="q-175-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>要求 Conventional Reset 才能啟用的映像，不會因 FLR 或 CC.EN Reset 提前啟用。</p>
+</li>
+<li id="q-175-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-175-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>CMBMSC 對 FLR 另有保留例外，不能概括成所有 Register 皆歸零。</p>
+</li>
+<li id="q-175-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查 Host 到底觸發哪個 reset source。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-176" data-question="176"><h2><a class="qa-qid" href="#q-176">Q176</a> Reset 發生在 Idle、命令或背景操作中，如何判斷結果？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-176-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-176-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>Reset 對命令通道與背景操作可能有不同效果，不能只用「全部中止」概括。</p>
+</li>
+<li id="q-176-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>受影響 queues 結束，但資料與持久管理狀態各依自己的規則。</p>
+</li>
+<li id="q-176-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>保存 outstanding 清單、操作 Log 與 Reset 來源。</p>
+</li>
+<li id="q-176-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Sanitize 持續；Short Self-test 中止；Extended Self-test 恢復；未 Commit 的 firmware 下載丟棄。</p>
+</li>
+<li id="q-176-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>Reset 前記錄階段，恢復後讀對應 Log 與 Identify，不憑舊 CQE bytes 猜結果。</p>
+</li>
+<li id="q-176-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>逐項判定完成、中止、持續或仍未知，再決定後續。</p>
+</li>
+<li id="q-176-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>沒有 CQE 不等於沒執行；Reset 不保證 Write 回復成舊資料。</p>
+</li>
+<li id="q-176-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-176-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>按各功能的持久性驗證，不要求所有功能有同一結果。</p>
+</li>
+<li id="q-176-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先區分命令本身與它啟動的背景工作。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-177" data-question="177"><h2><a class="qa-qid" href="#q-177">Q177</a> Reset 期間 CSTS.RDY 應如何變化？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-177-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-177-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>RDY 確認停用或重新就緒，不能以 Host 寫入 EN 代替觀察。</p>
+</li>
+<li id="q-177-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>RDY 是 controller 狀態，不保證每個 namespace ready。</p>
+</li>
+<li id="q-177-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>讀 CAP.TO、Ready Mode 與 CRTO 能力。</p>
+</li>
+<li id="q-177-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>清 EN 後等 RDY=0；重新設 EN=1 後按正確期限等 RDY=1。</p>
+</li>
+<li id="q-177-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>停用完成前不重新 Enable，先完成新環境設定再啟用。</p>
+</li>
+<li id="q-177-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>RDY 轉移與所選模式一致；media 尚未就緒時仍遵循模式限制。</p>
+</li>
+<li id="q-177-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>Register 讀取失敗不能當成 RDY=0 證據。</p>
+</li>
+<li id="q-177-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-177-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>保存 EN、RDY、CFS 與時間，區分請求與確認。</p>
+</li>
+<li id="q-177-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先排除存取失敗回傳的填充值。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-178" data-question="178"><h2><a class="qa-qid" href="#q-178">Q178</a> Reset 後哪些 Register、Feature 與 Queue 要重建？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-178-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-178-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>重建依 Reset 來源與 Feature 規則，不能照抄舊記憶體。</p>
+</li>
+<li id="q-178-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>I/O queues 失效、Admin 指標重設；持久 namespace 與 Saved 設定是另一層。</p>
+</li>
+<li id="q-178-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>查 Register 例外、Feature 能力／Current 與 queue 配額。</p>
+</li>
+<li id="q-178-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>CC.EN Reset 保留 AQA／ASQ／ACQ、指定 PMR registers 與 CMBMSC，但不保留 queue 指標。</p>
+</li>
+<li id="q-178-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>恢復必要 PCI／Register 設定，初始化 Admin Phase，Enable 等 RDY，配置功能，再建 CQ／SQ。</p>
+</li>
+<li id="q-178-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>新 queue 正常完成命令，Current Feature 符合恢復規則。</p>
+</li>
+<li id="q-178-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>保留位址不代表舊 CQE 有效；不可保存 Feature 也不一定回零。</p>
+</li>
+<li id="q-178-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-178-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>比較 Saved、Current 與例外，不用「全部歸零」的固定斷言。</p>
+</li>
+<li id="q-178-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認 Reset 來源再決定初始化步驟。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-179" data-question="179"><h2><a class="qa-qid" href="#q-179">Q179</a> Reset 後舊 Outstanding 與 Completion 應如何處理？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-179-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-179-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>避免舊完成誤配新 CID，以及舊命令晚到的存取干擾新工作。</p>
+</li>
+<li id="q-179-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>追蹤按 queue 使用期間隔離，共享資料的其他 controller 也可能參與復原。</p>
+</li>
+<li id="q-179-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>保存 Reset 完成證據與舊 SQID／CID 清單。</p>
+</li>
+<li id="q-179-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>重新初始化 Phase 與指標，不把 Reset 前 CQE 當新完成。</p>
+</li>
+<li id="q-179-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>確認舊處理已停止，再回收資源或由其他 controller 重試改寫命令。</p>
+</li>
+<li id="q-179-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>每筆新命令只收到新使用期間的結果；舊命令資料效果另行確認。</p>
+</li>
+<li id="q-179-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>失去通訊時不能要求全部舊命令回固定 Abort Status。</p>
+</li>
+<li id="q-179-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-179-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>區分 controller 新寫入與記憶體殘留的 CQE。</p>
+</li>
+<li id="q-179-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查 Phase 初始化與 CID 重用紀錄。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-180" data-question="180"><h2><a class="qa-qid" href="#q-180">Q180</a> Reset 後如何確認 Feature、Log、Namespace 與 Firmware？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-180-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-180-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>RDY=1 之外，還要知道哪些設定恢復、哪些背景操作持續。</p>
+</li>
+<li id="q-180-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>依 controller、namespace、subsystem 的各自範圍查詢。</p>
+</li>
+<li id="q-180-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>使用受支援的 Identify、Get Features 與 Logs。</p>
+</li>
+<li id="q-180-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Feature 查 Current／Saved；namespace 查身分與清單；firmware 查 FR／slots；背景操作查對應 Log。</p>
+</li>
+<li id="q-180-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>恢復 Admin 通道後查狀態，再建立與新格式／能力一致的 I/O 環境。</p>
+</li>
+<li id="q-180-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>變化應能解釋，例如 Sanitize 進度延續，但舊 AER 已失效。</p>
+</li>
+<li id="q-180-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>Error entries 清除而計數保留可以同時符合規範。</p>
+</li>
+<li id="q-180-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-180-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>按持久、恢復及即時欄位分類比對。</p>
+</li>
+<li id="q-180-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先排除把一份空 Log 推論成所有歷史消失。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-181" data-question="181"><h2><a class="qa-qid" href="#q-181">Q181</a> Reset 超時或 CFS 未清除時怎麼辦？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-181-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-181-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>先區分期限用錯與持續故障，不無限重送。</p>
+</li>
+<li id="q-181-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>先處理該 controller，擴大範圍前確認平台支援及其他使用者。</p>
+</li>
+<li id="q-181-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>保存 CAP／CRTO、EN／RDY／CFS、來源與時間。</p>
+</li>
+<li id="q-181-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>停用用 CAP.TO，啟用依 Ready Mode；fatal recovery 依 Base9.5。</p>
+</li>
+<li id="q-181-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>確認讀值有效，先 Controller Reset；CFS 仍未清除才評估適用的 Subsystem Reset。</p>
+</li>
+<li id="q-181-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>恢復後狀態與命令通道都可用，不只是一個 CFS 位元清零。</p>
+</li>
+<li id="q-181-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>不能以任意更短的 Host timeout 判違規，也不盲目要求不適合平台的 Subsystem Reset。</p>
+</li>
+<li id="q-181-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-181-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>先排除 Secondary Offline 預期造成的 CFS。</p>
+</li>
+<li id="q-181-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先核對期限與 controller 角色。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-182" data-question="182"><h2><a class="qa-qid" href="#q-182">Q182</a> Host 如何用 CC.SHN 做 Normal Shutdown？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-182-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-182-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>Normal Shutdown 準備保存與媒體關機，不等於停用 controller。</p>
+</li>
+<li id="q-182-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>可斷電範圍須依 CAP.CPS 協調相關 controllers。</p>
+</li>
+<li id="q-182-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>讀 CPS、RTD3E、SHST 與 ST。</p>
+</li>
+<li id="q-182-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>SHN=01b 要求 Normal；SHST=10b、ST=0 表示 controller shutdown 完成。</p>
+</li>
+<li id="q-182-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>停止新 I/O 並等既有命令，建議刪 SQ 再刪 CQ，最後設 SHN 並等待。</p>
+</li>
+<li id="q-182-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>完成後可斷電狀態持續到規定的狀態改變事件。</p>
+</li>
+<li id="q-182-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>寫 SHN 沒有 CQE；處理中命令可被 Power Loss Notification Status 中止。</p>
+</li>
+<li id="q-182-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-182-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>確認實際 SHST，不能只看送出 SHN。</p>
+</li>
+<li id="q-182-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認是否誤用清 EN 代替關機。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-183" data-question="183"><h2><a class="qa-qid" href="#q-183">Q183</a> 何時算 Shutdown Complete，可以移除電源？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-183-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-183-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>發出通知不等於完成保存，需等實際完成狀態。</p>
+</li>
+<li id="q-183-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>domain／subsystem scope 須全部相關 controllers ready。</p>
+</li>
+<li id="q-183-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>查 SHST、ST、CPS 與 RTD3E。</p>
+</li>
+<li id="q-183-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>SHST01b=處理中，10b=完成；一般 controller shutdown 用 ST0。</p>
+</li>
+<li id="q-183-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>輪詢完成；RTD3E=0 時建議至少等待 1 秒供處理，不是到 1 秒就無條件拔電。</p>
+</li>
+<li id="q-183-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>所需範圍皆 ready-to-power-off 才符合建議。</p>
+</li>
+<li id="q-183-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>之後 Reset 或允許的媒體存取可能使先前 readiness 失效。</p>
+</li>
+<li id="q-183-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-183-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>用最後狀態與實際失電時點比對，不忽略中間操作。</p>
+</li>
+<li id="q-183-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查 CPS 是否要求等待其他 controller。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-184" data-question="184"><h2><a class="qa-qid" href="#q-184">Q184</a> Normal、Abrupt Shutdown 與直接斷電有何不同？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-184-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-184-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>Normal 與 Abrupt 都有通知；直接失電可能沒有準備時間。</p>
+</li>
+<li id="q-184-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>流程不同會影響未完成工作與持久性，但仍需確認 power scope。</p>
+</li>
+<li id="q-184-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>保存 SHN、SHST、power 事件及 SMART.UPL。</p>
+</li>
+<li id="q-184-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>SHN01b／10b 分別選 Normal／Abrupt，兩者都用 SHST10b 回報完成。</p>
+</li>
+<li id="q-184-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>Normal 建議排空與刪 queue；Abrupt 停止新 I/O 再通知；直接斷電無法等待。</p>
+</li>
+<li id="q-184-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>Abrupt 若完成且失電時仍 ready，不必只因名稱就增加 UPL。</p>
+</li>
+<li id="q-184-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>未完成 volatile writes 的持久性不能只靠 Shutdown 名稱保證。</p>
+</li>
+<li id="q-184-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-184-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>分別觀察要求、完成與失電三個時點。</p>
+</li>
+<li id="q-184-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查失電時 SHST 與媒體狀態。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-185" data-question="185"><h2><a class="qa-qid" href="#q-185">Q185</a> Shutdown 期間能否繼續新命令或保留 Outstanding？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-185-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-185-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>持續提交新 I/O 會妨礙有序關機，因此先停止新工作。</p>
+</li>
+<li id="q-185-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>I/O 與 Admin 不同，AER outstanding 不等於資料尚未寫完。</p>
+</li>
+<li id="q-185-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>觀察 outstanding 清單與 SHST。</p>
+</li>
+<li id="q-185-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>正常流程排空 I/O；Admin 是否先 Abort 由 Host 選擇，完成時建議只剩 AER。</p>
+</li>
+<li id="q-185-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>停止新工作並處理既有結果，送 SHN 後不任意清 EN 影響關機時間。</p>
+</li>
+<li id="q-185-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>SHST 完成可與 pending AER 並存。</p>
+</li>
+<li id="q-185-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>處理中命令可因 Power Loss Notification 被中止，不保證晚到命令成功。</p>
+</li>
+<li id="q-185-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-185-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>確認 Host 沒把 AER 計入資料排空條件。</p>
+</li>
+<li id="q-185-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查卡住的是 I/O 還是長駐 AER。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-186" data-question="186"><h2><a class="qa-qid" href="#q-186">Q186</a> Normal／Abrupt 如何影響 Unsafe Shutdowns？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-186-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-186-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>Base2.4 改稱 Unexpected Power Losses（UPL），依真正失去 main power 時的狀態計數。</p>
+</li>
+<li id="q-186-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>UPL 是 SMART 生命週期資訊，不是每筆 Shutdown 的結果。</p>
+</li>
+<li id="q-186-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>讀 LID02h bytes144～159，保存失電前狀態。</p>
+</li>
+<li id="q-186-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>main power 失去且 SHST≠10b 時必須增加；另有 out-of-band Ignore Shutdown 導致媒體不在 shutdown state 的條件。</p>
+</li>
+<li id="q-186-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先取基準，發通知並等完成，再移電與查增量；記錄中途媒體重新啟用。</p>
+</li>
+<li id="q-186-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>完成且保持 ready 的 Normal 或 Abrupt，不因名稱增加 UPL；未完成便失電則增加。</p>
+</li>
+<li id="q-186-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>沒有真正 power loss 的 Reset 不必增加 UPL。</p>
+</li>
+<li id="q-186-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-186-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>依 if-and-only-if 條件驗證，排除額外失電及錯誤取樣。</p>
+</li>
+<li id="q-186-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查失電當下 readiness，不只看曾寫什麼 SHN。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-187" data-question="187"><h2><a class="qa-qid" href="#q-187">Q187</a> 非正常失電後為何查 SMART、Error 與 PEL？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-187-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-187-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>各資料補充計數、目前錯誤與持久事件，填補失電時沒有 CQE 的觀察空白。</p>
+</li>
+<li id="q-187-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>使用相同身分，分清累計與即時狀態。</p>
+</li>
+<li id="q-187-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>確認 PEL 支援與事件，使用正確 LID。</p>
+</li>
+<li id="q-187-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>SMART 看 UPL／Power Cycles／MDIE，Error 看 ECNT，PEL 看 Reset 與相關操作。</p>
+</li>
+<li id="q-187-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>恢復 Admin 後先保存 Log，再做可能覆寫歷史的測試。</p>
+</li>
+<li id="q-187-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>可知道失電與未確認操作；無 Error entry 不代表資料全部安全。</p>
+</li>
+<li id="q-187-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>Error entries 建議於 power cycle 清除，空 Log 不必然違規，持久 counters 另看。</p>
+</li>
+<li id="q-187-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。 <a class="qa-rule-link" href="#common-reset_review-15">本冊完整規則</a></p>
+</li>
+<li id="q-187-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>比較計數、事件及電源時間線，不要求紀錄一對一。</p>
+</li>
+<li id="q-187-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先保存恢復後第一份快照。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdownfull">Base 2.4 §3.6–3.6.1 (memory-based scope and shutdown)</a> · <a href="#ref-pciereset">PCIe Transport 1.4 §3.3</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
+<article id="common-queue-12"><h3>Queue 的重設與影響範圍 · Controller Reset 後是否保留或繼續？</h3><p>Host 清除 CC.EN 會觸發 Controller Level Reset：I/O SQ 與 CQ 被刪除，Admin Queue 的指標也會重設。這種重設雖然保留 AQA、ASQ、ACQ，卻不表示舊 CQE 仍然有效。Host 必須重新初始化 Admin CQ 的 Phase，啟用 controller 後，再配置並建立 I/O queue。</p></article>
+<article id="common-queue-13"><h3>Queue 的重設與影響範圍 · NVM Subsystem Reset 後是否保留或繼續？</h3><p>NVM Subsystem Reset 會讓受影響的 controller 執行 Controller Level Reset，Host 不能沿用舊 queue。恢復時，先重新確認傳輸及 Register 狀態，再建立 Admin 與 I/O 的操作環境。這種重設來源不同，不能直接套用清除 CC.EN 時對 AQA 等 Register 的保留例外。</p></article>
+<article id="common-queue-14"><h3>Queue 的重設與影響範圍 · Power Cycle 後是否保留或繼續？</h3><p>Power Cycle 後，Host 重新執行初始化及 queue 建立流程。即使 Host 記憶體中還留有舊 SQE 或 CQE 的內容，也不能把它們當成新 queue 的有效命令或完成結果。Host 必須重建指標、期待的 Phase，以及未完成命令的追蹤資料。</p></article>
+<article id="common-register-8"><h3>Register 存取 · DNR 與 More 應如何設定？</h3><p>這次 Register 存取沒有 NVMe CQE，因此 DNR 與 More 不適用。如果之後的 Admin 或 I/O 命令失敗，則解讀那筆命令實際回傳的 CQE，而不是替先前的 Register 寫入指定 Status 位元。</p></article>
+<article id="common-register-9"><h3>Register 存取 · 是否產生 Asynchronous Event？</h3><p>Register 存取本身不定義一筆成功通知。若另外發生 Internal Error 等已定義事件，則依該事件的規則處理。controller 尚不能處理 Admin Queue 時，Host 仍須直接檢查初始化狀態，不能改以等待事件判斷是否已完成初始化。</p></article>
+<article id="common-register-10"><h3>Register 存取 · 是否更新 Error Information Log 或其他 Log？</h3><p>規範不要求每次 Register 讀寫都建立一筆 Error Information entry。遇到初始化問題時，先保存 CAP、CC、CSTS、CRTO 及各次觀察的時間。若之後 controller 允許讀取 Log，再用錯誤與事件紀錄補足資訊。</p></article>
+<article id="common-register-11"><h3>Register 存取 · 是否記錄於 Persistent Event Log？</h3><p>一般 Register 存取不是獨立的 Persistent Event。若另外發生重設、電源變化或硬體錯誤，則在支援 PEL 且符合對應事件條件時，依規則記錄。因此，不能將每次 CC 寫入都當成一次 Power-on or Reset 事件。</p></article>
+<article id="common-reset_review-15"><h3>本主題的共用條件 · 是否影響其他 Controller 或 Namespace？</h3><p>Controller Reset 以該 controller 為範圍；Subsystem Reset 在單 domain 涵蓋全部，multi-domain 則依實作涵蓋一個或全部 domains。Shutdown 的可斷電範圍還須看 CAP.CPS；共享 namespace 的其他路徑不應被當成獨立資料副本。</p></article>
+</section>
+<section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">
+<li id="ref-cap"><strong>Base 2.4 · §3.1.4 (CAP, VS)</strong><br>文件頁 54–59 · PDF 80–85 · Figure 36–37</li>
+<li id="ref-cc"><strong>Base 2.4 · §3.1.4 (CC, CSTS, NSSR)</strong><br>文件頁 60–66 · PDF 86–92 · Figure 41–43</li>
+<li id="ref-adminreg"><strong>Base 2.4 · §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</strong><br>文件頁 66–68 · PDF 92–94 · Figure 44–47</li>
+<li id="ref-crto"><strong>Base 2.4 · §3.1.4 (CRTO)</strong><br>文件頁 72–73 · PDF 98–99 · Figure 57</li>
+<li id="ref-shutdownfull"><strong>Base 2.4 · §3.6–3.6.1 (memory-based scope and shutdown)</strong><br>文件頁 113–115 · PDF 139–141 · Figure 85</li>
+<li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>文件頁 120–124 · PDF 146–150</li>
+<li id="ref-firmware"><strong>Base 2.4 · §3.11–3.11.1, 5.2.9–5.2.10</strong><br>文件頁 135–138, 202–206 · PDF 161–164, 228–232 · Figure 187–193</li>
+<li id="ref-status"><strong>Base 2.4 · §4.2.3</strong><br>文件頁 145–155 · PDF 171–181 · Figure 101–105</li>
+<li id="ref-feature"><strong>Base 2.4 · §4.4</strong><br>文件頁 166–169 · PDF 192–195 · Figure 126–127</li>
+<li id="ref-aer"><strong>Base 2.4 · §5.2.2</strong><br>文件頁 183–190 · PDF 209–216 · Figure 150–156</li>
+<li id="ref-selftest"><strong>Base 2.4 · §5.2.6, 8.1.8</strong><br>文件頁 199–201, 614–616 · PDF 225–227, 640–642 · Figure 176–180, 700–701</li>
+<li id="ref-error"><strong>Base 2.4 · §5.2.13.1.2</strong><br>文件頁 218–220 · PDF 244–246 · Figure 212</li>
+<li id="ref-smart"><strong>Base 2.4 · §5.2.13.1.3</strong><br>文件頁 220–225 · PDF 246–251 · Figure 213–214</li>
+<li id="ref-dstlog"><strong>Base 2.4 · §5.2.13.1.7</strong><br>文件頁 229–232 · PDF 255–258 · Figure 218–219</li>
+<li id="ref-pel"><strong>Base 2.4 · §5.2.13.1.14 (header, reset, hardware, Set Feature events)</strong><br>文件頁 244–256, 258, 262–264 · PDF 270–282, 284, 288–290 · Figure 232–244, 246, 252–253</li>
+<li id="ref-sanitizelog"><strong>Base 2.4 · §5.2.13.1.38</strong><br>文件頁 313–320 · PDF 339–346 · Figure 312</li>
+<li id="ref-sanitizecmd"><strong>Base 2.4 · §5.2.26–5.2.27</strong><br>文件頁 448–454 · PDF 474–480 · Figure 451–455</li>
+<li id="ref-commrecovery"><strong>Base 2.4 · §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</strong><br>文件頁 825–828 · PDF 851–854</li>
+<li id="ref-fatal"><strong>Base 2.4 · §9.1–9.6.1</strong><br>文件頁 825–826 · PDF 851–852</li>
+<li id="ref-pciereset"><strong>PCIe Transport 1.4 · §3.3</strong><br>文件頁 11–12 · PDF 11–12</li>
+</ul><h3>需要看欄位圖時</h3><p>以下連結可開啟對應的圖表教學，查閱欄位及判讀方式。每張圖保留固定的教學位置，方便之後反覆查詢。</p><ul>
+<li><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>
+<li><a href="/nvme/figure-reference/command/zh-tw/#figure-b104">Base 2.4 Figure 104 · Status Code – Command Specific Status Values</a></li>
+<li><a href="/nvme/figure-reference/init/zh-tw/#figure-b36">Base 2.4 Figure 36 · Offset 0h: CAP – Controller Capabilities</a></li>
+<li><a href="/nvme/figure-reference/init/zh-tw/#figure-b41">Base 2.4 Figure 41 · Offset 14h: CC – Controller Configuration</a></li>
+<li><a href="/nvme/figure-reference/init/zh-tw/#figure-b42">Base 2.4 Figure 42 · Offset 1Ch: CSTS – Controller Status</a></li>
+<li><a href="/nvme/figure-reference/init/zh-tw/#figure-b44">Base 2.4 Figure 44 · Offset 24h: AQA – Admin Queue Attributes</a></li>
+<li><a href="/nvme/figure-reference/init/zh-tw/#figure-b45">Base 2.4 Figure 45 · Offset 28h: ASQ – Admin Submission Queue Base Address</a></li>
+<li><a href="/nvme/figure-reference/init/zh-tw/#figure-b46">Base 2.4 Figure 46 · Offset 30h: ACQ – Admin Completion Queue Base Address</a></li>
+</ul><details><summary>使用的原始文件</summary><ul class="qr-sources">
+<li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li>
+<li>NVM Express NVM Command Set Specification · Revision 1.3 · 2026-07-31<br><code>NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf</code></li>
+<li>NVM Express NVMe over PCIe Transport Specification · Revision 1.4 · 2026-07-31<br><code>NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf</code></li>
+</ul></details></section>
+</main>
+<nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/reset-shutdown/en/">English</a><a href="/DOCS/nvme-question-bank/reset-shutdown.html">繁中教學 HTML</a></nav>
+</div>
+<script>
+(function(){
+ const root=document.querySelector('.nvme-qa'); if(!root)return;
+ root.querySelectorAll('.qa-controls').forEach(x=>x.hidden=false);
+ root.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>root.querySelectorAll('.qa-answer').forEach(d=>d.open=b.dataset.expand==='true')));
+ const input=root.querySelector('#qa-search'),items=[...root.querySelectorAll('.qa-question,.qa-search-item')],output=root.querySelector('#qa-count');
+ if(input)input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let n=0;items.forEach(el=>{el.hidden=!el.textContent.toLowerCase().includes(q);if(!el.hidden)n++;});output.textContent=n+' / '+items.length;});
+ function reveal(){let el=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(el){for(let p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}el.hidden=false;}}
+ addEventListener('hashchange',reveal);reveal();
+ let printState=[];addEventListener('beforeprint',()=>{printState=[...root.querySelectorAll('details')].map(d=>[d,d.open]);printState.forEach(([d])=>d.open=true);});addEventListener('afterprint',()=>printState.forEach(([d,open])=>d.open=open));
+ const toggle=root.querySelector('[data-theme-toggle]');if(toggle)toggle.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'light':'dark';});
+})();
+</script>

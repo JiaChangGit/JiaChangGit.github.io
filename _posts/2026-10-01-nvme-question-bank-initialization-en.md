@@ -11,7 +11,7 @@ nvme_qa: true
 
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/initialization/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/initialization.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–68</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
 <header><p class="qa-range">Q1–Q9</p><h1>Controller initialization and disable</h1><p class="qr-intro">Understand controller state transitions before commands. Discovering capabilities is not enabling; setting EN is not readiness; RDY=1 need not establish readiness of every media operation. This volume connects timing, state and permitted actions.</p><p>Practice first, then reveal 17 answer items per question. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
 <aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>From disabled to command submission</h2><p class="qa-takeaway">Wait for the previous lifetime to end before configuring the next; both waits require RDY, not merely the EN value written by the host.</p>
@@ -85,7 +85,8 @@ nvme_qa: true
 <li id="q-001-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check bit positions, little-endian decoding and zero-based encoding. MQES=1023 does not mean only 1023 physical slots.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-002" data-question="2"><h2><a class="qa-qid" href="#q-002">Q02</a> In what order are AQA, ASQ, ACQ and CC programmed, and what happens if they are wrong?</h2>
@@ -142,7 +143,8 @@ nvme_qa: true
 <li id="q-002-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check device-usable queue addresses, page alignment and allocation length. An ordinary process virtual address is not automatically a valid queue base.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-003" data-question="3"><h2><a class="qa-qid" href="#q-003">Q03</a> How does a host judge enable completion using CC.EN, CSTS.RDY and the timeout fields?</h2>
@@ -199,7 +201,8 @@ nvme_qa: true
 <li id="q-003-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check timeout selection, starting time and the 500 ms unit. Do not restart the media deadline when RDY becomes 1.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-004" data-question="4"><h2><a class="qa-qid" href="#q-004">Q04</a> How is disable completion detected, and may the host re-enable before it completes?</h2>
@@ -256,7 +259,8 @@ nvme_qa: true
 <li id="q-004-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check for an immediate re-enable or interpretation of CAP.TO as plain milliseconds.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-005" data-question="5"><h2><a class="qa-qid" href="#q-005">Q05</a> May a host submit commands or update doorbells while CSTS.RDY is zero?</h2>
@@ -313,7 +317,8 @@ nvme_qa: true
 <li id="q-005-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First compare doorbell timing with the RDY transition, then with successful queue creation.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-006" data-question="6"><h2><a class="qa-qid" href="#q-006">Q06</a> What does CSTS.CFS mean, and how should the host recover from initialization failure or a fatal state?</h2>
@@ -370,7 +375,8 @@ nvme_qa: true
 <li id="q-006-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First confirm valid register access and an actual CFS value of 1. An all-ones failed read is not evidence that every status bit is asserted.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-007" data-question="7"><h2><a class="qa-qid" href="#q-007">Q07</a> Which ready modes exist, and how should the host handle limited readiness?</h2>
@@ -427,7 +433,8 @@ nvme_qa: true
 <li id="q-007-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First determine whether the failing command needs media and whether Figure 84 permits that response for it.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-008" data-question="8"><h2><a class="qa-qid" href="#q-008">Q08</a> How do Enable, Disable, Controller Reset, NVM Subsystem Reset and Shutdown differ?</h2>
@@ -484,7 +491,8 @@ nvme_qa: true
 <li id="q-008-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First identify whether EN, SHN or NSSRC was written and whether a platform reset occurred concurrently.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdown">Base 2.4 §3.6.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-009" data-question="9"><h2><a class="qa-qid" href="#q-009">Q09</a> What must be reinitialized after Controller Reset?</h2>
@@ -541,7 +549,8 @@ nvme_qa: true
 <li id="q-009-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check retirement of old outstanding tracking and phase reinitialization. A reused CID must not resolve to a command from the previous lifetime.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <section id="common-rules" class="qa-common"><h2>Shared rules linked from the answers</h2><p>Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.</p>
@@ -568,7 +577,7 @@ nvme_qa: true
 <li id="ref-feature"><strong>Base 2.4 · §4.4</strong><br>Printed pages 166–169 · PDF 192–195 · Figure 126–127</li>
 <li id="ref-pel"><strong>Base 2.4 · §5.2.13.1.14 (header, reset, hardware, Set Feature events)</strong><br>Printed pages 244–256, 258, 262–264 · PDF 270–282, 284, 288–290 · Figure 232–244, 246, 252–253</li>
 <li id="ref-setfeat"><strong>Base 2.4 · §5.2.30.1 (common fields, scope and persistence)</strong><br>Printed pages 456–460 · PDF 482–486 · Figure 463–466</li>
-<li id="ref-virtual"><strong>Base 2.4 · §8.2.7</strong><br>Printed pages 754–759 · PDF 780–785 · Figure 796</li>
+<li id="ref-virtual"><strong>Base 2.4 · §8.2.7</strong><br>Printed pages 754–758 · PDF 780–784 · Figure 796</li>
 <li id="ref-fatal"><strong>Base 2.4 · §9.1–9.6.1</strong><br>Printed pages 825–826 · PDF 851–852</li>
 <li id="ref-pcie"><strong>PCIe Transport 1.4 · §3.1–3.4</strong><br>Printed pages 9–13 · PDF 9–13 · Figure 3–8</li>
 </ul><h3>When you need a field guide</h3><p>Existing figure explanations have canonical locations; use these links instead of duplicating the same guide.</p><ul>

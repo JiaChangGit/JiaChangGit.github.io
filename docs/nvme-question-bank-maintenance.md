@@ -1,7 +1,7 @@
-# Independent NVMe question bank — Q1–Q68
+# Independent NVMe question bank — Q1–Q320
 
-Approved 2026-10-01. Purpose: learn the specification and judge firmware behavior.
-This delivery is six volumes plus an index, each in standalone Traditional Chinese
+Expanded with explicit authorization on 2026-10-02. Purpose: learn the specification and judge firmware behavior.
+This delivery is 26 volumes plus an index, each in standalone Traditional Chinese
 HTML and equivalent Traditional Chinese/English Pages. The Chinese HTML adds
 independent teaching steps and an APST state example. It does not require following
 a presentation route through the PDF.
@@ -13,15 +13,13 @@ retain PCIe configuration, interrupts, registers, queues and doorbells needed fo
 NVMe SSD behavior. Shared PDF pages can include excluded material; citing a page
 does not authorize teaching all of that page.
 
-The user supplied Q69–Q320 for later work and explicitly limited this delivery to
-Q1–Q68. Future ranges are preserved in `.ai/nvme-question-bank/scope.json`, including
-all chapters VII–XXVI. The user subsequently allowed additional non-overlapping
-questions and correction of unreasonable question premises. Keep the original IDs;
-correct premises without silently changing the subject. This delivery adds no extra
-questions because the supplied 320-question plan already covers the adjacent topics.
-Q12 and Q17 now ask about required creation/deletion dependencies rather than
-implying that the order is merely usual. Future Q290 must not describe FID09h.CD as
-interrupt masking: it disables coalescing, while masks are separate PCIe mechanisms.
+The user explicitly authorized completing Q69–Q320, superseding the earlier
+Q1–Q68-only delivery. The scope now covers all 320 original IDs in 26 topic volumes,
+with no extra questions. Earlier scope statements below are historical records.
+Unreasonable premises are corrected without losing their subject: Q273 does not
+invent a media-unit availability bit; Q290 distinguishes coalescing from masking;
+Q312 distinguishes the Abort completion from the target completion.
+
 
 ## Source review findings
 
@@ -57,7 +55,8 @@ interrupt masking: it disables coalescing, while masks are separate PCIe mechani
 
 ## Implementation and checks
 
-Content: `scripts/nvme_qa_{init,queues,doorbells,commands,identify,features}.py`.
+Content: topic modules `scripts/nvme_qa_*.py`; the load list in `nvme_qa_model.py` orders dependencies.
+`nvme_qa_teaching_extended.py` adds 20 independent courses; `nvme_qa_review.py` records explicit cross-topic corrections.
 The model retains all 17 bilingual items. Shared mechanisms are rendered in full
 once per volume, with a concise applicable answer and local link in each question.
 Question anchors (`q-001`) and answer anchors (`q-001-a-01`) are independent of
@@ -128,10 +127,74 @@ passed again, and the production site was rebuilt.
 
 Do not set a post's timestamp later than the actual publication time. A noon time
 on today's date was initially excluded by a morning Jekyll build. Use an elapsed
-timestamp (this batch uses 00:00 +0800), build without `--future`, and require all
-14 post URLs to exist in the output. Do not enable `future` globally to hide this.
+timestamp (question-bank posts use 00:00 +0800), build without `--future`, and
+require every declared post URL to exist in the output (54 in the expanded bank). Do not enable `future` globally to hide this.
 
 Keep the repository's existing Ruby/Bundler pair (Ruby 3.3.8, Bundler 2.6.7) and pinned
 actions. The historical Ruby 3.0.7/Bundler compatibility failure must not recur.
 After push, both validation and Pages workflows must succeed for the same commit;
 check deployed question IDs, all 17 items and the new stylesheet, not only HTTP 200.
+
+
+## 2026-10-02 expansion source decisions
+
+- All 320 questions retain 17 bilingual perspectives; 26 volumes and an index
+  produce 81 artifacts. Original URLs and Q/answer anchors are retained. The
+  integration volume links to mechanism questions rather than duplicating them.
+- Namespace Sanitize permits Crypto Erase only; subsystem OWS does not authorize
+  namespace Overwrite. Initiation completion is separate from operation completion.
+- Base Figure 104 gives MNSOIP-limit error 3Ch, while Figure 455 gives 12h.
+  Q135 preserves the conflict, without silently choosing one encoding.
+- Base Capacity Management insufficient-capacity prose (PDF220) describes the
+  largest creatable capacity, while Figure165 (PDF221) describes required capacity.
+  Q265 preserves this conflict for command-specific error information.
+- PEL Supported Events bitmap Figure233 reserves bit16 while Figure236 defines
+  Event Type10h; Q205 flags the discrepancy. No supplied errata resolves it.
+- Short self-test aborts on CLR; extended testing persists/resumes after CLR and
+  power restoration. Neither defines a generic self-test-completed AER.
+- PEL has no universal PEL-changed AER. Timestamp uses Event03h, not generic Set
+  Feature logging; reporting-context lifetime must not replace clock retention rules.
+- UPL (formerly Unsafe Shutdowns) follows actual main-power loss and shutdown state,
+  not a blanket Normal/Abrupt label. Preserve the applicable Ignore Shutdown exception.
+- PCIe Admin commands cannot use SGLs; SDT is a recommendation, not a universal
+  rejection limit. Do not import capsule-only descriptor-count limits into PCIe.
+- FID09h.CD is coalescing disable. INTMC uses write-one-to-clear. MSI-X masking
+  uses its own table/function masks; INTMS/INTMC access is undefined in that mode.
+- Media Unit wear fields do not define namespace readiness. FDP PH is namespace
+  specific and maps to RUH; write-PID fallback does not apply to invalid RUH Update.
+- Firmware source cross-references, Boot register/log locations, FDP figures and
+  Changed Namespace/Effects aliases use actual body headings in the provided PDFs.
+- Existing Ruby3.3.8/Bundler2.6.7 workflow is retained. Do not revert to Ruby3.0.7
+  with an incompatible unpinned Bundler. Verify both workflows at the pushed SHA.
+
+Editorial review keeps Taiwan Traditional Chinese complete subjects and logical
+connectives; simplified-character repairs do not substitute for sentence review.
+Shared event/reset descriptions are selected by the actual operation, including
+Timestamp, Boot reads, namespace queries and group-health queries.
+
+
+## 2026-10-03 expansion validation
+
+- Generated 81 artifacts: 26 topic volumes and one index, each in three editions.
+  Every original question ID 1–320 has all 17 perspectives; no overlapping extra
+  questions were added. New posts retain their 2026-10-02 authoring date.
+- All 122 tests passed after the final question/common-rule wording changes.
+  Production Jekyll build, generated-artifact checks, publish contract and the
+  existing 117-figure quick-reference check passed.
+- Source evidence checks cover 320 questions, 123 locator groups and the identities
+  of all three supplied PDFs. Their full text and rendered source images stay in
+  ignored local files and are not published.
+- Checked 22,221 internal links, including cross-volume question links and source
+  anchors, against the production site; none were missing.
+- Browser checks cover 81 pages at 834, 1194 and 1440 pixels, both explicit themes
+  against the opposite system theme, and collapsed/expanded answers: 972 states.
+  They check overflow, contrast, missing anchors and duplicate IDs. Keyboard
+  disclosure, search, deep answer links, theme selection and offline navigation
+  are also exercised. Representative light/dark screenshots are reviewed.
+- The final index spacing and health-flow arrow styling are followed by a targeted
+  72-state browser recheck. These changes do not alter question answers or sources.
+  Q213 then expands the existing header-field definitions and length example, with
+  a further 36-state check of its three editions; its source locations are unchanged.
+- Keep command-reset behavior distinct from log-query lifetime; keep PRP/SGL buffer
+  retirement distinct from queue-register retention. Shared prose is selected for
+  the actual operation rather than copied solely because an answer asks about reset.

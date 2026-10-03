@@ -1,0 +1,542 @@
+---
+layout: post
+title: "NVMe 自問自答題庫：Device Self-test"
+date: 2026-10-02 00:00:00 +0800
+categories: [nvme]
+permalink: /nvme/question-bank/self-test/zh-tw/
+lang: zh-TW
+nvme_quickref: true
+nvme_qa: true
+---
+
+<div class="nvme-quickref nvme-qa">
+<nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/self-test/en/">English</a><a href="/DOCS/nvme-question-bank/self-test.html">繁中教學 HTML</a></nav>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<header><p class="qa-range">Q149–Q156</p><h1>Device Self-test</h1><p class="qr-intro">Self-test 將裝置內部診斷結果回報給 Host。先確認能啟動哪種測試，再分清進度、最終結果與失敗欄位有效性。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
+<aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
+<section id="overview" class="qa-overview"><h2>啟動、執行、結果是三種資訊</h2><p class="qa-takeaway">啟動 CQE 成功，不表示測試通過。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">觀察</th><th scope="col">欄位／介面</th><th scope="col">用途</th></tr></thead><tbody><tr><td>可否執行</td><td>OACS、DSTO</td><td>確認支援與並行條件</td></tr><tr><td>目前執行</td><td>Current Operation、Completion Percentage</td><td>了解還在做什麼</td></tr><tr><td>本次結果</td><td>最新 Result 的 DSTC、DSTR</td><td>辨識通過、失敗或中止</td></tr><tr><td>失敗細節</td><td>VDINFO、SEGN、FLBA</td><td>只有有效欄位才可推論</td></tr></tbody></table></div>
+<p><strong>舉例看懂：</strong>Short 在 CLR 下需要中止；Extended 有跨 CLR 持續與失電恢復的規則。不能只看測試名稱都有 Self-test，就要求相同 reset 結果。</p>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a></p>
+</section>
+<div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
+<section id="question-index"><h2>本冊題目</h2><ol class="qa-index">
+<li><a href="#q-149">Q149 · 如何確認 Device Self-test 支援與可測範圍？</a></li>
+<li><a href="#q-150">Q150 · Short 與 Extended Self-test 有何差別？</a></li>
+<li><a href="#q-151">Q151 · Self-test 進行中再次啟動或要求中止會怎樣？</a></li>
+<li><a href="#q-152">Q152 · Current Operation 與 Completion Percentage 如何解讀？</a></li>
+<li><a href="#q-153">Q153 · 成功、失敗、中止、Reset 與斷電後的 Self-test 結果怎麼看？</a></li>
+<li><a href="#q-154">Q154 · Self-test 完成一定有 Asynchronous Event 嗎？</a></li>
+<li><a href="#q-155">Q155 · Segment、Diagnostic Information 與 Failing LBA 何時有效？</a></li>
+<li><a href="#q-156">Q156 · Self-test 結果如何排列，超過 20 次後怎麼辦？</a></li>
+</ol></section>
+<article class="qa-question" id="q-149" data-question="149"><h2><a class="qa-qid" href="#q-149">Q149</a> 如何確認 Device Self-test 支援與可測範圍？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-149-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-149-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>Self-test 提供裝置內部的診斷流程，可檢查 controller 與指定媒體，但它不能取代 Host 對資料內容的完整驗證。</p>
+</li>
+<li id="q-149-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>NSID=0 只測 controller；特定 active NSID 加入該 namespace；FFFFFFFFh 包含開始時此 controller 可存取的全部 attached namespaces。</p>
+</li>
+<li id="q-149-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>Identify.OACS 確認支援，DSTO.SDSO 決定單一測試限制的範圍，EDSTT 提供延伸測試時間。</p>
+</li>
+<li id="q-149-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Device Self-test 使用 STC 選操作；Get Log Page LID06h 查目前測試與最近 20 次結果。</p>
+</li>
+<li id="q-149-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先確認能力與 namespace 狀態，保存舊 Log，再啟動選定測試並追蹤新狀態。</p>
+</li>
+<li id="q-149-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>啟動成功表示背景測試已開始；真正通過要看新 Result 的 DSTR=0，而非只看啟動 CQE。</p>
+</li>
+<li id="q-149-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>不存在的 NSID 回 Invalid Namespace or Format；已配置但 inactive 的 NSID 回 Invalid Field in Command，這兩種情況不能混寫。</p>
+</li>
+<li id="q-149-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-149-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>核對 OACS、實際 STC、NSID 與 Log 的測試代碼，確認啟動的是預期測試。</p>
+</li>
+<li id="q-149-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認「不存在」與「存在但未 active」的差別。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-150" data-question="150"><h2><a class="qa-qid" href="#q-150">Q150</a> Short 與 Extended Self-test 有何差別？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-150-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-150-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>兩者提供不同深度與時間的診斷；實際 segments 與測試內容由廠商設計，規格中的 RAM／媒體檢查圖只是教學示例。</p>
+</li>
+<li id="q-150-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>兩者都依 NSID 選範圍，且可能因共享資源影響其他工作的效能。</p>
+</li>
+<li id="q-150-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>EDSTT 是延伸測試時間資訊；短程測試建議在 2 分鐘內完成。這些 should 不應提升為所有情況的硬性 shall。</p>
+</li>
+<li id="q-150-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>STC=1 啟動 Short，2 啟動 Extended；Log 的 DSTOS 表示正在執行哪種操作，DSTCS 表示完成百分比。</p>
+</li>
+<li id="q-150-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>依所需診斷與可接受影響選測試，保存開始時間並查進度；若命令需要暫停測試，controller 先暫停、完成該命令，再恢復測試。</p>
+</li>
+<li id="q-150-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>測試結束後由 Result 判定成功或哪個 segment 失敗；短程通過不保證延伸測試也必然通過。</p>
+</li>
+<li id="q-150-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>關鍵差異是 Reset：Short 必須被影響它的 CLR 中止；Extended 必須跨 CLR 與恢復供電後繼續。</p>
+</li>
+<li id="q-150-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-150-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>驗證時間時保留其他工作與暫停因素；驗證 Reset 時分別套用兩種測試規則。</p>
+</li>
+<li id="q-150-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查 STC，不要把 Extended 的持續性套到 Short，或反過來。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-151" data-question="151"><h2><a class="qa-qid" href="#q-151">Q151</a> Self-test 進行中再次啟動或要求中止會怎樣？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-151-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-151-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>避免同一限制範圍同時跑多個測試，並提供明確的背景操作中止方法。中止 Self-test 操作應使用 STC=Fh。</p>
+</li>
+<li id="q-151-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>DSTO.SDSO=0 以 controller 判斷是否已有測試；SDSO=1 則以 subsystem 判斷。</p>
+</li>
+<li id="q-151-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>先讀 DSTO 與 LID06h；只看目前 controller 的 Host outstanding 清單不足以知道另一端是否已開始測試。</p>
+</li>
+<li id="q-151-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>STC1／2／3 為新操作；Fh 中止；Eh 是廠商特定，互動規則也可能不同。</p>
+</li>
+<li id="q-151-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>已有測試時送 Fh，controller 先中止、建立最新結果，再將目前操作設為 idle，最後完成命令。</p>
+</li>
+<li id="q-151-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>沒有測試時送 Fh 仍成功，且不修改 Self-test Log；不能為這次空中止捏造新結果。</p>
+</li>
+<li id="q-151-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>已有測試時再送 1／2／3，回 Device Self-test In Progress（1/1Dh）；不能要求它默默重啟原測試。</p>
+</li>
+<li id="q-151-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-151-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>核對中止 CQE 前 Log 更新順序，以及新結果 DSTR=1，避免把 idle 當成唯一證據。</p>
+</li>
+<li id="q-151-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查使用的是 STC=Fh，還是誤用 Abort 去中止早已完成的啟動命令。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-152" data-question="152"><h2><a class="qa-qid" href="#q-152">Q152</a> Current Operation 與 Completion Percentage 如何解讀？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-152-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-152-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>Log 開頭描述正在執行的工作，後面的 Result List 描述已結束的測試。兩者可能同時存在，不應用舊結果取代當前進度。</p>
+</li>
+<li id="q-152-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>依測試的 controller／共享範圍讀正確 Log，並保存取樣時間。</p>
+</li>
+<li id="q-152-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>先確認支援，再使用 LID06h 的 CDSTO、CDSTC 與 RDS1。</p>
+</li>
+<li id="q-152-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>DSTOS=0 為無操作，1 為 Short，2 為 Extended，3 為 Host-Initiated Refresh；DSTCS 的值 25 代表 25%，不是零起算 26%。</p>
+</li>
+<li id="q-152-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先讀 DSTOS，只有有操作時才解讀 DSTCS；idle 時應忽略百分比，再查看最新 Result。</p>
+</li>
+<li id="q-152-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>Short／Extended 結束時，必須先建立結果才清 DSTOS。讀到 idle 並搭配新 Result，才知道操作如何結束。</p>
+</li>
+<li id="q-152-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>百分比不動不一定失敗，可能測試在某個 segment 或被其他命令暫停；也不能把 100%欄位當成全部結果。</p>
+</li>
+<li id="q-152-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-152-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>比較連續快照的 operation、進度與最新結果，避免只用一個百分比斷言韌體卡住。</p>
+</li>
+<li id="q-152-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先看 DSTOS 是否為 0，若是就不要繼續解讀殘留的 DSTCS。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-153" data-question="153"><h2><a class="qa-qid" href="#q-153">Q153</a> 成功、失敗、中止、Reset 與斷電後的 Self-test 結果怎麼看？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-153-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-153-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>測試結果需要保留原因，才能區分裝置診斷失敗與 Host 主動中止。Extended 因 Reset 暫停後恢復，不應被錯記成測試已失敗。</p>
+</li>
+<li id="q-153-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>結果屬於一次測試，包含當時測試代碼與時間；不是啟動命令的 CQE Status。</p>
+</li>
+<li id="q-153-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>用 LID06h 的 DSTR、DSTC、POH 及 valid diagnostic fields。</p>
+</li>
+<li id="q-153-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>DSTR0=成功，1=Self-test 命令中止，2=CLR 中止，3=namespace 移除，4=Format，5=致命或未知測試錯誤，6／7=segment 失敗，8=未知中止，9=Sanitize 中止。</p>
+</li>
+<li id="q-153-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先判斷 Short 或 Extended，再對照中止事件。Short 遇 CLR 結束；Extended 跨 Reset／恢復供電繼續，之後才產生最終結果。</p>
+</li>
+<li id="q-153-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>成功用 DSTR0；已知 segment 失敗用 7 並提供 SEGN；沒有新結果可能是 Extended 仍在恢復執行，不可直接判定 Log 遺漏。</p>
+</li>
+<li id="q-153-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>規格沒有 Power Loss 專屬 DSTR 值；不能自創代碼。Format 是否中止測試還需依 Figure701 的 scope 組合。</p>
+</li>
+<li id="q-153-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-153-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>比對外部 Reset／Format／Sanitize 時間、測試類型及 Log，確認結果原因能互相解釋。</p>
+</li>
+<li id="q-153-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認 Extended 是否本來就應該繼續，避免把沒有 Reset-aborted Result 視為錯誤。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-154" data-question="154"><h2><a class="qa-qid" href="#q-154">Q154</a> Self-test 完成一定有 Asynchronous Event 嗎？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-154-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-154-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>原題容易暗示有通用完成通知，需要修正：正常 Self-test 完成以 Log 判定，不能等待不存在的通用完成事件。</p>
+</li>
+<li id="q-154-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>啟動命令先完成，背景測試稍後結束；兩者不同，也不會自動轉成 AER。</p>
+</li>
+<li id="q-154-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>查 Self-test 能力與 LID06h；診斷失敗另看 Error 類型的 Diagnostic Failure 定義。</p>
+</li>
+<li id="q-154-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>Diagnostic Failure 的 AET=0、AEI=02h，與 Device Self-test Log 的 DSTR 不同；不是把 DSTR 全部放進 AER。</p>
+</li>
+<li id="q-154-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>啟動後定期讀 DSTOS 與新 Result；收到診斷錯誤事件時再查補充 Error Information，並與測試結果關聯。</p>
+</li>
+<li id="q-154-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>正常完成且沒有 AER 可以符合規範；有診斷失敗事件也仍須讀具體結果，不能只用事件當完整診斷。</p>
+</li>
+<li id="q-154-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>不能把沒有 Self-test Completed AER 寫成必定不合規的測項，也不能因有 AER 就把測試當成功。</p>
+</li>
+<li id="q-154-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-154-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>以實際定義的事件與 Log 驗證，避免把 Sanitize Completed 的機制套到 Self-test。</p>
+</li>
+<li id="q-154-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先查測試要求是否用了規格沒有定義的事件名稱。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-155" data-question="155"><h2><a class="qa-qid" href="#q-155">Q155</a> Segment、Diagnostic Information 與 Failing LBA 何時有效？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-155-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-155-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>欄位有值不代表有效。有效位元讓 Host 避免把保留或未知資料當成精確故障位置。</p>
+</li>
+<li id="q-155-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>SEGN 指內部測試 segment；FLBA 指 namespace 的 logical block，兩者沒有固定換算關係。</p>
+</li>
+<li id="q-155-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>先看 DSTR，再看 VDINFO 的 NSIDVLD、FVLD、SCTVLD、SCVLD。</p>
+</li>
+<li id="q-155-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>只有 DSTR=7 時 SEGN 表示第一個已知失敗 segment；FLBA 只有 FVLD=1 才有效，NVM 定義它是造成失敗的某一個 LBA。</p>
+</li>
+<li id="q-155-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>先確認結果非空，再確認各 valid bit，最後用有效 NSID 與 FLBA 對回 namespace；沒有有效 NSID 時，不能自行猜測其歸屬。</p>
+</li>
+<li id="q-155-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>多個 LBA 失敗時，只回其中一個是合法，不保證列出全部，也不保證是最低 LBA。</p>
+</li>
+<li id="q-155-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>無效欄位應忽略，不要因其值超範圍就判違規；同時，也不能忽略已宣告有效但明顯錯誤的內容。</p>
+</li>
+<li id="q-155-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-155-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>以有效位元、測試結果與格式共同驗證，區分「未知位置」與「已知位置不合理」。</p>
+</li>
+<li id="q-155-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先檢查 FVLD，而不是先把 FLBA=0 當成 LBA0 壞掉。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-156" data-question="156"><h2><a class="qa-qid" href="#q-156">Q156</a> Self-test 結果如何排列，超過 20 次後怎麼辦？</h2>
+<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<details class="qa-answer" id="q-156-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
+<li id="q-156-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
+<p>固定大小歷史讓 Host 查最近測試，但不能當成裝置出廠以來所有診斷的永久清單。</p>
+</li>
+<li id="q-156-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
+<p>LID06h 保存 20 個結果，每個 28 bytes，前 4 bytes 是目前狀態。</p>
+</li>
+<li id="q-156-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
+<p>使用 Log 固定結構與 DSTC／DSTR 空 entry 規則，不要用全零判斷是否有效。</p>
+</li>
+<li id="q-156-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
+<p>RDS1 最新，RDS2 次新，依序到 RDS20。未使用 entry 的 DSTR=Fh、DSTC=0，其他欄位應忽略。</p>
+</li>
+<li id="q-156-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
+<p>測試前保存 RDS1，完成後確認新結果移到第一筆，舊結果向後排列；超過容量後最舊結果不再列入最近 20 次。</p>
+</li>
+<li id="q-156-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
+<p>第 21 次結束後仍只顯示最近 20 次，不需要新增第 21 個結構，也不算遺失必要欄位。</p>
+</li>
+<li id="q-156-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
+<p>沒有進行中的測試而送 STC=Fh 不修改 Log，不能要求插入「中止成功」的新測試結果。</p>
+</li>
+<li id="q-156-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
+<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
+<p>本規格沒有通用的 Device Self-test Completed AER。 <a class="qa-rule-link" href="#common-selftest_op-9">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
+<p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。 <a class="qa-rule-link" href="#common-selftest_op-10">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
+<p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。 <a class="qa-rule-link" href="#common-selftest_op-11">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
+<p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。 <a class="qa-rule-link" href="#common-selftest_op-12">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
+<p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。 <a class="qa-rule-link" href="#common-selftest_op-13">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
+<p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。 <a class="qa-rule-link" href="#common-selftest_op-14">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
+<p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。 <a class="qa-rule-link" href="#common-selftest_op-15">本冊完整規則</a></p>
+</li>
+<li id="q-156-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
+<p>用 DSTC、DSTR、POH 與診斷內容比較前後快照，避免只用可能重複的時間值辨識唯一測試。</p>
+</li>
+<li id="q-156-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
+<p>先確認讀取長度涵蓋 564 bytes 的完整資料，而不是只拿到前幾個結果。</p>
+</li>
+</ol>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
+<article id="common-command-8"><h3>命令完成、事件與紀錄 · DNR 與 More 應如何設定？</h3><p>只有收到 CQE，才有 DNR 與 More 可供判讀。DNR=1 表示相同命令即使重送到此 NVM subsystem 的任一 controller，仍預期會失敗；DNR=0 則只表示可能成功。除非個別錯誤條件另有明定，不能只看 Status 名稱就要求 DNR=1。More=1 表示 Error Information Log 有這筆命令的補充資訊。SCT=SC=0 時，DNR 應為 0。</p></article>
+<article id="common-selftest_op-9"><h3>本主題的共用條件 · 是否產生 Asynchronous Event？</h3><p>本規格沒有通用的 Device Self-test Completed AER。正常完成應讀 LID06h 確認；測試發現診斷失敗時，另依 Diagnostic Failure 錯誤事件及其回報條件處理。</p></article>
+<article id="common-selftest_op-10"><h3>本主題的共用條件 · 是否更新 Error Information Log 或其他 Log？</h3><p>短程／延伸測試完成或被中止時，先建立最新 Self-test Result，再將目前操作設為 idle。診斷欄位要先檢查 valid bits；不是每個失敗結果都具有有效 NSID、LBA、SCT 與 SC。</p></article>
+<article id="common-selftest_op-11"><h3>本主題的共用條件 · 是否記錄於 Persistent Event Log？</h3><p>PEL 沒有通用的逐次 Self-test 結果事件；完整測試歷史以 LID06h 為主。若同時發生可記錄的硬體錯誤或 Reset，則是那些事件另行記錄，不可拿來取代 Self-test Result。</p></article>
+<article id="common-selftest_op-12"><h3>本主題的共用條件 · Controller Reset 後是否保留或繼續？</h3><p>影響執行 controller 的 Controller Level Reset 必須中止短程測試；延伸測試則必須跨 CLR 保留，並在重設完成後恢復。恢復的 segment 由廠商決定，規範建議只需重做被中斷的最後 segment。</p></article>
+<article id="common-selftest_op-13"><h3>本主題的共用條件 · NVM Subsystem Reset 後是否保留或繼續？</h3><p>Subsystem Reset 會對其範圍內的 controller 造成 CLR：短程測試被中止，延伸測試必須恢復。不能把重新建立 Admin Queue 與重新開始整個延伸測試當成同一件事。</p></article>
+<article id="common-selftest_op-14"><h3>本主題的共用條件 · Power Cycle 後是否保留或繼續？</h3><p>延伸測試必須在電源恢復後繼續；短程測試則不具有這項延續要求。恢復後先讀 DSTOS、進度與最新結果，不能只因 power cycle 就期待兩者都新增 Reset-aborted 結果。</p></article>
+<article id="common-selftest_op-15"><h3>本主題的共用條件 · 是否影響其他 Controller 或 Namespace？</h3><p>測試由收到命令的 controller 執行，NSID 決定包含哪些 namespace。DSTO.SDSO 決定同時只能有一個測試的限制是在 controller 或 subsystem；即使沒有測試其他 namespace，共享資源仍可能使其他工作變慢。</p></article>
+</section>
+<section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">
+<li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>文件頁 120–124 · PDF 146–150</li>
+<li id="ref-status"><strong>Base 2.4 · §4.2.3</strong><br>文件頁 145–155 · PDF 171–181 · Figure 101–105</li>
+<li id="ref-aer"><strong>Base 2.4 · §5.2.2</strong><br>文件頁 183–190 · PDF 209–216 · Figure 150–156</li>
+<li id="ref-aerfull"><strong>Base 2.4 · §5.2.2 (PCIe-applicable events)</strong><br>文件頁 183–191 · PDF 209–217 · Figure 150–160</li>
+<li id="ref-selftest"><strong>Base 2.4 · §5.2.6, 8.1.8</strong><br>文件頁 199–201, 614–616 · PDF 225–227, 640–642 · Figure 176–180, 700–701</li>
+<li id="ref-error"><strong>Base 2.4 · §5.2.13.1.2</strong><br>文件頁 218–220 · PDF 244–246 · Figure 212</li>
+<li id="ref-dstlog"><strong>Base 2.4 · §5.2.13.1.7</strong><br>文件頁 229–232 · PDF 255–258 · Figure 218–219</li>
+<li id="ref-pel"><strong>Base 2.4 · §5.2.13.1.14 (header, reset, hardware, Set Feature events)</strong><br>文件頁 244–256, 258, 262–264 · PDF 270–282, 284, 288–290 · Figure 232–244, 246, 252–253</li>
+<li id="ref-idctrl"><strong>Base 2.4 · §5.2.14.2.1</strong><br>文件頁 340–387 · PDF 366–413 · Figure 338–341</li>
+<li id="ref-nvmselftest"><strong>NVM Command Set 1.3 · §4.1.4.3</strong><br>文件頁 75–76 · PDF 75–76 · Figure 111</li>
+</ul><h3>需要看欄位圖時</h3><p>以下連結可開啟對應的圖表教學，查閱欄位及判讀方式。每張圖保留固定的教學位置，方便之後反覆查詢。</p><ul>
+<li><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>
+<li><a href="/nvme/figure-reference/command/zh-tw/#figure-b104">Base 2.4 Figure 104 · Status Code – Command Specific Status Values</a></li>
+<li><a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></li>
+</ul><details><summary>使用的原始文件</summary><ul class="qr-sources">
+<li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li>
+<li>NVM Express NVM Command Set Specification · Revision 1.3 · 2026-07-31<br><code>NVM-Express-NVM-Command-Set-Specification-Revision-1.3-Ratified-2026.07.31.pdf</code></li>
+<li>NVM Express NVMe over PCIe Transport Specification · Revision 1.4 · 2026-07-31<br><code>NVM-Express-NVMe-over-PCIe-Transport-Specification-Revision-1.4-Ratified-2026.07.31.pdf</code></li>
+</ul></details></section>
+</main>
+<nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/self-test/en/">English</a><a href="/DOCS/nvme-question-bank/self-test.html">繁中教學 HTML</a></nav>
+</div>
+<script>
+(function(){
+ const root=document.querySelector('.nvme-qa'); if(!root)return;
+ root.querySelectorAll('.qa-controls').forEach(x=>x.hidden=false);
+ root.querySelectorAll('[data-expand]').forEach(b=>b.addEventListener('click',()=>root.querySelectorAll('.qa-answer').forEach(d=>d.open=b.dataset.expand==='true')));
+ const input=root.querySelector('#qa-search'),items=[...root.querySelectorAll('.qa-question,.qa-search-item')],output=root.querySelector('#qa-count');
+ if(input)input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();let n=0;items.forEach(el=>{el.hidden=!el.textContent.toLowerCase().includes(q);if(!el.hidden)n++;});output.textContent=n+' / '+items.length;});
+ function reveal(){let el=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(el){for(let p=el;p;p=p.parentElement){if(p.tagName==='DETAILS')p.open=true;}el.hidden=false;}}
+ addEventListener('hashchange',reveal);reveal();
+ let printState=[];addEventListener('beforeprint',()=>{printState=[...root.querySelectorAll('details')].map(d=>[d,d.open]);printState.forEach(([d])=>d.open=true);});addEventListener('afterprint',()=>printState.forEach(([d,open])=>d.open=open));
+ const toggle=root.querySelector('[data-theme-toggle]');if(toggle)toggle.addEventListener('click',()=>{const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.dataset.theme=dark?'light':'dark';});
+})();
+</script>

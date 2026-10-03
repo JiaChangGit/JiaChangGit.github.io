@@ -22,12 +22,12 @@ class QuestionBankTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.outputs=artifacts()
 
-    def test_approved_scope_is_exactly_68_not_future_320(self):
+    def test_approved_scope_includes_all_320(self):
         scope=json.loads((ROOT/'.ai/nvme-question-bank/scope.json').read_text())
-        self.assertEqual(scope['status'],'approved');self.assertEqual(scope['question_range'],[1,68])
-        self.assertEqual([q['id'] for q in QUESTIONS],list(range(1,69)))
+        self.assertEqual(scope['status'],'approved');self.assertEqual(scope['question_range'],[1,320])
+        self.assertEqual([q['id'] for q in QUESTIONS],list(range(1,321)))
         future=[i for a,b in scope['future_only'].values() for i in range(a,b+1)]
-        self.assertEqual(sorted(future),list(range(69,321)))
+        self.assertEqual(future,[])
 
     def test_every_question_has_17_bilingual_answers(self):
         for q in QUESTIONS:
@@ -36,8 +36,8 @@ class QuestionBankTests(unittest.TestCase):
                 self.assertEqual(len(pair),2);self.assertTrue(all(isinstance(x,str) and x.strip() for x in pair))
                 self.assertNotRegex(pair[1],r'[\u4e00-\u9fff]')
 
-    def test_all_21_artifacts_match_builder(self):
-        self.assertEqual(len(self.outputs),21)
+    def test_all_81_artifacts_match_builder(self):
+        self.assertEqual(len(self.outputs),81)
         for path,expected in self.outputs.items():self.assertEqual(path.read_text(),expected,str(path))
 
     def test_volume_coverage_and_answer_numbering(self):
@@ -68,7 +68,7 @@ class QuestionBankTests(unittest.TestCase):
                 self.assertIn('教學 3',text)
 
     def test_registered_source_evidence_matches_authored_references(self):
-        m=check();self.assertEqual(len(m['questions']),68)
+        m=check();self.assertEqual(len(m['questions']),320)
 
     def test_source_references_exclude_wrong_table_locations(self):
         m=check()
@@ -94,5 +94,42 @@ class QuestionBankTests(unittest.TestCase):
         self.assertIn('Offline',byid[6]['answers'][1][1])
         self.assertIn('Not Saveable',byid[55]['answers'][7][1])
         self.assertIn('Timestamp Change',byid[63]['answers'][11][1])
+
+    def test_expansion_does_not_apply_log_context_rules_to_timestamps(self):
+        byid={q['id']:q for q in QUESTIONS}
+        for n in (214,215,216):
+            self.assertIn('Origin',byid[n]['answers'][12][1])
+            self.assertIn('saved',byid[n]['answers'][14][1].lower())
+            self.assertNotIn('reporting context',byid[n]['answers'][12][1])
+
+    def test_corrected_premises_and_operation_lifetimes(self):
+        byid={q['id']:q for q in QUESTIONS}
+        self.assertIn('crypto', ' '.join(v[1] for v in byid[134]['answers'].values()).lower())
+        self.assertIn('extended',byid[153]['answers'][12][1].lower())
+        self.assertIn('resume',byid[153]['answers'][14][1].lower())
+        self.assertIn('does not provide',byid[273]['answers'][1][1])
+        self.assertIn('mask',byid[290]['answers'][1][1])
+        self.assertIn('coalescing',byid[290]['answers'][1][1])
+        self.assertIn('two total',byid[312]['answers'][1][1].lower())
+
+    def test_prp_example_accounts_for_first_page_offset_and_chaining(self):
+        def page_count(size,offset,length):return (offset+length+size-1)//size
+        self.assertEqual([page_count(4096,1024,n) for n in (2048,4096,8192)],[1,2,3])
+        self.assertEqual((4096-4080)//8,2)
+        self.assertEqual(4096//8-1,511)
+        self.assertIn('5120',AIDS['pointers']['rows'][2][1][0])
+
+    def test_referenced_topics_have_canonical_links_and_preserve_all_questions(self):
+        byid={q['id']:q for q in QUESTIONS}
+        for q in QUESTIONS:
+            for n in q.get('related',[]):self.assertIn(n,byid)
+        self.assertEqual([i for v in VOLUMES for i in range(v[1],v[2]+1)],list(range(1,321)))
+        self.assertEqual(len(VOLUMES),26)
+
+    def test_boot_and_fdp_evidence_names_real_source_figures(self):
+        e=check()['evidence']
+        self.assertEqual(e['bootlog']['figure_headings']['279'],[309])
+        self.assertEqual(e['bootlog']['figure_headings']['280'],[310])
+        self.assertEqual(e['fdpnvm']['figure_headings']['116'],[79])
 
 if __name__=='__main__':unittest.main()

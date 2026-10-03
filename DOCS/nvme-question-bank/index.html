@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>NVMe 自問自答題庫：總索引 · Q1–68</title><style>/* Independently scoped quick-reference layout. All text follows explicit theme colors. */
+<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>NVMe 自問自答題庫：總索引 · Q1–320</title><style>/* Independently scoped quick-reference layout. All text follows explicit theme colors. */
 .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff; --qr-ink:#172b3b; --qr-muted:#4b6070; --qr-line:#cbd7df; --qr-accent:#096e68; --qr-soft:#e1f2ee; color:var(--qr-ink); background:var(--qr-paper); font:17px/1.85 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang TC","Microsoft JhengHei",sans-serif; -webkit-text-size-adjust:100%; padding:clamp(16px,3vw,36px); border-radius:12px; }
 .nvme-quickref * { box-sizing:border-box; }
 @media(prefers-color-scheme:dark) { .nvme-quickref { --qr-paper:#111923; --qr-surface:#172330; --qr-ink:#e4eef5; --qr-muted:#b2c3d0; --qr-line:#3a5060; --qr-accent:#66d8c5; --qr-soft:#173b39; } }
@@ -112,14 +112,34 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–68</p>
-<h1>NVMe Base 2.4 自問自答題庫</h1><p class="qr-intro">本題庫收錄第 1～68 題，依主題分成六冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。</p><div class="qr-series">
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<h1>NVMe Base 2.4 自問自答題庫</h1><p class="qr-intro">本題庫收錄第 1～320 題，依主題分成 26 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。</p><div class="qr-series">
 <article><h2><a href="initialization.html">Controller 初始化與停用</a></h2><p class="qr-tags">Q1–Q9</p><p>先理解 controller 如何從停用轉為就緒，再開始處理命令。讀到能力，不表示 controller 已啟用；Host 設定 EN，也還要等待 RDY。即使 RDY=1，仍可能需要依 Ready Mode 確認媒體是否可用。本冊將狀態、等待時間及允許執行的動作放在一起，說明每個階段應如何判斷。</p></article>
 <article><h2><a href="queues.html">Admin Queue 與 I/O Queue</a></h2><p class="qr-tags">Q10–Q21</p><p>Host 準備的 queue 記憶體、controller 分配的 queue 配額，以及已成功建立的 queue，是三種不同資訊。本冊先說明 SQ 與 CQ 的依賴關係，再討論大小、識別碼、刪除及重設，讓你能判斷何時可以使用 queue，以及何時能安全回收記憶體。</p></article>
 <article><h2><a href="doorbells.html">Doorbell、Queue Full 與 Wrap-around</a></h2><p class="qr-tags">Q22–Q30</p><p>Doorbell 告訴 controller，Host 的指標已前進到哪個位置；Phase 則讓 Host 分辨 CQ 中的是新完成結果，還是上一圈留下的資料。本冊將位置與有效性一起說明，幫助你正確處理繞回及空間釋放，避免將正常繞回誤判成倒退，或把舊 CQE 處理兩次。</p></article>
 <article><h2><a href="commands.html">Command、Completion 與處理順序</a></h2><p class="qr-tags">Q31–Q43</p><p>從 Host 提交命令，到 controller 取得、處理並回報完成，再到 Host 回收資源，各階段能證明的事情不同。本冊沿著這條流程解讀 Command 與 CQE，並說明順序、仲裁及中斷各自控制什麼。只有完成順序，還不足以推論 controller 內部的全部行為。</p></article>
 <article><h2><a href="identify.html">Identify 與能力探索</a></h2><p class="qr-tags">Q44–Q53</p><p>Identify 提供多種查詢結構。先確定要查哪個物件、需要哪一種資訊，再選擇 CNS、CSI、NSID 及其他欄位。本冊分別說明能力、目前配置與清單變更，讓你知道不同回覆如何互相補充，以及哪些差異才可能構成矛盾。</p></article>
 <article><h2><a href="features.html">Get Features 與 Set Features</a></h2><p class="qr-tags">Q54–Q68</p><p>設定 Feature 前，先確認它影響哪個物件、是否可變更，以及是否可保存。設定後，再分別確認命令成功、Current 讀回值、實際行為與重設後的恢復結果。本冊依這些步驟說明如何驗證設定，避免只看成功 CQE 就跳到功能一定正確的結論。</p></article>
+<article><h2><a href="logs.html">Get Log Page 與資料一致性</a></h2><p class="qr-tags">Q69–Q81</p><p>Log 回答狀態、歷史或支援能力，但不是每份 Log 都保存歷史，也不是讀取後一定不變。本冊先選對資料與範圍，再處理長度、分段、事件確認與一致性。</p></article>
+<article><h2><a href="asynchronous-events.html">Asynchronous Event Request</a></h2><p class="qr-tags">Q82–Q92</p><p>AER 讓 Host 先留下等待通知的請求，controller 有事件時才完成它。先理解請求、事件、Log 與確認的關係，再處理多事件、遮蔽與重新掛入。</p></article>
+<article><h2><a href="errors.html">錯誤 Status 與 Error Information</a></h2><p class="qr-tags">Q93–Q106</p><p>本冊從一筆失敗命令出發，先判斷錯誤類型，再找補充記錄與恢復依據。重點是把原命令、完成狀態及歷史資料對回同一件事。</p></article>
+<article><h2><a href="recovery.html">Abort、Timeout 與錯誤恢復</a></h2><p class="qr-tags">Q107–Q117</p><p>Timeout 是 Host 的觀察，未必能說明命令停在哪裡。本冊沿提交、取得、執行、完成與處理的路徑找證據，再決定 Abort 或較大範圍 reset。</p></article>
+<article><h2><a href="format-sanitize.html">Format 與 Sanitize</a></h2><p class="qr-tags">Q118–Q135</p><p>Format 改變 namespace 格式；Sanitize 處理資料清除。兩者的範圍、完成點與 reset 行為不同，本冊以一次操作的前、中、後狀態逐步區分。</p></article>
+<article><h2><a href="firmware-boot.html">Firmware Update 與 Boot Partition</a></h2><p class="qr-tags">Q136–Q148</p><p>先分清下載、提交與啟用，再把 Boot Partition 的讀取和切換放在旁邊比較。資料已傳入 controller，不代表新韌體或新開機映像已開始使用。</p></article>
+<article><h2><a href="self-test.html">Device Self-test</a></h2><p class="qr-tags">Q149–Q156</p><p>Self-test 將裝置內部診斷結果回報給 Host。先確認能啟動哪種測試，再分清進度、最終結果與失敗欄位有效性。</p></article>
+<article><h2><a href="namespace-management.html">Namespace Management、Attachment 與保護</a></h2><p class="qr-tags">Q157–Q173</p><p>建立 namespace、讓 controller 能存取它，以及限制寫入，是三組獨立狀態。本冊用同一物件從建立到刪除的流程，把三者接起來。</p></article>
+<article><h2><a href="reset-shutdown.html">Reset 與 Shutdown</a></h2><p class="qr-tags">Q174–Q187</p><p>Reset 結束操作環境，Shutdown 準備安全停止；兩者的目的和完成證據不同。先看影響範圍，再分辨哪些狀態需要重建，哪些操作仍持續。</p></article>
+<article><h2><a href="health.html">Power、Thermal 與 Health Monitoring</a></h2><p class="qr-tags">Q188–Q204</p><p>功耗狀態、溫度控制與健康計數互相關聯，但各自回答不同問題。本冊先建立狀態與時間概念，再學習如何讀取警告與工作量。</p></article>
+<article><h2><a href="persistent-events.html">Persistent Event Log 與 Timestamp</a></h2><p class="qr-tags">Q205–Q216</p><p>PEL 保存重要事件，Timestamp 協助解釋事件時間。本冊先教一致地取回完整 Log，再說明可變長度、事件類型與時鐘變更。</p></article>
+<article><h2><a href="keep-alive.html">Keep Alive</a></h2><p class="qr-tags">Q217–Q222</p><p>Keep Alive 用來偵測 Host 是否仍維持連線活動，在 PCIe 上屬選配。本冊分開命令模式與流量模式，說明何時開始計時及到期後的結果。</p></article>
+<article><h2><a href="memory.html">HMB、CMB 與 PMR</a></h2><p class="qr-tags">Q223–Q236</p><p>先看記憶體位於哪裡、由誰提供與何時可回收，再看持久性。HMB、CMB、PMR 不能因都含 Memory 就套同一組 reset 規則。</p></article>
+<article><h2><a href="security.html">Security 與 Lockdown</a></h2><p class="qr-tags">Q237–Q245</p><p>Security Send／Receive 承載協定資料；Lockdown 限制命令或 Feature。先分清資料交換結果與禁止範圍，再討論 reset 及斷電持續性。</p></article>
+<article><h2><a href="virtualization.html">Multi-Controller 與 Virtualization</a></h2><p class="qr-tags">Q246–Q255</p><p>多路徑、shared namespace 與虛擬化是不同關係。本冊先畫 controller 拓樸，再加入 attachment、ANA 及可分配 queue／interrupt 資源。</p></article>
+<article><h2><a href="capacity.html">NVM Set、Endurance Group 與容量</a></h2><p class="qr-tags">Q256–Q267</p><p>容量欄位分布於不同管理層級，健康計數也有自己的範圍。本冊先理解歸屬，再計算 Create／Delete 實際改變哪一層的容量。</p></article>
+<article><h2><a href="media.html">Domain、Reclaim Group 與 Media Unit</a></h2><p class="qr-tags">Q268–Q275</p><p>管理歸屬與 FDP 放置關係要用不同視角閱讀。本冊先辨認各種 ID 的範圍，再追蹤一筆 Write 如何選到 RU，最後解讀媒體資訊的限制。</p></article>
+<article><h2><a href="pointers.html">PRP 與 SGL</a></h2><p class="qr-tags">Q276–Q285</p><p>資料指標描述的是記憶體配置。本冊先算 PRP 跨頁，再讀 SGL 的 descriptor 關係，最後把格式錯誤與傳輸失敗分開。</p></article>
+<article><h2><a href="interrupts.html">Interrupt 設定與完成通知</a></h2><p class="qr-tags">Q286–Q296</p><p>先確認 CQE 真的存在，再查通知如何送到 Host。本冊把 CQ 關聯、合併、mask 與 Host 處理分開，避免把沒有中斷當成沒有完成。</p></article>
+<article><h2><a href="integration.html">整合驗證與證據交叉比對</a></h2><p class="qr-tags">Q297–Q320</p><p>本冊把前面機制放進具體矛盾情境：先確認比較的是同一對象與同一時點，再判斷證據是否足夠。相關機制使用固定連結，不重複整段教學。</p></article>
 </div><section><h2>怎麼使用這份題庫</h2><ol><li>先說出功能的目的、影響對象與正常順序，再選查詢欄位。</li><li>展開解答後，分別檢查成功結果、錯誤處理、事件、紀錄，以及三種重設的影響。MMIO 存取沒有 CQE，因此相關的 Status 或 DNR／More 項目會標示不適用。</li><li>判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。</li></ol><p>所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。</p></section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>全部題目</h2><ol class="qa-index">
@@ -191,6 +211,258 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li class="qa-search-item"><a href="features.html#q-066">Q66 · Set Features 成功後，為什麼還應使用 Get Features 確認？</a></li>
 <li class="qa-search-item"><a href="features.html#q-067">Q67 · Firmware Activation、Namespace 刪除、Controller Reset 及 Power Cycle 後，Feature 應如何變化？</a></li>
 <li class="qa-search-item"><a href="features.html#q-068">Q68 · Feature 宣告支援但 Get、Set 或實際功能行為不一致時，應如何驗證？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-069">Q69 · Supported Log Pages 有什麼用途？讀取其他 Log 前，應如何確認支援能力？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-070">Q70 · Error Information Log 與 SMART / Health Information Log 分別記錄什麼？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-071">Q71 · Firmware Slot Information、Changed Namespace List 及 Commands Supported and Effects Log 分別用來確認什麼？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-072">Q72 · Device Self-test、Persistent Event 及 Sanitize Status Log 分別適用於哪些情境？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-073">Q73 · Endurance Group、Predictable Latency、Lockdown、Boot Partition 及 Media Unit Status Log 各記錄什麼？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-074">Q74 · Host 如何依 Log Page 的 Scope 正確設定 NSID 及其他欄位？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-075">Q75 · 大型 Log 如何分段讀取？Offset、Length、重疊及缺口應如何處理？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-076">Q76 · Log Specific Identifier、UUID Index 及 Retain Asynchronous Event 有什麼用途？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-077">Q77 · 分段讀取期間 Log 內容改變時，Host 如何判斷資料是否一致？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-078">Q78 · Error Information Log 或 Persistent Event Log 到達容量上限時，舊紀錄如何處理？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-079">Q79 · 哪些 Log 資料在 Controller Reset、NVM Subsystem Reset 或 Power Cycle 後仍可保留？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-080">Q80 · Supported Log Pages 或 Commands Supported and Effects 的宣告與實際行為不一致時，如何判斷？</a></li>
+<li class="qa-search-item"><a href="logs.html#q-081">Q81 · Host 如何從 Commands Supported and Effects Log 確認 Opcode 支援及影響範圍？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-082">Q82 · Host 為什麼需要預先送出 Asynchronous Event Request？沒有事件時為何保持 Outstanding？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-083">Q83 · 事件發生後，Host 如何從 AER Completion 取得事件種類與 Log 位置？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-084">Q84 · Host 處理事件後，為什麼需要讀取對應 Log 並重新送出 AER？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-085">Q85 · AER Request 數量超過 Controller 上限時，應如何回應？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-086">Q86 · 沒有掛入 AER 時發生事件，Controller 如何保留與回報？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-087">Q87 · 多個相同或不同事件同時發生時，Controller 如何合併與回報？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-088">Q88 · Asynchronous Event Configuration 如何啟用或遮蔽特定事件？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-089">Q89 · SMART、Namespace、Firmware、Telemetry、Sanitize、Self-test 與 PEL 各有哪些通知條件？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-090">Q90 · Host 讀取 Log 後，事件如何清除或保留？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-091">Q91 · AER 能否被 Abort？Reset 時尚未完成的 Request 如何處理？</a></li>
+<li class="qa-search-item"><a href="asynchronous-events.html#q-092">Q92 · AER 已完成，但對應 Log 看不到預期資訊時，應如何定位？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-093">Q93 · Invalid Opcode、Invalid Field、CID Conflict 與 Sequence Error 如何區分？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-094">Q94 · Namespace、Log、Queue、Queue Size 與 Interrupt Vector 錯誤如何定位？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-095">Q95 · Firmware、Format 與容量錯誤為何不能只看名稱？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-096">Q96 · Data Transfer Error、Internal Error 與 Namespace Not Ready 有何不同？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-097">Q97 · Power Loss、Abort、SQ Deletion 與 Fused 失敗如何反映於完成？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-098">Q98 · Host 如何依 Status、More、DNR 與 CRD 決定下一步？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-099">Q99 · 哪些錯誤需要 Error Information？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-100">Q100 · 如何從 Error Information 對回原始命令與錯誤欄位？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-101">Q101 · Error Log 的 Status 必須與 CQE 完全逐 bit 相同嗎？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-102">Q102 · 多個錯誤、Log 容量與 Error Count 如何處理？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-103">Q103 · 非 Success CQE 沒有新增 Error Entry，一定違規嗎？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-104">Q104 · 一般命令錯誤後，其他命令是否可以繼續？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-105">Q105 · 哪些嚴重情況可能設定 CSTS.CFS，Host 應怎麼判斷？</a></li>
+<li class="qa-search-item"><a href="errors.html#q-106">Q106 · 如何交叉比對 CQE、Error Information 與 Persistent Event？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-107">Q107 · Abort 如何用 SQID 與 CID 指定目標？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-108">Q108 · Abort 已完成、不存在或指定錯誤 SQID／CID 的命令時會怎樣？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-109">Q109 · 重複 Abort 與並行 Abort 如何套用 ACL？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-110">Q110 · Abort 成功是否代表目標完全沒有執行？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-111">Q111 · Abort 未立即中止時，目標還能正常完成嗎？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-112">Q112 · Abort 與目標完成同時到達，Host 如何避免重複處理？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-113">Q113 · Timeout 後一定要依 Abort、Queue Reset、Controller Reset 的順序嗎？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-114">Q114 · Abort 本身也 Timeout，Host 應如何復原？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-115">Q115 · Reset 後如何處理舊命令、舊完成與舊 Queue？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-116">Q116 · 如何區分 Command Timeout、Ready Timeout 與長時間操作？</a></li>
+<li class="qa-search-item"><a href="recovery.html#q-117">Q117 · Timeout 時如何定位提交、取得、執行、完成或 Host 處理階段？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-118">Q118 · 如何確認 Format 與 Sanitize 支援能力？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-119">Q119 · Format、Secure Erase、Subsystem Sanitize 與 Namespace Sanitize 有何差別？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-120">Q120 · Format 如何選 LBA Format、Metadata、PI 與 SES？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-121">Q121 · Format 的非法格式、參數與狀態如何回報？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-122">Q122 · Format 期間哪些 Admin 操作可以繼續？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-123">Q123 · Format 過程遇到 Reset 或斷電，如何判斷結果？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-124">Q124 · Format 成功後哪些 Identify 與 Namespace 狀態要更新？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-125">Q125 · Format 失敗時如何使用 CQE、Error Log 與 PEL？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-126">Q126 · SANICAP 如何表示 Block Erase、Overwrite 與 Crypto Erase？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-127">Q127 · NDAS、Overwrite Pattern、Pass Count 與反轉 Pattern 如何使用？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-128">Q128 · SPROG、SOS、SANS 與 GDE／NDE 要怎麼一起看？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-129">Q129 · Subsystem Sanitize 期間哪些 Command 允許執行？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-130">Q130 · Sanitize 遇到 Reset 或 Power Loss 會繼續嗎？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-131">Q131 · 成功、失敗與 Failure Mode 在 Log 中如何區分？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-132">Q132 · Exit Failure Mode 能做什麼，不能做什麼？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-133">Q133 · Sanitize 的 AER 與 PEL 應在何時產生？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-134">Q134 · Namespace Sanitize 如何指定目標並確認其他 Namespace 未被清除？</a></li>
+<li class="qa-search-item"><a href="format-sanitize.html#q-135">Q135 · Namespace Sanitize 遇到不存在、Inactive 或不支援的目標如何回應？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-136">Q136 · Firmware Slot 的數量、唯讀限制與使用狀態從哪裡查？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-137">Q137 · Firmware Image Download 如何使用 OFST 與 NUMD？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-138">Q138 · 下載重疊、缺漏、順序與無效 Image 如何處理？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-139">Q139 · Firmware Commit 的 FS 與 CA 如何選？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-140">Q140 · 立即啟用與等待不同 Reset 啟用有何差別？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-141">Q141 · Firmware Activation Starting 何時產生？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-142">Q142 · Download、Commit 或 Activation 中發生 Reset／斷電如何處理？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-143">Q143 · Firmware 載入失敗後如何回復？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-144">Q144 · Activation 後如何確認版本、Slot 與 Command Effects？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-145">Q145 · Activation 後哪些設定應保留，哪些需要重新探索？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-146">Q146 · Boot Partition 支援、狀態與 Active ID 如何確認？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-147">Q147 · Boot Partition 如何下載、提交與切換 Active？</a></li>
+<li class="qa-search-item"><a href="firmware-boot.html#q-148">Q148 · Boot Partition 更新與 Controller Firmware 更新有何不同？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-149">Q149 · 如何確認 Device Self-test 支援與可測範圍？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-150">Q150 · Short 與 Extended Self-test 有何差別？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-151">Q151 · Self-test 進行中再次啟動或要求中止會怎樣？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-152">Q152 · Current Operation 與 Completion Percentage 如何解讀？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-153">Q153 · 成功、失敗、中止、Reset 與斷電後的 Self-test 結果怎麼看？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-154">Q154 · Self-test 完成一定有 Asynchronous Event 嗎？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-155">Q155 · Segment、Diagnostic Information 與 Failing LBA 何時有效？</a></li>
+<li class="qa-search-item"><a href="self-test.html#q-156">Q156 · Self-test 結果如何排列，超過 20 次後怎麼辦？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-157">Q157 · 如何確認 Namespace Management 與 Attachment 支援？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-158">Q158 · 建立 Namespace 時 NSZE、NCAP、Format 與 Thin Provisioning 如何設定？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-159">Q159 · Create Namespace 容量不足或參數不合法如何回應？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-160">Q160 · Create 後 Allocated Namespace List 如何更新？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-161">Q161 · Attach／Detach 如何指定 Controller？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-162">Q162 · Attach／Detach 後 Active List 與 Controller List 如何互相驗證？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-163">Q163 · 重複 Attach、非法 Controller 或未 Attach 就 Detach 如何回應？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-164">Q164 · Detach 時還有 Outstanding Command，應如何處理？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-165">Q165 · Detach 後再送 Namespace Command 應得到什麼？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-166">Q166 · 刪除不存在或仍 Attached 的 Namespace 如何處理？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-167">Q167 · Namespace 變更後哪些事件與 Log 應更新？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-168">Q168 · Changed Namespace List 超過容量如何表示？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-169">Q169 · Reset 或 Power Cycle 後 Namespace 配置與 Attachment 是否保留？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-170">Q170 · Private 與 Shared Namespace 有何差別？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-171">Q171 · 三種 Write Protection 模式與進入條件有何不同？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-172">Q172 · Write Protection 在 Reset 與 Power Cycle 後如何保留？</a></li>
+<li class="qa-search-item"><a href="namespace-management.html#q-173">Q173 · Write Protection 如何影響 Format、Sanitize 與 Namespace Management？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-174">Q174 · Controller、Subsystem 與 Queue Level Reset 範圍有何不同？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-175">Q175 · Conventional、FLR、Hot 與 Fundamental Reset 如何對應 NVMe？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-176">Q176 · Reset 發生在 Idle、命令或背景操作中，如何判斷結果？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-177">Q177 · Reset 期間 CSTS.RDY 應如何變化？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-178">Q178 · Reset 後哪些 Register、Feature 與 Queue 要重建？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-179">Q179 · Reset 後舊 Outstanding 與 Completion 應如何處理？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-180">Q180 · Reset 後如何確認 Feature、Log、Namespace 與 Firmware？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-181">Q181 · Reset 超時或 CFS 未清除時怎麼辦？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-182">Q182 · Host 如何用 CC.SHN 做 Normal Shutdown？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-183">Q183 · 何時算 Shutdown Complete，可以移除電源？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-184">Q184 · Normal、Abrupt Shutdown 與直接斷電有何不同？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-185">Q185 · Shutdown 期間能否繼續新命令或保留 Outstanding？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-186">Q186 · Normal／Abrupt 如何影響 Unsafe Shutdowns？</a></li>
+<li class="qa-search-item"><a href="reset-shutdown.html#q-187">Q187 · 非正常失電後為何查 SMART、Error 與 PEL？</a></li>
+<li class="qa-search-item"><a href="health.html#q-188">Q188 · Power State Descriptor 能告訴 Host 哪些事情？</a></li>
+<li class="qa-search-item"><a href="health.html#q-189">Q189 · Operational 與 Non-Operational Power State 差在哪裡？</a></li>
+<li class="qa-search-item"><a href="health.html#q-190">Q190 · Entry 與 Exit Latency 如何影響命令等待時間？</a></li>
+<li class="qa-search-item"><a href="health.html#q-191">Q191 · APST 如何設定、觸發與停用？</a></li>
+<li class="qa-search-item"><a href="health.html#q-192">Q192 · 量到恢復延遲超過 EXLAT，如何判斷是否違規？</a></li>
+<li class="qa-search-item"><a href="health.html#q-193">Q193 · HCTM 的 TMT1 與 TMT2 應如何設定？</a></li>
+<li class="qa-search-item"><a href="health.html#q-194">Q194 · Controller 何時開始或停止 Thermal Management？</a></li>
+<li class="qa-search-item"><a href="health.html#q-195">Q195 · Reset 與 Power Cycle 後，Power／Thermal 設定如何恢復？</a></li>
+<li class="qa-search-item"><a href="health.html#q-196">Q196 · SMART Critical Warning 的各 bit 代表什麼？</a></li>
+<li class="qa-search-item"><a href="health.html#q-197">Q197 · Available Spare、Threshold 與 Percentage Used 如何解讀？</a></li>
+<li class="qa-search-item"><a href="health.html#q-198">Q198 · 資料量、命令數、Busy Time、Power Cycles 與 Power On Hours 如何累計？</a></li>
+<li class="qa-search-item"><a href="health.html#q-199">Q199 · Unexpected Power Losses、媒體錯誤與 Error Log Entries 如何累計？</a></li>
+<li class="qa-search-item"><a href="health.html#q-200">Q200 · Warning 與 Critical Composite Temperature Time 如何累計？</a></li>
+<li class="qa-search-item"><a href="health.html#q-201">Q201 · 多個 Temperature Sensor 與 Composite Temperature 如何比較？</a></li>
+<li class="qa-search-item"><a href="health.html#q-202">Q202 · 哪些 Health 變化會產生 AER？</a></li>
+<li class="qa-search-item"><a href="health.html#q-203">Q203 · SMART 資料的 Scope 如何判斷？</a></li>
+<li class="qa-search-item"><a href="health.html#q-204">Q204 · SMART、實際操作、Error Log 與 PEL 如何交叉驗證？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-205">Q205 · 如何確認 Persistent Event Log 及個別事件的支援能力？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-206">Q206 · PEL Context 如何建立、分段讀取與釋放？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-207">Q207 · Context 不存在或重複建立時，應如何回應？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-208">Q208 · SMART、Firmware、Timestamp、Reset 與 Hardware Error 如何記錄？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-209">Q209 · Namespace、Format 與 Sanitize 對應哪些 Persistent Events？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-210">Q210 · PEL 達容量上限時，舊事件如何處理？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-211">Q211 · PEL 新增事件後，是否一定發送 Asynchronous Event？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-212">Q212 · Reset 與 Power Cycle 後，PEL 哪些東西應保留？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-213">Q213 · PEL 的 Header、長度與事件順序如何驗證？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-214">Q214 · Timestamp 如何設定並以 Get Features 驗證？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-215">Q215 · Timestamp 如何增加、Wrap-around，Origin 與 SYNC 怎麼看？</a></li>
+<li class="qa-search-item"><a href="persistent-events.html#q-216">Q216 · Timestamp 變更如何記錄，Reset 與 Power Cycle 後怎麼判讀？</a></li>
+<li class="qa-search-item"><a href="keep-alive.html#q-217">Q217 · PCIe Host 如何確認 Keep Alive 支援？</a></li>
+<li class="qa-search-item"><a href="keep-alive.html#q-218">Q218 · Keep Alive Timer 如何設定、調整與停用？</a></li>
+<li class="qa-search-item"><a href="keep-alive.html#q-219">Q219 · Host 如何在 Timer 到期前維持 Keep Alive？</a></li>
+<li class="qa-search-item"><a href="keep-alive.html#q-220">Q220 · Keep Alive Timeout 後，Controller 必須做哪些清理？</a></li>
+<li class="qa-search-item"><a href="keep-alive.html#q-221">Q221 · Controller Reset 後，是否要重新設定 Keep Alive？</a></li>
+<li class="qa-search-item"><a href="keep-alive.html#q-222">Q222 · Command Based 與 Traffic Based Keep Alive 有何不同？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-223">Q223 · HMB、CMB 與 PMR 分別解決什麼問題？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-224">Q224 · HMB 大小與 Descriptor List 如何配置？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-225">Q225 · HMB 位址、大小或 Descriptor 數量不合法時如何判斷？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-226">Q226 · HMB 如何啟用、停用並在 Reset 後重新提供？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-227">Q227 · Host 提前回收仍在使用的 HMB 會有什麼後果？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-228">Q228 · Host 如何找出 CMB 的位置、大小與可用用途？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-229">Q229 · 哪些 Queue、Data、Metadata 與指標清單可放 CMB？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-230">Q230 · CMB 超出範圍或用於不支援用途時如何處理？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-231">Q231 · Reset 後 CMB 設定與內容會保留嗎？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-232">Q232 · PMR 如何確認支援、啟用並等待 Ready？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-233">Q233 · PMR 未 Ready、發生錯誤或過早存取時會怎樣？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-234">Q234 · Host 如何安全停用 PMR？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-235">Q235 · Reset 與 Power Cycle 如何影響 PMR 狀態及持久資料？</a></li>
+<li class="qa-search-item"><a href="memory.html#q-236">Q236 · Host Memory、HMB、CMB 與 PMR 的存取與生命週期如何比較？</a></li>
+<li class="qa-search-item"><a href="security.html#q-237">Q237 · 如何確認 Security Send／Receive 與實際協定支援？</a></li>
+<li class="qa-search-item"><a href="security.html#q-238">Q238 · Security Protocol、欄位或資料長度不合法時如何處理？</a></li>
+<li class="qa-search-item"><a href="security.html#q-239">Q239 · Security 資料傳輸失敗應如何區分 Status 與協定錯誤？</a></li>
+<li class="qa-search-item"><a href="security.html#q-240">Q240 · Security 狀態如何影響其他 Admin Command？</a></li>
+<li class="qa-search-item"><a href="security.html#q-241">Q241 · Reset 與 Power Cycle 後 Security 狀態是否保留？</a></li>
+<li class="qa-search-item"><a href="security.html#q-242">Q242 · Lockdown 如何限制指定 Command 或 Feature？</a></li>
+<li class="qa-search-item"><a href="security.html#q-243">Q243 · 執行被 Lockdown 禁止的命令或 Feature 應如何回應？</a></li>
+<li class="qa-search-item"><a href="security.html#q-244">Q244 · Lockdown Log 的一般與增強格式如何解讀？</a></li>
+<li class="qa-search-item"><a href="security.html#q-245">Q245 · Reset 與 Power Cycle 後 Lockdown 是否保留？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-246">Q246 · Subsystem、Primary 與 Secondary Controller 是什麼關係？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-247">Q247 · Private 與 Shared Namespace 如何 Attach 到 Controller？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-248">Q248 · 如何取得 Namespace 對應的 Controller List？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-249">Q249 · 一台 Controller Reset 時，其他路徑能否繼續存取 Shared Namespace？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-250">Q250 · NVM Subsystem Reset 會影響哪些 Controller？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-251">Q251 · Namespace 變更如何通知其他 Controller？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-252">Q252 · Asymmetric Controller Behavior 與 ANA 如何協助選路徑？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-253">Q253 · Secondary Controller 如何 Online 或 Offline？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-254">Q254 · Virtualization Management 如何分配與釋放資源？</a></li>
+<li class="qa-search-item"><a href="virtualization.html#q-255">Q255 · Reset 與 Power Cycle 後 Virtualization 資源如何恢復？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-256">Q256 · NVM Set、Endurance Group 與 Namespace 是什麼關係？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-257">Q257 · 如何從 Identify 探索 NVM Set 與 Endurance Group？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-258">Q258 · Namespace 如何建立於指定 Set 或 Group？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-259">Q259 · 指定不存在的 NVM Set 或 Endurance Group 時會怎樣？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-260">Q260 · Endurance Group Information Log 提供哪些健康與容量資訊？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-261">Q261 · Endurance Group 的警告、Spare 與壽命事件如何更新？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-262">Q262 · 如何確認總容量與未配置容量？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-263">Q263 · Namespace 建立與刪除如何改變未配置容量？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-264">Q264 · Capacity Management 如何配置或釋放 Group 與 Set？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-265">Q265 · 要求容量或物件數超過可用資源時應回什麼？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-266">Q266 · 容量配置完成後，哪些 Identify 與 Log 應更新？</a></li>
+<li class="qa-search-item"><a href="capacity.html#q-267">Q267 · Reset 與 Power Cycle 後 Group、Set 與容量配置如何保留？</a></li>
+<li class="qa-search-item"><a href="media.html#q-268">Q268 · Domain、Set、Group、Media Unit 與 Namespace 是單一層級嗎？</a></li>
+<li class="qa-search-item"><a href="media.html#q-269">Q269 · 如何取得 Domain 與資源歸屬？</a></li>
+<li class="qa-search-item"><a href="media.html#q-270">Q270 · Reclaim Group、Reclaim Unit 與 RU Handle 各代表什麼？</a></li>
+<li class="qa-search-item"><a href="media.html#q-271">Q271 · Namespace 如何透過 Placement Handle 選擇 RU？</a></li>
+<li class="qa-search-item"><a href="media.html#q-272">Q272 · Media Unit Status Log 提供哪些資訊，如何走訪描述資料？</a></li>
+<li class="qa-search-item"><a href="media.html#q-273">Q273 · 能從 Media Unit Status 直接判斷 Namespace 不可用嗎？</a></li>
+<li class="qa-search-item"><a href="media.html#q-274">Q274 · 媒體狀態變化會產生哪些通知與紀錄？</a></li>
+<li class="qa-search-item"><a href="media.html#q-275">Q275 · 如何辨識管理實體的 Scope，避免混用 ID？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-276">Q276 · PRP1 如何描述第一頁的資料？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-277">Q277 · PRP2 何時是第二頁，何時是清單？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-278">Q278 · PRP List 如何串接多頁？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-279">Q279 · PRP 位址、Offset 與 List 有哪些對齊要求？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-280">Q280 · PRP 為 0、位址無效或鏈結錯誤時，能指定同一種錯誤嗎？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-281">Q281 · SGL Data Block、Segment 與 Last Segment 如何配合？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-282">Q282 · SGL 位址、長度、數量與類型錯誤如何區分？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-283">Q283 · Identify 的 SGL 能力如何限制合法用法？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-284">Q284 · Data Pointer 錯誤與 Data Transfer Error 有何不同？</a></li>
+<li class="qa-search-item"><a href="pointers.html#q-285">Q285 · PRP／SGL 錯誤如何與 CQE 及 Error Information 對回？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-286">Q286 · CQ 如何指定 Interrupt Vector？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-287">Q287 · 多條 CQ 共用 Vector 與獨立 Vector 有何不同？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-288">Q288 · Interrupt Coalescing 的 Threshold 與 Time 如何作用？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-289">Q289 · 如何停用 Interrupt Coalescing？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-290">Q290 · FID09h 是遮蔽中斷嗎？真正的 Mask 要如何設定？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-291">Q291 · Vector 被遮蔽時，Controller 還能寫 CQE 嗎？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-292">Q292 · 解除 Mask 後如何處理累積完成？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-293">Q293 · 已被 CQ 使用的 Vector 可以修改設定嗎？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-294">Q294 · Reset 後中斷設定要如何恢復？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-295">Q295 · Queue 刪除後如何回收中斷資源？</a></li>
+<li class="qa-search-item"><a href="interrupts.html#q-296">Q296 · 如何比對 Interrupt、CQ 與實際完成行為？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-297">Q297 · 宣告支援的 Command 卻失敗，第一步怎麼查？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-298">Q298 · 未宣告支援的 Command 卻成功，是否一定合規？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-299">Q299 · Set 成功但 Get 或行為不同，如何縮小問題？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-300">Q300 · AER 已完成，但對應 Log 看不到資訊，怎麼查？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-301">Q301 · 失敗 CQE 沒新增 Error Entry，一定違規嗎？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-302">Q302 · CQE、Error Information 與 PEL 不同，何時才是矛盾？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-303">Q303 · Reset 後 Feature 保留或 Saved 遺失，如何判斷？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-304">Q304 · Namespace 變更後，Identify、Changed List 與 AER 如何對照？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-305">Q305 · Firmware Activation 後 FR 或 Slot 沒改，如何判斷？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-306">Q306 · Sanitize 命令成功後 Log 還在進行中，是錯誤嗎？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-307">Q307 · Self-test 已結束但沒有結果，如何驗證？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-308">Q308 · Shutdown 與 Unsafe Shutdowns 計數不符直覺，如何判斷？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-309">Q309 · Critical Warning 改變卻沒有 AER，先看哪些設定？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-310">Q310 · PEL 事件排列與實際時間不同，如何驗證？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-311">Q311 · CFS=1 卻缺少錯誤資訊，還能查什麼？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-312">Q312 · Abort 後看見兩次 Completion，如何判斷是否重複？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-313">Q313 · Delete 完成後仍存取 Queue Memory，有何問題？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-314">Q314 · Reset 後讀到舊 CQE，如何處理？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-315">Q315 · Detach 後 Namespace Command 仍成功，何時合理？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-316">Q316 · Lockdown 後仍可操作，如何確認是否漏鎖？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-317">Q317 · Power State 恢復太慢，如何量測才公平？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-318">Q318 · 如何比較三種 Reset 對同一功能的影響？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-319">Q319 · 如何判斷操作真正影響誰？</a></li>
+<li class="qa-search-item"><a href="integration.html#q-320">Q320 · 如何把所有介面串成一次完整的符合性驗證？</a></li>
 </ol></section>
 </main>
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/en/">English</a></nav>

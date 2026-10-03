@@ -125,3 +125,6 @@ LESSONS = {
 ('APST 的狀態轉移該怎麼讀','假設目前處於 PS0，APSTE=1，PS0 entry 的 ITPT=2000 ms、ITPS=3，而且 PS3 是受支援的非工作狀態。controller 在 PS0 持續閒置超過 2000 ms 後，會轉入 PS3；之後若有工作需要離開 PS3，恢復處理時就要考慮 PS3.EXLAT 所描述的退出延遲。ITPT 是進入前的閒置門檻，EXLAT 是離開時的延遲，兩者發生在不同階段，不能相加後宣稱每筆命令都固定等待這麼久。'),
 ('持久性與原子性要各做一個判斷','持久性問的是已完成資料在斷電後是否仍存在；原子性問的是一次更新是否可能留下部分新資料、部分舊資料。WCE、FUA 與 Flush 處理持久性；原子單位及邊界則限制哪些寫入具有原子性。即使資料已持久保存，超出原子保證範圍的多 block 操作，也不會因此自動取得整筆不可分割的保證。')],
 }
+
+from scripts.nvme_qa_teaching_extended import extend
+extend(VOLUMES, INTRO, AIDS, LESSONS)

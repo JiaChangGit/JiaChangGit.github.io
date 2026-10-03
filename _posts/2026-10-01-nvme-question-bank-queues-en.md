@@ -11,7 +11,7 @@ nvme_qa: true
 
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/queues/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/queues.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–68</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
 <header><p class="qa-range">Q10–Q21</p><h1>Admin and I/O queues</h1><p class="qr-intro">Queue memory, allocated queue counts and successfully created queues are distinct. Learn SQ/CQ dependencies before size, identifiers, deletion and reset so memory can be reclaimed at the right time.</p><p>Practice first, then reveal 17 answer items per question. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
 <aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>One CQ and two SQs: creation and reclamation run in opposite directions</h2><p class="qa-takeaway">The CQ is the completion destination for its SQs; it cannot be deleted while an SQ still depends on it.</p>
@@ -88,7 +88,8 @@ nvme_qa: true
 <li id="q-010-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check queue addresses and CC.MPS alignment, then initialization of stale phase tags.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-011" data-question="11"><h2><a class="qa-qid" href="#q-011">Q11</a> What are the size, base-address and page-alignment requirements for Admin and I/O queues?</h2>
@@ -145,7 +146,8 @@ nvme_qa: true
 <li id="q-011-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check double application of +1, wrong entry size and alignment against CC.MPS rather than an assumed OS page size.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-012" data-question="12"><h2><a class="qa-qid" href="#q-012">Q12</a> How are I/O CQs and SQs created, and why must the CQ be created first?</h2>
@@ -202,7 +204,8 @@ nvme_qa: true
 <li id="q-012-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check that CQ creation completed successfully, not merely that its command was submitted.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-013" data-question="13"><h2><a class="qa-qid" href="#q-013">Q13</a> How does sharing a CQ differ from giving every SQ its own CQ?</h2>
@@ -259,7 +262,8 @@ nvme_qa: true
 <li id="q-013-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether completion matching incorrectly uses CID without SQID.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-014" data-question="14"><h2><a class="qa-qid" href="#q-014">Q14</a> How does the host determine supported queue memory layouts?</h2>
@@ -316,7 +320,8 @@ nvme_qa: true
 <li id="q-014-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First ask whether PRP1 addresses queue storage or its page list. Confusing them breaks the layout even with valid addresses.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-015" data-question="15"><h2><a class="qa-qid" href="#q-015">Q15</a> Which statuses apply to duplicate/zero QIDs, missing CQIDs, oversized queues and invalid vectors?</h2>
@@ -373,7 +378,8 @@ nvme_qa: true
 <li id="q-015-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check that only one field is invalid and the expected SCT is 1, rather than comparing SC alone.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-irq">PCIe Transport 1.4 §3.5</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-016" data-question="16"><h2><a class="qa-qid" href="#q-016">Q16</a> How do Number of Queues results relate to queues that can actually be created?</h2>
@@ -430,7 +436,8 @@ nvme_qa: true
 <li id="q-016-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether requested values were used instead of returned allocations or whether +1 was omitted.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-017" data-question="17"><h2><a class="qa-qid" href="#q-017">Q17</a> Why must associated SQs be deleted before their CQ?</h2>
@@ -487,7 +494,8 @@ nvme_qa: true
 <li id="q-017-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether another SQ still references the CQ, not only whether the CQ appears empty.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-018" data-question="18"><h2><a class="qa-qid" href="#q-018">Q18</a> What happens when deleting a missing queue, a referenced CQ or an SQ with outstanding commands?</h2>
@@ -544,7 +552,8 @@ nvme_qa: true
 <li id="q-018-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether Delete SQ itself completed successfully. Its outstanding state does not establish that all original work stopped.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-019" data-question="19"><h2><a class="qa-qid" href="#q-019">Q19</a> May the controller access deleted queue memory or post completions for its old commands?</h2>
@@ -601,7 +610,8 @@ nvme_qa: true
 <li id="q-019-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First establish whether the CQE was actually posted before or after successful Delete.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-020" data-question="20"><h2><a class="qa-qid" href="#q-020">Q20</a> What is the scope of Queue Level Reset, and how is outstanding work handled?</h2>
@@ -658,7 +668,8 @@ nvme_qa: true
 <li id="q-020-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First enumerate every SQ using the target CQ; omitting one can invalidate the reset sequence.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-021" data-question="21"><h2><a class="qa-qid" href="#q-021">Q21</a> Are old I/O queues valid after Controller Reset, and what must the host do again?</h2>
@@ -715,7 +726,8 @@ nvme_qa: true
 <li id="q-021-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
 <p>First check whether host I/O resumed before new Create commands succeeded.</p>
 </li>
-</ol><details class="qa-source-links"><summary>Source locations for this question</summary>
+</ol>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
 <p class="qa-citations">Sources: <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <section id="common-rules" class="qa-common"><h2>Shared rules linked from the answers</h2><p>Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.</p>

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the approved 68-question bank in six volumes and three editions."""
+"""Build the approved 320-question bank in 26 volumes and three editions."""
 from pathlib import Path
 import argparse
 import html
@@ -17,6 +17,9 @@ SHORT={'B':'Base 2.4','N':'NVM Command Set 1.3','P':'PCIe Transport 1.4'}
 SOURCES=json.loads((ROOT/'.ai/nvme-report/source-register.json').read_text())['sources']
 FIGURES=json.loads((ROOT/'.ai/nvme-quickref/figures.json').read_text())['figures']
 DATE='2026-10-01'
+
+def post_date(slug):
+    return DATE if slug in ['index']+[v[0] for v in VOLUMES[:6]] else '2026-10-02'
 
 def tr(zh,en,lang):return zh if lang=='zh' else en
 def txt(pair,lang):
@@ -66,8 +69,13 @@ def aid(slug,lang,standalone):
         for n,(title,text) in enumerate(LESSONS[slug],1):out+=['<article><h3>教學 '+str(n)+' · '+E(title)+'</h3><p>'+txt((text,''),'zh')+'</p></article>']
         if slug=='features':
             out+=['<div class="qa-state" role="img" aria-label="APST 教學假設：PS0 閒置超過 2000 ms 後進入 PS3；需要處理命令時離開 PS3，並考慮退出延遲"><span>PS0<br>可處理命令</span><span class="qa-arrow">idle &gt; ITPT<br>↓</span><span>PS3<br>非工作狀態</span><span class="qa-arrow">需要處理命令<br>↓</span><span>離開 PS3<br>考慮 EXLAT</span></div><p>這張圖使用教學假設的狀態路徑，不表示每個 SSD 都支援 PS3。實際判讀時，先查 Power State Descriptor 的 NOPS、ENLAT、EXLAT，確認狀態類型及進出延遲，再看 APST 的 ITPS 與 ITPT 如何設定。圖中只呈現已啟用 APST 的這條路徑，沒有列出其他狀態選擇。ITPT 指定轉入目標狀態前，需要閒置多久；ENLAT 與 EXLAT 則分別描述進入及離開狀態所需的延遲，三者發生的階段不同。</p>',cite(['power','powerstates','idctrl'],lang)]
+        if slug=='health':
+            out+=['<div class="qa-state" role="img" aria-label="教學假設：PS0 閒置超過 2000 ms 進入 PS3；I/O 到達時回到最近的工作狀態 PS0"><span>PS0<br>工作狀態</span><span class="qa-arrow">APSTE=1<br>閒置超過 ITPT=2000 ms<br>↓</span><span>PS3<br>NOPS=1</span><span class="qa-arrow">I/O 需要處理<br>退出 PS3，再進入 PS0<br>↓</span><span>PS0<br>恢復處理 I/O</span></div><p>這是教學假設的單一路徑：先確認 PS3 受支援，再將 PS0 的 APST entry 設為 ITPS=3。進入 PS3 的閒置門檻不包含在每筆 I/O 的退出延遲裡；返回 PS0 的轉換上限則要考慮 PS3.EXLAT 與 PS0.ENLAT。若 controller 經過其他狀態，需按各段轉換再計算。</p>',cite(['powerdetail','psd','power'],lang)]
         out+=['</section>']
     return '\n'.join(out)
+
+def short_rule(value):
+    return (value[0].split('。')[0]+'。',re.split(r'(?<=[.!?])\s+',value[1])[0])
 
 def shared_key(value):
     for group,rows in COMMON.items():
@@ -104,7 +112,7 @@ BRIEF={
 15:('先查 Feature 的作用範圍，再判斷其他 controller 或 namespace 是否共用這項設定，以及是否會一同受影響。','Feature scope determines whether other controllers or namespaces share the setting.')}
 }
 
-def question(q,lang,shared):
+def question(q,lang,shared,standalone=False):
     qid=f'q-{q["id"]:03d}'
     out=[f'<article class="qa-question" id="{qid}" data-question="{q["id"]}"><h2><a class="qa-qid" href="#{qid}">Q{q["id"]:02d}</a> '+txt(q['title'],lang)+'</h2>',
          '<p class="qa-prompt">'+tr('先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。','First describe the normal sequence and one invalid-precondition example, then reveal the answer.',lang)+'</p>',
@@ -115,17 +123,20 @@ def question(q,lang,shared):
         if key:
             shared.add(key)
             group,j=key
-            out+=['<p>'+txt(BRIEF[group][j],lang)+' <a class="qa-rule-link" href="#common-'+group+'-'+str(j)+'">'+tr('本冊完整規則','Full rule in this volume',lang)+'</a></p>']
+            out+=['<p>'+txt(BRIEF.get(group,{}).get(j,short_rule(value)),lang)+' <a class="qa-rule-link" href="#common-'+group+'-'+str(j)+'">'+tr('本冊完整規則','Full rule in this volume',lang)+'</a></p>']
         else:out+=['<p>'+txt(value,lang)+'</p>']
         out+=['</li>']
-    out+=['</ol><details class="qa-source-links"><summary>'+tr('本題原文定位','Source locations for this question',lang)+'</summary>',cite(q['refs'],lang),'</details></details><a class="qa-back" href="#question-index">'+tr('回本冊題目','Back to questions',lang)+'</a></article>']
+    out+=['</ol>']
+    if q.get('related'):
+        out+=['<p class="qa-related">'+tr('相關機制：','Related mechanisms: ',lang)+' · '.join('<a href="'+url(next(v[0] for v in VOLUMES if v[1]<=n<=v[2]),lang,standalone)+'#q-'+str(n).zfill(3)+'">Q'+str(n)+'</a>' for n in q['related'])+'</p>']
+    out+=['<details class="qa-source-links"><summary>'+tr('本題原文定位','Source locations for this question',lang)+'</summary>',cite(q['refs'],lang),'</details></details><a class="qa-back" href="#question-index">'+tr('回本冊題目','Back to questions',lang)+'</a></article>']
     return '\n'.join(out)
 
 def common_rules(shared,lang):
     titles={'feature_events':('Set Feature 的事件記錄','Set Feature event recording'),'register':('Register 存取','Register access'),'command':('命令完成、事件與紀錄','Command completion, events and records'),'queue':('Queue 的重設與影響範圍','Queue reset and scope'),'identify':('查詢的重設與影響範圍','Query reset and scope'),'feature':('Feature 的重設與影響範圍','Feature reset and scope')}
     out=['<section id="common-rules" class="qa-common"><h2>'+tr('共用規則：各題連到的完整解釋','Shared rules linked from the answers',lang)+'</h2><p>'+tr('這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。','Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.',lang)+'</p>']
     for group,i in sorted(shared):
-        out +=[f'<article id="common-{group}-{i}"><h3>'+txt(titles[group],lang)+' · '+txt(LABELS[i-1],lang)+'</h3><p>'+txt(COMMON[group][i],lang)+'</p></article>']
+        out +=[f'<article id="common-{group}-{i}"><h3>'+txt(titles.get(group,('本主題的共用條件','Shared conditions for this topic')),lang)+' · '+txt(LABELS[i-1],lang)+'</h3><p>'+txt(COMMON[group][i],lang)+'</p></article>']
     return '\n'.join(out+['</section>'])
 
 def sources(keys,lang,standalone):
@@ -150,7 +161,7 @@ def sources(keys,lang,standalone):
     return '\n'.join(out+['</ul></details></section>'])
 
 def index_body(lang,standalone):
-    out=['<h1>'+tr('NVMe Base 2.4 自問自答題庫','NVMe Base 2.4 Self-Study Question Bank',lang)+'</h1><p class="qr-intro">'+tr('本題庫收錄第 1～68 題，依主題分成六冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。','Questions 1–68 in six volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.',lang)+'</p><div class="qr-series">']
+    out=['<h1>'+tr('NVMe Base 2.4 自問自答題庫','NVMe Base 2.4 Self-Study Question Bank',lang)+'</h1><p class="qr-intro">'+tr('本題庫收錄第 1～320 題，依主題分成 26 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。','Questions 1–320 in 26 volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.',lang)+'</p><div class="qr-series">']
     for slug,a,b,zh,en in VOLUMES:
         out+=['<article><h2><a href="'+url(slug,lang,standalone)+'">'+tr(zh,en,lang)+'</a></h2><p class="qr-tags">Q'+str(a)+'–Q'+str(b)+'</p><p>'+txt(INTRO[slug],lang)+'</p></article>']
     out+=['</div><section><h2>'+tr('怎麼使用這份題庫','How to use this bank',lang)+'</h2><ol><li>'+tr('先說出功能的目的、影響對象與正常順序，再選查詢欄位。','Explain purpose, affected objects and sequence before selecting query fields.',lang)+'</li><li>'+tr('展開解答後，分別檢查成功結果、錯誤處理、事件、紀錄，以及三種重設的影響。MMIO 存取沒有 CQE，因此相關的 Status 或 DNR／More 項目會標示不適用。','Reveal the answer and separately compare success, errors, events, logs and three reset cases. Items without an MMIO CQE explicitly state non-applicability.',lang)+'</li><li>'+tr('判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。','Establish preconditions before judging firmware. Shall is a requirement, should a recommendation, may permission. Undefined behavior does not supply a fixed expected status.',lang)+'</li></ol><p>'+tr('所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。','All numerical examples are hypothetical, not hardware measurements. The scope is the three specifications as used by PCIe SSDs, excluding NVMe over Fabrics and PCIe link/packet details while retaining necessary PCIe configuration, interrupts, registers and doorbells.',lang)+'</p></section>',controls(lang,True),'<section id="question-index"><h2>'+tr('全部題目','All questions',lang)+'</h2><ol class="qa-index">']
@@ -179,7 +190,7 @@ SCRIPT='''<script>
 def body(slug,lang,standalone):
     out=['<div class="nvme-quickref nvme-qa">',nav(slug,lang,standalone)]
     if standalone:out+=['<button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>']
-    out+=['<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–68</p>']
+    out+=['<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>']
     if slug=='index':out+=[index_body(lang,standalone)]
     else:
         _,a,b,zh,en=next(v for v in VOLUMES if v[0]==slug)
@@ -187,7 +198,7 @@ def body(slug,lang,standalone):
         qs=[q for q in QUESTIONS if a<=q['id']<=b]
         for q in qs:out+=[f'<li><a href="#q-{q["id"]:03d}">Q{q["id"]:02d} · '+txt(q['title'],lang)+'</a></li>']
         out+=['</ol></section>'];shared=set()
-        for q in qs:out+=[question(q,lang,shared)]
+        for q in qs:out+=[question(q,lang,shared,standalone)]
         out+=[common_rules(shared,lang)]
         keys=set(r for q in qs for r in q['refs'])|set(AIDS[slug]['refs'])
         if slug=='features':keys|={'powerstates','power','idctrl'}
@@ -200,10 +211,10 @@ def artifacts():
     css=(ROOT/'assets/css/nvme-quickref.css').read_text()+'\n'+(ROOT/'assets/css/nvme-question-bank.css').read_text()
     for slug in ['index']+[v[0] for v in VOLUMES]:
         for lang in ['zh','en']:
-            title=tr('NVMe 自問自答題庫：','NVMe Self-Study Bank: ',lang)+(tr('總索引 · Q1–68','Index · Q1–68',lang) if slug=='index' else next(v[3 if lang=='zh' else 4] for v in VOLUMES if v[0]==slug))
-            front='---\nlayout: post\ntitle: '+json.dumps(title,ensure_ascii=False)+'\ndate: '+DATE+' 00:00:00 +0800\ncategories: [nvme]\npermalink: '+url(slug,lang)+'\nlang: '+tr('zh-TW','en',lang)+'\nnvme_quickref: true\nnvme_qa: true\n---\n\n'
-            result[ROOT/'_posts'/f'{DATE}-nvme-question-bank-{slug}-{tr("zh-tw","en",lang)}.md']=front+body(slug,lang,False)+'\n'
-        title='NVMe 自問自答題庫：'+('總索引 · Q1–68' if slug=='index' else next(v[3] for v in VOLUMES if v[0]==slug))
+            title=tr('NVMe 自問自答題庫：','NVMe Self-Study Bank: ',lang)+(tr('總索引 · Q1–320','Index · Q1–320',lang) if slug=='index' else next(v[3 if lang=='zh' else 4] for v in VOLUMES if v[0]==slug))
+            front='---\nlayout: post\ntitle: '+json.dumps(title,ensure_ascii=False)+'\ndate: '+post_date(slug)+' 00:00:00 +0800\ncategories: [nvme]\npermalink: '+url(slug,lang)+'\nlang: '+tr('zh-TW','en',lang)+'\nnvme_quickref: true\nnvme_qa: true\n---\n\n'
+            result[ROOT/'_posts'/f'{post_date(slug)}-nvme-question-bank-{slug}-{tr("zh-tw","en",lang)}.md']=front+body(slug,lang,False)+'\n'
+        title='NVMe 自問自答題庫：'+('總索引 · Q1–320' if slug=='index' else next(v[3] for v in VOLUMES if v[0]==slug))
         result[ROOT/'DOCS/nvme-question-bank'/f'{slug}.html']='<!doctype html>\n<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>'+E(title)+'</title><style>'+css+'</style></head><body class="qr-standalone">\n'+body(slug,'zh',True)+'\n</body></html>\n'
     return result
 
@@ -215,5 +226,5 @@ def main():
             if not path.exists() or path.read_text()!=content:drift.append(str(path.relative_to(ROOT)))
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(content,encoding='utf-8')
     if drift:raise SystemExit('Question-bank artifact drift: '+', '.join(drift))
-    print(('Verified' if args.check else 'Built')+f' {len(outputs)} question-bank artifacts: 68 questions, 17 items, 6 volumes + index, 3 editions')
+    print(('Verified' if args.check else 'Built')+f' {len(outputs)} question-bank artifacts: 320 questions, 17 items, 26 volumes + index, 3 editions')
 if __name__=='__main__':main()
