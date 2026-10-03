@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/health/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/health/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q188–Q204</p><h1>Power、Thermal 與 Health Monitoring</h1><p class="qr-intro">功耗狀態、溫度控制與健康計數互相關聯，但各自回答不同問題。本冊先建立狀態與時間概念，再學習如何讀取警告與工作量。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>控制值、目前值、累計值分開看</h2><p class="qa-takeaway">設定門檻不等於發生警告；警告恢復也不會把累計工作量清除。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-powerdetail">Base 2.4 §8.1.19.1–8.1.19.5</a> · <a href="#ref-psd">Base 2.4 §5.2.14.2.1 (Power State Descriptor)</a> · <a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a> · <a href="#ref-thermal">Base 2.4 §5.2.30.1.10</a> · <a href="#ref-smart">Base 2.4 §5.2.13.1.3</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 用狀態轉移理解省電</h3><p>先找目前工作狀態，再看 APST 會在閒置多久後轉去哪個非工作狀態。需要處理 I/O 時，controller 要回到工作狀態，這時才會受到退出與進入延遲影響。只背 Power State 編號無法推論延遲，必須一起看 NOPS、ENLAT、EXLAT 及實際轉移路徑。</p></article>
-<article><h3>教學 2 · 溫度門檻與降速不是同一個設定</h3><p>SMART 溫度警告描述健康條件；HCTM 讓 Host 提供熱管理門檻，controller 在指定條件下調整行為。兩者可能同時發生，也可能只有其中之一。比較時保留當時溫度、TMT1／TMT2 與警告門檻，避免把效能降低一律解釋為 SMART 錯誤。</p></article>
-<article><h3>教學 3 · 相同名稱的計數也要核對單位</h3><p>SMART Data Units 以 1000×512bytes 為單位並向上取整，而 Endurance Group 的相關資料量欄位以 10^9bytes 計。短測試中，小量新增資料可能還看不到預期差值，或受取整邊界影響。先換算單位，再說明取樣區間與量化誤差，才有可比較的結果。</p></article>
+<article><h3>教學 1 · 用狀態轉移理解省電</h3><p>先找目前工作狀態，再看 APST 會在閒置多久後轉去哪個非工作狀態。需要處理 I/O 時，controller 要回到工作狀態，這時才會受到退出與進入延遲影響。只背 Power State 編號無法推論延遲，必須一起看 NOPS、ENLAT、EXLAT 及實際轉移路徑。</p>
+</article>
+<article><h3>教學 2 · 溫度門檻與降速不是同一個設定</h3><p>SMART 溫度警告描述健康條件；HCTM 讓 Host 提供熱管理門檻，controller 在指定條件下調整行為。兩者可能同時發生，也可能只有其中之一。比較時保留當時溫度、TMT1／TMT2 與警告門檻，避免把效能降低一律解釋為 SMART 錯誤。</p>
+</article>
+<article><h3>教學 3 · 相同名稱的計數也要核對單位</h3><p>SMART Data Units 以 1000×512bytes 為單位並向上取整，而 Endurance Group 的相關資料量欄位以 10^9bytes 計。短測試中，小量新增資料可能還看不到預期差值，或受取整邊界影響。先換算單位，再說明取樣區間與量化誤差，才有可比較的結果。</p>
+</article>
 <div class="qa-state" role="img" aria-label="教學假設：PS0 閒置超過 2000 ms 進入 PS3；I/O 到達時回到最近的工作狀態 PS0"><span>PS0<br>工作狀態</span><span class="qa-arrow">APSTE=1<br>閒置超過 ITPT=2000 ms<br>↓</span><span>PS3<br>NOPS=1</span><span class="qa-arrow">I/O 需要處理<br>退出 PS3，再進入 PS0<br>↓</span><span>PS0<br>恢復處理 I/O</span></div><p>這是教學假設的單一路徑：先確認 PS3 受支援，再將 PS0 的 APST entry 設為 ITPS=3。進入 PS3 的閒置門檻不包含在每筆 I/O 的退出延遲裡；返回 PS0 的轉換上限則要考慮 PS3.EXLAT 與 PS0.ENLAT。若 controller 經過其他狀態，需按各段轉換再計算。</p>
 <p class="qa-citations">來源：<a href="#ref-powerdetail">Base 2.4 §8.1.19.1–8.1.19.5</a> · <a href="#ref-psd">Base 2.4 §5.2.14.2.1 (Power State Descriptor)</a> · <a href="#ref-power">Base 2.4 §5.2.30.1.2, 5.2.30.1.7</a></p>
 </section>

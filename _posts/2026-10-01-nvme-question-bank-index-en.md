@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "NVMe Self-Study Bank: Index · Q1–320"
+title: "NVMe Self-Study Bank: Index · Q1–328"
 date: 2026-10-01 00:00:00 +0800
 categories: [nvme]
 permalink: /nvme/question-bank/en/
@@ -11,8 +11,8 @@ nvme_qa: true
 
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/index.html">Chinese tutorial HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
-<h1>NVMe Base 2.4 Self-Study Question Bank</h1><p class="qr-intro">Questions 1–320 in 26 volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.</p><div class="qr-series">
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
+<h1>NVMe Base 2.4 Self-Study Question Bank</h1><p class="qr-intro">Questions 1–328 in 27 volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.</p><div class="qr-series">
 <article><h2><a href="/nvme/question-bank/initialization/en/">Controller initialization and disable</a></h2><p class="qr-tags">Q1–Q9</p><p>Understand controller state transitions before commands. Discovering capabilities is not enabling; setting EN is not readiness; RDY=1 need not establish readiness of every media operation. This volume connects timing, state and permitted actions.</p></article>
 <article><h2><a href="/nvme/question-bank/queues/en/">Admin and I/O queues</a></h2><p class="qr-tags">Q10–Q21</p><p>Queue memory, allocated queue counts and successfully created queues are distinct. Learn SQ/CQ dependencies before size, identifiers, deletion and reset so memory can be reclaimed at the right time.</p></article>
 <article><h2><a href="/nvme/question-bank/doorbells/en/">Doorbells, full queues and wrap-around</a></h2><p class="qr-tags">Q22–Q30</p><p>Doorbells communicate pointer positions; phase tells the host whether a CQ slot belongs to the next completion generation. Together they distinguish wrap-around from an invalid movement and new completions from stale ones.</p></article>
@@ -39,6 +39,7 @@ nvme_qa: true
 <article><h2><a href="/nvme/question-bank/pointers/en/">PRP and SGL</a></h2><p class="qr-tags">Q276–Q285</p><p>Learn memory layout through PRP boundary calculations, SGL descriptor relationships and distinct error classes.</p></article>
 <article><h2><a href="/nvme/question-bank/interrupts/en/">Interrupt configuration and completion delivery</a></h2><p class="qr-tags">Q286–Q296</p><p>Establish CQE posting before diagnosing routing, aggregation, masks and host consumption.</p></article>
 <article><h2><a href="/nvme/question-bank/integration/en/">Integrated validation and evidence correlation</a></h2><p class="qr-tags">Q297–Q320</p><p>Apply prior mechanisms to apparent contradictions, matching identity and time before judging evidence.</p></article>
+<article><h2><a href="/nvme/question-bank/data-io/en/">Data I/O: size, persistence and integrity</a></h2><p class="qr-tags">Q321–Q328</p><p>This supplement develops data-I/O reasoning not previously covered in depth: request validity, completion guarantees, content verification and partial failure effects. Derive answers from concrete field values while linking back to existing feature, queue and pointer lessons.</p></article>
 </div><section><h2>How to use this bank</h2><ol><li>Explain purpose, affected objects and sequence before selecting query fields.</li><li>Reveal the answer and separately compare success, errors, events, logs and three reset cases. Items without an MMIO CQE explicitly state non-applicability.</li><li>Establish preconditions before judging firmware. Shall is a requirement, should a recommendation, may permission. Undefined behavior does not supply a fixed expected status.</li></ol><p>All numerical examples are hypothetical, not hardware measurements. The scope is the three specifications as used by PCIe SSDs, excluding NVMe over Fabrics and PCIe link/packet details while retaining necessary PCIe configuration, interrupts, registers and doorbells.</p></section>
 <div class="qa-controls" hidden><label>Search this page <input type="search" id="qa-search" placeholder="Question number, field or keyword"></label><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>All questions</h2><ol class="qa-index">
@@ -362,6 +363,14 @@ nvme_qa: true
 <li class="qa-search-item"><a href="/nvme/question-bank/integration/en/#q-318">Q318 · How are three reset types compared for one feature?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/integration/en/#q-319">Q319 · How is an operation’s real scope established?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/integration/en/#q-320">Q320 · How are the interfaces combined into one conformance investigation?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-321">Q321 · Is a Read/Write length valid across MDTS, NLB and namespace bounds?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-322">Q322 · Does successful Write imply power-loss persistence, and what do Flush and FUA guarantee?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-323">Q323 · Why can a small Write lose whole-command atomicity when it crosses a boundary?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-324">Q324 · What do successful Read, Compare and Verify actually prove?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-325">Q325 · Must reads return zero after Write Zeroes or Deallocate?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-326">Q326 · Why did PI checking miss an error? A Type 1, 16-bit Guard example</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-327">Q327 · What does CQE.DW0 establish after a Copy failure?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/en/#q-328">Q328 · Does a read failure after Write Uncorrectable prove damaged media?</a></li>
 </ol></section>
 </main>
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/index.html">Chinese tutorial HTML</a></nav>

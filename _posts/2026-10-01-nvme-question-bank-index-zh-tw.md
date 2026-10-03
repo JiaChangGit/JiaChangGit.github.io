@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "NVMe 自問自答題庫：總索引 · Q1–320"
+title: "NVMe 自問自答題庫：總索引 · Q1–328"
 date: 2026-10-01 00:00:00 +0800
 categories: [nvme]
 permalink: /nvme/question-bank/zh-tw/
@@ -11,8 +11,8 @@ nvme_qa: true
 
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/en/">English</a><a href="/DOCS/nvme-question-bank/index.html">繁中教學 HTML</a></nav>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
-<h1>NVMe Base 2.4 自問自答題庫</h1><p class="qr-intro">本題庫收錄第 1～320 題，依主題分成 26 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。</p><div class="qr-series">
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
+<h1>NVMe Base 2.4 自問自答題庫</h1><p class="qr-intro">本題庫收錄第 1～328 題，依主題分成 27 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。</p><div class="qr-series">
 <article><h2><a href="/nvme/question-bank/initialization/zh-tw/">Controller 初始化與停用</a></h2><p class="qr-tags">Q1–Q9</p><p>先理解 controller 如何從停用轉為就緒，再開始處理命令。讀到能力，不表示 controller 已啟用；Host 設定 EN，也還要等待 RDY。即使 RDY=1，仍可能需要依 Ready Mode 確認媒體是否可用。本冊將狀態、等待時間及允許執行的動作放在一起，說明每個階段應如何判斷。</p></article>
 <article><h2><a href="/nvme/question-bank/queues/zh-tw/">Admin Queue 與 I/O Queue</a></h2><p class="qr-tags">Q10–Q21</p><p>Host 準備的 queue 記憶體、controller 分配的 queue 配額，以及已成功建立的 queue，是三種不同資訊。本冊先說明 SQ 與 CQ 的依賴關係，再討論大小、識別碼、刪除及重設，讓你能判斷何時可以使用 queue，以及何時能安全回收記憶體。</p></article>
 <article><h2><a href="/nvme/question-bank/doorbells/zh-tw/">Doorbell、Queue Full 與 Wrap-around</a></h2><p class="qr-tags">Q22–Q30</p><p>Doorbell 告訴 controller，Host 的指標已前進到哪個位置；Phase 則讓 Host 分辨 CQ 中的是新完成結果，還是上一圈留下的資料。本冊將位置與有效性一起說明，幫助你正確處理繞回及空間釋放，避免將正常繞回誤判成倒退，或把舊 CQE 處理兩次。</p></article>
@@ -39,6 +39,7 @@ nvme_qa: true
 <article><h2><a href="/nvme/question-bank/pointers/zh-tw/">PRP 與 SGL</a></h2><p class="qr-tags">Q276–Q285</p><p>資料指標描述的是記憶體配置。本冊先算 PRP 跨頁，再讀 SGL 的 descriptor 關係，最後把格式錯誤與傳輸失敗分開。</p></article>
 <article><h2><a href="/nvme/question-bank/interrupts/zh-tw/">Interrupt 設定與完成通知</a></h2><p class="qr-tags">Q286–Q296</p><p>先確認 CQE 真的存在，再查通知如何送到 Host。本冊把 CQ 關聯、合併、mask 與 Host 處理分開，避免把沒有中斷當成沒有完成。</p></article>
 <article><h2><a href="/nvme/question-bank/integration/zh-tw/">整合驗證與證據交叉比對</a></h2><p class="qr-tags">Q297–Q320</p><p>本冊把前面機制放進具體矛盾情境：先確認比較的是同一對象與同一時點，再判斷證據是否足夠。相關機制使用固定連結，不重複整段教學。</p></article>
+<article><h2><a href="/nvme/question-bank/data-io/zh-tw/">資料 I/O：長度、持久性與完整性</a></h2><p class="qr-tags">Q321–Q328</p><p>本冊補充原題庫尚未展開的資料 I/O 判讀：命令能不能接受、完成後保證什麼、資料內容如何驗證，以及失敗後可能留下哪些結果。先把四個問題分開，再用具體欄位值推導；既有 Feature、queue 與指標規則則連回原題。</p></article>
 </div><section><h2>怎麼使用這份題庫</h2><ol><li>先說出功能的目的、影響對象與正常順序，再選查詢欄位。</li><li>展開解答後，分別檢查成功結果、錯誤處理、事件、紀錄，以及三種重設的影響。MMIO 存取沒有 CQE，因此相關的 Status 或 DNR／More 項目會標示不適用。</li><li>判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。</li></ol><p>所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。</p></section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>全部題目</h2><ol class="qa-index">
@@ -362,6 +363,14 @@ nvme_qa: true
 <li class="qa-search-item"><a href="/nvme/question-bank/integration/zh-tw/#q-318">Q318 · 如何比較三種 Reset 對同一功能的影響？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/integration/zh-tw/#q-319">Q319 · 如何判斷操作真正影響誰？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/integration/zh-tw/#q-320">Q320 · 如何把所有介面串成一次完整的符合性驗證？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-321">Q321 · 一筆 Read／Write 的長度合法嗎？如何一起檢查 MDTS、NLB 與 Namespace 範圍？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-322">Q322 · Write 已成功，資料就一定耐斷電嗎？Flush 與 FUA 各保證什麼？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-323">Q323 · 原子單位足夠，為什麼跨邊界的 Write 仍可能不具整筆原子性？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-324">Q324 · Read、Compare 與 Verify 成功，各能證明什麼？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-325">Q325 · Write Zeroes 與 Deallocate 之後，Read 一定回全零嗎？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-326">Q326 · PI 檢查為什麼沒有抓到錯誤？以 Type 1、16-bit Guard 格式逐步判讀</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-327">Q327 · Copy 失敗後，CQE.DW0 能告訴我哪些資料已經複製？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/data-io/zh-tw/#q-328">Q328 · Write Uncorrectable 後 Read 失敗，是媒體壞掉了嗎？</a></li>
 </ol></section>
 </main>
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/en/">English</a><a href="/DOCS/nvme-question-bank/index.html">繁中教學 HTML</a></nav>

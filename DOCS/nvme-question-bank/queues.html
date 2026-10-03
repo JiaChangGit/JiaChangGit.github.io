@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/queues/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/queues/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q10–Q21</p><h1>Admin Queue 與 I/O Queue</h1><p class="qr-intro">Host 準備的 queue 記憶體、controller 分配的 queue 配額，以及已成功建立的 queue，是三種不同資訊。本冊先說明 SQ 與 CQ 的依賴關係，再討論大小、識別碼、刪除及重設，讓你能判斷何時可以使用 queue，以及何時能安全回收記憶體。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>一條 CQ、兩條 SQ：先建立依賴對象，刪除時則反過來</h2><p class="qa-takeaway">SQ 的命令要透過關聯的 CQ 回報完成。因此，只要仍有 SQ 使用某條 CQ，就不能先刪除那條 CQ。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-number">Base 2.4 §5.2.30.1.5</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 把配額、深度與記憶體容量分開算</h3><p>FID07h 的回覆決定能建立多少條 I/O queue；Create Queue 的 QSIZE 決定一條 queue 有多少個位置；每個位置的大小，則用來計算需要多少記憶體。例如一條 NVM I/O SQ 有 64 個位置，每個位置 64 bytes，總共需要 4096 bytes。這不表示 controller 分配了 64 條 SQ；由於環狀 queue 需保留一格，也不表示能同時放入 64 筆尚未消費的 SQE。</p></article>
-<article><h3>教學 2 · CQ 共用帶來什麼取捨</h3><p>多條 SQ 共用 CQ，可以集中處理完成通知。不過，如果一條繁忙 SQ 產生大量 completion，將 CQ 空間占滿，其他共用者也可能受到阻塞。各自使用 CQ，則能隔離這種空間壓力。這項取捨關乎完成結果放在哪裡，與 namespace 的資料是否共享是不同問題。</p></article>
-<article><h3>教學 3 · 刪除的完成點比刪除的提交點重要</h3><p>Host 送出 Delete SQ 後，controller 仍可能需要處理已取得的命令，因此不能在提交刪除命令的同時，就立刻釋放原記憶體。等 Delete SQ 成功完成，才到達規範定義的刪除完成點。某些命令即使沒有各自的 CQE，也可能已依規則被隱含中止；Host 應按刪除規則清理追蹤資料，而不是無限等待這些 completion。</p></article>
+<article><h3>教學 1 · 把配額、深度與記憶體容量分開算</h3><p>FID07h 的回覆決定能建立多少條 I/O queue；Create Queue 的 QSIZE 決定一條 queue 有多少個位置；每個位置的大小，則用來計算需要多少記憶體。例如一條 NVM I/O SQ 有 64 個位置，每個位置 64 bytes，總共需要 4096 bytes。這不表示 controller 分配了 64 條 SQ；由於環狀 queue 需保留一格，也不表示能同時放入 64 筆尚未消費的 SQE。</p>
+</article>
+<article><h3>教學 2 · CQ 共用帶來什麼取捨</h3><p>多條 SQ 共用 CQ，可以集中處理完成通知。不過，如果一條繁忙 SQ 產生大量 completion，將 CQ 空間占滿，其他共用者也可能受到阻塞。各自使用 CQ，則能隔離這種空間壓力。這項取捨關乎完成結果放在哪裡，與 namespace 的資料是否共享是不同問題。</p>
+</article>
+<article><h3>教學 3 · 刪除的完成點比刪除的提交點重要</h3><p>Host 送出 Delete SQ 後，controller 仍可能需要處理已取得的命令，因此不能在提交刪除命令的同時，就立刻釋放原記憶體。等 Delete SQ 成功完成，才到達規範定義的刪除完成點。某些命令即使沒有各自的 CQE，也可能已依規則被隱含中止；Host 應按刪除規則清理追蹤資料，而不是無限等待這些 completion。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

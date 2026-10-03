@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/doorbells/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/doorbells/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q22–Q30</p><h1>Doorbell、Queue Full 與 Wrap-around</h1><p class="qr-intro">Doorbell 告訴 controller，Host 的指標已前進到哪個位置；Phase 則讓 Host 分辨 CQ 中的是新完成結果，還是上一圈留下的資料。本冊將位置與有效性一起說明，幫助你正確處理繞回及空間釋放，避免將正常繞回誤判成倒退，或把舊 CQE 處理兩次。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>8 格 CQ：把繞回與 Phase 放在同一張表</h2><p class="qa-takeaway">CQ 索引回到 0，不表示位置 0 裡的舊資料重新有效。Host 還要比對這一圈期待的 Phase，才能確認是否已有新 CQE。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 指標是位置，差值才是數量</h3><p>Doorbell 中的 2 表示索引位置 2，不表示這次提交了 2 筆。對 8 個位置的環狀 queue，從 7 前進到 2，經過的是 7、0、1，共 3 個位置。如果只用一般數字大小比較，看到 2&lt;7 就判定倒退，便會把正常繞回誤認為非法操作。</p></article>
-<article><h3>教學 2 · Phase 不是成功位元</h3><p>Phase 只用來判斷這個 CQ 位置是否包含目前這一圈的新完成結果。即使 Phase 有效，CQE 內仍可能是失敗 Status；反過來，舊 CQE 即使留有 Success，只要 Phase 不符合期待值，就不能再處理一次。因此，先確認有效性，再解讀 SCT 與 SC，才能避免誤讀殘留資料。</p></article>
-<article><h3>教學 3 · 為何 Host 處理完還要寫 CQ Head</h3><p>Host 在自己的程式中將 CQE 標記為已處理，並不會自動通知 controller。必須更新 CQ Head Doorbell，controller 才能得知哪些位置已可重用。如果漏掉這一步，即使 Host 已處理完所有結果，controller 仍可能因 CQ Full 而停住。這時應檢查空間釋放流程，而不是先把停滯歸因於媒體延遲。</p></article>
+<article><h3>教學 1 · 指標是位置，差值才是數量</h3><p>Doorbell 中的 2 表示索引位置 2，不表示這次提交了 2 筆。對 8 個位置的環狀 queue，從 7 前進到 2，經過的是 7、0、1，共 3 個位置。如果只用一般數字大小比較，看到 2&lt;7 就判定倒退，便會把正常繞回誤認為非法操作。</p>
+</article>
+<article><h3>教學 2 · Phase 不是成功位元</h3><p>Phase 只用來判斷這個 CQ 位置是否包含目前這一圈的新完成結果。即使 Phase 有效，CQE 內仍可能是失敗 Status；反過來，舊 CQE 即使留有 Success，只要 Phase 不符合期待值，就不能再處理一次。因此，先確認有效性，再解讀 SCT 與 SC，才能避免誤讀殘留資料。</p>
+</article>
+<article><h3>教學 3 · 為何 Host 處理完還要寫 CQ Head</h3><p>Host 在自己的程式中將 CQE 標記為已處理，並不會自動通知 controller。必須更新 CQ Head Doorbell，controller 才能得知哪些位置已可重用。如果漏掉這一步，即使 Host 已處理完所有結果，controller 仍可能因 CQ Full 而停住。這時應檢查空間釋放流程，而不是先把停滯歸因於媒體延遲。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

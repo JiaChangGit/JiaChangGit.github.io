@@ -4692,6 +4692,136 @@
         "aer",
         "pel"
       ]
+    },
+    {
+      "id": 321,
+      "refs": [
+        "cap",
+        "pointers",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 322,
+      "refs": [
+        "flushdata",
+        "vwc",
+        "atomicdata",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 323,
+      "refs": [
+        "atomicdata",
+        "nvmfeat",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 324,
+      "refs": [
+        "comparedata",
+        "verifydata",
+        "smart",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 325,
+      "refs": [
+        "deallocateddata",
+        "nvmfeat",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 326,
+      "refs": [
+        "pidata",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 327,
+      "refs": [
+        "copydata",
+        "atomicdata",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
+    },
+    {
+      "id": 328,
+      "refs": [
+        "uncorrectabledata",
+        "atomicdata",
+        "smart",
+        "idctrl",
+        "idns",
+        "iofields",
+        "mediaerrors",
+        "reset",
+        "status",
+        "error",
+        "aer",
+        "pel"
+      ]
     }
   ],
   "locators": {
@@ -4817,7 +4947,17 @@
     "retirement": "P|3.4 (Command Related Resource Retirement)|13|",
     "interruptfull": "P|3.5–3.5.2 (interrupt delivery and masks), 3.8.4|13-16,24-26|9, 42–48",
     "interruptmask": "B|3.1.4 (INTMS, INTMC)|85|39–40",
-    "interruptfeature": "B|5.2.30.2.1–5.2.30.2.2|540-541|543–544"
+    "interruptfeature": "B|5.2.30.2.1–5.2.30.2.2|540-541|543–544",
+    "iofields": "N|3.3.4, 3.3.6 (data pointers, SLBA, NLB, FUA and completion)|48-51,53-56|53–54, 59, 68, 70–71, 76",
+    "flushdata": "B|7.2–7.2.1|593|",
+    "atomicdata": "N|2.1.4–2.1.4.6|15-21|4–10",
+    "comparedata": "N|3.3.1–3.3.1.1|27-30|24, 26–27, 31",
+    "verifydata": "N|3.3.5–3.3.5.1|51-53|61–62, 66",
+    "deallocateddata": "N|3.3.3–3.3.3.3, 3.3.8–3.3.8.2|44-48,57-61|45–47, 49, 83, 88–89",
+    "pidata": "N|2.1.5, 5.3.1.1 (STS=0), 5.3.2.1–5.3.2.2, 5.3.3|21-22,131,141-145,151-152|11–12, 155, 174–175",
+    "copydata": "N|3.3.2–3.3.2.3, 3.3.2.5 (Formats 0h/1h; cross-namespace formats only for contrast)|30-40,43-44|34–35, 39–40, 42–43",
+    "uncorrectabledata": "N|3.3.7–3.3.7.1|56-57|77–80",
+    "mediaerrors": "B|4.2.3 (Media and Data Integrity Errors only)|180-181|107"
   },
   "teaching": {
     "initialization": [
@@ -4981,6 +5121,13 @@
       "getlog",
       "aerfull",
       "pelcontext"
+    ],
+    "data-io": [
+      "flushdata",
+      "iofields",
+      "atomicdata",
+      "verifydata",
+      "copydata"
     ]
   },
   "evidence": {
@@ -7711,6 +7858,26 @@
         ]
       }
     },
+    "flushdata": {
+      "pdf_pages": [
+        593
+      ],
+      "page_text_sha256": "406a78738bf627a47dfe1ab747dd4ac5c251f7c1a98db2670c14cb3dcb6a631e",
+      "figure_headings": {}
+    },
+    "mediaerrors": {
+      "pdf_pages": [
+        180,
+        181
+      ],
+      "page_text_sha256": "ff9f4b3b4b8f4b421b7df816a148b672d836c275414b25361a95cbd9ace6faca",
+      "figure_headings": {
+        "107": [
+          180,
+          181
+        ]
+      }
+    },
     "idns": {
       "pdf_pages": [
         84,
@@ -7951,6 +8118,256 @@
         ],
         "116": [
           79
+        ]
+      }
+    },
+    "iofields": {
+      "pdf_pages": [
+        48,
+        49,
+        50,
+        51,
+        53,
+        54,
+        55,
+        56
+      ],
+      "page_text_sha256": "1bd47a6e64b990f49d6f50d70dd96dd057c70d679c20af5e2e7a5f4d6ecf9a28",
+      "figure_headings": {
+        "53": [
+          49
+        ],
+        "54": [
+          49
+        ],
+        "59": [
+          51
+        ],
+        "68": [
+          54
+        ],
+        "70": [
+          54
+        ],
+        "71": [
+          54
+        ],
+        "76": [
+          56
+        ]
+      }
+    },
+    "atomicdata": {
+      "pdf_pages": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "page_text_sha256": "f5e6d78b9167b55c5ff4c93d10da51e4626b6f2d3c6e704c6f228ec1285ad27a",
+      "figure_headings": {
+        "4": [
+          15,
+          16
+        ],
+        "5": [
+          17
+        ],
+        "6": [
+          18
+        ],
+        "7": [
+          18
+        ],
+        "8": [
+          19
+        ],
+        "9": [
+          20
+        ],
+        "10": [
+          21
+        ]
+      }
+    },
+    "comparedata": {
+      "pdf_pages": [
+        27,
+        28,
+        29,
+        30
+      ],
+      "page_text_sha256": "30c23554c71e900b65d7dbc4b00d9b31cd02131128842bf88f426be201b9b574",
+      "figure_headings": {
+        "24": [
+          28
+        ],
+        "26": [
+          28
+        ],
+        "27": [
+          28,
+          29
+        ],
+        "31": [
+          30
+        ]
+      }
+    },
+    "verifydata": {
+      "pdf_pages": [
+        51,
+        52,
+        53
+      ],
+      "page_text_sha256": "9ffc875d53d9ec1afbcaace134c212bf1d8536f532365e5a54dc8dab5205840f",
+      "figure_headings": {
+        "61": [
+          52
+        ],
+        "62": [
+          52
+        ],
+        "66": [
+          53
+        ]
+      }
+    },
+    "deallocateddata": {
+      "pdf_pages": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        57,
+        58,
+        59,
+        60,
+        61
+      ],
+      "page_text_sha256": "0c5a36a499ae35f4a19a127dc4145824e22628089c13bd11c95ecc3906e30406",
+      "figure_headings": {
+        "45": [
+          44
+        ],
+        "46": [
+          44,
+          45
+        ],
+        "47": [
+          45
+        ],
+        "49": [
+          48
+        ],
+        "83": [
+          59,
+          60
+        ],
+        "88": [
+          61
+        ],
+        "89": [
+          61
+        ]
+      }
+    },
+    "pidata": {
+      "pdf_pages": [
+        21,
+        22,
+        131,
+        141,
+        142,
+        143,
+        144,
+        145,
+        151,
+        152
+      ],
+      "page_text_sha256": "06d0b4d0d9948d52a090f08f87d2820a3bb5460f97a424a736276bdc216bb8c6",
+      "figure_headings": {
+        "11": [
+          21,
+          22
+        ],
+        "12": [
+          22
+        ],
+        "155": [
+          131
+        ],
+        "174": [
+          143
+        ],
+        "175": [
+          145
+        ]
+      }
+    },
+    "copydata": {
+      "pdf_pages": [
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        43,
+        44
+      ],
+      "page_text_sha256": "4bc26724803789484e08fca5b07c0da2de935976a10c131e7e0c3d7c0d80b8a4",
+      "figure_headings": {
+        "34": [
+          30
+        ],
+        "35": [
+          30,
+          31
+        ],
+        "39": [
+          32
+        ],
+        "40": [
+          33,
+          34
+        ],
+        "42": [
+          38
+        ],
+        "43": [
+          43,
+          44
+        ]
+      }
+    },
+    "uncorrectabledata": {
+      "pdf_pages": [
+        56,
+        57
+      ],
+      "page_text_sha256": "79f6a07a1fe991194073a16191bb4d1892f5ef24ae59375acca8ef029ed4ddbb",
+      "figure_headings": {
+        "77": [
+          56
+        ],
+        "78": [
+          56
+        ],
+        "79": [
+          57
+        ],
+        "80": [
+          57
         ]
       }
     },

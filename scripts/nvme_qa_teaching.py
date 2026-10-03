@@ -128,3 +128,6 @@ LESSONS = {
 
 from scripts.nvme_qa_teaching_extended import extend
 extend(VOLUMES, INTRO, AIDS, LESSONS)
+
+from scripts.nvme_qa_teaching_data_io import extend as extend_data_io
+extend_data_io(VOLUMES, INTRO, AIDS, LESSONS)

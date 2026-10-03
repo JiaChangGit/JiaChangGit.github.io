@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/firmware-boot/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/firmware-boot/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q136–Q148</p><h1>Firmware Update 與 Boot Partition</h1><p class="qr-intro">先分清下載、提交與啟用，再把 Boot Partition 的讀取和切換放在旁邊比較。資料已傳入 controller，不代表新韌體或新開機映像已開始使用。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>從映像資料到真正啟用</h2><p class="qa-takeaway">Slot、pending activation 與目前 running revision 各描述一個階段。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-firmware">Base 2.4 §3.11–3.11.1, 5.2.9–5.2.10</a> · <a href="#ref-fwlog">Base 2.4 §5.2.13.1.4</a> · <a href="#ref-boot">Base 2.4 §8.1.3–8.1.3.3.3</a> · <a href="#ref-bootreg">Base 2.4 §3.1.4 (BPINFO, BPRSEL, BPMBL)</a> · <a href="#ref-bootprotect">Base 2.4 §5.2.30.1.39</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 分段傳送先弄清楚單位與順序</h3><p>Firmware Download 的 Offset 與 Length 以 Dword 表示，Length 還有 zero-based 編碼。一般 firmware 段落可以按允許方式安排，但 Boot Partition image 要遵守其順序要求。兩個流程即使用到相同命令，也不能共用所有檢查條件。</p></article>
-<article><h3>教學 2 · 成功 Commit 要連同 Action 解讀</h3><p>同樣是 Commit 成功，可能只是存入映像，也可能安排下次 reset 啟用。若回覆要求特定 reset，就要做那一種；CC.EN 切換不能取代所有 Conventional Reset 要求。完成後以 active slot 與 running revision 核對，而不是只看 Download 有沒有成功。</p></article>
-<article><h3>教學 3 · Boot 讀取有自己的狀態回報</h3><p>Register 路徑使用 BPMBL 提供 buffer、BPRSEL 指定讀取範圍、BPINFO.BRS 表示進行與結果。這不是一筆 queue 命令，所以不會出現可供解碼的 NVMe CQE。讀取中也不能任意重設；先等狀態結束，才能把 buffer 當成可用映像。</p></article>
+<article><h3>教學 1 · 分段傳送先弄清楚單位與順序</h3><p>Firmware Download 的 Offset 與 Length 以 Dword 表示，Length 還有 zero-based 編碼。一般 firmware 段落可以按允許方式安排，但 Boot Partition image 要遵守其順序要求。兩個流程即使用到相同命令，也不能共用所有檢查條件。</p>
+</article>
+<article><h3>教學 2 · 成功 Commit 要連同 Action 解讀</h3><p>同樣是 Commit 成功，可能只是存入映像，也可能安排下次 reset 啟用。若回覆要求特定 reset，就要做那一種；CC.EN 切換不能取代所有 Conventional Reset 要求。完成後以 active slot 與 running revision 核對，而不是只看 Download 有沒有成功。</p>
+</article>
+<article><h3>教學 3 · Boot 讀取有自己的狀態回報</h3><p>Register 路徑使用 BPMBL 提供 buffer、BPRSEL 指定讀取範圍、BPINFO.BRS 表示進行與結果。這不是一筆 queue 命令，所以不會出現可供解碼的 NVMe CQE。讀取中也不能任意重設；先等狀態結束，才能把 buffer 當成可用映像。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

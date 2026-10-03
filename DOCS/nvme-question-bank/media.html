@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/media/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/media/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q268–Q275</p><h1>Domain、Reclaim Group 與 Media Unit</h1><p class="qr-intro">管理歸屬與 FDP 放置關係要用不同視角閱讀。本冊先辨認各種 ID 的範圍，再追蹤一筆 Write 如何選到 RU，最後解讀媒體資訊的限制。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>從 Write 的 PID 走到目前 RU</h2><p class="qa-takeaway">PID 裡的 PH 不是 RUH ID；必須先經過 namespace 的對照表。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 歸屬圖與放置圖各有用途</h3><p>歸屬圖回答 namespace 用哪個 Group 的容量；放置圖回答這筆資料要透過哪個 handle 與 RG 放進目前 RU。兩者互相關聯，但不能把所有名詞塞成一條包含鏈。畫圖時標清楚箭頭代表歸屬還是參照，才不會把可變的 RU 參照誤當永久物件位置。</p></article>
-<article><h3>教學 2 · Write容錯不等於所有FDP命令容錯</h3><p>Write 帶非法 PID 時有特定 fallback 與事件規則，目的在讓資料仍能被放到可用位置。但 RUH Update 是明確的管理要求，非法參數不能自動套用同一種補救。閱讀錯誤規則時先確認是哪個命令，不能只因都使用 RUH 就共用答案。</p></article>
-<article><h3>教學 3 · 耗損資訊不能直接變成Ready判斷</h3><p>Media Unit 的 PUSED 及 AVSP 提供耗損與 spare 資訊，沒有一個通用位元能直接推論 namespace 已不可用。PUSED 超過 100 也不代表所有 I/O 必須失敗。要判斷存取問題，還需看 attachment、controller 狀態、ANA 及實際 CQE，媒體欄位只是補充證據。</p></article>
+<article><h3>教學 1 · 歸屬圖與放置圖各有用途</h3><p>歸屬圖回答 namespace 用哪個 Group 的容量；放置圖回答這筆資料要透過哪個 handle 與 RG 放進目前 RU。兩者互相關聯，但不能把所有名詞塞成一條包含鏈。畫圖時標清楚箭頭代表歸屬還是參照，才不會把可變的 RU 參照誤當永久物件位置。</p>
+</article>
+<article><h3>教學 2 · Write容錯不等於所有FDP命令容錯</h3><p>Write 帶非法 PID 時有特定 fallback 與事件規則，目的在讓資料仍能被放到可用位置。但 RUH Update 是明確的管理要求，非法參數不能自動套用同一種補救。閱讀錯誤規則時先確認是哪個命令，不能只因都使用 RUH 就共用答案。</p>
+</article>
+<article><h3>教學 3 · 耗損資訊不能直接變成Ready判斷</h3><p>Media Unit 的 PUSED 及 AVSP 提供耗損與 spare 資訊，沒有一個通用位元能直接推論 namespace 已不可用。PUSED 超過 100 也不代表所有 I/O 必須失敗。要判斷存取問題，還需看 attachment、controller 狀態、ANA 及實際 CQE，媒體欄位只是補充證據。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

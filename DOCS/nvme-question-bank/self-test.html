@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/self-test/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/self-test/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q149–Q156</p><h1>Device Self-test</h1><p class="qr-intro">Self-test 將裝置內部診斷結果回報給 Host。先確認能啟動哪種測試，再分清進度、最終結果與失敗欄位有效性。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>啟動、執行、結果是三種資訊</h2><p class="qa-takeaway">啟動 CQE 成功，不表示測試通過。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-selftest">Base 2.4 §5.2.6, 8.1.8</a> · <a href="#ref-dstlog">Base 2.4 §5.2.13.1.7</a> · <a href="#ref-nvmselftest">NVM Command Set 1.3 §4.1.4.3</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 測試範圍先於結果解釋</h3><p>NSID=0、指定 namespace 與廣播選擇有不同範圍。先保存啟動參數，才知道失敗結果對應哪個對象。若測試只涵蓋某個 namespace，不能將成功結果擴大成所有 namespace 都已測過。</p></article>
-<article><h3>教學 2 · 有效位元是資料可否使用的前提</h3><p>Result 結構中有很多欄位，但不代表每次都有效。FLBA 只有有效條件成立時，才是可用的失敗位置；它也不是全部壞 LBA 清單。先讀 DSTR 與 VDINFO，再看細節，才不會將保留或無效 bytes 當成真實故障位置。</p></article>
-<article><h3>教學 3 · 比較新舊結果比只看目前 idle 更可靠</h3><p>測試開始前先保存最新結果；結束後再比較最前面的新紀錄。Current Operation 回到 idle 只表示現在沒有測試進行，可能是通過、失敗或中止。再搭配時間、測試種類與結果代碼，才能說清楚這次發生了什麼。</p></article>
+<article><h3>教學 1 · 測試範圍先於結果解釋</h3><p>NSID=0、指定 namespace 與廣播選擇有不同範圍。先保存啟動參數，才知道失敗結果對應哪個對象。若測試只涵蓋某個 namespace，不能將成功結果擴大成所有 namespace 都已測過。</p>
+</article>
+<article><h3>教學 2 · 有效位元是資料可否使用的前提</h3><p>Result 結構中有很多欄位，但不代表每次都有效。FLBA 只有有效條件成立時，才是可用的失敗位置；它也不是全部壞 LBA 清單。先讀 DSTR 與 VDINFO，再看細節，才不會將保留或無效 bytes 當成真實故障位置。</p>
+</article>
+<article><h3>教學 3 · 比較新舊結果比只看目前 idle 更可靠</h3><p>測試開始前先保存最新結果；結束後再比較最前面的新紀錄。Current Operation 回到 idle 只表示現在沒有測試進行，可能是通過、失敗或中止。再搭配時間、測試種類與結果代碼，才能說清楚這次發生了什麼。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

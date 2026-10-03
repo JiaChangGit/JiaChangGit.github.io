@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/format-sanitize/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/format-sanitize/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q118–Q135</p><h1>Format 與 Sanitize</h1><p class="qr-intro">Format 改變 namespace 格式；Sanitize 處理資料清除。兩者的範圍、完成點與 reset 行為不同，本冊以一次操作的前、中、後狀態逐步區分。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>三條操作路徑不能互換</h2><p class="qa-takeaway">支援 subsystem Overwrite，不代表支援 namespace Overwrite。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-format">Base 2.4 §5.1.1, 5.2.11</a> · <a href="#ref-nvmformat">NVM Command Set 1.3 §4.1.2</a> · <a href="#ref-sanitizecmd">Base 2.4 §5.2.26–5.2.27</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a> · <a href="#ref-sanitizestate">Base 2.4 §8.1.27.1–8.1.27.5</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 先問要改格式，還是要清資料</h3><p>將 4KiB 格式改成 512-byte 格式，是 Format 的問題；想讓原資料無法恢復，則要明確選擇清除方法及影響範圍。Format 的 Secure Erase 選項與 Sanitize 也不能只因都提到清除就視為等價。先確認需求，才能查對支援欄位與命令。</p></article>
-<article><h3>教學 2 · Sanitize 有兩個完成點</h3><p>命令啟動成功後，controller 可以在背景繼續清除。這時 Log 顯示進行中並不矛盾。Host 需要繼續觀察 SOS、SPROG 與可能的 verification state；最終成功、失敗或進入特定 failure mode，才是媒體操作的結果。不要只保留最初 Success CQE。</p></article>
-<article><h3>教學 3 · Reset 不會把進行中的操作一律取消</h3><p>Sanitize 有跨 reset 與失電恢復後持續的規則；Format 的中斷結果則需重新探索。恢復後先查原操作範圍、目前格式或 Sanitize Status，再決定下一步。未收到 CQE 不代表操作完全沒做，重送前必須先確定裝置目前狀態。</p></article>
+<article><h3>教學 1 · 先問要改格式，還是要清資料</h3><p>將 4KiB 格式改成 512-byte 格式，是 Format 的問題；想讓原資料無法恢復，則要明確選擇清除方法及影響範圍。Format 的 Secure Erase 選項與 Sanitize 也不能只因都提到清除就視為等價。先確認需求，才能查對支援欄位與命令。</p>
+</article>
+<article><h3>教學 2 · Sanitize 有兩個完成點</h3><p>命令啟動成功後，controller 可以在背景繼續清除。這時 Log 顯示進行中並不矛盾。Host 需要繼續觀察 SOS、SPROG 與可能的 verification state；最終成功、失敗或進入特定 failure mode，才是媒體操作的結果。不要只保留最初 Success CQE。</p>
+</article>
+<article><h3>教學 3 · Reset 不會把進行中的操作一律取消</h3><p>Sanitize 有跨 reset 與失電恢復後持續的規則；Format 的中斷結果則需重新探索。恢復後先查原操作範圍、目前格式或 Sanitize Status，再決定下一步。未收到 CQE 不代表操作完全沒做，重送前必須先確定裝置目前狀態。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

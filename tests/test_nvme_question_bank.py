@@ -22,10 +22,10 @@ class QuestionBankTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):cls.outputs=artifacts()
 
-    def test_approved_scope_includes_all_320(self):
+    def test_approved_scope_preserves_original_questions_and_supplement(self):
         scope=json.loads((ROOT/'.ai/nvme-question-bank/scope.json').read_text())
-        self.assertEqual(scope['status'],'approved');self.assertEqual(scope['question_range'],[1,320])
-        self.assertEqual([q['id'] for q in QUESTIONS],list(range(1,321)))
+        self.assertEqual(scope['status'],'approved');self.assertEqual(scope['question_range'],[1,328])
+        self.assertEqual([q['id'] for q in QUESTIONS],list(range(1,329)))
         future=[i for a,b in scope['future_only'].values() for i in range(a,b+1)]
         self.assertEqual(future,[])
 
@@ -36,8 +36,8 @@ class QuestionBankTests(unittest.TestCase):
                 self.assertEqual(len(pair),2);self.assertTrue(all(isinstance(x,str) and x.strip() for x in pair))
                 self.assertNotRegex(pair[1],r'[\u4e00-\u9fff]')
 
-    def test_all_81_artifacts_match_builder(self):
-        self.assertEqual(len(self.outputs),81)
+    def test_all_84_artifacts_match_builder(self):
+        self.assertEqual(len(self.outputs),84)
         for path,expected in self.outputs.items():self.assertEqual(path.read_text(),expected,str(path))
 
     def test_volume_coverage_and_answer_numbering(self):
@@ -68,7 +68,7 @@ class QuestionBankTests(unittest.TestCase):
                 self.assertIn('教學 3',text)
 
     def test_registered_source_evidence_matches_authored_references(self):
-        m=check();self.assertEqual(len(m['questions']),320)
+        m=check();self.assertEqual(len(m['questions']),328)
 
     def test_source_references_exclude_wrong_table_locations(self):
         m=check()
@@ -119,12 +119,48 @@ class QuestionBankTests(unittest.TestCase):
         self.assertEqual(4096//8-1,511)
         self.assertIn('5120',AIDS['pointers']['rows'][2][1][0])
 
+    def test_data_io_transfer_example_counts_metadata_and_namespace_end(self):
+        limit=(1<<5)*(1<<(12+0))
+        self.assertEqual(limit,131072)
+        self.assertGreater((31+1)*(4096+8),limit)
+        max_blocks=limit//(4096+8)
+        self.assertEqual(max_blocks,31)
+        self.assertEqual(max_blocks*(4096+8),127224)
+        self.assertGreater(1000+31,1024-1)
+        answer=next(q for q in QUESTIONS if q['id']==321)['answers']
+        self.assertIn(str((31+1)*(4096+8)),answer[5][0])
+        self.assertIn(str(max_blocks*(4096+8)),answer[6][0])
+
+    def test_atomicity_example_checks_size_and_boundary_independently(self):
+        normal,power_fail,boundary=7+1,1+1,15+1
+        def guaranteed(start,nlb,unit):
+            return nlb+1<=unit and start//boundary==(start+nlb)//boundary
+        self.assertEqual([(guaranteed(a,b,normal),guaranteed(a,b,power_fail))
+                          for a,b in [(14,1),(15,1),(12,3)]],
+                         [(True,True),(False,False),(True,False)])
+        answer=next(q for q in QUESTIONS if q['id']==323)['answers'][5][0]
+        for raw in ['NAWUN=7','NAWUPF=1','NABSN=NABSPF=15']:
+            self.assertIn(raw,answer)
+
+    def test_copy_example_decodes_each_source_and_failure_is_not_a_count(self):
+        start=1000;ranges=[]
+        for encoded in (3,1):
+            ranges.append((start,start+encoded));start+=encoded+1
+        self.assertEqual(ranges,[(1000,1003),(1004,1005)])
+        self.assertEqual(start-1000,6)
+        successful={0,1,3}
+        first_unsuccessful=min(set(range(4))-successful)
+        self.assertEqual(first_unsuccessful,2)
+        self.assertNotEqual(first_unsuccessful,len(successful))
+        answer=next(q for q in QUESTIONS if q['id']==327)['answers']
+        self.assertIn('1004～1005',answer[4][0]);self.assertIn('DW0=2',answer[6][0])
+
     def test_referenced_topics_have_canonical_links_and_preserve_all_questions(self):
         byid={q['id']:q for q in QUESTIONS}
         for q in QUESTIONS:
             for n in q.get('related',[]):self.assertIn(n,byid)
-        self.assertEqual([i for v in VOLUMES for i in range(v[1],v[2]+1)],list(range(1,321)))
-        self.assertEqual(len(VOLUMES),26)
+        self.assertEqual([i for v in VOLUMES for i in range(v[1],v[2]+1)],list(range(1,329)))
+        self.assertEqual(len(VOLUMES),27)
 
     def test_boot_and_fdp_evidence_names_real_source_figures(self):
         e=check()['evidence']

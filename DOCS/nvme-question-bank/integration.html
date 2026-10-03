@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/integration/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/integration/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q297–Q320</p><h1>整合驗證與證據交叉比對</h1><p class="qr-intro">本冊把前面機制放進具體矛盾情境：先確認比較的是同一對象與同一時點，再判斷證據是否足夠。相關機制使用固定連結，不重複整段教學。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>一條可重走的驗證路徑</h2><p class="qa-takeaway">先寫出要驗證的規範要求，再選資料；資料多不等於證據完整。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-aerfull">Base 2.4 §5.2.2 (PCIe-applicable events)</a> · <a href="#ref-pelcontext">Base 2.4 §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 先排除假矛盾</h3><p>比較的 controller、NSID、CSI、UUID、SEL 或時間不同，結果就可能合理不同。遇到不一致時先列出這些條件，再看是不是同一個物件的同一種資料。例如 Active List 不同不代表資料損壞，Current 與 Saved 不同也不代表 Set 失敗。</p></article>
-<article><h3>教學 2 · 每次只改一個能解釋結果的條件</h3><p>建立合法基準後，只改一個參數或順序，才能知道錯誤是誰造成的。如果 NSID、PRP 與命令狀態同時不合法，回報任何一個先檢出的錯誤都可能合理。測試設計的工作是讓證據能回答問題，而不是先選一個期待的 Status 再找理由。</p></article>
-<article><h3>教學 3 · 結論也要保留證據界線</h3><p>能證明違反 shall 時就明確指出；只偏離 should 時保留建議強度；規範未定義或原文互相矛盾時，說明哪一部分無法唯一判定。這不是省略答案，而是讓符合性結論可被另一位讀者重新檢查，不把猜測寫成規範要求。</p></article>
+<article><h3>教學 1 · 先排除假矛盾</h3><p>比較的 controller、NSID、CSI、UUID、SEL 或時間不同，結果就可能合理不同。遇到不一致時先列出這些條件，再看是不是同一個物件的同一種資料。例如 Active List 不同不代表資料損壞，Current 與 Saved 不同也不代表 Set 失敗。</p>
+</article>
+<article><h3>教學 2 · 每次只改一個能解釋結果的條件</h3><p>建立合法基準後，只改一個參數或順序，才能知道錯誤是誰造成的。如果 NSID、PRP 與命令狀態同時不合法，回報任何一個先檢出的錯誤都可能合理。測試設計的工作是讓證據能回答問題，而不是先選一個期待的 Status 再找理由。</p>
+</article>
+<article><h3>教學 3 · 結論也要保留證據界線</h3><p>能證明違反 shall 時就明確指出；只偏離 should 時保留建議強度；規範未定義或原文互相矛盾時，說明哪一部分無法唯一判定。這不是省略答案，而是讓符合性結論可被另一位讀者重新檢查，不把猜測寫成規範要求。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

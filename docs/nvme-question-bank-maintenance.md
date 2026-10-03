@@ -1,7 +1,7 @@
-# Independent NVMe question bank — Q1–Q320
+# Independent NVMe question bank — Q1–Q328
 
 Expanded with explicit authorization on 2026-10-02. Purpose: learn the specification and judge firmware behavior.
-This delivery is 26 volumes plus an index, each in standalone Traditional Chinese
+The current delivery is 27 volumes plus an index, each in standalone Traditional Chinese
 HTML and equivalent Traditional Chinese/English Pages. The Chinese HTML adds
 independent teaching steps and an APST state example. It does not require following
 a presentation route through the PDF.
@@ -14,8 +14,10 @@ NVMe SSD behavior. Shared PDF pages can include excluded material; citing a page
 does not authorize teaching all of that page.
 
 The user explicitly authorized completing Q69–Q320, superseding the earlier
-Q1–Q68-only delivery. The scope now covers all 320 original IDs in 26 topic volumes,
-with no extra questions. Earlier scope statements below are historical records.
+Q1–Q68-only delivery. All 320 original IDs were completed in 26 topic volumes. The 2026-10-03 supplement
+adds Q321–Q328 as a separate data-I/O volume under the user’s express permission
+to fill genuine gaps. Original IDs and URLs remain unchanged. Earlier scope
+statements below are historical records.
 Unreasonable premises are corrected without losing their subject: Q273 does not
 invent a media-unit availability bit; Q290 distinguishes coalescing from masking;
 Q312 distinguishes the Abort completion from the target completion.
@@ -198,3 +200,34 @@ Timestamp, Boot reads, namespace queries and group-health queries.
 - Keep command-reset behavior distinct from log-query lifetime; keep PRP/SGL buffer
   retirement distinct from queue-register retention. Shared prose is selected for
   the actual operation rather than copied solely because an answer asks about reset.
+
+
+## 2026-10-03 data-I/O supplement
+
+Q321–Q328 add eight distinct reasoning tasks: MDTS/metadata/range validity;
+Write/Flush/FUA persistence; atomic units and boundary crossings; Read/Compare/
+Verify evidence; Write Zeroes versus deallocation and DULBE; a constrained PI
+example; Copy partial-completion evidence; and intentional Write Uncorrectable
+marks versus physical-media diagnoses. The original questions cover the related
+features and error mechanisms, which remain canonical and are linked rather than
+copied. All eight have 17 bilingual answer perspectives; the standalone Chinese
+volume adds four lessons and a boundary comparison using stated hypothetical
+values. There are now 84 artifacts: 27 volumes plus an index in three editions.
+
+Source review adds ten locator groups (133 total) and preserves all three original
+PDF identities. Important boundaries include MEM metadata accounting, zero-value
+exceptions in atomicity fields, VSL/WUSL advisory variants, PI escape tags and
+Copy descriptor-format-specific overlap rules. Do not treat Copy DW0 as a safe
+resume cursor, Verify as an application-content comparison, or a successful
+Write Zeroes followed by DULBE as proof that zeroing failed.
+
+Validation for the supplement: all 125 tests passed, including independently
+calculated MDTS/metadata, atomic-boundary and Copy-range examples. The production
+Jekyll build, report publication contract, source-evidence check and existing
+quick-reference check passed. All 22,941 local links across the 84 artifacts resolve.
+The new volume and index were exercised in all three editions at three viewport
+widths, in both explicit themes and with answers closed/open (72 states), with no
+overflow, contrast or anchor errors. Representative light/dark screenshots were
+reviewed, including the boundary comparison and English answers. Search, keyboard
+disclosure, deep links and standalone offline navigation also passed. Original
+Q1–Q320 content is unchanged; the full earlier browser pass remains recorded above.

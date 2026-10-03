@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/pointers/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/pointers/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q276–Q285</p><h1>PRP 與 SGL</h1><p class="qr-intro">資料指標描述的是記憶體配置。本冊先算 PRP 跨頁，再讀 SGL 的 descriptor 關係，最後把格式錯誤與傳輸失敗分開。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>4KiB 頁面，PRP1 從 offset1024 開始</h2><p class="qa-takeaway">PRP2 類型由跨頁數決定；不能只用資料總長是否大於一頁判斷。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-pointers">Base 2.4 §4.2.1, 4.3.1–4.3.2 (PCIe-applicable layouts)</a> · <a href="#ref-sgls">Base 2.4 §5.2.14.2.1 (SGLS)</a> · <a href="#ref-retirement">PCIe Transport 1.4 §3.4 (Command Related Resource Retirement)</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 先算第一頁還剩多少</h3><p>頁面大小 P=4096、起點 offset=1024，代表第一頁只能放 3072bytes。長度 4096 雖然剛好是一頁大小，仍需要第二頁。這就是為什麼 PRP 判斷一定要包含 offset。把資料畫成第一段 3072 加剩餘段，比死背某個長度門檻更不容易出錯。</p></article>
-<article><h3>教學 2 · 清單本身也占記憶體</h3><p>PRP List 每筆 8bytes，4KiB 清單頁從頁首開始可放 512 筆。如果還要下一頁清單，最後一筆是鏈結，就只剩 511 筆描述資料。SGL 則每筆 16bytes，而且 Segment.LEN 描述下一段清單，不是 payload。把清單空間與資料空間分色或分欄，能避免兩種長度混用。</p></article>
-<article><h3>教學 3 · 格式錯誤與存取失敗需要不同證據</h3><p>PRP offset 不合法可從欄位直接看出；位址格式合法但記憶體已被 Host 回收，則是另一種存取問題。保存原 SQE、清單與 buffer 生命週期，才能定位。SGL 也可能先傳合法部分，之後才檢出另一筆錯誤，所以失敗 CQE 不證明整個 buffer 完全未變。</p></article>
+<article><h3>教學 1 · 先算第一頁還剩多少</h3><p>頁面大小 P=4096、起點 offset=1024，代表第一頁只能放 3072bytes。長度 4096 雖然剛好是一頁大小，仍需要第二頁。這就是為什麼 PRP 判斷一定要包含 offset。把資料畫成第一段 3072 加剩餘段，比死背某個長度門檻更不容易出錯。</p>
+</article>
+<article><h3>教學 2 · 清單本身也占記憶體</h3><p>PRP List 每筆 8bytes，4KiB 清單頁從頁首開始可放 512 筆。如果還要下一頁清單，最後一筆是鏈結，就只剩 511 筆描述資料。SGL 則每筆 16bytes，而且 Segment.LEN 描述下一段清單，不是 payload。把清單空間與資料空間分色或分欄，能避免兩種長度混用。</p>
+</article>
+<article><h3>教學 3 · 格式錯誤與存取失敗需要不同證據</h3><p>PRP offset 不合法可從欄位直接看出；位址格式合法但記憶體已被 Host 回收，則是另一種存取問題。保存原 SQE、清單與 buffer 生命週期，才能定位。SGL 也可能先傳合法部分，之後才檢出另一筆錯誤，所以失敗 CQE 不證明整個 buffer 完全未變。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

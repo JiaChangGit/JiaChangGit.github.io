@@ -112,7 +112,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/initialization/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/initialization/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
-<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>
+<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
 <header><p class="qa-range">Q1–Q9</p><h1>Controller 初始化與停用</h1><p class="qr-intro">先理解 controller 如何從停用轉為就緒，再開始處理命令。讀到能力，不表示 controller 已啟用；Host 設定 EN，也還要等待 RDY。即使 RDY=1，仍可能需要依 Ready Mode 確認媒體是否可用。本冊將狀態、等待時間及允許執行的動作放在一起，說明每個階段應如何判斷。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>從未啟用到能送命令</h2><p class="qa-takeaway">重新啟用前，先確認上一輪停用已完成。啟用與停用都要觀察 RDY 的實際變化，不能只看 Host 自己寫入的 EN。</p>
@@ -121,9 +121,12 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p class="qa-citations">來源：<a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a></p>
 </section>
 <section class="qa-lesson"><h2>先把觀念接起來</h2>
-<article><h3>教學 1 · 先分清誰寫、誰回報</h3><p>CC.EN 由 Host 寫入，表示要求啟用或停用；CSTS.RDY 由 controller 回報，表示它目前是否就緒。就像按下電源開關與系統完成開機是兩個時點，驗證時也必須記錄 EN 變化與 RDY 變化各自的時間。單看 EN=1，只能證明 Host 已要求啟用，不能證明 controller 已準備好。</p></article>
-<article><h3>教學 2 · Independent mode 為什麼需要兩個期限</h3><p>Independent mode 允許管理介面先就緒，再等待媒體能夠提供服務。CRIMT 對應介面就緒的期限，CRWMT 對應媒體就緒的期限；兩者都從 EN 由 0 變成 1 時起算。例如介面在 300 ms 就緒，而媒體期限是 2 s，媒體剩下的等待時間就是 1.7 s，不會從介面就緒時重新獲得 2 s。實際採用哪個期限，仍須依 CAP.TO 與 CRTO 的比較規則決定。</p></article>
-<article><h3>教學 3 · 重設後的位元仍在，不代表物件仍在</h3><p>由清除 CC.EN 觸發的 Controller Reset 會保留 AQA、ASQ、ACQ，因此 Host 不必只因這種重設就重新提供相同的基底位址。不過，Admin Queue 指標已重設，I/O queue 也已刪除。如果 Host 繼續用舊 CID 紀錄配對新 CQE，可能把前一次 queue 留下的資料當成新結果。因此，重建命令追蹤狀態也是恢復流程的一部分。</p></article>
+<article><h3>教學 1 · 先分清誰寫、誰回報</h3><p>CC.EN 由 Host 寫入，表示要求啟用或停用；CSTS.RDY 由 controller 回報，表示它目前是否就緒。就像按下電源開關與系統完成開機是兩個時點，驗證時也必須記錄 EN 變化與 RDY 變化各自的時間。單看 EN=1，只能證明 Host 已要求啟用，不能證明 controller 已準備好。</p>
+</article>
+<article><h3>教學 2 · Independent mode 為什麼需要兩個期限</h3><p>Independent mode 允許管理介面先就緒，再等待媒體能夠提供服務。CRIMT 對應介面就緒的期限，CRWMT 對應媒體就緒的期限；兩者都從 EN 由 0 變成 1 時起算。例如介面在 300 ms 就緒，而媒體期限是 2 s，媒體剩下的等待時間就是 1.7 s，不會從介面就緒時重新獲得 2 s。實際採用哪個期限，仍須依 CAP.TO 與 CRTO 的比較規則決定。</p>
+</article>
+<article><h3>教學 3 · 重設後的位元仍在，不代表物件仍在</h3><p>由清除 CC.EN 觸發的 Controller Reset 會保留 AQA、ASQ、ACQ，因此 Host 不必只因這種重設就重新提供相同的基底位址。不過，Admin Queue 指標已重設，I/O queue 也已刪除。如果 Host 繼續用舊 CID 紀錄配對新 CQE，可能把前一次 queue 留下的資料當成新結果。因此，重建命令追蹤狀態也是恢復流程的一部分。</p>
+</article>
 </section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><button type="button" data-expand="true">展開全部解答</button><button type="button" data-expand="false">收合全部解答</button><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>本冊題目</h2><ol class="qa-index">

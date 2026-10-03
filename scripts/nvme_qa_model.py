@@ -83,7 +83,7 @@ def load():
         for module in ('init','queues','doorbells','commands','identify','features'):
             import_module('scripts.nvme_qa_'+module)
         refine()
-        for module in ('logs','aer','errors','recovery','format_sanitize','firmware_boot','selftest','namespace','reset_shutdown','health','persistent_events','keep_alive','memory','security','virtualization','capacity','media','pointers','interrupts','integration'):
+        for module in ('logs','aer','errors','recovery','format_sanitize','firmware_boot','selftest','namespace','reset_shutdown','health','persistent_events','keep_alive','memory','security','virtualization','capacity','media','pointers','interrupts','integration','data_io'):
             import_module('scripts.nvme_qa_'+module)
         from scripts.nvme_qa_review import review
         review()

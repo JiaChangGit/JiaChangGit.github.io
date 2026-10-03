@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the approved 320-question bank in 26 volumes and three editions."""
+"""Build the approved 328-question bank in 27 volumes and three editions."""
 from pathlib import Path
 import argparse
 import html
@@ -19,7 +19,7 @@ FIGURES=json.loads((ROOT/'.ai/nvme-quickref/figures.json').read_text())['figures
 DATE='2026-10-01'
 
 def post_date(slug):
-    return DATE if slug in ['index']+[v[0] for v in VOLUMES[:6]] else '2026-10-02'
+    return DATE if slug in ['index']+[v[0] for v in VOLUMES[:6]] else ('2026-10-03' if slug=='data-io' else '2026-10-02')
 
 def tr(zh,en,lang):return zh if lang=='zh' else en
 def txt(pair,lang):
@@ -66,7 +66,17 @@ def aid(slug,lang,standalone):
     out=['<section id="overview" class="qa-overview"><h2>'+txt(a['title'],lang)+'</h2><p class="qa-takeaway">'+txt(a['takeaway'],lang)+'</p>',table(a['headers'],a['rows'],lang),'<p><strong>'+tr('舉例看懂：','Worked interpretation: ',lang)+'</strong>'+txt(a['example'],lang)+'</p>',cite(a['refs'],lang),'</section>']
     if standalone:
         out+=['<section class="qa-lesson"><h2>先把觀念接起來</h2>']
-        for n,(title,text) in enumerate(LESSONS[slug],1):out+=['<article><h3>教學 '+str(n)+' · '+E(title)+'</h3><p>'+txt((text,''),'zh')+'</p></article>']
+        for n,(title,text) in enumerate(LESSONS[slug],1):
+            out+=['<article><h3>教學 '+str(n)+' · '+E(title)+'</h3><p>'+txt((text,''),'zh')+'</p>']
+            if slug=='data-io' and n==3:
+                out+=['<p>沿用 <a href="#q-323">Q323</a> 的教學假設：Single Atomicity Mode、正常單位 8 個區塊、斷電單位 2 個區塊，兩種邊界均從 LBA 0 起每 16 個區塊出現。下表問的是「整筆寫入是否落在保證範圍內」，不是命令能不能成功。</p>',table(
+                    [(x,'') for x in ['Write 的 LBA 範圍','整筆正常原子性','整筆斷電原子性']],
+                    [[(x,'') for x in row] for row in [
+                        ['14～15：2 個區塊','有；不超過 8 個，且沒有跨界','有；不超過 2 個，且沒有跨界'],
+                        ['15～16：2 個區塊','沒有這項 2-block 保證；跨越 LBA 16 邊界','沒有這項 2-block 保證；跨越 LBA 16 邊界'],
+                        ['12～15：4 個區塊','有；不超過 8 個，且沒有跨界','沒有整筆 4-block 保證；超過 2 個區塊']]],lang),
+                    '<p>第二列說明起點的重要性；第三列則說明：即使沒有跨界，也仍須分別檢查正常與斷電原子單位。失去整筆保證不等於必然出現部分更新，也不代表每個區塊都失去 controller 的基本原子保證。</p>',cite(['atomicdata','idns'],lang)]
+            out+=['</article>']
         if slug=='features':
             out+=['<div class="qa-state" role="img" aria-label="APST 教學假設：PS0 閒置超過 2000 ms 後進入 PS3；需要處理命令時離開 PS3，並考慮退出延遲"><span>PS0<br>可處理命令</span><span class="qa-arrow">idle &gt; ITPT<br>↓</span><span>PS3<br>非工作狀態</span><span class="qa-arrow">需要處理命令<br>↓</span><span>離開 PS3<br>考慮 EXLAT</span></div><p>這張圖使用教學假設的狀態路徑，不表示每個 SSD 都支援 PS3。實際判讀時，先查 Power State Descriptor 的 NOPS、ENLAT、EXLAT，確認狀態類型及進出延遲，再看 APST 的 ITPS 與 ITPT 如何設定。圖中只呈現已啟用 APST 的這條路徑，沒有列出其他狀態選擇。ITPT 指定轉入目標狀態前，需要閒置多久；ENLAT 與 EXLAT 則分別描述進入及離開狀態所需的延遲，三者發生的階段不同。</p>',cite(['power','powerstates','idctrl'],lang)]
         if slug=='health':
@@ -133,7 +143,7 @@ def question(q,lang,shared,standalone=False):
     return '\n'.join(out)
 
 def common_rules(shared,lang):
-    titles={'feature_events':('Set Feature 的事件記錄','Set Feature event recording'),'register':('Register 存取','Register access'),'command':('命令完成、事件與紀錄','Command completion, events and records'),'queue':('Queue 的重設與影響範圍','Queue reset and scope'),'identify':('查詢的重設與影響範圍','Query reset and scope'),'feature':('Feature 的重設與影響範圍','Feature reset and scope')}
+    titles={'data_io':('資料 I/O 的事件、紀錄與重設','Data-I/O events, records and reset'),'feature_events':('Set Feature 的事件記錄','Set Feature event recording'),'register':('Register 存取','Register access'),'command':('命令完成、事件與紀錄','Command completion, events and records'),'queue':('Queue 的重設與影響範圍','Queue reset and scope'),'identify':('查詢的重設與影響範圍','Query reset and scope'),'feature':('Feature 的重設與影響範圍','Feature reset and scope')}
     out=['<section id="common-rules" class="qa-common"><h2>'+tr('共用規則：各題連到的完整解釋','Shared rules linked from the answers',lang)+'</h2><p>'+tr('這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。','Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.',lang)+'</p>']
     for group,i in sorted(shared):
         out +=[f'<article id="common-{group}-{i}"><h3>'+txt(titles.get(group,('本主題的共用條件','Shared conditions for this topic')),lang)+' · '+txt(LABELS[i-1],lang)+'</h3><p>'+txt(COMMON[group][i],lang)+'</p></article>']
@@ -146,6 +156,8 @@ def sources(keys,lang,standalone):
         out +=[f'<li id="ref-{key}"><strong>'+SHORT[prefix]+' · §'+E(section)+'</strong><br>'+tr('文件頁 ','Printed pages ',lang)+page_ranges(pages,26 if prefix=='B' else 0)+' · PDF '+page_ranges(pages)+((' · Figure '+figs) if figs else '')+'</li>']
     out+=['</ul><h3>'+tr('需要看欄位圖時','When you need a field guide',lang)+'</h3><p>'+tr('以下連結可開啟對應的圖表教學，查閱欄位及判讀方式。每張圖保留固定的教學位置，方便之後反覆查詢。','Existing figure explanations have canonical locations; use these links instead of duplicating the same guide.',lang)+'</p><ul>']
     chosen={'B36','B41','B42','B44','B45','B46','B93','B97','B101','B104','B126','B338','B473','B543','B544','N123'}
+    if 'iofields' in keys:
+        chosen|={'N4','N8','N53','N54','N70','N71','N39','N47','N83','N155','N174','N175'}
     prefixes=set(source_parts(k)[0] for k in keys)
     numbers=set()
     for key in keys:
@@ -161,7 +173,7 @@ def sources(keys,lang,standalone):
     return '\n'.join(out+['</ul></details></section>'])
 
 def index_body(lang,standalone):
-    out=['<h1>'+tr('NVMe Base 2.4 自問自答題庫','NVMe Base 2.4 Self-Study Question Bank',lang)+'</h1><p class="qr-intro">'+tr('本題庫收錄第 1～320 題，依主題分成 26 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。','Questions 1–320 in 26 volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.',lang)+'</p><div class="qr-series">']
+    out=['<h1>'+tr('NVMe Base 2.4 自問自答題庫','NVMe Base 2.4 Self-Study Question Bank',lang)+'</h1><p class="qr-intro">'+tr('本題庫收錄第 1～328 題，依主題分成 27 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。','Questions 1–328 in 27 volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.',lang)+'</p><div class="qr-series">']
     for slug,a,b,zh,en in VOLUMES:
         out+=['<article><h2><a href="'+url(slug,lang,standalone)+'">'+tr(zh,en,lang)+'</a></h2><p class="qr-tags">Q'+str(a)+'–Q'+str(b)+'</p><p>'+txt(INTRO[slug],lang)+'</p></article>']
     out+=['</div><section><h2>'+tr('怎麼使用這份題庫','How to use this bank',lang)+'</h2><ol><li>'+tr('先說出功能的目的、影響對象與正常順序，再選查詢欄位。','Explain purpose, affected objects and sequence before selecting query fields.',lang)+'</li><li>'+tr('展開解答後，分別檢查成功結果、錯誤處理、事件、紀錄，以及三種重設的影響。MMIO 存取沒有 CQE，因此相關的 Status 或 DNR／More 項目會標示不適用。','Reveal the answer and separately compare success, errors, events, logs and three reset cases. Items without an MMIO CQE explicitly state non-applicability.',lang)+'</li><li>'+tr('判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。','Establish preconditions before judging firmware. Shall is a requirement, should a recommendation, may permission. Undefined behavior does not supply a fixed expected status.',lang)+'</li></ol><p>'+tr('所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。','All numerical examples are hypothetical, not hardware measurements. The scope is the three specifications as used by PCIe SSDs, excluding NVMe over Fabrics and PCIe link/packet details while retaining necessary PCIe configuration, interrupts, registers and doorbells.',lang)+'</p></section>',controls(lang,True),'<section id="question-index"><h2>'+tr('全部題目','All questions',lang)+'</h2><ol class="qa-index">']
@@ -190,7 +202,7 @@ SCRIPT='''<script>
 def body(slug,lang,standalone):
     out=['<div class="nvme-quickref nvme-qa">',nav(slug,lang,standalone)]
     if standalone:out+=['<button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>']
-    out+=['<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–320</p>']
+    out+=['<main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>']
     if slug=='index':out+=[index_body(lang,standalone)]
     else:
         _,a,b,zh,en=next(v for v in VOLUMES if v[0]==slug)
@@ -211,10 +223,10 @@ def artifacts():
     css=(ROOT/'assets/css/nvme-quickref.css').read_text()+'\n'+(ROOT/'assets/css/nvme-question-bank.css').read_text()
     for slug in ['index']+[v[0] for v in VOLUMES]:
         for lang in ['zh','en']:
-            title=tr('NVMe 自問自答題庫：','NVMe Self-Study Bank: ',lang)+(tr('總索引 · Q1–320','Index · Q1–320',lang) if slug=='index' else next(v[3 if lang=='zh' else 4] for v in VOLUMES if v[0]==slug))
+            title=tr('NVMe 自問自答題庫：','NVMe Self-Study Bank: ',lang)+(tr('總索引 · Q1–328','Index · Q1–328',lang) if slug=='index' else next(v[3 if lang=='zh' else 4] for v in VOLUMES if v[0]==slug))
             front='---\nlayout: post\ntitle: '+json.dumps(title,ensure_ascii=False)+'\ndate: '+post_date(slug)+' 00:00:00 +0800\ncategories: [nvme]\npermalink: '+url(slug,lang)+'\nlang: '+tr('zh-TW','en',lang)+'\nnvme_quickref: true\nnvme_qa: true\n---\n\n'
             result[ROOT/'_posts'/f'{post_date(slug)}-nvme-question-bank-{slug}-{tr("zh-tw","en",lang)}.md']=front+body(slug,lang,False)+'\n'
-        title='NVMe 自問自答題庫：'+('總索引 · Q1–320' if slug=='index' else next(v[3] for v in VOLUMES if v[0]==slug))
+        title='NVMe 自問自答題庫：'+('總索引 · Q1–328' if slug=='index' else next(v[3] for v in VOLUMES if v[0]==slug))
         result[ROOT/'DOCS/nvme-question-bank'/f'{slug}.html']='<!doctype html>\n<html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><title>'+E(title)+'</title><style>'+css+'</style></head><body class="qr-standalone">\n'+body(slug,'zh',True)+'\n</body></html>\n'
     return result
 
@@ -226,5 +238,5 @@ def main():
             if not path.exists() or path.read_text()!=content:drift.append(str(path.relative_to(ROOT)))
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(content,encoding='utf-8')
     if drift:raise SystemExit('Question-bank artifact drift: '+', '.join(drift))
-    print(('Verified' if args.check else 'Built')+f' {len(outputs)} question-bank artifacts: 320 questions, 17 items, 26 volumes + index, 3 editions')
+    print(('Verified' if args.check else 'Built')+f' {len(outputs)} question-bank artifacts: 328 questions, 17 items, 27 volumes + index, 3 editions')
 if __name__=='__main__':main()
