@@ -155,6 +155,49 @@ class QuestionBankTests(unittest.TestCase):
         answer=next(q for q in QUESTIONS if q['id']==327)['answers']
         self.assertIn('1004～1005',answer[4][0]);self.assertIn('DW0=2',answer[6][0])
 
+    def test_lookup_routes_remain_in_existing_questions_with_bilingual_sources(self):
+        routes={q['id']:q for q in QUESTIONS if q.get('lookup')}
+        self.assertEqual(set(routes),{54,69,118})
+        for n,q in routes.items():
+            r=q['lookup']
+            self.assertTrue(set(r['refs'])<=set(q['refs']))
+            for value in [r['title'],r['intro'],r['conclusion']]+r['headers']+[v for row in r['rows'] for v in row]:
+                self.assertEqual(len(value),2);self.assertTrue(all(value))
+                self.assertNotRegex(value[1],r'[\u4e00-\u9fff]')
+            for path,content in self.outputs.items():
+                if f'data-question="{n}"' in content:
+                    self.assertEqual(content.count(f'id="q-{n:03d}-lookup"'),1)
+        self.assertNotIn('LPA.CELP',' '.join(self.outputs.values()))
+        self.assertNotIn('LPA.SPEDS',' '.join(self.outputs.values()))
+
+    def test_sanitize_support_example_decodes_admin_region_and_little_endian(self):
+        data=bytearray(4096);opcode=0x8c;offset=4*opcode
+        self.assertEqual(offset,560);self.assertEqual(offset,0x230)
+        data[offset:offset+4]=bytes([0x03,0x00,0x01,0x00])
+        entry=int.from_bytes(data[offset:offset+4],'little')
+        self.assertEqual(entry,0x00010003)
+        self.assertEqual((entry&1,(entry>>1)&1,(entry>>16)&7),(1,1,1))
+        wrong=int.from_bytes(data[1024+offset:1028+offset],'little')
+        self.assertEqual(wrong&1,0)
+        q=next(q for q in QUESTIONS if q['id']==118)
+        text=' '.join(c[0] for row in q['lookup']['rows'] for c in row)
+        self.assertIn('560～563',text);self.assertIn('00010003h',text)
+        self.assertIn('不會建立Sanitize Start',q['answers'][11][0])
+        self.assertNotIn('本題比較兩種操作',q['answers'][12][0])
+
+    def test_log_and_feature_lookup_use_different_indexes_and_bit_meanings(self):
+        self.assertEqual(4*0x81,0x204)
+        self.assertEqual(4*0x06,0x18)
+        self.assertEqual((1024//4)-1,255)
+        log_entry=1
+        self.assertEqual((log_entry&1,(log_entry>>1)&1),(1,0))
+        supported_capabilities=5;current_cache=0
+        self.assertEqual(tuple((supported_capabilities>>i)&1 for i in (2,1,0)),(1,0,1))
+        self.assertEqual(current_cache&1,0)
+        byid={q['id']:q for q in QUESTIONS}
+        self.assertIn('516～519',' '.join(c[0] for row in byid[69]['lookup']['rows'] for c in row))
+        self.assertIn('FSUPP',byid[54]['answers'][3][0])
+
     def test_referenced_topics_have_canonical_links_and_preserve_all_questions(self):
         byid={q['id']:q for q in QUESTIONS}
         for q in QUESTIONS:

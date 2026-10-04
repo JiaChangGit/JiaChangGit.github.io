@@ -160,7 +160,7 @@ nvme_qa: true
 <li class="qa-search-item"><a href="/nvme/question-bank/recovery/zh-tw/#q-115">Q115 · Reset 後如何處理舊命令、舊完成與舊 Queue？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/recovery/zh-tw/#q-116">Q116 · 如何區分 Command Timeout、Ready Timeout 與長時間操作？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/recovery/zh-tw/#q-117">Q117 · Timeout 時如何定位提交、取得、執行、完成或 Host 處理階段？</a></li>
-<li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/zh-tw/#q-118">Q118 · 如何確認 Format 與 Sanitize 支援能力？</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/zh-tw/#q-118">Q118 · 如何查詢 Format、Sanitize 與 Sanitize Namespace 的支援能力？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/zh-tw/#q-119">Q119 · Format、Secure Erase、Subsystem Sanitize 與 Namespace Sanitize 有何差別？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/zh-tw/#q-120">Q120 · Format 如何選 LBA Format、Metadata、PI 與 SES？</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/zh-tw/#q-121">Q121 · Format 的非法格式、參數與狀態如何回報？</a></li>

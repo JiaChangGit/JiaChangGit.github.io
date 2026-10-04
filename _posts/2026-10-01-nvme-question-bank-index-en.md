@@ -160,7 +160,7 @@ nvme_qa: true
 <li class="qa-search-item"><a href="/nvme/question-bank/recovery/en/#q-115">Q115 · How are old commands, completions and queues handled after reset?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/recovery/en/#q-116">Q116 · How do command, ready and long-operation timeouts differ?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/recovery/en/#q-117">Q117 · How is a timeout located along submission, execution and completion?</a></li>
-<li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/en/#q-118">Q118 · How are Format and Sanitize capabilities established?</a></li>
+<li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/en/#q-118">Q118 · How is support for Format, Sanitize and Sanitize Namespace discovered?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/en/#q-119">Q119 · How do Format, secure erase and the two sanitize targets differ?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/en/#q-120">Q120 · How are Format data format, metadata, PI and SES selected?</a></li>
 <li class="qa-search-item"><a href="/nvme/question-bank/format-sanitize/en/#q-121">Q121 · How are invalid Format parameters and states reported?</a></li>

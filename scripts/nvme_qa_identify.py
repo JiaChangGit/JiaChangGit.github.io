@@ -75,7 +75,7 @@ CNS01h：SN bytes23:4、MN63:24、FR71:64、MDTS byte77、OACS bytes257:256。 |
 add(50,'Identify 宣告支援某功能後，應如何透過對應 Command 及 Commands Supported and Effects Log 驗證？ || How can advertised Identify support be cross-checked against commands and the Commands Supported and Effects Log?','identify',['effects','idctrl','idcmd'],'''
 驗證能力時，要確認 Host 能在合法條件下使用該功能，不能只確認 Identify 的支援位為 1，就認定功能已驗證完成。 || Connect an advertised bit to a legal operation instead of validating the bit alone.
 查詢與測試應針對同一 controller、命令集及 namespace 配置，並注意資料取得的時間。不同配置或不同時點的結果，不能直接當成同一狀態比較。 || Compare the same controller, command set, namespace configuration and time.
-先查 Identify 的功能支援欄位，再確認 LPA.CELP。接著從 LID05h 選出正確的 Admin 或 I/O Opcode entry，讀取 CSUPP 與命令效果欄位。 || Check Identify support, LPA.CELP and the correct Admin/I/O opcode's CSUPP and effects in LID05h.
+先查 Identify 的功能支援欄位，再確認 LPA.CSES。接著從 LID05h 選出正確的 Admin 或 I/O Opcode entry，讀取 CSUPP 與命令效果欄位。 || Check Identify support, LPA.CSES and the correct Admin/I/O opcode's CSUPP and effects in LID05h.
 除了 CSUPP，還要讀取 LBCC、NCC、NIC、CCC、CSE 等欄位。它們用來說明命令可能如何影響資料、能力與 namespace 清單，以及執行時有哪些限制。 || Read CSUPP together with LBCC, NCC, NIC, CCC and CSE to understand data/capability/list changes and execution restrictions.
 先確認合法前提與支援能力，準備好參數及資源，再執行命令。完成後檢查 CQE 與實際結果，並依 effects 欄位指出的變更，重新查詢可能受影響的資訊。 || Establish legal prerequisites, discover support, prepare valid parameters/resources, execute, verify result and rediscover information affected by the command.
 宣告支援表示這項功能有合法的使用方式，不表示任何參數或任何狀態下都會成功。驗證成功時，也不能只看 CQE，還要確認命令產生了規範要求的效果。 || Support means a legal supported operation exists, not that every parameter/state succeeds. Completion must also match the command's defined effect.

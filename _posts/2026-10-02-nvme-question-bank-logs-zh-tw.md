@@ -36,7 +36,7 @@ nvme_qa: true
 <li><a href="#q-081">Q81 · Host 如何從 Commands Supported and Effects Log 確認 Opcode 支援及影響範圍？</a></li>
 </ol></section>
 <article class="qa-question" id="q-069" data-question="69"><h2><a class="qa-qid" href="#q-069">Q69</a> Supported Log Pages 有什麼用途？讀取其他 Log 前，應如何確認支援能力？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<p class="qa-prompt">需求：確認能不能讀 Sanitize Status，並判斷可否用 index offset 讀取。這兩個問題應查同一個位元嗎？先找出要讀的 Log 與目標 entry，再展開解答。</p>
 <details class="qa-answer" id="q-069-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
 <li id="q-069-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
 <p>Supported Log Pages 提供查詢目錄，讓 Host 知道目前這個介面支援哪些 LID，以及各 LID 是否允許用 entry 索引讀取。它能避免把不支援誤認為資料為零；不過，先讀它是探索方法，不是每次 Get Log Page 前都必須重送的命令。</p>
@@ -45,7 +45,13 @@ nvme_qa: true
 <p>回覆屬於收到命令的介面與 controller。不同介面可能支援不同 Log；CC.CSS=110b 時，CSI 與已啟用的 Command Set Profile 也會影響結果，不能把另一個介面的清單直接當成本介面的能力。</p>
 </li>
 <li id="q-069-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>Get Log Page 使用 LID=00h。Identify.LPA 的 SPEDS 決定延伸 offset 與長度能力；各 LID 的 LSUPP、IOS 則分別表示支援及 index-offset 能力。</p>
+<p>Get Log Page 使用 LID=00h。Identify.LPA.MLPS=1 保證提供 Supported Log Pages；MLPS=0 仍可能提供，不能直接判成所有 Log 都不支援。LPA.LPEDS（Figure338 bit2）說明延伸 offset 與長度能力；目標 entry 的 LSUPP、IOS 則分別表示該 LID 是否支援及是否接受 index offset。</p>
+<section class="qa-lookup" id="q-069-lookup"><h4>查詢範例：支援 Log，不等於支援每一種讀法</h4>
+<p>教學假設：同一 PCIe Admin 介面，CC.CSS=000b、UUID Index=0，LPA.MLPS=1、LPEDS=1。此處要查的是 Sanitize Status 的 LID81h，不是 Sanitize Namespace 的 Opcode8Ch。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">查詢步驟與原文位置</th><th scope="col">要取出的資訊</th><th scope="col">這一步能判斷什麼</th></tr></thead><tbody><tr><td>1 · §5.2.13.1.1、Figure 210，文件頁 217／PDF 243</td><td>Get Log Page：LID=00h、NSID=0、NUMDL=00FFh、NUMDU=0、LPO=0、OT=0、RAE=0。</td><td>讀取 256 筆、每筆 4 bytes，共 1024 bytes 的支援清單；查詢成功不表示 256 個 LID 全部受支援。</td></tr><tr><td>2 · Figure 210，文件頁 217／PDF 243</td><td>目標 LID=81h=129；entry 位於 4×129=516=204h，取 bytes516～519。</td><td>用 LID 當索引。Opcode 與 FID 即使同為 81h，也不是這張清單要查的對象。</td></tr><tr><td>3 · Figure 211，文件頁 217～218／PDF 243～244</td><td>假設 entry=00000001h：bit0 LSUPP=1，bit1 IOS=0。</td><td>支援 Sanitize Status，但不支援該 Log 的 index offset。LPEDS=1 只提供一般延伸讀取能力，不能推翻 IOS=0。</td></tr><tr><td>4 · Figures 206、312，文件頁 214、313 起／PDF 240、339 起</td><td>後續讀 LID81h 時使用 OT=0，依目標 scope 選 NSID；再解讀回傳的 Sanitize Status。</td><td>LSUPP 只回答 Log 是否提供；清除是否進行或完成，要看後續 Status 內容。即使 LSUPP=1，強行使用不支援的 OT=1 仍須回 Invalid Field。</td></tr></tbody></table></div>
+<p>如果 Supported Log Pages 本身不可取得，不能把缺少清單當成所有 LID 都不支援；應改查該 Log 在規格中的支援條件及對應 Identify 欄位。任何查詢失敗後留下的 buffer，都不能拿來解讀 LSUPP。</p>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
+</section>
 </li>
 <li id="q-069-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
 <p>整張表有 256 個 4-byte entries。LID=n 的 entry 位於 4×n；bit0 是 LSUPP，bit1 是 IOS，高位 LIDSP 另依該 Log 定義。LSUPP=0 時，Host 應忽略其餘欄位。</p>
@@ -90,8 +96,9 @@ nvme_qa: true
 <p>先確認清單與後續命令來自同一介面、相同 CSI 及設定期間，再檢查目標 entry 是否按 4 bytes 定位。</p>
 </li>
 </ol>
+<p class="qa-related">相關機制：<a href="/nvme/question-bank/logs/zh-tw/#q-081">Q81</a> · <a href="/nvme/question-bank/features/zh-tw/#q-054">Q54</a> · <a href="/nvme/question-bank/format-sanitize/zh-tw/#q-128">Q128</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">來源：<a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-070" data-question="70"><h2><a class="qa-qid" href="#q-070">Q70</a> Error Information Log 與 SMART / Health Information Log 分別記錄什麼？</h2>
 <p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
@@ -393,7 +400,7 @@ nvme_qa: true
 <p>Offset 是 Log 內的位置，不是 Host buffer 位址。OT=0 使用 byte offset；OT=1 使用該 Log 定義的 entry index，兩種單位不能混算。</p>
 </li>
 <li id="q-075-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>LPA.SPEDS 確認延伸長度與 offset，目標 LID 的 IOS 確認 index offset；另依 MDTS 與此 Log 的長度規則選擇每次傳輸量。</p>
+<p>LPA.LPEDS 確認延伸長度與 offset，目標 LID 的 IOS 確認 index offset；另依 MDTS 與此 Log 的長度規則選擇每次傳輸量。</p>
 </li>
 <li id="q-075-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
 <p>NUMD=(NUMDU&lt;&lt;16)|NUMDL，通常傳輸 bytes=4×(NUMD+1)。LPOU／LPOL 組成 64-bit offset；byte offset 要 Dword 對齊。某些 Log 另有 entry 或 header 規則。</p>
@@ -741,10 +748,10 @@ nvme_qa: true
 <p>Admin Opcode 與 I/O Opcode 使用不同區域；I/O 區還要選對命令集。CSP 可以同時表示多種 scope，因為實際參數可能決定不同影響對象。</p>
 </li>
 <li id="q-081-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>先確認 LPA.CELP、LID05h 支援與命令集選擇。CSP=0 表示未回報 scope，不能解成「不影響任何物件」。</p>
+<p>先讀 Identify Controller 的 LPA.CSES（Figure338 bit1），確認是否提供 LID05h，再固定命令集與 UUID 選擇。這個位元只表示能力 Log 可讀，Log 裡各 Opcode 是否受支援仍要逐筆查 CSUPP。CSP=0 則表示未回報 scope，不能解成「不影響任何物件」。</p>
 </li>
 <li id="q-081-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Admin entry 位於 4×Opcode；I/O entry 位於 1024+4×Opcode。讀 CSUPP、LBCC、NCC、NIC、CCC，並搭配 CSE、CSER、USS 與 CSP，不只看最低位。</p>
+<p>Figure216 先決定 entry 位置：Admin 使用 4×Opcode，I/O 使用 1024+4×Opcode，單位都是 bytes。Figure217 再定義這 4 bytes 中的 CSUPP、LBCC、NCC、NIC、CCC、CSE、CSER、USS 及 CSP。例如 Admin Opcode02h 是 Get Log Page，NVM I/O Opcode02h 卻是 Read；即使編碼相同，也不能查同一筆 entry。</p>
 </li>
 <li id="q-081-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
 <p>先找到正確 entry，再依 CSE／CSER 的建議協調其他工作。Host 支援非零 CSER 值時，使用其放寬建議；不支援時回到 CSE。命令完成後，重新查詢可能改變的能力或清單。</p>
@@ -783,11 +790,12 @@ nvme_qa: true
 <p>將 effects 與操作前後 Identify、清單及使用者資料影響交叉比對。CSUPP 與 Identify 宣告應一致，但實際效果仍須依本次參數判斷。</p>
 </li>
 <li id="q-081-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確認 entry 偏移是否漏加 I/O 區的 1024 bytes，再檢查 CSI 與 CSP=0 是否被誤解。</p>
+<p>先確認 Admin 或 I/O 區，再核對 Opcode、byte offset 與成功的查詢 CQE。Log 中資料的起點、分段 buffer 的起點，以及 entry 內的 bit 位置是三種座標；把任一種誤當另一種，都可能讀到別的命令或欄位。</p>
 </li>
 </ol>
+<p class="qa-related">相關機制：<a href="/nvme/question-bank/format-sanitize/zh-tw/#q-118">Q118</a> · <a href="/nvme/question-bank/logs/zh-tw/#q-069">Q69</a> · <a href="/nvme/question-bank/features/zh-tw/#q-054">Q54</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">來源：<a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
 <article id="common-command-8"><h3>命令完成、事件與紀錄 · DNR 與 More 應如何設定？</h3><p>只有收到 CQE，才有 DNR 與 More 可供判讀。DNR=1 表示相同命令即使重送到此 NVM subsystem 的任一 controller，仍預期會失敗；DNR=0 則只表示可能成功。除非個別錯誤條件另有明定，不能只看 Status 名稱就要求 DNR=1。More=1 表示 Error Information Log 有這筆命令的補充資訊。SCT=SC=0 時，DNR 應為 0。</p></article>
@@ -800,6 +808,7 @@ nvme_qa: true
 <article id="common-log_query-15"><h3>本主題的共用條件 · 是否影響其他 Controller 或 Namespace？</h3><p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。controller、namespace、domain 與 subsystem 的資料範圍也不同；多個 Host 共同查詢時，應記錄由誰讀取及何時確認，避免誤以為另一端沒有發生事件。</p></article>
 </section>
 <section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">
+<li id="ref-adminsupport"><strong>Base 2.4 · §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</strong><br>文件頁 45–47 · PDF 71–73 · Figure 28</li>
 <li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>文件頁 120–124 · PDF 146–150</li>
 <li id="ref-status"><strong>Base 2.4 · §4.2.3</strong><br>文件頁 145–155 · PDF 171–181 · Figure 101–105</li>
 <li id="ref-aer"><strong>Base 2.4 · §5.2.2</strong><br>文件頁 183–190 · PDF 209–216 · Figure 150–156</li>
@@ -813,12 +822,14 @@ nvme_qa: true
 <li id="ref-telemetrylog"><strong>Base 2.4 · §5.2.13.1.8–5.2.13.1.9</strong><br>文件頁 232–237 · PDF 258–263 · Figure 220–223</li>
 <li id="ref-pel"><strong>Base 2.4 · §5.2.13.1.14 (header, reset, hardware, Set Feature events)</strong><br>文件頁 244–256, 258, 262–264 · PDF 270–282, 284, 288–290 · Figure 232–244, 246, 252–253</li>
 <li id="ref-pelcontext"><strong>Base 2.4 · §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</strong><br>文件頁 244–256, 258 · PDF 270–282, 284 · Figure 232–244, 246</li>
+<li id="ref-sanitizelog"><strong>Base 2.4 · §5.2.13.1.38</strong><br>文件頁 313–320 · PDF 339–346 · Figure 312</li>
 <li id="ref-idctrl"><strong>Base 2.4 · §5.2.14.2.1</strong><br>文件頁 340–387 · PDF 366–413 · Figure 338–341</li>
 <li id="ref-profile"><strong>Base 2.4 · §5.2.30.1.18</strong><br>文件頁 478–479 · PDF 504–505 · Figure 494–495</li>
 <li id="ref-uuid"><strong>Base 2.4 · §8.1.31.1–8.1.31.2</strong><br>文件頁 737–738 · PDF 763–764 · Figure 782</li>
 </ul><h3>需要看欄位圖時</h3><p>以下連結可開啟對應的圖表教學，查閱欄位及判讀方式。每張圖保留固定的教學位置，方便之後反覆查詢。</p><ul>
 <li><a href="/nvme/figure-reference/command/zh-tw/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>
 <li><a href="/nvme/figure-reference/command/zh-tw/#figure-b104">Base 2.4 Figure 104 · Status Code – Command Specific Status Values</a></li>
+<li><a href="/nvme/figure-reference/logs/zh-tw/#figure-b217">Base 2.4 Figure 217 · Commands Supported and Effects Data Structure</a></li>
 <li><a href="/nvme/figure-reference/identify/zh-tw/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></li>
 </ul><details><summary>使用的原始文件</summary><ul class="qr-sources">
 <li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li>

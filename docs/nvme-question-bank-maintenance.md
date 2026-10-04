@@ -231,3 +231,34 @@ overflow, contrast or anchor errors. Representative light/dark screenshots were
 reviewed, including the boundary comparison and English answers. Search, keyboard
 disclosure, deep links and standalone offline navigation also passed. Original
 Q1–Q320 content is unchanged; the full earlier browser pass remains recorded above.
+
+
+## 2026-10-04 capability lookup routes
+
+Kept 328 questions and 27 volumes. The user's Sanitize Namespace example is
+implemented inside Q118 instead of adding a near-duplicate question. Q81 explains
+the general Admin/I/O entry distinction; Q69 provides a log-support lookup; Q54
+separates FID support, saveability and current state. Each worked table retains
+original figure and printed/PDF page positions, query parameters, hypothetical
+responses, byte/bit decoding and limits on the resulting claim. All three editions
+include these worked answers, folded inside the existing 17-part answer.
+
+Q118 now describes a read-only capability query throughout its event/log/reset
+answers rather than inheriting Format/Sanitize operation effects. Q134/Q135 link
+back to that canonical support route. Corrected Q50/Q81 to Figure338 LPA.CSES
+and Q69/Q75 to LPEDS. Figure211's cross-reference calls the latter SPEDS; retain
+the actual Identify field-table name and position (LPA bit2), not a new bit.
+
+SANICAP.CES and NVERS do not replace Admin8Ch CSUPP. Figure28's Optional is a
+specification requirement classification, not an observation of the device.
+Figure216 locates the entry at4×8Ch=230h; Figure217 bit0 interprets it. A failed
+LID05h read is missing evidence, not CSUPP0. Lookup examples never initiate erase
+or alter feature values. Source PDFs and rendered source pages stay private.
+
+Validation: 128 tests and the publication contract passed, with 23,070 internal
+links resolved across all 84 artifacts. Original PDFs verify 134 locator groups.
+The five changed page groups (including index and the field-name correction)
+passed 180 browser states across three editions, three widths, two explicit themes
+and both answer disclosure states. Chinese and English lookup tables were visually
+reviewed. Final field/value spacing receives a focused follow-up on the three
+worked-route volumes. Offline navigation, search and keyboard disclosure passed.

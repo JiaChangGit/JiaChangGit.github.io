@@ -87,6 +87,8 @@ def load():
             import_module('scripts.nvme_qa_'+module)
         from scripts.nvme_qa_review import review
         review()
+        from scripts.nvme_qa_lookup import apply as apply_lookup
+        apply_lookup()
     return sorted(QUESTIONS,key=lambda x:x['id'])
 
 def refine():

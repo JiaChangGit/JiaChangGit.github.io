@@ -390,7 +390,7 @@ nvme_qa: true
 <p>Compare the same controller, command set, namespace configuration and time.</p>
 </li>
 <li id="q-050-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Check Identify support, LPA.CELP and the correct Admin/I/O opcode&#x27;s CSUPP and effects in LID 05h.</p>
+<p>Check Identify support, LPA.CSES and the correct Admin/I/O opcode&#x27;s CSUPP and effects in LID 05h.</p>
 </li>
 <li id="q-050-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
 <p>Read CSUPP together with LBCC, NCC, NIC, CCC and CSE to understand data/capability/list changes and execution restrictions.</p>

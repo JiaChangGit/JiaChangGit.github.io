@@ -122,10 +122,17 @@ BRIEF={
 15:('先查 Feature 的作用範圍，再判斷其他 controller 或 namespace 是否共用這項設定，以及是否會一同受影響。','Feature scope determines whether other controllers or namespaces share the setting.')}
 }
 
+def lookup_route(q,lang):
+    route=q.get('lookup')
+    if not route:return ''
+    return '\n'.join([f'<section class="qa-lookup" id="q-{q["id"]:03d}-lookup"><h4>'+txt(route['title'],lang)+'</h4>',
+        '<p>'+txt(route['intro'],lang)+'</p>',table(route['headers'],route['rows'],lang),
+        '<p>'+txt(route['conclusion'],lang)+'</p>',cite(route['refs'],lang),'</section>'])
+
 def question(q,lang,shared,standalone=False):
     qid=f'q-{q["id"]:03d}'
     out=[f'<article class="qa-question" id="{qid}" data-question="{q["id"]}"><h2><a class="qa-qid" href="#{qid}">Q{q["id"]:02d}</a> '+txt(q['title'],lang)+'</h2>',
-         '<p class="qa-prompt">'+tr('先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。','First describe the normal sequence and one invalid-precondition example, then reveal the answer.',lang)+'</p>',
+         '<p class="qa-prompt">'+txt(q.get('practice',('先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。','First describe the normal sequence and one invalid-precondition example, then reveal the answer.')),lang)+'</p>',
          f'<details class="qa-answer" id="{qid}-answer"><summary>'+tr('展開完整解答 · 17 個觀察面向','Reveal the full answer · 17 perspectives',lang)+'</summary><ol class="qa-items">']
     for i in range(1,18):
         value=q['answers'][i];key=shared_key(value)
@@ -135,6 +142,7 @@ def question(q,lang,shared,standalone=False):
             group,j=key
             out+=['<p>'+txt(BRIEF.get(group,{}).get(j,short_rule(value)),lang)+' <a class="qa-rule-link" href="#common-'+group+'-'+str(j)+'">'+tr('本冊完整規則','Full rule in this volume',lang)+'</a></p>']
         else:out+=['<p>'+txt(value,lang)+'</p>']
+        if i==3 and q.get('lookup'):out+=[lookup_route(q,lang)]
         out+=['</li>']
     out+=['</ol>']
     if q.get('related'):
@@ -156,6 +164,7 @@ def sources(keys,lang,standalone):
         out +=[f'<li id="ref-{key}"><strong>'+SHORT[prefix]+' · §'+E(section)+'</strong><br>'+tr('文件頁 ','Printed pages ',lang)+page_ranges(pages,26 if prefix=='B' else 0)+' · PDF '+page_ranges(pages)+((' · Figure '+figs) if figs else '')+'</li>']
     out+=['</ul><h3>'+tr('需要看欄位圖時','When you need a field guide',lang)+'</h3><p>'+tr('以下連結可開啟對應的圖表教學，查閱欄位及判讀方式。每張圖保留固定的教學位置，方便之後反覆查詢。','Existing figure explanations have canonical locations; use these links instead of duplicating the same guide.',lang)+'</p><ul>']
     chosen={'B36','B41','B42','B44','B45','B46','B93','B97','B101','B104','B126','B338','B473','B543','B544','N123'}
+    if 'adminsupport' in keys:chosen|={'B217'}
     if 'iofields' in keys:
         chosen|={'N4','N8','N53','N54','N70','N71','N39','N47','N83','N155','N174','N175'}
     prefixes=set(source_parts(k)[0] for k in keys)

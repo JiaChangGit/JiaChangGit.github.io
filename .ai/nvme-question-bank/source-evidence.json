@@ -679,7 +679,8 @@
         "aer",
         "pel",
         "setfeat",
-        "featureeffects"
+        "featureeffects",
+        "vwc"
       ]
     },
     {
@@ -919,7 +920,8 @@
         "status",
         "error",
         "aer",
-        "pel"
+        "pel",
+        "sanitizelog"
       ]
     },
     {
@@ -1066,7 +1068,8 @@
         "status",
         "error",
         "aer",
-        "pel"
+        "pel",
+        "adminsupport"
       ]
     },
     {
@@ -1526,7 +1529,10 @@
         "status",
         "error",
         "aer",
-        "pel"
+        "pel",
+        "adminsupport",
+        "getlog",
+        "idcmd"
       ]
     },
     {
@@ -1765,7 +1771,8 @@
         "status",
         "error",
         "aer",
-        "pel"
+        "pel",
+        "commandseffects"
       ]
     },
     {
@@ -1781,7 +1788,8 @@
         "reset",
         "error",
         "aer",
-        "pel"
+        "pel",
+        "commandseffects"
       ]
     },
     {
@@ -4957,7 +4965,8 @@
     "pidata": "N|2.1.5, 5.3.1.1 (STS=0), 5.3.2.1–5.3.2.2, 5.3.3|21-22,131,141-145,151-152|11–12, 155, 174–175",
     "copydata": "N|3.3.2–3.3.2.3, 3.3.2.5 (Formats 0h/1h; cross-namespace formats only for contrast)|30-40,43-44|34–35, 39–40, 42–43",
     "uncorrectabledata": "N|3.3.7–3.3.7.1|56-57|77–80",
-    "mediaerrors": "B|4.2.3 (Media and Data Integrity Errors only)|180-181|107"
+    "mediaerrors": "B|4.2.3 (Media and Data Integrity Errors only)|180-181|107",
+    "adminsupport": "B|3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)|71-73|28"
   },
   "teaching": {
     "initialization": [
@@ -7875,6 +7884,21 @@
         "107": [
           180,
           181
+        ]
+      }
+    },
+    "adminsupport": {
+      "pdf_pages": [
+        71,
+        72,
+        73
+      ],
+      "page_text_sha256": "321559df36d9fc5130ed4aa55a1153810285258ee4e206cbbf7e3c0da99d7f49",
+      "figure_headings": {
+        "28": [
+          71,
+          72,
+          73
         ]
       }
     },

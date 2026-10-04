@@ -38,7 +38,7 @@ nvme_qa: true
 <li><a href="#q-068">Q68 · Feature 宣告支援但 Get、Set 或實際功能行為不一致時，應如何驗證？</a></li>
 </ol></section>
 <article class="qa-question" id="q-054" data-question="54"><h2><a class="qa-qid" href="#q-054">Q54</a> Feature 的 Current、Default、Saved Value 及 Supported Capabilities 分別代表什麼？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
+<p class="qa-prompt">需求：確認 Volatile Write Cache Feature 是否提供、能否保存，以及目前有沒有啟用。這三個答案分別在哪一份回覆？先想好查詢順序，再展開解答。</p>
 <details class="qa-answer" id="q-054-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
 <li id="q-054-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
 <p>Current 是目前使用的值，Default 是預設值，Saved 是已保存的值；Supported Capabilities 則說明這項 Feature 能否變更或保存。前三者描述設定內容，最後一項描述能力，不能當成四份相同設定。</p>
@@ -47,7 +47,13 @@ nvme_qa: true
 <p>比較這些回覆時，必須使用相同 FID、相同作用範圍及對應的選擇欄位。例如，兩個不同 namespace 的 Current 值，本來就可能不同。</p>
 </li>
 <li id="q-054-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>Identify.ONCS.SSFS 表示是否支援 Save／Select 機制。確認支援後，再以 Get Features.SEL=3 查詢個別 FID 的 CHANG、NSSPEC 與 SVBL，了解它是否可變更、是否以 namespace 為範圍，以及是否可保存。</p>
+<p>先分開查「這個 FID 是否提供」與「提供後有哪些設定能力」。Feature Identifiers Supported and Effects（LID12h）的 FSUPP 回答前者；Identify.ONCS.SSFS 表示是否支援 Save／Select 機制，支援時再用 Get Features.SEL=3 查 CHANG、NSSPEC 及 SVBL。SEL=3 的 DW0 bit0 是 SVBL，不是 FSUPP。</p>
+<section class="qa-lookup" id="q-054-lookup"><h4>查詢範例：FSUPP、SVBL 與 Current.WCE 分別回答什麼？</h4>
+<p>教學假設：CC.CSS=000b、UUID Index=0；Identify 顯示 LPA.MLPS=1、ONCS.SSFS=1、VWC.VWCP=1。本例只做 Get，不執行 Set Features 或改動快取。</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">查詢步驟與原文位置</th><th scope="col">要取出的資訊</th><th scope="col">這一步能判斷什麼</th></tr></thead><tbody><tr><td>1 · Figure 200，文件頁 211／PDF 237</td><td>Volatile Write Cache 對應 FID06h；MLPS=1 也保證 LID12h 可讀。</td><td>找到 Feature 識別碼及查詢入口。VWCP=1 表示有快取，不等於快取目前已啟用。</td></tr><tr><td>2 · Figures 270～271，文件頁 276～278／PDF 302～304</td><td>讀 LID12h 完整 1024 bytes（NUMD=255）；FID06h 位於 4×6=24=18h，取該 entry bit0 FSUPP，假設為 1。</td><td>controller 宣告提供 FID06h。這裡尚未回答是否可保存，也還沒有讀到 WCE。</td></tr><tr><td>3 · Figures 198、201，文件頁 210、212／PDF 236、238</td><td>Get Features：Opcode0Ah、FID06h、SEL=3、NSID=0。假設成功 CQE 的 DW0=00000005h。</td><td>bit2 CHANG=1、bit1 NSSPEC=0、bit0 SVBL=1：可變更且可保存。這個 5 是能力 bitmap，不能解成快取工作值。</td></tr><tr><td>4 · Figure 471，文件頁 464～465／PDF 490～491</td><td>再送相同 FID 的 Get Features，但 SEL=0。假設 DW0=0，依 VWC 格式讀 bit0 WCE=0。</td><td>Feature 受支援、可保存，但快取目前未啟用。不能因 Current=0，就改判成 Feature 不支援；也不能拿它和 SEL=3 的 5 直接比較是否相等。</td></tr></tbody></table></div>
+<p>三種 bit0 的名字與用途不同：LID12h entry 是 FSUPP，SEL=3 的 CQE 是 SVBL，本例 SEL=0 的 CQE 則是 WCE。判讀前必須連同 LID 或 FID、SEL 及回覆格式一起保存；只留下數字會失去意義。</p>
+<p class="qa-citations">來源：<a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
+</section>
 </li>
 <li id="q-054-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
 <p>SEL=0 Current、1 Default、2 Saved、3 Supported Capabilities。SEL=3 的 DW0 bit2／1／0 分別是 CHANG／NSSPEC／SVBL，不是 Feature 的工作值。</p>
@@ -56,7 +62,7 @@ nvme_qa: true
 <p>先查能力，再讀 Current。若要判斷重設後應使用哪個值，才進一步查 Saved 與 Default。Feature 不可保存或尚未有 Saved 值時，SEL=2 回傳 Default；若個別 Feature 本身沒有 Default，則依它的例外規則處理。</p>
 </li>
 <li id="q-054-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>例如 SEL=3 回傳 DW0=5，表示 CHANG=1、SVBL=1、NSSPEC=0，也就是可變更、可保存，而且不是 namespace scope。這不表示 Current=5；NSSPEC=0 也不足以單獨判定它一定是 controller scope。</p>
+<p>例如 SEL=3 回傳 DW0=5，表示 CHANG=1、SVBL=1、NSSPEC=0，也就是可變更、可保存。NSSPEC=0 表示這個位元沒有指出 scope，仍需查該 FID 的 FSP 或規範定義；不能直接推成 controller scope。這個 5 也不是 Current 的工作值。</p>
 </li>
 <li id="q-054-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
 <p>不支援 FID 時，回報 Invalid Field（0/02h）；SEL=4～7 則是保留編碼。若 controller 不支援所要求的 SEL，不能將回傳內容當成有效的 CHANG 或 SVBL 來解讀。</p>
@@ -92,8 +98,9 @@ nvme_qa: true
 <p>先確認 Get Features 使用的 SEL。若其實查的是能力而不是 Current，即使數字與 Set 值不同，也不能據此判定設定沒有生效。</p>
 </li>
 </ol>
+<p class="qa-related">相關機制：<a href="/nvme/question-bank/logs/zh-tw/#q-069">Q69</a> · <a href="/nvme/question-bank/logs/zh-tw/#q-081">Q81</a> · <a href="/nvme/question-bank/features/zh-tw/#q-055">Q55</a> · <a href="/nvme/question-bank/features/zh-tw/#q-060">Q60</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
+<p class="qa-citations">來源：<a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <article class="qa-question" id="q-055" data-question="55"><h2><a class="qa-qid" href="#q-055">Q55</a> Set Features 的 Save 位元如何影響 Controller Reset 與 Power Cycle 後的 Feature 值？</h2>
 <p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>

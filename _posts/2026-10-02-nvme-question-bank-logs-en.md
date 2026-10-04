@@ -36,7 +36,7 @@ nvme_qa: true
 <li><a href="#q-081">Q81 · How does Commands Supported and Effects describe opcode support and impact?</a></li>
 </ol></section>
 <article class="qa-question" id="q-069" data-question="69"><h2><a class="qa-qid" href="#q-069">Q69</a> What does Supported Log Pages provide, and how should support be checked before reading another log?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
+<p class="qa-prompt">Task: discover Sanitize Status support and whether it accepts index offsets. Do the two questions use the same bit? Find the directory and entry before revealing the answer.</p>
 <details class="qa-answer" id="q-069-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
 <li id="q-069-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
 <p>Supported Log Pages is a directory of LIDs and index-offset support on the current interface. It distinguishes lack of support from zero-valued data. Reading it is a discovery method, not a mandatory command before every log request.</p>
@@ -45,7 +45,13 @@ nvme_qa: true
 <p>Results describe the receiving interface and controller. Interfaces can differ; with CC.CSS=110b, CSI and the enabled command-set profile also affect support. Another interface’s directory is not interchangeable.</p>
 </li>
 <li id="q-069-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Use Get Log Page LID=00h. Identify.LPA.SPEDS controls extended offset/length support; each LID entry supplies LSUPP and IOS for support and index-offset capability.</p>
+<p>Use LID 00h. LPA.MLPS=1 guarantees Supported Log Pages, while MLPS=0 may still provide it and does not negate all logs. Figure 338 LPA.LPEDS bit 2 describes extended offsets/length; per-LID LSUPP and IOS describe log support and index-offset support.</p>
+<section class="qa-lookup" id="q-069-lookup"><h4>Worked lookup: log support versus permitted read modes</h4>
+<p>Assume one PCIe Admin interface, CC.CSS=000b, UUID Index 0, MLPS=1 and LPEDS=1. Discover Sanitize Status LID 81h, not Sanitize Namespace opcode 8Ch.</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · §5.2.13.1.1/Figure 210, printed 217/PDF 243</td><td>Get Log Page with LID 00h, NSID 0, NUMDL=00FFh, NUMDU=0, LPO=0, OT=0 and RAE=0.</td><td>Retrieves 256 four-byte entries (1024 bytes), not a declaration that every LID is supported.</td></tr><tr><td>2 · Figure 210, printed 217/PDF 243</td><td>LID 81h=129 selects offset 4×129=516=204h and bytes 516–519.</td><td>Index by LID; an opcode or FID with the same numeric value is a different identifier.</td></tr><tr><td>3 · Figure 211, printed 217–218/PDF 243–244</td><td>Assume entry 00000001h: LSUPP bit 0=1 and IOS bit 1=0.</td><td>Sanitize Status is supported, but its index-offset mode is not. General extended-read support does not override IOS=0.</td></tr><tr><td>4 · Figures 206/312, printed 214,313 onward/PDF 240,339 onward</td><td>Read LID 81h with OT=0 and the correct target NSID, then decode the returned status.</td><td>LSUPP establishes availability; operation progress/outcome requires the actual status. Unsupported OT=1 still requires Invalid Field despite LSUPP=1.</td></tr></tbody></table></div>
+<p>An unavailable directory does not establish that every LID is unsupported; use log-specific specification requirements and Identify fields. A failed query’s buffer is not valid LSUPP evidence.</p>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
+</section>
 </li>
 <li id="q-069-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
 <p>There are 256 four-byte entries. LID n is at byte 4n; bit 0 is LSUPP, bit 1 IOS, and LIDSP is log-specific. The host should ignore other fields when LSUPP=0.</p>
@@ -90,8 +96,9 @@ nvme_qa: true
 <p>First establish the same interface, CSI and configuration period, then verify four-byte entry addressing.</p>
 </li>
 </ol>
+<p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/logs/en/#q-081">Q81</a> · <a href="/nvme/question-bank/features/en/#q-054">Q54</a> · <a href="/nvme/question-bank/format-sanitize/en/#q-128">Q128</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">Sources: <a href="#ref-getlog">Base 2.4 §5.2.13–5.2.13.1.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-sanitizelog">Base 2.4 §5.2.13.1.38</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-070" data-question="70"><h2><a class="qa-qid" href="#q-070">Q70</a> What do Error Information and SMART/Health Information record?</h2>
 <p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
@@ -393,7 +400,7 @@ nvme_qa: true
 <p>Offsets locate data within the log, not host memory. OT=0 uses bytes; OT=1 uses log-defined entry indices. Do not mix their units.</p>
 </li>
 <li id="q-075-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Check LPA.SPEDS and per-LID IOS, then size transfers using MDTS and log-specific length rules.</p>
+<p>Check LPA.LPEDS and per-LID IOS, then size transfers using MDTS and log-specific length rules.</p>
 </li>
 <li id="q-075-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
 <p>NUMD=(NUMDU&lt;&lt;16)|NUMDL normally encodes bytes/4−1. LPOU/LPOL form the 64-bit offset; byte offsets require Dword alignment, with further log-specific constraints.</p>
@@ -741,10 +748,10 @@ nvme_qa: true
 <p>Admin and I/O opcodes occupy separate regions; the I/O region also requires the correct command set. CSP can name several possible scopes because parameters affect actual impact.</p>
 </li>
 <li id="q-081-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Check LPA.CELP, LID 05h and command-set selection. CSP=0 means no scope is reported, not no affected object.</p>
+<p>First check Figure 338 LPA.CSES bit 1 for LID 05h availability and fix command-set/UUID selection. CSES advertises the log, while per-opcode CSUPP advertises each command. CSP=0 means unreported scope, not no impact.</p>
 </li>
 <li id="q-081-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Admin entry offset is 4×opcode; I/O offset is 1024+4×opcode. Decode support, effects, submission recommendations, UUID selection and scope rather than only bit 0.</p>
+<p>Figure 216 locates the four-byte entry: Admin uses 4×opcode and I/O uses 1024+4×opcode, in bytes. Figure 217 decodes its support/effect fields. Admin opcode 02h is Get Log Page, whereas NVM I/O opcode 02h is Read; identical numbers do not identify the same entry.</p>
 </li>
 <li id="q-081-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
 <p>Select the entry and coordinate work under CSE/CSER recommendations. Use a supported nonzero CSER relaxation; otherwise use CSE. Rediscover potentially changed capabilities or inventory afterward.</p>
@@ -783,11 +790,12 @@ nvme_qa: true
 <p>Correlate effects with before/after Identify, inventory and data. Support declarations should agree; actual effects depend on this invocation’s parameters.</p>
 </li>
 <li id="q-081-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check the I/O region’s 1024-byte base, then CSI and the interpretation of CSP=0.</p>
+<p>First establish Admin/I/O region, opcode, byte offset and query success. Log-relative position, segment-buffer position and entry bit position are distinct coordinates; confusing them can select another command or field.</p>
 </li>
 </ol>
+<p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/format-sanitize/en/#q-118">Q118</a> · <a href="/nvme/question-bank/logs/en/#q-069">Q69</a> · <a href="/nvme/question-bank/features/en/#q-054">Q54</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+<p class="qa-citations">Sources: <a href="#ref-commandseffects">Base 2.4 §5.2.13.1.6</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-profile">Base 2.4 §5.2.30.1.18</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-adminsupport">Base 2.4 §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <section id="common-rules" class="qa-common"><h2>Shared rules linked from the answers</h2><p>Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.</p>
 <article id="common-command-8"><h3>Command completion, events and records · How are DNR and More set?</h3><p>For a CQE, DNR=1 means the identical command is expected to fail if resubmitted to any controller in this subsystem; DNR=0 means it may succeed. Do not assign DNR=1 solely from an error name unless that condition mandates it. More=1 identifies additional information for this command in the Error Information Log. DNR should be zero when SCT=SC=0.</p></article>
@@ -800,6 +808,7 @@ nvme_qa: true
 <article id="common-log_query-15"><h3>Shared conditions for this topic · Are other controllers or namespaces affected?</h3><p>Queries do not write namespace user data, but some reads acknowledge events or clear reported lists. Logs have controller, namespace, domain or subsystem scopes; track readers and acknowledgment times when several hosts share the view.</p></article>
 </section>
 <section id="source-index"><h2>Source locations and existing figure guides</h2><p>Base printed page = PDF page−26; the other two use identical numbers. Locations follow the supplied PDF body and retain figure numbers. Shared pages contribute only the relevant definitions, excluding Fabrics and PCIe link/packet content.</p><ul class="qa-references">
+<li id="ref-adminsupport"><strong>Base 2.4 · §3.1.3.4 (Figure 28 PCIe I/O-controller rows and O/M/P note only)</strong><br>Printed pages 45–47 · PDF 71–73 · Figure 28</li>
 <li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>Printed pages 120–124 · PDF 146–150</li>
 <li id="ref-status"><strong>Base 2.4 · §4.2.3</strong><br>Printed pages 145–155 · PDF 171–181 · Figure 101–105</li>
 <li id="ref-aer"><strong>Base 2.4 · §5.2.2</strong><br>Printed pages 183–190 · PDF 209–216 · Figure 150–156</li>
@@ -813,12 +822,14 @@ nvme_qa: true
 <li id="ref-telemetrylog"><strong>Base 2.4 · §5.2.13.1.8–5.2.13.1.9</strong><br>Printed pages 232–237 · PDF 258–263 · Figure 220–223</li>
 <li id="ref-pel"><strong>Base 2.4 · §5.2.13.1.14 (header, reset, hardware, Set Feature events)</strong><br>Printed pages 244–256, 258, 262–264 · PDF 270–282, 284, 288–290 · Figure 232–244, 246, 252–253</li>
 <li id="ref-pelcontext"><strong>Base 2.4 · §5.2.13.1.14–5.2.13.1.14.2.5 (exclude PCIe link/packet decoding)</strong><br>Printed pages 244–256, 258 · PDF 270–282, 284 · Figure 232–244, 246</li>
+<li id="ref-sanitizelog"><strong>Base 2.4 · §5.2.13.1.38</strong><br>Printed pages 313–320 · PDF 339–346 · Figure 312</li>
 <li id="ref-idctrl"><strong>Base 2.4 · §5.2.14.2.1</strong><br>Printed pages 340–387 · PDF 366–413 · Figure 338–341</li>
 <li id="ref-profile"><strong>Base 2.4 · §5.2.30.1.18</strong><br>Printed pages 478–479 · PDF 504–505 · Figure 494–495</li>
 <li id="ref-uuid"><strong>Base 2.4 · §8.1.31.1–8.1.31.2</strong><br>Printed pages 737–738 · PDF 763–764 · Figure 782</li>
 </ul><h3>When you need a field guide</h3><p>Existing figure explanations have canonical locations; use these links instead of duplicating the same guide.</p><ul>
 <li><a href="/nvme/figure-reference/command/en/#figure-b101">Base 2.4 Figure 101 · Completion Queue Entry: Status Field</a></li>
 <li><a href="/nvme/figure-reference/command/en/#figure-b104">Base 2.4 Figure 104 · Status Code – Command Specific Status Values</a></li>
+<li><a href="/nvme/figure-reference/logs/en/#figure-b217">Base 2.4 Figure 217 · Commands Supported and Effects Data Structure</a></li>
 <li><a href="/nvme/figure-reference/identify/en/#figure-b338">Base 2.4 Figure 338 · Identify – Identify Controller Data Structure, I/O Command Set Independent</a></li>
 </ul><details><summary>Original documents used</summary><ul class="qr-sources">
 <li>NVM Express Base Specification · Revision 2.4 · 2026-07-31<br><code>NVM-Express-Base-Specification-Revision-2.4-Ratified-2026.07.31.pdf</code></li>

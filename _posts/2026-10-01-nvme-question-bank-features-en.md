@@ -38,7 +38,7 @@ nvme_qa: true
 <li><a href="#q-068">Q68 · How should supported-feature claims be checked when Get, Set and behavior appear inconsistent?</a></li>
 </ol></section>
 <article class="qa-question" id="q-054" data-question="54"><h2><a class="qa-qid" href="#q-054">Q54</a> What do Current, Default, Saved and Supported Capabilities mean?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
+<p class="qa-prompt">Task: establish Volatile Write Cache feature availability, saveability and current enable state. Identify the separate responses before revealing the answer.</p>
 <details class="qa-answer" id="q-054-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
 <li id="q-054-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
 <p>Separate the active value, manufacturing default, saved value and change/save capabilities; these are not four identical settings.</p>
@@ -47,7 +47,13 @@ nvme_qa: true
 <p>Compare the same FID, scope and selectors; Current can differ across namespaces.</p>
 </li>
 <li id="q-054-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>ONCS.SSFS advertises Save/Select support. Under that mechanism, Get Features.SEL=3 returns CHANG/NSSPEC/SVBL for the FID.</p>
+<p>Separate FID availability from its settings capabilities. LID 12h FSUPP reports availability; Identify.ONCS.SSFS advertises Save/Select, under which Get Features.SEL 3 returns CHANG/NSSPEC/SVBL. SEL 3 DW0 bit 0 is SVBL, not FSUPP.</p>
+<section class="qa-lookup" id="q-054-lookup"><h4>Worked lookup: FSUPP, SVBL and Current.WCE</h4>
+<p>Assume CC.CSS=000b, UUID Index 0, MLPS=1, SSFS=1 and VWC.VWCP=1. The example performs queries only and does not change the cache.</p>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Step and source location</th><th scope="col">Information to retrieve</th><th scope="col">What this establishes</th></tr></thead><tbody><tr><td>1 · Figure 200, printed 211/PDF 237</td><td>Volatile Write Cache uses FID 06h; MLPS=1 also guarantees LID 12h.</td><td>Identifies the feature and discovery log. Cache presence does not establish current enablement.</td></tr><tr><td>2 · Figures 270–271, printed 276–278/PDF 302–304</td><td>Read 1024 bytes of LID 12h (NUMD=255); FID 06h is at byte 4×6=24=18h. Assume its FSUPP bit 0 is 1.</td><td>FID 06h is advertised; saveability and current WCE are still unknown.</td></tr><tr><td>3 · Figures 198/201, printed 210,212/PDF 236,238</td><td>Get Features opcode 0Ah, FID 06h, SEL 3 and NSID 0 returns successful CQE DW0=00000005h.</td><td>Bits 2/1/0 give CHANG=1/NSSPEC=0/SVBL=1: changeable and saveable. Five is a capability bitmap, not the cache setting.</td></tr><tr><td>4 · Figure 471, printed 464–465/PDF 490–491</td><td>Query the same FID with SEL 0. Assume DW0=0; the VWC format decodes bit 0 as WCE=0.</td><td>The feature is supported and saveable while caching is currently disabled. Current 0 is not lack of support and need not equal the SEL 3 bitmap 5.</td></tr></tbody></table></div>
+<p>Three different bit 0 definitions are involved: FSUPP in LID 12h, SVBL in SEL 3 CQE and WCE in this FID’s SEL 0 CQE. Preserve LID/FID, SEL and response format with the numeric value.</p>
+<p class="qa-citations">Sources: <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
+</section>
 </li>
 <li id="q-054-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
 <p>SEL 0/1/2/3 select Current/Default/Saved/Supported Capabilities. With SEL 3, DW0 bits 2/1/0 are CHANG/NSSPEC/SVBL, not operational values.</p>
@@ -56,7 +62,7 @@ nvme_qa: true
 <p>Read capabilities and Current first, then Saved/Default for reset analysis. If unsaveable or never saved, SEL 2 returns Default, subject to features that define no Default.</p>
 </li>
 <li id="q-054-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>SEL 3 result 5 means changeable, saveable and NSSPEC=0, not Current=5. NSSPEC=0 alone does not establish controller scope.</p>
+<p>SEL 3 DW0=5 reports CHANG=1, SVBL=1 and NSSPEC=0: changeable and saveable. NSSPEC=0 does not indicate scope; consult FSP or the FID definition rather than assuming controller scope. Five is not the Current operating value.</p>
 </li>
 <li id="q-054-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
 <p>Unsupported FID uses Invalid Field (0/02h); SEL 4–7 are reserved. Without Select support, do not treat a response as valid CHANG/SVBL discovery.</p>
@@ -92,8 +98,9 @@ nvme_qa: true
 <p>First check SEL before concluding that Set failed to take effect.</p>
 </li>
 </ol>
+<p class="qa-related">Related mechanisms: <a href="/nvme/question-bank/logs/en/#q-069">Q69</a> · <a href="/nvme/question-bank/logs/en/#q-081">Q81</a> · <a href="/nvme/question-bank/features/en/#q-055">Q55</a> · <a href="/nvme/question-bank/features/en/#q-060">Q60</a></p>
 <details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a></p>
+<p class="qa-citations">Sources: <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-getfeat">Base 2.4 §5.2.12</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-featureeffects">Base 2.4 §5.2.13.1.18</a> · <a href="#ref-vwc">Base 2.4 §5.2.30.1.4</a></p>
 </details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
 <article class="qa-question" id="q-055" data-question="55"><h2><a class="qa-qid" href="#q-055">Q55</a> How does Set Features.Save affect values after reset and power cycling?</h2>
 <p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>

@@ -1,5 +1,11 @@
 # AGENTS.md — Jia’s Blog 專案規則
 
+## 2026-10-04 能力查詢題的寫法
+
+使用者希望看懂從需求到查詢結果的完整路徑，例如 Sanitize Namespace：先以 Base Figure 28 找到 Admin Opcode 8Ch，再用 Figure 216 定位 LID05h 的 Admin entry，最後依 Figure 217 bit0 CSUPP 判讀。此類題先補強已有的 Q118／Q81，不另增相似題；Q69 與 Q54 分別示範 LSUPP、FSUPP／SEL 的不同查詢。每個範例要列出介面與選擇條件、命令、entry 位移的單位、回傳欄位、假設值及能證明與不能證明的事情。Figure 是規格定義，controller 回傳值才是本機能力證據；失敗查詢的 buffer 不能當成支援位元為 0。仍維持 328 題、27 冊及三版本。
+
+本份 Base 2.4 Figure 338 的正式欄位名稱為 LPA.CSES（bit1）與 LPA.LPEDS（bit2）。部分原文交叉引用使用 SPEDS；教材採實際欄位表名稱並保留來源定位。Sanitize Namespace 命令支援、SANICAP.CES 方法能力、NVERS 媒體驗證能力，以及目前 namespace 能否接受命令必須分開。能力查詢不能繼承成已啟動清除的事件、Log 或 Reset 行為。
+
 ## 2026-10-03 題庫補充原則
 
 原 Q1～Q320 已完成；使用者再次授權補充不重複的題目並修正不合理前提。新增 Q321～Q328 為資料 I/O 補充冊，處理傳輸長度、持久性、原子邊界、內容與完整性判讀、解除配置、PI、Copy 部分完成，以及 Write Uncorrectable。先確認原題未完整處理同一學習目的；原題號與網址保持穩定，以連結回到既有機制。新增題也維持 17 個面向、三版本及來源證據，不以增加題數代替完整教學。現在共 328 題、27 冊與總索引。

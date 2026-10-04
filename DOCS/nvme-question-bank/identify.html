@@ -499,7 +499,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <p>查詢與測試應針對同一 controller、命令集及 namespace 配置，並注意資料取得的時間。不同配置或不同時點的結果，不能直接當成同一狀態比較。</p>
 </li>
 <li id="q-050-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>先查 Identify 的功能支援欄位，再確認 LPA.CELP。接著從 LID05h 選出正確的 Admin 或 I/O Opcode entry，讀取 CSUPP 與命令效果欄位。</p>
+<p>先查 Identify 的功能支援欄位，再確認 LPA.CSES。接著從 LID05h 選出正確的 Admin 或 I/O Opcode entry，讀取 CSUPP 與命令效果欄位。</p>
 </li>
 <li id="q-050-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
 <p>除了 CSUPP，還要讀取 LBCC、NCC、NIC、CCC、CSE 等欄位。它們用來說明命令可能如何影響資料、能力與 namespace 清單，以及執行時有哪些限制。</p>
