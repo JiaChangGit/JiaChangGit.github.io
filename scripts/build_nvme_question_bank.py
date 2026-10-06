@@ -9,6 +9,8 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from scripts.nvme_qa_model import load, LABELS, REFS, COMMON
 from scripts.nvme_qa_teaching import VOLUMES, INTRO, AIDS, LESSONS
+from scripts.nvme_qa_presentation import reading_plan
+from scripts.nvme_qa_visuals import VISUALS
 
 ROOT=Path(__file__).resolve().parents[1]
 QUESTIONS=load()
@@ -93,34 +95,6 @@ def shared_key(value):
             if text==value:return group,i
     return None
 
-BRIEF={
-'feature_events':{11:('Get 查詢不會產生 Set Feature Event。對 Set，先確認這個 FID 支援記錄，再判斷設定是否成功，以及值是否改變。','Get does not itself produce a Set Feature event; Set requires FID logging support, successful completion and a check for a changed setting.')},
-'command':{
-8:('收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。','Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume.'),
-9:('正常完成不保證會回報非同步事件。若另有事件發生，還須確認支援能力、通知設定，以及是否有等待中的 AER。','Normal completion here does not guarantee an AER; a separate defined event requires support, configuration and a pending request.'),
-10:('依完成結果與記錄條件核對 Error Information，不能直接用失敗命令的數量推算新增 entry 數。完整條件見本冊共用規則。','Correlate the completion with error records under the shared entry-creation rules; do not infer entry count directly from the number of failures.'),
-11:('PEL 記錄符合條件的事件，不是每條命令的執行歷史。只有事件受支援且符合記錄條件時，才依規則要求新增紀錄。','PEL is not a per-command trace; supported defined events are logged under their recording conditions.')},
-'register':{
-8:('本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。','This MMIO access has no NVMe CQE, so DNR/More do not apply.'),
-9:('Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。','Register access has no success event; separate hardware errors use their event conditions.'),
-10:('不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。','Register accesses are not logged individually; preserve registers and timing before obtaining available diagnostics.'),
-11:('一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。','Ordinary register access is not a PEL event; completed resets and supported hardware errors are assessed separately.')},
-'queue':{
-12:('清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。','Clearing CC.EN invalidates I/O queues and resets Admin pointers; retained base addresses do not validate old completions.'),
-13:('受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。','Rebuild affected-controller queues; do not assume CC.EN-reset register-retention exceptions.'),
-14:('重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。','Initialize queues and host tracking again; residual memory is not valid command state for a new lifetime.'),
-15:('Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。','Queues belong to a controller; CQ capacity and lifetime affect all SQs sharing it.')},
-'identify':{
-12:('查詢若因重設中止，恢復後須重新送出。比較回覆時，再逐欄區分固定身分、配置與動態狀態。','Repeat an interrupted query and distinguish identity, configuration and dynamic fields.'),
-13:('重設後重新查詢受影響的物件。重設本身不表示 namespace 已刪除，也不表示配置已恢復出廠值。','Rediscover affected objects; reset alone does not mean namespace deletion or factory configuration.'),
-14:('Power Cycle 後重新查詢並比較。若期間還有韌體啟用或管理操作，必須分清楚差異是由哪個事件造成。','Re-read and compare, separating firmware activation or management changes from power cycling alone.'),
-15:('Identify 是唯讀查詢。不同 controller 的 Active List 可能不同，因此比較時必須確認查詢對象。','Identify is read-only; active lists may differ by controller, so compare matching query targets.')},
-'feature':{
-12:('先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。','Use scope, saveability and reset coverage; whole-subsystem and partial resets differ.'),
-13:('先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。','Establish whole or partial subsystem coverage; non-saveable persistent values do not thereby become zero.'),
-14:('可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。','Saveable values restore Saved; non-saveable values require their persistence and feature-specific rules.'),
-15:('先查 Feature 的作用範圍，再判斷其他 controller 或 namespace 是否共用這項設定，以及是否會一同受影響。','Feature scope determines whether other controllers or namespaces share the setting.')}
-}
 
 def lookup_route(q,lang):
     route=q.get('lookup')
@@ -129,29 +103,76 @@ def lookup_route(q,lang):
         '<p>'+txt(route['intro'],lang)+'</p>',table(route['headers'],route['rows'],lang),
         '<p>'+txt(route['conclusion'],lang)+'</p>',cite(route['refs'],lang),'</section>'])
 
+def visual_flow(q,lang):
+    v=VISUALS[q['id']];qid=f'q-{q["id"]:03d}'
+    out=[f'<figure class="qa-flow" id="{qid}-flow"><figcaption>'+txt(v['title'],lang)+'</figcaption>',
+         '<p>'+txt(v['intro'],lang)+'</p><ol class="qa-flow-steps">']
+    branches=v.get('branches',[])
+    for i,(title,body) in enumerate(v['steps']):
+        branch=i in branches
+        cls='qa-flow-branch' if branch else 'qa-flow-step'
+        # No sequential arrow may connect mutually exclusive alternatives.
+        arrow=i>0 and not branch and not (i-1 in branches)
+        out +=[f'<li class="{cls}">'+('<span class="qa-flow-arrow" aria-hidden="true">↓</span>' if arrow else '')+'<strong>'+txt(title,lang)+'</strong><p>'+txt(body,lang)+'</p></li>']
+    out+=['</ol><p class="qa-flow-conclusion">'+txt(v['conclusion'],lang)+'</p></figure>']
+    return '\n'.join(out)
+
+
 def question(q,lang,shared,standalone=False):
-    qid=f'q-{q["id"]:03d}'
-    out=[f'<article class="qa-question" id="{qid}" data-question="{q["id"]}"><h2><a class="qa-qid" href="#{qid}">Q{q["id"]:02d}</a> '+txt(q['title'],lang)+'</h2>',
-         '<p class="qa-prompt">'+txt(q.get('practice',('先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。','First describe the normal sequence and one invalid-precondition example, then reveal the answer.')),lang)+'</p>',
-         f'<details class="qa-answer" id="{qid}-answer"><summary>'+tr('展開完整解答 · 17 個觀察面向','Reveal the full answer · 17 perspectives',lang)+'</summary><ol class="qa-items">']
-    for i in range(1,18):
+    qid=f'q-{q["id"]:03d}';plan=reading_plan(q);visual=VISUALS.get(q['id'])
+    replaced=set(visual['replaces']) if visual else set()
+    rendered={1};seen={plan['lead']};flow_done=False
+    out=[f'<article class="qa-question" id="{qid}" data-question="{q["id"]}" data-answer-kind="{plan["kind"]}"><h2><a class="qa-qid" href="#{qid}">Q{q["id"]:02d}</a> '+txt(q['title'],lang)+'</h2>',
+         '<p class="qa-prompt">'+txt(q.get('practice',plan['prompt']),lang)+'</p>',
+         f'<details class="qa-answer" id="{qid}-answer"><summary>'+tr('展開解答與推導','Reveal the explanation',lang)+'</summary>',
+         f'<p class="qa-answer-lead" id="{qid}-a-01">'+txt(plan['lead'],lang)+'</p><div class="qa-sections">']
+    def paragraph(i):
         value=q['answers'][i];key=shared_key(value)
-        out.append(f'<li id="{qid}-a-{i:02d}" data-answer="{i}"><h3><span>{i:02d}</span> '+txt(LABELS[i-1],lang)+'</h3>')
+        anchor=f'<span class="qa-anchor" id="{qid}-a-{i:02d}"></span>'
+        rendered.add(i)
+        if value in seen:return anchor
+        seen.add(value)
         if key:
-            shared.add(key)
-            group,j=key
-            out+=['<p>'+txt(BRIEF.get(group,{}).get(j,short_rule(value)),lang)+' <a class="qa-rule-link" href="#common-'+group+'-'+str(j)+'">'+tr('本冊完整規則','Full rule in this volume',lang)+'</a></p>']
-        else:out+=['<p>'+txt(value,lang)+'</p>']
-        if i==3 and q.get('lookup'):out+=[lookup_route(q,lang)]
-        out+=['</li>']
-    out+=['</ol>']
-    if q.get('related'):
-        out+=['<p class="qa-related">'+tr('相關機制：','Related mechanisms: ',lang)+' · '.join('<a href="'+url(next(v[0] for v in VOLUMES if v[1]<=n<=v[2]),lang,standalone)+'#q-'+str(n).zfill(3)+'">Q'+str(n)+'</a>' for n in q['related'])+'</p>']
+            shared.add(key);group,j=key
+            return anchor+'<p>'+txt(short_rule(value),lang)+' <a class="qa-rule-link" href="#common-'+group+'-'+str(j)+'">'+tr('完整條件見本冊說明','Read the complete conditions in this volume',lang)+'</a></p>'
+        return anchor+'<p>'+txt(value,lang)+'</p>'
+    section_no=0
+    for section in plan['sections']:
+        fields=section['fields'];visible=[i for i in fields if i not in replaced]
+        put_flow=visual and not flow_done and 5 in fields
+        if not visible and not put_flow:continue
+        section_no+=1
+        out+=[f'<section class="qa-section" id="{qid}-s-{section_no:02d}" data-answer-section="{section_no}"><h3><span>{section_no}.</span> '+txt(section['title'],lang)+'</h3>']
+        if section.get('table'):
+            rows=[]
+            for i in visible:
+                rendered.add(i)
+                out+=[f'<span class="qa-anchor" id="{qid}-a-{i:02d}"></span>']
+                rows.append([LABELS[i-1],q['answers'][i]])
+            out+=[table([('觸發方式','Trigger'),('這項操作或狀態會如何變化','Effect on this operation or state')],rows,lang)]
+        else:
+            for i in visible:
+                out+=[paragraph(i)]
+                if i==3 and q.get('lookup'):out+=[lookup_route(q,lang)]
+        if put_flow:
+            for i in sorted(replaced):
+                if i not in rendered:
+                    out+=[f'<span class="qa-anchor" id="{qid}-a-{i:02d}"></span>'];rendered.add(i)
+            out+=[visual_flow(q,lang)];flow_done=True
+        out+=['</section>']
+    if visual and not flow_done:raise ValueError(f'Missing visual position for {qid}')
+    out+=['</div>']
+    # Keep previously shared deep links working, without retaining irrelevant
+    # legacy paragraphs in the hidden DOM or search text.
+    out+=[''.join(f'<span class="qa-anchor" id="{qid}-a-{i:02d}"></span>' for i in q['answers'] if i not in rendered)]
+    if plan['related']:
+        out+=['<p class="qa-related">'+tr('相關機制：','Related mechanisms: ',lang)+' · '.join('<a href="'+url(next(v[0] for v in VOLUMES if v[1]<=n<=v[2]),lang,standalone)+'#q-'+str(n).zfill(3)+'">Q'+str(n)+'</a>' for n in plan['related'])+'</p>']
     out+=['<details class="qa-source-links"><summary>'+tr('本題原文定位','Source locations for this question',lang)+'</summary>',cite(q['refs'],lang),'</details></details><a class="qa-back" href="#question-index">'+tr('回本冊題目','Back to questions',lang)+'</a></article>']
     return '\n'.join(out)
 
 def common_rules(shared,lang):
     titles={'data_io':('資料 I/O 的事件、紀錄與重設','Data-I/O events, records and reset'),'feature_events':('Set Feature 的事件記錄','Set Feature event recording'),'register':('Register 存取','Register access'),'command':('命令完成、事件與紀錄','Command completion, events and records'),'queue':('Queue 的重設與影響範圍','Queue reset and scope'),'identify':('查詢的重設與影響範圍','Query reset and scope'),'feature':('Feature 的重設與影響範圍','Feature reset and scope')}
+    if not shared:return ''
     out=['<section id="common-rules" class="qa-common"><h2>'+tr('共用規則：各題連到的完整解釋','Shared rules linked from the answers',lang)+'</h2><p>'+tr('這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。','Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.',lang)+'</p>']
     for group,i in sorted(shared):
         out +=[f'<article id="common-{group}-{i}"><h3>'+txt(titles.get(group,('本主題的共用條件','Shared conditions for this topic')),lang)+' · '+txt(LABELS[i-1],lang)+'</h3><p>'+txt(COMMON[group][i],lang)+'</p></article>']
@@ -185,7 +206,7 @@ def index_body(lang,standalone):
     out=['<h1>'+tr('NVMe Base 2.4 自問自答題庫','NVMe Base 2.4 Self-Study Question Bank',lang)+'</h1><p class="qr-intro">'+tr('本題庫收錄第 1～328 題，依主題分成 27 冊。先理解 controller 啟用、queue 及 command 的運作，再學習如何查詢能力與設定功能。每題除了說明機制，也練習將實際觀察結果與規範要求互相比對。','Questions 1–328 in 27 volumes: from controller enable, queues and commands to capability discovery and configuration. Learn both the mechanisms and how to judge observations against the specification.',lang)+'</p><div class="qr-series">']
     for slug,a,b,zh,en in VOLUMES:
         out+=['<article><h2><a href="'+url(slug,lang,standalone)+'">'+tr(zh,en,lang)+'</a></h2><p class="qr-tags">Q'+str(a)+'–Q'+str(b)+'</p><p>'+txt(INTRO[slug],lang)+'</p></article>']
-    out+=['</div><section><h2>'+tr('怎麼使用這份題庫','How to use this bank',lang)+'</h2><ol><li>'+tr('先說出功能的目的、影響對象與正常順序，再選查詢欄位。','Explain purpose, affected objects and sequence before selecting query fields.',lang)+'</li><li>'+tr('展開解答後，分別檢查成功結果、錯誤處理、事件、紀錄，以及三種重設的影響。MMIO 存取沒有 CQE，因此相關的 Status 或 DNR／More 項目會標示不適用。','Reveal the answer and separately compare success, errors, events, logs and three reset cases. Items without an MMIO CQE explicitly state non-applicability.',lang)+'</li><li>'+tr('判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。','Establish preconditions before judging firmware. Shall is a requirement, should a recommendation, may permission. Undefined behavior does not supply a fixed expected status.',lang)+'</li></ol><p>'+tr('所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。','All numerical examples are hypothetical, not hardware measurements. The scope is the three specifications as used by PCIe SSDs, excluding NVMe over Fabrics and PCIe link/packet details while retaining necessary PCIe configuration, interrupts, registers and doorbells.',lang)+'</p></section>',controls(lang,True),'<section id="question-index"><h2>'+tr('全部題目','All questions',lang)+'</h2><ol class="qa-index">']
+    out+=['</div><section><h2>'+tr('怎麼使用這份題庫','How to use this bank',lang)+'</h2><ol><li>'+tr('先說出功能的目的、影響對象與正常順序，再選查詢欄位。','Explain purpose, affected objects and sequence before selecting query fields.',lang)+'</li><li>'+tr('每題依問題安排解答：查詢題跟著欄位找證據，操作題看先後順序，比較題先分清對象。事件、錯誤與重設只在和問題有關時說明；流程圖中的分支條件與等待點也是答案的一部分。','Answers follow the question: trace evidence for lookups, dependencies for operations and distinctions for comparisons. Events, errors and resets appear when relevant. Conditions and wait points in the flows are part of the explanation.',lang)+'</li><li>'+tr('判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。','Establish preconditions before judging firmware. Shall is a requirement, should a recommendation, may permission. Undefined behavior does not supply a fixed expected status.',lang)+'</li></ol><p>'+tr('所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。','All numerical examples are hypothetical, not hardware measurements. The scope is the three specifications as used by PCIe SSDs, excluding NVMe over Fabrics and PCIe link/packet details while retaining necessary PCIe configuration, interrupts, registers and doorbells.',lang)+'</p></section>',controls(lang,True),'<section id="question-index"><h2>'+tr('全部題目','All questions',lang)+'</h2><ol class="qa-index">']
     for q in QUESTIONS:
         slug=next(v[0] for v in VOLUMES if v[1]<=q['id']<=v[2])
         out+=['<li class="qa-search-item"><a href="'+url(slug,lang,standalone)+f'#q-{q["id"]:03d}">Q{q["id"]:02d} · '+txt(q['title'],lang)+'</a></li>']
@@ -215,7 +236,7 @@ def body(slug,lang,standalone):
     if slug=='index':out+=[index_body(lang,standalone)]
     else:
         _,a,b,zh,en=next(v for v in VOLUMES if v[0]==slug)
-        out+=['<header><p class="qa-range">Q'+str(a)+'–Q'+str(b)+'</p><h1>'+tr(zh,en,lang)+'</h1><p class="qr-intro">'+txt(INTRO[slug],lang)+'</p><p>'+tr('先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。','Practice first, then reveal 17 answer items per question. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.',lang)+'</p></header>',glossary(lang),aid(slug,lang,standalone),controls(lang),'<section id="question-index"><h2>'+tr('本冊題目','Questions in this volume',lang)+'</h2><ol class="qa-index">']
+        out+=['<header><p class="qa-range">Q'+str(a)+'–Q'+str(b)+'</p><h1>'+tr(zh,en,lang)+'</h1><p class="qr-intro">'+txt(INTRO[slug],lang)+'</p><p>'+tr('先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。','Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.',lang)+'</p></header>',glossary(lang),aid(slug,lang,standalone),controls(lang),'<section id="question-index"><h2>'+tr('本冊題目','Questions in this volume',lang)+'</h2><ol class="qa-index">']
         qs=[q for q in QUESTIONS if a<=q['id']<=b]
         for q in qs:out+=[f'<li><a href="#q-{q["id"]:03d}">Q{q["id"]:02d} · '+txt(q['title'],lang)+'</a></li>']
         out+=['</ol></section>'];shared=set()
@@ -247,5 +268,5 @@ def main():
             if not path.exists() or path.read_text()!=content:drift.append(str(path.relative_to(ROOT)))
         else:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(content,encoding='utf-8')
     if drift:raise SystemExit('Question-bank artifact drift: '+', '.join(drift))
-    print(('Verified' if args.check else 'Built')+f' {len(outputs)} question-bank artifacts: 328 questions, 17 items, 27 volumes + index, 3 editions')
+    print(('Verified' if args.check else 'Built')+f' {len(outputs)} question-bank artifacts: 328 questions, question-specific answers, 27 volumes + index, 3 editions')
 if __name__=='__main__':main()

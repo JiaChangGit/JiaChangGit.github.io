@@ -262,3 +262,51 @@ passed 180 browser states across three editions, three widths, two explicit them
 and both answer disclosure states. Chinese and English lookup tables were visually
 reviewed. Final field/value spacing receives a focused follow-up on the three
 worked-route volumes. Offline navigation, search and keyboard disclosure passed.
+
+
+## 2026-10-05 — Answers follow the question, not the 17-part prompt
+
+The user explicitly changed the output contract: the original 17 perspectives
+are optional prompts for the author. They are no longer required answer sections.
+This supersedes the historical 17-item requirements above and in older AGENTS
+entries. Q1–Q328, the 27 volumes, all three editions and existing URLs remain.
+
+Every question now has an explicit reading plan in `nvme_qa_presentation.py`.
+The plans distinguish field interpretation, comparisons, capability lookup,
+procedures, concepts, errors, diagnosis, lifetime and events. Simple questions
+have bespoke shorter explanations; operation-specific error and retention rules
+remain where they actually answer the question. General MMIO/command event and
+reset boilerplate is not emitted into hidden or visible answer HTML.
+
+The legacy `answers` keys remain editorial material and compatibility anchors,
+not a requirement for future authors. Old `q-NNN-a-NN` fragments still open the
+revised answer; there are no hidden copies of the removed paragraphs. Necessary
+shared rules are explained once and linked locally. Relevant detail moved out of
+introductory comparisons links to its existing canonical question.
+
+Twelve bilingual, offline flows replace the paragraphs they explain: Q3, Q12,
+Q27, Q75, Q84, Q113, Q191, Q206, Q226, Q232, Q277 and Q299. The diagrams distinguish
+submission from completion, alternative branches from sequential operations,
+and successful information retrieval from successful background operations.
+Q3 retains CRTO timing origins and PEL/DNR failure conditions. Q113 does not turn
+host recovery policy into a mandatory Abort→Queue Reset→Controller Reset chain.
+Q277 uses the first-page offset before choosing the meaning of PRP2.
+
+The underlying source locations and three PDF identities are unchanged. The
+restructured renderer preserves the source index, worked capability queries,
+standalone teaching lessons and counterpart Chinese/English content. No new
+question was needed: this change improves existing learning objectives without
+creating similar questions.
+
+Completion validation on 2026-10-06: 132 tests passed; the final question-bank
+subset passed all 26 tests after the last editorial adjustments. All three source
+PDF hashes and 134 locator groups were checked. The 84 generated artifacts match
+the builder, the publication contract passes, and 15,561 local links resolve.
+Browser verification covered 1,008 states across all 84 editions (three viewport
+sizes, two explicit themes and folded/expanded answers), plus 144 focused states
+after final edits. All passed contrast, overflow, fragment and duplicate-ID checks.
+All 12 explanatory flows, a concise answer and a retention comparison were
+visually reviewed. Offline navigation, keyboard disclosure, search, theme changes
+and legacy deep links passed. Q172 specifically excludes the old unrelated
+Attachment retention text; Q195 links the established feature-specific comparison
+instead of repeating a generic reset table.

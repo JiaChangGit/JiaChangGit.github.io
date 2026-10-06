@@ -12,7 +12,7 @@ nvme_qa: true
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/interrupts/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/interrupts.html">Chinese tutorial HTML</a></nav>
 <main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q286–Q296</p><h1>Interrupt configuration and completion delivery</h1><p class="qr-intro">Establish CQE posting before diagnosing routing, aggregation, masks and host consumption.</p><p>Practice first, then reveal 17 answer items per question. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
+<header><p class="qa-range">Q286–Q296</p><h1>Interrupt configuration and completion delivery</h1><p class="qr-intro">Establish CQE posting before diagnosing routing, aggregation, masks and host consumption.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
 <aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>Four controls answer different questions</h2><p class="qa-takeaway">FID 09h.CD disables coalescing, not interrupts.</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Control</th><th scope="col">Interface</th><th scope="col">Meaning</th></tr></thead><tbody><tr><td>CQ routing</td><td>IV/IEN</td><td>Vector and notification enable</td></tr><tr><td>Aggregation</td><td>TIME/THR</td><td>Recommended delay/count</td></tr><tr><td>Per-vector override</td><td>CD</td><td>Disable aggregation for this vector</td></tr><tr><td>Masking</td><td>Mode-specific masks</td><td>Allow delivery</td></tr></tbody></table></div>
@@ -33,654 +33,251 @@ nvme_qa: true
 <li><a href="#q-295">Q295 · How are interrupt resources reclaimed after queue deletion?</a></li>
 <li><a href="#q-296">Q296 · How are interrupt settings, CQ state and completions cross-checked?</a></li>
 </ol></section>
-<article class="qa-question" id="q-286" data-question="286"><h2><a class="qa-qid" href="#q-286">Q286</a> How does a CQ select an interrupt vector?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-286-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-286-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>CQ identity selects completion storage, while IV selects notification; the numbers need not match.</p>
-</li>
-<li id="q-286-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>I/O CQs own vector associations; SQs use them through CQID.</p>
-</li>
-<li id="q-286-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Establish interrupt mode and allocated vectors before CQ creation.</p>
-</li>
-<li id="q-286-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>IV selects the vector, IEN enables CQ interrupts and PC selects memory contiguity.</p>
-</li>
-<li id="q-286-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Allocate vectors, create CQ and SQ, then verify with I/O.</p>
-</li>
-<li id="q-286-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>CQ5 can use IV2; an SQ7 completion goes to CQ5 and is identified by SQID/CID after IV2 notification.</p>
-</li>
-<li id="q-286-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Invalid vector selection maps to 1/08h, independently of QID validity.</p>
-</li>
-<li id="q-286-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-286-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Correlate successful creation, IV/IEN and the host handler’s CQ list.</p>
-</li>
-<li id="q-286-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First identify which CQ the host checks for that vector.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-287" data-question="287"><h2><a class="qa-qid" href="#q-287">Q287</a> How do shared and dedicated CQ vectors differ?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-287-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-287-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Sharing saves vectors but requires scanning more CQs; dedicated vectors simplify distribution.</p>
-</li>
-<li id="q-287-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Aggregation thresholds apply per vector and may cover several CQs.</p>
-</li>
-<li id="q-287-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Inspect available vectors and CQ IV/IEN associations.</p>
-</li>
-<li id="q-287-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>CQEs retain command identity; the interrupt does not enumerate completed commands.</p>
-</li>
-<li id="q-287-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Maintain vector-to-CQ membership, consume valid entries and acknowledge each CQ.</p>
-</li>
-<li id="q-287-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>One IV3 interrupt can cover multiple completions in two CQs.</p>
-</li>
-<li id="q-287-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Interrupt and CQE counts need not match under sharing and aggregation.</p>
-</li>
-<li id="q-287-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-287-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Measure per-CQ posting and consumption, not only shared-vector counts.</p>
-</li>
-<li id="q-287-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check whether the handler misses a CQ sharing the vector.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-288" data-question="288"><h2><a class="qa-qid" href="#q-288">Q288</a> How do coalescing threshold and time work?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-288-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-288-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Aggregation reduces host overhead at possible notification-latency cost without requiring delayed CQE posting.</p>
-</li>
-<li id="q-288-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>FID 08h applies to I/O queues, not Admin CQ.</p>
-</li>
-<li id="q-288-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Read/configure TIME/THR and check each vector’s coalescing-disable bit.</p>
-</li>
-<li id="q-288-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>TIME is in 100 µs units and THR is a zero-based recommended completion count.</p>
-</li>
-<li id="q-288-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Establish nonzero settings and CD0 before comparing notification timing under a fixed workload.</p>
-</li>
-<li id="q-288-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>TIME5/THR7 recommends 500 µs and 8 completions, not waiting for both exact values.</p>
-</li>
-<li id="q-288-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>PCIe permits implementation-specific aggregation, including none; deviation from recommended timing alone is not a violation.</p>
-</li>
-<li id="q-288-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-288-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>CQ-head updates may restart aggregation and ongoing servicing can continually postpone another notification.</p>
-</li>
-<li id="q-288-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First distinguish completion posting from interrupt delay.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-289" data-question="289"><h2><a class="qa-qid" href="#q-289">Q289</a> How is interrupt coalescing disabled?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-289-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-289-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Disabling aggregation removes coalescing, not interrupts.</p>
-</li>
-<li id="q-289-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>FID 08h controls I/O aggregation globally, while FID 09h.CD disables it per vector.</p>
-</li>
-<li id="q-289-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Read aggregation settings, vector overrides and CQ interrupt enable.</p>
-</li>
-<li id="q-289-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Either zero TIME or zero THR implicitly disables aggregation; CD1 prevents aggregation on that vector.</p>
-</li>
-<li id="q-289-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Use FID 08h globally, or associate an I/O CQ before setting a per-vector override.</p>
-</li>
-<li id="q-289-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Verify readback and apply delivery/mask rules rather than the previous aggregation threshold.</p>
-</li>
-<li id="q-289-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>THR0 has an explicit disable meaning despite ordinary zero-based count interpretation.</p>
-</li>
-<li id="q-289-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-289-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>No aggregation does not require one separate interrupt per CQE.</p>
-</li>
-<li id="q-289-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check whether CD1 was mistaken for masking.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-290" data-question="290"><h2><a class="qa-qid" href="#q-290">Q290</a> Does FID 09h mask interrupts, and where are actual masks configured?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-290-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-290-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>The original premise confuses FID 09h coalescing control with interrupt masking.</p>
-</li>
-<li id="q-290-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>A mask blocks delivery for all CQs sharing that vector.</p>
-</li>
-<li id="q-290-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Select the masking interface after establishing the active interrupt mode.</p>
-</li>
-<li id="q-290-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>INTMS write-one sets and INTMC write-one clears pin/MSI masks; MSI-X uses function and table-vector masks.</p>
-</li>
-<li id="q-290-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Preserve state, mask, service/acknowledge CQs, unmask and check remaining work.</p>
-</li>
-<li id="q-290-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>INTMC requires writing one to clear a mask; zero has no effect.</p>
-</li>
-<li id="q-290-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>INTMS/INTMC access is prohibited and undefined under MSI-X, not a guaranteed NVMe status.</p>
-</li>
-<li id="q-290-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Mask register accesses have no NVMe CQE; only separate Get/Set Feature commands carry DNR/More.</p>
-</li>
-<li id="q-290-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-290-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>FID 09h readback does not establish MSI-X mask state.</p>
-</li>
-<li id="q-290-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First inspect actual mode and mask bits.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-291" data-question="291"><h2><a class="qa-qid" href="#q-291">Q291</a> Can completions be posted while a vector is masked?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-291-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-291-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Masking controls notification rather than command execution or CQ posting.</p>
-</li>
-<li id="q-291-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Associated CQs can accumulate completions until their capacity limits intervene.</p>
-</li>
-<li id="q-291-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Inspect masks, IEN, CQ position/phase and applicable MSI-X pending bits.</p>
-</li>
-<li id="q-291-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Normal CQE posting continues; MSI-X masks cause pending-interrupt indication.</p>
-</li>
-<li id="q-291-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Poll and consume valid CQEs, then update head to release space.</p>
-</li>
-<li id="q-291-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>A new valid CQE without an interrupt can be normal while masked.</p>
-</li>
-<li id="q-291-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>CQ fullness is a capacity consequence of nonconsumption, not a direct masking rule.</p>
-</li>
-<li id="q-291-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-291-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Absence of an interrupt does not establish absence of completion.</p>
-</li>
-<li id="q-291-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check valid CQ phase before notification configuration.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-292" data-question="292"><h2><a class="qa-qid" href="#q-292">Q292</a> How are accumulated completions handled after unmasking?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-292-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-292-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>One pending interrupt can represent many completions whose results remain in CQs.</p>
-</li>
-<li id="q-292-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Service all relevant CQs sharing the vector.</p>
-</li>
-<li id="q-292-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Check mode-specific masks/pending state and associated queues.</p>
-</li>
-<li id="q-292-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Pending MSI-X delivery requires both mask layers clear.</p>
-</li>
-<li id="q-292-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Unmask, process valid CQEs and acknowledge heads while handling arrival races.</p>
-</li>
-<li id="q-292-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Ten accumulated completions need not cause ten replayed interrupts.</p>
-</li>
-<li id="q-292-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>INTM masking suppresses MSI pending assertion; MSI-X PBA semantics cannot be copied to it.</p>
-</li>
-<li id="q-292-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-292-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Judge consumption completeness, not equality of interrupt and command counts.</p>
-</li>
-<li id="q-292-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check another mask layer or omitted shared CQ.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-293" data-question="293"><h2><a class="qa-qid" href="#q-293">Q293</a> Can an in-use vector be reconfigured?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-293-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-293-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Distinguish coalescing changes, masking and reassignment of CQ association.</p>
-</li>
-<li id="q-293-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>FID 09h changes aggregation for the selected vector and its associated CQs.</p>
-</li>
-<li id="q-293-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>FID 09h requires prior association with an existing I/O CQ.</p>
-</li>
-<li id="q-293-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>CD selects aggregation behavior, not reassignment of Create CQ.IV.</p>
-</li>
-<li id="q-293-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Change/read back vector settings; recreate the queue association when a different IV is needed.</p>
-</li>
-<li id="q-293-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>An existing CQ is the feature’s prerequisite, not a prohibition on change.</p>
-</li>
-<li id="q-293-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Invalid/unassociated IV should produce Invalid Field, preserving the recommendation strength.</p>
-</li>
-<li id="q-293-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-293-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Preserve shared-CQ and mask state to isolate feature effects.</p>
-</li>
-<li id="q-293-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First identify which of CD, mask or CQ.IV is intended to change.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-294" data-question="294"><h2><a class="qa-qid" href="#q-294">Q294</a> How are interrupts restored after reset?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-294-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-294-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Queue associations end with queue lifetime; PCIe mode/mask retention depends on the reset source.</p>
-</li>
-<li id="q-294-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>One-controller reset differs from broader reset and does not justify reconfiguring unaffected controllers.</p>
-</li>
-<li id="q-294-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Inspect controller state, interrupt mode and feature current values.</p>
-</li>
-<li id="q-294-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>FID 08h resets to zero; default per-vector coalescing permission does not enable a disabled global aggregation policy.</p>
-</li>
-<li id="q-294-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Recover Admin access, vectors and queues before configuring per-vector/global aggregation.</p>
-</li>
-<li id="q-294-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>New completions are consumed through the rebuilt path without importing stale CQEs.</p>
-</li>
-<li id="q-294-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Setting FID 09h before rebuilding its CQ can violate the association prerequisite.</p>
-</li>
-<li id="q-294-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-294-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Mode changes may lose aggregation settings; CC.EN testing does not establish power-cycle behavior.</p>
-</li>
-<li id="q-294-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check reset type and successful new-CQ creation time.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-295" data-question="295"><h2><a class="qa-qid" href="#q-295">Q295</a> How are interrupt resources reclaimed after queue deletion?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-295-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-295-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>CQ deletion removes one completion destination, not the host-allocated PCIe vector itself.</p>
-</li>
-<li id="q-295-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Other CQs may still use the vector, requiring association-aware reclamation.</p>
-</li>
-<li id="q-295-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Preserve SQ-to-CQ-to-IV dependencies and outstanding commands.</p>
-</li>
-<li id="q-295-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Delete dependent SQs and wait, then delete CQ and retire its host handling state.</p>
-</li>
-<li id="q-295-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Release the handler/vector only after checking remaining CQ users.</p>
-</li>
-<li id="q-295-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Deleting CQ1 leaves IV3 serving CQ2 when both shared it.</p>
-</li>
-<li id="q-295-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Referenced CQs cannot be deleted successfully, nor their memory reclaimed early.</p>
-</li>
-<li id="q-295-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-295-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Correlate deletion completion, host membership and remaining notification paths.</p>
-</li>
-<li id="q-295-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First establish whether the vector is dedicated or shared.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-296" data-question="296"><h2><a class="qa-qid" href="#q-296">Q296</a> How are interrupt settings, CQ state and completions cross-checked?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-296-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-296-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Separating completion from notification distinguishes execution failures from delivery/consumption failures.</p>
-</li>
-<li id="q-296-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Follow a complete SQ-command-to-CQ-to-vector-to-handler path.</p>
-</li>
-<li id="q-296-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Inspect routing, aggregation, masks and phase.</p>
-</li>
-<li id="q-296-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Preserve submission, CQE posting, notification and head-update times separately.</p>
-</li>
-<li id="q-296-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Establish a valid CQE, assess notification, then verify consumption and reclamation.</p>
-</li>
-<li id="q-296-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>A posted CQE consumed by polling while masked can be valid normal behavior.</p>
-</li>
-<li id="q-296-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Resolve wrong phase/CQ or missing head updates before diagnosing a lost command from absent interrupts.</p>
-</li>
-<li id="q-296-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event. <a class="qa-rule-link" href="#common-interrupt_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Normal configuration/delivery does not require an error entry. <a class="qa-rule-link" href="#common-interrupt_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Interrupts are not individually recorded in PEL. <a class="qa-rule-link" href="#common-interrupt_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>CLR invalidates I/O queues and their vector associations. <a class="qa-rule-link" href="#common-interrupt_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime. <a class="qa-rule-link" href="#common-interrupt_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended. <a class="qa-rule-link" href="#common-interrupt_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting. <a class="qa-rule-link" href="#common-interrupt_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-296-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Correlate settings and observations from the same test interval.</p>
-</li>
-<li id="q-296-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First inspect the command’s CQ position and phase.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<section id="common-rules" class="qa-common"><h2>Shared rules linked from the answers</h2><p>Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.</p>
-<article id="common-command-8"><h3>Command completion, events and records · How are DNR and More set?</h3><p>For a CQE, DNR=1 means the identical command is expected to fail if resubmitted to any controller in this subsystem; DNR=0 means it may succeed. Do not assign DNR=1 solely from an error name unless that condition mandates it. More=1 identifies additional information for this command in the Error Information Log. DNR should be zero when SCT=SC=0.</p></article>
-<article id="common-interrupt_op-9"><h3>Shared conditions for this topic · Is an asynchronous event generated?</h3><p>Completion interrupts and Asynchronous Event Requests are different mechanisms; an AER completion also uses a CQE, but an ordinary I/O interrupt is not an NVMe asynchronous event.</p></article>
-<article id="common-interrupt_op-10"><h3>Shared conditions for this topic · Are Error Information or other logs updated?</h3><p>Normal configuration/delivery does not require an error entry. Failed commands follow error rules; an unconsumed CQE does not automatically create a controller error entry.</p></article>
-<article id="common-interrupt_op-11"><h3>Shared conditions for this topic · Is it recorded in the Persistent Event Log?</h3><p>Interrupts are not individually recorded in PEL. Feature changes follow FID-specific event rules, so PEL is not an interrupt counter.</p></article>
-<article id="common-interrupt_op-12"><h3>Shared conditions for this topic · What survives or continues after Controller Reset?</h3><p>CLR invalidates I/O queues and their vector associations. FID 08h resets to zero and FID 09h defaults to coalescing allowed; PCIe masks/modes require reset-source-specific treatment.</p></article>
-<article id="common-interrupt_op-13"><h3>Shared conditions for this topic · What survives or continues after NVM Subsystem Reset?</h3><p>Rebuild affected queues, vector associations and settings after subsystem reset; a reused vector number does not preserve the old CQ lifetime.</p></article>
-<article id="common-interrupt_op-14"><h3>Shared conditions for this topic · What survives or continues after a power cycle?</h3><p>Configure interrupt mode, queues and features after power cycle; mode changes also need not retain coalescing and reconfiguration is recommended.</p></article>
-<article id="common-interrupt_op-15"><h3>Shared conditions for this topic · Are other controllers or namespaces affected?</h3><p>A shared vector’s mask/coalescing affects notifications for all associated CQs; equal vector numbers on different controllers do not identify one NVMe setting.</p></article>
+<article class="qa-question" id="q-286" data-question="286" data-answer-kind="process"><h2><a class="qa-qid" href="#q-286">Q286</a> How does a CQ select an interrupt vector?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-286-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-286-a-01">CQ identity selects completion storage, while IV selects notification; the numbers need not match.</p><div class="qa-sections">
+<section class="qa-section" id="q-286-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-286-a-02"></span><p>I/O CQs own vector associations; SQs use them through CQID.</p>
+<span class="qa-anchor" id="q-286-a-03"></span><p>Establish interrupt mode and allocated vectors before CQ creation.</p>
+<span class="qa-anchor" id="q-286-a-04"></span><p>IV selects the vector, IEN enables CQ interrupts and PC selects memory contiguity.</p>
 </section>
+<section class="qa-section" id="q-286-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-286-a-05"></span><p>Allocate vectors, create CQ and SQ, then verify with I/O.</p>
+<span class="qa-anchor" id="q-286-a-06"></span><p>CQ5 can use IV2; an SQ7 completion goes to CQ5 and is identified by SQID/CID after IV2 notification.</p>
+</section>
+<section class="qa-section" id="q-286-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-286-a-07"></span><p>Invalid vector selection maps to 1/08h, independently of QID validity.</p>
+<span class="qa-anchor" id="q-286-a-16"></span><p>Correlate successful creation, IV/IEN and the host handler’s CQ list.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-286-a-17"></span><span class="qa-anchor" id="q-286-a-08"></span><span class="qa-anchor" id="q-286-a-09"></span><span class="qa-anchor" id="q-286-a-10"></span><span class="qa-anchor" id="q-286-a-11"></span><span class="qa-anchor" id="q-286-a-12"></span><span class="qa-anchor" id="q-286-a-13"></span><span class="qa-anchor" id="q-286-a-14"></span><span class="qa-anchor" id="q-286-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-287" data-question="287" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-287">Q287</a> How do shared and dedicated CQ vectors differ?</h2>
+<p class="qa-prompt">Identify the key difference and one case where the alternatives are not interchangeable.</p>
+<details class="qa-answer" id="q-287-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-287-a-01">Sharing saves vectors but requires scanning more CQs; dedicated vectors simplify distribution.</p><div class="qa-sections">
+<section class="qa-section" id="q-287-s-01" data-answer-section="1"><h3><span>1.</span> What differs</h3>
+<span class="qa-anchor" id="q-287-a-02"></span><p>Aggregation thresholds apply per vector and may cover several CQs.</p>
+<span class="qa-anchor" id="q-287-a-04"></span><p>CQEs retain command identity; the interrupt does not enumerate completed commands.</p>
+</section>
+<section class="qa-section" id="q-287-s-02" data-answer-section="2"><h3><span>2.</span> How to choose and verify</h3>
+<span class="qa-anchor" id="q-287-a-03"></span><p>Inspect available vectors and CQ IV/IEN associations.</p>
+<span class="qa-anchor" id="q-287-a-05"></span><p>Maintain vector-to-CQ membership, consume valid entries and acknowledge each CQ.</p>
+<span class="qa-anchor" id="q-287-a-06"></span><p>One IV3 interrupt can cover multiple completions in two CQs.</p>
+</section>
+<section class="qa-section" id="q-287-s-03" data-answer-section="3"><h3><span>3.</span> Where the comparison stops</h3>
+<span class="qa-anchor" id="q-287-a-07"></span><p>Interrupt and CQE counts need not match under sharing and aggregation.</p>
+<span class="qa-anchor" id="q-287-a-16"></span><p>Measure per-CQ posting and consumption, not only shared-vector counts.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-287-a-17"></span><span class="qa-anchor" id="q-287-a-08"></span><span class="qa-anchor" id="q-287-a-09"></span><span class="qa-anchor" id="q-287-a-10"></span><span class="qa-anchor" id="q-287-a-11"></span><span class="qa-anchor" id="q-287-a-12"></span><span class="qa-anchor" id="q-287-a-13"></span><span class="qa-anchor" id="q-287-a-14"></span><span class="qa-anchor" id="q-287-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-288" data-question="288" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-288">Q288</a> How do coalescing threshold and time work?</h2>
+<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
+<details class="qa-answer" id="q-288-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-288-a-01">Aggregation reduces host overhead at possible notification-latency cost without requiring delayed CQE posting.</p><div class="qa-sections">
+<section class="qa-section" id="q-288-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
+<span class="qa-anchor" id="q-288-a-02"></span><p>FID 08h applies to I/O queues, not Admin CQ.</p>
+<span class="qa-anchor" id="q-288-a-03"></span><p>Read/configure TIME/THR and check each vector’s coalescing-disable bit.</p>
+</section>
+<section class="qa-section" id="q-288-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
+<span class="qa-anchor" id="q-288-a-04"></span><p>TIME is in 100 µs units and THR is a zero-based recommended completion count.</p>
+<span class="qa-anchor" id="q-288-a-05"></span><p>Establish nonzero settings and CD0 before comparing notification timing under a fixed workload.</p>
+<span class="qa-anchor" id="q-288-a-06"></span><p>TIME5/THR7 recommends 500 µs and 8 completions, not waiting for both exact values.</p>
+</section>
+<section class="qa-section" id="q-288-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that change the interpretation</h3>
+<span class="qa-anchor" id="q-288-a-07"></span><p>PCIe permits implementation-specific aggregation, including none; deviation from recommended timing alone is not a violation.</p>
+<span class="qa-anchor" id="q-288-a-16"></span><p>CQ-head updates may restart aggregation and ongoing servicing can continually postpone another notification.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-288-a-17"></span><span class="qa-anchor" id="q-288-a-08"></span><span class="qa-anchor" id="q-288-a-09"></span><span class="qa-anchor" id="q-288-a-10"></span><span class="qa-anchor" id="q-288-a-11"></span><span class="qa-anchor" id="q-288-a-12"></span><span class="qa-anchor" id="q-288-a-13"></span><span class="qa-anchor" id="q-288-a-14"></span><span class="qa-anchor" id="q-288-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-289" data-question="289" data-answer-kind="process"><h2><a class="qa-qid" href="#q-289">Q289</a> How is interrupt coalescing disabled?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-289-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-289-a-01">Disabling aggregation removes coalescing, not interrupts.</p><div class="qa-sections">
+<section class="qa-section" id="q-289-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-289-a-02"></span><p>FID 08h controls I/O aggregation globally, while FID 09h.CD disables it per vector.</p>
+<span class="qa-anchor" id="q-289-a-03"></span><p>Read aggregation settings, vector overrides and CQ interrupt enable.</p>
+<span class="qa-anchor" id="q-289-a-04"></span><p>Either zero TIME or zero THR implicitly disables aggregation; CD1 prevents aggregation on that vector.</p>
+</section>
+<section class="qa-section" id="q-289-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-289-a-05"></span><p>Use FID 08h globally, or associate an I/O CQ before setting a per-vector override.</p>
+<span class="qa-anchor" id="q-289-a-06"></span><p>Verify readback and apply delivery/mask rules rather than the previous aggregation threshold.</p>
+</section>
+<section class="qa-section" id="q-289-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-289-a-07"></span><p>THR0 has an explicit disable meaning despite ordinary zero-based count interpretation.</p>
+<span class="qa-anchor" id="q-289-a-16"></span><p>No aggregation does not require one separate interrupt per CQE.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-289-a-17"></span><span class="qa-anchor" id="q-289-a-08"></span><span class="qa-anchor" id="q-289-a-09"></span><span class="qa-anchor" id="q-289-a-10"></span><span class="qa-anchor" id="q-289-a-11"></span><span class="qa-anchor" id="q-289-a-12"></span><span class="qa-anchor" id="q-289-a-13"></span><span class="qa-anchor" id="q-289-a-14"></span><span class="qa-anchor" id="q-289-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-290" data-question="290" data-answer-kind="process"><h2><a class="qa-qid" href="#q-290">Q290</a> Does FID 09h mask interrupts, and where are actual masks configured?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-290-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-290-a-01">Interrupt Vector Configuration (FID 09h) does not mask interrupts. Its CD bit controls whether that vector uses interrupt coalescing; inspect the active interrupt mechanism for the actual mask.</p><div class="qa-sections">
+<section class="qa-section" id="q-290-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-290-a-02"></span><p>A mask blocks delivery for all CQs sharing that vector.</p>
+<span class="qa-anchor" id="q-290-a-03"></span><p>Select the masking interface after establishing the active interrupt mode.</p>
+<span class="qa-anchor" id="q-290-a-04"></span><p>INTMS write-one sets and INTMC write-one clears pin/MSI masks; MSI-X uses function and table-vector masks.</p>
+</section>
+<section class="qa-section" id="q-290-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-290-a-05"></span><p>Preserve state, mask, service/acknowledge CQs, unmask and check remaining work.</p>
+<span class="qa-anchor" id="q-290-a-06"></span><p>INTMC requires writing one to clear a mask; zero has no effect.</p>
+</section>
+<section class="qa-section" id="q-290-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-290-a-07"></span><p>INTMS/INTMC access is prohibited and undefined under MSI-X, not a guaranteed NVMe status.</p>
+<span class="qa-anchor" id="q-290-a-16"></span><p>FID 09h readback does not establish MSI-X mask state.</p>
+</section>
+<section class="qa-section" id="q-290-s-04" data-answer-section="4"><h3><span>4.</span> Whether CQE, DNR and More apply here</h3>
+<span class="qa-anchor" id="q-290-a-08"></span><p>Mask register accesses have no NVMe CQE; only separate Get/Set Feature commands carry DNR/More.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-290-a-17"></span><span class="qa-anchor" id="q-290-a-09"></span><span class="qa-anchor" id="q-290-a-10"></span><span class="qa-anchor" id="q-290-a-11"></span><span class="qa-anchor" id="q-290-a-12"></span><span class="qa-anchor" id="q-290-a-13"></span><span class="qa-anchor" id="q-290-a-14"></span><span class="qa-anchor" id="q-290-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-291" data-question="291" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-291">Q291</a> Can completions be posted while a vector is masked?</h2>
+<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
+<details class="qa-answer" id="q-291-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-291-a-01">Masking controls notification rather than command execution or CQ posting.</p><div class="qa-sections">
+<section class="qa-section" id="q-291-s-01" data-answer-section="1"><h3><span>1.</span> Masking suppresses notification, not CQ progress</h3>
+<span class="qa-anchor" id="q-291-a-02"></span><p>Associated CQs can accumulate completions until their capacity limits intervene.</p>
+<span class="qa-anchor" id="q-291-a-04"></span><p>Normal CQE posting continues; MSI-X masks cause pending-interrupt indication.</p>
+<span class="qa-anchor" id="q-291-a-06"></span><p>A new valid CQE without an interrupt can be normal while masked.</p>
+</section>
+<section class="qa-section" id="q-291-s-02" data-answer-section="2"><h3><span>2.</span> Observe completions and avoid a full CQ</h3>
+<span class="qa-anchor" id="q-291-a-03"></span><p>Inspect masks, IEN, CQ position/phase and applicable MSI-X pending bits.</p>
+<span class="qa-anchor" id="q-291-a-05"></span><p>Poll and consume valid CQEs, then update head to release space.</p>
+<span class="qa-anchor" id="q-291-a-07"></span><p>CQ fullness is a capacity consequence of nonconsumption, not a direct masking rule.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-291-a-16"></span><span class="qa-anchor" id="q-291-a-17"></span><span class="qa-anchor" id="q-291-a-08"></span><span class="qa-anchor" id="q-291-a-09"></span><span class="qa-anchor" id="q-291-a-10"></span><span class="qa-anchor" id="q-291-a-11"></span><span class="qa-anchor" id="q-291-a-12"></span><span class="qa-anchor" id="q-291-a-13"></span><span class="qa-anchor" id="q-291-a-14"></span><span class="qa-anchor" id="q-291-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-292" data-question="292" data-answer-kind="process"><h2><a class="qa-qid" href="#q-292">Q292</a> How are accumulated completions handled after unmasking?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-292-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-292-a-01">One pending interrupt can represent many completions whose results remain in CQs.</p><div class="qa-sections">
+<section class="qa-section" id="q-292-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-292-a-02"></span><p>Service all relevant CQs sharing the vector.</p>
+<span class="qa-anchor" id="q-292-a-03"></span><p>Check mode-specific masks/pending state and associated queues.</p>
+<span class="qa-anchor" id="q-292-a-04"></span><p>Pending MSI-X delivery requires both mask layers clear.</p>
+</section>
+<section class="qa-section" id="q-292-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-292-a-05"></span><p>Unmask, process valid CQEs and acknowledge heads while handling arrival races.</p>
+<span class="qa-anchor" id="q-292-a-06"></span><p>Ten accumulated completions need not cause ten replayed interrupts.</p>
+</section>
+<section class="qa-section" id="q-292-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-292-a-07"></span><p>INTM masking suppresses MSI pending assertion; MSI-X PBA semantics cannot be copied to it.</p>
+<span class="qa-anchor" id="q-292-a-16"></span><p>Judge consumption completeness, not equality of interrupt and command counts.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-292-a-17"></span><span class="qa-anchor" id="q-292-a-08"></span><span class="qa-anchor" id="q-292-a-09"></span><span class="qa-anchor" id="q-292-a-10"></span><span class="qa-anchor" id="q-292-a-11"></span><span class="qa-anchor" id="q-292-a-12"></span><span class="qa-anchor" id="q-292-a-13"></span><span class="qa-anchor" id="q-292-a-14"></span><span class="qa-anchor" id="q-292-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-293" data-question="293" data-answer-kind="process"><h2><a class="qa-qid" href="#q-293">Q293</a> Can an in-use vector be reconfigured?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-293-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-293-a-01">Distinguish coalescing changes, masking and reassignment of CQ association.</p><div class="qa-sections">
+<section class="qa-section" id="q-293-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-293-a-02"></span><p>FID 09h changes aggregation for the selected vector and its associated CQs.</p>
+<span class="qa-anchor" id="q-293-a-03"></span><p>FID 09h requires prior association with an existing I/O CQ.</p>
+<span class="qa-anchor" id="q-293-a-04"></span><p>CD selects aggregation behavior, not reassignment of Create CQ.IV.</p>
+</section>
+<section class="qa-section" id="q-293-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-293-a-05"></span><p>Change/read back vector settings; recreate the queue association when a different IV is needed.</p>
+<span class="qa-anchor" id="q-293-a-06"></span><p>An existing CQ is the feature’s prerequisite, not a prohibition on change.</p>
+</section>
+<section class="qa-section" id="q-293-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-293-a-07"></span><p>Invalid/unassociated IV should produce Invalid Field, preserving the recommendation strength.</p>
+<span class="qa-anchor" id="q-293-a-16"></span><p>Preserve shared-CQ and mask state to isolate feature effects.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-293-a-17"></span><span class="qa-anchor" id="q-293-a-08"></span><span class="qa-anchor" id="q-293-a-09"></span><span class="qa-anchor" id="q-293-a-10"></span><span class="qa-anchor" id="q-293-a-11"></span><span class="qa-anchor" id="q-293-a-12"></span><span class="qa-anchor" id="q-293-a-13"></span><span class="qa-anchor" id="q-293-a-14"></span><span class="qa-anchor" id="q-293-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-294" data-question="294" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-294">Q294</a> How are interrupts restored after reset?</h2>
+<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
+<details class="qa-answer" id="q-294-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-294-a-01">Queue associations end with queue lifetime; PCIe mode/mask retention depends on the reset source.</p><div class="qa-sections">
+<section class="qa-section" id="q-294-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
+<span class="qa-anchor" id="q-294-a-02"></span><p>One-controller reset differs from broader reset and does not justify reconfiguring unaffected controllers.</p>
+<span class="qa-anchor" id="q-294-a-03"></span><p>Inspect controller state, interrupt mode and feature current values.</p>
+</section>
+<section class="qa-section" id="q-294-s-02" data-answer-section="2"><h3><span>2.</span> State changes and recovery</h3>
+<span class="qa-anchor" id="q-294-a-04"></span><p>FID 08h resets to zero; default per-vector coalescing permission does not enable a disabled global aggregation policy.</p>
+<span class="qa-anchor" id="q-294-a-05"></span><p>Recover Admin access, vectors and queues before configuring per-vector/global aggregation.</p>
+<span class="qa-anchor" id="q-294-a-06"></span><p>New completions are consumed through the rebuilt path without importing stale CQEs.</p>
+</section>
+<section class="qa-section" id="q-294-s-03" data-answer-section="3"><h3><span>3.</span> Verify retention and recovery</h3>
+<span class="qa-anchor" id="q-294-a-07"></span><p>Setting FID 09h before rebuilding its CQ can violate the association prerequisite.</p>
+<span class="qa-anchor" id="q-294-a-16"></span><p>Mode changes may lose aggregation settings; CC.EN testing does not establish power-cycle behavior.</p>
+<span class="qa-anchor" id="q-294-a-17"></span><p>First check reset type and successful new-CQ creation time.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-294-a-08"></span><span class="qa-anchor" id="q-294-a-09"></span><span class="qa-anchor" id="q-294-a-10"></span><span class="qa-anchor" id="q-294-a-11"></span><span class="qa-anchor" id="q-294-a-12"></span><span class="qa-anchor" id="q-294-a-13"></span><span class="qa-anchor" id="q-294-a-14"></span><span class="qa-anchor" id="q-294-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-295" data-question="295" data-answer-kind="process"><h2><a class="qa-qid" href="#q-295">Q295</a> How are interrupt resources reclaimed after queue deletion?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-295-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-295-a-01">CQ deletion removes one completion destination, not the host-allocated PCIe vector itself.</p><div class="qa-sections">
+<section class="qa-section" id="q-295-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-295-a-02"></span><p>Other CQs may still use the vector, requiring association-aware reclamation.</p>
+<span class="qa-anchor" id="q-295-a-03"></span><p>Preserve SQ-to-CQ-to-IV dependencies and outstanding commands.</p>
+<span class="qa-anchor" id="q-295-a-04"></span><p>Delete dependent SQs and wait, then delete CQ and retire its host handling state.</p>
+</section>
+<section class="qa-section" id="q-295-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-295-a-05"></span><p>Release the handler/vector only after checking remaining CQ users.</p>
+<span class="qa-anchor" id="q-295-a-06"></span><p>Deleting CQ1 leaves IV3 serving CQ2 when both shared it.</p>
+</section>
+<section class="qa-section" id="q-295-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-295-a-07"></span><p>Referenced CQs cannot be deleted successfully, nor their memory reclaimed early.</p>
+<span class="qa-anchor" id="q-295-a-16"></span><p>Correlate deletion completion, host membership and remaining notification paths.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-295-a-17"></span><span class="qa-anchor" id="q-295-a-08"></span><span class="qa-anchor" id="q-295-a-09"></span><span class="qa-anchor" id="q-295-a-10"></span><span class="qa-anchor" id="q-295-a-11"></span><span class="qa-anchor" id="q-295-a-12"></span><span class="qa-anchor" id="q-295-a-13"></span><span class="qa-anchor" id="q-295-a-14"></span><span class="qa-anchor" id="q-295-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-296" data-question="296" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-296">Q296</a> How are interrupt settings, CQ state and completions cross-checked?</h2>
+<p class="qa-prompt">Separate available evidence from missing information before judging conformance.</p>
+<details class="qa-answer" id="q-296-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-296-a-01">Separating completion from notification distinguishes execution failures from delivery/consumption failures.</p><div class="qa-sections">
+<section class="qa-section" id="q-296-s-01" data-answer-section="1"><h3><span>1.</span> Preserve the evidence first</h3>
+<span class="qa-anchor" id="q-296-a-02"></span><p>Follow a complete SQ-command-to-CQ-to-vector-to-handler path.</p>
+<span class="qa-anchor" id="q-296-a-03"></span><p>Inspect routing, aggregation, masks and phase.</p>
+<span class="qa-anchor" id="q-296-a-04"></span><p>Preserve submission, CQE posting, notification and head-update times separately.</p>
+</section>
+<section class="qa-section" id="q-296-s-02" data-answer-section="2"><h3><span>2.</span> Work through the possible causes</h3>
+<span class="qa-anchor" id="q-296-a-17"></span><p>First inspect the command’s CQ position and phase.</p>
+<span class="qa-anchor" id="q-296-a-05"></span><p>Establish a valid CQE, assess notification, then verify consumption and reclamation.</p>
+</section>
+<section class="qa-section" id="q-296-s-03" data-answer-section="3"><h3><span>3.</span> Decide what the evidence supports</h3>
+<span class="qa-anchor" id="q-296-a-06"></span><p>A posted CQE consumed by polling while masked can be valid normal behavior.</p>
+<span class="qa-anchor" id="q-296-a-07"></span><p>Resolve wrong phase/CQ or missing head updates before diagnosing a lost command from absent interrupts.</p>
+<span class="qa-anchor" id="q-296-a-16"></span><p>Correlate settings and observations from the same test interval.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-296-a-08"></span><span class="qa-anchor" id="q-296-a-09"></span><span class="qa-anchor" id="q-296-a-10"></span><span class="qa-anchor" id="q-296-a-11"></span><span class="qa-anchor" id="q-296-a-12"></span><span class="qa-anchor" id="q-296-a-13"></span><span class="qa-anchor" id="q-296-a-14"></span><span class="qa-anchor" id="q-296-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-interruptfull">PCIe Transport 1.4 §3.5–3.5.2 (interrupt delivery and masks), 3.8.4</a> · <a href="#ref-interruptmask">Base 2.4 §3.1.4 (INTMS, INTMC)</a> · <a href="#ref-interruptfeature">Base 2.4 §5.2.30.2.1–5.2.30.2.2</a> · <a href="#ref-create">Base 2.4 §5.3.1–5.3.2</a> · <a href="#ref-delete">Base 2.4 §5.3.3–5.3.4</a> · <a href="#ref-cqe">Base 2.4 §4.2.1, 4.2.3–4.2.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+
 <section id="source-index"><h2>Source locations and existing figure guides</h2><p>Base printed page = PDF page−26; the other two use identical numbers. Locations follow the supplied PDF body and retain figure numbers. Shared pages contribute only the relevant definitions, excluding Fabrics and PCIe link/packet content.</p><ul class="qa-references">
 <li id="ref-interruptmask"><strong>Base 2.4 · §3.1.4 (INTMS, INTMC)</strong><br>Printed pages 59 · PDF 85 · Figure 39–40</li>
 <li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>Printed pages 120–124 · PDF 146–150</li>

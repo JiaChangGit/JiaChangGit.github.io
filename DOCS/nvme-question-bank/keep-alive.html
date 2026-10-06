@@ -88,11 +88,22 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa .qa-answer {border:0;padding:0;background:transparent;}
 .nvme-qa summary {cursor:pointer;color:var(--qr-accent);font-weight:650;line-height:1.7;}
 .nvme-qa .qa-answer>summary {padding:.8rem 0;}
-.nvme-qa .qa-items {list-style:none;margin:0;padding:0;}
-.nvme-qa .qa-items>li {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
-.nvme-qa .qa-items h3 {font-size:1em;line-height:1.65;margin:0 0 .6rem;}
-.nvme-qa .qa-items h3 span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
-.nvme-qa .qa-items p {margin:.4rem 0;}
+.nvme-qa .qa-answer-lead {font-size:1.06em;line-height:1.85;margin:.6rem 0 1.4rem;}
+.nvme-qa .qa-section {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-section h3 {font-size:1.05em;line-height:1.65;margin:0 0 .8rem;}
+.nvme-qa .qa-section h3>span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
+.nvme-qa .qa-section>p {margin:.7rem 0 1.1rem;}
+.nvme-qa .qa-anchor {scroll-margin-top:2rem;}
+.nvme-qa .qa-flow {margin:1.3rem 0;padding:1.2rem;border:1px solid var(--qr-border);border-radius:12px;background:var(--qr-soft);}
+.nvme-qa .qa-flow figcaption {font-weight:700;font-size:1.03em;color:var(--qr-fg);line-height:1.6;}
+.nvme-qa .qa-flow>p {font-size:.94em;line-height:1.8;}
+.nvme-qa .qa-flow-steps {list-style:none;padding:0;margin:1.4rem 0;display:grid;gap:1.4rem;}
+.nvme-qa .qa-flow-steps>li {position:relative;margin:0;padding:1rem;border:1px solid var(--qr-border);border-left:4px solid var(--qr-accent);border-radius:8px;background:var(--qr-surface);}
+.nvme-qa .qa-flow-steps>li.qa-flow-branch {border-left-style:double;border-left-width:6px;margin-left:1rem;}
+.nvme-qa .qa-flow-steps strong {display:block;color:var(--qr-fg);line-height:1.6;}
+.nvme-qa .qa-flow-steps p {margin:.5rem 0 0;font-size:.92em;line-height:1.8;}
+.nvme-qa .qa-flow-arrow {position:absolute;top:-1.5rem;left:50%;font-size:1.1rem;line-height:1.4rem;color:var(--qr-accent);}
+.nvme-qa .qa-flow-conclusion {border-top:1px solid var(--qr-border);padding-top:1rem;margin-bottom:0;}
 .nvme-qa .qa-rule-link {white-space:normal;font-size:.9em;}
 .nvme-qa .qa-common article {padding:1rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
 .nvme-qa .qa-common h3 {font-size:1em;}
@@ -106,14 +117,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa .qa-theme {margin:0 1rem;}
 .nvme-qa output {font-size:.85em;color:var(--qr-muted);}
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
-@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-items h3 span{display:inline}.nvme-qa .qa-state{flex-direction:column}}
-@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-items>li{break-inside:avoid}}
+@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
+@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
 </style></head><body class="qr-standalone">
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/keep-alive/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/keep-alive/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
 <main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q217–Q222</p><h1>Keep Alive</h1><p class="qr-intro">Keep Alive 用來偵測 Host 是否仍維持連線活動，在 PCIe 上屬選配。本冊分開命令模式與流量模式，說明何時開始計時及到期後的結果。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
+<header><p class="qa-range">Q217–Q222</p><h1>Keep Alive</h1><p class="qr-intro">Keep Alive 用來偵測 Host 是否仍維持連線活動，在 PCIe 上屬選配。本冊分開命令模式與流量模式，說明何時開始計時及到期後的結果。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>兩種模式，兩種重新計時依據</h2><p class="qa-takeaway">一筆命令長期 outstanding，不等於每個流量區間都有新活動。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">條件</th><th scope="col">查詢或動作</th><th scope="col">判讀</th></tr></thead><tbody><tr><td>支援與粒度</td><td>KAS、TBKAS</td><td>KAS 單位 100 ms；模式另確認</td></tr><tr><td>逾時設定</td><td>FID0Fh.KATO</td><td>要求值可能向上調整</td></tr><tr><td>命令模式</td><td>成功 Keep Alive／KATO Set</td><td>依成功操作重新計時</td></tr><tr><td>流量模式</td><td>區間內取得命令</td><td>不能只看仍有 outstanding</td></tr></tbody></table></div>
@@ -137,364 +148,142 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-221">Q221 · Controller Reset 後，是否要重新設定 Keep Alive？</a></li>
 <li><a href="#q-222">Q222 · Command Based 與 Traffic Based Keep Alive 有何不同？</a></li>
 </ol></section>
-<article class="qa-question" id="q-217" data-question="217"><h2><a class="qa-qid" href="#q-217">Q217</a> PCIe Host 如何確認 Keep Alive 支援？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-217-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-217-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Keep Alive 是通訊存活監測，不是每筆 I/O 的執行期限。PCIe 不要求所有 SSD 都啟用它。</p>
-</li>
-<li id="q-217-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>每個 controller 各自有 Timer，不能以另一個 controller 的活動替代。</p>
-</li>
-<li id="q-217-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>Identify.KAS 非零表示支援，並給出以 100 ms 為單位的設定粒度；CTRATT.TBKAS 表示 Traffic Based 模式。</p>
-</li>
-<li id="q-217-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>支援 Timer 就必須支援 Keep Alive 命令；設定透過 FID0Fh.KATO，單位為毫秒。</p>
-</li>
-<li id="q-217-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先讀 KAS，再判斷模式及需要的 KATO，最後 Get 確認實際採用值。</p>
-</li>
-<li id="q-217-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>PCIe 的預設 KATO=0，即停用；支援能力非零與目前有啟用，是不同資訊。</p>
-</li>
-<li id="q-217-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>KAS=0 時不能要求它接受 Keep Alive 或 Timer 設定；依實際不支援的 Opcode／Feature 回應判讀。</p>
-</li>
-<li id="q-217-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Keep Alive 成功不產生另一筆成功 AER。 <a class="qa-rule-link" href="#common-keepalive_op-9">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。 <a class="qa-rule-link" href="#common-keepalive_op-10">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。 <a class="qa-rule-link" href="#common-keepalive_op-11">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。 <a class="qa-rule-link" href="#common-feature-12">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。 <a class="qa-rule-link" href="#common-feature-13">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。 <a class="qa-rule-link" href="#common-feature-14">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。 <a class="qa-rule-link" href="#common-keepalive_op-15">本冊完整規則</a></p>
-</li>
-<li id="q-217-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>KAS、TBKAS、Commands Supported and Effects 與實際 FID 行為需一致。</p>
-</li>
-<li id="q-217-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查是否誤把 PCIe 的選配能力當成所有裝置的必要功能。</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-218" data-question="218"><h2><a class="qa-qid" href="#q-218">Q218</a> Keep Alive Timer 如何設定、調整與停用？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-218-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-218-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Host 設定可容忍的通訊空窗；controller 依支援粒度採用可實作的值。</p>
-</li>
-<li id="q-218-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>設定作用於此 controller，不是整個 subsystem 的共同 I/O timeout。</p>
-</li>
-<li id="q-218-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>先讀 KAS 與目前 FID0Fh.KATO，並確認 Feature 的保存能力。</p>
-</li>
-<li id="q-218-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Set Features CDW11.KATO 指定毫秒；controller 必須向上取到 KAS 的粒度。非零值低於實作最小值時，採最小值。</p>
-</li>
-<li id="q-218-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Set 成功後 Get 讀實際值，再更新 Host 的發送排程；PCIe 可設 KATO=0 停用。</p>
-</li>
-<li id="q-218-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>例如 KAS=10 表示 1000 ms 粒度，要求 1500 ms 會向上成 2000 ms，前提是沒有更大的最小值。</p>
-</li>
-<li id="q-218-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>若要求超過適用傳輸允許的最大值，回 Keep Alive Timeout Invalid 且保留原設定；不能自行替 PCIe 編造固定最大限制。</p>
-</li>
-<li id="q-218-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Keep Alive 成功不產生另一筆成功 AER。 <a class="qa-rule-link" href="#common-keepalive_op-9">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。 <a class="qa-rule-link" href="#common-keepalive_op-10">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。 <a class="qa-rule-link" href="#common-keepalive_op-11">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。 <a class="qa-rule-link" href="#common-feature-12">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。 <a class="qa-rule-link" href="#common-feature-13">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。 <a class="qa-rule-link" href="#common-feature-14">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。 <a class="qa-rule-link" href="#common-keepalive_op-15">本冊完整規則</a></p>
-</li>
-<li id="q-218-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>Get 的回值可合法大於要求值；只有確認粒度與最小值後，才能判定調整是否不合理。</p>
-</li>
-<li id="q-218-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查 Host 是否仍按要求的 1500 ms 而不是實際 2000 ms 排程。</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-219" data-question="219"><h2><a class="qa-qid" href="#q-219">Q219</a> Host 如何在 Timer 到期前維持 Keep Alive？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-219-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-219-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>預留時間餘裕，才能容納排程、命令處理與傳輸延遲；在最後一刻送出不代表 controller 已及時處理。</p>
-</li>
-<li id="q-219-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>只有 EN=1、RDY=1、SHN=00b、SHST=00b 且 KATO 非零時 Timer 才 active。</p>
-</li>
-<li id="q-219-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>讀實際 KATO，並確認 Command Based 或 Traffic Based 模式。</p>
-</li>
-<li id="q-219-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Command Based 的 controller 在 Keep Alive 成功完成，或成功設定非零 KATO 時重新計時；普通 Read 不會替代它。</p>
-</li>
-<li id="q-219-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 建議每 KATT/2 送 Keep Alive，並在 Admin SQ 保留可提交空間；調整 KATO 成功後也更新排程。</p>
-</li>
-<li id="q-219-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>持續收到成功 Completion 能證明這條通訊路徑仍能往返；不是證明每筆媒體操作都已完成。</p>
-</li>
-<li id="q-219-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Keep Alive 自己長時間沒有 Completion 時，Host 依其送出後 KATT 的判斷與恢復規則處理，不能無限補送來掩蓋失聯。</p>
-</li>
-<li id="q-219-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Keep Alive 成功不產生另一筆成功 AER。 <a class="qa-rule-link" href="#common-keepalive_op-9">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。 <a class="qa-rule-link" href="#common-keepalive_op-10">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。 <a class="qa-rule-link" href="#common-keepalive_op-11">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。 <a class="qa-rule-link" href="#common-feature-12">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。 <a class="qa-rule-link" href="#common-feature-13">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。 <a class="qa-rule-link" href="#common-feature-14">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。 <a class="qa-rule-link" href="#common-keepalive_op-15">本冊完整規則</a></p>
-</li>
-<li id="q-219-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>把 Host 送出、controller 完成與 Host 收到的時間分開，才能解釋兩端觀察差異。</p>
-</li>
-<li id="q-219-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查 Admin SQ 是否被其他命令塞滿，導致 Keep Alive 根本尚未提交。</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-220" data-question="220"><h2><a class="qa-qid" href="#q-220">Q220</a> Keep Alive Timeout 後，Controller 必須做哪些清理？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-220-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-220-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Timeout 清理讓失去可靠通訊的 controller 停止繼續處理命令，降低 Host 轉移工作後仍有舊操作進行的風險。</p>
-</li>
-<li id="q-220-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>本題只列 PCIe 適用動作；它不刪 namespace、不執行 Sanitize，也不承諾回復已寫入資料。</p>
-</li>
-<li id="q-220-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>查 Identify.CQT、CSTS.CFS 與 Error Information，並保留 outstanding 清單。</p>
-</li>
-<li id="q-220-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>規範要求在 CQT 內記錄 Keep Alive Timeout Expired、停止命令處理，並設 CSTS.CFS=1。</p>
-</li>
-<li id="q-220-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 停止提交到該路徑，保存可取得的狀態，再依通訊恢復與 Reset 流程重建。</p>
-</li>
-<li id="q-220-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>完成清理表示停止處理；不代表每筆 outstanding 都會取得成功或錯誤 CQE。</p>
-</li>
-<li id="q-220-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>不能以 Keep Alive Timeout 直接指定舊 Write「沒有執行」，也不能假設所有舊命令可以安全原樣重送。</p>
-</li>
-<li id="q-220-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Keep Alive 成功不產生另一筆成功 AER。 <a class="qa-rule-link" href="#common-keepalive_op-9">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。 <a class="qa-rule-link" href="#common-keepalive_op-10">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。 <a class="qa-rule-link" href="#common-keepalive_op-11">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。 <a class="qa-rule-link" href="#common-feature-12">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。 <a class="qa-rule-link" href="#common-feature-13">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。 <a class="qa-rule-link" href="#common-feature-14">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。 <a class="qa-rule-link" href="#common-keepalive_op-15">本冊完整規則</a></p>
-</li>
-<li id="q-220-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>CFS、Error entry 與清理時間應一致，資料操作則另查實際效果與重試相依性。</p>
-</li>
-<li id="q-220-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確認逾時是 Host 自己判斷，還是 controller 已偵測並完成清理。</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-221" data-question="221"><h2><a class="qa-qid" href="#q-221">Q221</a> Controller Reset 後，是否要重新設定 Keep Alive？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-221-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-221-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Reset 結束舊命令環境，但 Timer 的恢復還取決於 Feature 保存與持續性，不能只因記得舊 KATO 就直接沿用排程。</p>
-</li>
-<li id="q-221-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>針對被重設的 controller，重新確認設定與 Timer active 條件。</p>
-</li>
-<li id="q-221-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>查恢復後 Current KATO、支援能力及適用的 Saved／Default 規則。</p>
-</li>
-<li id="q-221-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Timer 在 EN／RDY／SHN／SHST 任一條件不符時 inactive；再次由 inactive 轉 active 時初始化為有效 KATO。</p>
-</li>
-<li id="q-221-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>完成初始化，Get 確認 KATO；若為 0 而 Host 需要啟用，再 Set 非零值並讀回，然後重啟 Host 維護排程。</p>
-</li>
-<li id="q-221-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>Host 排程與 controller 的實際值、模式及新使用期間一致。</p>
-</li>
-<li id="q-221-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Reset 前尚未完成的 Keep Alive 不能拿舊 CQE bytes 當成 Reset 後成功的存活證據。</p>
-</li>
-<li id="q-221-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Keep Alive 成功不產生另一筆成功 AER。 <a class="qa-rule-link" href="#common-keepalive_op-9">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。 <a class="qa-rule-link" href="#common-keepalive_op-10">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。 <a class="qa-rule-link" href="#common-keepalive_op-11">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。 <a class="qa-rule-link" href="#common-feature-12">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。 <a class="qa-rule-link" href="#common-feature-13">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。 <a class="qa-rule-link" href="#common-feature-14">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。 <a class="qa-rule-link" href="#common-keepalive_op-15">本冊完整規則</a></p>
-</li>
-<li id="q-221-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>重設前後比較的是設定恢復規則，不是要求倒數值接續到最後一毫秒。</p>
-</li>
-<li id="q-221-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先讀 Current KATO，再決定是否需要重設值，避免把「必須重查」誤寫成所有裝置都「必須重設同一值」。</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-222" data-question="222"><h2><a class="qa-qid" href="#q-222">Q222</a> Command Based 與 Traffic Based Keep Alive 有何不同？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-222-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-222-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>兩種方式判斷存活的證據不同：前者靠專用命令，後者可利用一般命令流量。</p>
-</li>
-<li id="q-222-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>模式由支援 Keep Alive 的 controller.TBKAS 決定，不是 Host 任意忽略專用命令就算啟用 Traffic Based。</p>
-</li>
-<li id="q-222-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>確認 KAS 非零與 CTRATT.TBKAS；TBKAS=0 使用 Command Based。</p>
-</li>
-<li id="q-222-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Traffic Based 的 controller 看每個 KATT 區間是否曾 fetched Admin 或 I/O command；Host 則用已提交且已處理 Completion 的活動作為省略 Keep Alive 的證據。</p>
-</li>
-<li id="q-222-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 在 Traffic Based 模式建議每 KATT/4 檢查是否需送專用命令；沒有足夠活動時仍送 Keep Alive。</p>
-</li>
-<li id="q-222-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>一個區間有取得命令，controller 可開始下一區間，因此最後一次 fetched 後到偵測 Timeout 可能接近 2×KATT。</p>
-</li>
-<li id="q-222-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>不能要求 Traffic Based 在最後一筆命令後剛好 KATT 就一定 Timeout，也不能只因一筆長命令仍 outstanding 就認為每個後續區間都有新流量。</p>
-</li>
-<li id="q-222-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Keep Alive 成功不產生另一筆成功 AER。 <a class="qa-rule-link" href="#common-keepalive_op-9">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。 <a class="qa-rule-link" href="#common-keepalive_op-10">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。 <a class="qa-rule-link" href="#common-keepalive_op-11">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>先確認 Feature 作用範圍、保存能力及重設實際涵蓋的物件，再決定恢復方式。整個 subsystem 與只有部分範圍受重設時，規則不同。 <a class="qa-rule-link" href="#common-feature-12">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>先確認重設影響整個 NVM subsystem，還是其中一部分。Feature 即使不可保存，只要明定具有持續性，就不能要求它因此清零。 <a class="qa-rule-link" href="#common-feature-13">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>可保存的 Feature 依 Saved 恢復；不可保存的 Feature，則依持續性及個別例外判斷。不能只用有沒有 Save 能力決定是否保留。 <a class="qa-rule-link" href="#common-feature-14">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。 <a class="qa-rule-link" href="#common-keepalive_op-15">本冊完整規則</a></p>
-</li>
-<li id="q-222-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>依 fetched、completed 與區間邊界核對，不把「Host 已寫 SQE」當成 controller 已取得。</p>
-</li>
-<li id="q-222-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查 TBKAS 與實際採用的兩端模式是否一致。</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>本題原文定位</summary>
-<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
-<article id="common-command-8"><h3>命令完成、事件與紀錄 · DNR 與 More 應如何設定？</h3><p>只有收到 CQE，才有 DNR 與 More 可供判讀。DNR=1 表示相同命令即使重送到此 NVM subsystem 的任一 controller，仍預期會失敗；DNR=0 則只表示可能成功。除非個別錯誤條件另有明定，不能只看 Status 名稱就要求 DNR=1。More=1 表示 Error Information Log 有這筆命令的補充資訊。SCT=SC=0 時，DNR 應為 0。</p></article>
-<article id="common-feature-12"><h3>Feature 的重設與影響範圍 · Controller Reset 後是否保留或繼續？</h3><p>先確認 Feature 的作用範圍及保存能力。如果重設影響整個 NVM subsystem，可保存 Feature 的 Current 會恢復為 Saved；沒有 Saved 時，則使用 Default。不可保存且不具持續性的 Feature 回到 Default。若多個 controller 中只有部分受到重設，共用設定則依 Figure 127 判斷是否保留。個別 Feature 的明確例外，優先於這些一般規則。</p></article>
-<article id="common-feature-13"><h3>Feature 的重設與影響範圍 · NVM Subsystem Reset 後是否保留或繼續？</h3><p>判斷恢復方式時，不能只看 Reset 名稱，還要確認它實際涵蓋哪些物件。重設影響整個 NVM subsystem 時，使用 Figure 126；multi-domain 配置中只有部分範圍受影響時，使用 Figure 127。若 Feature 雖不可保存，卻明定具有持續性，就仍須保留，不能誤解為重設後一律清零。</p></article>
-<article id="common-feature-14"><h3>Feature 的重設與影響範圍 · Power Cycle 後是否保留或繼續？</h3><p>可保存的 Feature 若以 SV=1 成功更新 Saved，Power Cycle 後便依 Saved 恢復；SV=0 則不會改變 Saved。對不可保存的 Feature，另查 Figure 466 的持續性規則及個別例外。恢復後仍要讀取 Current 並驗證行為，不能只因 Saved 存在，就假設 controller 已正在使用它。</p></article>
-<article id="common-keepalive_op-9"><h3>本主題的共用條件 · 是否產生 Asynchronous Event？</h3><p>Keep Alive 成功不產生另一筆成功 AER。Timeout 後 controller 必須停止處理命令並設定 CFS，Host 不能依賴還能用 AER 收到故障通知。</p></article>
-<article id="common-keepalive_op-10"><h3>本主題的共用條件 · 是否更新 Error Information Log 或其他 Log？</h3><p>Keep Alive Timeout 必須在 CQT 指定的清理時間內記錄 Error Information entry，Status 為 Keep Alive Timeout Expired。這是明定的記錄義務，不能與一般命令失敗是否需要 entry 混為一談。</p></article>
-<article id="common-keepalive_op-11"><h3>本主題的共用條件 · 是否記錄於 Persistent Event Log？</h3><p>若 PEL 支援對應 Controller Fatal Status 硬體事件，Timeout 導致 CFS=1 時依該事件規則記錄；不是每筆 Keep Alive 都記一筆 PEL。</p></article>
-<article id="common-keepalive_op-15"><h3>本主題的共用條件 · 是否影響其他 Controller 或 Namespace？</h3><p>Timer 屬於目標 controller；其逾時清理停止該 controller 處理命令，不是刪除 namespace 或清除使用者資料。其他路徑若要接手，仍須先處理失聯路徑可能留下的未完成操作。</p></article>
+<article class="qa-question" id="q-217" data-question="217" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-217">Q217</a> PCIe Host 如何確認 Keep Alive 支援？</h2>
+<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
+<details class="qa-answer" id="q-217-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-217-a-01">Keep Alive 是通訊存活監測，不是每筆 I/O 的執行期限。PCIe 不要求所有 SSD 都啟用它。</p><div class="qa-sections">
+<section class="qa-section" id="q-217-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
+<span class="qa-anchor" id="q-217-a-02"></span><p>每個 controller 各自有 Timer，不能以另一個 controller 的活動替代。</p>
+<span class="qa-anchor" id="q-217-a-03"></span><p>Identify.KAS 非零表示支援，並給出以 100 ms 為單位的設定粒度；CTRATT.TBKAS 表示 Traffic Based 模式。</p>
+<span class="qa-anchor" id="q-217-a-04"></span><p>支援 Timer 就必須支援 Keep Alive 命令；設定透過 FID0Fh.KATO，單位為毫秒。</p>
 </section>
+<section class="qa-section" id="q-217-s-02" data-answer-section="2"><h3><span>2.</span> 查詢順序與回覆判讀</h3>
+<span class="qa-anchor" id="q-217-a-05"></span><p>先讀 KAS，再判斷模式及需要的 KATO，最後 Get 確認實際採用值。</p>
+<span class="qa-anchor" id="q-217-a-06"></span><p>PCIe 的預設 KATO=0，即停用；支援能力非零與目前有啟用，是不同資訊。</p>
+</section>
+<section class="qa-section" id="q-217-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
+<span class="qa-anchor" id="q-217-a-07"></span><p>KAS=0 時不能要求它接受 Keep Alive 或 Timer 設定；依實際不支援的 Opcode／Feature 回應判讀。</p>
+<span class="qa-anchor" id="q-217-a-16"></span><p>KAS、TBKAS、Commands Supported and Effects 與實際 FID 行為需一致。</p>
+<span class="qa-anchor" id="q-217-a-17"></span><p>先檢查是否誤把 PCIe 的選配能力當成所有裝置的必要功能。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-217-a-08"></span><span class="qa-anchor" id="q-217-a-09"></span><span class="qa-anchor" id="q-217-a-10"></span><span class="qa-anchor" id="q-217-a-11"></span><span class="qa-anchor" id="q-217-a-12"></span><span class="qa-anchor" id="q-217-a-13"></span><span class="qa-anchor" id="q-217-a-14"></span><span class="qa-anchor" id="q-217-a-15"></span>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-218" data-question="218" data-answer-kind="process"><h2><a class="qa-qid" href="#q-218">Q218</a> Keep Alive Timer 如何設定、調整與停用？</h2>
+<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
+<details class="qa-answer" id="q-218-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-218-a-01">Host 設定可容忍的通訊空窗；controller 依支援粒度採用可實作的值。</p><div class="qa-sections">
+<section class="qa-section" id="q-218-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
+<span class="qa-anchor" id="q-218-a-02"></span><p>設定作用於此 controller，不是整個 subsystem 的共同 I/O timeout。</p>
+<span class="qa-anchor" id="q-218-a-03"></span><p>先讀 KAS 與目前 FID0Fh.KATO，並確認 Feature 的保存能力。</p>
+<span class="qa-anchor" id="q-218-a-04"></span><p>Set Features CDW11.KATO 指定毫秒；controller 必須向上取到 KAS 的粒度。非零值低於實作最小值時，採最小值。</p>
+</section>
+<section class="qa-section" id="q-218-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
+<span class="qa-anchor" id="q-218-a-05"></span><p>Set 成功後 Get 讀實際值，再更新 Host 的發送排程；PCIe 可設 KATO=0 停用。</p>
+<span class="qa-anchor" id="q-218-a-06"></span><p>例如 KAS=10 表示 1000 ms 粒度，要求 1500 ms 會向上成 2000 ms，前提是沒有更大的最小值。</p>
+</section>
+<section class="qa-section" id="q-218-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
+<span class="qa-anchor" id="q-218-a-07"></span><p>若要求超過適用傳輸允許的最大值，回 Keep Alive Timeout Invalid 且保留原設定；不能自行替 PCIe 編造固定最大限制。</p>
+<span class="qa-anchor" id="q-218-a-16"></span><p>Get 的回值可合法大於要求值；只有確認粒度與最小值後，才能判定調整是否不合理。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-218-a-17"></span><span class="qa-anchor" id="q-218-a-08"></span><span class="qa-anchor" id="q-218-a-09"></span><span class="qa-anchor" id="q-218-a-10"></span><span class="qa-anchor" id="q-218-a-11"></span><span class="qa-anchor" id="q-218-a-12"></span><span class="qa-anchor" id="q-218-a-13"></span><span class="qa-anchor" id="q-218-a-14"></span><span class="qa-anchor" id="q-218-a-15"></span>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-219" data-question="219" data-answer-kind="process"><h2><a class="qa-qid" href="#q-219">Q219</a> Host 如何在 Timer 到期前維持 Keep Alive？</h2>
+<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
+<details class="qa-answer" id="q-219-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-219-a-01">預留時間餘裕，才能容納排程、命令處理與傳輸延遲；在最後一刻送出不代表 controller 已及時處理。</p><div class="qa-sections">
+<section class="qa-section" id="q-219-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
+<span class="qa-anchor" id="q-219-a-02"></span><p>只有 EN=1、RDY=1、SHN=00b、SHST=00b 且 KATO 非零時 Timer 才 active。</p>
+<span class="qa-anchor" id="q-219-a-03"></span><p>讀實際 KATO，並確認 Command Based 或 Traffic Based 模式。</p>
+<span class="qa-anchor" id="q-219-a-04"></span><p>Command Based 的 controller 在 Keep Alive 成功完成，或成功設定非零 KATO 時重新計時；普通 Read 不會替代它。</p>
+</section>
+<section class="qa-section" id="q-219-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
+<span class="qa-anchor" id="q-219-a-05"></span><p>Host 建議每 KATT/2 送 Keep Alive，並在 Admin SQ 保留可提交空間；調整 KATO 成功後也更新排程。</p>
+<span class="qa-anchor" id="q-219-a-06"></span><p>持續收到成功 Completion 能證明這條通訊路徑仍能往返；不是證明每筆媒體操作都已完成。</p>
+</section>
+<section class="qa-section" id="q-219-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
+<span class="qa-anchor" id="q-219-a-07"></span><p>Keep Alive 自己長時間沒有 Completion 時，Host 依其送出後 KATT 的判斷與恢復規則處理，不能無限補送來掩蓋失聯。</p>
+<span class="qa-anchor" id="q-219-a-16"></span><p>把 Host 送出、controller 完成與 Host 收到的時間分開，才能解釋兩端觀察差異。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-219-a-17"></span><span class="qa-anchor" id="q-219-a-08"></span><span class="qa-anchor" id="q-219-a-09"></span><span class="qa-anchor" id="q-219-a-10"></span><span class="qa-anchor" id="q-219-a-11"></span><span class="qa-anchor" id="q-219-a-12"></span><span class="qa-anchor" id="q-219-a-13"></span><span class="qa-anchor" id="q-219-a-14"></span><span class="qa-anchor" id="q-219-a-15"></span>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-220" data-question="220" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-220">Q220</a> Keep Alive Timeout 後，Controller 必須做哪些清理？</h2>
+<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
+<details class="qa-answer" id="q-220-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-220-a-01">Timeout 清理讓失去可靠通訊的 controller 停止繼續處理命令，降低 Host 轉移工作後仍有舊操作進行的風險。</p><div class="qa-sections">
+<section class="qa-section" id="q-220-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
+<span class="qa-anchor" id="q-220-a-02"></span><p>本題只列 PCIe 適用動作；它不刪 namespace、不執行 Sanitize，也不承諾回復已寫入資料。</p>
+<span class="qa-anchor" id="q-220-a-03"></span><p>查 Identify.CQT、CSTS.CFS 與 Error Information，並保留 outstanding 清單。</p>
+</section>
+<section class="qa-section" id="q-220-s-02" data-answer-section="2"><h3><span>2.</span> 哪些狀態改變，恢復後怎麼處理</h3>
+<span class="qa-anchor" id="q-220-a-04"></span><p>規範要求在 CQT 內記錄 Keep Alive Timeout Expired、停止命令處理，並設 CSTS.CFS=1。</p>
+<span class="qa-anchor" id="q-220-a-05"></span><p>Host 停止提交到該路徑，保存可取得的狀態，再依通訊恢復與 Reset 流程重建。</p>
+<span class="qa-anchor" id="q-220-a-06"></span><p>完成清理表示停止處理；不代表每筆 outstanding 都會取得成功或錯誤 CQE。</p>
+</section>
+<section class="qa-section" id="q-220-s-03" data-answer-section="3"><h3><span>3.</span> 如何驗證保留或恢復結果</h3>
+<span class="qa-anchor" id="q-220-a-07"></span><p>不能以 Keep Alive Timeout 直接指定舊 Write「沒有執行」，也不能假設所有舊命令可以安全原樣重送。</p>
+<span class="qa-anchor" id="q-220-a-16"></span><p>CFS、Error entry 與清理時間應一致，資料操作則另查實際效果與重試相依性。</p>
+<span class="qa-anchor" id="q-220-a-17"></span><p>先確認逾時是 Host 自己判斷，還是 controller 已偵測並完成清理。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-220-a-08"></span><span class="qa-anchor" id="q-220-a-09"></span><span class="qa-anchor" id="q-220-a-10"></span><span class="qa-anchor" id="q-220-a-11"></span><span class="qa-anchor" id="q-220-a-12"></span><span class="qa-anchor" id="q-220-a-13"></span><span class="qa-anchor" id="q-220-a-14"></span><span class="qa-anchor" id="q-220-a-15"></span>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-221" data-question="221" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-221">Q221</a> Controller Reset 後，是否要重新設定 Keep Alive？</h2>
+<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
+<details class="qa-answer" id="q-221-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-221-a-01">Reset 結束舊命令環境，但 Timer 的恢復還取決於 Feature 保存與持續性，不能只因記得舊 KATO 就直接沿用排程。</p><div class="qa-sections">
+<section class="qa-section" id="q-221-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
+<span class="qa-anchor" id="q-221-a-02"></span><p>針對被重設的 controller，重新確認設定與 Timer active 條件。</p>
+<span class="qa-anchor" id="q-221-a-03"></span><p>查恢復後 Current KATO、支援能力及適用的 Saved／Default 規則。</p>
+</section>
+<section class="qa-section" id="q-221-s-02" data-answer-section="2"><h3><span>2.</span> 哪些狀態改變，恢復後怎麼處理</h3>
+<span class="qa-anchor" id="q-221-a-04"></span><p>Timer 在 EN／RDY／SHN／SHST 任一條件不符時 inactive；再次由 inactive 轉 active 時初始化為有效 KATO。</p>
+<span class="qa-anchor" id="q-221-a-05"></span><p>完成初始化，Get 確認 KATO；若為 0 而 Host 需要啟用，再 Set 非零值並讀回，然後重啟 Host 維護排程。</p>
+<span class="qa-anchor" id="q-221-a-06"></span><p>Host 排程與 controller 的實際值、模式及新使用期間一致。</p>
+</section>
+<section class="qa-section" id="q-221-s-03" data-answer-section="3"><h3><span>3.</span> 如何驗證保留或恢復結果</h3>
+<span class="qa-anchor" id="q-221-a-07"></span><p>Reset 前尚未完成的 Keep Alive 不能拿舊 CQE bytes 當成 Reset 後成功的存活證據。</p>
+<span class="qa-anchor" id="q-221-a-16"></span><p>重設前後比較的是設定恢復規則，不是要求倒數值接續到最後一毫秒。</p>
+<span class="qa-anchor" id="q-221-a-17"></span><p>先讀 Current KATO，再決定是否需要重設值，避免把「必須重查」誤寫成所有裝置都「必須重設同一值」。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-221-a-08"></span><span class="qa-anchor" id="q-221-a-09"></span><span class="qa-anchor" id="q-221-a-10"></span><span class="qa-anchor" id="q-221-a-11"></span><span class="qa-anchor" id="q-221-a-12"></span><span class="qa-anchor" id="q-221-a-13"></span><span class="qa-anchor" id="q-221-a-14"></span><span class="qa-anchor" id="q-221-a-15"></span>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+<article class="qa-question" id="q-222" data-question="222" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-222">Q222</a> Command Based 與 Traffic Based Keep Alive 有何不同？</h2>
+<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
+<details class="qa-answer" id="q-222-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-222-a-01">兩種方式判斷存活的證據不同：前者靠專用命令，後者可利用一般命令流量。</p><div class="qa-sections">
+<section class="qa-section" id="q-222-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
+<span class="qa-anchor" id="q-222-a-02"></span><p>模式由支援 Keep Alive 的 controller.TBKAS 決定，不是 Host 任意忽略專用命令就算啟用 Traffic Based。</p>
+<span class="qa-anchor" id="q-222-a-04"></span><p>Traffic Based 的 controller 看每個 KATT 區間是否曾 fetched Admin 或 I/O command；Host 則用已提交且已處理 Completion 的活動作為省略 Keep Alive 的證據。</p>
+</section>
+<section class="qa-section" id="q-222-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
+<span class="qa-anchor" id="q-222-a-03"></span><p>確認 KAS 非零與 CTRATT.TBKAS；TBKAS=0 使用 Command Based。</p>
+<span class="qa-anchor" id="q-222-a-05"></span><p>Host 在 Traffic Based 模式建議每 KATT/4 檢查是否需送專用命令；沒有足夠活動時仍送 Keep Alive。</p>
+<span class="qa-anchor" id="q-222-a-06"></span><p>一個區間有取得命令，controller 可開始下一區間，因此最後一次 fetched 後到偵測 Timeout 可能接近 2×KATT。</p>
+</section>
+<section class="qa-section" id="q-222-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<span class="qa-anchor" id="q-222-a-07"></span><p>不能要求 Traffic Based 在最後一筆命令後剛好 KATT 就一定 Timeout，也不能只因一筆長命令仍 outstanding 就認為每個後續區間都有新流量。</p>
+<span class="qa-anchor" id="q-222-a-16"></span><p>依 fetched、completed 與區間邊界核對，不把「Host 已寫 SQE」當成 controller 已取得。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-222-a-17"></span><span class="qa-anchor" id="q-222-a-08"></span><span class="qa-anchor" id="q-222-a-09"></span><span class="qa-anchor" id="q-222-a-10"></span><span class="qa-anchor" id="q-222-a-11"></span><span class="qa-anchor" id="q-222-a-12"></span><span class="qa-anchor" id="q-222-a-13"></span><span class="qa-anchor" id="q-222-a-14"></span><span class="qa-anchor" id="q-222-a-15"></span>
+<details class="qa-source-links"><summary>本題原文定位</summary>
+<p class="qa-citations">來源：<a href="#ref-keepalive">Base 2.4 §3.9 (common and PCIe rules), 5.2.30.1.9</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-commrecovery">Base 2.4 §9.1–9.6.2.1 (PCIe-applicable rules; stop before 9.6.2.2)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
+
 <section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">
 <li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>文件頁 120–124 · PDF 146–150</li>
 <li id="ref-keepalive"><strong>Base 2.4 · §3.9 (common and PCIe rules), 5.2.30.1.9</strong><br>文件頁 129–135, 471 · PDF 155–161, 497 · Figure 481</li>

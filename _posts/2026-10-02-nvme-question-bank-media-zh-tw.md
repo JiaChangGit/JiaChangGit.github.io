@@ -12,7 +12,7 @@ nvme_qa: true
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="/nvme/question-bank/zh-tw/">題庫總索引</a><a href="/nvme/question-bank/media/en/">English</a><a href="/DOCS/nvme-question-bank/media.html">繁中教學 HTML</a></nav>
 <main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q268–Q275</p><h1>Domain、Reclaim Group 與 Media Unit</h1><p class="qr-intro">管理歸屬與 FDP 放置關係要用不同視角閱讀。本冊先辨認各種 ID 的範圍，再追蹤一筆 Write 如何選到 RU，最後解讀媒體資訊的限制。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
+<header><p class="qa-range">Q268–Q275</p><h1>Domain、Reclaim Group 與 Media Unit</h1><p class="qr-intro">管理歸屬與 FDP 放置關係要用不同視角閱讀。本冊先辨認各種 ID 的範圍，再追蹤一筆 Write 如何選到 RU，最後解讀媒體資訊的限制。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>從 Write 的 PID 走到目前 RU</h2><p class="qa-takeaway">PID 裡的 PH 不是 RUH ID；必須先經過 namespace 的對照表。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">步驟</th><th scope="col">假設值</th><th scope="col">選到什麼</th></tr></thead><tbody><tr><td>解 PID</td><td>RGID=1、PH=0</td><td>指定 RG1 及 namespace 的 PH0</td></tr><tr><td>查對照</td><td>NS1.PH0→RUH2</td><td>選 RUH2</td></tr><tr><td>查目前參照</td><td>RUH2 在 RG1 參照 RU 乙</td><td>這次 Write 使用的 RU</td></tr><tr><td>RU 用滿後</td><td>controller 更換目前 RU</td><td>PH 可不變，實際 RU 改變</td></tr></tbody></table></div>
@@ -30,479 +30,191 @@ nvme_qa: true
 <li><a href="#q-274">Q274 · 媒體狀態變化會產生哪些通知與紀錄？</a></li>
 <li><a href="#q-275">Q275 · 如何辨識管理實體的 Scope，避免混用 ID？</a></li>
 </ol></section>
-<article class="qa-question" id="q-268" data-question="268"><h2><a class="qa-qid" href="#q-268">Q268</a> Domain、Set、Group、Media Unit 與 Namespace 是單一層級嗎？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-268-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-268-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>這些名稱描述不同觀點：Domain 是管理與通訊邊界，Group 管耐用度，Set 組織容量，Namespace 提供邏輯位址，FDP 則決定資料放置。</p>
-</li>
-<li id="q-268-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>支援 Set 時，namespace 位於一個 Set，Set 位於一個 Endurance Group，Group 位於一個 Domain；Reclaim Group 不是再插入這條鏈的一層 namespace 容器。</p>
-</li>
-<li id="q-268-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>讀 CTRATT、各 Identify List、Namespace 歸屬及 FDP Configurations，不從名詞相似推測支援。</p>
-</li>
-<li id="q-268-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Media Unit 是規範提供的媒體資訊單位；Reclaim Unit 是 FDP 的回收單位，兩者不能直接畫上等號。</p>
-</li>
-<li id="q-268-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先畫管理歸屬，再另外畫 Placement Handle 如何選到 RUH 與 RU。兩張圖各自回答「屬於誰」和「放在哪裡」。</p>
-</li>
-<li id="q-268-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>可以說明一個 namespace 的歸屬，以及它的資料如何透過 FDP 放到所選資源，而不虛構一對一關係。</p>
-</li>
-<li id="q-268-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Media Unit 不保證等於一顆 die；Channel 與 Media Unit 的關係也不能一律當成單一路徑。</p>
-</li>
-<li id="q-268-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-268-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>對照各 ID 的定義、有效範圍及查詢時點；相同數值出現在不同 ID 欄不表示同一物件。</p>
-</li>
-<li id="q-268-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查圖上每條連線代表包含、歸屬還是動態參照。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-268" data-question="268" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-268">Q268</a> Domain、Set、Group、Media Unit 與 Namespace 是單一層級嗎？</h2>
+<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
+<details class="qa-answer" id="q-268-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-268-a-01">這些名稱描述不同觀點：Domain 是管理與通訊邊界，Group 管耐用度，Set 組織容量，Namespace 提供邏輯位址，FDP 則決定資料放置。</p><div class="qa-sections">
+<section class="qa-section" id="q-268-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
+<span class="qa-anchor" id="q-268-a-02"></span><p>支援 Set 時，namespace 位於一個 Set，Set 位於一個 Endurance Group，Group 位於一個 Domain；Reclaim Group 不是再插入這條鏈的一層 namespace 容器。</p>
+<span class="qa-anchor" id="q-268-a-04"></span><p>Media Unit 是規範提供的媒體資訊單位；Reclaim Unit 是 FDP 的回收單位，兩者不能直接畫上等號。</p>
+</section>
+<section class="qa-section" id="q-268-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
+<span class="qa-anchor" id="q-268-a-03"></span><p>讀 CTRATT、各 Identify List、Namespace 歸屬及 FDP Configurations，不從名詞相似推測支援。</p>
+<span class="qa-anchor" id="q-268-a-05"></span><p>先畫管理歸屬，再另外畫 Placement Handle 如何選到 RUH 與 RU。兩張圖各自回答「屬於誰」和「放在哪裡」。</p>
+<span class="qa-anchor" id="q-268-a-06"></span><p>可以說明一個 namespace 的歸屬，以及它的資料如何透過 FDP 放到所選資源，而不虛構一對一關係。</p>
+</section>
+<section class="qa-section" id="q-268-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<span class="qa-anchor" id="q-268-a-07"></span><p>Media Unit 不保證等於一顆 die；Channel 與 Media Unit 的關係也不能一律當成單一路徑。</p>
+<span class="qa-anchor" id="q-268-a-16"></span><p>對照各 ID 的定義、有效範圍及查詢時點；相同數值出現在不同 ID 欄不表示同一物件。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-268-a-17"></span><span class="qa-anchor" id="q-268-a-08"></span><span class="qa-anchor" id="q-268-a-09"></span><span class="qa-anchor" id="q-268-a-10"></span><span class="qa-anchor" id="q-268-a-11"></span><span class="qa-anchor" id="q-268-a-12"></span><span class="qa-anchor" id="q-268-a-13"></span><span class="qa-anchor" id="q-268-a-14"></span><span class="qa-anchor" id="q-268-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-269" data-question="269"><h2><a class="qa-qid" href="#q-269">Q269</a> 如何取得 Domain 與資源歸屬？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-269-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-269-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>在多 Domain 裝置中，先確定查詢視角，才知道容量與資源清單涵蓋哪個範圍。</p>
-</li>
-<li id="q-269-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>Domain 可以沒有 controller，也可以沒有 Endurance Group，不能只靠目前看得到的 controller 數量推算所有 Domain。</p>
-</li>
-<li id="q-269-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>查 CTRATT.MDS、Identify Controller 的 Domain 資訊，以及 Domain、Endurance Group、Set 清單。</p>
-</li>
-<li id="q-269-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Identify Namespace 的 ENDGID、NVMSETID 描述歸屬；Media Unit Status 的 DID、ENDGID、NVMSETID 則提供媒體端關係。</p>
-</li>
-<li id="q-269-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先取得有效 DID，再列資源與 namespace，將每筆紀錄的 controller 和 DID 一起保存。</p>
-</li>
-<li id="q-269-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>同一張對照表能回答某 namespace 使用哪個 Group，以及查到的容量屬於哪個 Domain。</p>
-</li>
-<li id="q-269-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>LID10h 的 LSI.DID=0 指目前 controller 所在 Domain；非法非零 DID 必須回 Invalid Field，不能悄悄查另一個 Domain。</p>
-</li>
-<li id="q-269-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-269-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>單 Domain 與多 Domain 的零值定義不同，需搭配 MDS 判讀；不要把缺少跨 Domain 資訊當成該資源不存在。</p>
-</li>
-<li id="q-269-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先看查詢是送到哪個 controller，以及 selector 是否明確指定 Domain。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-269" data-question="269" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-269">Q269</a> 如何取得 Domain 與資源歸屬？</h2>
+<p class="qa-prompt">先選查詢介面與目標，再說明哪個回傳欄位能支持你的結論。</p>
+<details class="qa-answer" id="q-269-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-269-a-01">在多 Domain 裝置中，先確定查詢視角，才知道容量與資源清單涵蓋哪個範圍。</p><div class="qa-sections">
+<section class="qa-section" id="q-269-s-01" data-answer-section="1"><h3><span>1.</span> 要查哪個對象、哪份資料</h3>
+<span class="qa-anchor" id="q-269-a-02"></span><p>Domain 可以沒有 controller，也可以沒有 Endurance Group，不能只靠目前看得到的 controller 數量推算所有 Domain。</p>
+<span class="qa-anchor" id="q-269-a-03"></span><p>查 CTRATT.MDS、Identify Controller 的 Domain 資訊，以及 Domain、Endurance Group、Set 清單。</p>
+<span class="qa-anchor" id="q-269-a-04"></span><p>Identify Namespace 的 ENDGID、NVMSETID 描述歸屬；Media Unit Status 的 DID、ENDGID、NVMSETID 則提供媒體端關係。</p>
+</section>
+<section class="qa-section" id="q-269-s-02" data-answer-section="2"><h3><span>2.</span> 查詢順序與回覆判讀</h3>
+<span class="qa-anchor" id="q-269-a-05"></span><p>先取得有效 DID，再列資源與 namespace，將每筆紀錄的 controller 和 DID 一起保存。</p>
+<span class="qa-anchor" id="q-269-a-06"></span><p>同一張對照表能回答某 namespace 使用哪個 Group，以及查到的容量屬於哪個 Domain。</p>
+</section>
+<section class="qa-section" id="q-269-s-03" data-answer-section="3"><h3><span>3.</span> 證據不足或不一致時怎麼判斷</h3>
+<span class="qa-anchor" id="q-269-a-07"></span><p>LID10h 的 LSI.DID=0 指目前 controller 所在 Domain；非法非零 DID 必須回 Invalid Field，不能悄悄查另一個 Domain。</p>
+<span class="qa-anchor" id="q-269-a-16"></span><p>單 Domain 與多 Domain 的零值定義不同，需搭配 MDS 判讀；不要把缺少跨 Domain 資訊當成該資源不存在。</p>
+<span class="qa-anchor" id="q-269-a-17"></span><p>先看查詢是送到哪個 controller，以及 selector 是否明確指定 Domain。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-269-a-08"></span><span class="qa-anchor" id="q-269-a-09"></span><span class="qa-anchor" id="q-269-a-10"></span><span class="qa-anchor" id="q-269-a-11"></span><span class="qa-anchor" id="q-269-a-12"></span><span class="qa-anchor" id="q-269-a-13"></span><span class="qa-anchor" id="q-269-a-14"></span><span class="qa-anchor" id="q-269-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-270" data-question="270"><h2><a class="qa-qid" href="#q-270">Q270</a> Reclaim Group、Reclaim Unit 與 RU Handle 各代表什麼？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-270-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-270-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>FDP 讓 Host 表達資料放置意圖，controller 仍負責實際回收及更換使用中的 RU。</p>
-</li>
-<li id="q-270-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>FDP 配置以 Endurance Group 為範圍；RG 與 RUH 的 ID 只在該配置中有意義。</p>
-</li>
-<li id="q-270-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>讀 LID20h 的 NRG、NRUH 與 RUH descriptors，再查 FID1Dh 是否啟用及所選配置。</p>
-</li>
-<li id="q-270-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>RG 收納可回收的 RUs；一個 RUH 在每個 RG 各參照一個 RU。同一 RU 同時最多由一個 RUH 參照。</p>
-</li>
-<li id="q-270-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 先選 RG 與 Placement Handle，再由 handle 對到 RUH。當目前 RU 用滿，controller 在同一 RG 換成另一個空 RU。</p>
-</li>
-<li id="q-270-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>教學例：RUH2 可同時參照 RG0 的 RU 甲與 RG1 的 RU 乙；只給 RUH2 還不能唯一指定這兩者之一。</p>
-</li>
-<li id="q-270-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Initially Isolated 與 Persistently Isolated 對回收時混放資料的要求不同，不能只靠 RUH 編號推論永久隔離。</p>
-</li>
-<li id="q-270-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-270-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>將所選配置、RG、RUH 類型與目前狀態一起比對；RUH ID 固定不代表其參照的 RU 永遠不變。</p>
-</li>
-<li id="q-270-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查是否把 handle 當成實體 RU 位址。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-270" data-question="270" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-270">Q270</a> Reclaim Group、Reclaim Unit 與 RU Handle 各代表什麼？</h2>
+<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
+<details class="qa-answer" id="q-270-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-270-a-01">FDP 讓 Host 表達資料放置意圖，controller 仍負責實際回收及更換使用中的 RU。</p><div class="qa-sections">
+<section class="qa-section" id="q-270-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
+<span class="qa-anchor" id="q-270-a-02"></span><p>FDP 配置以 Endurance Group 為範圍；RG 與 RUH 的 ID 只在該配置中有意義。</p>
+<span class="qa-anchor" id="q-270-a-04"></span><p>RG 收納可回收的 RUs；一個 RUH 在每個 RG 各參照一個 RU。同一 RU 同時最多由一個 RUH 參照。</p>
+</section>
+<section class="qa-section" id="q-270-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
+<span class="qa-anchor" id="q-270-a-03"></span><p>讀 LID20h 的 NRG、NRUH 與 RUH descriptors，再查 FID1Dh 是否啟用及所選配置。</p>
+<span class="qa-anchor" id="q-270-a-05"></span><p>Host 先選 RG 與 Placement Handle，再由 handle 對到 RUH。當目前 RU 用滿，controller 在同一 RG 換成另一個空 RU。</p>
+<span class="qa-anchor" id="q-270-a-06"></span><p>教學例：RUH2 可同時參照 RG0 的 RU 甲與 RG1 的 RU 乙；只給 RUH2 還不能唯一指定這兩者之一。</p>
+</section>
+<section class="qa-section" id="q-270-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<span class="qa-anchor" id="q-270-a-07"></span><p>Initially Isolated 與 Persistently Isolated 對回收時混放資料的要求不同，不能只靠 RUH 編號推論永久隔離。</p>
+<span class="qa-anchor" id="q-270-a-16"></span><p>將所選配置、RG、RUH 類型與目前狀態一起比對；RUH ID 固定不代表其參照的 RU 永遠不變。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-270-a-17"></span><span class="qa-anchor" id="q-270-a-08"></span><span class="qa-anchor" id="q-270-a-09"></span><span class="qa-anchor" id="q-270-a-10"></span><span class="qa-anchor" id="q-270-a-11"></span><span class="qa-anchor" id="q-270-a-12"></span><span class="qa-anchor" id="q-270-a-13"></span><span class="qa-anchor" id="q-270-a-14"></span><span class="qa-anchor" id="q-270-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-271" data-question="271"><h2><a class="qa-qid" href="#q-271">Q271</a> Namespace 如何透過 Placement Handle 選擇 RU？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-271-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-271-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Namespace 使用自己的 Placement Handle 清單，將 Write 中的放置意圖轉成 Group 內的 RUH。</p>
-</li>
-<li id="q-271-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>同一 PH 數值在不同 namespace 可以對到不同 RUH；不同 namespaces 也可能共用 RUH，須符合配置限制。</p>
-</li>
-<li id="q-271-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>讀 namespace 的 handle 清單、FDP 配置與 I/O Management Receive 的 RUH Status。</p>
-</li>
-<li id="q-271-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Write 的 DTYPE=02h 啟用 FDP 指示，DSPEC 的 PID 包含 RGID 與 PH；PID 裡不是直接填 RUH ID。</p>
-</li>
-<li id="q-271-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先解 PID，再以 PH 查出 RUH，最後用 RGID 找到該 RUH 在所選 RG 目前參照的 RU。</p>
-</li>
-<li id="q-271-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>例如 NS1 的 PH0 對 RUH2、PID 選 RG1，就使用 RUH2 在 RG1 的目前 RU；不是 RUH0。</p>
-</li>
-<li id="q-271-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Write 的 PID 非法時，controller 必須改選可存取的 RG／RUH，並依啟用設定記 Invalid PID 事件；RUH Update 的非法參數不能套用相同容錯。</p>
-</li>
-<li id="q-271-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-271-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>未使用 FDP Directive 的 Write 走 PH0 與 controller 所選 RG；不能因此宣稱完全繞過 FDP 配置。</p>
-</li>
-<li id="q-271-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查 DSPEC 解碼及 namespace 的 PH→RUH 對照，再看媒體結果。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-271" data-question="271" data-answer-kind="process"><h2><a class="qa-qid" href="#q-271">Q271</a> Namespace 如何透過 Placement Handle 選擇 RU？</h2>
+<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
+<details class="qa-answer" id="q-271-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-271-a-01">Namespace 使用自己的 Placement Handle 清單，將 Write 中的放置意圖轉成 Group 內的 RUH。</p><div class="qa-sections">
+<section class="qa-section" id="q-271-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
+<span class="qa-anchor" id="q-271-a-02"></span><p>同一 PH 數值在不同 namespace 可以對到不同 RUH；不同 namespaces 也可能共用 RUH，須符合配置限制。</p>
+<span class="qa-anchor" id="q-271-a-03"></span><p>讀 namespace 的 handle 清單、FDP 配置與 I/O Management Receive 的 RUH Status。</p>
+<span class="qa-anchor" id="q-271-a-04"></span><p>Write 的 DTYPE=02h 啟用 FDP 指示，DSPEC 的 PID 包含 RGID 與 PH；PID 裡不是直接填 RUH ID。</p>
+</section>
+<section class="qa-section" id="q-271-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
+<span class="qa-anchor" id="q-271-a-05"></span><p>先解 PID，再以 PH 查出 RUH，最後用 RGID 找到該 RUH 在所選 RG 目前參照的 RU。</p>
+<span class="qa-anchor" id="q-271-a-06"></span><p>例如 NS1 的 PH0 對 RUH2、PID 選 RG1，就使用 RUH2 在 RG1 的目前 RU；不是 RUH0。</p>
+</section>
+<section class="qa-section" id="q-271-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
+<span class="qa-anchor" id="q-271-a-07"></span><p>Write 的 PID 非法時，controller 必須改選可存取的 RG／RUH，並依啟用設定記 Invalid PID 事件；RUH Update 的非法參數不能套用相同容錯。</p>
+<span class="qa-anchor" id="q-271-a-16"></span><p>未使用 FDP Directive 的 Write 走 PH0 與 controller 所選 RG；不能因此宣稱完全繞過 FDP 配置。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-271-a-17"></span><span class="qa-anchor" id="q-271-a-08"></span><span class="qa-anchor" id="q-271-a-09"></span><span class="qa-anchor" id="q-271-a-10"></span><span class="qa-anchor" id="q-271-a-11"></span><span class="qa-anchor" id="q-271-a-12"></span><span class="qa-anchor" id="q-271-a-13"></span><span class="qa-anchor" id="q-271-a-14"></span><span class="qa-anchor" id="q-271-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-272" data-question="272"><h2><a class="qa-qid" href="#q-272">Q272</a> Media Unit Status Log 提供哪些資訊，如何走訪描述資料？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-272-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-272-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>這份 Log 用來查看 Domain 中媒體單位的歸屬、容量調整與耗損資訊，不是逐筆 I/O 的完成紀錄。</p>
-</li>
-<li id="q-272-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>LID10h 以 LSI.DID 選 Domain；Media Unit ID 與 Channel ID 的唯一性範圍是 Domain。</p>
-</li>
-<li id="q-272-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>查 Supported Log Pages 與 Domain 支援，再取得 Header 的 NMU、CCHANS、SELC。</p>
-</li>
-<li id="q-272-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>描述資料包含 MUID、DID、ENDGID、NVMSETID、CAF、AVSP、PUSED、MUCS 與 CIO；CIO 指向 Channel 清單，MUCS 是清單筆數。</p>
-</li>
-<li id="q-272-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>以 CIO 找清單起點，以 MUCS×2 bytes 讀 Channel IDs；有 Channel 清單時，描述資料長度由 CIO 加清單長度推算，不能固定每筆都是同樣大小。</p>
-</li>
-<li id="q-272-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>Channel IDs 需按順序讀取；CCHANS=0 表示未回報共同 Channel 數，不能直接當作裝置沒有 Channel。</p>
-</li>
-<li id="q-272-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>SELC=0 代表已清除容量配置時，Group、Set、CAF 與 Channel 數等欄須依其清零規則解讀，不能當作一般已配置狀態。</p>
-</li>
-<li id="q-272-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-272-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>Media Unit 的 AVSP、PUSED 與 Endurance Group 健康值之間，規範沒有要求簡單平均關係。</p>
-</li>
-<li id="q-272-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查 DID 與描述資料邊界，避免第一筆長度算錯後讓後面所有欄位位移。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-272" data-question="272" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-272">Q272</a> Media Unit Status Log 提供哪些資訊，如何走訪描述資料？</h2>
+<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
+<details class="qa-answer" id="q-272-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-272-a-01">這份 Log 用來查看 Domain 中媒體單位的歸屬、容量調整與耗損資訊，不是逐筆 I/O 的完成紀錄。</p><div class="qa-sections">
+<section class="qa-section" id="q-272-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
+<span class="qa-anchor" id="q-272-a-02"></span><p>LID10h 以 LSI.DID 選 Domain；Media Unit ID 與 Channel ID 的唯一性範圍是 Domain。</p>
+<span class="qa-anchor" id="q-272-a-03"></span><p>查 Supported Log Pages 與 Domain 支援，再取得 Header 的 NMU、CCHANS、SELC。</p>
+</section>
+<section class="qa-section" id="q-272-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
+<span class="qa-anchor" id="q-272-a-04"></span><p>描述資料包含 MUID、DID、ENDGID、NVMSETID、CAF、AVSP、PUSED、MUCS 與 CIO；CIO 指向 Channel 清單，MUCS 是清單筆數。</p>
+<span class="qa-anchor" id="q-272-a-05"></span><p>以 CIO 找清單起點，以 MUCS×2 bytes 讀 Channel IDs；有 Channel 清單時，描述資料長度由 CIO 加清單長度推算，不能固定每筆都是同樣大小。</p>
+<span class="qa-anchor" id="q-272-a-06"></span><p>Channel IDs 需按順序讀取；CCHANS=0 表示未回報共同 Channel 數，不能直接當作裝置沒有 Channel。</p>
+</section>
+<section class="qa-section" id="q-272-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
+<span class="qa-anchor" id="q-272-a-07"></span><p>SELC=0 代表已清除容量配置時，Group、Set、CAF 與 Channel 數等欄須依其清零規則解讀，不能當作一般已配置狀態。</p>
+<span class="qa-anchor" id="q-272-a-16"></span><p>Media Unit 的 AVSP、PUSED 與 Endurance Group 健康值之間，規範沒有要求簡單平均關係。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-272-a-17"></span><span class="qa-anchor" id="q-272-a-08"></span><span class="qa-anchor" id="q-272-a-09"></span><span class="qa-anchor" id="q-272-a-10"></span><span class="qa-anchor" id="q-272-a-11"></span><span class="qa-anchor" id="q-272-a-12"></span><span class="qa-anchor" id="q-272-a-13"></span><span class="qa-anchor" id="q-272-a-14"></span><span class="qa-anchor" id="q-272-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-273" data-question="273"><h2><a class="qa-qid" href="#q-273">Q273</a> 能從 Media Unit Status 直接判斷 Namespace 不可用嗎？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-273-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-273-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>原題假設 Media Unit 有一個可直接轉成 Namespace Ready 的不可用狀態；LID10h 沒有提供這種通用對應。</p>
-</li>
-<li id="q-273-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>媒體耗損、namespace 存取狀態與某條 controller 路徑是否可用，是不同觀察範圍。</p>
-</li>
-<li id="q-273-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>查 namespace 歸屬、controller Ready、適用 ANA 狀態及實際命令結果；Media Unit Log 只補充媒體資訊。</p>
-</li>
-<li id="q-273-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>PUSED 估算耐用度消耗，AVSP 描述 spare；兩者都不是 Namespace Not Ready 的直接編碼。</p>
-</li>
-<li id="q-273-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先確認 namespace 已附加且路徑允許存取，再觀察合法命令失敗原因，最後才查共享媒體是否能解釋影響範圍。</p>
-</li>
-<li id="q-273-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>PUSED 超過 100 不等於所有讀寫必須失敗；裝置仍可依其實際能力繼續服務。</p>
-</li>
-<li id="q-273-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Namespace Not Ready、ANA Inaccessible 與媒體錯誤分屬不同原因，應按實際條件與對應 Status 判斷。</p>
-</li>
-<li id="q-273-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-273-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>若多個 namespaces 同時受影響，檢查共用的 Group、Set 或 controller，仍不能只憑同時發生就證明因果。</p>
-</li>
-<li id="q-273-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先保存失敗命令的 SCT／SC 與 namespace 路徑狀態。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-273" data-question="273" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-273">Q273</a> 能從 Media Unit Status 直接判斷 Namespace 不可用嗎？</h2>
+<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
+<details class="qa-answer" id="q-273-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-273-a-01">不能直接判斷。Media Unit Status Log（LID10h）沒有一個能直接換算成 Namespace Ready 的通用狀態；必須再查看 namespace 與存取路徑的證據。</p><div class="qa-sections">
+<section class="qa-section" id="q-273-s-01" data-answer-section="1"><h3><span>1.</span> 耗損數值不是 Ready 狀態</h3>
+<span class="qa-anchor" id="q-273-a-02"></span><p>媒體耗損、namespace 存取狀態與某條 controller 路徑是否可用，是不同觀察範圍。</p>
+<span class="qa-anchor" id="q-273-a-04"></span><p>PUSED 估算耐用度消耗，AVSP 描述 spare；兩者都不是 Namespace Not Ready 的直接編碼。</p>
+<span class="qa-anchor" id="q-273-a-06"></span><p>PUSED 超過 100 不等於所有讀寫必須失敗；裝置仍可依其實際能力繼續服務。</p>
+</section>
+<section class="qa-section" id="q-273-s-02" data-answer-section="2"><h3><span>2.</span> 存取失敗時，應依什麼證據判斷</h3>
+<span class="qa-anchor" id="q-273-a-03"></span><p>查 namespace 歸屬、controller Ready、適用 ANA 狀態及實際命令結果；Media Unit Log 只補充媒體資訊。</p>
+<span class="qa-anchor" id="q-273-a-05"></span><p>先確認 namespace 已附加且路徑允許存取，再觀察合法命令失敗原因，最後才查共享媒體是否能解釋影響範圍。</p>
+<span class="qa-anchor" id="q-273-a-07"></span><p>Namespace Not Ready、ANA Inaccessible 與媒體錯誤分屬不同原因，應按實際條件與對應 Status 判斷。</p>
+<span class="qa-anchor" id="q-273-a-16"></span><p>若多個 namespaces 同時受影響，檢查共用的 Group、Set 或 controller，仍不能只憑同時發生就證明因果。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-273-a-17"></span><span class="qa-anchor" id="q-273-a-08"></span><span class="qa-anchor" id="q-273-a-09"></span><span class="qa-anchor" id="q-273-a-10"></span><span class="qa-anchor" id="q-273-a-11"></span><span class="qa-anchor" id="q-273-a-12"></span><span class="qa-anchor" id="q-273-a-13"></span><span class="qa-anchor" id="q-273-a-14"></span><span class="qa-anchor" id="q-273-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-274" data-question="274"><h2><a class="qa-qid" href="#q-274">Q274</a> 媒體狀態變化會產生哪些通知與紀錄？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-274-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-274-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>規範沒有通用的「Media Unit 任一欄變更」AER。必須先辨識實際變化屬於健康警告、ANA、namespace 屬性還是 FDP 事件。</p>
-</li>
-<li id="q-274-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>警告可能屬於 Endurance Group、subsystem，或僅屬於某 controller 的路徑；這些通知不能互相代替。</p>
-</li>
-<li id="q-274-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>讀 AEC、FID18h、FDP Event 設定與對應支援位元。</p>
-</li>
-<li id="q-274-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>SMART／Endurance Group Logs 提供警告，ANA Log 提供路徑狀態，FDP Events 記錄已啟用的放置事件。</p>
-</li>
-<li id="q-274-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先保存 AER 的 Type、Information、LID，再讀相符 Log；需要保留事件時使用 RAE=1。</p>
-</li>
-<li id="q-274-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>例如某 Group spare 低於門檻，應檢查 EGCW 與已啟用的 aggregate notice，而非期待一個 Media Unit Lost 事件。</p>
-</li>
-<li id="q-274-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>沒有事件前，先排除未啟用、沒有掛 AER、已被別的讀取確認，或變化根本不符合事件條件。</p>
-</li>
-<li id="q-274-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-274-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>PEL 只有在支援且符合指定事件時記錄；不能要求每次 PUSED 更新都新增事件。</p>
-</li>
-<li id="q-274-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確定「哪個欄位如何改變」，再找規範定義的事件。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-274" data-question="274" data-answer-kind="events"><h2><a class="qa-qid" href="#q-274">Q274</a> 媒體狀態變化會產生哪些通知與紀錄？</h2>
+<p class="qa-prompt">先說明事件成立的條件，再區分通知、事件確認與紀錄。</p>
+<details class="qa-answer" id="q-274-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-274-a-01">規範沒有通用的「Media Unit 任一欄變更」AER。必須先辨識實際變化屬於健康警告、ANA、namespace 屬性還是 FDP 事件。</p><div class="qa-sections">
+<section class="qa-section" id="q-274-s-01" data-answer-section="1"><h3><span>1.</span> 事件何時成立、由誰觀察</h3>
+<span class="qa-anchor" id="q-274-a-02"></span><p>警告可能屬於 Endurance Group、subsystem，或僅屬於某 controller 的路徑；這些通知不能互相代替。</p>
+<span class="qa-anchor" id="q-274-a-03"></span><p>讀 AEC、FID18h、FDP Event 設定與對應支援位元。</p>
+<span class="qa-anchor" id="q-274-a-04"></span><p>SMART／Endurance Group Logs 提供警告，ANA Log 提供路徑狀態，FDP Events 記錄已啟用的放置事件。</p>
+</section>
+<section class="qa-section" id="q-274-s-02" data-answer-section="2"><h3><span>2.</span> 通知、讀取與確認的關係</h3>
+<span class="qa-anchor" id="q-274-a-05"></span><p>先保存 AER 的 Type、Information、LID，再讀相符 Log；需要保留事件時使用 RAE=1。</p>
+<span class="qa-anchor" id="q-274-a-06"></span><p>例如某 Group spare 低於門檻，應檢查 EGCW 與已啟用的 aggregate notice，而非期待一個 Media Unit Lost 事件。</p>
+</section>
+<section class="qa-section" id="q-274-s-03" data-answer-section="3"><h3><span>3.</span> 沒有通知或紀錄時怎麼判斷</h3>
+<span class="qa-anchor" id="q-274-a-07"></span><p>沒有事件前，先排除未啟用、沒有掛 AER、已被別的讀取確認，或變化根本不符合事件條件。</p>
+<span class="qa-anchor" id="q-274-a-16"></span><p>PEL 只有在支援且符合指定事件時記錄；不能要求每次 PUSED 更新都新增事件。</p>
+<span class="qa-anchor" id="q-274-a-17"></span><p>先確定「哪個欄位如何改變」，再找規範定義的事件。</p>
+</section>
+<section class="qa-section" id="q-274-s-04" data-answer-section="4"><h3><span>4.</span> 分開核對事件通知與 Log 紀錄</h3>
+<span class="qa-anchor" id="q-274-a-09"></span><p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">完整條件見本冊說明</a></p>
+<span class="qa-anchor" id="q-274-a-10"></span><p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">完整條件見本冊說明</a></p>
+<span class="qa-anchor" id="q-274-a-11"></span><p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">完整條件見本冊說明</a></p>
+</section>
+</div>
+<span class="qa-anchor" id="q-274-a-08"></span><span class="qa-anchor" id="q-274-a-12"></span><span class="qa-anchor" id="q-274-a-13"></span><span class="qa-anchor" id="q-274-a-14"></span><span class="qa-anchor" id="q-274-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-275" data-question="275"><h2><a class="qa-qid" href="#q-275">Q275</a> 如何辨識管理實體的 Scope，避免混用 ID？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-275-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-275-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>相同數字可以同時是 NSID、DID、ENDGID 或 RGID；完整識別需要欄位種類與其所屬範圍。</p>
-</li>
-<li id="q-275-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>操作的命令入口、設定的範圍與資料的歸屬可能不同。</p>
-</li>
-<li id="q-275-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>先查命令／Feature 的 scope，再用 Identify 和相關清單解析指定 ID。</p>
-</li>
-<li id="q-275-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>記錄 controller ID、Domain、Group、Namespace 與命令 selector；不適用的欄位明確留空，不填猜測的 0。</p>
-</li>
-<li id="q-275-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>逐步回答「送給誰、指定誰、誰會一起受影響」，再選擇跨 controller 的比對對象。</p>
-</li>
-<li id="q-275-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>例如 FDP 的 FID1Dh 以 Group 為範圍；同 Group 的 namespaces 共用配置，但各自 PH 清單仍不同。</p>
-</li>
-<li id="q-275-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>不存在 ID、未支援功能與無法取得跨 Domain 資訊，不能全部用同一種錯誤解釋。</p>
-</li>
-<li id="q-275-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>收到 CQE 時才有 DNR 與 More 可判讀。本題沒有另行指定固定值，請依本冊的共用規則，搭配實際完成條件判斷。 <a class="qa-rule-link" href="#common-command-8">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。 <a class="qa-rule-link" href="#common-log_query-9">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>Get Log Page 回傳指定 Log 的資料。 <a class="qa-rule-link" href="#common-log_query-10">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。 <a class="qa-rule-link" href="#common-log_query-11">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。 <a class="qa-rule-link" href="#common-log_query-12">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。 <a class="qa-rule-link" href="#common-log_query-13">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後重新提交查詢。 <a class="qa-rule-link" href="#common-log_query-14">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。 <a class="qa-rule-link" href="#common-log_query-15">本冊完整規則</a></p>
-</li>
-<li id="q-275-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>同一物件的比較需保持 selector 與時間一致；若管理操作途中改變歸屬，先重新探索。</p>
-</li>
-<li id="q-275-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先把所有未標種類的裸數字補上欄位名稱與上層範圍。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-275" data-question="275" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-275">Q275</a> 如何辨識管理實體的 Scope，避免混用 ID？</h2>
+<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
+<details class="qa-answer" id="q-275-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-275-a-01">相同數字可以同時是 NSID、DID、ENDGID 或 RGID；完整識別需要欄位種類與其所屬範圍。</p><div class="qa-sections">
+<section class="qa-section" id="q-275-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
+<span class="qa-anchor" id="q-275-a-02"></span><p>操作的命令入口、設定的範圍與資料的歸屬可能不同。</p>
+<span class="qa-anchor" id="q-275-a-04"></span><p>記錄 controller ID、Domain、Group、Namespace 與命令 selector；不適用的欄位明確留空，不填猜測的 0。</p>
+</section>
+<section class="qa-section" id="q-275-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
+<span class="qa-anchor" id="q-275-a-03"></span><p>先查命令／Feature 的 scope，再用 Identify 和相關清單解析指定 ID。</p>
+<span class="qa-anchor" id="q-275-a-05"></span><p>逐步回答「送給誰、指定誰、誰會一起受影響」，再選擇跨 controller 的比對對象。</p>
+<span class="qa-anchor" id="q-275-a-06"></span><p>例如 FDP 的 FID1Dh 以 Group 為範圍；同 Group 的 namespaces 共用配置，但各自 PH 清單仍不同。</p>
+</section>
+<section class="qa-section" id="q-275-s-03" data-answer-section="3"><h3><span>3.</span> 容易誤判的地方</h3>
+<span class="qa-anchor" id="q-275-a-07"></span><p>不存在 ID、未支援功能與無法取得跨 Domain 資訊，不能全部用同一種錯誤解釋。</p>
+<span class="qa-anchor" id="q-275-a-16"></span><p>同一物件的比較需保持 selector 與時間一致；若管理操作途中改變歸屬，先重新探索。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-275-a-17"></span><span class="qa-anchor" id="q-275-a-08"></span><span class="qa-anchor" id="q-275-a-09"></span><span class="qa-anchor" id="q-275-a-10"></span><span class="qa-anchor" id="q-275-a-11"></span><span class="qa-anchor" id="q-275-a-12"></span><span class="qa-anchor" id="q-275-a-13"></span><span class="qa-anchor" id="q-275-a-14"></span><span class="qa-anchor" id="q-275-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-capacitymodel">Base 2.4 §3.2.2–3.2.3, 3.8</a> · <a href="#ref-mediaunit">Base 2.4 §5.2.13.1.16</a> · <a href="#ref-fdpmodel">Base 2.4 §3.2.4, 8.1.12</a> · <a href="#ref-fdpcontrol">Base 2.4 §5.2.13.1.29–5.2.13.1.32, 5.2.30.1.21–5.2.30.1.22, 7.3–7.4</a> · <a href="#ref-fdpnvm">NVM Command Set 1.3 §3.2, 4.1.4.6–4.1.4.7</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-idns">NVM Command Set 1.3 §4.1.5.1–4.1.5.4</a> · <a href="#ref-idlist">Base 2.4 §5.2.14.2.2–5.2.14.2.19, 5.2.14.3.1–5.2.14.3.2</a> · <a href="#ref-ana">Base 2.4 §2.4.2, 8.1.1 (PCIe namespace access)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
 <section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
-<article id="common-command-8"><h3>命令完成、事件與紀錄 · DNR 與 More 應如何設定？</h3><p>只有收到 CQE，才有 DNR 與 More 可供判讀。DNR=1 表示相同命令即使重送到此 NVM subsystem 的任一 controller，仍預期會失敗；DNR=0 則只表示可能成功。除非個別錯誤條件另有明定，不能只看 Status 名稱就要求 DNR=1。More=1 表示 Error Information Log 有這筆命令的補充資訊。SCT=SC=0 時，DNR 應為 0。</p></article>
 <article id="common-log_query-9"><h3>本主題的共用條件 · 是否產生 Asynchronous Event？</h3><p>讀取 Log 本身不是新增一個事件的理由；不過，RAE=0 的成功讀取可能確認並清除對應事件。RAE=1 保留事件，讀取失敗也必須保留。Immediate 與 One-Shot 事件另有清除方式，不能全部套用讀 Log 確認。</p></article>
 <article id="common-log_query-10"><h3>本主題的共用條件 · 是否更新 Error Information Log 或其他 Log？</h3><p>Get Log Page 回傳指定 Log 的資料。某些清單會因讀取而清除已回報的變更，某些事件也受 RAE 影響；讀取前先保存需要比對的狀態。讀取成功本身不要求新增 Error Information，失敗時則依 CQE 與錯誤記錄規則判斷。</p></article>
 <article id="common-log_query-11"><h3>本主題的共用條件 · 是否記錄於 Persistent Event Log？</h3><p>Get Log Page 不是 PEL 中逐筆記錄的讀取歷史。即使讀取的是 PEL，也不表示這次讀取會新增同類事件；只有另行發生且符合支援與記錄條件的事件，才依規則記錄。</p></article>
-<article id="common-log_query-12"><h3>本主題的共用條件 · Controller Reset 後是否保留或繼續？</h3><p>Controller Reset 會中止未完成的查詢，Host 恢復 Admin Queue 後重新讀取。Log 內容是否保留則是另一個問題：Error Information entries 建議清除，但 Error Count 保留；SMART 的累計資訊與 PEL 依各欄位規則持續，不能隨查詢一起當成遺失。</p></article>
-<article id="common-log_query-13"><h3>本主題的共用條件 · NVM Subsystem Reset 後是否保留或繼續？</h3><p>NVM Subsystem Reset 後，先恢復受影響 controller 的查詢通道，再讀取 Log。它不等於恢復出廠設定；Figure 209 的 Restore to Default Content 欄描述製造預設內容的恢復，不能拿來當一般 Reset 的保留表。</p></article>
-<article id="common-log_query-14"><h3>本主題的共用條件 · Power Cycle 後是否保留或繼續？</h3><p>Power Cycle 後重新提交查詢。SMART 的生命週期資訊及 PEL 具有跨斷電的保留規則；Error Information entries 則建議清除，但其累計 Error Count 仍保留。目前溫度、正在執行的操作及回報 context 必須依各自定義重新判讀，不能把所有 bytes 當成固定不變。</p></article>
-<article id="common-log_query-15"><h3>本主題的共用條件 · 是否影響其他 Controller 或 Namespace？</h3><p>查詢不會改寫 namespace 的使用者資料，但某些 Log 的讀取會確認事件或清除已回報清單。controller、namespace、domain 與 subsystem 的資料範圍也不同；多個 Host 共同查詢時，應記錄由誰讀取及何時確認，避免誤以為另一端沒有發生事件。</p></article>
 </section>
 <section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">
 <li id="ref-ana"><strong>Base 2.4 · §2.4.2, 8.1.1 (PCIe namespace access)</strong><br>文件頁 37, 578–584 · PDF 63, 604–610 · Figure 675–678</li>

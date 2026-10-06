@@ -88,11 +88,22 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa .qa-answer {border:0;padding:0;background:transparent;}
 .nvme-qa summary {cursor:pointer;color:var(--qr-accent);font-weight:650;line-height:1.7;}
 .nvme-qa .qa-answer>summary {padding:.8rem 0;}
-.nvme-qa .qa-items {list-style:none;margin:0;padding:0;}
-.nvme-qa .qa-items>li {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
-.nvme-qa .qa-items h3 {font-size:1em;line-height:1.65;margin:0 0 .6rem;}
-.nvme-qa .qa-items h3 span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
-.nvme-qa .qa-items p {margin:.4rem 0;}
+.nvme-qa .qa-answer-lead {font-size:1.06em;line-height:1.85;margin:.6rem 0 1.4rem;}
+.nvme-qa .qa-section {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-section h3 {font-size:1.05em;line-height:1.65;margin:0 0 .8rem;}
+.nvme-qa .qa-section h3>span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
+.nvme-qa .qa-section>p {margin:.7rem 0 1.1rem;}
+.nvme-qa .qa-anchor {scroll-margin-top:2rem;}
+.nvme-qa .qa-flow {margin:1.3rem 0;padding:1.2rem;border:1px solid var(--qr-border);border-radius:12px;background:var(--qr-soft);}
+.nvme-qa .qa-flow figcaption {font-weight:700;font-size:1.03em;color:var(--qr-fg);line-height:1.6;}
+.nvme-qa .qa-flow>p {font-size:.94em;line-height:1.8;}
+.nvme-qa .qa-flow-steps {list-style:none;padding:0;margin:1.4rem 0;display:grid;gap:1.4rem;}
+.nvme-qa .qa-flow-steps>li {position:relative;margin:0;padding:1rem;border:1px solid var(--qr-border);border-left:4px solid var(--qr-accent);border-radius:8px;background:var(--qr-surface);}
+.nvme-qa .qa-flow-steps>li.qa-flow-branch {border-left-style:double;border-left-width:6px;margin-left:1rem;}
+.nvme-qa .qa-flow-steps strong {display:block;color:var(--qr-fg);line-height:1.6;}
+.nvme-qa .qa-flow-steps p {margin:.5rem 0 0;font-size:.92em;line-height:1.8;}
+.nvme-qa .qa-flow-arrow {position:absolute;top:-1.5rem;left:50%;font-size:1.1rem;line-height:1.4rem;color:var(--qr-accent);}
+.nvme-qa .qa-flow-conclusion {border-top:1px solid var(--qr-border);padding-top:1rem;margin-bottom:0;}
 .nvme-qa .qa-rule-link {white-space:normal;font-size:.9em;}
 .nvme-qa .qa-common article {padding:1rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
 .nvme-qa .qa-common h3 {font-size:1em;}
@@ -106,14 +117,14 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa .qa-theme {margin:0 1rem;}
 .nvme-qa output {font-size:.85em;color:var(--qr-muted);}
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
-@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-items h3 span{display:inline}.nvme-qa .qa-state{flex-direction:column}}
-@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-items>li{break-inside:avoid}}
+@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
+@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
 </style></head><body class="qr-standalone">
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/initialization/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/initialization/en/">English</a></nav>
 <button class="qa-theme" type="button" data-theme-toggle>切換明／暗色</button>
 <main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q1–Q9</p><h1>Controller 初始化與停用</h1><p class="qr-intro">先理解 controller 如何從停用轉為就緒，再開始處理命令。讀到能力，不表示 controller 已啟用；Host 設定 EN，也還要等待 RDY。即使 RDY=1，仍可能需要依 Ready Mode 確認媒體是否可用。本冊將狀態、等待時間及允許執行的動作放在一起，說明每個階段應如何判斷。</p><p>先練習，再展開每題的 17 項解答。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
+<header><p class="qa-range">Q1–Q9</p><h1>Controller 初始化與停用</h1><p class="qr-intro">先理解 controller 如何從停用轉為就緒，再開始處理命令。讀到能力，不表示 controller 已啟用；Host 設定 EN，也還要等待 RDY。即使 RDY=1，仍可能需要依 Ready Mode 確認媒體是否可用。本冊將狀態、等待時間及允許執行的動作放在一起，說明每個階段應如何判斷。</p><p>先練習，再展開解答。各題依需要使用文字、欄位判讀、比較或流程說明，不要求相同的回答項目。所有數字案例均為教學假設；Status 以 SCT/SC 表示，代碼後的 h 代表十六進位。</p></header>
 <aside class="qa-glossary"><h2>先認識本文使用的字詞</h2><dl><dt>Controller / namespace</dt><dd>controller 接收命令並管理存取；namespace 是命令可指定的一份邏輯儲存空間。NVM subsystem 則包含 controller 與非揮發儲存資源，同一 subsystem 可以有多個 controller。</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission Queue（SQ）是提交佇列，Completion Queue（CQ）是完成佇列；SQE 與 CQE 分別是其中的一筆命令及完成項目。QID 識別 queue，CID 區分同一 SQ 中尚未完成的命令，NSID 則識別 namespace。</dd><dt>Register / Identify / Feature / Log</dt><dd>Register 提供可存取的控制或狀態資訊；Identify 查詢物件的能力與屬性；Feature 用來讀取或變更工作設定；Log Page 回報特定種類的狀態或紀錄。FID、LID、CNS、CSI 則分別用來選擇 Feature、Log Page、Identify 資料結構及命令集。</dd><dt>index / offset / zero-based</dt><dd>index 指出清單中的第幾筆，通常從 0 起算；offset 表示與起點相隔多遠，解讀時必須確認單位。若數量欄位採 zero-based 編碼，實際數量等於欄位值加 1；但不是所有欄位看到 0 都要加 1。Dword 是 4 bytes，1 byte 是 8 bits。</dd><dt>Scope / reset / retention</dt><dd>scope 表示操作影響哪些物件；retention 表示狀態是否保留。清除 CC.EN 所觸發的 Controller Reset，是 Controller Level Reset（CLR）的一種。同屬 CLR 的不同觸發方式，仍可能採用不同的 Register 保留規則。</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>從未啟用到能送命令</h2><p class="qa-takeaway">重新啟用前，先確認上一輪停用已完成。啟用與停用都要觀察 RDY 的實際變化，不能只看 Host 自己寫入的 EN。</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="可橫向捲動的比較表"><table><thead><tr><th scope="col">階段</th><th scope="col">觀察／動作</th><th scope="col">下一步的條件</th></tr></thead><tbody><tr><td>停用完成</td><td>CC.EN=0；CSTS.RDY=0</td><td>設定 AQA、ASQ、ACQ 與 CC</td></tr><tr><td>啟用中</td><td>Host 將 EN 從 0 設為 1，並開始計時</td><td>等待 RDY=1，同時檢查 CFS 及適用的 timeout</td></tr><tr><td>介面就緒</td><td>RDY=1；依 Ready Mode 判斷媒體限制</td><td>先執行允許的 Admin 命令，再建立 I/O queue</td></tr><tr><td>再次停用</td><td>Host 將 EN 從 1 清為 0，並停止提交新命令</td><td>等待 RDY=0，才開始下一次初始化</td></tr></tbody></table></div>
@@ -140,538 +151,217 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <li><a href="#q-008">Q08 · Controller Enable、Disable、Controller Reset、NVM Subsystem Reset 與 Shutdown 有什麼差異？</a></li>
 <li><a href="#q-009">Q09 · Controller Reset 後，哪些 Register、Admin Queue、Feature 與 I/O Queue 需要重新設定？</a></li>
 </ol></section>
-<article class="qa-question" id="q-001" data-question="1"><h2><a class="qa-qid" href="#q-001">Q01</a> Host 應如何從 CAP 與 VS 確認 NVMe 版本、最大 Queue 大小、Timeout、Doorbell 間距、Memory Page Size 及支援的 Command Set？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-001-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-001-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Host 必須先知道 controller 支援哪些配置，才能正確初始化介面。CAP 用來宣告支援能力，CC 則記錄 Host 實際選用的設定，因此不能直接把 CAP 的能力位元複製到 CC。</p>
-</li>
-<li id="q-001-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>讀取 CAP 與 VS 只會取得目標 controller 的資訊，不會改變 queue 或媒體狀態。即使已確認 NVMe 版本，Host 仍須逐項檢查選配功能，因為版本相同不代表支援的功能完全相同。</p>
-</li>
-<li id="q-001-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>VS 的 MJR、MNR、TER 欄位共同表示版本。Queue 與命令集能力則由 CAP 提供：MQES+1 是單一 I/O queue 的 entry 數量上限，CQR 說明是否要求實體記憶體連續，CSS 則說明支援哪些命令集選擇方式。</p>
-</li>
-<li id="q-001-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>這些欄位使用不同的編碼方式。CAP.TO 以 500 ms 為單位；相鄰 Doorbell 的間距是 2^(2+DSTRD) bytes；可選的記憶體頁面大小則介於 2^(12+MPSMIN) 與 2^(12+MPSMAX) bytes。判斷啟用逾時時，還必須一併讀取 CRTO。</p>
-</li>
-<li id="q-001-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 先建立 NVMe Register 的位址映射，再讀取 VS 與 CAP。根據讀到的能力，選擇合法的 MPS、CSS、AMS 與 Ready Mode，接著配置 queue。若 IOCSS=1，則在啟用後以 Identify CNS 1Ch 查詢可使用的命令集組合。</p>
-</li>
-<li id="q-001-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>讀取成功後，Host 應能算出合法的配置範圍；這次 Register 讀取本身不會產生 CQE。例如，MQES=03FFh 表示最多 1024 個 queue 位置，而 DSTRD=2 表示相鄰 Doorbell 相隔 16 bytes。</p>
-</li>
-<li id="q-001-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>讀取唯讀 Register 不會以 Invalid Field CQE 回覆錯誤。至於後續設定，若 Host 把不支援的值寫入 CC.MPS 或 CC.AMS，規範可能將結果定義為 undefined behavior；此時不能要求 controller 回傳某個固定錯誤碼。</p>
-</li>
-<li id="q-001-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-001-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-001-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-001-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-001-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>CAP 與 VS 分別提供能力及版本資訊。Controller Reset 後，Host 重新讀取它們，再設定 CC 中需要選擇的值；這些唯讀能力欄位本身不需要、也不是由 Host 寫回。</p>
-</li>
-<li id="q-001-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>NVM Subsystem Reset 後，先確認 Register 已可存取，再重新查詢版本與能力。若這次重設同時啟用新韌體，更要以恢復後的實際回覆為準。</p>
-</li>
-<li id="q-001-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>Power Cycle 後，Host 重新讀取 CAP 與 VS。本題只是查詢能力與版本，沒有因這次讀取而需要保存的 Host 設定。</p>
-</li>
-<li id="q-001-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>讀取 Register 不會改變其他 controller 或 namespace。不過，不同 controller 可以有不同能力，因此不能拿其中一個 controller 的回覆代替全部。</p>
-</li>
-<li id="q-001-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>驗證時，應確認 CC.CSS 選用的命令集符合 CAP.CSS 宣告的能力及 Identify 回報的組合。同樣地，Create Queue 的 QSIZE 必須符合 MQES 限制。Admin Queue 則另受 AQA 的 4096 個位置上限約束，不能與 I/O queue 的上限混為一談。</p>
-</li>
-<li id="q-001-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先檢查欄位的位元位置、little-endian 解讀方式，以及數量是否採 zero-based 編碼。例如，MQES=1023 代表 1024 個位置；如果只配置 1023 個，便是漏算了編碼中的加 1。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-001" data-question="1" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-001">Q01</a> Host 應如何從 CAP 與 VS 確認 NVMe 版本、最大 Queue 大小、Timeout、Doorbell 間距、Memory Page Size 及支援的 Command Set？</h2>
+<p class="qa-prompt">先試著說明欄位的單位與編碼，再用一組數值推導結果。</p>
+<details class="qa-answer" id="q-001-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-001-a-01">Host 必須先知道 controller 支援哪些配置，才能正確初始化介面。CAP 用來宣告支援能力，CC 則記錄 Host 實際選用的設定，因此不能直接把 CAP 的能力位元複製到 CC。</p><div class="qa-sections">
+<section class="qa-section" id="q-001-s-01" data-answer-section="1"><h3><span>1.</span> 先確認資料的來源與範圍</h3>
+<span class="qa-anchor" id="q-001-a-02"></span><p>讀取 CAP 與 VS 只會取得目標 controller 的資訊，不會改變 queue 或媒體狀態。即使已確認 NVMe 版本，Host 仍須逐項檢查選配功能，因為版本相同不代表支援的功能完全相同。</p>
+<span class="qa-anchor" id="q-001-a-03"></span><p>VS 的 MJR、MNR、TER 欄位共同表示版本。Queue 與命令集能力則由 CAP 提供：MQES+1 是單一 I/O queue 的 entry 數量上限，CQR 說明是否要求實體記憶體連續，CSS 則說明支援哪些命令集選擇方式。</p>
+</section>
+<section class="qa-section" id="q-001-s-02" data-answer-section="2"><h3><span>2.</span> 欄位、單位與判讀例子</h3>
+<span class="qa-anchor" id="q-001-a-04"></span><p>這些欄位使用不同的編碼方式。CAP.TO 以 500 ms 為單位；相鄰 Doorbell 的間距是 2^(2+DSTRD) bytes；可選的記憶體頁面大小則介於 2^(12+MPSMIN) 與 2^(12+MPSMAX) bytes。判斷啟用逾時時，還必須一併讀取 CRTO。</p>
+<span class="qa-anchor" id="q-001-a-05"></span><p>Host 先建立 NVMe Register 的位址映射，再讀取 VS 與 CAP。根據讀到的能力，選擇合法的 MPS、CSS、AMS 與 Ready Mode，接著配置 queue。若 IOCSS=1，則在啟用後以 Identify CNS 1Ch 查詢可使用的命令集組合。</p>
+<span class="qa-anchor" id="q-001-a-06"></span><p>讀取成功後，Host 應能算出合法的配置範圍；這次 Register 讀取本身不會產生 CQE。例如，MQES=03FFh 表示最多 1024 個 queue 位置，而 DSTRD=2 表示相鄰 Doorbell 相隔 16 bytes。</p>
+</section>
+<section class="qa-section" id="q-001-s-03" data-answer-section="3"><h3><span>3.</span> 判讀時要保留的條件</h3>
+<span class="qa-anchor" id="q-001-a-07"></span><p>讀取唯讀 Register 不會以 Invalid Field CQE 回覆錯誤。至於後續設定，若 Host 把不支援的值寫入 CC.MPS 或 CC.AMS，規範可能將結果定義為 undefined behavior；此時不能要求 controller 回傳某個固定錯誤碼。</p>
+<span class="qa-anchor" id="q-001-a-16"></span><p>驗證時，應確認 CC.CSS 選用的命令集符合 CAP.CSS 宣告的能力及 Identify 回報的組合。同樣地，Create Queue 的 QSIZE 必須符合 MQES 限制。Admin Queue 則另受 AQA 的 4096 個位置上限約束，不能與 I/O queue 的上限混為一談。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-001-a-17"></span><span class="qa-anchor" id="q-001-a-08"></span><span class="qa-anchor" id="q-001-a-09"></span><span class="qa-anchor" id="q-001-a-10"></span><span class="qa-anchor" id="q-001-a-11"></span><span class="qa-anchor" id="q-001-a-12"></span><span class="qa-anchor" id="q-001-a-13"></span><span class="qa-anchor" id="q-001-a-14"></span><span class="qa-anchor" id="q-001-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-002" data-question="2"><h2><a class="qa-qid" href="#q-002">Q02</a> AQA、ASQ、ACQ 與 CC 各欄位應按照什麼順序設定？設定錯誤時可能發生什麼？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-002-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-002-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Host 必須先準備 Admin SQ 與 CQ 的記憶體，再把位置與大小告訴 controller。這樣 controller 啟用後，才有可用的通道接收管理命令並回報結果。</p>
-</li>
-<li id="q-002-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>這些設定影響目標 controller 的管理介面。若 queue 位址填錯，controller 就可能無法讀取命令或寫入完成結果，導致後續 Identify、Get Features 等命令都無法正常完成。</p>
-</li>
-<li id="q-002-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>先從 CAP 確認可用的 MPS 範圍、CSS、AMS 與 CRMS，再檢查 AQA 對 Admin Queue 長度的限制。Host 選用的配置必須同時符合這些條件。</p>
-</li>
-<li id="q-002-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>AQA.ASQS 與 ACQS 儲存的是 entry 數量減 1；ASQ 與 ACQ 則提供實體起始位址，且必須依 CC.MPS 對齊。CC 還需設定 CSS、MPS、AMS 與 CRIME。若使用 NVM I/O，IOSQES 與 IOCQES 分別設為 6 與 4。</p>
-</li>
-<li id="q-002-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先等待前一次重設完成，確認 RDY=0，再配置實體連續的 Admin Queue 記憶體，並把 Admin CQ 的 Phase 初始化為 0。接著，在 EN=0 時寫入 AQA、ASQ、ACQ 及合法的 CC 設定。將 EN 設為 1 後，等待 RDY=1。I/O entry 大小則必須在建立 I/O Queue 前設定完成。</p>
-</li>
-<li id="q-002-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>初始化成功後，Host 可以透過 Admin Queue 提交 Identify。不過，I/O Queue 仍需另外建立；若採 Independent mode，也不能只憑 RDY=1 就認定所有媒體都已就緒。</p>
-</li>
-<li id="q-002-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>例如，以 AQA size=0 的配置啟用 controller、在 EN=1 時修改 MPS，或選用不支援的 MPS／AMS，都可能落入規範所稱的 undefined behavior。這些是 Register 使用方式的問題，不能擅自規定 controller 必須回傳 Invalid Field CQE。</p>
-</li>
-<li id="q-002-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-002-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>驗證時，先確認 Register 的編碼正確，再確認 Admin CQ 能收到與原命令 CID 相符的 Identify 完成結果。CC.EN=1 只表示 Host 已要求啟用，單憑這個值還不足以證明初始化完成。</p>
-</li>
-<li id="q-002-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確認 ASQ、ACQ 指向的是裝置可存取的位址，再檢查頁面對齊與實際配置長度。一般程式使用的虛擬位址，不能直接當成 queue 的實體基底位址。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-002" data-question="2" data-answer-kind="process"><h2><a class="qa-qid" href="#q-002">Q02</a> AQA、ASQ、ACQ 與 CC 各欄位應按照什麼順序設定？設定錯誤時可能發生什麼？</h2>
+<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
+<details class="qa-answer" id="q-002-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-002-a-01">Host 必須先準備 Admin SQ 與 CQ 的記憶體，再把位置與大小告訴 controller。這樣 controller 啟用後，才有可用的通道接收管理命令並回報結果。</p><div class="qa-sections">
+<section class="qa-section" id="q-002-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
+<span class="qa-anchor" id="q-002-a-02"></span><p>這些設定影響目標 controller 的管理介面。若 queue 位址填錯，controller 就可能無法讀取命令或寫入完成結果，導致後續 Identify、Get Features 等命令都無法正常完成。</p>
+<span class="qa-anchor" id="q-002-a-03"></span><p>先從 CAP 確認可用的 MPS 範圍、CSS、AMS 與 CRMS，再檢查 AQA 對 Admin Queue 長度的限制。Host 選用的配置必須同時符合這些條件。</p>
+<span class="qa-anchor" id="q-002-a-04"></span><p>AQA.ASQS 與 ACQS 儲存的是 entry 數量減 1；ASQ 與 ACQ 則提供實體起始位址，且必須依 CC.MPS 對齊。CC 還需設定 CSS、MPS、AMS 與 CRIME。若使用 NVM I/O，IOSQES 與 IOCQES 分別設為 6 與 4。</p>
+</section>
+<section class="qa-section" id="q-002-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
+<span class="qa-anchor" id="q-002-a-05"></span><p>先等待前一次重設完成，確認 RDY=0，再配置實體連續的 Admin Queue 記憶體，並把 Admin CQ 的 Phase 初始化為 0。接著，在 EN=0 時寫入 AQA、ASQ、ACQ 及合法的 CC 設定。將 EN 設為 1 後，等待 RDY=1。I/O entry 大小則必須在建立 I/O Queue 前設定完成。</p>
+<span class="qa-anchor" id="q-002-a-06"></span><p>初始化成功後，Host 可以透過 Admin Queue 提交 Identify。不過，I/O Queue 仍需另外建立；若採 Independent mode，也不能只憑 RDY=1 就認定所有媒體都已就緒。</p>
+</section>
+<section class="qa-section" id="q-002-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
+<span class="qa-anchor" id="q-002-a-07"></span><p>例如，以 AQA size=0 的配置啟用 controller、在 EN=1 時修改 MPS，或選用不支援的 MPS／AMS，都可能落入規範所稱的 undefined behavior。這些是 Register 使用方式的問題，不能擅自規定 controller 必須回傳 Invalid Field CQE。</p>
+<span class="qa-anchor" id="q-002-a-16"></span><p>驗證時，先確認 Register 的編碼正確，再確認 Admin CQ 能收到與原命令 CID 相符的 Identify 完成結果。CC.EN=1 只表示 Host 已要求啟用，單憑這個值還不足以證明初始化完成。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-002-a-17"></span><span class="qa-anchor" id="q-002-a-08"></span><span class="qa-anchor" id="q-002-a-09"></span><span class="qa-anchor" id="q-002-a-10"></span><span class="qa-anchor" id="q-002-a-11"></span><span class="qa-anchor" id="q-002-a-12"></span><span class="qa-anchor" id="q-002-a-13"></span><span class="qa-anchor" id="q-002-a-14"></span><span class="qa-anchor" id="q-002-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-003" data-question="3"><h2><a class="qa-qid" href="#q-003">Q03</a> Host 設定 CC.EN 後，應如何根據 CAP.TO 與 CSTS.RDY 判斷 Controller 是否成功 Enable？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-003-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-003-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Host 寫入啟用要求後，controller 還需要時間準備。這題要分辨「已要求啟用」與「已能處理命令」，並選對等待期限，避免過早重設；在 Base 2.4 中，判斷時也必須納入 CRTO。</p>
-</li>
-<li id="q-003-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>這裡判斷的是目標 controller 的啟用狀態。至於媒體是否已可存取，還要配合所選的 Ready Mode，不能只看一個 RDY 值。</p>
-</li>
-<li id="q-003-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>讀取 CAP.CRMS、CC.CRIME、CRTO.CRWMT／CRIMT 及 CAP.TO，確認目前採用哪種 Ready Mode 及等待期限。不能假設所有啟用情況都只需要查看 CAP.TO。</p>
-</li>
-<li id="q-003-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>計時從 CC.EN 由 0 變成 1 開始，Host 則透過 CSTS.RDY 觀察是否就緒。CRTO 的單位是 500 ms：With Media 模式使用 CRWMT；Independent 模式先以 CRIMT 判斷介面就緒期限，再以 CRWMT 判斷媒體就緒期限。</p>
-</li>
-<li id="q-003-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 先記錄 Ready Mode 與啟用時間，再持續讀取 RDY、CFS。當 RDY=1 時，才能開始提交該模式允許的命令。若初始化失敗，還須依失敗條件判斷後續處理，因此不能把每次讀到 RDY=1 都解讀成媒體健康。</p>
-</li>
-<li id="q-003-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>正常情況在適用期限內 RDY=1。例：CRIMT=2、CRWMT=20，分別是 1 s 的介面就緒期限與 10 s 的媒體期限，兩者都從 Enable 起算。</p>
-</li>
-<li id="q-003-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>透過 Register 啟用 controller，不會產生 CQE。若媒體尚未就緒，只有符合對應條件的命令，才能回報 Namespace Not Ready（SCT=0, SC=82h）或 Admin Command Media Not Ready（0/24h）。</p>
-</li>
-<li id="q-003-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>透過 Register 啟用 controller，不會產生 CQE，因此這個動作本身沒有 DNR 或 More。Independent mode 在合法等待期間，若命令因媒體尚未就緒而失敗，可以回報 DNR=0；超過 CRWMT 後，就不得繼續以相同的暫時性理由回報 DNR=0。More 則依 Error Information Log 是否有該命令的補充資訊設定。</p>
-</li>
-<li id="q-003-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-003-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-003-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若發生 §3.5.4.1 定義的初始化期限失敗，而且 controller 支援 PEL，必須記錄 NVM Subsystem Hardware Error Event，原因為 Controller Ready Timeout Exceeded。這是失敗條件觸發的紀錄，不是每次 Enable 成功都必須新增的事件。</p>
-</li>
-<li id="q-003-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-003-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-003-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-003-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-003-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>應把啟用時間、CRIME、命令種類與回傳 Status 放在同一條時間軸上核對。Figure 84 只允許列出的 Admin 命令在特定條件下回報媒體尚未就緒，並非所有 Admin 命令都能用這個理由暫時拒絕執行。</p>
-</li>
-<li id="q-003-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確認使用哪個 timeout、從何時開始計時，以及是否正確換算 500 ms 單位。媒體的等待期限同樣從 Enable 起算，不能等 RDY=1 才重新計時。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-003" data-question="3" data-answer-kind="process"><h2><a class="qa-qid" href="#q-003">Q03</a> Host 設定 CC.EN 後，應如何根據 CAP.TO 與 CSTS.RDY 判斷 Controller 是否成功 Enable？</h2>
+<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
+<details class="qa-answer" id="q-003-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-003-a-01">Host 寫入啟用要求後，controller 還需要時間準備。這題要分辨「已要求啟用」與「已能處理命令」，並選對等待期限，避免過早重設；在 Base 2.4 中，判斷時也必須納入 CRTO。</p><div class="qa-sections">
+<section class="qa-section" id="q-003-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
+<span class="qa-anchor" id="q-003-a-02"></span><p>這裡判斷的是目標 controller 的啟用狀態。至於媒體是否已可存取，還要配合所選的 Ready Mode，不能只看一個 RDY 值。</p>
+<span class="qa-anchor" id="q-003-a-03"></span><p>讀取 CAP.CRMS、CC.CRIME、CRTO.CRWMT／CRIMT 及 CAP.TO，確認目前採用哪種 Ready Mode 及等待期限。不能假設所有啟用情況都只需要查看 CAP.TO。</p>
+</section>
+<section class="qa-section" id="q-003-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
+<span class="qa-anchor" id="q-003-a-04"></span>
+<span class="qa-anchor" id="q-003-a-05"></span>
+<span class="qa-anchor" id="q-003-a-06"></span>
+<span class="qa-anchor" id="q-003-a-17"></span>
+<figure class="qa-flow" id="q-003-flow"><figcaption>Enable 的兩條等待期限</figcaption>
+<p>下圖把介面就緒與媒體就緒分開。兩個計時器都從 Enable 起算，不是在 RDY=1 後才開始等媒體。</p><ol class="qa-flow-steps">
+<li class="qa-flow-step"><strong>起點：CC.EN 由 0 變 1</strong><p>記下時間與 CC.CRIME；讀取 RDY、CFS，持續確認初始化狀態。</p></li>
+<li class="qa-flow-branch"><strong>分支 A：With Media</strong><p>以 CRWMT 判斷就緒期限。CRTO 的單位是 500 ms；到 RDY=1 才提交此模式允許的命令。</p></li>
+<li class="qa-flow-branch"><strong>分支 B：Independent</strong><p>先以 CRIMT 判斷介面就緒，再以 CRWMT 判斷媒體期限。RDY=1 不代表媒體已健康可用；仍須遵守命令的媒體就緒條件。</p></li>
+<li class="qa-flow-step"><strong>回到同一條時間軸驗證</strong><p>教學假設 CRIMT=2、CRWMT=20：介面期限在 Enable 後 1 s，媒體期限在 Enable 後 10 s。</p></li>
+</ol><p class="qa-flow-conclusion">A、B 是不同模式，不是依序執行的兩個操作。若發生初始化失敗，須連同 CFS 與失敗條件判斷，不能只因曾看到 RDY=1 就宣告成功。</p></figure>
+</section>
+<section class="qa-section" id="q-003-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
+<span class="qa-anchor" id="q-003-a-07"></span><p>透過 Register 啟用 controller，不會產生 CQE。若媒體尚未就緒，只有符合對應條件的命令，才能回報 Namespace Not Ready（SCT=0, SC=82h）或 Admin Command Media Not Ready（0/24h）。</p>
+<span class="qa-anchor" id="q-003-a-16"></span><p>應把啟用時間、CRIME、命令種類與回傳 Status 放在同一條時間軸上核對。Figure 84 只允許列出的 Admin 命令在特定條件下回報媒體尚未就緒，並非所有 Admin 命令都能用這個理由暫時拒絕執行。</p>
+</section>
+<section class="qa-section" id="q-003-s-04" data-answer-section="4"><h3><span>4.</span> 錯誤完成與紀錄要如何對照</h3>
+<span class="qa-anchor" id="q-003-a-08"></span><p>透過 Register 啟用 controller，不會產生 CQE，因此這個動作本身沒有 DNR 或 More。Independent mode 在合法等待期間，若命令因媒體尚未就緒而失敗，可以回報 DNR=0；超過 CRWMT 後，就不得繼續以相同的暫時性理由回報 DNR=0。More 則依 Error Information Log 是否有該命令的補充資訊設定。</p>
+<span class="qa-anchor" id="q-003-a-11"></span><p>若發生 §3.5.4.1 定義的初始化期限失敗，而且 controller 支援 PEL，必須記錄 NVM Subsystem Hardware Error Event，原因為 Controller Ready Timeout Exceeded。這是失敗條件觸發的紀錄，不是每次 Enable 成功都必須新增的事件。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-003-a-09"></span><span class="qa-anchor" id="q-003-a-10"></span><span class="qa-anchor" id="q-003-a-12"></span><span class="qa-anchor" id="q-003-a-13"></span><span class="qa-anchor" id="q-003-a-14"></span><span class="qa-anchor" id="q-003-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-init">Base 2.4 §3.5.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-004" data-question="4"><h2><a class="qa-qid" href="#q-004">Q04</a> Host 清除 CC.EN 後，應如何判斷 Controller 是否成功 Disable？尚未 Disable 完成時能否重新 Enable？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-004-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-004-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Host 必須確認上一輪命令處理已停止，才能開始下一輪初始化。等待停用完成，就是為了建立這個明確的分界。</p>
-</li>
-<li id="q-004-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>清除 EN 會觸發目標 controller 的重設，影響其所有 I/O Queue。因此，這個動作並不是只暫停其中一條 SQ。</p>
-</li>
-<li id="q-004-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>CAP.TO 說明清除 EN 後，Host 應等待 RDY 從 1 變成 0 的最長時間。驗證時，也應保存 CC、CSTS 的讀值及時間，才能確認轉移是否在期限內完成。</p>
-</li>
-<li id="q-004-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>在正常停用流程中，Host 從 EN=1、RDY=1 的狀態清除 EN。清除後還必須等到 RDY=0，才能重新啟用 controller。</p>
-</li>
-<li id="q-004-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 先停止提交新命令，再清除 EN，並持續讀取 RDY。等到 RDY=0 後，重新初始化 Admin CQ 與 Host 的命令追蹤資料，完成 CC 設定，最後才把 EN 設回 1。</p>
-</li>
-<li id="q-004-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>RDY=0 才是停用完成的判斷依據，不需要等到每筆舊命令都收到獨立 CQE。此時原有的 I/O Queue 已失效，不能繼續使用。</p>
-</li>
-<li id="q-004-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>若 RDY 還是 1，Host 就把 EN 從 0 設回 1，結果屬於 undefined behavior。由於這是 Register 操作，不是提交 Admin 命令，因此不能要求 controller 以 Command Sequence Error 回覆。</p>
-</li>
-<li id="q-004-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-004-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>核對 EN、RDY 的轉移順序後，還應確認 Host 已停止使用舊 queue。即使舊記憶體裡仍看得到資料，也不代表該 queue 仍可繼續運作。</p>
-</li>
-<li id="q-004-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先看是不是清 EN 後立刻設回 1，或把 CAP.TO 當成毫秒值直接使用。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-004" data-question="4" data-answer-kind="process"><h2><a class="qa-qid" href="#q-004">Q04</a> Host 清除 CC.EN 後，應如何判斷 Controller 是否成功 Disable？尚未 Disable 完成時能否重新 Enable？</h2>
+<p class="qa-prompt">先排出操作順序，指出哪一步必須等待完成，才能進行下一步。</p>
+<details class="qa-answer" id="q-004-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-004-a-01">Host 必須確認上一輪命令處理已停止，才能開始下一輪初始化。等待停用完成，就是為了建立這個明確的分界。</p><div class="qa-sections">
+<section class="qa-section" id="q-004-s-01" data-answer-section="1"><h3><span>1.</span> 操作前先準備什麼</h3>
+<span class="qa-anchor" id="q-004-a-02"></span><p>清除 EN 會觸發目標 controller 的重設，影響其所有 I/O Queue。因此，這個動作並不是只暫停其中一條 SQ。</p>
+<span class="qa-anchor" id="q-004-a-03"></span><p>CAP.TO 說明清除 EN 後，Host 應等待 RDY 從 1 變成 0 的最長時間。驗證時，也應保存 CC、CSTS 的讀值及時間，才能確認轉移是否在期限內完成。</p>
+<span class="qa-anchor" id="q-004-a-04"></span><p>在正常停用流程中，Host 從 EN=1、RDY=1 的狀態清除 EN。清除後還必須等到 RDY=0，才能重新啟用 controller。</p>
+</section>
+<section class="qa-section" id="q-004-s-02" data-answer-section="2"><h3><span>2.</span> 先後順序與完成條件</h3>
+<span class="qa-anchor" id="q-004-a-05"></span><p>Host 先停止提交新命令，再清除 EN，並持續讀取 RDY。等到 RDY=0 後，重新初始化 Admin CQ 與 Host 的命令追蹤資料，完成 CC 設定，最後才把 EN 設回 1。</p>
+<span class="qa-anchor" id="q-004-a-06"></span><p>RDY=0 才是停用完成的判斷依據，不需要等到每筆舊命令都收到獨立 CQE。此時原有的 I/O Queue 已失效，不能繼續使用。</p>
+</section>
+<section class="qa-section" id="q-004-s-03" data-answer-section="3"><h3><span>3.</span> 未符合條件時如何處理</h3>
+<span class="qa-anchor" id="q-004-a-07"></span><p>若 RDY 還是 1，Host 就把 EN 從 0 設回 1，結果屬於 undefined behavior。由於這是 Register 操作，不是提交 Admin 命令，因此不能要求 controller 以 Command Sequence Error 回覆。</p>
+<span class="qa-anchor" id="q-004-a-16"></span><p>核對 EN、RDY 的轉移順序後，還應確認 Host 已停止使用舊 queue。即使舊記憶體裡仍看得到資料，也不代表該 queue 仍可繼續運作。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-004-a-17"></span><span class="qa-anchor" id="q-004-a-08"></span><span class="qa-anchor" id="q-004-a-09"></span><span class="qa-anchor" id="q-004-a-10"></span><span class="qa-anchor" id="q-004-a-11"></span><span class="qa-anchor" id="q-004-a-12"></span><span class="qa-anchor" id="q-004-a-13"></span><span class="qa-anchor" id="q-004-a-14"></span><span class="qa-anchor" id="q-004-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-cap">Base 2.4 §3.1.4 (CAP, VS)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-005" data-question="5"><h2><a class="qa-qid" href="#q-005">Q05</a> Host 能否在 CSTS.RDY 為 0 時送出 Command 或更新 Doorbell？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-005-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-005-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Host 可以先在記憶體中準備 SQE，但準備完成並不等於已提交命令。更新 SQ Tail Doorbell 才會通知 controller 有新命令，因此必須等到 controller 與 queue 都可用時才能進行。</p>
-</li>
-<li id="q-005-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>這個限制適用於該 PCIe controller 的 Admin 與 I/O 命令提交。初始化時先設定 Admin Queue Register 是建立通道的步驟，不能將它視為已經送出命令。</p>
-</li>
-<li id="q-005-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>判斷能否提交時，必須同時確認 CSTS.RDY、CC.EN 及目標 queue 是否存在。即使 RDY=1，也仍需檢查 queue 是否已建立，以及 controller 是否處於 shutdown 狀態。</p>
-</li>
-<li id="q-005-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>SQ Tail Doorbell 告訴 controller 哪些新命令已提交；CQ Head Doorbell 則告訴 controller，Host 已處理到哪個完成位置。這兩種通知都不能讓尚未就緒的 controller 提前進入 Ready 狀態。</p>
-</li>
-<li id="q-005-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先等到 RDY=1，並確認目標 queue 已建立且尚未刪除。接著，讓 SQE 的內容對裝置可見，再更新 SQ Tail Doorbell，完成提交。</p>
-</li>
-<li id="q-005-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>正確提交後，controller 才能取得命令。Host 即使已將 SQE 寫入記憶體，只要尚未更新 SQ Tail，就還沒有完成提交。</p>
-</li>
-<li id="q-005-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>若 Host 在 controller 或 queue 尚不可用時提交，不能期待收到固定的錯誤 CQE。原因是停用中的 Admin Queue 本來就無法作為可靠的錯誤回報通道。</p>
-</li>
-<li id="q-005-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-005-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>如果看到 EN=1、RDY=0 且等待逾時，應先檢查初始化是否完成。此時尚未合法提交的 Identify 沒有回覆，不能據此判定裝置不支援 Identify。</p>
-</li>
-<li id="q-005-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先比對 Doorbell 寫入時間與 RDY 變成 1 的時間，再檢查 queue 建立成功時間。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-005" data-question="5" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-005">Q05</a> Host 能否在 CSTS.RDY 為 0 時送出 Command 或更新 Doorbell？</h2>
+<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
+<details class="qa-answer" id="q-005-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-005-a-01">Host 可以先在記憶體中準備 SQE，但準備完成並不等於已提交命令。更新 SQ Tail Doorbell 才會通知 controller 有新命令，因此必須等到 controller 與 queue 都可用時才能進行。</p><div class="qa-sections">
+<section class="qa-section" id="q-005-s-01" data-answer-section="1"><h3><span>1.</span> 何時可以提交命令</h3>
+<span class="qa-anchor" id="q-005-a-02"></span><p>這個限制適用於該 PCIe controller 的 Admin 與 I/O 命令提交。初始化時先設定 Admin Queue Register 是建立通道的步驟，不能將它視為已經送出命令。</p>
+<span class="qa-anchor" id="q-005-a-03"></span><p>判斷能否提交時，必須同時確認 CSTS.RDY、CC.EN 及目標 queue 是否存在。即使 RDY=1，也仍需檢查 queue 是否已建立，以及 controller 是否處於 shutdown 狀態。</p>
+<span class="qa-anchor" id="q-005-a-05"></span><p>先等到 RDY=1，並確認目標 queue 已建立且尚未刪除。接著，讓 SQE 的內容對裝置可見，再更新 SQ Tail Doorbell，完成提交。</p>
+</section>
+<section class="qa-section" id="q-005-s-02" data-answer-section="2"><h3><span>2.</span> Doorbell 不能取代就緒條件</h3>
+<span class="qa-anchor" id="q-005-a-04"></span><p>SQ Tail Doorbell 告訴 controller 哪些新命令已提交；CQ Head Doorbell 則告訴 controller，Host 已處理到哪個完成位置。這兩種通知都不能讓尚未就緒的 controller 提前進入 Ready 狀態。</p>
+<span class="qa-anchor" id="q-005-a-07"></span><p>若 Host 在 controller 或 queue 尚不可用時提交，不能期待收到固定的錯誤 CQE。原因是停用中的 Admin Queue 本來就無法作為可靠的錯誤回報通道。</p>
+<span class="qa-anchor" id="q-005-a-16"></span><p>如果看到 EN=1、RDY=0 且等待逾時，應先檢查初始化是否完成。此時尚未合法提交的 Identify 沒有回覆，不能據此判定裝置不支援 Identify。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-005-a-06"></span><span class="qa-anchor" id="q-005-a-17"></span><span class="qa-anchor" id="q-005-a-08"></span><span class="qa-anchor" id="q-005-a-09"></span><span class="qa-anchor" id="q-005-a-10"></span><span class="qa-anchor" id="q-005-a-11"></span><span class="qa-anchor" id="q-005-a-12"></span><span class="qa-anchor" id="q-005-a-13"></span><span class="qa-anchor" id="q-005-a-14"></span><span class="qa-anchor" id="q-005-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-qattr">Base 2.4 §3.3.3–3.4.1</a> · <a href="#ref-queue">Base 2.4 §3.3.1</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-pcie">PCIe Transport 1.4 §3.1–3.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-006" data-question="6"><h2><a class="qa-qid" href="#q-006">Q06</a> CSTS.CFS 代表什麼？Controller 初始化失敗或進入 Fatal 狀態時，Host 應如何恢復？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-006-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-006-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>CFS 通常表示 controller 處於嚴重異常狀態，與單筆命令失敗不同。不過，在虛擬化配置中，secondary controller 進入 Offline 也會設定 CFS。因此，判斷硬體故障前，應先確認 controller 的角色及 Online／Offline 狀態。</p>
-</li>
-<li id="q-006-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>嚴重的 controller 異常可能影響整個命令服務；某個 namespace 的媒體錯誤，則不一定具有相同的影響範圍。兩者需要分別判斷。</p>
-</li>
-<li id="q-006-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>應一併觀察 CSTS.CFS、RDY、CC.EN 與適用的等待期限。Identify 中宣告支援某項選配功能，並不會讓 Host 可以忽略 CFS 所指出的狀態。</p>
-</li>
-<li id="q-006-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>先保存 Register，以及已取得的 CQE 和 Log。若管理通道仍可使用，再讀取其他診斷資訊；若通道已無回應，就不能無限等待 Get Log Page 完成。</p>
-</li>
-<li id="q-006-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 應根據故障情況，以及目前還能存取哪些控制介面，選擇適當的 Controller Level Reset。等狀態轉移完成後，再重新初始化。若控制介面完全沒有回應，則需要平台層的恢復處理；一次清除 CC.EN 並不保證能排除所有故障。</p>
-</li>
-<li id="q-006-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>恢復後，還要確認 RDY 正常、Identify 可完成，而且新 queue 能正確處理命令。CFS 已清除只表示該狀態不再成立，不能單憑這點認定資料完整性也已通過驗證。</p>
-</li>
-<li id="q-006-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>若 controller 還能回報受影響命令的結果，Internal Error（SCT=0, SC=06h）可能適用。若故障已嚴重到無法透過 CQE 溝通，則可能改由 CFS 指示異常；此時不能要求每筆命令都留下 CQE。</p>
-</li>
-<li id="q-006-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-006-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>應對照同一時間的 CFS、初始化等待期限與硬體錯誤紀錄，確認它們是否指向相同事件。單筆命令回傳 Invalid Field，並不足以證明 controller 已進入 Fatal 狀態。</p>
-</li>
-<li id="q-006-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確認 Register 讀取仍有效，以及 CFS 真的是 1；不可將失效讀取的全 1 值直接解碼成每個狀態位都成立。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-006" data-question="6" data-answer-kind="diagnose"><h2><a class="qa-qid" href="#q-006">Q06</a> CSTS.CFS 代表什麼？Controller 初始化失敗或進入 Fatal 狀態時，Host 應如何恢復？</h2>
+<p class="qa-prompt">先列出已知證據與仍缺少的資訊，再決定能不能判定韌體違規。</p>
+<details class="qa-answer" id="q-006-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-006-a-01">CFS 通常表示 controller 處於嚴重異常狀態，與單筆命令失敗不同。不過，在虛擬化配置中，secondary controller 進入 Offline 也會設定 CFS。因此，判斷硬體故障前，應先確認 controller 的角色及 Online／Offline 狀態。</p><div class="qa-sections">
+<section class="qa-section" id="q-006-s-01" data-answer-section="1"><h3><span>1.</span> 先保留哪些證據</h3>
+<span class="qa-anchor" id="q-006-a-02"></span><p>嚴重的 controller 異常可能影響整個命令服務；某個 namespace 的媒體錯誤，則不一定具有相同的影響範圍。兩者需要分別判斷。</p>
+<span class="qa-anchor" id="q-006-a-03"></span><p>應一併觀察 CSTS.CFS、RDY、CC.EN 與適用的等待期限。Identify 中宣告支援某項選配功能，並不會讓 Host 可以忽略 CFS 所指出的狀態。</p>
+<span class="qa-anchor" id="q-006-a-04"></span><p>先保存 Register，以及已取得的 CQE 和 Log。若管理通道仍可使用，再讀取其他診斷資訊；若通道已無回應，就不能無限等待 Get Log Page 完成。</p>
+</section>
+<section class="qa-section" id="q-006-s-02" data-answer-section="2"><h3><span>2.</span> 依什麼順序排除原因</h3>
+<span class="qa-anchor" id="q-006-a-17"></span><p>先確認 Register 讀取仍有效，以及 CFS 真的是 1；不可將失效讀取的全 1 值直接解碼成每個狀態位都成立。</p>
+<span class="qa-anchor" id="q-006-a-05"></span><p>Host 應根據故障情況，以及目前還能存取哪些控制介面，選擇適當的 Controller Level Reset。等狀態轉移完成後，再重新初始化。若控制介面完全沒有回應，則需要平台層的恢復處理；一次清除 CC.EN 並不保證能排除所有故障。</p>
+</section>
+<section class="qa-section" id="q-006-s-03" data-answer-section="3"><h3><span>3.</span> 什麼結果足以支持結論</h3>
+<span class="qa-anchor" id="q-006-a-06"></span><p>恢復後，還要確認 RDY 正常、Identify 可完成，而且新 queue 能正確處理命令。CFS 已清除只表示該狀態不再成立，不能單憑這點認定資料完整性也已通過驗證。</p>
+<span class="qa-anchor" id="q-006-a-07"></span><p>若 controller 還能回報受影響命令的結果，Internal Error（SCT=0, SC=06h）可能適用。若故障已嚴重到無法透過 CQE 溝通，則可能改由 CFS 指示異常；此時不能要求每筆命令都留下 CQE。</p>
+<span class="qa-anchor" id="q-006-a-16"></span><p>應對照同一時間的 CFS、初始化等待期限與硬體錯誤紀錄，確認它們是否指向相同事件。單筆命令回傳 Invalid Field，並不足以證明 controller 已進入 Fatal 狀態。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-006-a-08"></span><span class="qa-anchor" id="q-006-a-09"></span><span class="qa-anchor" id="q-006-a-10"></span><span class="qa-anchor" id="q-006-a-11"></span><span class="qa-anchor" id="q-006-a-12"></span><span class="qa-anchor" id="q-006-a-13"></span><span class="qa-anchor" id="q-006-a-14"></span><span class="qa-anchor" id="q-006-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a> · <a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-virtual">Base 2.4 §8.2.7</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-007" data-question="7"><h2><a class="qa-qid" href="#q-007">Q07</a> Controller 初始化後可能進入哪些 Ready Mode？Host 應如何處理暫時或限制性的 Ready 狀態？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-007-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-007-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>Ready Mode 決定 controller 何時可以開始服務。Independent 模式允許管理命令在媒體初始化完成前先開始執行，但媒體仍必須在規定的期限內就緒。</p>
-</li>
-<li id="q-007-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>這裡討論兩種模式：Controller Ready With Media，以及 Controller Ready Independent of Media。它們規定的是介面與媒體的就緒關係，而不是額外定義一組可任意解讀的 degraded-ready 狀態碼。</p>
-</li>
-<li id="q-007-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>CAP.CRMS 中的 CRWMS、CRIMS 分別宣告兩種模式的支援能力。當 CAP.CRMS=11b 時，Host 可以透過 CC.CRIME 選擇要使用的模式。</p>
-</li>
-<li id="q-007-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>CRIME=0 選擇 With Media，CRIME=1 選擇 Independent。判斷當下允許執行哪些命令時，要一起檢查 CSTS.RDY、CRTO.CRIMT／CRWMT，以及 Figure 84 的命令分類。</p>
-</li>
-<li id="q-007-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>Host 必須在啟用前選好模式。若選擇 Independent 模式，RDY=1 後可先執行不依賴媒體的查詢；需要媒體的命令若收到允許的暫時性 Status，則延後處理。同時仍要追蹤從 Enable 開始計算的 CRWMT，不能重新起算。</p>
-</li>
-<li id="q-007-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>With Media 模式正常就緒時，controller 應已能處理所要求的媒體存取。Independent 模式的 RDY=1 則先表示介面及適用命令已可服務，尚不能據此認定所有 namespace 都已就緒。</p>
-</li>
-<li id="q-007-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>在規範允許的條件下，controller 可以回傳 0/82h 或 0/24h；其中 0/24h 只適用於 Independent 模式下特定的 Admin 命令。超過媒體就緒期限後，若仍以同一個暫時等待理由回報 DNR=0，就不符合該期限的要求。</p>
-</li>
-<li id="q-007-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本題的 Register 讀寫沒有 DNR 或 More。若命令因媒體尚未就緒而回報 CQE，則另依條件判斷：允許等待期間可以使用 DNR=0，但超過 CRWMT 後，不得繼續以相同的暫時性理由回報 DNR=0。More 仍用來表示 Error Information Log 是否有補充資訊。</p>
-</li>
-<li id="q-007-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-007-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-007-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>若符合 §3.5.4.1 的初始化失敗條件，而且 controller 支援 PEL，必須記錄 NVM Subsystem Hardware Error Event，原因為 Controller Ready Timeout Exceeded。正常選用某種 Ready Mode，本身不會要求產生這筆錯誤事件。</p>
-</li>
-<li id="q-007-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-007-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-007-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-007-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-007-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>同時核對 CAP 宣告、CC 選擇、timeout 與命令行為。CSTS.PP 是另一種暫停處理指示，不是第三個 Ready Mode。</p>
-</li>
-<li id="q-007-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先問正在失敗的命令是否需要媒體，再看它是否真的屬 Figure 84 允許的種類。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-007" data-question="7" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-007">Q07</a> Controller 初始化後可能進入哪些 Ready Mode？Host 應如何處理暫時或限制性的 Ready 狀態？</h2>
+<p class="qa-prompt">先用自己的話解釋機制，再舉一個常見誤解。</p>
+<details class="qa-answer" id="q-007-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-007-a-01">Ready Mode 決定 controller 何時可以開始服務。Independent 模式允許管理命令在媒體初始化完成前先開始執行，但媒體仍必須在規定的期限內就緒。</p><div class="qa-sections">
+<section class="qa-section" id="q-007-s-01" data-answer-section="1"><h3><span>1.</span> 機制與適用範圍</h3>
+<span class="qa-anchor" id="q-007-a-02"></span><p>這裡討論兩種模式：Controller Ready With Media，以及 Controller Ready Independent of Media。它們規定的是介面與媒體的就緒關係，而不是額外定義一組可任意解讀的 degraded-ready 狀態碼。</p>
+<span class="qa-anchor" id="q-007-a-04"></span><p>CRIME=0 選擇 With Media，CRIME=1 選擇 Independent。判斷當下允許執行哪些命令時，要一起檢查 CSTS.RDY、CRTO.CRIMT／CRWMT，以及 Figure 84 的命令分類。</p>
+</section>
+<section class="qa-section" id="q-007-s-02" data-answer-section="2"><h3><span>2.</span> 用操作與結果理解</h3>
+<span class="qa-anchor" id="q-007-a-03"></span><p>CAP.CRMS 中的 CRWMS、CRIMS 分別宣告兩種模式的支援能力。當 CAP.CRMS=11b 時，Host 可以透過 CC.CRIME 選擇要使用的模式。</p>
+<span class="qa-anchor" id="q-007-a-05"></span><p>Host 必須在啟用前選好模式。若選擇 Independent 模式，RDY=1 後可先執行不依賴媒體的查詢；需要媒體的命令若收到允許的暫時性 Status，則延後處理。同時仍要追蹤從 Enable 開始計算的 CRWMT，不能重新起算。</p>
+<span class="qa-anchor" id="q-007-a-06"></span><p>With Media 模式正常就緒時，controller 應已能處理所要求的媒體存取。Independent 模式的 RDY=1 則先表示介面及適用命令已可服務，尚不能據此認定所有 namespace 都已就緒。</p>
+</section>
+<section class="qa-section" id="q-007-s-03" data-answer-section="3"><h3><span>3.</span> 容易誤判的地方</h3>
+<span class="qa-anchor" id="q-007-a-07"></span><p>在規範允許的條件下，controller 可以回傳 0/82h 或 0/24h；其中 0/24h 只適用於 Independent 模式下特定的 Admin 命令。超過媒體就緒期限後，若仍以同一個暫時等待理由回報 DNR=0，就不符合該期限的要求。</p>
+<span class="qa-anchor" id="q-007-a-16"></span><p>同時核對 CAP 宣告、CC 選擇、timeout 與命令行為。CSTS.PP 是另一種暫停處理指示，不是第三個 Ready Mode。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-007-a-17"></span><span class="qa-anchor" id="q-007-a-08"></span><span class="qa-anchor" id="q-007-a-09"></span><span class="qa-anchor" id="q-007-a-10"></span><span class="qa-anchor" id="q-007-a-11"></span><span class="qa-anchor" id="q-007-a-12"></span><span class="qa-anchor" id="q-007-a-13"></span><span class="qa-anchor" id="q-007-a-14"></span><span class="qa-anchor" id="q-007-a-15"></span>
+<p class="qa-related">相關機制：<a href="initialization.html#q-003">Q3</a></p>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-ready">Base 2.4 §3.5.3–3.5.4</a> · <a href="#ref-crto">Base 2.4 §3.1.4 (CRTO)</a> · <a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-008" data-question="8"><h2><a class="qa-qid" href="#q-008">Q08</a> Controller Enable、Disable、Controller Reset、NVM Subsystem Reset 與 Shutdown 有什麼差異？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-008-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-008-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>這幾個動作分別處理開始服務、停止並重設，以及移除電源前的準備。先分清它們的目的，才能避免用 Reset 取代原本需要的正常 Shutdown。</p>
-</li>
-<li id="q-008-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>啟用或清除 CC.EN 的作用對象是單一 controller。NVM Subsystem Reset 則依規範涵蓋相應的 subsystem 或 domain 範圍；Shutdown 也另有 controller 與 subsystem 層級，必須先確認使用的是哪一種。</p>
-</li>
-<li id="q-008-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>CAP.NSSRS 可用來確認是否支援 NSSR。判斷 Shutdown 的作用範圍時，則還要查看 CAP 宣告的 shutdown 能力與 CSTS.ST。</p>
-</li>
-<li id="q-008-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>Enable：EN 0→1。Controller Reset：EN 1→0。NSSR.NSSRC 寫 4E564D65h 觸發支援的 subsystem reset。正常 controller shutdown 用 CC.SHN=01b，觀察 CSTS.SHST=10b。</p>
-</li>
-<li id="q-008-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>若準備正常移除電源，Host 應先協調 I/O，再送出 Shutdown 通知，並等待關機處理完成。若目的是故障恢復，則選擇合適的 Reset，之後重新建立命令處理環境。</p>
-</li>
-<li id="q-008-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>不同動作有不同的完成判斷：啟用時等待 RDY=1；停用或重設時檢查對應的狀態轉移；Shutdown 則等待 SHST=10b。Shutdown 完成不表示所有 Register 都已回到重設值。</p>
-</li>
-<li id="q-008-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>Register 操作本身沒有 CQE。Shutdown 過程中，controller 可以對適用命令回報 Commands Aborted due to Power Loss Notification（0/05h）；但不能因此把所有 Reset 中未完成的命令，都預期為相同 Status。</p>
-</li>
-<li id="q-008-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-008-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>應先記錄觸發方式與影響範圍，再比較操作前後保留了哪些值。如果紀錄只寫「reset」，就無法說明 AQA、PCIe 狀態與 Feature 為何有不同的保留結果。</p>
-</li>
-<li id="q-008-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先辨認到底寫了 EN、SHN 還是 NSSRC，以及是否有平台重設同時發生。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-008" data-question="8" data-answer-kind="compare"><h2><a class="qa-qid" href="#q-008">Q08</a> Controller Enable、Disable、Controller Reset、NVM Subsystem Reset 與 Shutdown 有什麼差異？</h2>
+<p class="qa-prompt">先說出比較對象最重要的差別，並舉一個不能互相代用的例子。</p>
+<details class="qa-answer" id="q-008-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-008-a-01">這幾個動作分別處理開始服務、停止並重設，以及移除電源前的準備。先分清它們的目的，才能避免用 Reset 取代原本需要的正常 Shutdown。</p><div class="qa-sections">
+<section class="qa-section" id="q-008-s-01" data-answer-section="1"><h3><span>1.</span> 差別在哪裡</h3>
+<span class="qa-anchor" id="q-008-a-02"></span><p>啟用或清除 CC.EN 的作用對象是單一 controller。NVM Subsystem Reset 則依規範涵蓋相應的 subsystem 或 domain 範圍；Shutdown 也另有 controller 與 subsystem 層級，必須先確認使用的是哪一種。</p>
+<span class="qa-anchor" id="q-008-a-04"></span><p>Enable：EN 0→1。Controller Reset：EN 1→0。NSSR.NSSRC 寫 4E564D65h 觸發支援的 subsystem reset。正常 controller shutdown 用 CC.SHN=01b，觀察 CSTS.SHST=10b。</p>
+</section>
+<section class="qa-section" id="q-008-s-02" data-answer-section="2"><h3><span>2.</span> 如何選擇與確認</h3>
+<span class="qa-anchor" id="q-008-a-03"></span><p>CAP.NSSRS 可用來確認是否支援 NSSR。判斷 Shutdown 的作用範圍時，則還要查看 CAP 宣告的 shutdown 能力與 CSTS.ST。</p>
+<span class="qa-anchor" id="q-008-a-05"></span><p>若準備正常移除電源，Host 應先協調 I/O，再送出 Shutdown 通知，並等待關機處理完成。若目的是故障恢復，則選擇合適的 Reset，之後重新建立命令處理環境。</p>
+<span class="qa-anchor" id="q-008-a-06"></span><p>不同動作有不同的完成判斷：啟用時等待 RDY=1；停用或重設時檢查對應的狀態轉移；Shutdown 則等待 SHST=10b。Shutdown 完成不表示所有 Register 都已回到重設值。</p>
+</section>
+<section class="qa-section" id="q-008-s-03" data-answer-section="3"><h3><span>3.</span> 哪些結論不能互相套用</h3>
+<span class="qa-anchor" id="q-008-a-07"></span><p>Register 操作本身沒有 CQE。Shutdown 過程中，controller 可以對適用命令回報 Commands Aborted due to Power Loss Notification（0/05h）；但不能因此把所有 Reset 中未完成的命令，都預期為相同 Status。</p>
+<span class="qa-anchor" id="q-008-a-16"></span><p>應先記錄觸發方式與影響範圍，再比較操作前後保留了哪些值。如果紀錄只寫「reset」，就無法說明 AQA、PCIe 狀態與 Feature 為何有不同的保留結果。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-008-a-17"></span><span class="qa-anchor" id="q-008-a-08"></span><span class="qa-anchor" id="q-008-a-09"></span><span class="qa-anchor" id="q-008-a-10"></span><span class="qa-anchor" id="q-008-a-11"></span><span class="qa-anchor" id="q-008-a-12"></span><span class="qa-anchor" id="q-008-a-13"></span><span class="qa-anchor" id="q-008-a-14"></span><span class="qa-anchor" id="q-008-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-cc">Base 2.4 §3.1.4 (CC, CSTS, NSSR)</a> · <a href="#ref-shutdown">Base 2.4 §3.6.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<article class="qa-question" id="q-009" data-question="9"><h2><a class="qa-qid" href="#q-009">Q09</a> Controller Reset 後，哪些 Register、Admin Queue、Feature 與 I/O Queue 需要重新設定？</h2>
-<p class="qa-prompt">先試著說明正常流程，並舉出一個未滿足執行條件的例子，再展開解答核對。</p>
-<details class="qa-answer" id="q-009-answer"><summary>展開完整解答 · 17 個觀察面向</summary><ol class="qa-items">
-<li id="q-009-a-01" data-answer="1"><h3><span>01</span> 這個功能要解決什麼問題？</h3>
-<p>重設後，Host 需要重新建立可用的命令處理環境。這樣才能把新命令與上一輪的 queue 指標、Phase 及未完成命令分開處理。</p>
-</li>
-<li id="q-009-a-02" data-answer="2"><h3><span>02</span> 它的影響範圍是什麼？</h3>
-<p>本題只討論清除 CC.EN 所觸發的 Controller Reset。FLR 與 NVM Subsystem Reset 來自不同觸發方式，不能直接套用這裡的 Register 保留規則。</p>
-</li>
-<li id="q-009-a-03" data-answer="3"><h3><span>03</span> 支援能力從哪個 Register、Identify 欄位、Feature 或 Log Page 確認？</h3>
-<p>先查看 §3.7.2 的重設例外，以及各 Register 的 Reset 欄，確認哪些值會保留。Feature 則還要考慮作用範圍、是否可保存設定，以及 Figure 126、127、466 的恢復規則。</p>
-</li>
-<li id="q-009-a-04" data-answer="4"><h3><span>04</span> 涉及哪些 Command 與重要欄位？</h3>
-<p>這種重設會保留 AQA、ASQ、ACQ、指定的 PMR Register 與 CMBMSC，但仍會重設 Admin Queue 的指標，並刪除所有 I/O SQ／CQ。Host 因此需要重新配置 CC。Feature 的恢復方式則另行判斷：可保存設定者依重設範圍恢復 Saved，沒有 Saved 時使用 Default；不可保存設定者依持續性規則處理。HMB 也需要重新配置。</p>
-</li>
-<li id="q-009-a-05" data-answer="5"><h3><span>05</span> 正常流程及先後順序是什麼？</h3>
-<p>先等到 RDY=0，確認保留的 Admin Queue 記憶體仍可使用，並把 Admin CQ 的 Phase 初始化為 0。完成配置並啟用後，重新查詢必要的能力與 Feature，再協商 Number of Queues，最後依序建立 CQ 與 SQ。</p>
-</li>
-<li id="q-009-a-06" data-answer="6"><h3><span>06</span> 成功時應回傳什麼結果？</h3>
-<p>重建成功後，新命令應能在新建立的 queue 上正常完成。即使沿用相同的 QID 或記憶體位址，也不表示上一輪 queue 可以接續使用。</p>
-</li>
-<li id="q-009-a-07" data-answer="7"><h3><span>07</span> 不支援、非法參數或錯誤順序時的 Status？</h3>
-<p>重設中斷的舊命令沒有統一、必須回傳的「Reset Status」。重建時若使用非法 QID 或大小，則依對應 Create 命令的規則判斷。直接對舊 queue 更新 Doorbell，不能代替重建流程。</p>
-</li>
-<li id="q-009-a-08" data-answer="8"><h3><span>08</span> DNR 與 More 應如何設定？</h3>
-<p>本次 MMIO 存取沒有 NVMe CQE，因此 DNR／More 不適用。 <a class="qa-rule-link" href="#common-register-8">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-09" data-answer="9"><h3><span>09</span> 是否產生 Asynchronous Event？</h3>
-<p>Register 存取本身不產生成功事件。若另外發生硬體錯誤等事件，則依該事件自己的條件判斷。 <a class="qa-rule-link" href="#common-register-9">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-10" data-answer="10"><h3><span>10</span> 是否更新 Error Information Log 或其他 Log？</h3>
-<p>不要求每次 Register 讀寫都新增錯誤紀錄。先保留 Register 值及時間，再補充 controller 當時允許讀取的診斷資料。 <a class="qa-rule-link" href="#common-register-10">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-11" data-answer="11"><h3><span>11</span> 是否記錄於 Persistent Event Log？</h3>
-<p>一般 Register 存取不是 PEL 事件。若操作同時引發 Reset 或硬體錯誤，再依支援能力與對應事件條件判斷。 <a class="qa-rule-link" href="#common-register-11">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-12" data-answer="12"><h3><span>12</span> Controller Reset 後是否保留或繼續？</h3>
-<p>清除 CC.EN 後，I/O queue 失效，Admin Queue 指標重設。即使基底位址保留，舊 completion 也不能繼續當成有效結果。 <a class="qa-rule-link" href="#common-queue-12">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-13" data-answer="13"><h3><span>13</span> NVM Subsystem Reset 後是否保留或繼續？</h3>
-<p>受影響 controller 的 queue 必須重建。這次重設的來源不同，不能直接套用清除 CC.EN 時的 Register 保留例外。 <a class="qa-rule-link" href="#common-queue-13">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-14" data-answer="14"><h3><span>14</span> Power Cycle 後是否保留或繼續？</h3>
-<p>重新初始化 queue，並重建 Host 的命令追蹤資料。記憶體中殘留的舊內容，不是新 queue 的有效命令或完成結果。 <a class="qa-rule-link" href="#common-queue-14">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-15" data-answer="15"><h3><span>15</span> 是否影響其他 Controller 或 Namespace？</h3>
-<p>Queue 隸屬於各自的 controller。多條 SQ 共用同一 CQ 時，才會共同受到這條 CQ 的可用空間及使用期間影響。 <a class="qa-rule-link" href="#common-queue-15">本冊完整規則</a></p>
-</li>
-<li id="q-009-a-16" data-answer="16"><h3><span>16</span> Identify、Feature、Log 與 Command 行為是否一致？</h3>
-<p>應比較重設前後的 Register、Get Features 回覆與實際可用的 Queue 配置。尤其要分清楚：AQA 的值被保留，不代表 Admin CQ 裡的舊內容仍然有效。</p>
-</li>
-<li id="q-009-a-17" data-answer="17"><h3><span>17</span> 結果不符預期時，第一個要檢查什麼？</h3>
-<p>先確認 Host 已清除上一輪未完成命令的對照資料，並重新初始化 Phase。即使新命令重用了相同 CID，也不能把它對應到上一輪的命令。</p>
-</li>
-</ol>
+<article class="qa-question" id="q-009" data-question="9" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-009">Q09</a> Controller Reset 後，哪些 Register、Admin Queue、Feature 與 I/O Queue 需要重新設定？</h2>
+<p class="qa-prompt">先指明重設或中斷的方式，再分別判斷設定、進行中的操作與資料。</p>
+<details class="qa-answer" id="q-009-answer"><summary>展開解答與推導</summary>
+<p class="qa-answer-lead" id="q-009-a-01">重設後，Host 需要重新建立可用的命令處理環境。這樣才能把新命令與上一輪的 queue 指標、Phase 及未完成命令分開處理。</p><div class="qa-sections">
+<section class="qa-section" id="q-009-s-01" data-answer-section="1"><h3><span>1.</span> 先界定觸發方式與影響對象</h3>
+<span class="qa-anchor" id="q-009-a-02"></span><p>本題只討論清除 CC.EN 所觸發的 Controller Reset。FLR 與 NVM Subsystem Reset 來自不同觸發方式，不能直接套用這裡的 Register 保留規則。</p>
+<span class="qa-anchor" id="q-009-a-03"></span><p>先查看 §3.7.2 的重設例外，以及各 Register 的 Reset 欄，確認哪些值會保留。Feature 則還要考慮作用範圍、是否可保存設定，以及 Figure 126、127、466 的恢復規則。</p>
+</section>
+<section class="qa-section" id="q-009-s-02" data-answer-section="2"><h3><span>2.</span> 哪些狀態改變，恢復後怎麼處理</h3>
+<span class="qa-anchor" id="q-009-a-04"></span><p>這種重設會保留 AQA、ASQ、ACQ、指定的 PMR Register 與 CMBMSC，但仍會重設 Admin Queue 的指標，並刪除所有 I/O SQ／CQ。Host 因此需要重新配置 CC。Feature 的恢復方式則另行判斷：可保存設定者依重設範圍恢復 Saved，沒有 Saved 時使用 Default；不可保存設定者依持續性規則處理。HMB 也需要重新配置。</p>
+<span class="qa-anchor" id="q-009-a-05"></span><p>先等到 RDY=0，確認保留的 Admin Queue 記憶體仍可使用，並把 Admin CQ 的 Phase 初始化為 0。完成配置並啟用後，重新查詢必要的能力與 Feature，再協商 Number of Queues，最後依序建立 CQ 與 SQ。</p>
+<span class="qa-anchor" id="q-009-a-06"></span><p>重建成功後，新命令應能在新建立的 queue 上正常完成。即使沿用相同的 QID 或記憶體位址，也不表示上一輪 queue 可以接續使用。</p>
+</section>
+<section class="qa-section" id="q-009-s-03" data-answer-section="3"><h3><span>3.</span> 如何驗證保留或恢復結果</h3>
+<span class="qa-anchor" id="q-009-a-07"></span><p>重設中斷的舊命令沒有統一、必須回傳的「Reset Status」。重建時若使用非法 QID 或大小，則依對應 Create 命令的規則判斷。直接對舊 queue 更新 Doorbell，不能代替重建流程。</p>
+<span class="qa-anchor" id="q-009-a-16"></span><p>應比較重設前後的 Register、Get Features 回覆與實際可用的 Queue 配置。尤其要分清楚：AQA 的值被保留，不代表 Admin CQ 裡的舊內容仍然有效。</p>
+<span class="qa-anchor" id="q-009-a-17"></span><p>先確認 Host 已清除上一輪未完成命令的對照資料，並重新初始化 Phase。即使新命令重用了相同 CID，也不能把它對應到上一輪的命令。</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-009-a-08"></span><span class="qa-anchor" id="q-009-a-09"></span><span class="qa-anchor" id="q-009-a-10"></span><span class="qa-anchor" id="q-009-a-11"></span><span class="qa-anchor" id="q-009-a-12"></span><span class="qa-anchor" id="q-009-a-13"></span><span class="qa-anchor" id="q-009-a-14"></span><span class="qa-anchor" id="q-009-a-15"></span>
 <details class="qa-source-links"><summary>本題原文定位</summary>
 <p class="qa-citations">來源：<a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-feature">Base 2.4 §4.4</a> · <a href="#ref-setfeat">Base 2.4 §5.2.30.1 (common fields, scope and persistence)</a> · <a href="#ref-adminreg">Base 2.4 §3.1.4 (AQA, ASQ, ACQ, CMBLOC)</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a> · <a href="#ref-fatal">Base 2.4 §9.1–9.6.1</a></p>
 </details></details><a class="qa-back" href="#question-index">回本冊題目</a></article>
-<section id="common-rules" class="qa-common"><h2>共用規則：各題連到的完整解釋</h2><p>這些規則在本冊只完整說明一次。返回剛才的題目可用瀏覽器「上一頁」；特定命令或 Feature 的明文例外優先。</p>
-<article id="common-queue-12"><h3>Queue 的重設與影響範圍 · Controller Reset 後是否保留或繼續？</h3><p>Host 清除 CC.EN 會觸發 Controller Level Reset：I/O SQ 與 CQ 被刪除，Admin Queue 的指標也會重設。這種重設雖然保留 AQA、ASQ、ACQ，卻不表示舊 CQE 仍然有效。Host 必須重新初始化 Admin CQ 的 Phase，啟用 controller 後，再配置並建立 I/O queue。</p></article>
-<article id="common-queue-13"><h3>Queue 的重設與影響範圍 · NVM Subsystem Reset 後是否保留或繼續？</h3><p>NVM Subsystem Reset 會讓受影響的 controller 執行 Controller Level Reset，Host 不能沿用舊 queue。恢復時，先重新確認傳輸及 Register 狀態，再建立 Admin 與 I/O 的操作環境。這種重設來源不同，不能直接套用清除 CC.EN 時對 AQA 等 Register 的保留例外。</p></article>
-<article id="common-queue-14"><h3>Queue 的重設與影響範圍 · Power Cycle 後是否保留或繼續？</h3><p>Power Cycle 後，Host 重新執行初始化及 queue 建立流程。即使 Host 記憶體中還留有舊 SQE 或 CQE 的內容，也不能把它們當成新 queue 的有效命令或完成結果。Host 必須重建指標、期待的 Phase，以及未完成命令的追蹤資料。</p></article>
-<article id="common-queue-15"><h3>Queue 的重設與影響範圍 · 是否影響其他 Controller 或 Namespace？</h3><p>Queue 隸屬於建立它的 controller；兩個 controller 使用相同 QID，不表示它們共用同一條 queue。相反地，同一 controller 中共用 CQ 的 SQ，確實會受到該 CQ 的空間及刪除順序影響。另外，queue 重設不等於刪除 namespace，也不會撤銷已完成的資料寫入。</p></article>
-<article id="common-register-8"><h3>Register 存取 · DNR 與 More 應如何設定？</h3><p>這次 Register 存取沒有 NVMe CQE，因此 DNR 與 More 不適用。如果之後的 Admin 或 I/O 命令失敗，則解讀那筆命令實際回傳的 CQE，而不是替先前的 Register 寫入指定 Status 位元。</p></article>
-<article id="common-register-9"><h3>Register 存取 · 是否產生 Asynchronous Event？</h3><p>Register 存取本身不定義一筆成功通知。若另外發生 Internal Error 等已定義事件，則依該事件的規則處理。controller 尚不能處理 Admin Queue 時，Host 仍須直接檢查初始化狀態，不能改以等待事件判斷是否已完成初始化。</p></article>
-<article id="common-register-10"><h3>Register 存取 · 是否更新 Error Information Log 或其他 Log？</h3><p>規範不要求每次 Register 讀寫都建立一筆 Error Information entry。遇到初始化問題時，先保存 CAP、CC、CSTS、CRTO 及各次觀察的時間。若之後 controller 允許讀取 Log，再用錯誤與事件紀錄補足資訊。</p></article>
-<article id="common-register-11"><h3>Register 存取 · 是否記錄於 Persistent Event Log？</h3><p>一般 Register 存取不是獨立的 Persistent Event。若另外發生重設、電源變化或硬體錯誤，則在支援 PEL 且符合對應事件條件時，依規則記錄。因此，不能將每次 CC 寫入都當成一次 Power-on or Reset 事件。</p></article>
-</section>
+
 <section id="source-index"><h2>原文定位與既有圖表判讀</h2><p>Base 的文件頁碼等於 PDF 頁碼減 26；NVM 與 PCIe 兩份規格的文件頁碼則與 PDF 頁碼相同。以下依提供的 PDF 本文列出章節、頁碼及 Figure 編號。若同一頁包含其他主題，只引用本題需要的定義，不納入 Fabrics 或 PCIe Link、封包內容。</p><ul class="qa-references">
 <li id="ref-cap"><strong>Base 2.4 · §3.1.4 (CAP, VS)</strong><br>文件頁 54–59 · PDF 80–85 · Figure 36–37</li>
 <li id="ref-cc"><strong>Base 2.4 · §3.1.4 (CC, CSTS, NSSR)</strong><br>文件頁 60–66 · PDF 86–92 · Figure 41–43</li>

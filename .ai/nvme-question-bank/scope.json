@@ -1,14 +1,13 @@
 {
   "schema_version": 1,
   "status": "approved",
-  "approved_date": "2026-10-03",
+  "approved_date": "2026-10-05",
   "purpose": "Learn the specification and judge firmware behavior against its requirements",
   "question_range": [
     1,
     328
   ],
   "volumes": 27,
-  "answer_items": 17,
   "sources": [
     "NVME-BASE-2.4",
     "NVME-PCIE-TRANSPORT-1.4",
@@ -132,5 +131,6 @@
       328
     ]
   },
-  "future_only": {}
+  "future_only": {},
+  "answer_format": "Question-specific explanations; the original 17 perspectives are optional editorial prompts, not a required output template"
 }

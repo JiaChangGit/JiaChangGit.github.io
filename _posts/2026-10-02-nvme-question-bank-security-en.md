@@ -12,7 +12,7 @@ nvme_qa: true
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="Bank and editions"><a href="#content">Skip to content</a><a href="/nvme/question-bank/en/">Question index</a><a href="/nvme/question-bank/security/zh-tw/">繁體中文</a><a href="/DOCS/nvme-question-bank/security.html">Chinese tutorial HTML</a></nav>
 <main id="content"><p class="qr-eyebrow">BASE 2.4 / NVM 1.3 / PCIe 1.4 · Q1–328</p>
-<header><p class="qa-range">Q237–Q245</p><h1>Security and Lockdown</h1><p class="qr-intro">Security commands transport protocol data; Lockdown prohibits selected operations. Separate protocol results, prohibition scope and persistence.</p><p>Practice first, then reveal 17 answer items per question. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
+<header><p class="qa-range">Q237–Q245</p><h1>Security and Lockdown</h1><p class="qr-intro">Security commands transport protocol data; Lockdown prohibits selected operations. Separate protocol results, prohibition scope and persistence.</p><p>Practice first, then reveal the explanation. Each question uses the prose, field interpretation, comparison or flow that suits it. All numerical examples are hypothetical. Status is written SCT/SC; h indicates hexadecimal.</p></header>
 <aside class="qa-glossary"><h2>Terms used in this volume</h2><dl><dt>Controller / namespace</dt><dd>A controller receives commands and manages access. A namespace is a logical storage space that commands can address. An NVM subsystem contains controllers and nonvolatile storage resources.</dd><dt>SQ / CQ / SQE / CQE</dt><dd>Submission and Completion Queues carry command entries (SQEs) and completion entries (CQEs). QID identifies a queue, CID distinguishes outstanding commands in one SQ, and NSID identifies a namespace.</dd><dt>Register / Identify / Feature / Log</dt><dd>A register exposes control or state. Identify queries capabilities and attributes; features query or configure operation; log pages report specific state or records. FID, LID, CNS and CSI select features, logs, Identify structures and command sets.</dd><dt>index / offset / zero-based</dt><dd>An index selects an entry, usually starting at 0; an offset measures distance from an origin in specified units. A zero-based count encodes count−1, but not every zero-valued field is a count. A Dword is 4 bytes; a byte is 8 bits.</dd><dt>Scope / reset / retention</dt><dd>Scope names the affected objects; retention means preserving state. Controller Reset (clearing CC.EN) is one form of Controller Level Reset, or CLR. Different CLR triggers can retain different registers.</dd></dl></aside>
 <section id="overview" class="qa-overview"><h2>Transport, protocol and permission are distinct</h2><p class="qa-takeaway">NVMe success is not authentication success, and prohibiting Set does not automatically prohibit Get.</p>
 <div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Question</th><th scope="col">Evidence</th><th scope="col">Where the answer resides</th></tr></thead><tbody><tr><td>Was data exchanged?</td><td>Security CQE</td><td>NVMe completion</td></tr><tr><td>Did authentication succeed?</td><td>Protocol selectors/payload</td><td>Selected protocol</td></tr><tr><td>Is it prohibited?</td><td>Interface/scope/list</td><td>Prohibition and target completion</td></tr><tr><td>Does it survive power loss?</td><td>CSEL and LDPE</td><td>Scope-specific persistence</td></tr></tbody></table></div>
@@ -31,545 +31,223 @@ nvme_qa: true
 <li><a href="#q-244">Q244 · How are normal and enhanced Lockdown logs interpreted?</a></li>
 <li><a href="#q-245">Q245 · Does Lockdown survive resets and power cycles?</a></li>
 </ol></section>
-<article class="qa-question" id="q-237" data-question="237"><h2><a class="qa-qid" href="#q-237">Q237</a> How are Security Send/Receive and protocols discovered?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-237-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-237-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>NVMe command support and security-protocol support are separate capability layers.</p>
-</li>
-<li id="q-237-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>OACS describes commands; discovery identifies supported SECP values.</p>
-</li>
-<li id="q-237-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Check the OACS support bit and Commands Supported and Effects.</p>
-</li>
-<li id="q-237-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Security Receive SECP00h discovers protocols without a prior Security Send.</p>
-</li>
-<li id="q-237-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Discover first, then encode selectors/lengths and protocol-specific exchange ordering.</p>
-</li>
-<li id="q-237-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Successful discovery identifies protocols, not authentication success.</p>
-</li>
-<li id="q-237-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Unsupported Receive SECP requires Invalid Field; unsupported Opcode is a different layer.</p>
-</li>
-<li id="q-237-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Generic Security Send/Receive defines no universal success AER. <a class="qa-rule-link" href="#common-security_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Separate NVMe CQE from protocol results in Security Receive payload. <a class="qa-rule-link" href="#common-security_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Security exchange is not a generic per-command PEL audit trail. <a class="qa-rule-link" href="#common-security_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Pending Security Receive data may not survive CLR. <a class="qa-rule-link" href="#common-security_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rediscover communication and protocol state after subsystem reset. <a class="qa-rule-link" href="#common-security_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Recreated queues do not prove an unlocked security state after power cycle. <a class="qa-rule-link" href="#common-security_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>The target controller transports data, while protocol selectors/payload determine whether effects reach a range, namespace or subsystem. <a class="qa-rule-link" href="#common-security_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-237-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Command support does not promise every SECP.</p>
-</li>
-<li id="q-237-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First locate failure at command or protocol selection level.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-238" data-question="238"><h2><a class="qa-qid" href="#q-238">Q238</a> How are invalid security selectors or lengths handled?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-238-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-238-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Separate outer NVMe fields from inner protocol data to predict the right response.</p>
-</li>
-<li id="q-238-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Selectors, pointers and lengths matter; protocol definitions govern payload validity.</p>
-</li>
-<li id="q-238-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Establish supported commands and protocols before forming a request.</p>
-</li>
-<li id="q-238-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>AL/TL follow Security Protocol In/Out with INC_512=0, not generic zero-based Dword counts.</p>
-</li>
-<li id="q-238-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Validate outer fields/buffer before payload; NSSF is defined for specified EAh uses.</p>
-</li>
-<li id="q-238-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Valid transport returns protocol results that separately establish security success.</p>
-</li>
-<li id="q-238-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Unsupported Receive/reserved Send SECP requires Invalid Field; inner authentication failure may be a protocol result rather than those CQE statuses.</p>
-</li>
-<li id="q-238-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Generic Security Send/Receive defines no universal success AER. <a class="qa-rule-link" href="#common-security_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Separate NVMe CQE from protocol results in Security Receive payload. <a class="qa-rule-link" href="#common-security_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Security exchange is not a generic per-command PEL audit trail. <a class="qa-rule-link" href="#common-security_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Pending Security Receive data may not survive CLR. <a class="qa-rule-link" href="#common-security_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rediscover communication and protocol state after subsystem reset. <a class="qa-rule-link" href="#common-security_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Recreated queues do not prove an unlocked security state after power cycle. <a class="qa-rule-link" href="#common-security_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>The target controller transports data, while protocol selectors/payload determine whether effects reach a range, namespace or subsystem. <a class="qa-rule-link" href="#common-security_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-238-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Preserve both outer CQE and inner result.</p>
-</li>
-<li id="q-238-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check lengths and buffer capacity before diagnosing credentials.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-239" data-question="239"><h2><a class="qa-qid" href="#q-239">Q239</a> How are security transfer and protocol failures distinguished?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-239-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-239-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Failed transport differs from a protocol rejecting successfully delivered data.</p>
-</li>
-<li id="q-239-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Analyze command transport before the multi-command protocol exchange.</p>
-</li>
-<li id="q-239-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Preserve SQE, pointers, length, CQE and valid receive payload.</p>
-</li>
-<li id="q-239-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Data Transfer Error concerns data movement; security outcomes may be encoded separately in protocol fields.</p>
-</li>
-<li id="q-239-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Establish valid returned data before decoding; stale buffers after transfer failure are not new results.</p>
-</li>
-<li id="q-239-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>A successful CQE still requires protocol-result interpretation.</p>
-</li>
-<li id="q-239-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Unsupported fields, transfer failures, internal errors and authentication rejection have distinct premises.</p>
-</li>
-<li id="q-239-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Generic Security Send/Receive defines no universal success AER. <a class="qa-rule-link" href="#common-security_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Separate NVMe CQE from protocol results in Security Receive payload. <a class="qa-rule-link" href="#common-security_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Security exchange is not a generic per-command PEL audit trail. <a class="qa-rule-link" href="#common-security_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Pending Security Receive data may not survive CLR. <a class="qa-rule-link" href="#common-security_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rediscover communication and protocol state after subsystem reset. <a class="qa-rule-link" href="#common-security_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Recreated queues do not prove an unlocked security state after power cycle. <a class="qa-rule-link" href="#common-security_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>The target controller transports data, while protocol selectors/payload determine whether effects reach a range, namespace or subsystem. <a class="qa-rule-link" href="#common-security_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-239-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Correlate both layers and sequence to the intended exchange.</p>
-</li>
-<li id="q-239-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First distinguish protocol rejection from DMA failure.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-240" data-question="240"><h2><a class="qa-qid" href="#q-240">Q240</a> How can security state affect other Admin commands?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-240-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-240-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Security policy may restrict operations, but an unspecified Locked state does not prohibit every Admin command.</p>
-</li>
-<li id="q-240-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Protocol, protected objects and explicit NVMe interactions determine scope.</p>
-</li>
-<li id="q-240-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Identify the actual protocol/state, Lockdown log and applicable personality settings.</p>
-</li>
-<li id="q-240-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Security transport, Lockdown and Namespace Write Protection are distinct mechanisms.</p>
-</li>
-<li id="q-240-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Identify command/scope, the denying mechanism and its specified response.</p>
-</li>
-<li id="q-240-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Permitted queries may continue, and removing one restriction need not remove others.</p>
-</li>
-<li id="q-240-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Generic SC 23h applies to Lockdown, not every security denial.</p>
-</li>
-<li id="q-240-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Generic Security Send/Receive defines no universal success AER. <a class="qa-rule-link" href="#common-security_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Separate NVMe CQE from protocol results in Security Receive payload. <a class="qa-rule-link" href="#common-security_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Security exchange is not a generic per-command PEL audit trail. <a class="qa-rule-link" href="#common-security_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Pending Security Receive data may not survive CLR. <a class="qa-rule-link" href="#common-security_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rediscover communication and protocol state after subsystem reset. <a class="qa-rule-link" href="#common-security_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Recreated queues do not prove an unlocked security state after power cycle. <a class="qa-rule-link" href="#common-security_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>The target controller transports data, while protocol selectors/payload determine whether effects reach a range, namespace or subsystem. <a class="qa-rule-link" href="#common-security_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-240-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Correlate each mechanism separately with observed behavior.</p>
-</li>
-<li id="q-240-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First identify the precise denying mechanism before unlock/retry reasoning.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-241" data-question="241"><h2><a class="qa-qid" href="#q-241">Q241</a> Does security state survive reset or power cycle?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-241-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-241-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>A testable answer requires a particular protocol and state.</p>
-</li>
-<li id="q-241-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Keys, persistent policy, sessions and pending receive data have different lifetimes.</p>
-</li>
-<li id="q-241-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Record protocol/revision/state and reset source; the three NVMe specs define only their stated transport behavior.</p>
-</li>
-<li id="q-241-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>Base permits loss of receive results after communication loss/CLR, not automatic erasure of persistent security settings.</p>
-</li>
-<li id="q-241-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Recover communication, query state and reauthenticate if the selected protocol requires it.</p>
-</li>
-<li id="q-241-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Correctness follows selected protocol retention, not universal keep/clear behavior.</p>
-</li>
-<li id="q-241-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Without a protocol, do not invent statuses, unlock results or key handling; state the specification boundary.</p>
-</li>
-<li id="q-241-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Generic Security Send/Receive defines no universal success AER. <a class="qa-rule-link" href="#common-security_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Separate NVMe CQE from protocol results in Security Receive payload. <a class="qa-rule-link" href="#common-security_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Security exchange is not a generic per-command PEL audit trail. <a class="qa-rule-link" href="#common-security_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Pending Security Receive data may not survive CLR. <a class="qa-rule-link" href="#common-security_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Rediscover communication and protocol state after subsystem reset. <a class="qa-rule-link" href="#common-security_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>Recreated queues do not prove an unlocked security state after power cycle. <a class="qa-rule-link" href="#common-security_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>The target controller transports data, while protocol selectors/payload determine whether effects reach a range, namespace or subsystem. <a class="qa-rule-link" href="#common-security_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-241-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Verify transport, session and persistent state separately.</p>
-</li>
-<li id="q-241-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First identify the exact field or protocol object meant by security state.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-242" data-question="242"><h2><a class="qa-qid" href="#q-242">Q242</a> How does Lockdown restrict commands or features?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-242-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-242-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Lockdown controls execution at selected interfaces/controllers, not encryption or namespace write protection.</p>
-</li>
-<li id="q-242-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>CSEL selects subsystem, controller or a primary’s secondaries; IFC selects the receiving interface.</p>
-</li>
-<li id="q-242-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Check CFLS/CCFLS and the prohibitable list, which is implementation-defined.</p>
-</li>
-<li id="q-242-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>SCP/OFI select opcode or FID, PRHBT controls prohibition, and CSS/UIDX select target controller/definition.</p>
-</li>
-<li id="q-242-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Discover, apply, await success, read current prohibition and test the matching interface.</p>
-</li>
-<li id="q-242-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Successful scope enforcement is idempotent for repeat prohibit/allow operations.</p>
-</li>
-<li id="q-242-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Nonprohibitable targets require the command-specific prohibition-not-supported status; unsupported nonzero CSEL requires Invalid Field.</p>
-</li>
-<li id="q-242-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Lockdown success defines no generic configuration-complete AER. <a class="qa-rule-link" href="#common-lockdown_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Current prohibitions should reflect success under matching interface/scope/controller/UUID selectors; denied commands use ordinary error-log correlation. <a class="qa-rule-link" href="#common-lockdown_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Lockdown itself has no dedicated standard PEL event. <a class="qa-rule-link" href="#common-lockdown_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Ordinary CLR does not remove a successful prohibition; removal requires an allowed subsequent Lockdown or its specified power-cycle condition. <a class="qa-rule-link" href="#common-lockdown_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Subsystem reset is not power cycle and does not automatically remove prohibitions; preserve scope-specific state and explicit personality exceptions. <a class="qa-rule-link" href="#common-lockdown_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>CSEL0 persists across power cycles only with LDPE1; otherwise power cycle removes it. <a class="qa-rule-link" href="#common-lockdown_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>CSEL selects controllers and IFC the receiving interface. <a class="qa-rule-link" href="#common-lockdown_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-242-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Prohibiting one FID targets Set, not Get or necessarily the entire Set Features opcode.</p>
-</li>
-<li id="q-242-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First align scope, target, controller selection and receiving interface.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-243" data-question="243"><h2><a class="qa-qid" href="#q-243">Q243</a> What response is required for a prohibited command or feature?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-243-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-243-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Verify actual enforcement after successful configuration.</p>
-</li>
-<li id="q-243-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Match controller, receiving interface, opcode/FID and applicable UUID.</p>
-</li>
-<li id="q-243-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Read current prohibitions and confirm the successful setting/scope.</p>
-</li>
-<li id="q-243-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>A prohibited command received on the Admin SQ shall abort with SCT 0/SC 23h.</p>
-</li>
-<li id="q-243-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Apply the restriction, submit an otherwise-valid target command and verify denial/no execution.</p>
-</li>
-<li id="q-243-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Test success means enforcement, not successful execution of the denied command.</p>
-</li>
-<li id="q-243-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Configuration failures differ from target denial; preserve explicit CDP Authentication exceptions.</p>
-</li>
-<li id="q-243-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Lockdown success defines no generic configuration-complete AER. <a class="qa-rule-link" href="#common-lockdown_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Current prohibitions should reflect success under matching interface/scope/controller/UUID selectors; denied commands use ordinary error-log correlation. <a class="qa-rule-link" href="#common-lockdown_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Lockdown itself has no dedicated standard PEL event. <a class="qa-rule-link" href="#common-lockdown_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Ordinary CLR does not remove a successful prohibition; removal requires an allowed subsequent Lockdown or its specified power-cycle condition. <a class="qa-rule-link" href="#common-lockdown_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Subsystem reset is not power cycle and does not automatically remove prohibitions; preserve scope-specific state and explicit personality exceptions. <a class="qa-rule-link" href="#common-lockdown_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>CSEL0 persists across power cycles only with LDPE1; otherwise power cycle removes it. <a class="qa-rule-link" href="#common-lockdown_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>CSEL selects controllers and IFC the receiving interface. <a class="qa-rule-link" href="#common-lockdown_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-243-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>With enabled persistence and the required authenticated-unfreeze support, CDP Authentication Send/Receive remains allowed despite prior prohibition.</p>
-</li>
-<li id="q-243-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First check target/interface and explicit exceptions.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-244" data-question="244"><h2><a class="qa-qid" href="#q-244">Q244</a> How are normal and enhanced Lockdown logs interpreted?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-244-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-244-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>The log distinguishes prohibitable capability from current prohibitions.</p>
-</li>
-<li id="q-244-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Normal lists can describe all controllers; enhanced lists can select one or aggregate entries reported by at least one.</p>
-</li>
-<li id="q-244-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Enhanced ELPF1 requires CCFLS; LSI.CNTLID is used only there.</p>
-</li>
-<li id="q-244-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>CNTTS chooses capability/Admin/OOB prohibition; SCP selects identifiers. Normal LNGTH counts bytes; enhanced sizes/counts govern descriptors.</p>
-</li>
-<li id="q-244-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Match returned selectors; in the enhanced aggregate, ACNTL1 means all and 0 some but not all.</p>
-</li>
-<li id="q-244-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>If only controller 1 prohibits FID 12h, an aggregate entry with ACNTL0 means partial coverage, not no prohibition.</p>
-</li>
-<li id="q-244-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Unsupported enhanced format requires Invalid Field; enhanced log length is not universally 512 bytes.</p>
-</li>
-<li id="q-244-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Lockdown success defines no generic configuration-complete AER. <a class="qa-rule-link" href="#common-lockdown_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Current prohibitions should reflect success under matching interface/scope/controller/UUID selectors; denied commands use ordinary error-log correlation. <a class="qa-rule-link" href="#common-lockdown_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Lockdown itself has no dedicated standard PEL event. <a class="qa-rule-link" href="#common-lockdown_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Ordinary CLR does not remove a successful prohibition; removal requires an allowed subsequent Lockdown or its specified power-cycle condition. <a class="qa-rule-link" href="#common-lockdown_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Subsystem reset is not power cycle and does not automatically remove prohibitions; preserve scope-specific state and explicit personality exceptions. <a class="qa-rule-link" href="#common-lockdown_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>CSEL0 persists across power cycles only with LDPE1; otherwise power cycle removes it. <a class="qa-rule-link" href="#common-lockdown_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>CSEL selects controllers and IFC the receiving interface. <a class="qa-rule-link" href="#common-lockdown_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-244-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Compare per-controller results and behavior to distinguish union from intersection.</p>
-</li>
-<li id="q-244-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First identify format and controller selector before interpreting coverage.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<article class="qa-question" id="q-245" data-question="245"><h2><a class="qa-qid" href="#q-245">Q245</a> Does Lockdown survive resets and power cycles?</h2>
-<p class="qa-prompt">First describe the normal sequence and one invalid-precondition example, then reveal the answer.</p>
-<details class="qa-answer" id="q-245-answer"><summary>Reveal the full answer · 17 perspectives</summary><ol class="qa-items">
-<li id="q-245-a-01" data-answer="1"><h3><span>01</span> What problem does this function solve?</h3>
-<p>Retention depends on CSEL and persistence settings, not one Lockdown-enabled flag.</p>
-</li>
-<li id="q-245-a-02" data-answer="2"><h3><span>02</span> What is its scope?</h3>
-<p>Separate subsystem prohibitions from selected-controller/group prohibitions.</p>
-</li>
-<li id="q-245-a-03" data-answer="3"><h3><span>03</span> Which register, Identify field, feature or log page establishes support?</h3>
-<p>Preserve original selectors and read actual personality LDPS.</p>
-</li>
-<li id="q-245-a-04" data-answer="4"><h3><span>04</span> Which commands and fields matter?</h3>
-<p>LDPE is requested input and LDPS returned state; submission does not establish success.</p>
-</li>
-<li id="q-245-a-05" data-answer="5"><h3><span>05</span> What is the normal sequence?</h3>
-<p>Snapshot, perform the specified reset/power cycle and repeat the same query/behavior checks.</p>
-</li>
-<li id="q-245-a-06" data-answer="6"><h3><span>06</span> What indicates success?</h3>
-<p>Ordinary reset retains restrictions; power-cycle behavior depends on scope and persistence, with no CSEL1/2 persistence extension.</p>
-</li>
-<li id="q-245-a-07" data-answer="7"><h3><span>07</span> What status applies to unsupported, invalid or out-of-order requests?</h3>
-<p>Neither retention after subsystem reset nor loss of controller-scoped restrictions after power cycle is automatically a failure.</p>
-</li>
-<li id="q-245-a-08" data-answer="8"><h3><span>08</span> How are DNR and More set?</h3>
-<p>Applies to a CQE. No fixed DNR/More override is specified here; use the CQE bit rules in this volume. <a class="qa-rule-link" href="#common-command-8">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-09" data-answer="9"><h3><span>09</span> Is an asynchronous event generated?</h3>
-<p>Lockdown success defines no generic configuration-complete AER. <a class="qa-rule-link" href="#common-lockdown_op-9">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-10" data-answer="10"><h3><span>10</span> Are Error Information or other logs updated?</h3>
-<p>Current prohibitions should reflect success under matching interface/scope/controller/UUID selectors; denied commands use ordinary error-log correlation. <a class="qa-rule-link" href="#common-lockdown_op-10">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-11" data-answer="11"><h3><span>11</span> Is it recorded in the Persistent Event Log?</h3>
-<p>Lockdown itself has no dedicated standard PEL event. <a class="qa-rule-link" href="#common-lockdown_op-11">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-12" data-answer="12"><h3><span>12</span> What survives or continues after Controller Reset?</h3>
-<p>Ordinary CLR does not remove a successful prohibition; removal requires an allowed subsequent Lockdown or its specified power-cycle condition. <a class="qa-rule-link" href="#common-lockdown_op-12">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-13" data-answer="13"><h3><span>13</span> What survives or continues after NVM Subsystem Reset?</h3>
-<p>Subsystem reset is not power cycle and does not automatically remove prohibitions; preserve scope-specific state and explicit personality exceptions. <a class="qa-rule-link" href="#common-lockdown_op-13">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-14" data-answer="14"><h3><span>14</span> What survives or continues after a power cycle?</h3>
-<p>CSEL0 persists across power cycles only with LDPE1; otherwise power cycle removes it. <a class="qa-rule-link" href="#common-lockdown_op-14">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-15" data-answer="15"><h3><span>15</span> Are other controllers or namespaces affected?</h3>
-<p>CSEL selects controllers and IFC the receiving interface. <a class="qa-rule-link" href="#common-lockdown_op-15">Full rule in this volume</a></p>
-</li>
-<li id="q-245-a-16" data-answer="16"><h3><span>16</span> Are Identify, features, logs and command behavior consistent?</h3>
-<p>Scope, actual personality state and reset type jointly determine the expectation.</p>
-</li>
-<li id="q-245-a-17" data-answer="17"><h3><span>17</span> What should be checked first when the result differs?</h3>
-<p>First distinguish the three actual reset/power actions.</p>
-</li>
-</ol>
-<details class="qa-source-links"><summary>Source locations for this question</summary>
-<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
-</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
-<section id="common-rules" class="qa-common"><h2>Shared rules linked from the answers</h2><p>Each shared mechanism is explained in full once in this volume. Use browser Back to return to the question; explicit command or feature exceptions take precedence.</p>
-<article id="common-command-8"><h3>Command completion, events and records · How are DNR and More set?</h3><p>For a CQE, DNR=1 means the identical command is expected to fail if resubmitted to any controller in this subsystem; DNR=0 means it may succeed. Do not assign DNR=1 solely from an error name unless that condition mandates it. More=1 identifies additional information for this command in the Error Information Log. DNR should be zero when SCT=SC=0.</p></article>
-<article id="common-lockdown_op-9"><h3>Shared conditions for this topic · Is an asynchronous event generated?</h3><p>Lockdown success defines no generic configuration-complete AER. Verify the log and target command behavior; separate events follow their own rules.</p></article>
-<article id="common-lockdown_op-10"><h3>Shared conditions for this topic · Are Error Information or other logs updated?</h3><p>Current prohibitions should reflect success under matching interface/scope/controller/UUID selectors; denied commands use ordinary error-log correlation.</p></article>
-<article id="common-lockdown_op-11"><h3>Shared conditions for this topic · Is it recorded in the Persistent Event Log?</h3><p>Lockdown itself has no dedicated standard PEL event. A separate persistence-personality change follows its supported event rules.</p></article>
-<article id="common-lockdown_op-12"><h3>Shared conditions for this topic · What survives or continues after Controller Reset?</h3><p>Ordinary CLR does not remove a successful prohibition; removal requires an allowed subsequent Lockdown or its specified power-cycle condition.</p></article>
-<article id="common-lockdown_op-13"><h3>Shared conditions for this topic · What survives or continues after NVM Subsystem Reset?</h3><p>Subsystem reset is not power cycle and does not automatically remove prohibitions; preserve scope-specific state and explicit personality exceptions.</p></article>
-<article id="common-lockdown_op-14"><h3>Shared conditions for this topic · What survives or continues after a power cycle?</h3><p>CSEL0 persists across power cycles only with LDPE1; otherwise power cycle removes it. CSEL1/2 end at power cycle regardless of LDPE.</p></article>
-<article id="common-lockdown_op-15"><h3>Shared conditions for this topic · Are other controllers or namespaces affected?</h3><p>CSEL selects controllers and IFC the receiving interface. One interface’s prohibition does not cover others; FID scope targets Set Features, not automatic Get prohibition.</p></article>
-<article id="common-security_op-9"><h3>Shared conditions for this topic · Is an asynchronous event generated?</h3><p>Generic Security Send/Receive defines no universal success AER. Protocol-specific or other resulting conditions require their own rules; do not invent an authentication-complete NVMe event.</p></article>
-<article id="common-security_op-10"><h3>Shared conditions for this topic · Are Error Information or other logs updated?</h3><p>Separate NVMe CQE from protocol results in Security Receive payload. Error Information follows NVMe error-logging conditions.</p></article>
-<article id="common-security_op-11"><h3>Shared conditions for this topic · Is it recorded in the Persistent Event Log?</h3><p>Security exchange is not a generic per-command PEL audit trail. TCG-defined or related events require their actual definitions beyond these three NVMe specifications.</p></article>
-<article id="common-security_op-12"><h3>Shared conditions for this topic · What survives or continues after Controller Reset?</h3><p>Pending Security Receive data may not survive CLR. Lock/session/key persistence is protocol-specific; lost transport results do not establish unlock or key erasure.</p></article>
-<article id="common-security_op-13"><h3>Shared conditions for this topic · What survives or continues after NVM Subsystem Reset?</h3><p>Rediscover communication and protocol state after subsystem reset. Base supplies no universal authentication/lock retention rule for every security protocol.</p></article>
-<article id="common-security_op-14"><h3>Shared conditions for this topic · What survives or continues after a power cycle?</h3><p>Recreated queues do not prove an unlocked security state after power cycle. Apply the selected protocol’s persistent/session rules; absent that choice these NVMe sources do not define one answer.</p></article>
-<article id="common-security_op-15"><h3>Shared conditions for this topic · Are other controllers or namespaces affected?</h3><p>The target controller transports data, while protocol selectors/payload determine whether effects reach a range, namespace or subsystem.</p></article>
+<article class="qa-question" id="q-237" data-question="237" data-answer-kind="lookup"><h2><a class="qa-qid" href="#q-237">Q237</a> How are Security Send/Receive and protocols discovered?</h2>
+<p class="qa-prompt">Choose the interface and target, then identify the returned field that supports your conclusion.</p>
+<details class="qa-answer" id="q-237-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-237-a-01">NVMe command support and security-protocol support are separate capability layers.</p><div class="qa-sections">
+<section class="qa-section" id="q-237-s-01" data-answer-section="1"><h3><span>1.</span> Select the target and information</h3>
+<span class="qa-anchor" id="q-237-a-02"></span><p>OACS describes commands; discovery identifies supported SECP values.</p>
+<span class="qa-anchor" id="q-237-a-03"></span><p>Check the OACS support bit and Commands Supported and Effects.</p>
+<span class="qa-anchor" id="q-237-a-04"></span><p>Security Receive SECP00h discovers protocols without a prior Security Send.</p>
 </section>
+<section class="qa-section" id="q-237-s-02" data-answer-section="2"><h3><span>2.</span> Query sequence and interpretation</h3>
+<span class="qa-anchor" id="q-237-a-05"></span><p>Discover first, then encode selectors/lengths and protocol-specific exchange ordering.</p>
+<span class="qa-anchor" id="q-237-a-06"></span><p>Successful discovery identifies protocols, not authentication success.</p>
+</section>
+<section class="qa-section" id="q-237-s-03" data-answer-section="3"><h3><span>3.</span> Handle missing or inconsistent evidence</h3>
+<span class="qa-anchor" id="q-237-a-07"></span><p>Unsupported Receive SECP requires Invalid Field; unsupported Opcode is a different layer.</p>
+<span class="qa-anchor" id="q-237-a-16"></span><p>Command support does not promise every SECP.</p>
+<span class="qa-anchor" id="q-237-a-17"></span><p>First locate failure at command or protocol selection level.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-237-a-08"></span><span class="qa-anchor" id="q-237-a-09"></span><span class="qa-anchor" id="q-237-a-10"></span><span class="qa-anchor" id="q-237-a-11"></span><span class="qa-anchor" id="q-237-a-12"></span><span class="qa-anchor" id="q-237-a-13"></span><span class="qa-anchor" id="q-237-a-14"></span><span class="qa-anchor" id="q-237-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-238" data-question="238" data-answer-kind="error"><h2><a class="qa-qid" href="#q-238">Q238</a> How are invalid security selectors or lengths handled?</h2>
+<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
+<details class="qa-answer" id="q-238-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-238-a-01">Separate outer NVMe fields from inner protocol data to predict the right response.</p><div class="qa-sections">
+<section class="qa-section" id="q-238-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
+<span class="qa-anchor" id="q-238-a-02"></span><p>Selectors, pointers and lengths matter; protocol definitions govern payload validity.</p>
+<span class="qa-anchor" id="q-238-a-04"></span><p>AL/TL follow Security Protocol In/Out with INC_512=0, not generic zero-based Dword counts.</p>
+<span class="qa-anchor" id="q-238-a-07"></span><p>Unsupported Receive/reserved Send SECP requires Invalid Field; inner authentication failure may be a protocol result rather than those CQE statuses.</p>
+</section>
+<section class="qa-section" id="q-238-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
+<span class="qa-anchor" id="q-238-a-03"></span><p>Establish supported commands and protocols before forming a request.</p>
+<span class="qa-anchor" id="q-238-a-05"></span><p>Validate outer fields/buffer before payload; NSSF is defined for specified EAh uses.</p>
+</section>
+<section class="qa-section" id="q-238-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
+<span class="qa-anchor" id="q-238-a-06"></span><p>Valid transport returns protocol results that separately establish security success.</p>
+<span class="qa-anchor" id="q-238-a-16"></span><p>Preserve both outer CQE and inner result.</p>
+<span class="qa-anchor" id="q-238-a-17"></span><p>First check lengths and buffer capacity before diagnosing credentials.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-238-a-08"></span><span class="qa-anchor" id="q-238-a-09"></span><span class="qa-anchor" id="q-238-a-10"></span><span class="qa-anchor" id="q-238-a-11"></span><span class="qa-anchor" id="q-238-a-12"></span><span class="qa-anchor" id="q-238-a-13"></span><span class="qa-anchor" id="q-238-a-14"></span><span class="qa-anchor" id="q-238-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-239" data-question="239" data-answer-kind="error"><h2><a class="qa-qid" href="#q-239">Q239</a> How are security transfer and protocol failures distinguished?</h2>
+<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
+<details class="qa-answer" id="q-239-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-239-a-01">Failed transport differs from a protocol rejecting successfully delivered data.</p><div class="qa-sections">
+<section class="qa-section" id="q-239-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
+<span class="qa-anchor" id="q-239-a-02"></span><p>Analyze command transport before the multi-command protocol exchange.</p>
+<span class="qa-anchor" id="q-239-a-04"></span><p>Data Transfer Error concerns data movement; security outcomes may be encoded separately in protocol fields.</p>
+<span class="qa-anchor" id="q-239-a-07"></span><p>Unsupported fields, transfer failures, internal errors and authentication rejection have distinct premises.</p>
+</section>
+<section class="qa-section" id="q-239-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
+<span class="qa-anchor" id="q-239-a-03"></span><p>Preserve SQE, pointers, length, CQE and valid receive payload.</p>
+<span class="qa-anchor" id="q-239-a-05"></span><p>Establish valid returned data before decoding; stale buffers after transfer failure are not new results.</p>
+</section>
+<section class="qa-section" id="q-239-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
+<span class="qa-anchor" id="q-239-a-06"></span><p>A successful CQE still requires protocol-result interpretation.</p>
+<span class="qa-anchor" id="q-239-a-16"></span><p>Correlate both layers and sequence to the intended exchange.</p>
+<span class="qa-anchor" id="q-239-a-17"></span><p>First distinguish protocol rejection from DMA failure.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-239-a-08"></span><span class="qa-anchor" id="q-239-a-09"></span><span class="qa-anchor" id="q-239-a-10"></span><span class="qa-anchor" id="q-239-a-11"></span><span class="qa-anchor" id="q-239-a-12"></span><span class="qa-anchor" id="q-239-a-13"></span><span class="qa-anchor" id="q-239-a-14"></span><span class="qa-anchor" id="q-239-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-240" data-question="240" data-answer-kind="concept"><h2><a class="qa-qid" href="#q-240">Q240</a> How can security state affect other Admin commands?</h2>
+<p class="qa-prompt">Explain the mechanism in your own words and identify a common misconception.</p>
+<details class="qa-answer" id="q-240-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-240-a-01">Security policy may restrict operations, but an unspecified Locked state does not prohibit every Admin command.</p><div class="qa-sections">
+<section class="qa-section" id="q-240-s-01" data-answer-section="1"><h3><span>1.</span> Mechanism and scope</h3>
+<span class="qa-anchor" id="q-240-a-02"></span><p>Protocol, protected objects and explicit NVMe interactions determine scope.</p>
+<span class="qa-anchor" id="q-240-a-04"></span><p>Security transport, Lockdown and Namespace Write Protection are distinct mechanisms.</p>
+</section>
+<section class="qa-section" id="q-240-s-02" data-answer-section="2"><h3><span>2.</span> Understand it through actions and results</h3>
+<span class="qa-anchor" id="q-240-a-03"></span><p>Identify the actual protocol/state, Lockdown log and applicable personality settings.</p>
+<span class="qa-anchor" id="q-240-a-05"></span><p>Identify command/scope, the denying mechanism and its specified response.</p>
+<span class="qa-anchor" id="q-240-a-06"></span><p>Permitted queries may continue, and removing one restriction need not remove others.</p>
+</section>
+<section class="qa-section" id="q-240-s-03" data-answer-section="3"><h3><span>3.</span> Avoid a misleading conclusion</h3>
+<span class="qa-anchor" id="q-240-a-07"></span><p>Generic SC 23h applies to Lockdown, not every security denial.</p>
+<span class="qa-anchor" id="q-240-a-16"></span><p>Correlate each mechanism separately with observed behavior.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-240-a-17"></span><span class="qa-anchor" id="q-240-a-08"></span><span class="qa-anchor" id="q-240-a-09"></span><span class="qa-anchor" id="q-240-a-10"></span><span class="qa-anchor" id="q-240-a-11"></span><span class="qa-anchor" id="q-240-a-12"></span><span class="qa-anchor" id="q-240-a-13"></span><span class="qa-anchor" id="q-240-a-14"></span><span class="qa-anchor" id="q-240-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-241" data-question="241" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-241">Q241</a> Does security state survive reset or power cycle?</h2>
+<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
+<details class="qa-answer" id="q-241-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-241-a-01">A testable answer requires a particular protocol and state.</p><div class="qa-sections">
+<section class="qa-section" id="q-241-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
+<span class="qa-anchor" id="q-241-a-02"></span><p>Keys, persistent policy, sessions and pending receive data have different lifetimes.</p>
+<span class="qa-anchor" id="q-241-a-03"></span><p>Record protocol/revision/state and reset source; the three NVMe specs define only their stated transport behavior.</p>
+</section>
+<section class="qa-section" id="q-241-s-02" data-answer-section="2"><h3><span>2.</span> State changes and recovery</h3>
+<span class="qa-anchor" id="q-241-a-04"></span><p>Base permits loss of receive results after communication loss/CLR, not automatic erasure of persistent security settings.</p>
+<span class="qa-anchor" id="q-241-a-05"></span><p>Recover communication, query state and reauthenticate if the selected protocol requires it.</p>
+<span class="qa-anchor" id="q-241-a-06"></span><p>Correctness follows selected protocol retention, not universal keep/clear behavior.</p>
+</section>
+<section class="qa-section" id="q-241-s-03" data-answer-section="3"><h3><span>3.</span> Checks across reset or power loss</h3>
+<span class="qa-anchor" id="q-241-a-12"></span>
+<span class="qa-anchor" id="q-241-a-13"></span>
+<span class="qa-anchor" id="q-241-a-14"></span>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Trigger</th><th scope="col">Effect on this operation or state</th></tr></thead><tbody><tr><td>What survives or continues after Controller Reset?</td><td>Pending Security Receive data may not survive CLR. Lock/session/key persistence is protocol-specific; lost transport results do not establish unlock or key erasure.</td></tr><tr><td>What survives or continues after NVM Subsystem Reset?</td><td>Rediscover communication and protocol state after subsystem reset. Base supplies no universal authentication/lock retention rule for every security protocol.</td></tr><tr><td>What survives or continues after a power cycle?</td><td>Recreated queues do not prove an unlocked security state after power cycle. Apply the selected protocol’s persistent/session rules; absent that choice these NVMe sources do not define one answer.</td></tr></tbody></table></div>
+</section>
+<section class="qa-section" id="q-241-s-04" data-answer-section="4"><h3><span>4.</span> Verify retention and recovery</h3>
+<span class="qa-anchor" id="q-241-a-07"></span><p>Without a protocol, do not invent statuses, unlock results or key handling; state the specification boundary.</p>
+<span class="qa-anchor" id="q-241-a-16"></span><p>Verify transport, session and persistent state separately.</p>
+<span class="qa-anchor" id="q-241-a-17"></span><p>First identify the exact field or protocol object meant by security state.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-241-a-08"></span><span class="qa-anchor" id="q-241-a-09"></span><span class="qa-anchor" id="q-241-a-10"></span><span class="qa-anchor" id="q-241-a-11"></span><span class="qa-anchor" id="q-241-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-242" data-question="242" data-answer-kind="process"><h2><a class="qa-qid" href="#q-242">Q242</a> How does Lockdown restrict commands or features?</h2>
+<p class="qa-prompt">Order the actions and identify which completion must precede the next action.</p>
+<details class="qa-answer" id="q-242-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-242-a-01">Lockdown controls execution at selected interfaces/controllers, not encryption or namespace write protection.</p><div class="qa-sections">
+<section class="qa-section" id="q-242-s-01" data-answer-section="1"><h3><span>1.</span> Prepare the operation</h3>
+<span class="qa-anchor" id="q-242-a-02"></span><p>CSEL selects subsystem, controller or a primary’s secondaries; IFC selects the receiving interface.</p>
+<span class="qa-anchor" id="q-242-a-03"></span><p>Check CFLS/CCFLS and the prohibitable list, which is implementation-defined.</p>
+<span class="qa-anchor" id="q-242-a-04"></span><p>SCP/OFI select opcode or FID, PRHBT controls prohibition, and CSS/UIDX select target controller/definition.</p>
+</section>
+<section class="qa-section" id="q-242-s-02" data-answer-section="2"><h3><span>2.</span> Sequence and completion conditions</h3>
+<span class="qa-anchor" id="q-242-a-05"></span><p>Discover, apply, await success, read current prohibition and test the matching interface.</p>
+<span class="qa-anchor" id="q-242-a-06"></span><p>Successful scope enforcement is idempotent for repeat prohibit/allow operations.</p>
+</section>
+<section class="qa-section" id="q-242-s-03" data-answer-section="3"><h3><span>3.</span> Handle unmet conditions</h3>
+<span class="qa-anchor" id="q-242-a-07"></span><p>Nonprohibitable targets require the command-specific prohibition-not-supported status; unsupported nonzero CSEL requires Invalid Field.</p>
+<span class="qa-anchor" id="q-242-a-16"></span><p>Prohibiting one FID targets Set, not Get or necessarily the entire Set Features opcode.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-242-a-17"></span><span class="qa-anchor" id="q-242-a-08"></span><span class="qa-anchor" id="q-242-a-09"></span><span class="qa-anchor" id="q-242-a-10"></span><span class="qa-anchor" id="q-242-a-11"></span><span class="qa-anchor" id="q-242-a-12"></span><span class="qa-anchor" id="q-242-a-13"></span><span class="qa-anchor" id="q-242-a-14"></span><span class="qa-anchor" id="q-242-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-243" data-question="243" data-answer-kind="error"><h2><a class="qa-qid" href="#q-243">Q243</a> What response is required for a prohibited command or feature?</h2>
+<p class="qa-prompt">Distinguish failure conditions before deciding whether a particular response is required.</p>
+<details class="qa-answer" id="q-243-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-243-a-01">Verify actual enforcement after successful configuration.</p><div class="qa-sections">
+<section class="qa-section" id="q-243-s-01" data-answer-section="1"><h3><span>1.</span> Distinguish the failure conditions</h3>
+<span class="qa-anchor" id="q-243-a-02"></span><p>Match controller, receiving interface, opcode/FID and applicable UUID.</p>
+<span class="qa-anchor" id="q-243-a-04"></span><p>A prohibited command received on the Admin SQ shall abort with SCT 0/SC 23h.</p>
+<span class="qa-anchor" id="q-243-a-07"></span><p>Configuration failures differ from target denial; preserve explicit CDP Authentication exceptions.</p>
+</section>
+<section class="qa-section" id="q-243-s-02" data-answer-section="2"><h3><span>2.</span> Establish the cause from evidence</h3>
+<span class="qa-anchor" id="q-243-a-03"></span><p>Read current prohibitions and confirm the successful setting/scope.</p>
+<span class="qa-anchor" id="q-243-a-05"></span><p>Apply the restriction, submit an otherwise-valid target command and verify denial/no execution.</p>
+</section>
+<section class="qa-section" id="q-243-s-03" data-answer-section="3"><h3><span>3.</span> Outcome and follow-up checks</h3>
+<span class="qa-anchor" id="q-243-a-06"></span><p>Test success means enforcement, not successful execution of the denied command.</p>
+<span class="qa-anchor" id="q-243-a-16"></span><p>With enabled persistence and the required authenticated-unfreeze support, CDP Authentication Send/Receive remains allowed despite prior prohibition.</p>
+<span class="qa-anchor" id="q-243-a-17"></span><p>First check target/interface and explicit exceptions.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-243-a-08"></span><span class="qa-anchor" id="q-243-a-09"></span><span class="qa-anchor" id="q-243-a-10"></span><span class="qa-anchor" id="q-243-a-11"></span><span class="qa-anchor" id="q-243-a-12"></span><span class="qa-anchor" id="q-243-a-13"></span><span class="qa-anchor" id="q-243-a-14"></span><span class="qa-anchor" id="q-243-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-244" data-question="244" data-answer-kind="fields"><h2><a class="qa-qid" href="#q-244">Q244</a> How are normal and enhanced Lockdown logs interpreted?</h2>
+<p class="qa-prompt">Explain the units and encoding, then work through one set of values.</p>
+<details class="qa-answer" id="q-244-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-244-a-01">The log distinguishes prohibitable capability from current prohibitions.</p><div class="qa-sections">
+<section class="qa-section" id="q-244-s-01" data-answer-section="1"><h3><span>1.</span> Establish the source and scope</h3>
+<span class="qa-anchor" id="q-244-a-02"></span><p>Normal lists can describe all controllers; enhanced lists can select one or aggregate entries reported by at least one.</p>
+<span class="qa-anchor" id="q-244-a-03"></span><p>Enhanced ELPF1 requires CCFLS; LSI.CNTLID is used only there.</p>
+</section>
+<section class="qa-section" id="q-244-s-02" data-answer-section="2"><h3><span>2.</span> Fields, units and worked interpretation</h3>
+<span class="qa-anchor" id="q-244-a-04"></span><p>CNTTS chooses capability/Admin/OOB prohibition; SCP selects identifiers. Normal LNGTH counts bytes; enhanced sizes/counts govern descriptors.</p>
+<span class="qa-anchor" id="q-244-a-05"></span><p>Match returned selectors; in the enhanced aggregate, ACNTL1 means all and 0 some but not all.</p>
+<span class="qa-anchor" id="q-244-a-06"></span><p>If only controller 1 prohibits FID 12h, an aggregate entry with ACNTL0 means partial coverage, not no prohibition.</p>
+</section>
+<section class="qa-section" id="q-244-s-03" data-answer-section="3"><h3><span>3.</span> Conditions that change the interpretation</h3>
+<span class="qa-anchor" id="q-244-a-07"></span><p>Unsupported enhanced format requires Invalid Field; enhanced log length is not universally 512 bytes.</p>
+<span class="qa-anchor" id="q-244-a-16"></span><p>Compare per-controller results and behavior to distinguish union from intersection.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-244-a-17"></span><span class="qa-anchor" id="q-244-a-08"></span><span class="qa-anchor" id="q-244-a-09"></span><span class="qa-anchor" id="q-244-a-10"></span><span class="qa-anchor" id="q-244-a-11"></span><span class="qa-anchor" id="q-244-a-12"></span><span class="qa-anchor" id="q-244-a-13"></span><span class="qa-anchor" id="q-244-a-14"></span><span class="qa-anchor" id="q-244-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+<article class="qa-question" id="q-245" data-question="245" data-answer-kind="lifecycle"><h2><a class="qa-qid" href="#q-245">Q245</a> Does Lockdown survive resets and power cycles?</h2>
+<p class="qa-prompt">Name the reset or interruption, then assess settings, ongoing operations and data separately.</p>
+<details class="qa-answer" id="q-245-answer"><summary>Reveal the explanation</summary>
+<p class="qa-answer-lead" id="q-245-a-01">Retention depends on CSEL and persistence settings, not one Lockdown-enabled flag.</p><div class="qa-sections">
+<section class="qa-section" id="q-245-s-01" data-answer-section="1"><h3><span>1.</span> Identify the trigger and affected objects</h3>
+<span class="qa-anchor" id="q-245-a-02"></span><p>Separate subsystem prohibitions from selected-controller/group prohibitions.</p>
+<span class="qa-anchor" id="q-245-a-03"></span><p>Preserve original selectors and read actual personality LDPS.</p>
+</section>
+<section class="qa-section" id="q-245-s-02" data-answer-section="2"><h3><span>2.</span> State changes and recovery</h3>
+<span class="qa-anchor" id="q-245-a-04"></span><p>LDPE is requested input and LDPS returned state; submission does not establish success.</p>
+<span class="qa-anchor" id="q-245-a-05"></span><p>Snapshot, perform the specified reset/power cycle and repeat the same query/behavior checks.</p>
+<span class="qa-anchor" id="q-245-a-06"></span><p>Ordinary reset retains restrictions; power-cycle behavior depends on scope and persistence, with no CSEL1/2 persistence extension.</p>
+</section>
+<section class="qa-section" id="q-245-s-03" data-answer-section="3"><h3><span>3.</span> Checks across reset or power loss</h3>
+<span class="qa-anchor" id="q-245-a-12"></span>
+<span class="qa-anchor" id="q-245-a-13"></span>
+<span class="qa-anchor" id="q-245-a-14"></span>
+<div class="qr-table" tabindex="0" role="region" aria-label="Horizontally scrollable comparison table"><table><thead><tr><th scope="col">Trigger</th><th scope="col">Effect on this operation or state</th></tr></thead><tbody><tr><td>What survives or continues after Controller Reset?</td><td>Ordinary CLR does not remove a successful prohibition; removal requires an allowed subsequent Lockdown or its specified power-cycle condition.</td></tr><tr><td>What survives or continues after NVM Subsystem Reset?</td><td>Subsystem reset is not power cycle and does not automatically remove prohibitions; preserve scope-specific state and explicit personality exceptions.</td></tr><tr><td>What survives or continues after a power cycle?</td><td>CSEL0 persists across power cycles only with LDPE1; otherwise power cycle removes it. CSEL1/2 end at power cycle regardless of LDPE.</td></tr></tbody></table></div>
+</section>
+<section class="qa-section" id="q-245-s-04" data-answer-section="4"><h3><span>4.</span> Verify retention and recovery</h3>
+<span class="qa-anchor" id="q-245-a-07"></span><p>Neither retention after subsystem reset nor loss of controller-scoped restrictions after power cycle is automatically a failure.</p>
+<span class="qa-anchor" id="q-245-a-16"></span><p>Scope, actual personality state and reset type jointly determine the expectation.</p>
+<span class="qa-anchor" id="q-245-a-17"></span><p>First distinguish the three actual reset/power actions.</p>
+</section>
+</div>
+<span class="qa-anchor" id="q-245-a-08"></span><span class="qa-anchor" id="q-245-a-09"></span><span class="qa-anchor" id="q-245-a-10"></span><span class="qa-anchor" id="q-245-a-11"></span><span class="qa-anchor" id="q-245-a-15"></span>
+<details class="qa-source-links"><summary>Source locations for this question</summary>
+<p class="qa-citations">Sources: <a href="#ref-security">Base 2.4 §5.2.28–5.2.29</a> · <a href="#ref-lockdown">Base 2.4 §5.2.16, 8.1.5</a> · <a href="#ref-locklog">Base 2.4 §5.2.13.1.20</a> · <a href="#ref-lockpersist">Base 2.4 §5.2.30.1.25.4–5.2.30.1.25.4.1</a> · <a href="#ref-idctrl">Base 2.4 §5.2.14.2.1</a> · <a href="#ref-reset">Base 2.4 §3.7.1–3.7.4</a> · <a href="#ref-status">Base 2.4 §4.2.3</a> · <a href="#ref-error">Base 2.4 §5.2.13.1.2</a> · <a href="#ref-aer">Base 2.4 §5.2.2</a> · <a href="#ref-pel">Base 2.4 §5.2.13.1.14 (header, reset, hardware, Set Feature events)</a></p>
+</details></details><a class="qa-back" href="#question-index">Back to questions</a></article>
+
 <section id="source-index"><h2>Source locations and existing figure guides</h2><p>Base printed page = PDF page−26; the other two use identical numbers. Locations follow the supplied PDF body and retain figure numbers. Shared pages contribute only the relevant definitions, excluding Fabrics and PCIe link/packet content.</p><ul class="qa-references">
 <li id="ref-reset"><strong>Base 2.4 · §3.7.1–3.7.4</strong><br>Printed pages 120–124 · PDF 146–150</li>
 <li id="ref-status"><strong>Base 2.4 · §4.2.3</strong><br>Printed pages 145–155 · PDF 171–181 · Figure 101–105</li>

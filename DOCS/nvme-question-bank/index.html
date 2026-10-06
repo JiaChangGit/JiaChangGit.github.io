@@ -88,11 +88,22 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa .qa-answer {border:0;padding:0;background:transparent;}
 .nvme-qa summary {cursor:pointer;color:var(--qr-accent);font-weight:650;line-height:1.7;}
 .nvme-qa .qa-answer>summary {padding:.8rem 0;}
-.nvme-qa .qa-items {list-style:none;margin:0;padding:0;}
-.nvme-qa .qa-items>li {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
-.nvme-qa .qa-items h3 {font-size:1em;line-height:1.65;margin:0 0 .6rem;}
-.nvme-qa .qa-items h3 span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
-.nvme-qa .qa-items p {margin:.4rem 0;}
+.nvme-qa .qa-answer-lead {font-size:1.06em;line-height:1.85;margin:.6rem 0 1.4rem;}
+.nvme-qa .qa-section {padding:1.2rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
+.nvme-qa .qa-section h3 {font-size:1.05em;line-height:1.65;margin:0 0 .8rem;}
+.nvme-qa .qa-section h3>span {color:var(--qr-accent);font-family:ui-monospace,monospace;margin-right:.5rem;}
+.nvme-qa .qa-section>p {margin:.7rem 0 1.1rem;}
+.nvme-qa .qa-anchor {scroll-margin-top:2rem;}
+.nvme-qa .qa-flow {margin:1.3rem 0;padding:1.2rem;border:1px solid var(--qr-border);border-radius:12px;background:var(--qr-soft);}
+.nvme-qa .qa-flow figcaption {font-weight:700;font-size:1.03em;color:var(--qr-fg);line-height:1.6;}
+.nvme-qa .qa-flow>p {font-size:.94em;line-height:1.8;}
+.nvme-qa .qa-flow-steps {list-style:none;padding:0;margin:1.4rem 0;display:grid;gap:1.4rem;}
+.nvme-qa .qa-flow-steps>li {position:relative;margin:0;padding:1rem;border:1px solid var(--qr-border);border-left:4px solid var(--qr-accent);border-radius:8px;background:var(--qr-surface);}
+.nvme-qa .qa-flow-steps>li.qa-flow-branch {border-left-style:double;border-left-width:6px;margin-left:1rem;}
+.nvme-qa .qa-flow-steps strong {display:block;color:var(--qr-fg);line-height:1.6;}
+.nvme-qa .qa-flow-steps p {margin:.5rem 0 0;font-size:.92em;line-height:1.8;}
+.nvme-qa .qa-flow-arrow {position:absolute;top:-1.5rem;left:50%;font-size:1.1rem;line-height:1.4rem;color:var(--qr-accent);}
+.nvme-qa .qa-flow-conclusion {border-top:1px solid var(--qr-border);padding-top:1rem;margin-bottom:0;}
 .nvme-qa .qa-rule-link {white-space:normal;font-size:.9em;}
 .nvme-qa .qa-common article {padding:1rem 0;border-top:1px solid var(--qr-border);scroll-margin-top:2rem;}
 .nvme-qa .qa-common h3 {font-size:1em;}
@@ -106,8 +117,8 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 .nvme-qa .qa-theme {margin:0 1rem;}
 .nvme-qa output {font-size:.85em;color:var(--qr-muted);}
 .nvme-qa :focus-visible {outline:3px solid var(--qr-accent);outline-offset:3px;}
-@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-items h3 span{display:inline}.nvme-qa .qa-state{flex-direction:column}}
-@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-items>li{break-inside:avoid}}
+@media(max-width:600px){.nvme-qa .qa-question{padding:1rem}.nvme-qa .qa-glossary{padding:1rem}.nvme-qa .qa-state{flex-direction:column}.nvme-qa .qa-flow{padding:.8rem}.nvme-qa .qa-flow-steps>li.qa-flow-branch{margin-left:.3rem}}
+@media print{.nvme-qa .qa-controls,.nvme-qa .qa-theme,.nvme-qa .qa-back{display:none}.nvme-qa details::details-content{display:block}.nvme-qa details>*{display:block!important}.nvme-qa .qa-question{break-inside:auto}.nvme-qa .qa-flow-steps>li{break-inside:avoid}}
 </style></head><body class="qr-standalone">
 <div class="nvme-quickref nvme-qa">
 <nav class="qr-top" aria-label="題庫與版本"><a href="#content">跳到內容</a><a href="index.html">題庫總索引</a><a href="/nvme/question-bank/zh-tw/">Pages 中文</a><a href="/nvme/question-bank/en/">English</a></nav>
@@ -141,7 +152,7 @@ html[data-theme="light"] .nvme-quickref { --qr-paper:#f0f4f7; --qr-surface:#fff;
 <article><h2><a href="interrupts.html">Interrupt 設定與完成通知</a></h2><p class="qr-tags">Q286–Q296</p><p>先確認 CQE 真的存在，再查通知如何送到 Host。本冊把 CQ 關聯、合併、mask 與 Host 處理分開，避免把沒有中斷當成沒有完成。</p></article>
 <article><h2><a href="integration.html">整合驗證與證據交叉比對</a></h2><p class="qr-tags">Q297–Q320</p><p>本冊把前面機制放進具體矛盾情境：先確認比較的是同一對象與同一時點，再判斷證據是否足夠。相關機制使用固定連結，不重複整段教學。</p></article>
 <article><h2><a href="data-io.html">資料 I/O：長度、持久性與完整性</a></h2><p class="qr-tags">Q321–Q328</p><p>本冊補充原題庫尚未展開的資料 I/O 判讀：命令能不能接受、完成後保證什麼、資料內容如何驗證，以及失敗後可能留下哪些結果。先把四個問題分開，再用具體欄位值推導；既有 Feature、queue 與指標規則則連回原題。</p></article>
-</div><section><h2>怎麼使用這份題庫</h2><ol><li>先說出功能的目的、影響對象與正常順序，再選查詢欄位。</li><li>展開解答後，分別檢查成功結果、錯誤處理、事件、紀錄，以及三種重設的影響。MMIO 存取沒有 CQE，因此相關的 Status 或 DNR／More 項目會標示不適用。</li><li>判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。</li></ol><p>所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。</p></section>
+</div><section><h2>怎麼使用這份題庫</h2><ol><li>先說出功能的目的、影響對象與正常順序，再選查詢欄位。</li><li>每題依問題安排解答：查詢題跟著欄位找證據，操作題看先後順序，比較題先分清對象。事件、錯誤與重設只在和問題有關時說明；流程圖中的分支條件與等待點也是答案的一部分。</li><li>判斷韌體是否符合規範前，先確認要求適用的前提。shall 表示強制要求，should 表示建議，may 表示允許。若規範將行為列為 undefined，就沒有固定結果可供驗收，不能自行指定必須回報的 Status。</li></ol><p>所有算例皆為教學假設，不是實體裝置量測。範圍是 PCIe SSD 使用的三份規格；不含 NVMe over Fabrics、PCIe Link 與封包細節。必要的 PCIe 設定、中斷、Register 及 Doorbell 仍包含在內。</p></section>
 <div class="qa-controls" hidden><label>搜尋本頁 <input type="search" id="qa-search" placeholder="題號、欄位或關鍵字"></label><output id="qa-count" aria-live="polite"></output></div>
 <section id="question-index"><h2>全部題目</h2><ol class="qa-index">
 <li class="qa-search-item"><a href="initialization.html#q-001">Q01 · Host 應如何從 CAP 與 VS 確認 NVMe 版本、最大 Queue 大小、Timeout、Doorbell 間距、Memory Page Size 及支援的 Command Set？</a></li>

@@ -187,7 +187,7 @@ q(236,"Host Memory、HMB、CMB 與 PMR 的存取與生命週期如何比較？ |
 普通 Host buffer 由 Host 管理，命令期間供 controller 存取；HMB 專供 controller；CMB 位於裝置；PMR 額外提供持久性機制。 || Ordinary host buffers are command-scoped; HMB is controller-exclusive; CMB is device-local; PMR adds persistence mechanisms.
 以 HMPRE、CMB/PMR flags 與每筆命令資料指標，確認實際使用哪一種空間。 || Use capabilities and command pointers to identify the actual space.
 普通 buffer 按命令與 queue 生命週期回收；HMB 等停用完成；CMB 重設後需初始化；PMR 保存前需支援的 barrier 與健康確認。 || Reclaim ordinary buffers by command/queue lifetime, HMB after disable, initialize CMB after reset and verify PMR barriers/health.
-先画出 Host 地址、controller 地址與實際記憶體的對應，再標註從何時開始可存取、何時才能回收。 || Map host/controller addresses to physical memory and mark access/reclamation boundaries.
+先畫出 Host 地址、controller 地址與實際記憶體的對應，再標註從何時開始可存取、何時才能回收。 || Map host/controller addresses to physical memory and mark access/reclamation boundaries.
 例如一個成功 Write CQE 可結束其來源 Host buffer 使用，但不代表整塊 HMB 同時釋放，也不代表 PMR barrier 已執行。 || A Write completion can end source-buffer use without releasing HMB or performing a PMR barrier.
 錯誤回應依違反哪個介面規則決定，不存在統一「記憶體錯誤」Status 可套用全部情況。 || Error outcomes depend on the violated interface, not one universal memory-error status.
 核對 ownership、mapping、命令完成與持久性各自的證據，避免用「還能讀到資料」代替全部驗證。 || Verify ownership, mapping, completion and persistence rather than merely readable contents.

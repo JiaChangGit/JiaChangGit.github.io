@@ -7,6 +7,8 @@ import unittest
 from scripts.build_nvme_question_bank import artifacts,QUESTIONS,ROOT
 from scripts.nvme_qa_teaching import VOLUMES,AIDS,LESSONS
 from scripts.nvme_qa_sources import check
+from scripts.nvme_qa_presentation import reading_plan
+from scripts.nvme_qa_visuals import VISUALS
 
 class Document(HTMLParser):
     def __init__(self,text):
@@ -16,7 +18,7 @@ class Document(HTMLParser):
         if 'id' in a:self.ids.append(a['id'])
         if tag=='a' and 'href' in a:self.links.append(a['href'])
         if 'data-question' in a:self.questions.append(int(a['data-question']))
-        if 'data-answer' in a:self.answers.append(int(a['data-answer']))
+        if 'data-answer-section' in a:self.answers.append(int(a['data-answer-section']))
 
 class QuestionBankTests(unittest.TestCase):
     @classmethod
@@ -29,10 +31,11 @@ class QuestionBankTests(unittest.TestCase):
         future=[i for a,b in scope['future_only'].values() for i in range(a,b+1)]
         self.assertEqual(future,[])
 
-    def test_every_question_has_17_bilingual_answers(self):
+    def test_selected_answer_content_and_titles_are_bilingual(self):
         for q in QUESTIONS:
-            self.assertEqual(sorted(q['answers']),list(range(1,18)))
-            for pair in [q['title']]+list(q['answers'].values()):
+            plan=reading_plan(q)
+            selected={1}|{i for section in plan['sections'] for i in section['fields']}
+            for pair in [q['title'],plan['prompt'],plan['lead']]+[section['title'] for section in plan['sections']]+[q['answers'][i] for i in selected]:
                 self.assertEqual(len(pair),2);self.assertTrue(all(isinstance(x,str) and x.strip() for x in pair))
                 self.assertNotRegex(pair[1],r'[\u4e00-\u9fff]')
 
@@ -47,7 +50,12 @@ class QuestionBankTests(unittest.TestCase):
                 self.assertEqual(doc.questions,[]);continue
             slug=next(v for v in VOLUMES if v[0] in path.name)
             self.assertEqual(doc.questions,list(range(slug[1],slug[2]+1)))
-            self.assertEqual(doc.answers,list(range(1,18))*(slug[2]-slug[1]+1))
+            for article in text.split('<article class="qa-question"')[1:]:
+                content=article.split('</article>')[0]
+                sections=Document(content).answers
+                self.assertEqual(sections,list(range(1,len(sections)+1)))
+                self.assertNotIn('data-answer=',content)
+                self.assertNotIn('17 個觀察面向',content)
 
     def test_unique_anchors_and_local_fragment_resolution(self):
         for path,text in self.outputs.items():
@@ -201,9 +209,74 @@ class QuestionBankTests(unittest.TestCase):
     def test_referenced_topics_have_canonical_links_and_preserve_all_questions(self):
         byid={q['id']:q for q in QUESTIONS}
         for q in QUESTIONS:
-            for n in q.get('related',[]):self.assertIn(n,byid)
+            for n in reading_plan(q)['related']:self.assertIn(n,byid)
         self.assertEqual([i for v in VOLUMES for i in range(v[1],v[2]+1)],list(range(1,329)))
         self.assertEqual(len(VOLUMES),27)
+
+    def test_irrelevant_template_text_is_absent_not_merely_folded(self):
+        from scripts.build_nvme_question_bank import question,txt
+        byid={q['id']:q for q in QUESTIONS}
+        for n in (1,24,31,35,54,118,277):
+            for lang in ('zh','en'):
+                rendered=question(byid[n],lang,set())
+                for i in (8,9,10,11,12,13,14):
+                    self.assertNotIn(txt(byid[n]['answers'][i],lang),rendered,(n,i,lang))
+                self.assertNotIn('17 perspectives',rendered)
+        # Retention is still explained when retention is the actual question.
+        for n in (65,130,153,235):
+            rendered=question(byid[n],'zh',set())
+            for i in (12,13,14):self.assertIn(txt(byid[n]['answers'][i],'zh'),rendered)
+        # A namespace profile must not add attachment retention to a WPS question.
+        protection=question(byid[172],'zh',set())
+        self.assertNotIn('Attach／Detach',protection)
+        self.assertIn('WPS2',protection)
+        self.assertIn('WPS0',protection)
+
+    def test_flows_replace_prose_and_keep_old_links(self):
+        from scripts.build_nvme_question_bank import question,txt
+        byid={q['id']:q for q in QUESTIONS}
+        for n,v in VISUALS.items():
+            for lang in ('zh','en'):
+                rendered=question(byid[n],lang,set())
+                self.assertEqual(rendered.count(f'id="q-{n:03d}-flow"'),1)
+                for i in v['replaces']:
+                    self.assertNotIn(txt(byid[n]['answers'][i],lang),rendered)
+                for i in range(1,18):
+                    self.assertEqual(rendered.count(f'id="q-{n:03d}-a-{i:02d}"'),1)
+                for pair in [v['title'],v['intro'],v['conclusion']]+[p for row in v['steps'] for p in row]:
+                    self.assertIn(txt(pair,lang),rendered)
+        # Alternative PRP2 meanings must never be joined by sequential arrows.
+        prp=question(byid[277],'zh',set())
+        self.assertEqual(prp.count('class="qa-flow-branch"'),3)
+        self.assertNotIn('class="qa-flow-arrow"',prp)
+
+    def test_diagram_examples_check_wait_points_and_boundaries(self):
+        def body(n):
+            v=VISUALS[n]
+            return ' '.join([v['intro'][1],v['conclusion'][1]]+[a[1]+' '+b[1] for a,b in v['steps']])
+        queue=body(12)
+        self.assertLess(queue.index('Create I/O CQ'),queue.index('Create I/O SQ'))
+        self.assertIn('await success on the Admin CQ',queue)
+        self.assertIn('before successful completion',body(226))
+        self.assertIn('not a mandatory three-step sequence',body(113))
+        self.assertIn('Both deadlines start at Enable',body(3))
+        self.assertIn('reread it rather than replacing only the final chunk',body(206))
+        first_capacity=4096-1024
+        self.assertEqual([max(0,n-first_capacity) for n in (2048,4096,8192)],[0,1024,5120])
+        for value in ('3072','1024','5120'):self.assertIn(value,body(277))
+        self.assertIn(f'{(2000<<8)|(3<<3):08X}h',body(191))
+
+    def test_short_answers_do_not_repeat_editorial_history(self):
+        from scripts.build_nvme_question_bank import question
+        byid={q['id']:q for q in QUESTIONS}
+        for n in (154,211,273):
+            rendered=question(byid[n],'zh',set())
+            self.assertNotIn('原題',rendered)
+            self.assertEqual(rendered.count('data-answer-section='),2)
+        # Important initialization error conditions survived removal of the template.
+        rendered=question(byid[3],'en',set())
+        for text in ('Controller Ready Timeout Exceeded','DNR=0'):
+            self.assertIn(text,rendered)
 
     def test_boot_and_fdp_evidence_names_real_source_figures(self):
         e=check()['evidence']
