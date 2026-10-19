@@ -1,0 +1,1188 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "updated": "2026-10-19",
+  "page_index_base": 1,
+  "verification_policy": "verified 表示已核對來源定義及適用條件；teaching_example 另表示合成假設與計算已核對，不代表讀取過任何實體裝置。",
+  "claims": [
+    {
+      "id": "PCIE-ARCH-IO-001",
+      "claim": "PCI Express 是保留 PCI 軟體模型的序列、點對點 I/O 互連。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        99
+      ],
+      "pdf_pages": [
+        99
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "課程先介紹系統觀再深入暫存器，是作者的教學編排，不是規範要求。"
+    },
+    {
+      "id": "PCIE-ARCH-LINK-001",
+      "claim": "PCIe Link 連接兩端元件；每個 Lane 包含一組傳送與一組接收差動訊號對，多個 Lane 可組成較寬的 Link。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.2"
+      ],
+      "figures": [
+        "1-1"
+      ],
+      "tables": [],
+      "document_pages": [
+        100,
+        101,
+        102
+      ],
+      "pdf_pages": [
+        100,
+        101,
+        102
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-ARCH-TOPOLOGY-001",
+      "claim": "Root Complex 將 CPU／記憶體子系統連到 I/O；Root Port、Switch 與 Endpoint 形成互連拓樸。Switch 對設定軟體呈現為多個邏輯 PCI-to-PCI Bridge。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3",
+        "1.3.1",
+        "1.3.3"
+      ],
+      "figures": [
+        "1-2",
+        "1-3"
+      ],
+      "tables": [],
+      "document_pages": [
+        102,
+        103,
+        106,
+        107
+      ],
+      "pdf_pages": [
+        102,
+        103,
+        106,
+        107
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-ARCH-INITIALIZATION-001",
+      "claim": "硬體初始化期間，Link 兩端協商 Lane 數與運作速度；§1.2 描述的協商本身不需要韌體或 OS 軟體介入。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        102
+      ],
+      "pdf_pages": [
+        102
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "不能延伸為所有平台重置、時脈設定、重新訓練或軟體速度策略都不需要韌體。"
+    },
+    {
+      "id": "PCIE-ARCH-CONFIGURATION-001",
+      "claim": "設定模型讓系統軟體發現 Function、配置位址與中斷等資源，並控制 Function 接受或發出 Request；這與 Link 的硬體初始化屬於不同工作。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.4"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        108,
+        109
+      ],
+      "pdf_pages": [
+        108,
+        109
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-ARCH-LAYERS-001",
+      "claim": "PCIe 以 Transaction、Data Link 與 Physical 三個邏輯層說明交易與傳輸；分層是規格的理解模型，不限定硬體必須如此實作。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.5",
+        "1.5.1",
+        "1.5.2",
+        "1.5.3"
+      ],
+      "figures": [
+        "1-4",
+        "1-5"
+      ],
+      "tables": [],
+      "document_pages": [
+        109,
+        110,
+        111
+      ],
+      "pdf_pages": [
+        109,
+        110,
+        111
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "Chapter 0 只用概念分工；Figure 1-5 不宜被解讀成所有 Flit Mode 封包都採相同格式。"
+    },
+    {
+      "id": "PCIE-LINK-RATE-UNITS-001",
+      "claim": "GT/s 描述每個 Lane 每個方向的編碼位元傳輸速率；應用資料吞吐量還受調變、編碼及其他開銷影響，不能直接把 GT/s 當作應用 GB/s。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.2"
+      ],
+      "figures": [],
+      "tables": [
+        "1-1"
+      ],
+      "document_pages": [
+        101,
+        102
+      ],
+      "pdf_pages": [
+        101,
+        102
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "表 1-1 的 Effective Data Rate 僅扣除 encoding overhead；不可當作完整應用吞吐量。"
+    },
+    {
+      "id": "PCIE-CONFIG-SIZE-001",
+      "claim": "每個 Function 的 PCIe Configuration Space 為 4096 bytes；前 256 bytes 是 PCI-compatible region，其餘為 Extended Configuration Space。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.2"
+      ],
+      "figures": [
+        "7-3"
+      ],
+      "tables": [],
+      "document_pages": [
+        905,
+        906
+      ],
+      "pdf_pages": [
+        905,
+        906
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-CONFIG-BDF-001",
+      "claim": "一般非 ARI 的設定位址使用 Bus、Device、Function 識別 Function；ECAM 位址對應包含最多 8 個 Bus bits、5 個 Device bits 與 3 個 Function bits。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.2.2"
+      ],
+      "figures": [],
+      "tables": [
+        "7-1"
+      ],
+      "document_pages": [
+        907,
+        908
+      ],
+      "pdf_pages": [
+        907,
+        908
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "本章案例排除 ARI；p.908 明確說明 ARI 的 A[19:12] 改為 8-bit Function Number。"
+    },
+    {
+      "id": "PCI-FW-SEGMENT-001",
+      "claim": "PCI Segment Group 是由韌體管理並由 OS 使用的軟體分組；不同 Segment Group 可重複使用 Bus Number，同一 Group 內必須唯一，不能把 Segment 直接等同某個實體元件。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "1.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        8,
+        9
+      ],
+      "pdf_pages": [
+        8,
+        9
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-CONFIG-ECAM-001",
+      "claim": "ECAM 以主機記憶體位址映射設定空間；在實作 ECAM 的系統，Host Bridge 將這些存取轉為 PCIe Configuration Requests。這與經 BAR 位址範圍操作裝置的 Memory Request 不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.2.2",
+        "7.2.2.1"
+      ],
+      "figures": [],
+      "tables": [
+        "7-1"
+      ],
+      "document_pages": [
+        907,
+        908,
+        909
+      ],
+      "pdf_pages": [
+        907,
+        908,
+        909
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "ECAM 的平台適用條件見 pp.906–907；本主張不宣稱所有處理器平台都必須直接使用 ECAM。"
+    },
+    {
+      "id": "PCIE-CONFIG-TYPE0-001",
+      "claim": "PCI Express Endpoint 使用 Type 00h Configuration Space Header；Header Type 位於 offset 0Eh，低 7 bits 的 Header Layout 為 00h 表示 Type 0，bit 7 另有 Multi-Function 意義。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3.2.2",
+        "7.5.1.1.9",
+        "7.5.1.2"
+      ],
+      "figures": [
+        "7-8",
+        "7-10"
+      ],
+      "tables": [
+        "7-7"
+      ],
+      "document_pages": [
+        105,
+        924,
+        925,
+        927,
+        928
+      ],
+      "pdf_pages": [
+        105,
+        924,
+        925,
+        927,
+        928
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-CAP-STATUS-001",
+      "claim": "Status Register 位於 Function 設定空間 offset 06h；其 bit 4 為 Capabilities List，PCI Express device Functions 必須將此 bit 固定為 1。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.4"
+      ],
+      "figures": [
+        "7-6"
+      ],
+      "tables": [
+        "7-5"
+      ],
+      "document_pages": [
+        920,
+        921,
+        922
+      ],
+      "pdf_pages": [
+        920,
+        921,
+        922
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "這裡的傳統 Capability 串列不可與從 100h 開始的 PCIe Extended Capability 串列混用。"
+    },
+    {
+      "id": "PCIE-CAP-POINTER-001",
+      "claim": "Capabilities Pointer 位於 offset 34h，指向傳統 Capability 串列的第一項；軟體使用前必須遮罩掉低 2 bits，即 pointer & 0xFC。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.11",
+        "7.5.1.2"
+      ],
+      "figures": [
+        "7-10"
+      ],
+      "tables": [],
+      "document_pages": [
+        926,
+        928
+      ],
+      "pdf_pages": [
+        926,
+        928
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-CAP-PM-FIRST-001",
+      "claim": "Power Management Capability 的 Capability_ID 為 01h；其 Next Capability Pointer 指向同一 Function 設定空間中的下一個 Capability，00h 表示串列結束。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.2.1"
+      ],
+      "figures": [
+        "7-18"
+      ],
+      "tables": [
+        "7-14"
+      ],
+      "document_pages": [
+        945
+      ],
+      "pdf_pages": [
+        945
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "教材第一個串列項目設為 PM Capability 是教學假設，不是規格固定順序。"
+    },
+    {
+      "id": "PCIE-CAP-ID-001",
+      "claim": "PCI Express Capability 的首個 byte 為 Capability ID 10h；下一個 byte 為 Next Capability Pointer，00h 表示後面沒有其他傳統 Capability。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.1"
+      ],
+      "figures": [
+        "7-22"
+      ],
+      "tables": [
+        "7-18"
+      ],
+      "document_pages": [
+        952,
+        953
+      ],
+      "pdf_pages": [
+        952,
+        953
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-CAP-VERSION-TYPE-001",
+      "claim": "PCI Express Capabilities Register 位於 Capability 起點 +02h；bits 3:0 為 Capability Version，Base 6.0 對應值為 2h；bits 7:4 的 Device/Port Type 為 0000b 時表示 PCI Express Endpoint。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.2"
+      ],
+      "figures": [
+        "7-23"
+      ],
+      "tables": [
+        "7-19"
+      ],
+      "document_pages": [
+        953,
+        954
+      ],
+      "pdf_pages": [
+        953,
+        954
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "Capability Version=2 是結構版本，不是 PCIe 2.0，也不是目前 Link 速度。單看 version=2 不保證所有 Link Capabilities 2 欄位都有實作；較舊硬體差異見 p.1000。"
+    },
+    {
+      "id": "PCIE-CAP-LINK-APPLICABILITY-001",
+      "claim": "一般非 RCiEP Endpoint 有 Link Capabilities、Link Status 與 Link Control；RCiEP 不實作這些 Link 暫存器。VF 的 Link Status 欄位為 RsvdZ，應採其 PF 的設定，因此本例排除 RCiEP 與 VF。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3.2.3",
+        "7.5.3",
+        "7.5.3.8"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        106,
+        951,
+        977
+      ],
+      "pdf_pages": [
+        106,
+        951,
+        977
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-CAP-LAYOUT-001",
+      "claim": "PCIe Capability 中，Link Capabilities 位於 +0Ch、Link Status 位於 +12h、Link Capabilities 2 位於 +2Ch；這些是相對於該 Capability 起點的 byte offset。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3",
+        "7.5.3.6",
+        "7.5.3.8",
+        "7.5.3.18"
+      ],
+      "figures": [
+        "7-21",
+        "7-27",
+        "7-29",
+        "7-38"
+      ],
+      "tables": [],
+      "document_pages": [
+        952,
+        967,
+        977,
+        998
+      ],
+      "pdf_pages": [
+        952,
+        967,
+        977,
+        998
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "當 Capability 起點為 70h，三者的 Function 設定空間位址分別是 7Ch、82h、9Ch；不可把 7Ch 當成 Link Capabilities 2。"
+    },
+    {
+      "id": "PCIE-LINK-SUPPORTED-SPEEDS-001",
+      "claim": "Link Capabilities 2 的 Supported Link Speeds Vector 位於 register bits 7:1；欄位內 bits 0–5 分別對應 2.5、5、8、16、32、64 GT/s，欄位 bit 6 為 RsvdP。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.18"
+      ],
+      "figures": [
+        "7-38"
+      ],
+      "tables": [
+        "7-35"
+      ],
+      "document_pages": [
+        998
+      ],
+      "pdf_pages": [
+        998
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "先以 (register >> 1) & 0x7F 取出欄位，再用欄位內 bit 編號；不可混用 register bit 1 與 field bit 1。"
+    },
+    {
+      "id": "PCIE-LINK-RETIMER-SUPPORT-001",
+      "claim": "當 Supported Link Speeds Vector 宣告支援 16 GT/s 或更高速度時，Link Capabilities 2 的 bit 23 與 bit 24 必須為 1，分別表示可偵測 Retimer 與兩個 Retimers。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.18"
+      ],
+      "figures": [],
+      "tables": [
+        "7-35"
+      ],
+      "document_pages": [
+        999,
+        1000
+      ],
+      "pdf_pages": [
+        999,
+        1000
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "兩個 bits 表示偵測能力，不是目前 Link 上真的存在一個或兩個 Retimers。完整假設 register 不能寫成 0x0000001E 並宣稱其他 bits 都為 0。"
+    },
+    {
+      "id": "PCIE-LINK-CURRENT-SPEED-001",
+      "claim": "Link Status bits 3:0 是 Current Link Speed。編碼 1–7 指向 Supported Link Speeds Vector 欄位內 bit 0–6，因此編碼 3 對應欄位 bit 2，即 8 GT/s。Link 未 up 時，Current Link Speed 的值沒有定義。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.8",
+        "7.5.3.18"
+      ],
+      "figures": [
+        "7-29",
+        "7-38"
+      ],
+      "tables": [
+        "7-26",
+        "7-35"
+      ],
+      "document_pages": [
+        978,
+        998
+      ],
+      "pdf_pages": [
+        978,
+        998
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-LINK-CURRENT-WIDTH-001",
+      "claim": "Link Status bits 9:4 是 Negotiated Link Width；欄位值 4 表示 x4。這是目前協商寬度，不是由這個欄位證明裝置的最大寬度；Link 未 up 時此欄位沒有定義。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.8"
+      ],
+      "figures": [
+        "7-29"
+      ],
+      "tables": [
+        "7-26"
+      ],
+      "document_pages": [
+        978
+      ],
+      "pdf_pages": [
+        978
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-LINK-DLLLA-LIMIT-001",
+      "claim": "Link Status bit 13 只有在 Data Link Layer Link Active Reporting Capable 為 1 時才實作，否則必須為 0。Upstream Port 的 Reporting Capable bit 必須為 0，因此不能單憑 Endpoint 這個 bit 為 0 就判斷 Link down。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.6",
+        "7.5.3.8"
+      ],
+      "figures": [],
+      "tables": [
+        "7-23",
+        "7-26"
+      ],
+      "document_pages": [
+        969,
+        979
+      ],
+      "pdf_pages": [
+        969,
+        979
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCIE-LINK-MAXIMUM-001",
+      "claim": "Link Capabilities 的 Max Link Speed 位於 bits 3:0，表示該 Port 的最高支援速度；Maximum Link Width 位於 bits 9:4，可能大於實際接線寬度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.6"
+      ],
+      "figures": [
+        "7-27"
+      ],
+      "tables": [
+        "7-23"
+      ],
+      "document_pages": [
+        967
+      ],
+      "pdf_pages": [
+        967
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "目前 Link Status 的速度／寬度與能力欄位回答不同問題；不要由目前 x4 推論最大只能 x4。"
+    },
+    {
+      "id": "PCIE-CAP-EXTENDED-SEPARATE-001",
+      "claim": "PCIe Extended Capabilities 在 Configuration Space 中從 100h 開始，使用不同的 Extended Capability Header；它不是本例由 offset 34h 追蹤的傳統 Capability 串列。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3",
+        "7.6.1",
+        "7.6.3"
+      ],
+      "figures": [
+        "7-42",
+        "7-43"
+      ],
+      "tables": [
+        "7-39"
+      ],
+      "document_pages": [
+        951,
+        1009,
+        1010
+      ],
+      "pdf_pages": [
+        951,
+        1009,
+        1010
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCI-FW-UEFI-ROLE-001",
+      "claim": "UEFI Driver Model 支援開機前執行的 bus 與 device drivers；PCI Bus Driver 建立子裝置 handle，PCI Device Driver 使用 PCI I/O Protocol 存取 PCI controller 的記憶體與 I/O。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.1",
+        "3.1.1",
+        "3.1.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        32,
+        33
+      ],
+      "pdf_pages": [
+        32,
+        33
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCI-FW-OS-HANDOFF-001",
+      "claim": "PCI Firmware 3.3 §3.5 以 UEFI ExitBootServices() 返回作為 PCI 子系統從韌體交給 OS 的交接點。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        34
+      ],
+      "pdf_pages": [
+        34
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "這是 PCI 子系統交接敘述；不應延伸為 ACPI／平台韌體在 OS 執行後完全不存在或不能參與管理。"
+    },
+    {
+      "id": "PCI-FW-BOOT-PATH-001",
+      "claim": "韌體必須設定 boot／console 裝置及其完整路徑；可以選擇設定其他裝置，但不能把所有一般裝置均已完成配置當作保證。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        34,
+        35
+      ],
+      "pdf_pages": [
+        34,
+        35
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "須同時保留所有 Host Bridges 都必須設定的規則，見 PCI-FW-HOST-BRIDGES-001。"
+    },
+    {
+      "id": "PCI-FW-HOST-BRIDGES-001",
+      "claim": "韌體必須設定所有 Host Bridges，即使它們沒有連到 boot／console 裝置，並透過 ACPI 描述讓 OS 能使用其下方裝置；不可把只要求 boot／console 裝置的敘述套到 Host Bridges。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        35
+      ],
+      "pdf_pages": [
+        35
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCI-FW-ACPI-ECAM-001",
+      "claim": "PCI Firmware 定義以 MCFG／_CBA 向 OS 公告 ECAM 基底位址的介面；ACPI 也提供 Host Bridge 的資源、Bus 與 Segment 描述。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.1",
+        "4.3.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        38,
+        39,
+        40,
+        47
+      ],
+      "pdf_pages": [
+        38,
+        39,
+        40,
+        47
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCI-FW-OSC-001",
+      "claim": "_OSC 讓 OS 告知支援能力並請求相關功能的控制權；平台回覆的 Control Field 會影響 OS 是否能啟用對應功能，故裝置具備功能不等於 OS 已取得使用它的控制權。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.5",
+        "4.5.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        48
+      ],
+      "pdf_pages": [
+        48
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19"
+    },
+    {
+      "id": "PCI-FW-BASE-VERSION-001",
+      "claim": "PCI Firmware 3.3 §1.2 的參考文件列出 PCI Express Base 5.0。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "1.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        7
+      ],
+      "pdf_pages": [
+        7
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "本課程另外採用使用者提供的 Base 6.0；保留各結論的版本來源是課程的編輯規則，不是本段規範要求。"
+    },
+    {
+      "id": "PCIE-CH0-EXAMPLE-001",
+      "claim": "本例循 34h → 40h → 70h 找到 PCIe Capability，並以 9Ch 的 Link Capabilities 2 與 82h 的 Link Status 得出：本端支援 2.5／5／8／16 GT/s，目前 Link 為 8 GT/s、x4。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1",
+        "7.5.1.1.11",
+        "7.5.1.1.4",
+        "7.5.1.1.9",
+        "7.5.2.1",
+        "7.5.3",
+        "7.5.3.1",
+        "7.5.3.18",
+        "7.5.3.2",
+        "7.5.3.6",
+        "7.5.3.8"
+      ],
+      "figures": [
+        "7-6",
+        "7-8",
+        "7-10",
+        "7-18",
+        "7-21",
+        "7-22",
+        "7-23",
+        "7-29",
+        "7-38"
+      ],
+      "tables": [
+        "7-5",
+        "7-7",
+        "7-14",
+        "7-18",
+        "7-19",
+        "7-26",
+        "7-35",
+        "7-23"
+      ],
+      "document_pages": [
+        916,
+        921,
+        922,
+        924,
+        925,
+        926,
+        928,
+        945,
+        951,
+        952,
+        953,
+        954,
+        969,
+        978,
+        979,
+        998,
+        999,
+        1000
+      ],
+      "pdf_pages": [
+        916,
+        921,
+        922,
+        924,
+        925,
+        926,
+        928,
+        945,
+        951,
+        952,
+        953,
+        954,
+        969,
+        978,
+        979,
+        998,
+        999,
+        1000
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "assumptions": [
+        "AI 自訂教學假設，非規格原文範例、真實裝置讀值或實機量測。",
+        "一般 PCI Express Endpoint，非 RCiEP、非 VF，且不用 ARI。",
+        "Function 已完成本例所需的發現與設定空間存取準備；本例所有讀取均成功。",
+        "Link 已 up 且讀取期間狀態穩定；本例不以 Link Status bit 13 判定 Link up。",
+        "各 offset 皆為所選 Function 設定空間內的 byte offset，非 CPU 實體位址。"
+      ],
+      "raw_reads": [
+        {
+          "offset": "0x006",
+          "width_bits": 16,
+          "value": "0x0010",
+          "meaning": "Status：Capabilities List bit 4 = 1；其餘位元為本例假設。"
+        },
+        {
+          "offset": "0x00E",
+          "width_bits": 8,
+          "value": "0x00",
+          "meaning": "Header Type：Type 0、單 Function 假設。"
+        },
+        {
+          "offset": "0x034",
+          "width_bits": 8,
+          "value": "0x40",
+          "meaning": "Capabilities Pointer。"
+        },
+        {
+          "offset": "0x040",
+          "width_bits": 8,
+          "value": "0x01",
+          "meaning": "第一項 Capability ID：Power Management。"
+        },
+        {
+          "offset": "0x041",
+          "width_bits": 8,
+          "value": "0x70",
+          "meaning": "下一項 Capability 的 Function 設定空間位移。"
+        },
+        {
+          "offset": "0x070",
+          "width_bits": 8,
+          "value": "0x10",
+          "meaning": "PCI Express Capability ID。"
+        },
+        {
+          "offset": "0x071",
+          "width_bits": 8,
+          "value": "0x00",
+          "meaning": "傳統 Capability 串列結束。"
+        },
+        {
+          "offset": "0x072",
+          "width_bits": 16,
+          "value": "0x0002",
+          "meaning": "PCI Express Capabilities：version 2、Device/Port Type 0；其餘位元為本例假設。"
+        },
+        {
+          "offset": "0x09C",
+          "width_bits": 32,
+          "value": "0x0180001E",
+          "meaning": "Link Capabilities 2：保留 bit 23/24 的必要偵測能力；本題只解碼 bits 7:1。"
+        },
+        {
+          "offset": "0x082",
+          "width_bits": 16,
+          "value": "0x0043",
+          "meaning": "Link Status：bits 9:0=0x043；其餘位元本例假設為 0，不由其推論 Link down。"
+        }
+      ],
+      "calculations": [
+        {
+          "expression": "0x0010 & 0x0010",
+          "result": "0x0010",
+          "meaning": "Capabilities List = 1"
+        },
+        {
+          "expression": "0x00 & 0x7F",
+          "result": "0x00",
+          "meaning": "Header Layout = Type 0"
+        },
+        {
+          "expression": "0x40 & 0xFC",
+          "result": "0x40",
+          "meaning": "第一個 Capability 在 0x40"
+        },
+        {
+          "expression": "0x0002 & 0x000F",
+          "result": "0x2",
+          "meaning": "Capability Version = 2"
+        },
+        {
+          "expression": "(0x0002 >> 4) & 0xF",
+          "result": "0x0",
+          "meaning": "Device/Port Type = PCI Express Endpoint"
+        },
+        {
+          "expression": "0x70 + 0x2C",
+          "result": "0x9C",
+          "meaning": "Link Capabilities 2 的絕對設定空間位移"
+        },
+        {
+          "expression": "0x70 + 0x12",
+          "result": "0x82",
+          "meaning": "Link Status 的絕對設定空間位移"
+        },
+        {
+          "expression": "0x0180001E & 0xFE",
+          "result": "0x1E",
+          "meaning": "保留 Supported Link Speeds Vector 在 register 內的原位置"
+        },
+        {
+          "expression": "(0x0180001E >> 1) & 0x7F",
+          "result": "0x0F",
+          "meaning": "欄位 bits 0–3 為 1，支援 2.5/5/8/16 GT/s"
+        },
+        {
+          "expression": "0x0043 & 0x000F",
+          "result": "0x3",
+          "meaning": "目前速度編碼 = 3，對應 field bit 2，即 8 GT/s"
+        },
+        {
+          "expression": "(0x0043 >> 4) & 0x3F",
+          "result": "0x4",
+          "meaning": "目前協商寬度 = x4"
+        },
+        {
+          "expression": "0x01 | (0x70 << 8)",
+          "result": "0x7001",
+          "meaning": "本章 WORD 讀值與原有逐 byte 假設等價。"
+        },
+        {
+          "expression": "0x10 | (0x00 << 8)",
+          "result": "0x0010",
+          "meaning": "PCIe Capability ID 與終止指標的 WORD。"
+        },
+        {
+          "expression": "0x90 + 0x2C",
+          "result": "0xBC",
+          "meaning": "自測題改變 Capability 起點後，Link Capabilities 2 的 offset。"
+        },
+        {
+          "expression": "0x90 + 0x12",
+          "result": "0xA2",
+          "meaning": "自測題改變 Capability 起點後，Link Status 的 offset。"
+        }
+      ],
+      "limitations": [
+        "不能由本端能力宣告推論對端也支援 16 GT/s。",
+        "不能由目前速度低於本端上限就斷言故障或訓練失敗。",
+        "不能由目前 x4 推論裝置或接線的最高支援寬度。",
+        "不能把 8 GT/s × 4 直接當成應用程式實測吞吐量。",
+        "完整 32-bit Link Capabilities 2 值必須保留必要 bits 23/24；0x0000001E 僅可作為遮罩結果，不作完整 register 範例。",
+        "Status bit 4 是 16-bit Status register 內的 bit 4；若改讀 offset 04h 的整個 DWORD，它位於 DWORD bit 20。",
+        "Link Status 位於 +12h，是 +10h DWORD 的高 16 bits；若改以 DWORD 讀取，需先右移 16 bits，不能直接套用本例 WORD mask。"
+      ],
+      "alternate_read_grouping": [
+        {
+          "offset": "0x040",
+          "width_bits": 16,
+          "value": "0x7001",
+          "meaning": "將相鄰 ID byte 01h 與 Next Pointer byte 70h 依小端序合成 WORD。"
+        },
+        {
+          "offset": "0x070",
+          "width_bits": 16,
+          "value": "0x0010",
+          "meaning": "將相鄰 ID byte 10h 與 Next Pointer byte 00h 依小端序合成 WORD。"
+        }
+      ]
+    },
+    {
+      "id": "PCIE-CONFIG-ENDIAN-001",
+      "claim": "設定空間配置與個別設定暫存器的格式依 little-endian（小端序）呈現；較低位址的 byte 是多 byte 數值的最低有效 byte。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1"
+      ],
+      "figures": [
+        "7-4"
+      ],
+      "tables": [],
+      "document_pages": [
+        916
+      ],
+      "pdf_pages": [
+        916
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "此規則描述設定空間資料配置，不應和 TLP 圖的傳送順序混為一談。§7.4 p.913 講的是 register attributes，不是這段小端序說明。"
+    },
+    {
+      "id": "PCIE-CONFIG-BAR-001",
+      "claim": "BAR 位於設定標頭中，讓系統軟體辨識並配置 Function 的 Memory 或 I/O 位址資源；BAR 本身不是裝置的資料緩衝區。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.2.1"
+      ],
+      "figures": [
+        "7-10",
+        "7-11",
+        "7-12"
+      ],
+      "tables": [
+        "7-9"
+      ],
+      "document_pages": [
+        928,
+        929,
+        930
+      ],
+      "pdf_pages": [
+        928,
+        929,
+        930
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "p.931 仍有本節 Prefetchable 實作說明，但 Chapter 0 不引用其詳細例外；p.932 已進入 Subsystem IDs 與 Expansion ROM BAR，不應當成本章一般 BAR 說明的末頁。"
+    },
+    {
+      "id": "PCIE-TRANSACTION-SPACES-001",
+      "claim": "Memory Transactions 存取 memory-mapped 位置，Configuration Transactions 存取裝置 Function 的設定暫存器；兩者是不同的 Transaction 類型與用途。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.1.1",
+        "2.1.1.1",
+        "2.1.1.3"
+      ],
+      "figures": [],
+      "tables": [
+        "2-1"
+      ],
+      "document_pages": [
+        116,
+        117
+      ],
+      "pdf_pages": [
+        116,
+        117
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-19",
+      "notes": "本章網路裝置的實際操作順序與工作介面為教學情境；這段規格並未定義任何特定網卡的裝置命令或 DMA buffer 格式。"
+    }
+  ]
+}

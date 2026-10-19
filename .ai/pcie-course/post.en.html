@@ -1,0 +1,62 @@
+<p class="lead">A system can list a PCIe device before that device is ready to move data. Likewise, a feature defined in a specification is not necessarily supported by the device in front of you. This chapter establishes the system context, then works through one query: locating capability fields in Configuration Space and separating supported behavior from current operation.</p>
+<p><a href="/DOCS/pcie-course/chapter-0.html">Full Chinese tutorial and diagrams</a> · <a href="/DOCS/pcie-course/index.html">Course roadmap</a> · <a href="/pcie/chapter-0-zh-tw/">繁體中文</a></p>
+<aside class="note"><strong>Version scope</strong><p>Register definitions follow PCI Express Base Specification Revision 6.0; firmware context follows PCI Firmware Specification Revision 3.3. The latter references Base 5.0 in §1.2 (p.7), so these documents must not be treated as a matched revision set. All page numbers below refer to the PDFs used for this course; printed and PDF page numbers coincide.</p></aside>
+
+<section id="system">
+<h2>What must happen after a device is connected?</h2>
+<p>A Root Complex connects the CPU/memory subsystem to the I/O hierarchy. A Root Port establishes an outward Link, a Switch extends the connection paths, and an Endpoint provides device functionality. A Link connects two adjacent ends; Lanes make up that Link. x4 means four Lanes, not four devices.</p>
+<p>The basic object identified and configured by software is a Function. One card can expose multiple Functions. The example notation <code>0000:03:00.0</code> identifies a Segment, Bus, Device, and Function; Bus, Device, and Function are commonly abbreviated as BDF. A Segment is a logical grouping, not an additional hardware component, and this identifier is not a memory address.</p>
+<p>Hardware at both ends must first meet the conditions for establishing a Link. System software discovers Functions and assigns resources; the device driver prepares the device-specific working interface. This is a teaching model of dependencies, and a platform may perform the work in stages. Firmware 3.3 §3.5 requires firmware to configure the complete paths to boot and console devices, as well as all Host Bridges. It does not guarantee that every Endpoint has been configured.</p>
+<div class="table-wrap"><table><caption>Three kinds of access that may participate in one operation</caption><thead><tr><th scope="col">Purpose</th><th scope="col">Information to locate</th></tr></thead><tbody>
+<tr><td>Identify a Function or query PCIe capabilities</td><td>The headers and Capability structures in Configuration Space.</td></tr>
+<tr><td>Operate the device interface from the CPU</td><td>Resources described by BARs and the device's register definitions. Access through memory mapping is MMIO (Memory-Mapped I/O).</td></tr>
+<tr><td>Move working data through device-initiated accesses</td><td>DMA (Direct Memory Access) buffers, device-visible addresses, and access conditions. The CPU still prepares the work.</td></tr>
+</tbody></table></div>
+<p>A BAR is a Base Address Register in Configuration Space, not the data buffer itself. Readable Configuration Space alone does not establish that MMIO or DMA is ready.</p>
+<details class="source-note"><summary>Specification locations for the system context</summary><p>Base 6.0 §1.2–§1.4, pp.100–109 (Figure 1-2: p.103); §2.1.1, pp.116–117; BARs: §7.5.1.2.1, pp.928–930. Firmware 3.3 §1.3, pp.8–9; §3.1–§3.2, pp.32–33; handoff requirements: §3.5, pp.34–35.</p></details>
+</section>
+
+<section id="query">
+<h2>Why does current speed not tell us which speeds are supported?</h2>
+<p>Capability fields describe supported behavior, control fields describe related settings, and status fields describe the current result. This query first checks the local Port's supported set and then the Link's current speed. Neither answer substitutes for the other.</p>
+<p>Each Function has 4096 bytes of PCIe Configuration Space. The PCI Express Capability is in the conventional Capability list within the first 256 bytes. Its name does not mean that it belongs to the separate Extended Capability list. (Base 6.0 §7.2 / Figure 7-3, pp.905–906; §7.5.3, p.951.)</p>
+<aside class="example"><strong>Teaching assumptions</strong><p>The topology, locations, and values below are author-created, not hardware measurements. The target is an already discovered, ordinary PCI Express Endpoint, not a Root Complex Integrated Endpoint (RCiEP) or a Virtual Function (VF) used in virtualization. Conventional Bus/Device/Function (BDF) addressing is used, without Alternative Routing-ID Interpretation (ARI), which interprets Function identifiers differently. All configuration reads succeed. The Link is up and remains stable throughout the query, and the Link Capabilities 2 speed vector used here is implemented. Every offset is a byte offset within this Function's Configuration Space, not a CPU physical address.</p></aside>
+<div class="table-wrap"><table><caption>Follow the list, then check the structure version and component type</caption><thead><tr><th scope="col">Step</th><th scope="col">Assumed read and interpretation</th><th scope="col">Base 6.0 reading location</th></tr></thead><tbody>
+<tr><td>Identify the header</td><td>An 8-bit read at <code>0x0E</code> returns <code>0x00</code>; <code>0x00 &amp; 0x7F = 0</code> selects Type 0. A 16-bit read at <code>0x06</code> returns <code>0x0010</code>, with Status bit 4 set.</td><td>Figure 7-8 / Table 7-7, pp.924–925; Figure 7-10, p.928; Figure 7-6 / Table 7-5, pp.921–922.</td></tr>
+<tr><td>Find the list entry</td><td>An 8-bit read at <code>0x34</code> returns <code>0x40</code>. Mask the low two bits first: <code>0x40 &amp; 0xFC = 0x40</code>.</td><td>§7.5.1.1.11, p.926.</td></tr>
+<tr><td>Pass the PM Capability</td><td>A 16-bit read at <code>0x40</code> returns <code>0x7001</code>: the low-byte ID is <code>0x01</code> and the high-byte Next Pointer is <code>0x70</code>.</td><td>Figure 7-18 / Table 7-14, p.945.</td></tr>
+<tr><td>Find the PCIe Capability</td><td>A 16-bit read at <code>0x70</code> returns <code>0x0010</code>: the ID is <code>0x10</code> and the Next Pointer is zero. Record <code>cap_base = 0x70</code>.</td><td>Figure 7-22 / Table 7-18, p.953.</td></tr>
+<tr><td>Check version and type</td><td>A 16-bit read at <code>0x72</code> returns <code>0x0002</code>: the low four bits give Version 2, and bits 7:4 give type 0, a PCI Express Endpoint.</td><td>Figure 7-23 / Table 7-19, pp.953–954.</td></tr>
+</tbody></table></div>
+<p>Configuration Space uses little-endian formatting, so the lower-addressed byte of <code>0x7001</code> is <code>0x01</code> (Base 6.0 §7.5.1.1, p.916). List locations and ordering can differ; <code>0x70</code> is not a universal constant.</p>
+<p>If the list ends without the target, or a read fails, there is no basis for interpreting an arbitrary location as that structure. An unsuccessful read is not a valid response declaring lack of support.</p>
+<p>Capability Version 2 does not mean PCIe Gen2, and by itself does not guarantee that older hardware implements the speed vector. Implementation is a separate assumption here. Using Base 6.0 to interpret the fields also does not mean that the device must support 64 GT/s. For older hardware, see the implementation note in §7.5.3.18 (p.1000).</p>
+</section>
+
+<section id="decode">
+<h2>How do the register values become an answer?</h2>
+<p>Start with Figure 7-21 (p.952) and add each register's relative offset to the Capability base. Then consult the capability definition in Figure 7-38 / Table 7-35 (pp.998–1000), followed by the status definition in Figure 7-29 / Table 7-26 (pp.978–979). The question determines the reading order. Figures locate fields; tables and surrounding requirements explain their interpretation. Check the revision and applicable component at every step rather than inferring meaning from a field name alone.</p>
+<pre><code>Link Capabilities 2: 0x70 + 0x2C = 0x9C; read 32 bits → 0x0180001E
+Link Status:         0x70 + 0x12 = 0x82; read 16 bits → 0x0043</code></pre>
+<p>The Supported Link Speeds Vector occupies register bits 7:1. Mask those positions, then shift the field down:</p>
+<pre><code>(0x0180001E &amp; 0x000000FE) &gt;&gt; 1 = 0x0F</code></pre>
+<p>Field bits 0–3 are all set, indicating support for <strong>2.5, 5, 8, and 16 GT/s</strong>. Bits 4–5 are clear, so 32 and 64 GT/s are not advertised; bit 6 is reserved. Field bit 0 was originally register bit 1, so these two numbering systems must remain distinct. The full read value keeps register bits 23 and 24 set to meet Table 7-35's detection-capability requirements for devices supporting 16 GT/s or above. Those bits do not prove that Retimers are present in the path.</p>
+<p>Link Status instead contains an encoded value, not another supported-speed bitmap:</p>
+<pre><code>Current Link Speed: 0x0043 &amp; 0x000F = 3
+Negotiated Link Width: (0x0043 &amp; 0x03F0) &gt;&gt; 4 = 4</code></pre>
+<p>Code 3 selects field bit 2 of the speed vector, meaning <strong>8 GT/s</strong>; width 4 means <strong>x4</strong>. These masks assume the stated read widths. They cannot be applied directly to a 32-bit value read at a different offset.</p>
+<p>Table 7-26 makes both fields undefined when the Link is not up. The value <code>0x0043</code> does not itself establish that the Link is up. Nor does a clear bit 13 alone establish that the Link is down: implementation of that status bit depends on reporting capability (Table 7-23 and Table 7-26, pp.969 and 979).</p>
+</section>
+
+<section id="limits">
+<h2>Does operating at only 8 GT/s prove a fault?</h2>
+<p><strong>Example deduction:</strong> Under the stated assumptions, the local Port advertises speeds up to 16 GT/s, while its Link currently operates at 8 GT/s and x4. These reads do not explain the lower speed. The partner's capabilities, relevant settings, and Link state must also be checked. x4 is not evidence of the maximum supported width, and GT/s is not application GB/s. Useful throughput also depends on Lane count, encoding, packet overhead, and workload (Base 6.0 §1.2, pp.101–102).</p>
+</section>
+
+<section id="self-check">
+<h2>Does the same conclusion survive a changed condition?</h2>
+<details class="question"><summary>If the Capability base moves to 0x90, can the capability still be read at 0x9C?</summary><p>No. From Figure 7-21 (p.952), Link Capabilities 2 moves to <code>0x90 + 0x2C = 0xBC</code>, and Link Status to <code>0x90 + 0x12 = 0xA2</code>. The new base is a teaching assumption; the relative offsets stay the same.</p></details>
+<details class="question"><summary>If Current Link Speed is 4, does that mean two speeds are supported simultaneously?</summary><p>No. With valid Link-state conditions, code 4 means a current speed of 16 GT/s. The supported set still requires a separate vector read. (Table 7-26 and Table 7-35, pp.978 and 998.)</p></details>
+<details class="question"><summary>If the Link is down and a previously obtained value is 0x0043, can it describe the current speed and width?</summary><p>No. Table 7-26 (p.978) defines speed and width as undefined when the Link is not up. Plausible numbers do not replace the required validity condition.</p></details>
+</section>
+<p>The next step is to clarify topology, Functions, and identification scope before studying Configuration Space in depth. See the <a href="/DOCS/pcie-course/chapter-0.html">full Chapter 0 Chinese tutorial</a> for field diagrams, the expanded example, and source references. Later chapters are still planned.</p>

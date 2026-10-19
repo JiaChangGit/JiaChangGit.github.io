@@ -1,0 +1,511 @@
+{
+  "title": "PCIe 系統觀與規格閱讀課程",
+  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。本次完成 Chapter 0 與全課程規劃；後續章節尚待逐章查證、撰寫與校閱。",
+  "chapters": [
+    {
+      "number": 0,
+      "title": "從系統全貌到第一次規格查詢",
+      "question": "一個 PCIe 裝置如何被系統認識並使用？又該如何查出它支援什麼？",
+      "topics": [
+        "PCIe 的用途與 CPU、記憶體、裝置之間的關係",
+        "Root Complex、Root Port、Switch、Endpoint 的角色辨識",
+        "建立連線、發現裝置、配置資源與開始使用的整體流程",
+        "Configuration Space、MMIO 與 DMA 的用途區分",
+        "支援能力、控制設定與目前狀態的差別",
+        "依序查找 Capability、Figure、Table 與欄位的完整速率判讀案例",
+        "用反例說明低於最高支援速率不等於已證明故障"
+      ],
+      "prerequisites": [],
+      "status": "ready",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 1,
+      "title": "拓樸、Function 與識別方式",
+      "question": "一張卡、一個裝置與一個 Function 是同一件事嗎？系統究竟在辨識誰？",
+      "topics": [
+        "實體封裝、Device 與 Function 的區別",
+        "Root Complex 邊界與多條 PCIe 階層",
+        "Switch 上下游 Port、Bridge 與匯流排關係",
+        "Bus、Device、Function 與 Segment 的識別範圍",
+        "Requester ID 與拓樸識別的關係",
+        "以拓樸圖追蹤同一 Function，不把 BDF 當成永久身分"
+      ],
+      "prerequisites": [
+        0
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 2,
+      "title": "讀取設定空間與尋找 Capability",
+      "question": "我要確認某項功能是否存在，應從哪裡開始找，又如何避免讀錯欄位？",
+      "topics": [
+        "設定空間存取與 Configuration Header",
+        "Type 0 與 Type 1 Header 的用途",
+        "傳統 Capability 與 Extended Capability 的清單走訪",
+        "Capability ID、Next Pointer、相對位移與絕對位址",
+        "欄位大小、位元編碼、Reserved 與存取屬性",
+        "Capability 版本與適用的 Function／Port 類型",
+        "建立可重複使用的 Figure、Table、條文查詢方法"
+      ],
+      "prerequisites": [
+        0,
+        1
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 3,
+      "title": "從未知拓樸到完成裝置發現",
+      "question": "開機時還不知道有哪些裝置，系統如何逐步找到它們？",
+      "topics": [
+        "Enumeration 的前提與觀察對象",
+        "Root Bridge、Bridge 與下游匯流排的搜尋",
+        "Bus Number 配置與橋接器的轉送範圍",
+        "多功能裝置的發現方式",
+        "裝置身分、Class Code 與軟體接手的線索",
+        "無回應、尚未就緒與不存在裝置的證據區分",
+        "韌體建立初始配置與 OS 後續處理的關係"
+      ],
+      "prerequisites": [
+        1,
+        2
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 4,
+      "title": "BAR、位址空間與資源配置",
+      "question": "找到裝置後，CPU 要把資料寫到哪裡，裝置才會收到？",
+      "topics": [
+        "BAR 表示的資源需求與位址配置",
+        "Memory BAR、I/O BAR、32-bit 與 64-bit BAR",
+        "大小、對齊與 Prefetchable 屬性",
+        "Bridge Window 與上游位址空間的涵蓋關係",
+        "Memory Space Enable、I/O Space Enable 與 Bus Master Enable 的不同作用",
+        "資源分配、解碼啟用與開始使用的先後條件",
+        "MMIO 位址、主記憶體位址與裝置內部位置的區別"
+      ],
+      "prerequisites": [
+        2,
+        3
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 5,
+      "title": "一次讀寫如何變成 PCIe 交易",
+      "question": "CPU 讀取裝置暫存器後，要求和回覆如何穿過 PCIe 拓樸？",
+      "topics": [
+        "Transaction Layer Packet 的用途",
+        "Memory、Configuration、I/O 與 Message 交易",
+        "依位址、ID 或隱含規則進行路由",
+        "Posted、Non-Posted 與 Completion",
+        "Requester、Completer、Tag 與要求配對",
+        "資料長度、Byte Enable 與封包邊界",
+        "完成狀態與沒有一般 Completion 的交易"
+      ],
+      "prerequisites": [
+        1,
+        2,
+        4
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ]
+    },
+    {
+      "number": 6,
+      "title": "DMA、可見性與交易順序",
+      "question": "裝置已經發出寫入，CPU 就一定看得到正確資料嗎？",
+      "topics": [
+        "DMA 的要求者、目標與位址觀點",
+        "IOMMU 的必要背景與位址轉換邊界",
+        "PCIe 交易排序與作業系統記憶體模型的責任區分",
+        "Relaxed Ordering、No Snoop 與相關適用條件",
+        "資料、描述項與通知的可見性關係",
+        "軟體同步、快取一致性與 PCIe 規則不能互相代替",
+        "以兩筆交易推演允許與不允許的觀察結果"
+      ],
+      "prerequisites": [
+        4,
+        5
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PLATFORM-MEMORY-MODEL-TO-SELECT",
+        "IOMMU-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 7,
+      "title": "中斷如何把事件交給軟體",
+      "question": "裝置有事情要處理時，如何通知 CPU？通知內容又在哪裡設定？",
+      "topics": [
+        "事件、資料與通知之間的關係",
+        "INTx 的相容用途",
+        "MSI 與 MSI-X 的能力查詢與設定",
+        "MSI-X Table、PBA 與 BAR 的關係",
+        "向量、遮罩、Pending 與觸發條件",
+        "中斷寫入與先前資料交易的順序",
+        "以假設值追蹤一個向量的設定及通知結果"
+      ],
+      "prerequisites": [
+        2,
+        4,
+        5,
+        6
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 8,
+      "title": "Link 建立與可靠傳遞",
+      "question": "兩端都支援 PCIe，為什麼還需要訓練連線、流量控制與重送？",
+      "topics": [
+        "Lane、Link、速度與寬度的關係",
+        "LTSSM 的主要狀態與訓練目的",
+        "支援速率、目標設定與協商結果",
+        "Data Link 與 Transaction Layer 的責任邊界",
+        "流量控制、緩衝空間與傳送許可",
+        "傳輸錯誤的偵測與恢復",
+        "PCIe 6.0 中 Flit Mode 與 Non-Flit Mode 的適用範圍"
+      ],
+      "prerequisites": [
+        0,
+        2,
+        5
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0"
+      ]
+    },
+    {
+      "number": 9,
+      "title": "Reset 的範圍與恢復條件",
+      "question": "重設一個 Function、重設一條 Link 與重新上電，會改變同樣的狀態嗎？",
+      "topics": [
+        "各種 Reset 的觸發方式與影響範圍",
+        "Fundamental Reset、Hot Reset 與 Function Level Reset",
+        "Reset 與 Link 狀態變化的關係",
+        "進行中的交易與重新存取的時機",
+        "欄位重設值、保存狀態與重新配置",
+        "裝置停止 DMA 與恢復軟體使用的條件",
+        "以狀態表比較同一欄位在不同事件後的結果"
+      ],
+      "prerequisites": [
+        2,
+        4,
+        5,
+        8
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    },
+    {
+      "number": 10,
+      "title": "裝置與連線如何省電",
+      "question": "裝置暫時沒有工作時，哪些部分可以休息？需要工作時又如何回來？",
+      "topics": [
+        "Function 電源狀態與 Link 電源狀態的區別",
+        "PCI Power Management Capability",
+        "ASPM 與軟體主導的電源管理",
+        "L1 Substates 的能力、控制與依賴條件",
+        "PME 與喚醒路徑",
+        "進入、退出與重新可用的延遲",
+        "平台電源資源與 PCIe 電源機制的分工"
+      ],
+      "prerequisites": [
+        2,
+        8,
+        9
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3",
+        "ACPI-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 11,
+      "title": "熱插拔與拓樸變動",
+      "question": "系統運作中新增或移除裝置，如何維持資源與軟體狀態的一致性？",
+      "topics": [
+        "Hot-Plug 能力與 Slot 的關係",
+        "Presence、事件狀態、控制與通知",
+        "插入、供電、建立連線與開始枚舉",
+        "正常移除與 Surprise Removal 的條件差異",
+        "預留資源與重新配置的問題",
+        "軟體停止使用與實體裝置離開的先後關係",
+        "DPC 對錯誤隔離的用途，連回錯誤處理章深入"
+      ],
+      "prerequisites": [
+        3,
+        4,
+        7,
+        8,
+        9,
+        10
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3",
+        "ACPI-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 12,
+      "title": "錯誤證據、回報與隔離",
+      "question": "收到 PCIe 錯誤時，應如何從紀錄判斷發生了什麼，以及哪些結論仍缺乏證據？",
+      "topics": [
+        "Correctable 與 Uncorrectable 錯誤",
+        "狀態、Mask、Severity 與回報控制",
+        "AER 的查詢入口及紀錄解讀",
+        "Root Port 回報與錯誤來源追蹤",
+        "DPC 的隔離與恢復條件",
+        "Header Log 與必要的交易背景",
+        "保留證據、判斷範圍與清除狀態的順序",
+        "以跨元件紀錄練習避免過度推論"
+      ],
+      "prerequisites": [
+        2,
+        5,
+        7,
+        8,
+        9
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3",
+        "ACPI-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 13,
+      "title": "韌體、ACPI 與 OS 的控制權",
+      "question": "同一個 PCIe 功能，究竟由韌體還是 OS 管理？軟體如何得知平台的限制？",
+      "topics": [
+        "UEFI 階段的 PCI Bus 與 PCI I/O 介面",
+        "ACPI 描述的 Root Bridge、設定空間與資源",
+        "MCFG、_CRS 與相關描述的用途",
+        "_OSC 等控制權協調與能力確認",
+        "原生 Hot-Plug、AER 與電源管理的管理者",
+        "系統啟動交接與執行期間的責任邊界",
+        "區分 PCI Firmware、UEFI、ACPI 各自規定的內容"
+      ],
+      "prerequisites": [
+        3,
+        4,
+        7,
+        10,
+        11,
+        12
+      ],
+      "status": "planned",
+      "sources": [
+        "PCI-FW-3.3",
+        "PCIE-BASE-6.0",
+        "UEFI-SPEC-TO-SELECT",
+        "ACPI-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 14,
+      "title": "開機裝置、Option ROM 與相容機制",
+      "question": "OS 尚未載入驅動程式，韌體如何利用 PCIe 裝置開機？哪些流程只適用於舊式系統？",
+      "topics": [
+        "Expansion ROM BAR 與 ROM 映像",
+        "ROM Header、PCI Data Structure 與映像選擇",
+        "UEFI Driver 與裝置初始化的關係",
+        "開機服務、裝置路徑與 OS 驅動程式的交接",
+        "Legacy BIOS 介面與歷史相容需求",
+        "原生 PCIe 機制與沿用 PCI 規則的區別",
+        "避免把某平台的啟動行為當成所有系統要求"
+      ],
+      "prerequisites": [
+        2,
+        3,
+        4,
+        13
+      ],
+      "status": "planned",
+      "sources": [
+        "PCI-FW-3.3",
+        "PCIE-BASE-6.0",
+        "UEFI-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 15,
+      "title": "多功能、ARI 與 SR-IOV",
+      "question": "一個實體裝置如何提供多個獨立的軟體使用對象？",
+      "topics": [
+        "多功能裝置與虛擬化的不同需求",
+        "ARI 對 Function 識別與轉送的影響",
+        "Physical Function 與 Virtual Function",
+        "SR-IOV 能力、VF 數量與啟用條件",
+        "VF 位址資源、身分與中斷",
+        "Reset 及資源共享的隔離界線",
+        "以假設拓樸追蹤 PF 與 VF 的查詢入口"
+      ],
+      "prerequisites": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        9
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3",
+        "PCI-SIG-IOV-SOURCES-TO-VERIFY"
+      ]
+    },
+    {
+      "number": 16,
+      "title": "ATS、PRI 與 PASID",
+      "question": "裝置需要替不同工作存取記憶體時，如何辨識位址空間並處理轉譯需求？",
+      "topics": [
+        "未轉譯位址、已轉譯位址與平台 IOMMU",
+        "ATS 的能力、啟用與轉譯快取",
+        "失效通知與快取一致性要求",
+        "PASID 所辨識的對象及有效條件",
+        "PRI 的用途、請求與回應",
+        "ATS、PRI、PASID 之間的關係與獨立能力",
+        "缺少其中一項能力時能做與不能做的事"
+      ],
+      "prerequisites": [
+        2,
+        5,
+        6,
+        12,
+        15
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-SIG-ADDRESS-TRANSLATION-SOURCES-TO-VERIFY",
+        "IOMMU-SPEC-TO-SELECT"
+      ]
+    },
+    {
+      "number": 17,
+      "title": "隔離、存取控制與傳輸安全",
+      "question": "裝置能傳送合法的 PCIe 交易，是否就表示它可以安全地存取任何目標？",
+      "topics": [
+        "威脅情境與信任邊界",
+        "ACS 與 Peer-to-Peer 路由限制",
+        "IOMMU 隔離和 PCIe 存取控制的分工",
+        "IDE 的保護目標、能力與適用範圍",
+        "安全建立所需的其他規格與平台前提",
+        "支援、啟用、驗證成功與保護生效的證據區分",
+        "不把封包完整性、身分驗證與資料保密混為一談"
+      ],
+      "prerequisites": [
+        2,
+        5,
+        6,
+        12,
+        13,
+        15,
+        16
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "IOMMU-SPEC-TO-SELECT",
+        "PCI-SIG-SECURITY-SOURCES-TO-VERIFY",
+        "DMTF-SECURITY-SOURCES-TO-SELECT"
+      ]
+    },
+    {
+      "number": 18,
+      "title": "實體連線、訊號與板級限制",
+      "question": "規格欄位看起來相容，為什麼實體連線仍可能無法達到預期速度或寬度？",
+      "topics": [
+        "差動訊號、Lane 與雙向傳輸的必要背景",
+        "時脈、編碼與 PCIe 6.0 訊號傳輸方式",
+        "Equalization、通道條件與訓練結果",
+        "Retimer 與其他中間元件的作用",
+        "連接器、卡片、供電與 Base Specification 的範圍差異",
+        "Link 寬度、速度與實體條件的關係",
+        "用規格證據縮小原因範圍，避免僅憑狀態值推斷訊號品質"
+      ],
+      "prerequisites": [
+        8,
+        9,
+        10
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-SIG-CEM-SPEC-TO-SELECT",
+        "SIGNAL-INTEGRITY-BACKGROUND-TO-SELECT"
+      ]
+    },
+    {
+      "number": 19,
+      "title": "效能推估與跨章判讀",
+      "question": "Link 已達預期速度與寬度，應用程式為什麼仍未達到預期傳輸量？",
+      "topics": [
+        "GT/s、編碼效率、協定開銷與有效資料量",
+        "MPS、MRRS、Completion 切分與交易數量",
+        "可並行要求數、延遲與吞吐量",
+        "拓樸共享、Peer-to-Peer 與上游瓶頸",
+        "電源狀態、重送與軟體工作負載的影響",
+        "把能力、設定、狀態、量測分成不同證據",
+        "整合多個欄位與假設工作負載，推導上限及不確定性"
+      ],
+      "prerequisites": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        18
+      ],
+      "status": "planned",
+      "sources": [
+        "PCIE-BASE-6.0",
+        "PCI-FW-3.3"
+      ]
+    }
+  ]
+}

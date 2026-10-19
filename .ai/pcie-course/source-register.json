@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "updated": "2026-10-19",
+  "primary_source_policy": "技術欄位以已核對的使用者提供 PDF 為準；補充來源須保留固定版本、用途與查核限制。",
+  "sources": [
+    {
+      "id": "PCIE-BASE-6.0",
+      "title": "PCI Express Base Specification",
+      "revision": "6.0 (6.0-1.0-PUB)",
+      "document_date": "2021-12-16",
+      "publisher": "PCI-SIG",
+      "type": "local_pdf",
+      "filename": "PCI-Express-Base-Specification-Revision-6.0.pdf",
+      "sha256": "3c9d06d00ed1701e7fd19137e24a3a340ac52a17abf29fc148d60e37e9abf710",
+      "page_count": 1923,
+      "page_numbering": "One-based PDF page index equals the printed document page number for all cited pages.",
+      "accessed": "2026-10-19",
+      "verification": "Cover, relevant complete text pages, figures/tables and field definitions checked against the supplied PDF.",
+      "distribution": "Source PDF remains local; do not copy it into the repository or published artifacts.",
+      "version_note": "以使用者提供的 6.0-1.0-PUB PDF 為準；封面日期為 2021-12-16，不以其他公開發布日期代換。"
+    },
+    {
+      "id": "PCI-FW-3.3",
+      "title": "PCI Firmware Specification",
+      "revision": "3.3",
+      "document_date": "2021-01-20",
+      "publisher": "PCI-SIG",
+      "type": "local_pdf",
+      "filename": "PCI-Firmware-Specification.pdf",
+      "sha256": "3101608e878a660597d51c9c6d1397ba427a9ff0d983a417d0171019541888a5",
+      "page_count": 122,
+      "page_numbering": "One-based PDF page index equals the printed document page number for all cited pages.",
+      "accessed": "2026-10-19",
+      "verification": "Cover, relevant complete text pages, figures/tables and field definitions checked against the supplied PDF.",
+      "distribution": "Source PDF remains local; do not copy it into the repository or published artifacts.",
+      "version_note": "本版 §1.2 p.7 列出的 PCI Express Base 參考版本為 5.0；教材整合 Base 6.0 時保留各主張的版本與來源，不宣稱兩份文件為同版配套。"
+    },
+    {
+      "id": "UEFI-2.11-OVERVIEW",
+      "title": "UEFI Specification: Overview",
+      "revision": "2.11",
+      "publisher": "UEFI Forum",
+      "type": "official_versioned_web_page",
+      "url": "https://uefi.org/specs/UEFI/2.11/02_Overview.html",
+      "accessed": "2026-10-19",
+      "purpose": "輔助說明韌體階段的 PCI drivers 與 PCI I/O Protocol 用途。",
+      "role": "supplementary_background",
+      "verification": "Official indexed excerpt; full-page fetch returned HTTP 403. Search-index excerpt verification reported by the parent agent; this record does not claim a complete page review.",
+      "not_used_for": "PCIe register layouts, encodings, normative handoff boundaries, or the worked example."
+    },
+    {
+      "id": "ACPI-6.6-INTRODUCTION",
+      "title": "ACPI Specification: Introduction",
+      "revision": "6.6",
+      "publisher": "UEFI Forum",
+      "type": "official_versioned_web_page",
+      "url": "https://uefi.org/specs/ACPI/6.6/01_Introduction.html",
+      "accessed": "2026-10-19",
+      "purpose": "輔助說明由作業系統主導的設定與電源管理介面。",
+      "role": "supplementary_background",
+      "verification": "Official indexed excerpt; full-page fetch returned HTTP 403. Search-index excerpt verification reported by the parent agent; this record does not claim a complete page review.",
+      "not_used_for": "PCIe register layouts, encodings, normative handoff boundaries, or the worked example."
+    }
+  ]
+}

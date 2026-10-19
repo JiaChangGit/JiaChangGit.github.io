@@ -45,10 +45,22 @@ jobs:
           python3 -B scripts/validate_nvme_report.py --phase publish
           python3 -B -m unittest discover -s tests -v
 
+      - name: Verify PCIe course and worked example
+        run: |
+          python3 -B scripts/build_pcie_course.py --check
+          python3 -B scripts/validate_pcie_course.py
+
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: production
+
+      - name: Verify PCIe pages were included
+        run: |
+          test -f _site/DOCS/pcie-course/chapter-0.html
+          test -f _site/DOCS/pcie-course/index.html
+          test -f _site/pcie/chapter-0-zh-tw/index.html
+          test -f _site/pcie/chapter-0-en/index.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5

@@ -1,3 +1,9 @@
+## PCIe 課程
+
+[課程閱讀路線](DOCS/pcie-course/index.html) · [Chapter 0 完整中文教學](DOCS/pcie-course/chapter-0.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-0-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-0-en/) · [編寫與來源維護計畫](docs/pcie-course-plan.md)
+
+目前完成 Chapter 0；Chapter 1–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
+
 ## NVMe reports / 規格教學
 
 [NVM Command Set 1.3 獨立報告：中文](https://jiachanggit.github.io/nvme/nvm-command-set-1-3-zh-tw/) · [English](https://jiachanggit.github.io/nvme/nvm-command-set-1-3-en/) · [範圍與查核](docs/nvme-nvm-command-set-1-3-review-2026-09-03.md)

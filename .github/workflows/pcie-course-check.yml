@@ -1,0 +1,36 @@
+name: Validate PCIe course
+
+on:
+  push:
+    paths:
+      - ".ai/pcie-course/**"
+      - "DOCS/pcie-course/**"
+      - "_posts/*pcie-chapter*.md"
+      - "docs/pcie-course-plan.md"
+      - "scripts/build_pcie_course.py"
+      - "scripts/validate_pcie_course.py"
+      - ".github/workflows/pcie-course-check.yml"
+  pull_request:
+    paths:
+      - ".ai/pcie-course/**"
+      - "DOCS/pcie-course/**"
+      - "_posts/*pcie-chapter*.md"
+      - "docs/pcie-course-plan.md"
+      - "scripts/build_pcie_course.py"
+      - "scripts/validate_pcie_course.py"
+      - ".github/workflows/pcie-course-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check generated course and example evidence
+        run: |
+          python3 -B scripts/build_pcie_course.py --check
+          python3 -B scripts/validate_pcie_course.py
