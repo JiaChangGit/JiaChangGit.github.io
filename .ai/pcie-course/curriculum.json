@@ -1,6 +1,6 @@
 {
   "title": "PCIe 系統觀與規格閱讀課程",
-  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。本次完成 Chapter 0 與全課程規劃；後續章節尚待逐章查證、撰寫與校閱。",
+  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0、Chapter 1 與全課程規劃；後續章節尚待逐章查證、撰寫與校閱。",
   "chapters": [
     {
       "number": 0,
@@ -37,11 +37,14 @@
       "prerequisites": [
         0
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
         "PCI-FW-3.3"
-      ]
+      ],
+      "title_en": "Topology, Functions, and PCIe Identity",
+      "description": "沿著含 Switch 的拓樸，釐清實體卡、Function 與 Port 的關係，再從欄位判讀 BDF、下游 Bus 範圍與 Requester ID。",
+      "publication_date": "2026-10-20"
     },
     {
       "number": 2,

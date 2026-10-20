@@ -1,24 +1,25 @@
 # PCIe 課程編寫與來源維護計畫
 
-更新日期：2026-10-19。這是獨立的 PCIe 課程，不沿用 NVMe 系列的題數、冊數或主題排除清單。
+更新日期：2026-10-20。這是獨立的 PCIe 課程，不沿用 NVMe 系列的題數、冊數或主題排除清單。
 
 ## 讀者、目標與本次交付
 
 讀者懂基本程式與 CPU、記憶體概念，但沒有 PCIe 基礎。課程先建立完整系統觀，再逐步深入韌體、軟體、交易、連線及實體機制。NVMe SSD 可以作為例子，但課程本身不以讀過 NVMe 教材為前提。
 
-本次完成 Chapter 0「從系統全貌到第一次規格查詢」及全系列的學習路線。Chapter 0 包含完整的查詢情境、假設讀值、位元判讀與結論限制。後續章節只有規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
+目前完成 Chapter 0「從系統全貌到第一次規格查詢」、Chapter 1「拓樸、Function 與識別方式」及全系列的學習路線。Chapter 0 包含完整的查詢情境、假設讀值、位元判讀與結論限制；Chapter 1 增加含 Switch 的拓樸、兩個 Segment、角色判讀、下游 Bus 範圍與 Requester ID。Chapter 2–19 只有規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
 
 主要入口：
 
 - 課程索引：`/DOCS/pcie-course/index.html`。
 - Chapter 0 中文教學：`/DOCS/pcie-course/chapter-0.html`。
+- Chapter 1 中文教學：`/DOCS/pcie-course/chapter-1.html`，另有 `/pcie/chapter-1-zh-tw/` 與 `/pcie/chapter-1-en/` 兩篇報告。
 - 中文報告文章：`/pcie/chapter-0-zh-tw/`。
 - 英文報告文章：`/pcie/chapter-0-en/`。
 - [章節資料](../.ai/pcie-course/curriculum.json)保存題目、主題與先備章節。
 - [來源登記](../.ai/pcie-course/source-register.json)保存來源版本與來源檔案識別資訊。
-- [技術主張與證據](../.ai/pcie-course/claims.json)保存本次已查核的結論及定位。
+- [技術主張與證據](../.ai/pcie-course/claims.json)保存 Chapter 0 已查核的結論及定位；[Chapter 1 證據](../.ai/pcie-course/chapter1-claims.json)另記錄本章的來源、讀值與計算。
 
-`curriculum.json` 的 `ready` 表示本次交付的 Chapter 0；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
+`curriculum.json` 的 `ready` 表示已交付的 Chapter 0、Chapter 1；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
 
 ## 為什麼這樣安排
 
@@ -123,7 +124,7 @@ Chapter 0 只建立用途與第一個可走完的案例。其他章節需要用�
 - 原文要求強度必須保留。shall、should、may、Reserved、Undefined 與 Implementation Specific 不可互換。
 - 一項機制在文件中存在，不表示所有版本、所有 Function 類型及所有裝置都必須支援。判讀前必須檢查其適用條件。
 - 精確引用至少包含來源名稱、Revision、Section；涉及欄位時加上 Figure、Table、文件頁與 PDF 頁。跨頁表格記錄實際使用的欄位頁，不能只填表頭頁。
-- 教材中的來源連結先指向合法的官方入口；使用者提供 PDF 的本地路徑保留在內部來源紀錄，不將整份 PDF 公開。
+- 教材中的來源連結先指向合法的官方入口；使用者提供 PDF 的檔名與雜湊保留在內部來源紀錄，不將整份 PDF 公開。
 - 來源互相衝突時，記錄衝突與無法確定的部分。未確認前不靠推測補出單一答案。
 
 ## 教學假設、推演與背景如何標示
@@ -166,6 +167,17 @@ Chapter 0 只建立用途與第一個可走完的案例。其他章節需要用�
 - 獨立 HTML 跟隨系統明暗偏好；網站文章跟隨網站的 `data-theme` 選擇，避免系統與網站模式不同時發生文字、背景對比錯誤。
 
 算術與結構檢查不能代替技術和語句校閱。本次另逐項檢查版本、13 個 Figure、8 個 Table 的定位、適用條件，以及中英文情境與結論的一致性。
+
+## Chapter 1 增補紀錄（2026-10-20）
+
+Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清單走訪。完整教學先讀拓樸，再辨識 BDF，接著比較 Header Layout 與 Device/Port Type，最後以 Secondary／Subordinate Bus Number 核對分支，並推導 Requester ID。雙語報告保留相同的案例前提與結論。
+
+- 新增 15 筆來源／案例紀錄；合計 52 筆，兩份原始 PDF 雜湊與登記版本一致。
+- Builder 依 ready 章節產生教材、前後章導覽及文章；目前共 7 份產物。Chapter 1 的發文日期為 2026-10-20，永久網址不含日期。
+- 數值檢查把正文的五筆角色讀值、四組 Bridge 範圍與證據檔比對，再沿 Bus 關係推導目標路徑與 Requester ID；避免只有範例答案正確，正文卻漂移。
+- 技術校閱特別核對 Header Type bit 7 的 may 語意、Primary Bus Number 的相容性用途、ARI／FPB 的不同影響，以及 Flit Mode 另有 Segment 欄位的邊界。
+- Jekyll 建置成功；Chrome 檢查完整教學的桌面、平板直／橫向與手機尺寸，雙語文章另查桌面及窄畫面，合計 16 組明暗組合。答案與來源可展開、連結與 summary 達 44px 點選高度、SVG 文字未越界，也沒有整頁水平溢出。另人工檢視拓樸、位元圖、手機答案及英文暗色文章。這仍是瀏覽器尺寸測試，未宣稱實機 iPad Safari 驗證。
+- 原有 132 項測試通過；來源 PDF 與內部證據檔不加入站點。
 
 ## 後續逐章編寫與驗證
 

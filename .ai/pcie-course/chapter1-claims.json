@@ -1,0 +1,548 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 1,
+  "updated": "2026-10-20",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH1-OBJECTS-001",
+      "claim": "Device 是同一 Bus／Device Number 的 Function 集合；Function 是設定空間可定址的實體；Port 是元件與 Link 的介面。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "Terms and Acronyms"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        84,
+        85,
+        89
+      ],
+      "pdf_pages": [
+        84,
+        85,
+        89
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "卡、封裝、Function 數量不相等是教學推論；卡內元件配置是明列的教學假設。"
+    },
+    {
+      "id": "PCIE-CH1-SWITCH-001",
+      "claim": "本章未使用 FPB Routing ID 的 Switch 映射為多個邏輯 Bridge；Upstream Port secondary bus 是內部邏輯 Bus，內部只能放代表 Downstream Port 的 Bridge，不能放並列的 Type 0 Endpoint。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3.3",
+        "7.1"
+      ],
+      "figures": [
+        "1-3",
+        "7-1",
+        "7-2"
+      ],
+      "tables": [],
+      "document_pages": [
+        106,
+        107,
+        903,
+        904
+      ],
+      "pdf_pages": [
+        106,
+        107,
+        903,
+        904
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-BDF-001",
+      "claim": "非 ARI 的 BDF 為 8-bit Bus、5-bit Device、3-bit Function；該編碼容量不表示實際存在數量。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.4.2",
+        "2.2.6.2"
+      ],
+      "figures": [
+        "2-20",
+        "2-22"
+      ],
+      "tables": [
+        "2-8"
+      ],
+      "document_pages": [
+        147,
+        148,
+        156,
+        157
+      ],
+      "pdf_pages": [
+        147,
+        148,
+        156,
+        157
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "Table 2-8 與 Figures 2-20/22 是目的地 ID routing 版型；只取位元配置，不把該圖的封包 byte offset 當成 Requester ID 的通用位置。"
+    },
+    {
+      "id": "PCIE-CH1-SEGMENT-001",
+      "claim": "PCI Segment Group 是 Bus 的邏輯分組，每組最多 256 個 Bus；不同組可重複 Bus Number，沒有固定實體對應。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "1.3",
+        "4.3.2.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        8,
+        9,
+        47
+      ],
+      "pdf_pages": [
+        8,
+        9,
+        47
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-HEADER-001",
+      "claim": "Header Type bits6:0 選 Header Layout；bit7 Set 只表示可能多 Function；Clear 時除其他明示機制外不得探查 Function0以外的 Function。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.9"
+      ],
+      "figures": [
+        "7-8"
+      ],
+      "tables": [
+        "7-7"
+      ],
+      "document_pages": [
+        924,
+        925
+      ],
+      "pdf_pages": [
+        924,
+        925
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-PORTTYPE-001",
+      "claim": "PCIe Capability base+02h 的 16-bit Capabilities Register，以 bits7:4 編碼 Function 類型：0 Endpoint、4 Root Port、5 Switch UP、6 Switch DP；bits3:0 是 Capability Version。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3",
+        "7.5.3.2"
+      ],
+      "figures": [
+        "7-21",
+        "7-23"
+      ],
+      "tables": [
+        "7-19"
+      ],
+      "document_pages": [
+        952,
+        953,
+        954
+      ],
+      "pdf_pages": [
+        952,
+        953,
+        954
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-BRIDGEBUS-001",
+      "claim": "本章 Root/Switch Port 的 Type1 Header 在0x19、0x1A各有8-bit Secondary與Subordinate Bus Number，分別表示下游介面Bus與下游最高Bus。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.3",
+        "7.5.1.3.3",
+        "7.5.1.3.4"
+      ],
+      "figures": [
+        "7-14"
+      ],
+      "tables": [],
+      "document_pages": [
+        936,
+        937
+      ],
+      "pdf_pages": [
+        936,
+        937
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-PRIMARY-001",
+      "claim": "PCIe通常不使用Primary Bus Number，為legacy相容保留；本章不以此欄位推自身BDF。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.3.2",
+        "2.2.6.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        156,
+        937
+      ],
+      "pdf_pages": [
+        156,
+        937
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-RID-001",
+      "claim": "Requester ID 是16bits，與Tag共同識別交易；Switch轉送Request不得修改Transaction ID，Switch為自身事件發要求使用相關Port的Requester ID。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        156,
+        157
+      ],
+      "pdf_pages": [
+        156,
+        157
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "教學案例排除 ARI、Phantom／Shadow Functions。"
+    },
+    {
+      "id": "PCIE-CH1-RIDSEGMENT-001",
+      "claim": "Segment 是獨立於Requester ID的欄位，Flit Mode在部分情況會在TLP中明列；不能泛稱PCIe封包不含Segment。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.2",
+        "2.2.6.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        157
+      ],
+      "pdf_pages": [
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        157
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-IDENTITY-001",
+      "claim": "Bus／Device Number 可於runtime改變；BDF是當前配置位置，不保證跨次快照的實體個體身分。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        156,
+        157
+      ],
+      "pdf_pages": [
+        156,
+        157
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "Bus03變05是教學推演，不宣稱每次開機都變更編號。"
+    },
+    {
+      "id": "PCIE-CH1-VENDORDEVICE-001",
+      "claim": "Vendor ID 與 Device ID 參與Function廠商／類型及驅動選擇，不保證實體個體序號唯一性。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.1",
+        "7.5.1.1.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        917
+      ],
+      "pdf_pages": [
+        917
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-PORTNUMBER-001",
+      "claim": "Port Number 是 Link Capabilities bits31:24，與BDF的Device Number不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.6"
+      ],
+      "figures": [
+        "7-27"
+      ],
+      "tables": [
+        "7-23"
+      ],
+      "document_pages": [
+        967,
+        969
+      ],
+      "pdf_pages": [
+        967,
+        969
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH1-LINKDEVICE-001",
+      "claim": "普通非ARI未啟用FPB的Link對端Device為0；Switch DP可以使用非0DeviceNumber，不能把5-bit容量理解成每條Link有32個實體裝置。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.3.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        911
+      ],
+      "pdf_pages": [
+        911
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "用於核對例子中普通Endpoint／UP為Device00、Switch DP為Device01/02。"
+    },
+    {
+      "id": "PCIE-CH1-EXAMPLE-001",
+      "claim": "教學快照從Bridge範圍定位03:00.1，再解碼Header與Requester ID；不表示實機存取結果。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.1",
+        "7.5.1.1.9",
+        "7.5.3.2",
+        "7.5.1.3.3",
+        "7.5.1.3.4",
+        "2.2.6.2"
+      ],
+      "figures": [
+        "7-2",
+        "7-8",
+        "7-14",
+        "7-23"
+      ],
+      "tables": [
+        "7-7",
+        "7-19"
+      ],
+      "document_pages": [
+        156,
+        157,
+        903,
+        904,
+        924,
+        925,
+        936,
+        937,
+        953,
+        954
+      ],
+      "pdf_pages": [
+        156,
+        157,
+        903,
+        904,
+        924,
+        925,
+        936,
+        937,
+        953,
+        954
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "assumptions": [
+        "已完成發現與配置，所有列出Function已確認存在，Configuration讀取成功且快照穩定。",
+        "非ARI、非SR-IOV、未使用FPB Routing ID；Requester ID未使用Phantom／Shadow Functions。",
+        "Segment0000卡A一個Device提供03:00.0/.1，卡B提供04:00.0；Segment0001另有03:00.0。",
+        "PCIe Capability各自查得base70h；只給Capabilities Register低byte，沒有假設高byte為0。"
+      ],
+      "cap_base": "0x70",
+      "target": "03:00.1",
+      "expected_bridge_path": [
+        "00:01.0",
+        "01:00.0",
+        "02:01.0"
+      ],
+      "expected_requester_id": "0x0301",
+      "role_reads": [
+        {
+          "bdf": "00:01.0",
+          "header": "0x01",
+          "capabilities_low_byte": "0x42"
+        },
+        {
+          "bdf": "01:00.0",
+          "header": "0x01",
+          "capabilities_low_byte": "0x52"
+        },
+        {
+          "bdf": "02:01.0",
+          "header": "0x01",
+          "capabilities_low_byte": "0x62"
+        },
+        {
+          "bdf": "02:02.0",
+          "header": "0x01",
+          "capabilities_low_byte": "0x62"
+        },
+        {
+          "bdf": "03:00.0",
+          "header": "0x80",
+          "capabilities_low_byte": "0x02"
+        }
+      ],
+      "topology": [
+        {
+          "bdf": "00:01.0",
+          "secondary": "0x01",
+          "subordinate": "0x04"
+        },
+        {
+          "bdf": "01:00.0",
+          "secondary": "0x02",
+          "subordinate": "0x04"
+        },
+        {
+          "bdf": "02:01.0",
+          "secondary": "0x03",
+          "subordinate": "0x03"
+        },
+        {
+          "bdf": "02:02.0",
+          "secondary": "0x04",
+          "subordinate": "0x04"
+        }
+      ],
+      "calculations": [
+        {
+          "expression": "0x70 + 0x02",
+          "result": "0x72"
+        },
+        {
+          "expression": "0x01 & 0x7F",
+          "result": "1"
+        },
+        {
+          "expression": "0x80 & 0x7F",
+          "result": "0"
+        },
+        {
+          "expression": "(0x80 & 0x80) >> 7",
+          "result": "1"
+        },
+        {
+          "expression": "(0x62 & 0xF0) >> 4",
+          "result": "6"
+        },
+        {
+          "expression": "0x62 & 0x0F",
+          "result": "2"
+        },
+        {
+          "expression": "(0x03 << 8) | (0x00 << 3) | 1",
+          "result": "0x0301"
+        },
+        {
+          "expression": "(0x02 << 8) | (0x02 << 3) | 0",
+          "result": "0x0210"
+        },
+        {
+          "expression": "(0x0210 >> 8) & 0xFF",
+          "result": "2"
+        },
+        {
+          "expression": "(0x0210 >> 3) & 0x1F",
+          "result": "2"
+        },
+        {
+          "expression": "0x0210 & 0x07",
+          "result": "0"
+        },
+        {
+          "expression": "(0x03 << 8) | 0",
+          "result": "0x0300"
+        },
+        {
+          "expression": "(0x05 << 8) | 1",
+          "result": "0x0501"
+        }
+      ],
+      "limitations": [
+        "HeaderType bit7不證明其他Function存在或數量。",
+        "16-bit RID不含Segment，不能跨Segment或跨配置快照證明相同實體個體。",
+        "不以PrimaryBus推自身BDF，不將Bus範圍當作MemoryWindow，不從BDF推實體插槽。"
+      ]
+    }
+  ]
+}

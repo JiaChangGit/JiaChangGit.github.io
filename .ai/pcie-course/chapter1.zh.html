@@ -1,0 +1,142 @@
+<p class="lead">如果系統列出兩個 PCIe Function，機器裡就一定有兩張卡嗎？如果兩筆紀錄都寫著 <code>03:00.0</code>，又能確定它們指向同一個對象嗎？要回答這些問題，得先把實體連接、設定空間中的拓樸，以及識別號的範圍分開。</p>
+<p>本章接續 <a href="chapter-0.html#topology">Chapter 0 的系統角色</a>，把焦點放在「軟體究竟在辨識誰」。讀完後，你應能沿著 Switch 的邏輯拓樸找到 Function，查出它是哪一種 Port，並說明一組 BDF 能證明什麼。</p>
+<aside class="note"><strong>版本與適用範圍</strong><p>欄位依 PCI Express Base Specification Revision 6.0；Segment 的背景依 PCI Firmware Specification Revision 3.3。本章採傳統 Bus／Device／Function 編址，不使用 ARI（Alternative Routing-ID Interpretation）、SR-IOV（Single Root I/O Virtualization）或 FPB（Flattening Portal Bridge）Routing ID 機制。這些機制涉及額外的發現、編號或路由規則，留待後續章節；其中 ARI 會改變 Device／Function 位元的解讀。頁碼均為本課程採用 PDF 的文件頁／PDF 頁，兩者相同。</p></aside>
+
+<section id="objects">
+<h2>1. 系統列出的是卡，還是 Function？</h2>
+<p>先想像一張插入主機的擴充卡。卡是實體組裝的單位；軟體卻不是替整張卡讀取一份共同的設定空間。軟體會找出可辨識的 Function，再分別讀取各自的設定資料。同一個 Device 可以只有一個 Function，也可以有多個 Function；一張卡內還可能有 Switch 及多個元件，所以不能把這幾個數量畫上等號。</p>
+<div class="table-wrap"><table><caption>看到同一件硬體時，我們可能在談不同的對象</caption><thead><tr><th scope="col">用語</th><th scope="col">這一層在回答什麼問題？</th><th scope="col">不能直接推得什麼？</th></tr></thead><tbody>
+<tr><td>實體卡、封裝</td><td>元件裝在哪裡，如何連到主機？</td><td>不能只憑卡的數量，推算 Function 的數量。</td></tr>
+<tr><td>Device</td><td>在傳統編址下，同一個 Bus 上的哪個 Device Number？</td><td>Device Number 不是插槽號，也不是產品型號。</td></tr>
+<tr><td>Function</td><td>這個 Device 中，要讀取哪一個軟體可辨識對象的設定空間？</td><td>一個 Function 不一定對應一張卡或一個獨立封裝。</td></tr>
+<tr><td>Port</td><td>元件透過哪個介面連接相鄰的 PCIe Link？</td><td>Port 的實體編號不能當成 BDF 裡的 Device Number。</td></tr>
+</tbody></table></div>
+<p>這裡的 Device 特別指設定模型中的位置。「這個裝置」在日常說法裡也可能指整張卡或整顆晶片；後續只要涉及位址，就會寫出 Device Number 或完整 BDF，避免混淆。</p>
+<details class="source-note"><summary>規格依據：設定對象與實體連接</summary><p>Base 6.0 Terms and Acronyms 的 Device、Function、Port 條目，pp.84–85、89；§1.3.2–§1.3.3，pp.105–107；§7.1，pp.903–904，Figures 7-1、7-2。卡內配置是教學背景，不是規格要求每張卡採用同一種組裝方式。Port Number 欄位見 §7.5.3.6、Table 7-23，p.969；它不參與下文的 BDF 位元編碼。</p></details>
+</section>
+
+<section id="snapshot">
+<h2>2. Switch 為什麼會在設定空間裡變成多個 Bridge？</h2>
+<p>在本章使用的設定模型中，Root Port 表現為一個 PCI-to-PCI Bridge。Switch 則由多個邏輯 Bridge 組成：Upstream Port 的下游是 Switch 內部的邏輯 Bus；每個 Downstream Port 再從這個 Bus 接出一條外部 Link。這個安排讓軟體能沿著橋接關係認識整棵樹。</p>
+<p class="term-note">PCI-to-PCI Bridge 是設定模型裡連接上、下游匯流排的橋接功能。Upstream 指朝向 Root Complex 的方向；Downstream 指離開 Root Complex、朝階層下游的方向。Switch 的 internal bus 是邏輯表示，不是把外部 PCIe Link 改成共享的平行匯流排。</p>
+<aside class="example"><strong>教學假設：已完成發現與配置的快照</strong><p>下圖的編號與元件由作者設計，不是規格指定的固定拓樸，也不是實機量測。所有列出的 Function 都已確認存在，相關設定讀取成功，查詢期間拓樸不變。Requester ID 的案例也不使用 Phantom／Shadow Functions；這些機制可借用額外的 Function 識別號，留待交易進階內容再談。卡 A 內的一個 Device 提供 Function 0 與 Function 1，卡 B 提供另一個單功能 Device。圖中省略 CPU、記憶體及其他路徑；Bus Number 的配置過程留到 Chapter 3。</p></aside>
+<figure class="diagram">
+<svg viewBox="0 0 760 660" role="img" aria-labelledby="map-title map-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="map-title">Segment 0000 中含 Switch 的設定拓樸</title><desc id="map-desc">Root Port 00:01.0 透過 Bus 01 的 Link 連到 Switch Upstream Port 01:00.0。Switch 內部 Bus 02 上有 Downstream Port 02:01.0 與 02:02.0，分別經 Bus 03 與 Bus 04 的 Link 連到卡 A 和卡 B。卡 A 提供 03:00.0 與 03:00.1；卡 B 提供 04:00.0。</desc>
+<rect x="110" y="186" width="540" height="276" rx="16" fill="var(--blue-soft)" stroke="var(--accent)" stroke-dasharray="7 5"/>
+<g fill="none" stroke="var(--accent-2)" stroke-width="3"><path d="M380 108V224M220 430V536M540 430V536"/></g>
+<g fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-dasharray="6 4"><path d="M380 302V330M220 330H540M220 330V362M540 330V362"/></g>
+<g fill="var(--surface)" stroke="var(--line)" stroke-width="2"><rect x="235" y="30" width="290" height="78" rx="10"/><rect x="235" y="224" width="290" height="78" rx="10"/><rect x="135" y="362" width="170" height="68" rx="9"/><rect x="455" y="362" width="170" height="68" rx="9"/><rect x="70" y="536" width="300" height="96" rx="10"/><rect x="415" y="536" width="270" height="96" rx="10"/></g>
+<g fill="var(--ink)" text-anchor="middle" font-size="18"><text x="380" y="60">Root Port</text><text x="380" y="88">00:01.0</text><text x="380" y="254">Switch Upstream Port</text><text x="380" y="283">01:00.0</text><text x="220" y="390">Downstream A</text><text x="220" y="416">02:01.0</text><text x="540" y="390">Downstream B</text><text x="540" y="416">02:02.0</text><text x="220" y="567">卡 A：同一個 Device</text><text x="220" y="595">03:00.0　與　03:00.1</text><text x="220" y="620" font-size="15">兩個 Function，各有設定空間</text><text x="550" y="569">卡 B</text><text x="550" y="601">04:00.0</text></g>
+<g fill="var(--muted)" font-size="16"><text x="24" y="23">Segment 0000</text><text x="400" y="151">Link 對應 Bus 01</text><text x="130" y="211">Switch 的邏輯邊界</text><text x="257" y="353">Internal Bus 02（虛線）</text><text x="77" y="497">Link → Bus 03</text><text x="555" y="497">Link → Bus 04</text></g>
+</svg>
+<figcaption>自製教學圖。實線表示外部 Link，虛線表示 Switch 內部的邏輯連接；每個方框中的位址都是已知快照的 BDF。卡 A 的兩個 Function 共用所畫的上游 Link，不能因為有兩個 Function 就多算一條 Link。</figcaption>
+</figure>
+<p>先從上方一路往下讀：Root Port 的下一層是 Bus 01；到了 Switch Upstream Port，下一層才是內部 Bus 02；兩個 Downstream Port 再分別接到 Bus 03 和 Bus 04。所以 <code>02:01.0</code> 是橋接功能本身的位置，<code>03:00.1</code> 才是它下游的目標 Function。</p>
+<p>依 Base 6.0 §7.1，本模型的 Switch 內部 Bus 只能出現代表 Downstream Port 的 Bridge，不能把一般 Type 0 Endpoint 畫在 Bus 02，與這些 Bridge 並列。圖上的卡 A、卡 B 因而放在各 Downstream Port 的下一層。</p>
+<details class="source-note"><summary>讀原圖時，依序看哪幾張？</summary><p>先看 Base 6.0 Figure 1-3（§1.3.3，p.107），建立 Switch 裡有多個 virtual PCI-to-PCI Bridge 的觀念；再看 Figure 7-2（§7.1，p.904），確認這些 Bridge 如何映射到設定拓樸。Root Port 的對應關係看同頁 Figure 7-1。§7.1 p.903 說明 internal bus 與 Endpoint 限制，並限定這段 Switch 描述不使用 FPB Routing ID 機制。本圖沿用這個範圍。</p></details>
+</section>
+
+<section id="address">
+<h2>3. 03:00.1 的每一段究竟選了誰？</h2>
+<p>Bus、Device、Function 合稱 BDF。在傳統編址下，Bus Number 有 8 bits，Device Number 有 5 bits，Function Number 有 3 bits。先選定 PCI Segment Group（本章簡稱 Segment），再選其中的 Bus，接著選 Device 與 Function，才能定位本章的設定對象。</p>
+<div class="table-wrap"><table><caption>把 0000:03:00.1 拆開；本章位址各段均採十六進位</caption><thead><tr><th scope="col">部分</th><th scope="col">案例值</th><th scope="col">意義與範圍</th></tr></thead><tbody>
+<tr><td>Segment</td><td><code>0000</code></td><td>先選哪個 PCI Segment。Firmware 3.3 定義 Segment 為一組 Bus；每組最多 256 個 Bus，系統可有多個 Segment。</td></tr>
+<tr><td>Bus</td><td><code>03</code></td><td>該 Segment 中的 Bus 03；8-bit 範圍為 <code>00–FF</code>。</td></tr>
+<tr><td>Device</td><td><code>00</code></td><td>Bus 03 上的 Device 00；5-bit 範圍為 <code>00–1F</code>。</td></tr>
+<tr><td>Function</td><td><code>1</code></td><td>Device 00 的 Function 1；3-bit 範圍為 <code>0–7</code>。可編碼 8 個位置，不表示 8 個都存在。</td></tr>
+</tbody></table></div>
+<p>可編碼的位置也不能當成實體連接數量。依本章未使用 ARI／FPB 的普通 Link 規則，對端使用 Device 0；Switch 的 Downstream Port 則可在內部 Bus 上使用其他 Device Number。因此圖中的 Endpoint 與 Switch Upstream Port 都是 Device 00，而兩個 Downstream Port 分別是 Device 01、02。（Base 6.0 §7.3.1，p.911。）</p>
+<p>前綴 <code>0000:</code> 是本章用來標出 Segment 的寫法。它提供查詢所需的範圍，並不是一個額外的 Bridge，也不能拿來推算 CPU 插槽數量。</p>
+<h3>另一個 Segment 也有 03:00.0，會衝突嗎？</h3>
+<p><strong>新增教學假設：</strong>系統另有 Segment <code>0001</code>，其中一條 Root Port 路徑接到 <code>0001:03:00.0</code>。這與圖中的 <code>0000:03:00.0</code> 是兩個不同的設定對象；只有省略 Segment，才會看起來相同。紀錄資料時，應把 Segment 與 BDF 一起保留。</p>
+<p>反過來，同一份穩定快照、同一個 Segment 裡，<code>03:00.0</code> 和 <code>03:00.1</code> 具有相同的 Bus 與 Device，指向同一個 Device 的兩個 Function。至於它們在實體上裝在哪張卡，還需要實體配置的資訊；本例是題目另行給定卡 A 的組裝方式。</p>
+<details class="source-note"><summary>規格依據：編碼範圍與 Segment</summary><p>Base 6.0 §2.2.4.2、Table 2-8（p.147），Figures 2-20、2-22（p.148），說明傳統 ID 編碼；Requester ID 的條件另見下節。設定拓樸見 §7.1 pp.903–904。PCI Firmware 3.3 §1.3，pp.8–9 定義 PCI Segment Group：每組最多 256 個 PCI Bus，系統最多 65536 個 Segment。這是位址範圍，不是每個平台都實作最大數量的保證。</p></details>
+</section>
+
+<section id="identify">
+<h2>4. 只知道 BDF，怎麼查它是 Endpoint 還是 Port？</h2>
+<p>BDF 告訴你查詢對象的位置，卻沒有直接編碼它的角色。要判斷 <code>02:01.0</code> 是什麼，先查 Header Type，再到該 Function 的 PCI Express Capability 查 Device/Port Type。前者決定標頭版面；後者才區分 Root Port、Switch Port 或 Endpoint。</p>
+<ol class="route">
+<li><strong>先分清 Header 的兩個欄位</strong><br>Figure 7-8 與 Table 7-7：低 7 bits 是 Header Layout，bit 7 是 Multi-Function Device。</li>
+<li><strong>找到 PCIe 類型欄位</strong><br>Figure 7-21：從已找到的 Capability 起點加 <code>0x02</code>，定位 16-bit PCI Express Capabilities Register。</li>
+<li><strong>解碼角色</strong><br>Figure 7-23 定位 bits 7:4，Table 7-19 查 Device/Port Type 編碼與適用 Header。</li>
+</ol>
+<aside class="example"><strong>教學讀值與介面</strong><p>下表都是指定 Function 的 Configuration Space 讀取。<code>0x0E</code> 讀 8 bits；PCIe Capability 已依 <a href="chapter-0.html#case">Chapter 0 的清單走訪</a> 找到，本例各 Function 恰好都在 <code>0x70</code>，因此 <code>0x72</code> 讀 16 bits。表內第二個讀值只列該 Register 的低 byte；其餘位元不參與本題的 Version 與 Type 判讀，不假設為 0。</p></aside>
+<div class="table-wrap"><table><caption>本例的角色辨識資料</caption><thead><tr><th scope="col">Segment 0000 中的 BDF</th><th scope="col">0x0E 的 8-bit 讀值</th><th scope="col">0x72 的 16-bit 讀值之低 byte</th><th scope="col">查表後的角色</th></tr></thead><tbody>
+<tr><td><code>00:01.0</code></td><td><code>0x01</code></td><td><code>0x42</code></td><td>Type 1 Header；PCIe Type 4，Root Port。</td></tr>
+<tr><td><code>01:00.0</code></td><td><code>0x01</code></td><td><code>0x52</code></td><td>Type 1 Header；PCIe Type 5，Switch Upstream Port。</td></tr>
+<tr><td><code>02:01.0</code></td><td><code>0x01</code></td><td><code>0x62</code></td><td>Type 1 Header；PCIe Type 6，Switch Downstream Port。</td></tr>
+<tr><td><code>02:02.0</code></td><td><code>0x01</code></td><td><code>0x62</code></td><td>Type 1 Header；PCIe Type 6，另一個 Switch Downstream Port。</td></tr>
+<tr><td><code>03:00.0</code></td><td><code>0x80</code></td><td><code>0x02</code></td><td>Type 0 Header，可能有其他 Function；PCIe Type 0，Endpoint。</td></tr>
+</tbody></table></div>
+<p>以 Downstream A 為例，<code>0x01 &amp; 0x7F = 1</code> 先選出 Type 1 Header。設讀到的 16-bit Capabilities Register 為 <code>cap</code>，則 <code>(cap &amp; 0x00F0) &gt;&gt; 4 = 6</code>，才得到 Switch Downstream Port。<code>cap &amp; 0x000F = 2</code> 則表示 Capability Version 2，與 Type 6 是不同欄位，也不是連線的 PCIe 世代。</p>
+<h3>Header Type 為 0x80，就代表有 8 個 Function 嗎？</h3>
+<p>不是。先做 <code>0x80 &amp; 0x7F = 0</code>，可知 Header Layout 仍是 Type 0；bit 7 為 1，只表示這個 Device <strong>可能</strong>含有多個 Function，允許軟體探查其他 Function，並未回報數量。卡 A 的 Function 1 存在，是題目已確認的另一筆資料，不能只從 <code>0x80</code> 推出。</p>
+<p>Table 7-7 也規定，若此 bit 為 0，軟體不得探查 Function 0 以外的 Function，除非 ARI、SR-IOV 等其他機制另有指示。本章已排除這些機制；不能為了練習，就把「一律掃完 0–7」當成通用規則。</p>
+<details class="source-note"><summary>欄位位置與查表順序的來源</summary><p>Base 6.0 §7.5.1.1.9，Figure 7-8／Table 7-7，pp.924–925；§7.5.3 Figure 7-21，p.952；§7.5.3.2 Figure 7-23／Table 7-19，pp.953–954。Table 7-19 的名稱雖是 Device/Port Type，實際描述的是這個 Function 的類型。Type 1 Header 不只適用於 Switch Downstream Port，不能跳過第二次查詢。</p></details>
+</section>
+
+<section id="bridge-path">
+<h2>5. 要找 Bus 03，為什麼沿著 Downstream A？</h2>
+<p>角色已經查清楚，接著要確認橋接關係。對本章採用的一般 Type 1 Bridge 而言，Secondary Bus Number 指出緊接在下游的 Bus；Subordinate Bus Number 則標出其下游階層涵蓋的最高 Bus Number。兩個值一起讀，才分得清「下一層是哪個 Bus」與「整個下游範圍到哪裡」。</p>
+<p>閱讀順序是：先由 Header Layout 確認 Type 1，再看 Type 1 Configuration Space Header 的 Figure 7-14，找到 <code>0x19</code> 與 <code>0x1A</code>，最後讀 §7.5.1.3.3 與 §7.5.1.3.4 的欄位定義。兩個 offset 都從該 Function 的設定空間起點計算，各讀 8 bits；它們不以 PCIe Capability 為起點。</p>
+<div class="table-wrap"><table><caption>教學快照中的 Bridge 下游範圍</caption><thead><tr><th scope="col">Bridge BDF</th><th scope="col">0x19：Secondary</th><th scope="col">0x1A：Subordinate</th><th scope="col">本例如何使用</th></tr></thead><tbody>
+<tr><td><code>00:01.0</code></td><td><code>0x01</code></td><td><code>0x04</code></td><td>Root Port 下一層為 Bus 01，下游範圍涵蓋 Bus 01–04。</td></tr>
+<tr><td><code>01:00.0</code></td><td><code>0x02</code></td><td><code>0x04</code></td><td>Switch Upstream Port 下一層為內部 Bus 02，下游範圍涵蓋 Bus 02–04。</td></tr>
+<tr><td><code>02:01.0</code></td><td><code>0x03</code></td><td><code>0x03</code></td><td>Downstream A 的下游範圍只有 Bus 03。</td></tr>
+<tr><td><code>02:02.0</code></td><td><code>0x04</code></td><td><code>0x04</code></td><td>Downstream B 的下游範圍只有 Bus 04。</td></tr>
+</tbody></table></div>
+<p><strong>案例推演：</strong>目標 <code>0000:03:00.1</code> 位於 Segment 0000 的 Bus 03。Bus 03 落在 Root Port 的 01–04 範圍，也落在 Upstream Port 的 02–04 範圍；到了兩個 Downstream Port，只有 A 的 03–03 範圍符合。因此圖中的分支是 A，最後仍須以 Device 00、Function 1 選定對象。</p>
+<p>這裡練習的是把已知快照與欄位對上，沒有執行 Configuration Write。Bus Number 怎麼分配、尚未配置時如何搜尋，以及 Configuration Request 如何轉送，分別留到枚舉與交易章。也不要把這張 Bus 範圍表當成 Memory BAR 的位址窗口；它們處理的識別與資源不同。</p>
+<details class="source-note"><summary>規格依據與這個方法的範圍</summary><p>Base 6.0 §7.5.1.3，Figure 7-14（p.936）；§7.5.1.3.3–§7.5.1.3.4（p.937）。本章不使用 FPB Routing ID 機制。Primary Bus Number 位於 0x18，但 §7.5.1.3.2（p.937）說明此欄位通常不供 PCIe Function 使用，主要為相容性保留；本例沒有用它來推出 Bridge 自己的 BDF。</p></details>
+</section>
+
+<section id="requester">
+<h2>6. 封包裡的 Requester ID 和 BDF 有什麼關係？</h2>
+<p>當某個 Function 發出交易要求時，Requester ID 用來識別要求者。本章的傳統格式把 Bus、Device、Function 放進 16 bits；因此，先理解 BDF，後面閱讀交易封包才知道這個欄位在指誰。封包如何配對要求與回覆，會在 Chapter 5 再談。</p>
+<figure class="diagram">
+<svg viewBox="0 0 760 166" role="img" aria-labelledby="rid-title rid-desc" xmlns="http://www.w3.org/2000/svg">
+<title id="rid-title">傳統 16-bit Requester ID 的位元配置</title><desc id="rid-desc">bits 15 至 8 是 8-bit Bus Number，bits 7 至 3 是 5-bit Device Number，bits 2 至 0 是 3-bit Function Number。範例 Bus03、Device00、Function1 編碼為 0x0301。</desc>
+<g stroke="var(--line)" stroke-width="2"><rect x="24" y="40" width="356" height="72" fill="var(--blue-soft)"/><rect x="380" y="40" width="222" height="72" fill="var(--teal-soft)"/><rect x="602" y="40" width="134" height="72" fill="var(--surface)"/></g>
+<g fill="var(--muted)" font-size="16"><text x="24" y="27">15</text><text x="355" y="27">8</text><text x="386" y="27">7</text><text x="578" y="27">3</text><text x="608" y="27">2</text><text x="722" y="27">0</text></g>
+<g fill="var(--ink)" font-size="20" text-anchor="middle"><text x="202" y="72">Bus Number</text><text x="202" y="99">0x03</text><text x="491" y="72">Device Number</text><text x="491" y="99">0x00</text><text x="669" y="72">Function</text><text x="669" y="99">1</text><text x="380" y="150">Requester ID = 0x0301</text></g>
+</svg>
+<figcaption>自製欄位示意，適用於本章的非 ARI 傳統格式。Segment 不在這 16 bits 之內。</figcaption>
+</figure>
+<pre><code>Requester ID = (Bus &lt;&lt; 8) | (Device &lt;&lt; 3) | Function
+03:00.1 → (0x03 &lt;&lt; 8) | (0x00 &lt;&lt; 3) | 1 = 0x0301
+02:02.0 → (0x02 &lt;&lt; 8) | (0x02 &lt;&lt; 3) | 0 = 0x0210</code></pre>
+<p><strong>案例推演：</strong>要把 <code>0x0210</code> 還原，先取 <code>(id &gt;&gt; 8) &amp; 0xFF = 0x02</code> 得到 Bus，再取 <code>(id &gt;&gt; 3) &amp; 0x1F = 0x02</code> 得到 Device，最後取 <code>id &amp; 0x07 = 0</code> 得到 Function。它對應圖中的 Downstream B，而不是 Bus 02 上的 Function 0x10。</p>
+<p>這個算式只編碼身分，不表示所有經過 Downstream B 的要求都要改成 <code>0x0210</code>。Requester 是發出該要求的對象；沿途經過哪個 Bridge，是另一件事。把橋接路徑上的 BDF 都當成要求者，會失去原本要追蹤的 Function。</p>
+<p>此外，<code>0000:03:00.0</code> 與 <code>0001:03:00.0</code> 的傳統 16-bit 編碼都會是 <code>0x0300</code>。因此只拿到這 16 bits，仍缺少判定 Segment 的情境。這不等於宣稱封包完全沒有 Segment 資訊：PCIe 6.0 的部分 Flit Mode 格式另有 Segment 欄位，不能與這個 16-bit 欄位混為一談。</p>
+<details class="source-note"><summary>規格依據：Requester ID 與 Segment 的邊界</summary><p>先看 Base 6.0 §2.2.4.2 的 Table 2-8（p.147）、Figures 2-20／2-22（p.148）辨認非 ARI 的位元分配，再讀 §2.2.6.2（pp.156–157）的 Requester ID 規則。前幾張圖展示的是目的地 ID routing，不能把圖上的封包 byte offset 套到所有 Requester ID；本章只取 BDF 的編碼關係。p.157 也明定 Switch 轉送要求時不得修改 Transaction ID，並把 Segment 定義為獨立欄位。Flit Mode 的獨立 Segment 資訊見 §2.2.1.2，pp.134–139。本章只做欄位識別與編碼，沒有把傳統 BDF 的拆法延伸到 ARI。</p></details>
+</section>
+
+<section id="identity">
+<h2>7. 記住 BDF，下一次開機就能認出同一張卡嗎？</h2>
+<p>BDF 描述的是目前設定拓樸中的位置，不是製造時刻在硬體上的序號。Bus Number 由設定流程建立；若拓樸或配置方式改變，同一件硬體可能出現在不同位置。只比對兩次紀錄的 BDF，既不能保證相同位址仍是原來的硬體，也不能因位址改變就判定硬體被換掉。</p>
+<aside class="example"><strong>換一次快照來想</strong><p>假設另一次配置把卡 A 所在的 Bus 從 03 改為 05，其他相關路徑也已正確調整。原 Function 1 在新快照中就以 <code>0000:05:00.1</code> 被定位，傳統 Requester ID 也成為 <code>0x0501</code>。這是作者用來說明配置結果可能改變的情境，不表示每次開機都會重新編號。</p></aside>
+<p>若要跨開機追蹤實體裝置，就需要另外取得可信的裝置身分或平台位置資訊。Vendor ID、Device ID 描述廠商與裝置類型，不能單獨充當每一件產品的唯一序號。這類長期識別需求與本章的「選定目前哪個 Function」不同，不能用一組 BDF 同時回答。</p>
+<details class="source-note"><summary>規格依據與推論範圍</summary><p>Base 6.0 §2.2.6.2（pp.156–157）說明 Bus／Device Number 的設定、捕獲與執行期間可改變的性質；另外， §7.5.1.1.1–§7.5.1.1.2（p.917）的 Vendor ID／Device ID 定義，也支持上述區分。換成 Bus 05 是教學推演；規格不要求每次開機更改 BDF，也未由這些 ID 保證實體個體的唯一性。</p></details>
+</section>
+
+<section id="practice">
+<h2>8. 換一個條件，你會怎麼查？</h2>
+<details class="question"><summary>題目一：只讀到 Header Type = 0x01，就可以把這個 Function 標成 Switch Downstream Port 嗎？</summary><p>還不行。依 Figure 7-8／Table 7-7，低 7 bits 只確定它採 Type 1 Header。下一步要找到 PCIe Capability，沿 Figure 7-21 到相對 offset 0x02，再依 Figure 7-23／Table 7-19 解碼 Device/Port Type；值為 6 才是本題要辨識的 Switch Downstream Port。Root Port 與 Upstream Port 也使用 Type 1 Header。</p></details>
+<details class="question"><summary>題目二：我只知道 Header Type = 0x80，可以把其他七個 Function 都標成「存在」嗎？</summary><p>不能。Table 7-7 的 bit 7 只允許探查，沒有列出存在的 Function。正確的紀錄是「Type 0 Header；Device 可能含有多個 Function」，再保留各 Function 是否存在的獨立查詢結果。即使只有一個 Function，也可能看到這個 bit 為 1。</p></details>
+<details class="question"><summary>題目三：紀錄只有 Requester ID = 0x0300，能判定是卡 A 的 Function 0 嗎？</summary><p>在本章的傳統格式下，可先還原為 BDF 03:00.0；還缺少 Segment 及這筆紀錄所屬的配置快照。若 Segment 是 0001，就不是圖中的卡 A；若是不同時刻的配置，也不能直接沿用舊圖。先補齊範圍與時間，再對照 Function。</p></details>
+<details class="question"><summary>題目四：圖中的兩條分支都連到 Device 00，是不是把同一個裝置畫了兩次？</summary><p>沒有。卡 A 是 Bus 03 的 Device 00，卡 B 是 Bus 04 的 Device 00；BDF 的 Bus 部分不同。若要沿圖查到卡 B，先由 Type 1 Header 的 Figure 7-14 找到 Secondary／Subordinate 欄位，再使用本例 Downstream B 的 04–04 範圍。不能只拿 Device Number 00 比對。</p></details>
+</section>
+
+<section id="next">
+<h2>9. 知道查誰之後，下一步看什麼？</h2>
+<p>現在可以先用 Segment 與 BDF 選定 Function，再用 Header Layout 與 Device/Port Type 判斷該怎麼讀它。Chapter 2 將整理設定空間的完整查詢方法：傳統與 Extended Capability 從哪裡開始、指標怎麼走，以及欄位寬度、版本與存取屬性如何影響解讀。</p>
+<p>Chapter 2 之後的內容仍在規劃中。需要先回顧具體的能力查詢，可讀 <a href="chapter-0.html#case">Chapter 0 的速率案例</a>；整套安排見 <a href="index.html">課程閱讀路線</a>。</p>
+</section>
+
+<section id="sources">
+<h2>版本與來源</h2>
+<p>主要依據是讀者提供的 PCI Express Base Specification Revision 6.0（6.0-1.0-PUB）與 PCI Firmware Specification Revision 3.3。Firmware 3.3 的參考文件列的是 Base 5.0（§1.2，p.7），本章沒有把它當成 Base 6.0 的配套版本；實際欄位均以 Base 6.0 為準。</p>
+<p>各節已列出原文位置與使用範圍。自製拓樸圖、BDF、讀值和換條件的案例均為教學設計；原始 PDF 不隨教材公開。查核日期：2026-10-20。</p>
+</section>

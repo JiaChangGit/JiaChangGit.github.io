@@ -57,10 +57,22 @@ jobs:
 
       - name: Verify PCIe pages were included
         run: |
-          test -f _site/DOCS/pcie-course/chapter-0.html
-          test -f _site/DOCS/pcie-course/index.html
-          test -f _site/pcie/chapter-0-zh-tw/index.html
-          test -f _site/pcie/chapter-0-en/index.html
+          python3 -B - <<'PY'
+          import json
+          from pathlib import Path
+          curriculum = json.loads(Path('.ai/pcie-course/curriculum.json').read_text(encoding='utf-8'))
+          expected = [Path('_site/DOCS/pcie-course/index.html')]
+          for chapter in curriculum['chapters']:
+              if chapter['status'] != 'ready':
+                  continue
+              number = chapter['number']
+              expected.append(Path(f'_site/DOCS/pcie-course/chapter-{number}.html'))
+              expected.extend(Path(f'_site/pcie/chapter-{number}-{language}/index.html') for language in ('zh-tw', 'en'))
+          missing = [str(path) for path in expected if not path.is_file()]
+          if missing:
+              raise SystemExit('Missing published PCIe pages: ' + ', '.join(missing))
+          print(f'Verified {len(expected)} published PCIe pages.')
+          PY
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
