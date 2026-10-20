@@ -1,0 +1,465 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 2,
+  "updated": "2026-10-20",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH2-SPACE-001",
+      "claim": "設定空間為 4096 bytes；前 256 bytes 為 PCI 相容區。Function offset、結構相對位移、ECAM 的 CPU 位址及 BAR 資源不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.2",
+        "7.2.1",
+        "7.2.2",
+        "7.5.1.1"
+      ],
+      "figures": [
+        "7-3",
+        "7-4"
+      ],
+      "tables": [
+        "7-1"
+      ],
+      "document_pages": [
+        905,
+        906,
+        907,
+        908,
+        909,
+        916
+      ],
+      "pdf_pages": [
+        905,
+        906,
+        907,
+        908,
+        909,
+        916
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-ENTRY-001",
+      "claim": "Type 0／1 的 Capabilities Pointer 在 0x34；Status bit 4 指示清單。指標低 2 bits 須遮罩。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.4",
+        "7.5.1.1.11"
+      ],
+      "figures": [
+        "7-6"
+      ],
+      "tables": [
+        "7-5"
+      ],
+      "document_pages": [
+        921,
+        922,
+        926
+      ],
+      "pdf_pages": [
+        921,
+        922,
+        926
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-HEADER-001",
+      "claim": "Header Type 低 7 bits 決定布局；bit 7 另指多功能 Device，與封包 Type 不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.9",
+        "7.3.2",
+        "7.3.3"
+      ],
+      "figures": [
+        "7-8"
+      ],
+      "tables": [
+        "7-7"
+      ],
+      "document_pages": [
+        912,
+        913,
+        924,
+        925
+      ],
+      "pdf_pages": [
+        912,
+        913,
+        924,
+        925
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-CONVENTIONAL-001",
+      "claim": "PM、PCIe、MSI-X 的 Capability ID 分別為 01h、10h、11h；ID=00h 的 Null Capability 仍須沿 Next Pointer 走訪。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.2.1",
+        "7.5.3.1",
+        "7.7.2.1",
+        "7.9.27"
+      ],
+      "figures": [
+        "7-18",
+        "7-22",
+        "7-59",
+        "7-384"
+      ],
+      "tables": [
+        "7-14",
+        "7-18",
+        "7-48",
+        "7-336"
+      ],
+      "document_pages": [
+        945,
+        953,
+        1021,
+        1022,
+        1315
+      ],
+      "pdf_pages": [
+        945,
+        953,
+        1021,
+        1022,
+        1315
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-EXTENDED-001",
+      "claim": "一般 Function Extended 清單從 0x100 開始；Header 的 ID、Version、Next 分別為 bits 15:0、19:16、31:20。Next 是從 Function 起點計算的 byte offset；無清單時 0x100 各欄為 0。RCRB 另有規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.6",
+        "7.6.1",
+        "7.6.2",
+        "7.6.3"
+      ],
+      "figures": [
+        "7-42",
+        "7-43"
+      ],
+      "tables": [
+        "7-39"
+      ],
+      "document_pages": [
+        1008,
+        1009,
+        1010
+      ],
+      "pdf_pages": [
+        1008,
+        1009,
+        1010
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-VERSION-001",
+      "claim": "AER 的 ID 為 0001h；支援 Flit Mode 者須用 Version 3，本例非 Flit Mode 可用 Version 2。通用 Extended Header 的版本比較須遵守向前相容規則。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.8.4.1",
+        "7.6.3"
+      ],
+      "figures": [
+        "7-154"
+      ],
+      "tables": [
+        "7-39",
+        "7-134"
+      ],
+      "document_pages": [
+        1010,
+        1112
+      ],
+      "pdf_pages": [
+        1010,
+        1112
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-DSN-001",
+      "claim": "DSN 為可選 Extended Capability，ID=0003h、Version=1；一般多功能 Device 若有 DSN，Function 0 必須實作，其他有實作的 Function 必須回報同值。此處排除 RCiEP 與 PF／VF。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.3",
+        "7.9.3.1"
+      ],
+      "figures": [
+        "7-241",
+        "7-242"
+      ],
+      "tables": [
+        "7-221"
+      ],
+      "document_pages": [
+        1205,
+        1206
+      ],
+      "pdf_pages": [
+        1205,
+        1206
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-DSN-BYTES-001",
+      "claim": "DSN Lower／Upper DW 位於結構 +0x04／+0x08；Register bits 7:0 對應 EUI bits 63:56，逐 byte 反向對映。EUI 包含 IEEE 24-bit company id 與製造商 40-bit extension。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.9.3.2"
+      ],
+      "figures": [
+        "7-243"
+      ],
+      "tables": [
+        "7-222"
+      ],
+      "document_pages": [
+        1206,
+        1207
+      ],
+      "pdf_pages": [
+        1206,
+        1207
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "案例僅練習資料重組，不宣稱數字已由 IEEE 配發；讀到識別資料不等於完成認證。"
+    },
+    {
+      "id": "PCIE-CH2-ATTRIBUTES-001",
+      "claim": "RO 可在明定時反映硬體變動；RW1C 寫 1 清除、寫 0 無效；RsvdP 寫入必須保存讀值，RsvdZ 必須寫 0。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.4"
+      ],
+      "figures": [],
+      "tables": [
+        "7-2"
+      ],
+      "document_pages": [
+        914,
+        915
+      ],
+      "pdf_pages": [
+        914,
+        915
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH2-EVIDENCE-001",
+      "claim": "未實作 Register 的設定讀取在無其他錯誤時成功回 0；這不能單獨證明存在有意義的欄位。Capability 存在不等於 MSI-X 已啟用。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.3.3",
+        "7.7.2.2"
+      ],
+      "figures": [],
+      "tables": [
+        "7-49"
+      ],
+      "document_pages": [
+        913,
+        1022
+      ],
+      "pdf_pages": [
+        913,
+        1022
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "範圍、對齊、重訪檢查是教材解析策略；失敗讀取不能當成有效的缺乏支援證據。"
+    },
+    {
+      "id": "PCIE-CH2-EXAMPLE-001",
+      "claim": "重建傳統與 Extended 清單，跨過 Null 到 PCIe，找到 DSN 並按 Table 7-222 重組 EUI。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1",
+        "7.6.3",
+        "7.9.3.2",
+        "7.9.27"
+      ],
+      "figures": [
+        "7-43",
+        "7-243",
+        "7-384"
+      ],
+      "tables": [
+        "7-39",
+        "7-222",
+        "7-336"
+      ],
+      "document_pages": [
+        916,
+        1010,
+        1207,
+        1315
+      ],
+      "pdf_pages": [
+        916,
+        1010,
+        1207,
+        1315
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "assumptions": [
+        "目標 0000:03:00.0，沿用 Chapter 1 多功能 Endpoint；PCIe Capability 起點 0x70。",
+        "讀取成功、快照穩定，非 VF／RCiEP，不用 ARI、SR-IOV、RCRB，不支援 Flit Mode。",
+        "所有讀值為作者設計；未列欄位不視為零；DSN 僅示範編碼。"
+      ],
+      "raw_reads": [
+        {
+          "offset": "0x0E",
+          "width_bits": 8,
+          "value": "0x80"
+        },
+        {
+          "offset": "0x06",
+          "width_bits": 16,
+          "value": "0x0010"
+        },
+        {
+          "offset": "0x34",
+          "width_bits": 8,
+          "value": "0x40"
+        },
+        {
+          "offset": "0x40",
+          "width_bits": 16,
+          "value": "0x5001"
+        },
+        {
+          "offset": "0x50",
+          "width_bits": 16,
+          "value": "0x7000"
+        },
+        {
+          "offset": "0x70",
+          "width_bits": 16,
+          "value": "0xD010"
+        },
+        {
+          "offset": "0xD0",
+          "width_bits": 16,
+          "value": "0x0011"
+        },
+        {
+          "offset": "0x100",
+          "width_bits": 32,
+          "value": "0x18020001"
+        },
+        {
+          "offset": "0x180",
+          "width_bits": 32,
+          "value": "0x00010003"
+        },
+        {
+          "offset": "0x184",
+          "width_bits": 32,
+          "value": "0x33221100"
+        },
+        {
+          "offset": "0x188",
+          "width_bits": 32,
+          "value": "0x77665544"
+        }
+      ],
+      "conventional_offsets": [
+        "0x40",
+        "0x50",
+        "0x70",
+        "0xD0"
+      ],
+      "conventional_ids": [
+        "0x01",
+        "0x00",
+        "0x10",
+        "0x11"
+      ],
+      "extended_offsets": [
+        "0x100",
+        "0x180"
+      ],
+      "extended_ids": [
+        "0x0001",
+        "0x0003"
+      ],
+      "dsn_integer": "0x7766554433221100",
+      "eui_bytes": "00-11-22-33-44-55-66-77",
+      "calculations": [
+        {
+          "expression": "(0x7000 >> 8) & 0xFC",
+          "result": "0x70"
+        },
+        {
+          "expression": "(0x18020001 >> 20) & 0xFFC",
+          "result": "0x180"
+        },
+        {
+          "expression": "(0x18020001 >> 16) & 0xF",
+          "result": "0x2"
+        },
+        {
+          "expression": "0x180 + 0x04",
+          "result": "0x184"
+        },
+        {
+          "expression": "0x180 + 0x08",
+          "result": "0x188"
+        },
+        {
+          "expression": "(0x77665544 << 32) | 0x33221100",
+          "result": "0x7766554433221100"
+        },
+        {
+          "expression": "0b1001 & ~0b0001",
+          "result": "0x8"
+        }
+      ]
+    }
+  ]
+}

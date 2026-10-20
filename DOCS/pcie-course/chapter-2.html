@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。">
+  <title>讀取設定空間與尋找 Capability · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 2</p>
+      <h1>讀取設定空間與尋找 Capability</h1>
+      <p class="header-description">從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-20</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#map">1. 同一個 offset，先問它從哪裡算起</a></li><li><a href="#choose">2. 想查某項功能，要先走哪一份清單？</a></li><li><a href="#conventional">3. 清單中出現 ID = 0，就可以停止了嗎？</a></li><li><a href="#extended">4. 要找 Device Serial Number，依序翻哪幾張圖？</a></li><li><a href="#attributes">5. 讀到一個欄位，就能把原值寫回去嗎？</a></li><li><a href="#limits">6. 找不到時，怎麼分清「不存在」與「還不知道」？</a></li><li><a href="#practice">7. 條件改變後，你會改哪一步？</a></li><li><a href="#next">8. 查詢入口本身是怎麼找到的？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">已經知道要查哪個 Function，下一步卻不一定是「找到某個固定 offset」。有些欄位在標頭的固定位置，有些藏在 Capability 清單裡；兩種 Capability 清單又有不同的入口與格式。本章用「這個 Function 是否提供裝置序號？」串起完整讀法。</p>
+<p>先備知識是 <a href="chapter-1.html#address">Segment 與 BDF</a>，以及 <a href="chapter-1.html#identify">Header Layout 與 Device/Port Type</a>。本章不重做連線速率案例，而是補上可套用到其他功能的查詢方法。</p>
+<aside class="note"><strong>版本與範圍</strong><p>依 PCI Express Base Specification Revision 6.0。案例是一般 PCI Express Endpoint，採 Type 0 Header，並非 RCiEP 或 VF；不用 ARI、SR-IOV 或 RCRB 的清單。本章只讀取假設資料，不操作實體裝置。文件頁與 PDF 頁序相同。</p></aside>
+
+<section id="map"><h2>1. 同一個 offset，先問它從哪裡算起</h2>
+<p>每個 Function 的 PCIe Configuration Space（設定空間）有 4096 bytes。前 256 bytes 保留 PCI 相容布局，後面才是 Extended Configuration Space。這裡的 byte offset 是 Function 內的位置；它既不是 BDF，也不是 CPU 可以直接拿去存取的實體位址。</p>
+<figure class="diagram"><svg viewBox="0 0 760 260" role="img" aria-labelledby="space-title space-desc" xmlns="http://www.w3.org/2000/svg"><title id="space-title">設定空間的三個閱讀區域</title><desc id="space-desc">000至03F為標頭，040至0FF放傳統Capability等內容，100至FFF為Extended Configuration Space。傳統清單入口在標頭034，Extended清單由100開始。圖不按容量比例。</desc><g stroke="var(--line)" stroke-width="2"><rect x="20" y="50" width="230" height="120" fill="var(--blue-soft)"/><rect x="250" y="50" width="230" height="120" fill="var(--teal-soft)"/><rect x="480" y="50" width="260" height="120" fill="var(--surface)"/></g><g fill="var(--ink)" font-size="18" text-anchor="middle"><text x="135" y="84">Configuration Header</text><text x="135" y="119">0x000–0x03F</text><text x="135" y="150">0x034：傳統清單入口</text><text x="365" y="84">傳統 Capability 等內容</text><text x="365" y="119">0x040–0x0FF</text><text x="365" y="150">PCIe Capability 在此區</text><text x="610" y="84">Extended Configuration</text><text x="610" y="119">0x100–0xFFF</text><text x="610" y="150">0x100：Extended 清單入口</text></g><g fill="var(--muted)" font-size="16"><text x="20" y="28">同一個已選定的 Function</text><text x="20" y="212">前 256 bytes：PCI 相容區</text><text x="480" y="212">後 3840 bytes：延伸區</text><text x="20" y="244">示意圖不按容量比例繪製；空白位置不代表可自行放入新結構。</text></g></svg><figcaption>自製閱讀地圖，依 Base 6.0 Figure 7-3（p.906）、Figure 7-4（p.916）與 Figure 7-42（p.1009）整理。</figcaption></figure>
+<p>例如，<code>0x34</code> 是從 Function 設定空間起點計算的 Capabilities Pointer；某個結構標示的 <code>Offset 04h</code>，則可能是從該結構起點計算。先確認原圖畫的是整份設定空間，還是其中一個結構，再做加法。</p>
+<h3>設定空間透過記憶體映射存取，就等於裝置的 Memory BAR 嗎？</h3>
+<p>不等於。ECAM（Enhanced Configuration Access Mechanism）把 CPU 對指定記憶體範圍的存取轉成 Configuration Request；BAR 則描述裝置所需的資源。兩者都可能從 CPU 的記憶體位址發起，目的與轉換方式卻不同。</p>
+<p>查詢介面還必須能存取所需範圍。PCI 相容存取機制只涵蓋前 256 bytes；不能用它沒有提供的能力，推論 <code>0x100</code> 之後的功能不存在。ECAM 的平台基址與可用 Bus 範圍要由平台提供，本章不自行猜一個實體位址。</p>
+<details class="source-note"><summary>規格依據與存取限制</summary><p>Base 6.0 §7.2–§7.2.2.2，pp.905–909；Table 7-1（pp.907–908）列出 ECAM 位址中的 Bus、Device、Function 與 Register 部分。跨 DWORD 邊界或使用鎖定語意的 CPU 存取，不保證能由 Root Complex 轉成 Configuration Request（pp.907、909）。本章使用自然對齊、大小明確的設定讀取。</p></details></section>
+
+<section id="choose"><h2>2. 想查某項功能，要先走哪一份清單？</h2>
+<p>先查該功能在指定版本中的正式結構名稱。PCI Express Capability 雖然名稱帶有 PCI Express，仍屬於前 256 bytes 的傳統清單；Device Serial Number 則是 Extended Capability。不能單靠英文名稱中是否出現 PCIe 來分類。</p>
+<div class="table-wrap"><table><caption>兩份清單的差異</caption><thead><tr><th scope="col">比較項目</th><th scope="col">傳統 Capability</th><th scope="col">Extended Capability</th></tr></thead><tbody>
+<tr><td>設定空間內的入口</td><td>先看 Status.Capabilities List，再讀 Header 的 Capabilities Pointer；本章 Type 0／1 在 0x34。</td><td>從 0x100 的 32-bit Header 開始，不接在傳統清單尾端。</td></tr>
+<tr><td>識別與下一項</td><td>一般開頭的低 byte 是 8-bit ID，高 byte 是 8-bit Next Pointer。</td><td>bits 15:0 為 ID，19:16 為 Version，31:20 為 Next Offset。</td></tr>
+<tr><td>下一項的基準</td><td>Function 設定空間起點；不是目前結構起點。</td><td>同樣從 Function 設定空間起點計算。取出後要遮掉低 2 bits。</td></tr>
+<tr><td>清單結束</td><td>Next Pointer 為 0。ID 為 0 的 Null Capability 仍可能有下一項。</td><td>Next Offset 為 0。若完全沒有 Extended Capability，0x100 的 Header 依規格回報 ID、Version、Next 全為 0。</td></tr>
+</tbody></table></div>
+<p>Header Type 決定標頭布局，與 Configuration Request 封包的 Type 0／Type 1 不是同一個分類；封包類型會在下一章處理。本章已知目標 Header 是 Type 0，實際布局可對照 Figure 7-10（p.928）；Type 1 則看 Figure 7-14（p.936）。</p>
+<details class="source-note"><summary>這張表的來源與例外</summary><p>Base 6.0 §7.5.1.1.4，Figure 7-6／Table 7-5（pp.921–922）；§7.5.1.1.11（p.926）；傳統 Header 例見 Figure 7-22／Table 7-18（p.953）。Extended 格式見 §7.6–§7.6.3、Figures 7-42／7-43、Table 7-39（pp.1008–1010）。Null Capability 見 §7.9.27、Figure 7-384／Table 7-336（p.1315）。RCRB 的起點與空清單規則不同，本章沒有把它納入。</p></details></section>
+
+<section id="conventional"><h2>3. 清單中出現 ID = 0，就可以停止了嗎？</h2>
+<aside class="example"><strong>教學假設</strong><p>目標為已發現的 <code>0000:03:00.0</code>。設定讀取均成功，資料來自同一份穩定快照，平台可以存取完整設定空間。下列位置與讀值由作者設計，未列出的欄位不視為 0。此 Function 不支援 Flit Mode；後面的 AER Header 因而採可用的 Version 2。這個前提是為了讓範例結構彼此一致，不由清單位置推得。</p></aside>
+<div class="table-wrap"><table><caption>傳統清單的假設讀值</caption><thead><tr><th scope="col">Function 內 byte offset</th><th scope="col">讀取寬度</th><th scope="col">讀值</th><th scope="col">這次查詢的用途</th></tr></thead><tbody>
+<tr><td>0x0E</td><td>8 bits</td><td>0x80</td><td>Header Layout 為 Type 0；bit 7 表示多功能 Device。</td></tr><tr><td>0x06</td><td>16 bits</td><td>0x0010</td><td>Status bit 4 為 1，有 Capability 清單。</td></tr><tr><td>0x34</td><td>8 bits</td><td>0x40</td><td>第一項位於 0x40。</td></tr><tr><td>0x40</td><td>16 bits</td><td>0x5001</td><td>ID 01h：Power Management；下一項 0x50。</td></tr><tr><td>0x50</td><td>16 bits</td><td>0x7000</td><td>ID 00h：Null Capability；下一項 0x70。</td></tr><tr><td>0x70</td><td>16 bits</td><td>0xD010</td><td>ID 10h：PCI Express Capability；下一項 0xD0。</td></tr><tr><td>0xD0</td><td>16 bits</td><td>0x0011</td><td>ID 11h：MSI-X；Next 為 0，清單結束。</td></tr>
+</tbody></table></div>
+<p><strong>案例推演：</strong>入口為 <code>0x40 &amp; 0xFC = 0x40</code>。每次讀取 16 bits 後，以 <code>value &amp; 0xFF</code> 取 ID，以高 8 bits 對應的 <code>(value &gt;&gt; 8) &amp; 0xFC</code> 取得下一項的位置。</p>
+<pre><code>0x40 → PM → 0x50 → Null → 0x70 → PCIe → 0xD0 → MSI-X → 結束
+在 0x50：ID = 0x7000 &amp; 0xFF = 0
+         Next = (0x7000 &gt;&gt; 8) &amp; 0xFC = 0x70</code></pre>
+<p>Null Capability 只是沒有功能資料的清單節點。看到它應沿 Next 繼續走；若把 ID 0 當成終點，就會漏掉後面的 PCIe 與 MSI-X。反過來，在這份傳統清單找不到 Device Serial Number，也不能宣告它不存在，因為目標屬於另一份清單。</p>
+<p>本例的 MSI-X 結構存在，也不代表中斷已啟用。能力的存在、控制位設定及目前是否能使用，仍是不同問題；MSI-X 的設定流程留到中斷章。</p>
+<details class="source-note"><summary>本例 ID 與指標的核對位置</summary><p>PM：§7.5.2.1，Figure 7-18／Table 7-14，p.945。Null：§7.9.27，p.1315。PCIe：§7.5.3.1，Figure 7-22／Table 7-18，p.953。MSI-X：§7.7.2.1，Figure 7-59／Table 7-48，pp.1021–1022；啟用位另見 Table 7-49，p.1022。起始指標低 2 bits 的遮罩規則見 p.926；配置資料採小端序，見 §7.5.1.1，p.916。</p></details></section>
+
+<section id="extended"><h2>4. 要找 Device Serial Number，依序翻哪幾張圖？</h2>
+<ol class="route"><li><strong>確認入口</strong><br>Figure 7-42／§7.6.1：Extended 清單由設定空間 0x100 開始。</li><li><strong>解開清單 Header</strong><br>Figure 7-43／Table 7-39：讀 32 bits，分出 ID、Version 與 Next。</li><li><strong>確認目標與資料位置</strong><br>Figure 7-242／Table 7-221：DSN 的 ID 為 0003h；Figure 7-241：序號位於結構起點 +0x04、+0x08。</li></ol>
+<p class="term-note">DSN 是 Device Serial Number 的縮寫。這是可選的 Extended Capability，不是每個 Function 都必須提供，也不是每個 Function 各自擁有不同序號。</p>
+<div class="table-wrap"><table><caption>Extended 清單與序號的假設讀值</caption><thead><tr><th scope="col">Function 內 byte offset</th><th scope="col">讀取寬度</th><th scope="col">讀值</th><th scope="col">解讀</th></tr></thead><tbody>
+<tr><td>0x100</td><td>32 bits</td><td>0x18020001</td><td>AER：ID 0001h、Version 2；下一項 0x180。</td></tr><tr><td>0x180</td><td>32 bits</td><td>0x00010003</td><td>DSN：ID 0003h、Version 1；Next 為 0。</td></tr><tr><td>0x184</td><td>32 bits</td><td>0x33221100</td><td>Serial Number Register 的 Lower DW。</td></tr><tr><td>0x188</td><td>32 bits</td><td>0x77665544</td><td>Serial Number Register 的 Upper DW。</td></tr>
+</tbody></table></div>
+<pre><code>header = 0x18020001
+ID      = header &amp; 0xFFFF          = 0x0001
+Version = (header &gt;&gt; 16) &amp; 0xF     = 2
+Next    = (header &gt;&gt; 20) &amp; 0xFFC   = 0x180</code></pre>
+<p><strong>案例推演：</strong>下一筆讀取在 <code>0x180</code>，不是 <code>0x100 + 0x180</code>，也不是把 0x180 再乘 4。Next 已經是 byte offset；DWORD 對齊只要求低 2 bits 為 0。到 0x180 讀到 ID 0003h、Version 1 後，才依 DSN 的布局讀 <code>0x180 + 0x04 = 0x184</code> 與 <code>0x180 + 0x08 = 0x188</code>。</p>
+<h3>兩個 DWORD 拼起來，就是平常書寫的 EUI-64 順序嗎？</h3>
+<p>先分清楚「Register 整數」與「識別碼的位元組順序」。本例組成的 Register 整數是 <code>(0x77665544 &lt;&lt; 32) | 0x33221100 = 0x7766554433221100</code>。Table 7-222 另外規定，Register bits 7:0 對應 EUI bits 63:56，接著依 byte 對映；因此本例按 EUI 的高位元組到低位元組書寫時，是 <code>00-11-22-33-44-55-66-77</code>。</p>
+<p>這組數字只示範資料重組，不主張是已配發或可以拿去使用的產品序號。真實 DSN 必須符合 Table 7-222 的 IEEE 公司識別碼與製造商延伸識別碼規則。序號也不能單獨當成身分認證證據。</p>
+<p>DSN 的範圍還要讀 §7.9.3：一般多功能 Device 若實作這項能力，Function 0 必須實作；其他有實作的 Function 必須回報相同值。因此，找到相同 DSN 不能用來區分同一個 Device 的 Function 0 與 Function 1；目前的設定對象仍由 Segment 與 BDF 選定。</p>
+<details class="source-note"><summary>原文定位與版本條件</summary><p>清單：§7.6–§7.6.3，Figures 7-42／7-43、Table 7-39，pp.1008–1010。AER Header：§7.8.4.1、Figure 7-154／Table 7-134，p.1112；支援 Flit Mode 時須用 Version 3，本例已排除該情況。DSN：§7.9.3–§7.9.3.2，Figures 7-241–7-243、Tables 7-221／7-222，pp.1205–1207。RCiEP、PF／VF 有另外規則，本例不適用。Table 7-39 允許向前相容的更高 Capability Version，不能把「只接受等於 1」寫成所有版本的通用搜尋規則。</p></details></section>
+
+<section id="attributes"><h2>5. 讀到一個欄位，就能把原值寫回去嗎？</h2>
+<p>不能只看數值，還要看表格的 Attributes 欄。欄位可以有相同寬度，卻對寫入做出完全不同的反應。讀取與修改應是兩個分開決定的動作；查詢能力時，不需要用寫入來「試看看」。</p>
+<div class="table-wrap"><table><caption>先認識會直接影響判讀的存取屬性</caption><thead><tr><th scope="col">屬性</th><th scope="col">讀值與寫入的意義</th><th scope="col">常見誤判</th></tr></thead><tbody>
+<tr><td>RO</td><td>軟體不能改寫；若欄位明確反映硬體狀態，值仍可能隨執行狀態改變。</td><td>唯讀不等於永遠不變。</td></tr><tr><td>RW</td><td>軟體可設定或清除，仍須遵守該欄位的額外條件。</td><td>可寫不代表任何時刻、任何值都合法。</td></tr><tr><td>RW1C</td><td>讀取狀態；寫 1 清除對應狀態，寫 0 沒有效果。</td><td>把讀值原樣寫回，可能清掉原本想保留的事件。</td></tr><tr><td>RsvdP</td><td>保留且保存。此版本讀為 0，寫入時軟體必須保存讀到的值。</td><td>不能自行借來存資料。</td></tr><tr><td>RsvdZ</td><td>保留且寫零。此版本讀為 0，寫入時軟體必須使用 0。</td><td>不能對所有 Reserved 都套相同的讀改寫方式。</td></tr>
+</tbody></table></div>
+<aside class="example"><strong>語義練習，不是實際 Register 配置</strong><p>假設一個 4-bit 狀態欄全為 RW1C，讀到 <code>1001b</code>，只想清除 bit 0。應寫 <code>0001b</code>；若期間沒有新事件，剩下 <code>1000b</code>。若把讀到的 <code>1001b</code> 原樣寫回，bit 3 也會一起被清掉。真實 Register 可能混合不同屬性，必須按整張欄位表組成寫值。</p></aside>
+<details class="source-note"><summary>規格依據</summary><p>Base 6.0 §7.4，Table 7-2，pp.913–915；本表取 RO、RW、RW1C、RsvdP、RsvdZ 的語義。HwInit 與 Sticky 類型另有初始化和 Reset 條件，留到相關章節使用，不把未列在此表的類型視為等同 RW。</p></details></section>
+
+<section id="limits"><h2>6. 找不到時，怎麼分清「不存在」與「還不知道」？</h2>
+<div class="table-wrap"><table><caption>把查詢結果寫成可核對的結論</caption><thead><tr><th scope="col">實際取得的證據</th><th scope="col">可以怎麼記錄？</th><th scope="col">仍不能推論什麼？</th></tr></thead><tbody>
+<tr><td>在正確清單中找到目標 ID，且已核對版本與類型。</td><td>此 Function 暴露該 Capability；可繼續讀其定義欄位。</td><td>不能直接宣告功能已啟用、工作已完成。</td></tr><tr><td>成功走完適用的清單，Next 為 0，沒有找到可選的目標。</td><td>這份有效清單沒有暴露目標 Capability。</td><td>不能因此宣告整張卡、其他 Function 都不支援。</td></tr><tr><td>有效讀取 0x100 得 0x00000000。</td><td>依 §7.6.1，這個 Function 沒有 Extended Capability。</td><td>不能把同樣規則套到傳統清單的 Null ID。</td></tr><tr><td>存取介面不支援延伸區，或這次讀取失敗。</td><td>尚未取得可用的查詢結果。</td><td>不能拿失敗後的 buffer 當成「支援位元全為 0」。</td></tr><tr><td>指標循環、超出範圍，或資料與必要結構矛盾。</td><td>清單無法可靠解析，保留異常位置與讀值。</td><td>不能假裝正常走到結尾。</td></tr>
+</tbody></table></div>
+<p>最後一列是<strong>教材採用的解析檢查</strong>，不是額外發明的裝置功能：記住走過的 offset，檢查範圍與對齊，遇到無法解讀的資料就停止推論。清單位置不必遞增，不能只因 Next 比目前位置小，就宣告錯誤；是否重訪同一節點才是循環檢查的重點。</p>
+<p>同樣地，成功讀到 0 不保證那裡是一個有意義的欄位。Base 6.0 §7.3.3（p.913）規定，在沒有其他需回報錯誤的情況下，對未實作 Register 的設定讀取成功回傳 0。位置與格式必須先由標頭、Capability 或明確的 Register 定義建立，不能靠讀值看起來合理來猜。</p></section>
+
+<section id="practice"><h2>7. 條件改變後，你會改哪一步？</h2>
+<details class="question"><summary>讀到 0x50 的值是 0x7000，下一步是停止、讀 0x70，還是讀 0xC0？</summary><p>讀 0x70。ID 0 是傳統 Null Capability，Next 0x70 從設定空間起點計算。0xC0 是把目前位置錯加上 Next 的結果。（Figure 7-384／Table 7-336，p.1315；各 Next Pointer 的定義見清單來源。）</p></details>
+<details class="question"><summary>Extended Header 改成 0x24010003，DSN 資料要到 0x244 讀嗎？</summary><p>先問這個 Header 是在哪裡讀到的。若仍在 0x180，ID 0003h 代表目前這一項就是 DSN，資料仍在 0x184 與 0x188；0x240 是下一項的位置。只有目前結構真的位於 0x240，Lower DW 才在 0x244。（Figures 7-241／7-243，pp.1205–1206；Table 7-39，p.1010。）</p></details>
+<details class="question"><summary>同一個 Device 的兩個 Function 回報相同 DSN，是規格違反嗎？</summary><p>不是。本章的一般多功能 Device，其他有實作 DSN 的 Function 必須回報與 Function 0 相同的值。DSN 不能拿來代替 BDF 的 Function 部分。（§7.9.3，p.1205。）</p></details>
+<details class="question"><summary>某個狀態是 RO，兩次讀值不同，就代表裝置壞了嗎？</summary><p>不能這樣判定。先查欄位是否明確反映會變動的硬體狀態。RO 限制的是軟體改寫，並不禁止硬體依定義更新狀態。（Table 7-2，p.914。）</p></details></section>
+
+<section id="next"><h2>8. 查詢入口本身是怎麼找到的？</h2><p>本章從一個已知存在的 Function 開始。接著的 <a href="chapter-3.html">Chapter 3</a> 會往前追問：系統還不知道有哪些 Bus 和 Function 時，如何安排搜尋路徑？原本尚未配置的 Bridge，又如何逐步成為可查詢的下游入口？</p></section>
+<section id="sources"><h2>版本與來源</h2><p>本章以使用者提供的 PCI Express Base Specification Revision 6.0（6.0-1.0-PUB）為依據。各節附精確圖表與頁碼；所有讀值、拓樸位置與解析檢查均已區分為教學假設或作者的檢查方法。查核日期：2026-10-20。原始 PDF 不隨教材散布。</p></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-1.html">← Chapter 1</a><a href="chapter-3.html">Chapter 3 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

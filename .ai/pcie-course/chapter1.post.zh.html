@@ -64,4 +64,4 @@ Device/Port Type：(PCIe_Capabilities &amp; 0x00F0) &gt;&gt; 4</code></pre>
 <details class="question"><summary>目標改成 0000:04:00.0，仍然經過 Downstream Port A 嗎？</summary><p>不會。依本例快照，Bus <code>04</code> 落在 Downstream Port B 的 <code>04–04</code> 範圍內，卻不在 A 的 <code>03–03</code> 範圍。前段仍經過同一個 Root Port 與 Upstream Port，只有 Switch 的下游分支改變。（Base 6.0 §7.5.1.3.3–§7.5.1.3.4，p.937。）</p></details>
 <details class="question"><summary>兩筆紀錄的 BDF 都是 03:00.0，是否就可以視為同一個 Function？</summary><p>還不能。至少先確認 Segment 與紀錄所屬的配置時間。本例的 <code>0000:03:00.0</code> 和 <code>0001:03:00.0</code> 是不同 Function；若是不同時間的紀錄，相同 BDF 也不能單獨證明硬體身分相同。（Firmware 3.3 §1.3，pp.8–9；Base 6.0 §2.2.6.2，p.156。）</p></details>
 </section>
-<p>讀懂這些識別資訊後，下一步才是系統性地查詢某個 Function 的設定空間與 Capability。完整拓樸圖、逐步判讀與來源整理，見 <a href="/DOCS/pcie-course/chapter-1.html">Chapter 1 中文教學</a>；Chapter 2 仍在規劃中。</p>
+<p>讀懂這些識別資訊後，下一步才是系統性地查詢某個 Function 的設定空間與 Capability。完整拓樸圖、逐步判讀與來源整理，見 <a href="/DOCS/pcie-course/chapter-1.html">Chapter 1 中文教學</a>；接著可讀 <a href="/DOCS/pcie-course/chapter-2.html">Chapter 2：設定空間與 Capability</a>。</p>

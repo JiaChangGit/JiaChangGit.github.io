@@ -4,7 +4,13 @@
 
 [Chapter 1 完整中文教學](DOCS/pcie-course/chapter-1.html) · [Chapter 1 中文文章](https://jiachanggit.github.io/pcie/chapter-1-zh-tw/) · [Chapter 1 English](https://jiachanggit.github.io/pcie/chapter-1-en/)
 
-目前完成 Chapter 0、Chapter 1；Chapter 2–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
+[Chapter 2 設定空間與 Capability](DOCS/pcie-course/chapter-2.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-2-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-2-en/)
+
+[Chapter 3 枚舉與裝置發現](DOCS/pcie-course/chapter-3.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-3-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-3-en/)
+
+[Chapter 4 BAR 與資源配置](DOCS/pcie-course/chapter-4.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-4-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-4-en/)
+
+目前完成 Chapter 0–4；Chapter 5–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
 
 ## NVMe reports / 規格教學
 

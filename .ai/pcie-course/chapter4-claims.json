@@ -1,0 +1,415 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 4,
+  "updated": "2026-10-20",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH4-FORMAT-001",
+      "claim": "Memory BAR bit 0=0；bits 2:1 為寬度編碼、bit 3 為 Prefetchable、低 DWORD bits 31:4 為位址。I/O bit 0=1，bit 1 Reserved，位址始於 bit 2。Type 0 六 DWORD，Type 1 兩 DWORD，64-bit BAR 佔相鄰兩個。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.2.1",
+        "7.5.1.3"
+      ],
+      "figures": [
+        "7-10",
+        "7-11",
+        "7-12",
+        "7-14"
+      ],
+      "tables": [
+        "7-9"
+      ],
+      "document_pages": [
+        928,
+        929,
+        930,
+        936
+      ],
+      "pdf_pages": [
+        928,
+        929,
+        930,
+        936
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-PREFETCH-001",
+      "claim": "一般 PCIe Endpoint 的 Prefetchable BAR 必須支援 64-bit；Prefetchable 涉及無讀取副作用及容許合併寫入等行為，不是 CPU cache 現態。Endpoint 不得依賴 OS 配置 I/O 資源且不得發 I/O Requests。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "1.3.2.2",
+        "7.5.1.2.1"
+      ],
+      "figures": [
+        "7-11"
+      ],
+      "tables": [
+        "7-9"
+      ],
+      "document_pages": [
+        105,
+        929,
+        930
+      ],
+      "pdf_pages": [
+        105,
+        929,
+        930
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-SIZING-001",
+      "claim": "關閉對應解碼、保存原 BAR、寫全 1 讀回、去除編碼、限定寬度取反加 1；64-bit 必須處理兩 DWORD，重新啟用前還原原值。未實作 BAR 固定零；有效資源大小為 2 的冪次、自然對齊。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.2.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        929,
+        930
+      ],
+      "pdf_pages": [
+        929,
+        930
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "notes": "教材另設受控的未使用 Function、無進行中交易、MSE／BME=0；若改用新配置，需在解碼前一致完成。BME 清除不能推論舊交易已消失。"
+    },
+    {
+      "id": "PCIE-CH4-MEMORY-WINDOW-001",
+      "claim": "Memory Base／Limit 高 12 bits 對應 Address31:20，Base 低 20 bits 補零、Limit 補一，為 1 MiB 粒度含尾範圍。沒有下游 Memory 資源時依該節設定 Limit < Base。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.3.8"
+      ],
+      "figures": [
+        "7-14"
+      ],
+      "tables": [],
+      "document_pages": [
+        936,
+        940
+      ],
+      "pdf_pages": [
+        936,
+        940
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-PREFETCH-WINDOW-001",
+      "claim": "已實作 Prefetchable Window 須支持 64-bit。Base／Limit 低 nibble=1，高位由 Upper32 欄位供應，含尾及 1 MiB 粒度同 Memory Window。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.3.9",
+        "7.5.1.3.10"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        940,
+        941
+      ],
+      "pdf_pages": [
+        940,
+        941
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-ADDRESS-VIEW-001",
+      "claim": "Firmware Root Bridge 介面允許 CPU 與 PCI MMIO 使用非相同映射；本例的相同映射是另列的假設。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.1.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        32
+      ],
+      "pdf_pages": [
+        32
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-COMMAND-001",
+      "claim": "Command offset04 為16-bit；bit0 IOSE、bit1 MSE、bit2 BME 分開。Type 0 BME 控制發起 Memory／IO Requests；Type 1 另控制其上行轉送但不阻擋 Completion。BME=0 也禁止 MSI／MSI-X。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.3"
+      ],
+      "figures": [
+        "7-4",
+        "7-5"
+      ],
+      "tables": [
+        "7-4"
+      ],
+      "document_pages": [
+        916,
+        917,
+        918,
+        919,
+        920
+      ],
+      "pdf_pages": [
+        916,
+        917,
+        918,
+        919,
+        920
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-STATUS-001",
+      "claim": "相鄰 offset06 Status 含 RW1C；修改 Command 時不可盲目把整個 DWORD 讀值寫回。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1",
+        "7.5.1.1.4",
+        "7.4"
+      ],
+      "figures": [
+        "7-4",
+        "7-6"
+      ],
+      "tables": [
+        "7-2",
+        "7-5"
+      ],
+      "document_pages": [
+        914,
+        916,
+        921,
+        922,
+        923
+      ],
+      "pdf_pages": [
+        914,
+        916,
+        921,
+        922,
+        923
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-HANDOFF-001",
+      "claim": "Firmware 3.3 以 IO／Memory Enable 與 ROM Enable 判斷資源配置，不以 BME 判斷 BAR 有效性。啟用資源必須正確配置。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        34,
+        35
+      ],
+      "pdf_pages": [
+        34,
+        35
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH4-EXAMPLE-001",
+      "claim": "由 32／64-bit BAR 探測重算 16 KiB／2 MiB，配置非重疊且對齊的位址，解碼三層 Bridge Window 並檢查包含關係與 MMIO 位址。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.2.1",
+        "7.5.1.3.8",
+        "7.5.1.3.9",
+        "7.5.1.3.10",
+        "7.5.1.1.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        929,
+        930,
+        940,
+        941,
+        918,
+        919
+      ],
+      "pdf_pages": [
+        929,
+        930,
+        940,
+        941,
+        918,
+        919
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "assumptions": [
+        "目標 0000:03:00.0，Type 0、非 VF、不用 Enhanced Allocation／Resizable BAR。",
+        "驅動未使用，無進行中交易，MSE/BME=0；保存原值，對齊32-bit設定寫並確認完成。",
+        "平台保留兩段資源，其他分支不競爭，三個 Bridge 都支援並使用相同64-bit Prefetchable Window。",
+        "BAR0+0x120 為可讀裝置 Register，CPU／PCI 相同映射；均為作者假設。"
+      ],
+      "bars": [
+        {
+          "name": "BAR0",
+          "offset": "0x10",
+          "width_bits": 32,
+          "original": [
+            "0x00000000"
+          ],
+          "probe": [
+            "0xFFFFC000"
+          ],
+          "assigned": [
+            "0x80004000"
+          ],
+          "size": "0x4000",
+          "base": "0x80004000",
+          "limit": "0x80007FFF",
+          "prefetchable": false
+        },
+        {
+          "name": "BAR2/3",
+          "offset": "0x18",
+          "width_bits": 64,
+          "original": [
+            "0x0000000C",
+            "0x00000000"
+          ],
+          "probe": [
+            "0xFFE0000C",
+            "0xFFFFFFFF"
+          ],
+          "assigned": [
+            "0x2000000C",
+            "0x00000001"
+          ],
+          "size": "0x200000",
+          "base": "0x120000000",
+          "limit": "0x1201FFFFF",
+          "prefetchable": true
+        }
+      ],
+      "window_path": [
+        "00:01.0",
+        "01:00.0",
+        "02:01.0"
+      ],
+      "window_registers": [
+        {
+          "offset": "0x20",
+          "width_bits": 16,
+          "value": "0x8000"
+        },
+        {
+          "offset": "0x22",
+          "width_bits": 16,
+          "value": "0x8000"
+        },
+        {
+          "offset": "0x24",
+          "width_bits": 16,
+          "value": "0x2001"
+        },
+        {
+          "offset": "0x26",
+          "width_bits": 16,
+          "value": "0x2011"
+        },
+        {
+          "offset": "0x28",
+          "width_bits": 32,
+          "value": "0x00000001"
+        },
+        {
+          "offset": "0x2C",
+          "width_bits": 32,
+          "value": "0x00000001"
+        }
+      ],
+      "mmio_offset": "0x120",
+      "mmio_address": "0x80004120",
+      "calculations": [
+        {
+          "expression": "((~(0xFFFFC000 & 0xFFFFFFF0)) & 0xFFFFFFFF) + 1",
+          "result": "0x4000"
+        },
+        {
+          "expression": "((~((0xFFFFFFFF << 32) | (0xFFE0000C & 0xFFFFFFF0))) & 0xFFFFFFFFFFFFFFFF) + 1",
+          "result": "0x200000"
+        },
+        {
+          "expression": "0x80004000 + 0x4000 - 1",
+          "result": "0x80007FFF"
+        },
+        {
+          "expression": "0x120000000 + 0x200000 - 1",
+          "result": "0x1201FFFFF"
+        },
+        {
+          "expression": "0x80004000 + 0x120",
+          "result": "0x80004120"
+        },
+        {
+          "expression": "(0x8000 & 0xFFF0) << 16",
+          "result": "0x80000000"
+        },
+        {
+          "expression": "((0x8000 & 0xFFF0) << 16) | 0xFFFFF",
+          "result": "0x800FFFFF"
+        },
+        {
+          "expression": "(1 << 32) | ((0x2001 & 0xFFF0) << 16)",
+          "result": "0x120000000"
+        },
+        {
+          "expression": "(1 << 32) | ((0x2011 & 0xFFF0) << 16) | 0xFFFFF",
+          "result": "0x1201FFFFF"
+        },
+        {
+          "expression": "0x80005000 & 0x3FFF",
+          "result": "0x1000"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,438 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 3,
+  "updated": "2026-10-20",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH3-PLATFORM-001",
+      "claim": "平台先提供 Root Bridge 的設定存取介面與資源；Root Bridge 與 PCIe Root Port 是不同觀察對象，不能從 Endpoint 推得平台起點。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.1.1",
+        "3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        32,
+        34,
+        35
+      ],
+      "pdf_pages": [
+        32,
+        34,
+        35
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-PROBE-001",
+      "claim": "建議以 Vendor ID 探查存在性；FFFFh 表示無 Function。本章排除具有不同呈現規則的 VF。未實作 BDF 的 Configuration Request 依 UR 處理。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.1",
+        "7.3.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        917,
+        911
+      ],
+      "pdf_pages": [
+        917,
+        911
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-SYNTHESIS-001",
+      "claim": "Root Complex 對依賴全 1 讀值的軟體，將 Configuration UR 合成為全 1；不代表非成功 Completion 自帶全 1 payload。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.3.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        220,
+        221
+      ],
+      "pdf_pages": [
+        220,
+        221
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-RRS-CONDITIONS-001",
+      "claim": "RRS 只可在指定 Reset／Readiness 條件回報，非任意忙碌通知；Configuration-Ready、Immediate Readiness 與先前成功完成等禁止條件須檢查。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.3.1",
+        "2.3.1.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        211,
+        214
+      ],
+      "pdf_pages": [
+        211,
+        214
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-RRS-VISIBILITY-001",
+      "claim": "RRS visibility 支援在 Root Capabilities bit 0；啟用在 Root Control bit 4。啟用且讀取涵蓋 Vendor ID 兩 bytes 時，RC 回 0001h 及其他 bytes 全 1；適用其他情況由 RC 重發要求。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.3.2",
+        "7.5.3.12",
+        "7.5.3.13"
+      ],
+      "figures": [
+        "7-21",
+        "7-33",
+        "7-34"
+      ],
+      "tables": [
+        "7-30",
+        "7-31"
+      ],
+      "document_pages": [
+        220,
+        221,
+        952,
+        986,
+        987,
+        988
+      ],
+      "pdf_pages": [
+        220,
+        221,
+        952,
+        986,
+        987,
+        988
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-BUS-001",
+      "claim": "Secondary／Subordinate 各為 8-bit RW，位於 0x19／0x1A；Primary Bus Number 不用來推自身 BDF。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.3.2",
+        "7.5.1.3.3",
+        "7.5.1.3.4"
+      ],
+      "figures": [
+        "7-14"
+      ],
+      "tables": [],
+      "document_pages": [
+        936,
+        937
+      ],
+      "pdf_pages": [
+        936,
+        937
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-CANDIDATES-001",
+      "claim": "非 ARI、非 FPB 的普通 Link 對端使用 Device 0；Switch 內部 Downstream Port 可用其他 Device Number。Header Type bit 7 為 0 且無其他機制指示時，不可一律探查 Function 1–7；為 1 僅允許探查。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.3.1",
+        "7.5.1.1.9"
+      ],
+      "figures": [
+        "7-8"
+      ],
+      "tables": [
+        "7-7"
+      ],
+      "document_pages": [
+        911,
+        924,
+        925
+      ],
+      "pdf_pages": [
+        911,
+        924,
+        925
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-ROUTE-001",
+      "claim": "Config Request Type 與 Header Type 不同。往更深有效 Bus 傳 Type 1，往直接 Link 對端轉 Type 0；Bridge 自身接受有效 Type 0。Switch 內部拓樸不等於額外實體 Link。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.1",
+        "7.3.2",
+        "7.3.3"
+      ],
+      "figures": [
+        "7-1",
+        "7-2"
+      ],
+      "tables": [],
+      "document_pages": [
+        903,
+        904,
+        912,
+        913
+      ],
+      "pdf_pages": [
+        903,
+        904,
+        912,
+        913
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-WRITES-001",
+      "claim": "使用新配置前須先完成必要 Configuration Writes；ECAM 必須提供確認其完成的機制，不能用 CPU 已發出代表完成。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.2.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        908
+      ],
+      "pdf_pages": [
+        908
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-IDENTITY-001",
+      "claim": "Vendor／Device ID 與 Class Code 提供識別線索；裝置發現不等於資源或工作初始化完成。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.1.1.1",
+        "7.5.1.1.2",
+        "7.5.1.1.6"
+      ],
+      "figures": [
+        "7-7"
+      ],
+      "tables": [
+        "7-6"
+      ],
+      "document_pages": [
+        917,
+        923,
+        924
+      ],
+      "pdf_pages": [
+        917,
+        923,
+        924
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-HANDOFF-001",
+      "claim": "韌體必須配置開機與主控台路徑及所有 Host Bridges；其他裝置可留給 OS。不得因任意 Endpoint 未配置就宣告違規。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        34,
+        35
+      ],
+      "pdf_pages": [
+        34,
+        35
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20"
+    },
+    {
+      "id": "PCIE-CH3-EXAMPLE-001",
+      "claim": "依作者深度優先策略逐步打開 Bus 範圍、發現 Function、縮回各分支，最後與 Chapter 1 快照一致。另檢查獨立 RRS 就緒案例。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.3.3",
+        "7.5.1.3.3",
+        "7.5.1.3.4",
+        "2.3.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        912,
+        913,
+        937,
+        220
+      ],
+      "pdf_pages": [
+        912,
+        913,
+        937,
+        220
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-20",
+      "assumptions": [
+        "Segment 0000 Root Bus 00，可用 Bus 00–3F，無競爭階層。",
+        "相關 Link 與等待條件滿足；尚未完成下游 Bus 配置；管理權獨占。",
+        "暫設 3F、逐層搜尋、最後縮回是作者策略，不是唯一演算法。",
+        "RRS 是獨立的合法 Reset 未就緒情境，沒有禁止回 RRS 的條件。"
+      ],
+      "bus_limit": "0x3F",
+      "actions": [
+        {
+          "step": 1,
+          "bdf": "00:01.0",
+          "secondary": "0x01",
+          "subordinate": "0x3F"
+        },
+        {
+          "step": 2,
+          "bdf": "01:00.0",
+          "secondary": "0x02",
+          "subordinate": "0x3F"
+        },
+        {
+          "step": 3,
+          "bdf": "02:01.0",
+          "secondary": "0x03",
+          "subordinate": "0x3F"
+        },
+        {
+          "step": 4,
+          "bdf": "02:01.0",
+          "secondary": "0x03",
+          "subordinate": "0x03"
+        },
+        {
+          "step": 5,
+          "bdf": "02:02.0",
+          "secondary": "0x04",
+          "subordinate": "0x3F"
+        },
+        {
+          "step": 6,
+          "bdf": "02:02.0",
+          "secondary": "0x04",
+          "subordinate": "0x04"
+        },
+        {
+          "step": 7,
+          "bdf": "01:00.0",
+          "secondary": "0x02",
+          "subordinate": "0x04"
+        },
+        {
+          "step": 7,
+          "bdf": "00:01.0",
+          "secondary": "0x01",
+          "subordinate": "0x04"
+        }
+      ],
+      "discovered": [
+        {
+          "step": 4,
+          "bdf": "03:00.0",
+          "header": "0x80"
+        },
+        {
+          "step": 4,
+          "bdf": "03:00.1",
+          "header": null
+        },
+        {
+          "step": 6,
+          "bdf": "04:00.0",
+          "header": "0x00"
+        }
+      ],
+      "rrs_cap_base": "0x70",
+      "rrs_reads": [
+        {
+          "offset": "0x8E",
+          "width_bits": 16,
+          "value": "0x0001"
+        },
+        {
+          "offset": "0x8C",
+          "width_bits": 16,
+          "value": "0x0010"
+        },
+        {
+          "offset": "0x00",
+          "width_bits": 32,
+          "value": "0xFFFF0001"
+        }
+      ],
+      "calculations": [
+        {
+          "expression": "0x70 + 0x1E",
+          "result": "0x8E"
+        },
+        {
+          "expression": "0x70 + 0x1C",
+          "result": "0x8C"
+        },
+        {
+          "expression": "0xFFFF0001 & 0xFFFF",
+          "result": "0x0001"
+        },
+        {
+          "expression": "0xFFFF0001 >> 16",
+          "result": "0xFFFF"
+        }
+      ]
+    }
+  ]
+}

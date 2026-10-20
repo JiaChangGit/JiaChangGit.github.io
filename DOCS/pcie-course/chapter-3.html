@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。">
+  <title>從未知拓樸到完成裝置發現 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 3</p>
+      <h1>從未知拓樸到完成裝置發現</h1>
+      <p class="header-description">沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-20</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#starting">1. 完全不知道裝置位置時，第一筆查詢從哪裡開始？</a></li><li><a href="#probe">2. 第一筆讀取，要取得什麼證據？</a></li><li><a href="#readiness">3. 讀到 0xFFFF0001，是什麼裝置？</a></li><li><a href="#walk">4. 還不知道下一層有多深，Subordinate 要先填多少？</a></li><li><a href="#routing">5. 對 Endpoint 讀設定時，Type 1 到哪裡變成 Type 0？</a></li><li><a href="#handoff">6. 能列出 BDF，就表示裝置已經可以工作嗎？</a></li><li><a href="#practice">7. 換一個情況，原流程還成立嗎？</a></li><li><a href="#next">8. 找到裝置之後，還欠哪一步？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">Chapter 1 給了一張已經編好號碼的拓樸圖；Chapter 2 則假設 Function 已經找到。現在把時間往前移：開機時還不知道 Switch 後面有哪些裝置，系統怎麼先替路徑編號，再找到那些 Function？</p>
+<p>本章用同一棵樹示範發現過程。重點是每一步為什麼能走到下一層，不把一種軟體搜尋策略寫成所有平台唯一的枚舉程序。</p>
+<aside class="note"><strong>版本與範圍</strong><p>欄位與交易規則依 PCI Express Base Specification Revision 6.0；韌體交接依 PCI Firmware Specification Revision 3.3。採傳統 BDF，不使用 ARI、SR-IOV 或 FPB。以下是教學推演，不執行實機掃描或寫入；本文的 offset 均以 byte 為單位。</p></aside>
+
+<section id="starting"><h2>1. 完全不知道裝置位置時，第一筆查詢從哪裡開始？</h2>
+<p>枚舉（enumeration）不是從任意記憶體位址開始猜。系統軟體先取得平台提供的 Host／Root Bridge 資訊，例如 Segment、可用 Bus 範圍，以及執行設定存取的介面，再從已知的根部往下找。</p>
+<p>Root Bridge 是平台向軟體提供的根部存取與資源範圍，Root Port 則是 PCIe 階層中向下接出 Link 的 Port。兩者不要只因名稱都有 Root 就合併。Firmware 3.3 §3.1.1 說明 UEFI 的 Root Bridge 介面如何提供 PCI Memory、I/O 與 Configuration 存取；§3.5 則要求韌體配置所有 Host Bridge，並提供相關平台描述。</p>
+<aside class="example"><strong>本章的起始條件</strong><p>平台已提供 Segment 0000、Bus 00–3F 的可用範圍；本例沒有其他階層與它競爭這段 Bus Number。Root Port 00:01.0 已能存取，相關連線與 Reset 後等待條件已滿足。下游尚未完成 Bus Number 配置。軟體持有這段配置的管理權，沒有另一個執行者同時修改；Hot-Plug 與執行中的裝置重新配置另有條件，留到後續章節。</p></aside>
+<p>本例的搜尋策略是先往一條分支走到底，再回來處理旁邊的分支。Bus Number 依序使用 01、02、03、04，探查期間暫以 3F 作下游上限，完成後再縮到實際範圍。<strong>這是作者設計的配置策略</strong>；規格定義 Register 與路由行為，並未要求每個平台照這個編號順序，也未禁止為熱插拔保留額外 Bus Number。</p>
+<details class="source-note"><summary>平台起點的依據</summary><p>PCI Firmware 3.3 §3.1.1，p.32；§3.5，pp.34–35。Base 6.0 §7.1，Figures 7-1／7-2，pp.903–904。Host Bridge 的實作與 Root Complex 內部編號具有平台差異，本例將已知起點列為前提，不由 Endpoint 反推平台設定。</p></details></section>
+
+<section id="probe"><h2>2. 第一筆讀取，要取得什麼證據？</h2>
+<p>對一個待探查的位置，先讀 Configuration Header 的 Vendor ID。Base 6.0 建議用它判斷 Function 是否存在；在這個欄位看到 FFFFh，表示沒有 Function。可是軟體看到的讀值與 PCIe Completion Status 並不是同一件事：Root Complex 可能把某種交易結果轉成軟體可見的資料。</p>
+<div class="table-wrap"><table><caption>探查結果應先分流</caption><thead><tr><th scope="col">觀察</th><th scope="col">本章如何處理</th><th scope="col">不能跳過的條件</th></tr></thead><tbody>
+<tr><td>取得有效的 Vendor ID 與成功的設定資料。</td><td>記錄 Function，繼續讀 Header Type、Class Code 與必要的 Capability。</td><td>先確認不是 RRS 可見性機制使用的特殊值。</td></tr><tr><td>平台以約定方式回報該位置沒有 Function。</td><td>略過這個位置，繼續其他合法候選位置。</td><td>例如依賴全 1 讀值的軟體，須搭配會對 UR 合成全 1 的 Root Complex。</td></tr><tr><td>收到符合條件的 RRS 可見資料。</td><td>標為暫時未就緒，依平台與適用規則安排重試。</td><td>不能把特殊 Vendor ID 當成一個真正廠商。</td></tr><tr><td>存取失敗、逾時或路徑尚未建立。</td><td>保留失敗原因，先處理路徑或就緒問題。</td><td>不能把任意 buffer 值當成不存在，也不能宣稱實體卡一定不在。</td></tr>
+</tbody></table></div>
+<p class="term-note">UR 是 Unsupported Request，表示該要求無法依適用規則被接受。RRS 是 Base 6.0 的 Request Retry Status，表示在規格允許的情況下，接收端暫時不能處理要求。RRS 不是要求遺失，也不是可在任何時刻任意使用的忙碌通知。</p>
+<details class="source-note"><summary>Vendor ID 與讀值合成的來源</summary><p>Vendor ID：Base 6.0 §7.5.1.1.1，p.917。未實作的 Bus／Device／Function 對設定要求回 UR：§7.3.1，p.911。對依賴全 1 讀值的軟體，Root Complex 應合成資料的要求見 §2.3.2 的 implementation note，p.221。這不表示 UR Completion 本身帶著全 1 payload；非成功 Completion 不帶讀取資料。</p></details></section>
+
+<section id="readiness"><h2>3. 讀到 0xFFFF0001，是什麼裝置？</h2>
+<p>先不要把它拆成一般 Vendor／Device ID。若 Root Port 支援並已啟用 Configuration RRS Software Visibility，而且 Configuration Read 包含 Vendor ID 的兩個 bytes，Root Complex 在收到 RRS 時，會讓軟體讀到 Vendor ID = 0001h；同筆讀取的其他 bytes 則回報全 1。</p>
+<aside class="example"><strong>獨立的就緒情境</strong><p>假設目標剛經過規格允許回 RRS 的 Reset，尚未回報 Configuration-Ready，也尚未成功完成重設後的設定要求；沒有 Immediate Readiness 等禁止 RRS 的條件。Root Port 使用自身的可見性控制，已找到 PCIe Capability 起點 0x70；以下讀值均成功取得。這個情境用來解釋暫時未就緒，不插入後面已具備就緒條件的正常枚舉時間表。</p></aside>
+<div class="table-wrap"><table><caption>RRS 可見性案例的讀取</caption><thead><tr><th scope="col">對象與 byte offset</th><th scope="col">寬度</th><th scope="col">假設讀值</th><th scope="col">判讀</th></tr></thead><tbody>
+<tr><td>Root Port，0x70 + 0x1E = 0x8E</td><td>16 bits</td><td>0x0001</td><td>Root Capabilities bit 0 = 1，支援可見性。</td></tr><tr><td>Root Port，0x70 + 0x1C = 0x8C</td><td>16 bits</td><td>0x0010</td><td>Root Control bit 4 = 1，已啟用。</td></tr><tr><td>目標 Function，0x00</td><td>32 bits</td><td>0xFFFF0001</td><td>本情境中的 RRS 合成讀值；不是真實 Vendor／Device ID。</td></tr>
+</tbody></table></div>
+<p>查詢次序是先由 Figure 7-21 找 Root Capabilities 與 Root Control 的位移，接著用 Figure 7-34／Table 7-31 查能力，再用 Figure 7-33／Table 7-30 查啟用狀態，最後回 §2.3.2 解釋 0001h 的特殊意義。它是 PCI-SIG 為此用途保留的值，不對應任何已分配的 Vendor ID。</p>
+<p>若只讀 16-bit Vendor ID，特殊值會是 <code>0x0001</code>；本例讀了 32 bits，才看到 <code>0xFFFF0001</code>。若沒有啟用這項可見性，或讀取沒有同時涵蓋 Vendor ID 的兩個 bytes，就不能要求 Root Complex 用這個資料格式回報；適用時由 Root Complex 重新發出設定要求。</p>
+<p>教材不把「等固定一秒」當成所有 Reset 的共同答案。重試期限要連同 Reset、Readiness 與平台策略判斷；用完允許的等待仍未就緒，應記為初始化或存取未完成，不能假裝已取得有效 Vendor ID。</p>
+<details class="source-note"><summary>RRS 的精確依據與邊界</summary><p>Base 6.0 §2.3.1，p.211 列出可回 RRS 的 Reset 與禁止條件；p.214 的 implementation note 說明軟體可見性。實際 Root Complex 處理見 §2.3.2，pp.220–221。Register 位置：Figure 7-21，p.952；§7.5.3.12，Figure 7-33／Table 7-30，pp.986–988；§7.5.3.13，Figure 7-34／Table 7-31，p.988。本章使用 Base 6.0 的 RRS 名稱。</p></details></section>
+
+<section id="walk"><h2>4. 還不知道下一層有多深，Subordinate 要先填多少？</h2>
+<p>回到已就緒的正常案例。先讀 Bridge 的 Header Type 與 PCIe 類型，再依 Figure 7-14 找到 Secondary（0x19）與 Subordinate（0x1A）；兩者各為 8 bits、可讀寫。Secondary 先指定下一層 Bus，Subordinate 暫時涵蓋仍可能分配的範圍，讓後續查詢有路可走。</p>
+<p>本例已知平台可用上限是 3F，因此用 3F 作暫時上限，沒有任意擴到 FF。每次先完成必要的 Configuration Write，再探查新的下游位置；寫入完成的確認依平台存取機制處理，不把 CPU 已送出存取當成遠端已完成設定。</p>
+<div class="table-wrap"><table><caption>教學枚舉時間表：先往下找，再回填範圍</caption><thead><tr><th scope="col">步驟</th><th scope="col">本次設定或探查</th><th scope="col">為什麼下一步走得通？</th></tr></thead><tbody>
+<tr><td>1</td><td>Root Port 00:01.0：Secondary=01，Subordinate=3F。</td><td>開放下一層 Bus 01，以及尚待探查的下游範圍。</td></tr><tr><td>2</td><td>在 01:00.0 找到 Switch Upstream Port；設 Secondary=02，Subordinate=3F。</td><td>可以探查 Switch 內部 Bus 02。</td></tr><tr><td>3</td><td>在 02:01.0 找到 Downstream A；設 Secondary=03，Subordinate=3F。</td><td>沿 A 的 Link 探查 Bus 03 的 Device 00。</td></tr><tr><td>4</td><td>找到 03:00.0，Header Type=80h；再確認 03:00.1 存在。完成本分支後，把 A 的 Subordinate 改為 03。</td><td>本例 A 下方沒有更深 Bridge；後續號碼可交給另一分支。</td></tr><tr><td>5</td><td>回 Bus 02，找到 02:02.0 的 Downstream B；設 Secondary=04，Subordinate=3F。</td><td>A 已縮回 03，不會與 B 的暫時範圍重疊。</td></tr><tr><td>6</td><td>找到 04:00.0，Header Type=00h；本分支完成，把 B 的 Subordinate 改為 04。</td><td>本例是單功能 Device，沒有其他機制指示須探查更多 Function。</td></tr><tr><td>7</td><td>Switch Upstream Port 的 Subordinate 改為 04，Root Port 的 Subordinate 也改為 04。</td><td>兩者保留完整下游範圍，形成 Chapter 1 的最終快照。</td></tr>
+</tbody></table></div>
+<p>Function 0 的 Header Type=80h 只是允許繼續探查，並沒有說 Function 1 一定存在。表中的「確認 03:00.1 存在」是另一筆有效結果。本例另外假設其他合法候選位置沒有新 Function；即使某個 Function Number 不存在，也不能自行推出後面所有號碼都不存在。</p>
+<p>普通 Link 對端與 Switch 內部 Bus 的候選位置也不同。非 ARI、未使用 FPB 時，外部 Link 的對端關聯到 Device 0；內部的 Downstream Port 則可用其他 Device Number。因此不能為了讓表格整齊，就只在 Bus 02 查 Device 0 而漏掉本例的 Device 01、02。</p>
+<details class="source-note"><summary>時間表所依據的 Register 與規則</summary><p>Base 6.0 §7.5.1.3，Figure 7-14，p.936；Secondary／Subordinate 的語義與 RW 屬性：§7.5.1.3.3–§7.5.1.3.4，p.937。Header Type：Table 7-7，p.925。Device Number 限制：§7.3.1，p.911。ECAM 寫入完成的保障要求：§7.2.2，p.908。本例不使用 Primary Bus Number 推自身 BDF，原因見 <a href="chapter-1.html#bridge-path">Chapter 1</a>。深度優先次序、3F 暫時上限及最後緊縮範圍是教學策略。</p></details></section>
+
+<section id="routing"><h2>5. 對 Endpoint 讀設定時，Type 1 到哪裡變成 Type 0？</h2>
+<p>這一節的 Type 指 <strong>Configuration Request 的封包類型</strong>，不是 Configuration Header 的布局。Header Type 1 的 Bridge 也會接受對自身設定空間的 Type 0 Request；兩者名稱相同，不代表一一配對。</p>
+<p>一般路由規則可整理為下面的分支。前提是符合本章的正常傳統配置，且要求的 Device／Function 與其他欄位也有效。</p>
+<div class="table-wrap"><table><caption>遇到 Type 1 Configuration Request 時，往哪裡送？</caption><thead><tr><th scope="col">目標 Bus 與下游關係</th><th scope="col">處理方式</th></tr></thead><tbody>
+<tr><td>正是某個對外 Port 的下一層 Bus，且 Device 解碼符合。</td><td>將要求改為 Type 0，再送向該 Link 的對端。</td></tr><tr><td>還在該分支涵蓋的更深層範圍。</td><td>保持 Type 1，繼續送往該下游分支。</td></tr><tr><td>不屬於有效分支。</td><td>依 Unsupported Request 規則處理，不憑猜測廣播到所有 Link。</td></tr>
+</tbody></table></div>
+<p><strong>案例推演：</strong>目標是 <code>03:00.1</code>。Root Port 的下一層是 Bus 01，而目標 Bus 03 位於其下游範圍，所以外部 Link 上仍送 Type 1 給 Switch。Switch 再辨識 Bus 03 正好是 Downstream A 的 Link 所對應的 Bus，便在送向 Endpoint 前轉成 Type 0。Endpoint 最後以 Function 1 與 Register 位移處理要求。</p>
+<p>Switch 內部是邏輯設定拓樸；本例沒有假設內部真的有另一條實體 PCIe Link，或每個 virtual Bridge 都要在實體線路上產生一份封包。這裡只描述規格要求的對外路由結果。</p>
+<details class="source-note"><summary>路由規則的來源</summary><p>Base 6.0 §7.3.2–§7.3.3，pp.912–913。Endpoint 對 Type 1 Configuration Request 依 UR 處理；Root Port／Switch 對有效的本地 Type 0 Request 則處理自身設定空間。本節沒有將 Type 0／Type 1 的角色延伸到所有其他 TLP。</p></details></section>
+
+<section id="handoff"><h2>6. 能列出 BDF，就表示裝置已經可以工作嗎？</h2>
+<p>這次搜尋完成後，系統有了 Function 清單與下游路徑，但還沒有因此完成 BAR 資源配置、開啟 Memory Space，或準備驅動程式的工作資料。Vendor／Device ID 和 Class Code 能提供識別與驅動選擇線索，也不等於初始化已成功。</p>
+<p>枚舉也不保證全由韌體一次做完。Firmware 3.3 §3.5 要求韌體配置開機與主控台裝置的完整路徑，以及所有 Host Bridge；其他裝置可以留給 OS 處理。因此，OS 看到某個 Endpoint 尚未配置，不能僅憑這件事宣告韌體違反規格。若要檢查交接，應先確認它是不是被要求完成的那條路徑。</p>
+<details class="source-note"><summary>來源與下一步</summary><p>Base 6.0 §7.5.1.1.1–§7.5.1.1.2，p.917；Class Code：§7.5.1.1.6，Figure 7-7／Table 7-6，pp.923–924。PCI Firmware 3.3 §3.5，pp.34–35。資源與命令控制位在 <a href="chapter-4.html">Chapter 4</a> 接續處理。</p></details></section>
+
+<section id="practice"><h2>7. 換一個情況，原流程還成立嗎？</h2>
+<details class="question"><summary>Root Port 只把下游上限開到 Bus 01，還沒找到 Switch 下方的 Bus 03，就能直接跳去讀 03:00.0 嗎？</summary><p>不能假設走得通。先要為通往 Bus 03 的各層 Bridge 建立一致且有效的 Bus 範圍。對目前不屬於有效路徑的要求，規格允許的結果不是「幫你找到裝置」，而是按 UR 規則處理。（§7.3.3，pp.912–913。）</p></details>
+<details class="question"><summary>Function 0 的 Header Type 是 00h，可以為了保險一律掃 Function 1–7 嗎？</summary><p>本章沒有 ARI／SR-IOV 等額外指示，因此不可以。Table 7-7（p.925）在 Multi-Function Device bit 清除時禁止這種探查。若 bit 設定，允許探查也不等於那些 Function 已存在。</p></details>
+<details class="question"><summary>讀到 0xFFFF0001，就把 Device ID FFFFh 當成未知型號繼續初始化，問題在哪裡？</summary><p>若符合本章的 RRS 可見性條件，整個讀值是 Root Complex 為重試狀態合成的資料，尚未取得真正的 Vendor／Device ID。應處理就緒與重試，不能據此選驅動或讀取假想的裝置欄位。（§2.3.2，p.220。）</p></details>
+<details class="question"><summary>最終 Subordinate 比本例的 04 大，就一定錯了嗎？</summary><p>不一定。本例採完成後緊縮到實際使用範圍的策略；平台可能依法配置並保留額外 Bus Number。要檢查的是平台授予的範圍、各分支是否一致，以及保留政策，不能把本例的數字當成唯一合法答案。</p></details></section>
+
+<section id="next"><h2>8. 找到裝置之後，還欠哪一步？</h2><p>接著讀 <a href="chapter-4.html">Chapter 4：BAR、位址空間與資源配置</a>。那一章會從裝置需要多少空間開始，算出大小與對齊，檢查沿途 Bridge Window，再分清 Memory Space Enable 與 Bus Master Enable。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3；精確位置附於各節。Firmware 3.3 的 Base 參考版為 5.0，本章欄位和 RRS 行為均取自 Base 6.0。枚舉順序與 Bus Number 配置是作者推演，不是原文指定程序。查核日期：2026-10-20。</p></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-2.html">← Chapter 2</a><a href="chapter-4.html">Chapter 4 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

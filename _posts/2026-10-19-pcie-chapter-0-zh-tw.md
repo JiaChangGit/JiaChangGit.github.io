@@ -283,7 +283,7 @@ Negotiated Link Width：(0x0043 &amp; 0x03F0) &gt;&gt; 4 = 4</code></pre>
 <details class="question"><summary>Current Link Speed 為 4，是同時支援兩種速率嗎？</summary><p>不是。有效的 Link 狀態下，編碼 4 表示目前為 16 GT/s。支援集合仍須另外查向量。（Table 7-26、Table 7-35，pp.978、998。）</p></details>
 <details class="question"><summary>Link 已中斷，手上仍有 0x0043 這筆讀值，能報成目前 8 GT/s、x4 嗎？</summary><p>不能。Table 7-26（p.978）將 Link 未建立時的速率與寬度定為 undefined；看似合理的數字不能取代有效條件。</p></details>
 </section>
-<p>下一步先釐清拓樸、Function 與識別範圍，再深入設定空間。逐步欄位圖、完整案例與來源整理，見<a href="/DOCS/pcie-course/chapter-0.html">Chapter 0 中文教學</a>；<a href="/DOCS/pcie-course/chapter-1.html">Chapter 1 已可閱讀</a>，Chapter 2–19 仍在規劃中。</p>
+<p>下一步先釐清拓樸、Function 與識別範圍，再深入設定空間。逐步欄位圖、完整案例與來源整理，見<a href="/DOCS/pcie-course/chapter-0.html">Chapter 0 中文教學</a>；<a href="/DOCS/pcie-course/chapter-1.html">Chapter 1 已可閱讀</a>，Chapter 2–4 已完成，Chapter 5–19 仍在規劃中。</p>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-0.html">繁中完整教學</a><a href="/pcie/chapter-0-en/">English</a></nav>
 </div>

@@ -1,6 +1,6 @@
 {
   "title": "PCIe 系統觀與規格閱讀課程",
-  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0、Chapter 1 與全課程規劃；後續章節尚待逐章查證、撰寫與校閱。",
+  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–4 與全課程規劃；Chapter 5–19 尚待逐章查證、撰寫與校閱。",
   "chapters": [
     {
       "number": 0,
@@ -63,11 +63,13 @@
         0,
         1
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
-        "PCIE-BASE-6.0",
-        "PCI-FW-3.3"
-      ]
+        "PCIE-BASE-6.0"
+      ],
+      "title_en": "Reading Configuration Space and Finding Capabilities",
+      "description": "從傳統與 Extended 清單找到 Device Serial Number，練習指標、欄位版本、位元組順序與存取屬性的判讀。",
+      "publication_date": "2026-10-20"
     },
     {
       "number": 3,
@@ -86,11 +88,14 @@
         1,
         2
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
         "PCI-FW-3.3"
-      ]
+      ],
+      "title_en": "From Unknown Topology to Function Discovery",
+      "description": "沿著含 Switch 的拓樸配置 Bus Number，分清存在性、RRS 未就緒與存取失敗，再追蹤 Configuration Request 路由。",
+      "publication_date": "2026-10-20"
     },
     {
       "number": 4,
@@ -109,11 +114,14 @@
         2,
         3
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
         "PCI-FW-3.3"
-      ]
+      ],
+      "title_en": "BARs, Address Spaces, and Resource Allocation",
+      "description": "由 32-bit 與 64-bit BAR 讀回值計算大小和對齊，配置三層 Bridge Window，並分清 MSE 與 BME。",
+      "publication_date": "2026-10-20"
     },
     {
       "number": 5,
