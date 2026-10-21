@@ -22,7 +22,13 @@
 
 [Chapter 10 裝置與連線如何省電](DOCS/pcie-course/chapter-10.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-10-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-10-en/)
 
-目前完成 Chapter 0–10；Chapter 11–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
+[Chapter 11 熱插拔與拓樸變動](DOCS/pcie-course/chapter-11.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-11-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-11-en/)
+
+[Chapter 12 錯誤證據、回報與隔離](DOCS/pcie-course/chapter-12.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-12-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-12-en/)
+
+[Chapter 13 韌體、ACPI 與 OS 的控制權](DOCS/pcie-course/chapter-13.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-13-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-13-en/)
+
+目前完成 Chapter 0–13；Chapter 14–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
 
 ## NVMe reports / 規格教學
 

@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="從插槽能力、事件通知與插入時序，判讀熱插拔的資源與移除條件。">
+  <title>熱插拔與拓樸變動 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 11</p>
+      <h1>熱插拔與拓樸變動</h1>
+      <p class="header-description">從插槽能力、事件通知與插入時序，判讀熱插拔的資源與移除條件。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#overview">1. 有插槽，就一定能在運作中拔插嗎？</a></li><li><a href="#slot">2. 如果要查這個插槽能做什麼，依序看哪幾張圖？</a></li><li><a href="#events">3. Presence=1 與 Presence Changed=1，有什麼差別？</a></li><li><a href="#sequence">4. 寫入 Power On 後，什麼時候可以開始枚舉？</a></li><li><a href="#resources">5. Link 已起來，為什麼新裝置仍可能不能使用？</a></li><li><a href="#remove">6. 有秩序移除與突然消失，處理方式差在哪裡？</a></li><li><a href="#questions">7. 換一個情境，還能判斷嗎？</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">裝置插入後，系統不只要發現它，還要確認供電、Link、設定存取與位址資源都已準備好。裝置移除時則反過來：先讓軟體停止使用，才有機會有秩序地收回資源。本章從插槽的一組讀值出發，把這些步驟接起來。</p>
+<aside class="note"><strong>版本與案例邊界</strong><p>硬體行為依 PCI Express Base 6.0，控制權與韌體交接依 PCI Firmware 3.3。兩份規格的版次分開使用。本章所有讀值、時間與資源配置都是作者假設；延用 02:01.0 → 03:00.0 的位置，但另設一個具備 Hot-Plug 的插槽案例。假設 OS 已取得原生 Hot-Plug 控制權，沒有 SFI 介入，採一般有秩序插入流程，也不使用提早就緒通知。</p></aside>
+<section id="overview"><h2>1. 有插槽，就一定能在運作中拔插嗎？</h2>
+<p>不一定。PCIe 的 Native Hot-Plug 定義了一組可搭配使用的機制；按鈕、指示燈、電源控制器、固定扣具與偵測器是否存在，還要看實際 form factor。Base 規格不替所有連接器指定相同的拔插方式。</p>
+<div class="table-wrap"><table><caption>插槽相關資訊各自回答什麼</caption><thead><tr><th scope="col">資訊</th><th scope="col">能回答的問題</th><th scope="col">還不能下的結論</th></tr></thead><tbody>
+<tr><td>Slot Implemented</td><td>這個 Downstream Port 是否連接插槽？</td><td>不表示支援 Hot-Plug。</td></tr><tr><td>Hot-Plug Capable</td><td>插槽是否具備 Hot-Plug 能力？</td><td>不表示 OS 已取得控制權。</td></tr><tr><td>Presence Detect State</td><td>目前的存在偵測結果為何？</td><td>不表示 Link 已可傳輸。</td></tr><tr><td>Data Link Layer Link Active</td><td>Data Link 是否已進入可運作狀態？</td><td>不表示裝置已枚舉、取得 BAR 資源或完成驅動初始化。</td></tr>
+</tbody></table></div>
+<p>OS 與韌體之間的管理權由 <a href="chapter-13.html#osc">Chapter 13 的 _OSC 協調</a>說明。這裡先接受「OS 有權管理此插槽」的前提，專心觀察硬體如何回報。</p>
+<details class="source-note"><summary>先讀機制範圍，再看能力欄位</summary><p>Base 6.0 §6.7–§6.7.1、Table 6-7（pp.727–728）；§7.5.3.2、Table 7-19（pp.953–954）；Figures 7-30–7-32、Tables 7-27–7-29（pp.980–986）。PCI Firmware 3.3 §4.5.1、Table 4-6（pp.48–53）規定控制權；授權本身不證明每個插槽的硬體能力。</p></details></section>
+<section id="slot"><h2>2. 如果要查這個插槽能做什麼，依序看哪幾張圖？</h2>
+<p>先在控制插槽的 <strong>Downstream Port 02:01.0</strong> 找 PCI Express Capability，不能到新插入的 Endpoint 尋找插槽控制器。本例 Capability base=0x70。先讀 Figure 7-23 的 Port Type 與 Slot Implemented，再讀 Figure 7-30 的 Slot Capabilities；有了能力前提，才解讀 Figures 7-31、7-32 的 Control 與 Status。</p>
+<div class="table-wrap"><table><caption>Hot-Plug 插槽的起始讀值</caption><thead><tr><th scope="col">位置與寬度</th><th scope="col">值</th><th scope="col">用途</th></tr></thead><tbody>
+<tr><td>PCI Express Capabilities，0x72，16 bits</td><td>0x0162</td><td>Version=2、Type=6、Slot Implemented=1。</td></tr><tr><td>Slot Capabilities，0x84，32 bits</td><td>0x002825DF</td><td>能力、功率上限與實體插槽編號。</td></tr><tr><td>Slot Control，0x88，16 bits</td><td>0x17F8</td><td>通知已設定，主電源關閉、指示燈關閉。</td></tr><tr><td>Slot Status，0x8A，16 bits</td><td>0x0048</td><td>目前偵測到裝置，且存在狀態曾改變。</td></tr>
+</tbody></table></div>
+<p><code>(0x0162 &gt;&gt; 4) &amp; 0xF = 6</code> 表示 Switch Downstream Port；bit 8=1 才讓插槽欄位具有本節所需的意義。若 Slot Implemented=0，不能繼續把整個 Slot Register 區都當成有效插槽資料；Data Link Layer State Changed 等欄位另有明確例外。</p>
+<p>Slot Capabilities 的 bits 0–4 都是 1：Attention Button、Power Controller、MRL Sensor、Attention Indicator、Power Indicator 均存在。MRL 是 Manually-operated Retention Latch，也就是手動固定扣具。bit 6=1 表示 Hot-Plug Capable；bit 18=0 表示支援 Command Completed 通知。<code>0x002825DF &gt;&gt; 19 = 5</code> 是實體插槽編號，不是 Device Number。</p>
+<p>功率欄位也要分開算：Value=<code>(0x002825DF &gt;&gt; 7) &amp; 0xFF = 75</code>，Scale=0，因此本例上限為 75 W。這是插槽所提供的上限資訊，不是裝置當下量到的耗電量。本例沒有使用 Value 大於 0xEF 時的特殊編碼。</p>
+<p>Hot-Plug Surprise bit 5=0。本例只示範有秩序流程；不能由此推斷其他平台完全無法處理非同步移除。Base 6.0 已不建議以舊 HPS 機制支援 async hot-plug，而建議使用 DPC。若有 SFI，讀到的 HPS 還可能受 SFI HPS Suppress 影響。</p>
+<details class="source-note"><summary>能力查詢路徑</summary><p>Figure 7-23／Table 7-19（pp.953–954）→ Figure 7-30／Table 7-27（pp.980–982）→ Figure 7-31／Table 7-28（pp.982–984）→ Figure 7-32／Table 7-29（pp.985–986）。HPS 的版次提醒見 §6.7.6（pp.741–742）；SFI 對 HPS 的影響見 Table 7-27（p.980）。</p></details></section>
+<section id="events"><h2>3. Presence=1 與 Presence Changed=1，有什麼差別？</h2>
+<p>0x0048 的 bit 6 是目前狀態，bit 3 是待處理事件。前者說「現在偵測到裝置」，後者說「存在狀態曾經改變」。事件 bit 不記錄變化次數，也不保存每次變化方向；同類 Slot Event 尚未清除時，後續同類事件會被忽略。因此軟體不能把 Changed=1 解成「剛好插入一次」。</p>
+<p>本例有主電源控制器，也有符合 form factor 的 out-of-band presence detect，因此主電源關閉時仍能偵測插入。一般而言，In-Band PD Disable=0 時 Presence Detect State 是 in-band 與適用 out-of-band 偵測的 OR；in-band 偵測需要裝置已有供電。若兩種偵測來源不同步，只看這一個 bit 不能還原完整的物理過程。</p>
+<p>通知又是另一層。Slot Control=0x17F8 開啟 PDC Enable bit 3、Command Completed Interrupt Enable bit 4、Hot-Plug Interrupt Enable bit 5，以及 Data Link Layer State Changed Enable bit 12。存在事件 bit 可以在通知停用時設起來；而要收到中斷，還必須符合所選 INTx 或 MSI／MSI-X 機制的條件。</p>
+<div class="table-wrap"><table><caption>三個事件快照與精確清除值</caption><thead><tr><th scope="col">已保存的 Slot Status</th><th scope="col">這次要處理的事件</th><th scope="col">向 0x8A 寫入的 16-bit 值</th><th scope="col">沒有新事件時的後續讀值</th></tr></thead><tbody>
+<tr><td>0x0048</td><td>Presence Detect Changed</td><td>0x0008</td><td>0x0040</td></tr><tr><td>0x0050</td><td>Command Completed</td><td>0x0010</td><td>0x0040</td></tr><tr><td>0x0140</td><td>Data Link Layer State Changed</td><td>0x0100</td><td>0x0040</td></tr>
+</tbody></table></div>
+<p>這些事件欄位是 RW1C：對欲清除的 bit 寫 1；Presence Detect State 是唯讀欄位，不是要清除的事件。三列是不同時間的快照，假設清除期間沒有新事件；實際處理仍須重新讀取目前狀態。不要把相鄰 Slot Control 與 Slot Status 一起做不加區分的 32-bit 讀改寫。</p>
+<details class="source-note"><summary>事件、目前狀態與通知</summary><p>§6.7.3.1（p.735）定義事件待處理期間的行為；§6.7.3.4（pp.736–737）定義中斷條件。Presence 與各 RW1C 欄位見 Table 7-29（pp.985–986）；In-Band PD Disable 見 Table 7-28（p.984）。中斷傳送本身回顧 <a href="chapter-7.html">Chapter 7</a>。</p></details></section>
+<section id="sequence"><h2>4. 寫入 Power On 後，什麼時候可以開始枚舉？</h2>
+<p>本例先處理插入事件、確認扣具關閉與功率預算足夠，再向 Slot Control 寫入 0x12F8。這個值保留通知設定，讓 Power Controller Control bit 10=0（Power On），Power Indicator bits 9:8=10b（Blink），Attention Indicator bits 7:6=11b（Off）。假設沒有前一個未完成的 Hot-Plug 命令。</p>
+<p>對 Hot-Plug Capable Port 的 Slot Control 寫入就是一個 Hot-Plug 命令，即使只改通知設定也一樣。本例支援 Command Completed，所以必須等前一個命令完成後才發下一個；若一秒後仍未回報完成，規格允許重送或發下一個命令。這是命令介面的規則，不是「逾時就能假定供電成功」。</p>
+<figure class="diagram course-diagram"><svg viewBox="0 0 900 260" role="img" aria-labelledby="hp-title hp-desc"><title id="hp-title">插入案例中的三種完成時間</title><desc id="hp-desc">零毫秒寫入電源命令，二十毫秒收到命令完成，四十毫秒讀到 Link Active，沒有提早就緒機制時最早一百四十毫秒開始設定存取。</desc><line x1="65" y1="130" x2="835" y2="130" stroke="var(--accent)" stroke-width="4"/><polygon points="835,130 821,122 821,138" fill="var(--accent)"/><g fill="var(--accent)"><circle cx="90" cy="130" r="6"/><circle cx="310" cy="130" r="6"/><circle cx="530" cy="130" r="6"/><circle cx="790" cy="130" r="6"/></g><g text-anchor="middle"><text x="90" y="65">t = 0 ms</text><text x="90" y="94">寫 Power On</text><text x="310" y="65">t = 20 ms</text><text x="310" y="94">Command Completed</text><text x="530" y="65">t = 40 ms</text><text x="530" y="94">讀到 Link Active</text><text x="790" y="65">t = 140 ms</text><text x="790" y="94">首個設定存取</text><text x="310" y="187">可接受下一個命令</text><text x="665" y="220">從 Link Active 起等 100 ms</text></g></svg><figcaption>作者時間假設；橫軸不按比例。命令完成、Link 可用與設定存取時點不是同一件事。</figcaption></figure>
+<p>Command Completed 只保證控制器已處理前一個命令、可以接收下一個命令，<strong>不保證命令對應的實際動作已完成</strong>。同樣地，Power Controller Control 讀回 0，只是最近寫入的設定；電源故障等狀況仍可能阻止實際供電。</p>
+<p>之後收到 Data Link Layer State Changed，須再讀 Link Status 的 Data Link Layer Link Active，確認為 1。本例在 t=40 ms 讀到 Link Status=0x2043，其中 bit 13=1；沒有適用的提早就緒機制，所以從這次讀到 Active 起等 100 ms，t=140 ms 才開始 Configuration Request。不能把 100 ms 從 t=0 或 Command Completed 起算。</p>
+<p>§6.7.3.3 另規定：Hot-Add 啟動後，一秒內應出現 Data Link Layer State Changed；有 Power Controller 時，本例起點就是 t=0 的供電寫入。對已 Active 但尚未回 Successful Completion 的裝置，軟體又須允許從 Active 起至少一秒，才可認定裝置損壞。這兩個一秒處理不同問題；RRS 與 Reset 的等待例外回看 <a href="chapter-9.html">Chapter 9</a>。</p>
+<details class="source-note"><summary>時序依據</summary><p>§6.7.3.2–§6.7.3.3（pp.735–736）；Table 7-28（p.984）說明控制讀回值；Table 7-29（pp.985–986）限定 Command Completed 的意義及 Link Active 檢查。Configuration 首次存取的 Readiness 例外見 §6.6.1（pp.721–723）。</p></details></section>
+<section id="resources"><h2>5. Link 已起來，為什麼新裝置仍可能不能使用？</h2>
+<p>接下來要完成 <a href="chapter-3.html">枚舉</a>與 <a href="chapter-4.html">資源配置</a>。這不是重跑兩章的所有細節，而是檢查新增裝置能否放進目前仍在使用的拓樸。</p>
+<p><strong>作者資源案例：</strong>假設某條下游路徑只剩 0x80080000–0x800FFFFF 可用，共 0x80000 bytes，也就是 512 KiB。新裝置的一個 BAR 需要 0x100000 bytes（1 MiB），且依大小對齊。即使裝置已能回 Configuration Completion，這段空間仍放不下 BAR；把 BAR 寫到視窗外也不會讓上游自動轉送。</p>
+<p>平台可以在最初配置時預留適當的 Bus Numbers 與 Memory／I/O 範圍。若預留不足，是否能重新配置，要看上游視窗、Host Bridge 可提供資源，以及其他驅動是否能配合暫停與搬移。這是平台與 OS 的配置政策，不能把「支援 Hot-Plug」寫成「保證任何新卡都裝得下」。</p>
+<details class="source-note"><summary>資源範圍與推演邊界</summary><p>PCI Firmware 3.3 §3.5（pp.34–37）、§4.3.2（p.47）說明 Host Bridge 資源及 OS 配置邊界；Bridge/BAR 欄位沿用 Chapter 4 的來源。本例剩餘空間與容量比較是作者推演，不是規格指定的保留大小或重新配置演算法。</p></details></section>
+<section id="remove"><h2>6. 有秩序移除與突然消失，處理方式差在哪裡？</h2>
+<div class="table-wrap"><table><caption>依移除前是否有協調機會，選擇處理路線</caption><thead><tr><th scope="col">情況</th><th scope="col">軟體需要處理的事情</th><th scope="col">不能省略的判斷</th></tr></thead><tbody><tr><td>Orderly removal</td><td>停止新工作，與使用此裝置的軟體協調；依裝置協定處理在途工作，再完成適用的供電、指示燈及移除流程。</td><td>清 BME 不能證明所有既有傳輸或應用工作已完成；還要有裝置與軟體層的完成證據。</td></tr><tr><td>Async／surprise removal</td><td>裝置可能已無法存取；處理失效的軟體狀態與未完成工作，並依平台機制隔離、移除或恢復。</td><td>不能靠再讀已消失裝置的欄位，補出從未取得的完成保證。</td></tr></tbody></table></div>
+<p>上表的工作協調是作者整理的系統流程；各類裝置如何停止佇列、保存資料或取消工作，超出 PCIe Base 的通用定義。DPC 可切斷受影響的下游流量，減少錯誤擴散，但不會替應用程式判定哪些工作已成功。下一章會從 DPC Status 與 AER 紀錄確認實際發生的事。</p>
+<details class="source-note"><summary>移除模式與隔離</summary><p>§6.7（p.727）、§6.7.6（pp.741–742）區分 orderly 與 async；§6.2.11（pp.694–697）說明 DPC。請接著讀 <a href="chapter-12.html#dpc">Chapter 12：DPC</a>；BME 與尚未完成交易的界線見 Chapter 6、Chapter 9。</p></details></section>
+<section id="questions"><h2>7. 換一個情境，還能判斷嗎？</h2><details class="question"><summary>Presence Changed=1，但 Presence=0，是否能說從未插入過裝置？</summary><p>不能。前者保留事件，後者是目前狀態；中間可能有多次變動。應以當前狀態決定處理方向，不能把單一事件 bit 當成歷史清單。依據：§6.7.3.1、Table 7-29。</p></details><details class="question"><summary>控制權已授予 OS、Link 也 Active，還差哪種證據才能開始裝置工作？</summary><p>至少還要通過首次設定存取的等待條件、完成枚舉與資源配置，並完成驅動要求的初始化。每一步回答的問題不同，不能用 Active 取代。依據：§6.7.3.3、PCI Firmware 3.3 §3.5。</p></details><details class="question"><summary>Command Completed=1 後又讀到 Power Fault，哪個紀錄優先相信？</summary><p>兩者不矛盾。前者說明命令介面可接受下一個命令；後者記錄電源故障。必須處理故障並重新確認硬體狀態，不能用命令完成覆蓋掉故障證據。依據：Table 7-28、Table 7-29。</p></details></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-10.html">← Chapter 10</a><a href="chapter-12.html">Chapter 12 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 13,
+  "updated": "2026-10-21",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH13-HANDOFF-001",
+      "claim": "所有Host Bridges與boot/console路徑須配置；不保證所有Function，UEFI driver不可自行改BAR配置。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5",
+        "4.1.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        34,
+        35,
+        36,
+        37,
+        45,
+        46
+      ],
+      "pdf_pages": [
+        34,
+        35,
+        36,
+        37,
+        45,
+        46
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH13-ECAM-001",
+      "claim": "MCFG Base以Bus0為基準，_CRS/BAR資源不同，_CBA用於適用Host Bridge描述。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.1.1",
+        "4.1.2",
+        "4.1.3",
+        "4.1.4",
+        "4.3.2"
+      ],
+      "figures": [],
+      "tables": [
+        "4-1",
+        "4-2",
+        "4-3"
+      ],
+      "document_pages": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "pdf_pages": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH13-OSC-001",
+      "claim": "HostBridge _OSC UUID rev1三DWORD，Support單向、Control請求/回傳，授權不證硬體能力。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.5.1"
+      ],
+      "figures": [],
+      "tables": [
+        "4-4",
+        "4-5",
+        "4-6"
+      ],
+      "document_pages": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58
+      ],
+      "pdf_pages": [
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH13-DEPENDENCIES-001",
+      "claim": "DPC需SupportEDR與ControlAER/Capability；firmware保留DPC須保留AER，bit4不覆寫個別條款。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.5.1",
+        "4.5.2.4"
+      ],
+      "figures": [],
+      "tables": [
+        "4-4",
+        "4-5",
+        "4-6"
+      ],
+      "document_pages": [
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        60
+      ],
+      "pdf_pages": [
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        60
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH13-NEGOTIATION-001",
+      "claim": "Query不改硬體，先協商後非Query；同次boot後續宣告/已授權保留，無放棄機制。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.5.2",
+        "4.5.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        59,
+        60,
+        61,
+        62
+      ],
+      "pdf_pages": [
+        59,
+        60,
+        61,
+        62
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH13-EDR-001",
+      "claim": "HotPlug/PME授權後firmware寫入限制；DPC保留時EDR僅在指定對象和時間窗允許Status處理。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.5.1"
+      ],
+      "figures": [],
+      "tables": [
+        "4-6"
+      ],
+      "document_pages": [
+        53,
+        54,
+        55,
+        56,
+        57
+      ],
+      "pdf_pages": [
+        53,
+        54,
+        55,
+        56,
+        57
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH13-EXAMPLE-001",
+      "claim": "作者非零StartBus ECAM與三次_OSC查詢/接管，平台保留AER/DPC的合法相依組合。",
+      "kind": "teaching_example",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "4.1.4",
+        "4.5.1",
+        "4.5.2",
+        "4.5.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        44,
+        45,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        59,
+        60,
+        61,
+        62
+      ],
+      "pdf_pages": [
+        44,
+        45,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        59,
+        60,
+        61,
+        62
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "assumptions": [
+        "Non-ARI Segment2 range40-4F",
+        "Known native-DPC incompatibility; firmware retains DPC and AER",
+        "No previous grants, no failure/unknownUUID/revision errors",
+        "Query responses use reserved return bit0=0; no hardware changes in query"
+      ],
+      "ecam": {
+        "base": "0xE0000000",
+        "segment": "0x0002",
+        "start_bus": "0x40",
+        "end_bus": "0x4F",
+        "bus": "0x42",
+        "device": "0x03",
+        "function": "0x01",
+        "offset": "0x180",
+        "address": "0xE4219180",
+        "range_start": "0xE4000000",
+        "range_end": "0xE4FFFFFF"
+      },
+      "support": "0x0000009F",
+      "calls": [
+        [
+          "0x00000001",
+          "0x0000009D",
+          "0x00000010",
+          "0x00000015"
+        ],
+        [
+          "0x00000001",
+          "0x00000015",
+          "0x00000000",
+          "0x00000015"
+        ],
+        [
+          "0x00000000",
+          "0x00000015",
+          "0x00000000",
+          "0x00000015"
+        ]
+      ]
+    },
+    {
+      "id": "PCIE-CH13-ACPI-001",
+      "claim": "通用_OSC input Query與return status方向分開；return bit0 Reserved，bit4 Masked。",
+      "kind": "supplementary_background",
+      "source_id": "ACPI-6.6-OSC",
+      "revision": "6.6",
+      "sections": [
+        "6.2.12"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        401
+      ],
+      "pdf_pages": [],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "verification": "Official indexed excerpt only; full PDF/HTML retrieval 403, no complete chapter review claimed."
+    },
+    {
+      "id": "PCIE-CH13-UEFI-001",
+      "claim": "UEFI PCI device handle、PCI I/O boot services用途與平台相依枚舉。",
+      "kind": "supplementary_background",
+      "source_id": "UEFI-2.11-PCI",
+      "revision": "2.11",
+      "sections": [
+        "14.3.7",
+        "14.3.8",
+        "14.3.9",
+        "14.4"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        623
+      ],
+      "pdf_pages": [],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "verification": "Official indexed excerpt only; full PDF/HTML retrieval 403, no complete chapter review claimed."
+    }
+  ]
+}

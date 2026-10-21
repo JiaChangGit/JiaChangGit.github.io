@@ -6,7 +6,7 @@
 
 讀者懂基本程式與 CPU、記憶體概念，但沒有 PCIe 基礎。課程先建立完整系統觀，再逐步深入韌體、軟體、交易、連線及實體機制。NVMe SSD 可以作為例子，但課程本身不以讀過 NVMe 教材為前提。
 
-目前完成 Chapter 0–10 及全系列的學習路線。Chapter 0 建立系統觀，Chapter 1 處理拓樸與識別；Chapter 2 走訪兩種 Capability 清單，Chapter 3 推演枚舉，Chapter 4 計算 BAR 與 Bridge Window；Chapter 5–7 接續交易、DMA 與中斷，Chapter 8–10 處理 Link、Reset 與電源管理。Chapter 11–19 仍為規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
+目前完成 Chapter 0–13 及全系列的學習路線。Chapter 0 建立系統觀，Chapter 1 處理拓樸與識別；Chapter 2 走訪兩種 Capability 清單，Chapter 3 推演枚舉，Chapter 4 計算 BAR 與 Bridge Window；Chapter 5–7 接續交易、DMA 與中斷，Chapter 8–10 處理 Link、Reset 與電源管理。Chapter 11–13 接續 Hot-Plug、AER／DPC 與平台控制權。Chapter 14–19 仍為規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
 
 主要入口：
 
@@ -205,7 +205,7 @@ Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清�
 
 ## Chapter 8–10 增補紀錄（2026-10-21）
 
-本批延伸使用者「繼續完成，或者繼續後續章節」的要求，完成 Link、Reset 與電源管理三章，提供三份獨立中文教學及六篇內容對等的中英文文章。目前 Chapter 0–10 可閱讀，Chapter 11–19 保留規劃狀態。
+本批延伸使用者「繼續完成，或者繼續後續章節」的要求，完成 Link、Reset 與電源管理三章，提供三份獨立中文教學及六篇內容對等的中英文文章。本批完成時 Chapter 0–10 可閱讀，Chapter 11–19 當時保留規劃狀態。
 
 - [Chapter 8 證據](../.ai/pcie-course/chapter8-claims.json)區分訓練、DL_Active 與 Function readiness。雙端速率案例新增 Target 上限與回報適用性；有限 credit 帳本、Flit layout 與模式欄位各自標示範圍，不重做 Chapter 0 的單端能力查詢。
 - [Chapter 9 證據](../.ai/pcie-course/chapter9-claims.json)以普通多 Function Endpoint 推演 FLR 範圍，另說明 PF／VF 不可泛用。FLR 觸發、100 ms 完成上限、RRS／FRS 與 stale Completion 等待分開處理；Conventional Reset 算例明列計時起點。
@@ -213,6 +213,17 @@ Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清�
 - 本批新增 24 筆來源與案例，合計 133 筆；原始兩份 PDF 雜湊仍與登記版本一致。產生器／來源及算例驗證通過，共 34 份公開產物，內部證據、來源 PDF 與抽取內容未出現在站點輸出。
 - 新驗證從讀值解出速率、寬度、FLR、PMCSR 與 L1SS 欄位，重算 credit、Flit 範圍、恢復時間與 LTR 門檻，再比對正文表格。在記憶體內刻意改壞三個證據案例及三張正文表格，六種變更均被攔下。中英文十六進位值集合及主題順序相同，另人工核對條件與結論。
 - Jekyll 建置、既有 NVMe 來源／產物／發布契約及 132 項測試通過。Chrome 的 48 組尺寸與明暗檢查通過，涵蓋三章完整教學的桌面、平板直橫向、手機及雙語文章的桌面與窄畫面；沒有整頁橫向溢出、SVG 文字越界、短於 44px 的連結／summary 或頁面錯誤。寬表格在自己的容器內捲動，答案及來源可展開；人工檢視訓練圖、FLR 條件圖、L1.2 表格及英文暗色版。這是瀏覽器尺寸驗證，不是實機 iPad Safari 驗證。
+
+## Chapter 11–13 增補紀錄（2026-10-21）
+
+本批完成 Hot-Plug、錯誤證據與平台控制權三章，各有獨立中文教學及內容對等的中英文報告。Chapter 0–13 可閱讀，Chapter 14–19 仍保留規劃；來源 PDF、抽取文字與閱讀截圖只留在儲存庫外。
+
+- Chapter 11 從 Slot Implemented、Hot-Plug Capable 到事件與目前狀態，釐清 Command Completed、實際供電與 Configuration readiness。新增的時間線將命令完成、DLL Active 與等待起點分開；資源不足案例連回既有 BAR／Bridge 教學。
+- Chapter 12 以穩定設定下的兩個 AER Status bit 示範 Mask、Severity、FEP、有效 Timeout Header 與 Root Source ID。DPC 另設事件，避免誤認被攔下的 ERR_NONFATAL 必然也出現在 Root AER。證據保存與 RW1CS 清除的順序分開說明。
+- Chapter 13 以 PCI Firmware 3.3 為主，保留其參考 Base 5.0 與課程 Base 6.0 的版本差異。MCFG 非零 Start Bus 的案例、_OSC Query 與實際接管、DPC／AER 相依，以及韌體保留所有權時的 EDR 有限例外均獨立推導。
+- UEFI 2.11 §14.3.7–§14.4 與 ACPI 6.6 §6.2.12 的補充只依官方索引摘錄；本次完整 PDF／HTML 取得回覆 403。來源登記與三版正文均明列此限制，未宣稱全文查核，未猜測 PDF 頁碼。PCI 專用控制位與交接責任以已持有的 Firmware 3.3 核對。
+- 本批新增 23 筆來源／案例紀錄，合計 156 筆；兩份原始 PDF 雜湊一致。產生器與來源、連結檢查通過，公開產物共 43 份。重算 Slot 通知／RW1C、時序、資源容量、AER／DPC 位元、MRd Header、ECAM 與 _OSC 相依條件，並比對正文表格。三種證據資料與三種正文表格的刻意錯誤均被攔下；雙語十六進位值及主題順序相同，另校閱語意。
+- 既有 NVMe 產物、來源、發布契約與 132 項測試通過，Jekyll 建置成功。Chrome 48 組頁面、尺寸與明暗檢查通過；涵蓋三章教學的桌面、平板直橫向及手機，以及雙語報告的桌面與窄畫面。沒有整頁水平溢出、SVG 文字越界、頁面錯誤或小於 44px 的可見連結／summary；來源與答案可展開。人工檢視時間線、AER 表格、DPC 圖與英文暗色版。這不是實機 iPad Safari 測試。
 
 ## 後續逐章編寫與驗證
 

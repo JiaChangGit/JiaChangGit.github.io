@@ -662,6 +662,137 @@ def validate_link_reset_power_examples(claims, require, documents=None):
                     'Chapter 10 published LTR inputs drifted')
 
 
+def validate_hotplug_error_ownership_examples(claims, require, documents=None):
+    """Recompute examples from raw inputs and reconcile their tutorial tables.
+
+    This does not prove normative accuracy or infer real platform behavior.
+    documents supports in-memory mutations during maintenance checks.
+    """
+    examples = {c['id']: c for c in claims}
+    documents = documents or {}
+
+    def doc(n):
+        return documents.get(n) or Document((DATA / f'chapter{n}.zh.html').read_text(encoding='utf-8'))
+
+    def reads(n, caption, evidence):
+        rows = table_rows(doc(n), caption, require)
+        require(len(rows) == len(evidence), f'Chapter {n} row count: {caption}')
+        for row, (offset, value) in zip(rows, evidence):
+            require(int(offset, 0) in hex_values(row[0]) and hex_values(row[1]) == [int(value, 0)],
+                    f'Chapter {n} published read mismatch: {caption}: {offset}')
+        return {int(offset, 0): int(value, 0) for offset, value in evidence}
+
+    e = examples.get('PCIE-CH11-EXAMPLE-001')
+    if e:
+        raw = reads(11, 'Hot-Plug 插槽的起始讀值', [(r[0], r[2]) for r in e['slot_reads']])
+        require([r[1] for r in e['slot_reads']] == [16, 32, 16, 16], 'Chapter 11 access widths')
+        cap, slot, control, status = (raw[k] for k in (0x72, 0x84, 0x88, 0x8A))
+        require(cap & 15 == 2 and (cap >> 4) & 15 == 6 and bool(cap & 0x100),
+                'Chapter 11 Port identity/slot premise')
+        require(slot & 0x7F == 0x5F and not slot & (1 << 18) and slot >> 19 == 5,
+                'Chapter 11 elements, HPS, CC support or slot number')
+        require((slot >> 7) & 255 == 75 and (slot >> 15) & 3 == 0,
+                'Chapter 11 75 W power-limit encoding')
+        require(control & 0x1038 == 0x1038 and (control >> 6) & 15 == 15 and bool(control & 0x400),
+                'Chapter 11 initial notifications/indicators/power')
+        write = int(e['power_write'], 0)
+        require(write == (control & ~(0x400 | 0x300)) | 0x200,
+                'Chapter 11 power-on/blink write must preserve other controls')
+        rows = table_rows(doc(11), '三個事件快照與精確清除值', require)
+        require(len(rows) == len(e['events']) == 3, 'Chapter 11 acknowledgment rows')
+        for row, values in zip(rows, e['events']):
+            before, clear, after = (int(v, 0) for v in values)
+            require(hex_values(' '.join((row[0], row[2], row[3]))) == [before, clear, after],
+                    'Chapter 11 published RW1C values')
+            require(clear in (1 << 3, 1 << 4, 1 << 8) and before & ~clear == after == 1 << 6,
+                    'Chapter 11 clear event without clearing read-only Presence')
+        require(status == int(e['events'][0][0], 0), 'Chapter 11 initial event consistency')
+        start, completed, active, first = e['timeline_ms']
+        require(start < completed < active and first - active == 100 and active - start <= 1000,
+                'Chapter 11 independent command, Link, and configuration time origins')
+        require(int(e['link_status'], 0) & (1 << 13), 'Chapter 11 DLL Active premise')
+        low, high = (int(v, 0) for v in e['free_range'])
+        needed = int(e['bar_size'], 0)
+        aligned = (low + needed - 1) & ~(needed - 1)
+        require(high - low + 1 == 512 * 1024 and needed == 1024 * 1024 and aligned + needed - 1 > high,
+                'Chapter 11 new BAR cannot fit remaining aligned resource range')
+
+    e = examples.get('PCIE-CH12-EXAMPLE-001')
+    if e:
+        a = reads(12, 'Endpoint AER 的教學讀值', e['aer_reads'])
+        # The fourth DWORD is intentionally undefined, not a synthetic zero.
+        rows = table_rows(doc(12), '有效 FEP 所對應的 Non-Flit Header Log', require)
+        require(len(rows) == 4 and not hex_values(rows[3][1]), 'Chapter 12 undefined fourth Header DWORD')
+        h = {int(k, 0): int(v, 0) for k, v in e['header_reads']}
+        for row, (k, v) in zip(rows, e['header_reads']):
+            require(hex_values(row[0]) == [int(k, 0)] and hex_values(row[1]) == [int(v, 0)],
+                    'Chapter 12 Header Log differs from body')
+        require(a[0x100] & 0xFFFF == 1 and (a[0x100] >> 16) & 15 == 2 and a[0x100] >> 20 == 0,
+                'Chapter 12 AER ID/version/next')
+        status, mask, severity, logcap = (a[k] for k in (0x104, 0x108, 0x10C, 0x118))
+        require(status == (1 << 14) | (1 << 18) and status & ~mask == 1 << 14,
+                'Chapter 12 unmasked error set')
+        require(not severity & (1 << 14) and bool(severity & (1 << 18)) and a[0x78] & 6 == 6,
+                'Chapter 12 severity and reporting configuration')
+        fep = logcap & 31
+        require(fep == 14 and bool(status & (1 << fep)) and bool(logcap & (1 << 12))
+                and not logcap & (3 << 9), 'Chapter 12 valid FEP and Timeout Header capability')
+        dw0, dw1, dw2 = (h[k] for k in (0x11C, 0x120, 0x124))
+        length = (dw0 & 1023) or 1024
+        require(dw0 >> 24 == 0 and dw1 & 255 == 255 and dw2 & 3 == 0,
+                'Chapter 12 3DW MRd/full byte enables/alignment')
+        require(length * 4 == e['request_bytes'] == 256 and dw2 + length * 4 - 1 == int(e['request_end'], 0),
+                'Chapter 12 Request range')
+        require(dw1 >> 16 == 0x0300 and (dw1 >> 8) & 255 == 0x13,
+                'Chapter 12 requester and tag')
+        r = reads(12, 'Root Port 收到單一 Non-Fatal 訊息的快照', e['root_reads'])
+        require(r[0x12C] == 2 and r[0x130] == (1 << 2) | (1 << 5)
+                and r[0x134] >> 16 == dw1 >> 16, 'Chapter 12 Root category and first reporter')
+        dp = reads(12, 'DPC 的獨立事件快照', e['dpc_reads'])
+        require(dp[0x300] & 0xFFFF == 0x1D and (dp[0x300] >> 16) & 15 == 1,
+                'Chapter 12 DPC ID/version')
+        require(dp[0x306] & 3 == 2 and bool(dp[0x306] & 8) and not dp[0x306] & 16,
+                'Chapter 12 DPC trigger/interrupt/ERR_COR settings')
+        require(dp[0x308] & 1 == 1 and (dp[0x308] >> 1) & 3 == 1 and dp[0x308] & 8 == 8
+                and not dp[0x308] & 16 and dp[0x30A] == 0x0300,
+                'Chapter 12 DPC valid Message Source ID and Switch-reserved RP Busy')
+
+    e = examples.get('PCIE-CH13-EXAMPLE-001')
+    if e:
+        x = {k: int(v, 0) for k, v in e['ecam'].items()}
+        require(x['start_bus'] <= x['bus'] <= x['end_bus'] <= 255 and x['device'] < 32
+                and x['function'] < 8 and x['offset'] < 4096, 'Chapter 13 ECAM selector bounds')
+        address = x['base'] + (x['bus'] << 20) + (x['device'] << 15) + (x['function'] << 12) + x['offset']
+        start, end = x['base'] + (x['start_bus'] << 20), x['base'] + ((x['end_bus'] + 1) << 20) - 1
+        require(address == x['address'] and start == x['range_start'] and end == x['range_end']
+                and start <= address <= end and end - start + 1 == 16 * 1024 * 1024,
+                'Chapter 13 Bus-zero ECAM address/range')
+        rows = table_rows(doc(13), '非零 Start Bus 的 ECAM 教學案例', require)
+        expected = [[x['base']], [x['segment']], [x['start_bus'], x['end_bus']],
+                    [x['bus'], x['device'], x['function'], x['offset']], [address]]
+        require([hex_values(r[1]) for r in rows] == expected, 'Chapter 13 published ECAM values')
+        calls = [[int(v, 0) for v in row] for row in e['calls']]
+        rows = table_rows(doc(13), '先協商，再正式接管的三次 _OSC 呼叫', require)
+        require([hex_values(' '.join(r[1:])) for r in rows] == calls, 'Chapter 13 published _OSC negotiation')
+        support, held = int(e['support'], 0), 0
+        require(support == 0x9F and len(calls) == 3, 'Chapter 13 Support and call count')
+        for query, requested, status, returned in calls:
+            require(query in (0, 1) and not status & 0xE, 'Chapter 13 no failed/unknown UUID/revision grant')
+            require(returned & ~requested == 0 and bool(status & 16) == (requested != returned),
+                    'Chapter 13 masked control response')
+            for bits in (requested, returned):
+                require(not bits & 0x1AD or bool(bits & 16), 'Chapter 13 dependent feature requires Capability control')
+                require(not bits & 128 or bits & 24 == 24 and bool(support & 128),
+                        'Chapter 13 DPC requires AER, Capability, EDR')
+            require(not (requested & 128 and not returned & 128) or not returned & 8,
+                    'Chapter 13 retaining DPC must retain AER')
+            require(requested & held == held and returned & held == held, 'Chapter 13 earlier grants retained')
+            if not query:
+                held = returned
+        require(calls[0][1] & ~calls[0][3] == 0x88 and calls[1][0] == 1
+                and calls[2][0] == 0 and held == 0x15, 'Chapter 13 query versus final ownership')
+
+
 def validate(source_dir=None):
     errors = []
     def require(condition, message):
@@ -763,6 +894,11 @@ def validate(source_dir=None):
             require(any(c['id'] == f'PCIE-CH{number}-EXAMPLE-001' for c in claims),
                     f'Missing Chapter {number} worked example')
     validate_link_reset_power_examples(claims, require)
+    for number in (11, 12, 13):
+        if any(chapter['number'] == number for chapter in ready):
+            require(any(c['id'] == f'PCIE-CH{number}-EXAMPLE-001' for c in claims),
+                    f'Missing Chapter {number} worked example')
+    validate_hotplug_error_ownership_examples(claims, require)
 
     chapter_numbers = [c['number'] for c in curriculum]
     require(len(set(chapter_numbers)) == len(chapter_numbers), 'Duplicate chapter numbers')
@@ -858,6 +994,8 @@ def validate(source_dir=None):
         print('Chapters 5–7 transfer bytes, Completion fragments, DMA ranges, and MSI-X locations match their published tables.')
     if any(chapter['number'] == 10 for chapter in ready):
         print('Chapters 8–10 Link fields, credits, Flit ranges, FLR, PMCSR writes, and L1.2 timing match their published tables.')
+    if any(chapter['number'] == 13 for chapter in ready):
+        print('Chapters 11–13 Slot events, AER logs, DPC, ECAM, and _OSC negotiation match their published tables.')
 
 
 if __name__ == '__main__':

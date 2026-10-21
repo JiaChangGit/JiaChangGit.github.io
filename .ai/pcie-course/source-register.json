@@ -101,6 +101,32 @@
       "purpose": "Only _PR0/_PR3 power-resource dependencies and separation from PCIe Registers.",
       "verification": "Official PDF cover and sections 7.3.8/7.3.11 read, document pp.497-498 / one-based PDF pp.568-569. HTML fetch 403; PDF fetch succeeded.",
       "not_used_for": "PCIe field layouts, board wiring, or platform-specific timing."
+    },
+    {
+      "id": "ACPI-6.6-OSC",
+      "title": "ACPI Specification: _OSC generic interface",
+      "revision": "6.6",
+      "publisher": "UEFI Forum",
+      "type": "official_indexed_pdf_excerpt",
+      "url": "https://uefi.org/sites/default/files/resources/ACPI_Spec_6.6.pdf",
+      "accessed": "2026-10-21",
+      "role": "supplementary_background",
+      "purpose": "Only generic _OSC input query flag and returned error/masked bits, section6.2.12 documentp401.",
+      "verification": "Official search-index excerpt read; direct PDF and HTML returned HTTP403. No full PDF page mapping or complete chapter verification claimed.",
+      "not_used_for": "Additional unreviewed normative requirements or platform-specific register behavior."
+    },
+    {
+      "id": "UEFI-2.11-PCI",
+      "title": "UEFI Specification: PCI driver model and PCI I/O",
+      "revision": "2.11",
+      "publisher": "UEFI Forum",
+      "type": "official_indexed_pdf_excerpt",
+      "url": "https://uefi.org/sites/default/files/resources/UEFI_Spec_Final_2.11.pdf",
+      "accessed": "2026-10-21",
+      "role": "supplementary_background",
+      "purpose": "Only interface roles/boot services scope, sections14.3.7-14.4 documentp623; contents confirms Root Bridge I/O entry point.",
+      "verification": "Official search-index excerpt read; direct PDF and HTML returned HTTP403. No full PDF page mapping or complete chapter verification claimed.",
+      "not_used_for": "Additional unreviewed normative requirements or platform-specific register behavior."
     }
   ]
 }

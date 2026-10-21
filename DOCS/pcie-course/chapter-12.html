@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。">
+  <title>錯誤證據、回報與隔離 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 12</p>
+      <h1>錯誤證據、回報與隔離</h1>
+      <p class="header-description">以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#evidence">1. 一個錯誤訊息，能告訴我們多少事情？</a></li><li><a href="#aer">2. Status 有兩個 bit，為什麼只回報一個錯誤？</a></li><li><a href="#header">3. Header Log 看起來像封包，就能直接解碼嗎？</a></li><li><a href="#root">4. Root Port 記錄 03:00.0，是否代表它就是故障來源？</a></li><li><a href="#preserve">5. 為什麼不能一開始就把所有 Status 寫 1 清掉？</a></li><li><a href="#dpc">6. 如果啟用 DPC，為什麼 Root 可能看不到原本的 ERR_NONFATAL？</a></li><li><a href="#questions">7. 根據證據回答，不補上沒有讀到的事</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">收到 PCIe 錯誤通知時，最先要做的是保存能互相比對的證據。哪個 Function 偵測到錯誤、哪個訊息到達 Root Port，以及是否已啟動隔離，可能是三個不同問題。本章用 AER 與 DPC 的兩個獨立案例，練習從欄位推出有根據的結論。</p>
+<aside class="note"><strong>版本與假設</strong><p>本章依 PCI Express Base 6.0。數值與事件順序均為作者假設，採普通非 SR-IOV Function。AER 案例不支援 Flit Mode 或 End-End TLP Prefix，也未啟用 DPC；另一個 DPC 案例另列快照，不能把兩者當成同一次事件。範例假設管理者有權讀取與處理相關紀錄；控制權見 Chapter 13。</p></aside>
+<section id="evidence"><h2>1. 一個錯誤訊息，能告訴我們多少事情？</h2>
+<p>Correctable Error 表示協定可自行恢復的錯誤，仍可能降低效能；Uncorrectable Error 則影響功能，並分為 Non-Fatal 與 Fatal。Non-Fatal 不等於工作已成功，Fatal 也不是「一定已損壞某顆晶片」的硬體診斷。這些分類提供回報與處理政策所需的嚴重程度。</p>
+<div class="table-wrap"><table><caption>由近到遠整理錯誤證據</caption><thead><tr><th scope="col">紀錄位置</th><th scope="col">回答的問題</th><th scope="col">證據限制</th></tr></thead><tbody><tr><td>Function 的 Device Status／AER Status</td><td>這個 Function 記錄了哪類偵測結果？</td><td>不保證訊息已送達，也不是事件次數。</td></tr><tr><td>AER Mask／Severity／Device Control</td><td>偵測時如何記錄與回報？</td><td>事後讀值不一定等於事發當時設定。</td></tr><tr><td>Root Error Status／Source ID</td><td>Root Port 收到哪些類別，第一個回報者是誰？</td><td>回報者不一定是造成根本問題的元件。</td></tr><tr><td>Header Log／First Error Pointer</td><td>目前保存的錯誤對應哪個交易內容？</td><td>有有效性、容量、封包模式與錯誤種類限制。</td></tr><tr><td>DPC Status</td><td>是否已隔離下游，觸發原因是什麼？</td><td>不能替應用工作判定成功或復原完成。</td></tr></tbody></table></div>
+<p>Advanced Error Reporting（AER）是在基本錯誤回報之外，提供個別錯誤狀態、遮罩、嚴重程度與相關紀錄的 Extended Capability。即使沒有找到 AER，也不能直接說「裝置沒有任何錯誤回報能力」。</p>
+<details class="source-note"><summary>分類與回報模型</summary><p>§6.2.1–§6.2.4（pp.669–679）；Figure 6-1（p.670）整理分類。個別錯誤的處理與預設分類要再讀 Tables 6-4、6-5（pp.685–691），不能只從名稱猜行為。</p></details></section>
+<section id="aer"><h2>2. Status 有兩個 bit，為什麼只回報一個錯誤？</h2>
+<p>先依 Chapter 2 的 Extended Capability 清單找 ID=0x0001，再用 Figure 7-154 解 Header。下面是 Endpoint 03:00.0 的快照；AER base 剛好是 0x100，不是固定位置。假設先前紀錄已清理、設定自事件前保持不變，期間沒有其他錯誤，且沿途的錯誤訊息轉送已正確啟用。</p>
+<div class="table-wrap"><table><caption>Endpoint AER 的教學讀值</caption><thead><tr><th scope="col">欄位與位置</th><th scope="col">值</th><th scope="col">閱讀入口</th></tr></thead><tbody><tr><td>Header，0x100，32 bits</td><td>0x00020001</td><td>Figure 7-154</td></tr><tr><td>Uncorrectable Error Status，0x104，32 bits</td><td>0x00044000</td><td>Figure 7-155</td></tr><tr><td>Uncorrectable Error Mask，0x108，32 bits</td><td>0x00040000</td><td>Figure 7-156</td></tr><tr><td>Uncorrectable Error Severity，0x10C，32 bits</td><td>0x00040000</td><td>Figure 7-157</td></tr><tr><td>Advanced Error Capabilities and Control，0x118，32 bits</td><td>0x0000100E</td><td>Figure 7-160</td></tr><tr><td>Device Control，PCIe base+0x08=0x78，16 bits</td><td>0x2816</td><td>Figure 7-25</td></tr></tbody></table></div>
+<p>Header 表示 ID=0x0001、Version=2、Next=0；即使讀的是 Base 6.0，也不能自行套用只適合較新 Capability／Flit 的佈局。本例沒有 Flit 或 Prefix，因此 Version=2 符合條件。</p>
+<p>Status 的 bit 14=1 是 Completion Timeout；bit 18=1 是 Malformed TLP。Mask bit 18=1、bit 14=0，因此這兩個已記錄的錯誤中，只有 Completion Timeout 未被遮罩：<code>0x00044000 &amp; ~0x00040000 = 0x00004000</code>。這個運算只挑出本例的未遮罩狀態，還不是完整的回報判定演算法。</p>
+<p>個別錯誤被 Mask 時，Status 仍可設起來；但不會為該次錯誤發出 Error Message，也不會把它存進 Header Log、TLP Prefix Log 或 First Error Pointer。不能把「Mask=1」解成「沒有發生」，也不能把 Severity=Fatal 解成「無論 Mask 為何都必須送出 Fatal 訊息」。</p>
+<p>本例 Severity bit 14=0，Completion Timeout 被設定為 Non-Fatal；bit 18=1，Malformed TLP 被設定為 Fatal，但後者已 Mask。Device Control bit 1=1 允許 Non-Fatal 回報，所以在本例前提下，Completion Timeout 產生 ERR_NONFATAL。Device Control bit 2 也開啟 Fatal 回報，仍不會解除個別 Malformed TLP Mask。這是明確設定後的快照，不宣稱 Severity 值是重設預設值。</p>
+<p>完整通知還要經過沿途 Bridge 的轉送條件、Root Port primary interface 的傳送允許，以及 Root 端的中斷設定。實際查詢時，從 Figure 6-3 沿來源到 Root 的路徑檢查；不能只讀 Endpoint 的一個 Enable 就結案。Unsupported Request、Advisory Non-Fatal 等類型另有規則，不宜把本例簡化式照搬過去。</p>
+<details class="source-note"><summary>Status → Mask → Severity → 回報路徑</summary><p>Figures 7-154–7-157／Tables 7-134–7-137（pp.1112–1117）；Figure 7-25／Table 7-21（pp.958–962）。Mask 行為見 §6.2.3.2.2（p.673），回報路徑見 §6.2.6／Figure 6-3（p.685）、§6.2.8.1（p.692）；Advisory Non-Fatal 另見 §6.2.4.3（p.682）。</p></details></section>
+<section id="header"><h2>3. Header Log 看起來像封包，就能直接解碼嗎？</h2>
+<p>先檢查有效性。Advanced Error Capabilities and Control 的低五位為 0x0E，也就是 First Error Pointer（FEP）=14；它指向 Uncorrectable Error Status 的 bit 14。本例該 bit=1，因此 FEP 有效，對應 Completion Timeout。不是看到 Log 非零，就能認定它屬於目前關心的事件。</p>
+<p>Completion Timeout 也不能一律期待有 Request Header。本例 bit 12=1，表示 Completion Timeout Prefix/Header Log Capable；Multiple Header Recording Capable／Enable bits 9、10 均為 0。再加上沒有 Flit／End-End Prefix，這才得到本例的四個 DWORD Log 容量與解讀前提。</p>
+<div class="table-wrap"><table><caption>有效 FEP 所對應的 Non-Flit Header Log</caption><thead><tr><th scope="col">DWORD 讀取位置</th><th scope="col">讀值</th><th scope="col">由封包格式推出的內容</th></tr></thead><tbody><tr><td>0x11C</td><td>0x00000040</td><td>3 DW Memory Read Header，Length=64 DW。</td></tr><tr><td>0x120</td><td>0x030013FF</td><td>Requester ID=0x0300、Tag=0x13、First／Last DW BE 均為 0xF。</td></tr><tr><td>0x124</td><td>0x40001000</td><td>Request 起始位址。</td></tr><tr><td>0x128</td><td>不解讀</td><td>本例是 12-byte Header，第四個 DWORD 未定義。</td></tr></tbody></table></div>
+<p>因此這筆未如期完成的 Request 要讀 64 × 4=256 bytes，範圍為 0x40001000–0x400010FF。Header 顯示的是等待 Completion 的 Request，不是「超時回來的 Completion」。這個案例延用 Chapter 5 的交易欄位，不重教 TLP 全部格式。</p>
+<p>Figure 7-161 特別規定 DWORD 讀取後的排列方式：封包 Header byte 0 位於第一個 Log DWORD 的 bits 31:24。上表已按 DWORD 數值解讀，不能再套一次普通 byte dump 的直覺而把位元組反轉。若是 Flit Mode，要改看 Logged TLP was Flit Mode、Header Log Size、Logged TLP Size，以及 Type／OHC，不能仍只拿前三個 DWORD 套本例。</p>
+<p>這份 Log 可以定位某筆 Request 及其等待結果；它不能單獨證明原因在 Endpoint、Completer、Link、路由或平台。Masked 的 Malformed TLP 沒有本次 Header 紀錄，也不能把現在這份 MRd Header 逕自歸給它。</p>
+<details class="source-note"><summary>先驗證 FEP，再選 Header 格式</summary><p>§6.2.4.2（pp.679–680）定義 FEP 有效性及多筆記錄；Figures 7-160、7-161／Tables 7-140、7-141（pp.1121–1123）定義能力、Log 格式與 byte 排列。Memory Request 格式見 §2.2.7、Figure 2-31（p.163），細部推導連回 <a href="chapter-5.html">Chapter 5</a>。</p></details></section>
+<section id="root"><h2>4. Root Port 記錄 03:00.0，是否代表它就是故障來源？</h2>
+<p>先區分「送出錯誤訊息的 Function」與「造成根本問題的元件」。Root Error Source Identification 記錄第一個相應類別訊息的 Requester ID；例如 Endpoint 等不到讀取回覆而回報 Timeout，Root 看到 Endpoint 的 ID 並不奇怪。</p>
+<div class="table-wrap"><table><caption>Root Port 收到單一 Non-Fatal 訊息的快照</caption><thead><tr><th scope="col">Root AER base=0x100 的位置</th><th scope="col">值</th><th scope="col">判讀</th></tr></thead><tbody><tr><td>Root Error Command，0x12C</td><td>0x00000002</td><td>開啟 Non-Fatal 中斷回報。</td></tr><tr><td>Root Error Status，0x130</td><td>0x00000024</td><td>bit 2、bit 5=1；Multiple、Fatal、Correctable 均未設。</td></tr><tr><td>Error Source Identification，0x134</td><td>0x03000000</td><td>高 16 bits=0x0300，是第一個 Uncorrectable 訊息的 Requester ID。</td></tr></tbody></table></div>
+<p><code>(0x03000000 &gt;&gt; 16) &amp; 0xFFFF = 0x0300</code>，依一般 BDF 編碼解為 03:00.0。本例 Root AER 的中斷向量編號設為 0，因此完整 Status 的高位沒有額外數值。Root primary interface 的傳送條件也已滿足；若要斷言 CPU 實際收到中斷，還要確認 MSI／MSI-X 或 INTx 的傳送與平台路由，不能只憑 0x24。</p>
+<p>Root Error Status 的更新不受 Root Error Command 或 Root Control 的值控制，但仍有前述 primary interface 傳送允許條件。假如後來又收到另一個 Uncorrectable Message，Multiple bit 會設起來，第一個 Source ID 仍保留；這個欄位不是完整的回報者清單。</p>
+<details class="source-note"><summary>Root 端的圖表路徑</summary><p>Figure 7-162／Table 7-142（pp.1123–1124）→ Figure 7-163／Table 7-143（pp.1124–1126）→ Figure 7-164／Table 7-144（pp.1126–1127）。先看類別有效狀態，再決定要讀 Source ID 的哪半邊。</p></details></section>
+<section id="preserve"><h2>5. 為什麼不能一開始就把所有 Status 寫 1 清掉？</h2>
+<p>因為清除不只是讓畫面乾淨。當軟體清掉 FEP 所指的錯誤時，硬體可能更新下一筆 Header 與 FEP；若先清除再讀 Log，就可能把兩個時間點的資料拼成同一個事件。</p>
+<ol><li>先記下管理對象、時間與當時設定；保存相關 AER Status、Mask、Severity、FEP、有效 Log，以及 Root／DPC 的對應證據。</li><li>依 FEP 與能力確認 Log 的格式及有效範圍；若資料可能並行變動，重新核對關聯，不能假定多個 Register 的讀取是原子快照。</li><li>完成該筆紀錄處理後，才對相應 RW1CS bit 寫 1。若啟用 Multiple Header Recording，依 FEP 逐筆處理，再重新讀狀態。</li></ol>
+<p>前兩步是作者整理的蒐證方式；第三步的硬體清除語意來自規格。Base 6.0 建議在多筆 Header 記錄啟用且 FEP 有效時，不要清除 FEP 以外的 Status bit；規格也列有確定沒有 Header 紀錄的 masked error 例外。它不是一條「所有錯誤情境都一次寫固定遮罩」的操作口訣。</p>
+<p>另外，清 PCI Status 不會連帶清 AER Status，反方向也一樣。對照不同紀錄時，須記下是哪個 Register 在什麼時候被清除。</p>
+<details class="source-note"><summary>清除會改變哪些證據</summary><p>§6.2.4.2（pp.679–681，含註腳 108）說明多筆記錄與清除順序；§6.2.7.1（p.691）說明 PCI Status 與 AER Status 的獨立性。</p></details></section>
+<section id="dpc"><h2>6. 如果啟用 DPC，為什麼 Root 可能看不到原本的 ERR_NONFATAL？</h2>
+<p>以下換成<strong>另一個事件案例</strong>。02:01.0 的 DPC Extended Capability 位於 0x300；這是一個 Switch Downstream Port，不使用 Root Port Extensions。Downstream Port Containment（DPC）可在觸發後停止下游 PCIe 流量，使問題先被限制在受影響的分支。</p>
+<div class="table-wrap"><table><caption>DPC 的獨立事件快照</caption><thead><tr><th scope="col">欄位與位置</th><th scope="col">值</th><th scope="col">由欄位得知的狀態</th></tr></thead><tbody><tr><td>Header，0x300，32 bits</td><td>0x0001001D</td><td>ID=0x001D、Version=1、Next=0。</td></tr><tr><td>DPC Control，0x306，16 bits</td><td>0x000A</td><td>Trigger Enable=10b；Interrupt Enable=1。</td></tr><tr><td>DPC Status，0x308，16 bits</td><td>0x000B</td><td>Trigger Status=1；Reason=01b；Interrupt Status=1。</td></tr><tr><td>DPC Error Source ID，0x30A，16 bits</td><td>0x0300</td><td>觸發訊息的 Requester ID。</td></tr></tbody></table></div>
+<p>Trigger Enable=10b 表示 Port 自己偵測到未遮罩的 Uncorrectable Error，或收到 ERR_NONFATAL／ERR_FATAL 時可觸發。Reason=<code>(0x000B &gt;&gt; 1) &amp; 3 = 1</code>，所以本次原因是收到 ERR_NONFATAL；此時 Source ID 才具有這裡要用的意義。若 Reason=00b 表示 Port 自己偵測到錯誤，就不能照用 Source ID 猜來源。</p>
+<p>觸發 DPC 的這個 ERR_NONFATAL 會被 Port 丟棄，不再往上游轉送。DPC 可另外以中斷或 ERR_COR 通知管理者，但本例 DPC ERR_COR Enable=0，只啟用 DPC 中斷；中斷是否到達仍要看向量與平台設定。因此不能要求 Root AER 一定同時出現上一節的 0x24 快照。</p>
+<figure class="diagram course-diagram"><svg viewBox="0 0 900 250" role="img" aria-labelledby="dpc-title dpc-desc"><title id="dpc-title">DPC 在下游 Port 截止觸發訊息</title><desc id="dpc-desc">Endpoint 的 ERR_NONFATAL 到達 Switch Downstream Port 後觸發 DPC。該訊息不再向 Root 轉送；Port 停止下游流量並用已啟用的 DPC 通知機制回報。</desc><g fill="var(--surface)" stroke="var(--accent)" stroke-width="2"><rect x="35" y="45" width="210" height="100" rx="10"/><rect x="335" y="45" width="240" height="100" rx="10"/><rect x="665" y="45" width="200" height="100" rx="10"/></g><g text-anchor="middle"><text x="140" y="85">Endpoint 03:00.0</text><text x="140" y="118">回報 ERR_NONFATAL</text><text x="455" y="85">Downstream 02:01.0</text><text x="455" y="118">DPC Trigger Status = 1</text><text x="765" y="85">Root Port</text><text x="765" y="118">不收到這筆原訊息</text><text x="455" y="205">下游 Link 進 Disabled；DPC 通知另行判斷</text></g><line x1="245" y1="95" x2="325" y2="95" stroke="var(--accent)" stroke-width="3"/><polygon points="325,95 312,88 312,102" fill="var(--accent)"/><line x1="575" y1="95" x2="630" y2="95" stroke="var(--muted)" stroke-dasharray="5 4"/><path d="M625 80 L645 110 M645 80 L625 110" stroke="var(--accent)" stroke-width="3"/></svg><figcaption>作者示意；箭頭表示這筆錯誤訊息的傳遞，不代表所有通知都被阻擋。</figcaption></figure>
+<p>Trigger Status=1 時，硬體要求 LTSSM 進入 Disabled。軟體必須讓 Port 留在 DPC，直到 Link Status 的 Data Link Layer Link Active 讀為 0；若是支援 RP Extensions 的 Root Port，還必須等 DPC RP Busy=0。本例是 Switch Port，不能把 Reserved 的 RP Busy 當成有效進度指標。</p>
+<p>對 Interrupt Status bit 3 寫 1 只是清中斷狀態；對 Trigger Status bit 0 寫 1 則會釋放 DPC，讓 LTSSM 回 Detect 嘗試訓練。後者須先符合上述條件與恢復政策，並在後續設定存取遵守 Conventional Reset 的時序。不能為了「消除錯誤」而先寫掉 Trigger Status，也不能把它清為 0 當成裝置、驅動與應用都已恢復。</p>
+<details class="source-note"><summary>DPC 的查詢與釋放條件</summary><p>§6.2.11–§6.2.11.2（pp.694–697）；Figures 7-297–7-301、Tables 7-261–7-265（pp.1248–1254）。DPC 後的交易行為另見 §2.9.3（p.262 起）；控制權與 AER 的關係接 <a href="chapter-13.html#dependencies">Chapter 13</a>。</p></details></section>
+<section id="questions"><h2>7. 根據證據回答，不補上沒有讀到的事</h2><details class="question"><summary>AER Status=0，是否足以證明從開機至今都沒有錯誤？</summary><p>不足。紀錄可能已被清除或重設，部分欄位也取決於實作與偵測條件。應先確認蒐證時間範圍與清除紀錄。依據：§6.2.4.2、Table 7-135。</p></details><details class="question"><summary>FEP=14，但 Status bit 14 已清除，仍可把 Header Log 當成最新 Timeout 嗎？</summary><p>不可以。FEP 此時無效；Log 看起來合理並不能補足有效性條件。依據：§6.2.4.2、Table 7-140。</p></details><details class="question"><summary>DPC Source ID=03:00.0，能否斷言 03:00.0 的硬體必須更換？</summary><p>不能。先確認 Trigger Reason 允許解讀 Source ID；即使有效，也只識別觸發訊息的回報者。還需交易、相鄰元件與平台證據才能判斷原因。依據：Table 7-265。</p></details></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-11.html">← Chapter 11</a><a href="chapter-13.html">Chapter 13 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

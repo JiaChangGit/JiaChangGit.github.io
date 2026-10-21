@@ -1,0 +1,315 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 11,
+  "updated": "2026-10-21",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH11-ELEMENTS-001",
+      "claim": "Slot能力、存在、Link可用與管理權分開；實體元件依form factor。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.7",
+        "6.7.1",
+        "7.5.3.2"
+      ],
+      "figures": [
+        "7-23"
+      ],
+      "tables": [
+        "6-7",
+        "7-19"
+      ],
+      "document_pages": [
+        727,
+        728,
+        953,
+        954
+      ],
+      "pdf_pages": [
+        727,
+        728,
+        953,
+        954
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH11-FIELDS-001",
+      "claim": "Slot Capabilities/Control/Status欄位及RW1C；CC不保證動作完成，Power Control非量測。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.9",
+        "7.5.3.10",
+        "7.5.3.11"
+      ],
+      "figures": [
+        "7-30",
+        "7-31",
+        "7-32"
+      ],
+      "tables": [
+        "7-27",
+        "7-28",
+        "7-29"
+      ],
+      "document_pages": [
+        980,
+        981,
+        982,
+        983,
+        984,
+        985,
+        986
+      ],
+      "pdf_pages": [
+        980,
+        981,
+        982,
+        983,
+        984,
+        985,
+        986
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH11-EVENTS-001",
+      "claim": "Slot Event非計數器，狀態不等於通知，INTx/MSI條件另查；Presence含不同來源。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.7.3.1",
+        "6.7.3.4",
+        "7.5.3.11"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        735,
+        736,
+        737,
+        985,
+        986
+      ],
+      "pdf_pages": [
+        735,
+        736,
+        737,
+        985,
+        986
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH11-TIMING-001",
+      "claim": "支援CC時須遵守命令序列；Hot-add一般等Active後100ms，兩種1s起點不同。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.7.3.2",
+        "6.7.3.3",
+        "6.6.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        721,
+        722,
+        723,
+        735,
+        736
+      ],
+      "pdf_pages": [
+        721,
+        722,
+        723,
+        735,
+        736
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH11-ASYNC-001",
+      "claim": "Orderly/async不同；Base6 HPS deprecated for async，推薦DPC，不把隔離當應用成功。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.7",
+        "6.7.6",
+        "6.2.11"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        727,
+        741,
+        742,
+        694,
+        695,
+        696,
+        697
+      ],
+      "pdf_pages": [
+        727,
+        741,
+        742,
+        694,
+        695,
+        696,
+        697
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH11-PLATFORM-001",
+      "claim": "Hot-Plug授權與插槽能力獨立，資源與交接受Host Bridge限制。",
+      "kind": "specification",
+      "source_id": "PCI-FW-3.3",
+      "revision": "3.3",
+      "sections": [
+        "3.5",
+        "4.3.2",
+        "4.5.1"
+      ],
+      "figures": [],
+      "tables": [
+        "4-6"
+      ],
+      "document_pages": [
+        34,
+        35,
+        36,
+        37,
+        46,
+        47,
+        48,
+        49,
+        53
+      ],
+      "pdf_pages": [
+        34,
+        35,
+        36,
+        37,
+        46,
+        47,
+        48,
+        49,
+        53
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH11-EXAMPLE-001",
+      "claim": "作者插槽讀值、事件清除、時間與資源不足算例。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.9",
+        "7.5.3.10",
+        "7.5.3.11",
+        "6.7.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        980,
+        981,
+        982,
+        983,
+        984,
+        985,
+        986,
+        735,
+        736
+      ],
+      "pdf_pages": [
+        980,
+        981,
+        982,
+        983,
+        984,
+        985,
+        986,
+        735,
+        736
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "assumptions": [
+        "Separate hot-plug slot; native OS ownership; no SFI",
+        "Out-of-band presence available, latch closed, budget adequate",
+        "No preceding pending command, no concurrent events during acknowledgment",
+        "No early readiness; one-second clocks treated independently"
+      ],
+      "slot_reads": [
+        [
+          "0x72",
+          16,
+          "0x0162"
+        ],
+        [
+          "0x84",
+          32,
+          "0x002825DF"
+        ],
+        [
+          "0x88",
+          16,
+          "0x17F8"
+        ],
+        [
+          "0x8A",
+          16,
+          "0x0048"
+        ]
+      ],
+      "events": [
+        [
+          "0x0048",
+          "0x0008",
+          "0x0040"
+        ],
+        [
+          "0x0050",
+          "0x0010",
+          "0x0040"
+        ],
+        [
+          "0x0140",
+          "0x0100",
+          "0x0040"
+        ]
+      ],
+      "power_write": "0x12F8",
+      "timeline_ms": [
+        0,
+        20,
+        40,
+        140
+      ],
+      "link_status": "0x2043",
+      "free_range": [
+        "0x80080000",
+        "0x800FFFFF"
+      ],
+      "bar_size": "0x100000"
+    }
+  ]
+}

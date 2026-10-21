@@ -61,4 +61,4 @@
 <section id="practice"><h2>9. 用條件改變答案</h2>
 <details class="question"><summary>No_Soft_Reset=1，但裝置經歷 D3cold 再上電，還能直接沿用原先狀態嗎？</summary><p>不能。No_Soft_Reset 保證的是指定的 D3hot→D0 軟體轉換；從 D3cold 恢復需要電源與 Fundamental Reset，回到 D0uninitialized，再建立工作狀態。（§5.3.1.4，pp.606–608。）</p></details>
 <details class="question"><summary>只有 Endpoint 支援 ASPM L1.2，上游 Port 不支援，可以只開 Endpoint 嗎？</summary><p>不可以。對應能力必須兩端都支援才可啟用，否則行為未定義；還要遵守雙端設定順序與 LTR／時序前提。（§5.5.4，p.650。）</p></details>
-<p>到這裡，課程已串起裝置發現、傳輸、可靠性、Reset 與省電。下一階段依 <a href="index.html">課程路線</a>接續 Hot-Plug、錯誤回報與系統控制權，處理裝置在運作中改變狀態時，平台如何協調。</p></section>
+<p>到這裡，課程已串起裝置發現、傳輸、可靠性、Reset 與省電。接著讀 <a href="chapter-11.html">Chapter 11</a> 的 Hot-Plug，再串起錯誤回報與系統控制權，處理裝置在運作中改變狀態時，平台如何協調。</p></section>

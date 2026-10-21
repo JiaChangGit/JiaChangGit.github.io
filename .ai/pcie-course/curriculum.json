@@ -1,6 +1,6 @@
 {
   "title": "PCIe 系統觀與規格閱讀課程",
-  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–10 與全課程規劃；Chapter 11–19 尚待逐章查證、撰寫與校閱。",
+  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–13 與全課程規劃；Chapter 14–19 尚待逐章查證、撰寫與校閱。",
   "chapters": [
     {
       "number": 0,
@@ -304,12 +304,14 @@
         9,
         10
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
-        "PCI-FW-3.3",
-        "ACPI-SPEC-TO-SELECT"
-      ]
+        "PCI-FW-3.3"
+      ],
+      "title_en": "Hot-Plug and Topology Changes",
+      "description": "從插槽能力、事件通知與插入時序，判讀熱插拔的資源與移除條件。",
+      "publication_date": "2026-10-21"
     },
     {
       "number": 12,
@@ -332,12 +334,14 @@
         8,
         9
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
-        "PCI-FW-3.3",
-        "ACPI-SPEC-TO-SELECT"
-      ]
+        "PCI-FW-3.3"
+      ],
+      "title_en": "Error Evidence, Reporting, and Containment",
+      "description": "以 AER、Header Log、Root 記錄與 DPC 分清錯誤證據、回報路徑與隔離結果。",
+      "publication_date": "2026-10-21"
     },
     {
       "number": 13,
@@ -360,13 +364,16 @@
         11,
         12
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
-        "PCI-FW-3.3",
         "PCIE-BASE-6.0",
-        "UEFI-SPEC-TO-SELECT",
-        "ACPI-SPEC-TO-SELECT"
-      ]
+        "PCI-FW-3.3",
+        "ACPI-6.6-OSC",
+        "UEFI-2.11-PCI"
+      ],
+      "title_en": "Firmware, ACPI, and OS Ownership",
+      "description": "區分 UEFI、ACPI 與 PCI Firmware 的角色，以 MCFG、_CRS 和 _OSC 串起資源與控制權。",
+      "publication_date": "2026-10-21"
     },
     {
       "number": 14,
