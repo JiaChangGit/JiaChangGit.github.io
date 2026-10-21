@@ -16,7 +16,13 @@
 
 [Chapter 7 中斷如何把事件交給軟體](DOCS/pcie-course/chapter-7.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-7-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-7-en/)
 
-目前完成 Chapter 0–7；Chapter 8–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
+[Chapter 8 Link 建立與可靠傳遞](DOCS/pcie-course/chapter-8.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-8-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-8-en/)
+
+[Chapter 9 Reset 的範圍與恢復條件](DOCS/pcie-course/chapter-9.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-9-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-9-en/)
+
+[Chapter 10 裝置與連線如何省電](DOCS/pcie-course/chapter-10.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-10-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-10-en/)
+
+目前完成 Chapter 0–10；Chapter 11–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
 
 ## NVMe reports / 規格教學
 

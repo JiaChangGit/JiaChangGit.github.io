@@ -1,0 +1,391 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 8,
+  "updated": "2026-10-21",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH8-LAYERS-001",
+      "claim": "Physical training、DL Feature/FC初始化、Function readiness 是不同條件，DLLP只在相鄰Link交換。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "3.1",
+        "3.2",
+        "3.4",
+        "6.6.1"
+      ],
+      "figures": [
+        "3-1",
+        "3-2"
+      ],
+      "tables": [],
+      "document_pages": [
+        263,
+        264,
+        265,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        721
+      ],
+      "pdf_pages": [
+        263,
+        264,
+        265,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        721
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH8-TRAINING-001",
+      "claim": "Detect/Polling/Configuration/L0的職責，Recovery可用於速率變更；Link Training不是所有LTSSM狀態的編碼。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.6",
+        "4.2.7",
+        "7.5.3.8"
+      ],
+      "figures": [
+        "4-48",
+        "7-29"
+      ],
+      "tables": [
+        "4-48",
+        "7-26"
+      ],
+      "document_pages": [
+        444,
+        445,
+        453,
+        454,
+        978,
+        979
+      ],
+      "pdf_pages": [
+        444,
+        445,
+        453,
+        454,
+        978,
+        979
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH8-SPEED-001",
+      "claim": "Supported、Target upper limit與Current分開；最大寬度可超過佈線；Retrain讀零；Link Active須先確認回報能力。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.6",
+        "7.5.3.7",
+        "7.5.3.8",
+        "7.5.3.18",
+        "7.5.3.19"
+      ],
+      "figures": [
+        "7-27",
+        "7-28",
+        "7-29",
+        "7-38",
+        "7-39"
+      ],
+      "tables": [
+        "7-23",
+        "7-24",
+        "7-26",
+        "7-35",
+        "7-36"
+      ],
+      "document_pages": [
+        967,
+        969,
+        972,
+        973,
+        978,
+        979,
+        998,
+        999,
+        1000,
+        1001,
+        1002
+      ],
+      "pdf_pages": [
+        967,
+        969,
+        972,
+        973,
+        978,
+        979,
+        998,
+        999,
+        1000,
+        1001,
+        1002
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH8-CREDITS-001",
+      "claim": "NFM每VC有六類credits；Data單位16bytes，MRd只需NPH；DLL replay不重複扣新FC額度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.6.1",
+        "3.5"
+      ],
+      "figures": [
+        "3-9",
+        "3-10",
+        "3-11"
+      ],
+      "tables": [
+        "2-44",
+        "2-45"
+      ],
+      "document_pages": [
+        236,
+        237,
+        283,
+        284
+      ],
+      "pdf_pages": [
+        236,
+        237,
+        283,
+        284
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH8-REPLAY-001",
+      "claim": "NFM sequence/LCRC、ACK/NAK與replay保護相鄰Link，非交易Completion或軟體工作完成。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "3.1",
+        "3.6.2",
+        "3.6.3"
+      ],
+      "figures": [
+        "3-17",
+        "3-21",
+        "3-22"
+      ],
+      "tables": [],
+      "document_pages": [
+        264,
+        288,
+        293,
+        294,
+        299,
+        300,
+        301,
+        302,
+        303
+      ],
+      "pdf_pages": [
+        264,
+        288,
+        293,
+        294,
+        299,
+        300,
+        301,
+        302,
+        303
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH8-FLIT-001",
+      "claim": "64GT/s使用Flit，較低速率亦可；256byte分配236/6/8/6；replay粒度改為Flit；Status取決Presence。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "4.2.3",
+        "4.2.3.3",
+        "4.2.3.4",
+        "7.5.3.2",
+        "7.5.3.20"
+      ],
+      "figures": [
+        "4-33",
+        "7-40"
+      ],
+      "tables": [
+        "4-10",
+        "4-11",
+        "4-12",
+        "4-13",
+        "4-14",
+        "7-19",
+        "7-37"
+      ],
+      "document_pages": [
+        340,
+        351,
+        352,
+        353,
+        354,
+        355,
+        357,
+        383,
+        384,
+        385,
+        955,
+        1004,
+        1005,
+        1006,
+        1007
+      ],
+      "pdf_pages": [
+        340,
+        351,
+        352,
+        353,
+        354,
+        355,
+        357,
+        383,
+        384,
+        385,
+        955,
+        1004,
+        1005,
+        1006,
+        1007
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH8-EXAMPLE-001",
+      "claim": "作者算例：雙端速率證據、有限可用credit帳本、Flit layout與Presence投影。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.6.1",
+        "7.5.3.8",
+        "7.5.3.18",
+        "7.5.3.19",
+        "7.5.3.20",
+        "4.2.3.3"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        236,
+        237,
+        351,
+        978,
+        979,
+        998,
+        1001,
+        1006,
+        1007
+      ],
+      "pdf_pages": [
+        236,
+        237,
+        351,
+        978,
+        979,
+        998,
+        1001,
+        1006,
+        1007
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "assumptions": [
+        "NFM VC0 finite unscaled available credits, no competing packets",
+        "Both PCIe capabilities at 0x70 version 2",
+        "Flit projections are separate from the NFM Link example"
+      ],
+      "link": {
+        "cap_base": "0x70",
+        "cap2": [
+          "0x0180001E",
+          "0x0180001E"
+        ],
+        "widths": [
+          8,
+          4
+        ],
+        "target": "0x0003",
+        "status": [
+          "0x2043",
+          "0x0043"
+        ],
+        "active_reporting": [
+          true,
+          false
+        ]
+      },
+      "credit": {
+        "initial_ph": 2,
+        "initial_pd": 5,
+        "payloads": [
+          64,
+          32
+        ],
+        "pd_return": 1,
+        "mrd_bytes": 256,
+        "nph": 1
+      },
+      "flit_ranges": [
+        [
+          0,
+          235,
+          236
+        ],
+        [
+          236,
+          241,
+          6
+        ],
+        [
+          242,
+          249,
+          8
+        ],
+        [
+          250,
+          255,
+          6
+        ]
+      ],
+      "flit_projections": [
+        "0x4400",
+        "0x3400"
+      ]
+    }
+  ]
+}

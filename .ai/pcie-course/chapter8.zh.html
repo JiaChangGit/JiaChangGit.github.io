@@ -1,0 +1,59 @@
+<p class="lead">前幾章已經能追蹤 Request 與 Completion，但這些封包要送得出去，兩端必須先建立可用的 Link，也必須確定接收端有空間。本章從「為什麼只跑到 8 GT/s ×4？」出發，再追問封包如何避免塞滿接收端，以及傳輸出錯時由誰重送。</p>
+<aside class="note"><strong>版本與範圍</strong><p>以 PCI Express Base 6.0 為準。速率案例沿用 Switch Downstream Port 02:01.0 與 Endpoint 03:00.0 的位置，但新增的讀值是作者教學假設，並非實測。主案例使用 Non-Flit Mode；Flit Mode 另行比較，不把兩種格式的欄位混在同一封包。</p></aside>
+<section id="layers"><h2>1. 接上線後，還缺少哪幾件事？</h2>
+<p>一條 Lane 提供兩個方向各自的傳輸通道；多條 Lane 可以組成一條 Link。×4 表示四條 Lane，GT/s 則描述速率，兩者不能互相替代。Physical Layer 必須讓兩端辨識彼此、取得接收同步，並把各 Lane 組成一致的連線。這個過程由 Link Training and Status State Machine，簡稱 LTSSM，管理。</p>
+<p>接著，Data Link Layer 管理相鄰兩端的連線狀態與可靠傳遞；Transaction Layer 處理前面學過的 TLP、路由及交易。DLLP 只在一條 Link 的兩端之間交換，不會像 TLP 一樣一路穿越 Switch 到最終目的地。</p>
+<div class="table-wrap"><table><caption>同一句「準備好了」，可能指三種不同事情</caption><thead><tr><th scope="col">觀察對象</th><th scope="col">此時解決的問題</th><th scope="col">仍不能直接推出的結論</th></tr></thead><tbody>
+<tr><td>Physical Layer</td><td>建立接收同步，協商 Lane、寬度與速率。</td><td>Function 已完成內部初始化。</td></tr>
+<tr><td>Data Link Layer</td><td>完成必要的 Feature Exchange 與 VC0 Flow Control 初始化，進入 DL_Active。</td><td>BAR、中斷與 DMA 映射都已配置。</td></tr>
+<tr><td>Function／系統軟體</td><td>裝置能接受設定，系統完成資源與工作介面的初始化。</td><td>每次工作一定成功；仍須看裝置的完成結果。</td></tr>
+</tbody></table></div>
+<p>VC 是 Virtual Channel，用來區分相關傳輸資源；本章只使用預設 VC0。Flow Control，簡稱 FC，則是依接收端公布的緩衝空間，決定能否再送出 TLP 的機制。</p>
+<details class="source-note"><summary>分層與初始化來源</summary><p>Base 6.0 §3.1–§3.2，Figure 3-1／3-2（pp.263–265）；§3.4（pp.270–276）；§6.6.1（p.721）。FC 記帳由 Transaction Layer 負責，Data Link Layer 協助傳遞 FC 資訊，見 §2.6.1（p.236）。</p></details></section>
+<section id="training"><h2>2. LTSSM 的 Configuration，是在配置 BAR 嗎？</h2>
+<p>不是。這裡的 Configuration 是連線訓練狀態，用來協商 Link 寬度與 Lane 編號等事項，與 Configuration Space 的讀寫不同。初次建立連線時，可以先抓住下圖的主要路徑；真正的狀態機還有逾時、重試、測試及省電分支。</p>
+<figure class="diagram"><svg viewBox="0 0 820 315" role="img" aria-labelledby="training-title training-desc" class="course-diagram"><title id="training-title">初次訓練與後續 Recovery 的不同目的</title><desc id="training-desc">初次連線依序經過 Detect、Polling、Configuration 到 L0。L0 可進入 Recovery 調整速率或恢復同步，再回 L0；這不是完整 LTSSM。</desc><g fill="var(--blue-soft)" stroke="var(--line)"><rect x="20" y="30" width="160" height="100" rx="12"/><rect x="220" y="30" width="160" height="100" rx="12"/><rect x="420" y="30" width="180" height="100" rx="12"/><rect x="640" y="30" width="160" height="100" rx="12"/><rect x="460" y="205" width="270" height="80" rx="12"/></g><g stroke="var(--accent)" stroke-width="2.5" fill="none"><path d="M180 80 H215"/><path d="M380 80 H415"/><path d="M600 80 H635"/><path d="M750 130 V245 H735"/><path d="M500 205 V165 H680 V135"/></g><g fill="var(--accent)"><path d="M208 75 L218 80 L208 85 Z M408 75 L418 80 L408 85 Z M628 75 L638 80 L628 85 Z M738 240 L728 245 L738 250 Z M675 140 L680 130 L685 140 Z"/></g><g text-anchor="middle"><text x="100" y="65">Detect</text><text x="100" y="100">偵測遠端終端</text><text x="300" y="65">Polling</text><text x="300" y="100">取得同步</text><text x="510" y="65">Configuration</text><text x="510" y="100">組成 Link</text><text x="720" y="65">L0</text><text x="720" y="100">正常傳輸</text><text x="595" y="235">Recovery</text><text x="595" y="265">變更速率／重新取得同步</text></g></svg><figcaption>作者依 §4.2.6 繪製的閱讀導圖，只保留本節需要的路徑；完整分支與條件請對照 Figure 4-48。</figcaption></figure>
+<p>Detect 先檢查遠端終端是否存在；Polling 交換訓練 Ordered Sets，建立 bit／Symbol 同步並處理 Lane polarity；Configuration 把 Lane 組成 Link，處理寬度與 Lane 間對齊。L0 是正常傳輸狀態。Recovery 可以重新取得同步，也可用來變更速率，因此看到 Recovery 本身，不能直接斷定發生硬體故障。</p>
+<p>讀 Figure 4-48 時，先找「從哪個狀態出發、要完成什麼」，再進入 §4.2.7 查對應子狀態，不必第一次就背下所有箭頭。接著看 Figure 3-2：Physical Layer 可運作後，Data Link Layer 還要完成適用的 DL_Feature／DL_Init 工作，才到 DL_Active。</p>
+<details class="source-note"><summary>訓練狀態的閱讀位置</summary><p>§4.2.6.1–§4.2.6.5（pp.444–445）；完整 Figure 4-48（p.454）；Table 4-48（p.453）對照 LTSSM 與 Link 狀態輸出。Figure 3-2（p.265）是另一個層次的狀態機，不能把 DL_Active 當成 LTSSM 狀態名稱。</p></details></section>
+<section id="speed"><h2>3. 兩端支援 16 GT/s，為什麼現在只有 8 GT/s ×4？</h2>
+<p>先查同一條 Link 的兩端，而不是拿卡片宣傳規格與任意 Root Port 比較。以下假設兩端 PCI Express Capability 都已定位於 0x70、版本為 2。表中先只列相關欄位；Maximum Link Width 的值是解碼後的 Lane 數，其餘標成十六進位者是完整 Register 讀值。</p>
+<div class="table-wrap"><table><caption>速率案例的兩端證據</caption><thead><tr><th scope="col">位置／欄位</th><th scope="col">02:01.0 Downstream Port</th><th scope="col">03:00.0 Endpoint</th></tr></thead><tbody>
+<tr><td>Link Capabilities 2，0x9C，32 bits</td><td>0x0180001E</td><td>0x0180001E</td></tr>
+<tr><td>Maximum Link Width，Link Capabilities bits 9:4</td><td>8 lanes</td><td>4 lanes</td></tr>
+<tr><td>Link Control 2，0xA0，16 bits</td><td>0x0003</td><td>本次不以 Endpoint 的 Target 值控制正常速率</td></tr>
+<tr><td>Link Status，0x82，16 bits</td><td>0x2043</td><td>0x0043</td></tr>
+</tbody></table></div>
+<p>依 Figure 7-38／Table 7-35，先計算 <code>(0x0180001E &amp; 0xFE) &gt;&gt; 1 = 0x0F</code>，得到 2.5、5、8、16 GT/s 都支援。高位的兩個 Retimer 偵測能力位元不屬於速率 vector，不能一起解碼。</p>
+<p>再看 Downstream Port 的 Figure 7-39／Table 7-36：<code>0x0003 &amp; 0xF = 3</code>，Target Link Speed 對應 8 GT/s。這個欄位對 Downstream Port 設定正常運作速率的上限，不是保證訓練一定達到的速率。最後依 Figure 7-29／Table 7-26，<code>0x2043 &amp; 0xF = 3</code>、<code>(0x2043 &gt;&gt; 4) &amp; 0x3F = 4</code>，目前確實為 8 GT/s ×4。</p>
+<p>本例另外假設 Downstream Port 的 Data Link Layer Link Active Reporting Capable=1，因此 Status bit 13=1 可用來確認 DL_Active；Endpoint 未實作該回報，bit 13 固定為零，不能據此判定它沒有連線。Link 不在 up 狀態時，Current Link Speed 與 Negotiated Link Width 的值未定義。</p>
+<p>因此，本例的 8 GT/s 符合設定的上限，×4 也符合 Endpoint 的能力。Downstream Port 宣告 ×8，並不保證實際連線布了八條 Lane。這些證據沒有要求結果一定要是 16 GT/s ×8，也沒有證明任何接點故障。</p>
+<details class="question"><summary>把 Target 改成 4，再讀到 Retrain Link=0，就能說已升到 16 GT/s 嗎？</summary><p>不能。需先確認速率支援、控制對象與正常操作前提，再依 Link Control 的 Retrain Link 觸發訓練；此 bit 寫 1 觸發，讀取永遠為零。應觀察適用的 Link Training／Link Active，再讀 Current Link Speed 與寬度。Link Training 只涵蓋 Configuration／Recovery 及等待 Retrain 開始的情況，且在 Endpoint 為 Reserved，不能當成通用 LTSSM 編碼。（Tables 7-24、7-26，pp.972–973、978–979。）</p></details>
+<details class="source-note"><summary>從 Figure 到結論</summary><p>Maximum Link Width：Figure 7-27／Table 7-23（p.967）；Current 與狀態適用性：Figure 7-29／Table 7-26（pp.978–979）；Supported：Figure 7-38／Table 7-35（pp.998–1000）；Target：Figure 7-39／Table 7-36（pp.1001–1002）。這是一組作者假設的有效讀值，不是規格指定的預設設定。</p></details></section>
+<section id="credits"><h2>4. Link 很快，但接收端沒有空間，還能送嗎？</h2>
+<p>不能只看速率。接收端透過 FC 資訊告知可用額度，發送端依交易種類檢查 credit。Non-Flit Mode 下，每個 VC 分開記錄 Posted、Non-Posted、Completion 的 Header 與 Data，合計 PH、PD、NPH、NPD、CplH、CplD 六類。Data credit 的單位是 4 DW，也就是 16 bytes；Header credit 另計，不能把一個 Header credit 當作 16 bytes。</p>
+<p>以下是<strong>作者建立的概念帳本</strong>：VC0、Non-Flit Mode、有限且未縮放的可用 credits，沒有其他封包競爭。數字不是軟體可直接讀到的標準 Register，也不是 InitFC 的最低宣告值。假設現在只剩 PH=2、PD=5。</p>
+<div class="table-wrap"><table><caption>有限 credit 的發送判斷</caption><thead><tr><th scope="col">候選封包</th><th scope="col">所需 credits</th><th scope="col">判斷</th></tr></thead><tbody>
+<tr><td>64-byte MWr</td><td>1 PH、4 PD</td><td>可送；發送後剩 PH=1、PD=1。</td></tr>
+<tr><td>接著送 32-byte MWr</td><td>1 PH、2 PD</td><td>PD 不足；此封包等待額度更新。</td></tr>
+<tr><td>其後可用 PD 增加 1，再送同一個 32-byte MWr</td><td>1 PH、2 PD</td><td>可送；發送後 PH=0、PD=0。</td></tr>
+<tr><td>另一個 256-byte MRd，假設 NPH=1</td><td>1 NPH、0 NPD</td><td>Request 本身沒有 256-byte Payload；FC 這一項條件通過。</td></tr>
+</tbody></table></div>
+<p>PD 用量以 Payload bytes 除以 16 後向上取整。MRd 的 Length 指定要讀多少資料，不代表 Request 帶了這些資料；回來的 Completion 在反方向消耗 CplH／CplD。通過 credit 檢查也只代表 FC 條件成立，仍受排序、仲裁等規則約束。</p>
+<p>若 DLL 重送同一個 TLP，Transaction Layer 不會再次把它當成新 TLP 扣一輪 credit。這個區分很重要：FC 管接收緩衝資源，replay 管相鄰傳輸的可靠性。</p>
+<details class="source-note"><summary>credit 單位與用量</summary><p>§2.6.1（pp.236–237）；Table 2-44 的六類 credit、Table 2-45 的各種 TLP 用量（p.237）。DLLP 的交換格式可從 Figures 3-9–3-11（pp.283–284）查 InitFC1、InitFC2 與 UpdateFC。本例只計算已知可用額度，不把累積計數協定簡化成每次更新都是增量。</p></details></section>
+<section id="replay"><h2>5. ACK 收到了，是否表示裝置已完成工作？</h2>
+<p>不是。Non-Flit Mode 的 Data Link Layer 為 TLP 加入 sequence number 與 LCRC，接收端檢查後，以 ACK／NAK 等機制讓發送端知道是否需要重送。發送端保留 replay 所需的副本；收到適當的正向確認後才釋放。NAK 或確認逾時可以引發 replay。</p>
+<p>假設 Endpoint 的 MWr 要穿越 Switch。第一條 Link 上收到 ACK，表示這一跳的可靠傳遞已有相應確認，並不等於最終記憶體更新已被 CPU 使用，更不等於裝置工作完成。Switch 再往上游傳送時，使用的是另一條 Link 的確認與重送機制。ACK 也不是 Chapter 5 的 Completion：Posted MWr 沒有一般 Completion，仍然有 Link 層的可靠傳遞。</p>
+<p>接收端的 sequence 檢查也處理 replay 可能帶來的重複封包，避免把已接受的副本再次交給 Transaction Layer。不能把硬體 replay 說成驅動程式重新提交一次工作；兩者的層次與副作用不同。</p>
+<details class="source-note"><summary>可靠傳遞的圖表路徑</summary><p>先看 Figure 3-17（p.288），辨識 TLP 外的 sequence／LCRC；再讀 §3.6.2 的傳送端規則與 §3.6.3（pp.300–303）的接收規則。Figure 3-21（p.299）處理 ACK／NAK，Figure 3-22（p.303）處理接收 TLP。分層與副本保存概述見 §3.1（p.264）。</p></details></section>
+<section id="flit"><h2>6. PCIe 6.0 的 Flit 改變了什麼？</h2>
+<p>在 64 GT/s 運作時使用 Flit Mode，但 Flit Mode 也能搭配較低速率；只看到「16 GT/s」不足以判定封包模式。Flit 是固定 256 bytes 的傳輸單位，TLP 可以跨越多個 Flit，一個 Flit 也不必只容納一個 TLP。</p>
+<div class="table-wrap"><table><caption>一個 Flit 的 256 bytes 分配</caption><thead><tr><th scope="col">Byte 範圍</th><th scope="col">大小</th><th scope="col">用途</th></tr></thead><tbody><tr><td>0–235</td><td>236 bytes</td><td>TLP 區，包含 TLP Header 等內容，不能全算成應用資料。</td></tr><tr><td>236–241</td><td>6 bytes</td><td>Data Link Layer Payload，簡稱 DLP。</td></tr><tr><td>242–249</td><td>8 bytes</td><td>CRC，供錯誤檢查。</td></tr><tr><td>250–255</td><td>6 bytes</td><td>ECC，支援 Forward Error Correction（FEC）。</td></tr></tbody></table></div>
+<p>Flit Mode 的可靠傳遞以 Flit 為 replay 單位，配合 CRC、FEC 與序號機制。FEC 能處理其設計範圍內的錯誤，不代表所有錯誤都能修好，也沒有取消 replay。前面 Non-Flit TLP 的 LCRC／ACK 格式不能原封不動套上來。</p>
+<p>要查目前模式，先確認 PCI Express Capabilities 的 Flit Mode Supported（Figure 7-23／Table 7-19 bit 15），再查 Downstream Port 的 Link Status 2。Flit Mode Status 在 bit 10，但只有 Downstream Component Presence 為 011b、100b 或 101b 時才有意義。若只擷取這兩個欄位得到 <code>0x4400</code>，則 Presence=100b、Flit=1：Link 已 up、尚未收到 DRS，模式為 Flit。若是 <code>0x3400</code>，Presence=011b，雖已協商 Flit，Data Link Layer 尚未 active。這兩個數字是<strong>欄位投影</strong>，不是完整 Register dump。</p>
+<details class="source-note"><summary>Flit 的版本邊界</summary><p>§4.2.3（p.340）；§4.2.3.3、Tables 4-10–4-14（pp.351–355）；§4.2.3.4.1（p.357）；重送見 §4.2.3.4.2.1／Figure 4-33（p.383），CRC／ECC 見 §4.2.3.4.3–§4.2.3.4.4（pp.384–390）。模式欄位見 Table 7-19（p.955）與 Figure 7-40／Table 7-37（pp.1004–1007）。本章採 Base 6.0 原版，沒有默默納入後續 ECN。</p></details></section>
+<section id="practice"><h2>7. 換個條件，再判斷一次</h2>
+<details class="question"><summary>同一條 Link 的 PD=0，是否代表所有封包都不能送？</summary><p>不能這樣推論。不同 TLP 使用不同種類的 credit；例如沒有 Payload 的 MRd 檢查 NPH。仍需符合排序等其他條件，不能只因 NPH 足夠就保證立即排到傳送。（Table 2-45，p.237。）</p></details>
+<details class="question"><summary>Flit 裡有 236 bytes 的 TLP 空間，能說每個 Flit 有效傳了 236 bytes 的使用者資料嗎？</summary><p>不能。TLP 區也包含 Header，並可能有 NOP；TLP 與 Flit 邊界也不相同。需要實際的封包配置才能計算有效資料率。（§4.2.3.4.1，p.357。）</p></details>
+<p>下一章接著處理 <a href="chapter-9.html">Reset 的範圍與恢復條件</a>：Link、Function 與未完成交易，究竟哪些狀態會改變？</p></section>

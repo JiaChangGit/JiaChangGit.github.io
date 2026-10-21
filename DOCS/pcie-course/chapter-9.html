@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。">
+  <title>Reset 的範圍與恢復條件 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 9</p>
+      <h1>Reset 的範圍與恢復條件</h1>
+      <p class="header-description">從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#scope">1. 只想重新初始化 03:00.0，該選哪種 Reset？</a></li><li><a href="#locate">2. 我要查 FLR，依序看哪些 Figure？</a></li><li><a href="#pending">3. BME 已清零，為什麼還不能立即重新開始？</a></li><li><a href="#wait">4. 100 ms 到了，是哪一件事完成了？</a></li><li><a href="#conventional">5. 如果用的是 Hot Reset，能套同一套等待方式嗎？</a></li><li><a href="#restore">6. FLR 後，能把整份 Configuration dump 寫回去嗎？</a></li><li><a href="#practice">7. 先確認哪個條件，才能下結論？</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">「把裝置重設」還不是一個完整的操作描述。必須先知道要影響哪個 Function、哪條 Link，以及 Reset 後如何重新取得安全可用的狀態。本章以同一張卡上的兩個 Function 為例，從選擇重設範圍開始，再處理尚未完成的交易與設定恢復。</p>
+<aside class="note"><strong>版本與案例</strong><p>採 PCI Express Base 6.0。主案例是普通多 Function Endpoint 的 03:00.0 與 03:00.1，不含 SR-IOV；兩者共用連往 Switch Downstream Port 02:01.0 的 Link。數值、時間點與作業情境由作者假設。PF 的 FLR 會清除 VF Enable，使其 VFs 不再存在，不能把本例「其他普通 Function 不受影響」直接套到 PF／VF 關係。</p></aside>
+<section id="scope"><h2>1. 只想重新初始化 03:00.0，該選哪種 Reset？</h2>
+<p>先看 03:00.1 是否仍在工作。如果它必須繼續運作，就不能隨意把兩者共用的 Link 或整張卡一起重設。Base 6.0 將 Conventional Reset 與 Function Level Reset（FLR）分開；前者涵蓋 Cold、Warm、Hot，後者以 Function 為單位。</p>
+<div class="table-wrap"><table><caption>依影響範圍選擇重設機制</caption><thead><tr><th scope="col">機制</th><th scope="col">如何發生</th><th scope="col">本例需注意的範圍</th></tr></thead><tbody>
+<tr><td>Cold Fundamental Reset</td><td>供電後必須發生的 Fundamental Reset。</td><td>影響接受該重設的元件；不能當成只重設 03:00.0。</td></tr>
+<tr><td>Warm Fundamental Reset</td><td>沒有移除再接回主電源，由硬體觸發 Fundamental Reset。</td><td>Base 未定義通用的 Warm Reset 產生方式，需看平台與 form factor。</td></tr>
+<tr><td>Hot Reset</td><td>透過 Link 的 in-band 機制傳播 Conventional Reset。</td><td>這條 Link 下游的元件受影響；若往下還有 Switch，範圍可能延伸到整個分支。</td></tr>
+<tr><td>FLR</td><td>對支援 FLR 的 Endpoint Function 寫入 Initiate FLR。</td><td>重設指定普通 Function，不得改變 Link 狀態，也不得影響其他普通 Function。</td></tr>
+</tbody></table></div>
+<p>PERST# 是提供給元件或卡片時使用的 Fundamental Reset 訊號名稱，但 Base 沒有替所有插槽形式規定一套通用的板級時序。不能把某張卡的 PERST# 操作方法當成 PCIe 所有平台都成立的步驟。</p>
+<p>在 Root Port 或 Switch Downstream Port 設定 Bridge Control 的 Secondary Bus Reset，必須送出 Hot Reset。以本例來說，重設 02:01.0 的次級側會波及 03:00.0 與 03:00.1；若改在 Switch 更上游發起，還可能影響另一分支的 04:00.0。應先沿 <a href="chapter-1.html">Chapter 1 的拓樸</a>畫出範圍，再決定能否操作。</p>
+<details class="source-note"><summary>Reset 分類與範圍來源</summary><p>§6.6.1（pp.721–724）；Hot Reset 傳播條件見 p.723、§4.2.5.9（p.441）；FLR 見 §6.6.2（pp.724–727）。PF／VF 例外見 Table 7-21（p.962）。Conventional Reset 後的初始化也有 sticky 欄位例外，不能理解成每個 bit 一律歸零。</p></details></section>
+<section id="locate"><h2>2. 我要查 FLR，依序看哪些 Figure？</h2>
+<p>先走 Chapter 2 的 Capability 清單，確認找到 PCI Express Capability，而不是直接假設某個位址有 FLR。本例已知 Capability 在 0x70、Device/Port Type=Endpoint。接著依下表查能力、未完成交易與觸發控制。原始讀值是作者假設，欄位定義則來自規格。</p>
+<div class="table-wrap"><table><caption>FLR 案例的設定讀值</caption><thead><tr><th scope="col">讀取位置與寬度</th><th scope="col">值</th><th scope="col">來源與判讀</th></tr></thead><tbody>
+<tr><td>0x74，32 bits</td><td>0x10008000</td><td>Figure 7-24／Table 7-20：Device Capabilities bit 28=1，支援 FLR；bit 15 為 Role-Based Error Reporting。</td></tr>
+<tr><td>0x7A，16 bits</td><td>0x0020</td><td>Figure 7-26／Table 7-22：Device Status bit 5=1，尚有此 Function 發出的 Non-Posted Requests 未完成。</td></tr>
+<tr><td>0x78，16 bits</td><td>0x2810</td><td>Figure 7-25／Table 7-21：Device Control 的既有設定；bit 15 讀為零。</td></tr>
+<tr><td>0x04，16 bits</td><td>0x0006</td><td>Command：MSE 與 BME 已啟用。停工程序須協調軟體與裝置，不可只直接發 FLR。</td></tr>
+</tbody></table></div>
+<p>能力判讀為 <code>(0x10008000 &gt;&gt; 28) &amp; 1 = 1</code>。完成停工與必要等待後，保留 Device Control 其他欄位，寫入 <code>0x2810 | 0x8000 = 0xA810</code>，觸發 FLR。這是針對本例值的 16-bit 寫入；不要把相鄰的 Device Status 一起讀改寫，以免意外清掉 RW1C 狀態。</p>
+<p>Initiate FLR bit 的讀值永遠是零，不能輪詢它等待「由 1 變 0」。同一 bit 在 PCI Express-to-PCI/PCI-X Bridge 的意義是 Bridge Configuration Retry Enable，因此 Function 類型是解碼前提。</p>
+<details class="source-note"><summary>能力、控制與狀態的三張圖</summary><p>Figure 7-24／Table 7-20（pp.955、958）；Figure 7-25／Table 7-21（pp.959、962）；Figure 7-26／Table 7-22（pp.965–966）。Command 的欄位意義沿用 Chapter 4；本章只新增 Reset 所需的控制關係。</p></details></section>
+<section id="pending"><h2>3. BME 已清零，為什麼還不能立即重新開始？</h2>
+<p>BME 控制新的 bus-master Request，不會把先前已送出的 Request 從系統中收回。Transactions Pending 也只反映此 Function 發出的 Non-Posted Requests；它沒有計算所有 Posted Writes、CPU 對裝置的存取，或裝置在外部介面的工作。</p>
+<p>考慮一個作者假設的情境：03:00.0 已送出 Tag=0x13 的 MRd，Completion 還在路上。FLR 讓 Function 丟失先前交易的追蹤資訊；若軟體立即恢復工作，Function 又將同一 Tag 用於新 MRd，遲到的舊 Completion 就可能被誤認為新交易的回覆。這是規格所提醒的 stale Completion 風險。</p>
+<div class="table-wrap"><table><caption>不同觀察值能支持的結論</caption><thead><tr><th scope="col">觀察</th><th scope="col">可以判斷</th><th scope="col">不能據此判斷</th></tr></thead><tbody><tr><td>BME=0</td><td>禁止其適用的新 Request 發送。</td><td>所有舊 Completion 都已回來。</td></tr><tr><td>FLR 前 Transactions Pending=0</td><td>其追蹤的 Non-Posted Requests 已完成或被 Completion Timeout 終止。</td><td>所有 Posted Writes 與外部工作均已完成。</td></tr><tr><td>FLR 後 Transactions Pending=0</td><td>符合 FLR 完成時必須清除此 bit 的要求。</td><td>證明沒有任何舊 Completion 仍在系統中。</td></tr></tbody></table></div>
+<p>因此，應先停止其他軟體對 Function 的存取，依裝置介面停止新工作、協調 DMA 與中斷，再處理 PCIe 未完成交易。規格的 Implementation Note 提供一種安排：清除整個 Command、輪詢 Transactions Pending，待它清除或已等待足夠時間確信剩餘回覆不會到達後，再發起 FLR。這是範例演算法，不是所有裝置都只要照抄這幾步就完成停工。</p>
+<details class="source-note"><summary>未完成交易與舊 Completion</summary><p>Transactions Pending 精確範圍：Table 7-22（p.966）。FLR 等待義務：§6.6.2（pp.725–726）；Implementation Note “Avoiding Data Corruption from Stale Completions”（p.727）。DMA 映射與記憶體回收的前提連回 <a href="chapter-6.html">Chapter 6</a>。</p></details></section>
+<section id="wait"><h2>4. 100 ms 到了，是哪一件事完成了？</h2>
+<p>規格要求 Function 在觸發後 100 ms 內完成 FLR；但 Function 特有的後續初始化可能還需要時間。若超過這個時限後仍需要初始化，它收到 Configuration Request 時必須回 RRS。當它已對 Configuration Request 回過非 RRS 的 Completion，就不能在下一次 Reset 前又回 RRS。</p>
+<figure class="diagram"><svg viewBox="0 0 820 260" role="img" aria-labelledby="reset-title reset-desc" class="course-diagram"><title id="reset-title">FLR 完成、設定就緒與舊交易處理是不同條件</title><desc id="reset-desc">發起 FLR 後，一條路徑等待 FLR 完成並確認設定就緒；另一條路徑確認舊 Non-Posted 交易的等待義務已滿足。兩者都成立後才可初始化並恢復工作。</desc><g fill="var(--blue-soft)" stroke="var(--line)"><rect x="20" y="90" width="170" height="80" rx="12"/><rect x="260" y="20" width="290" height="85" rx="12"/><rect x="260" y="155" width="290" height="85" rx="12"/><rect x="620" y="90" width="180" height="80" rx="12"/></g><g stroke="var(--accent)" stroke-width="2.5" fill="none"><path d="M190 130 H225 V62 H260 M225 130 V197 H260 M550 62 H585 V130 H620 M550 197 H585 V130"/></g><g text-anchor="middle"><text x="105" y="123">發起 FLR</text><text x="105" y="151">寫入先獲回覆</text><text x="405" y="52">FLR 完成，確認設定就緒</text><text x="405" y="83">100 ms 上限 ≠ 初始化全完成</text><text x="405" y="187">處理先前 Non-Posted Requests</text><text x="405" y="218">依觸發時狀態與 timeout 等待</text><text x="710" y="123">兩個條件都滿足</text><text x="710" y="151">才初始化並恢復工作</text></g></svg><figcaption>作者整理的條件關係圖；上下兩條路徑都要滿足，不是二選一。若事前已妥善處理舊交易，下方條件可在 FLR 前完成。</figcaption></figure>
+<p>若發起 FLR 時 Transactions Pending=1，軟體在初始化前還必須留出足夠時間，讓相關 Completion 到達，或合理確信它們不會再到達。規格建議參考 <strong>FLR 前</strong>的 Completion Timeout；若當時 timeout 被停用，等待時間由系統決定，但不得少於 100 ms。不能拿 FLR 後的預設 timeout 值替換這個判斷。</p>
+<p>若支援 Function Readiness Status（FRS），收到 Configuration-Ready 訊息可讓系統軟體提早發出 Configuration Requests，但這不保證 Function 先前發出的 Requests 都已完成。FLR 進行中，收到的 Request 可以被靜默丟棄；不要用任意 MMIO 讀取當成標準 FLR 完成檢查。</p>
+<details class="source-note"><summary>時間與存取規則</summary><p>§6.6.2（pp.725–727）。觸發 FLR 的 Configuration Write 必須先獲得 Completion，再開始 FLR；進行中的 Request／Completion 處置與後續 RRS 規則見 p.726。FRS 是有條件的就緒通知，不取代對 stale Completion 的等待。</p></details></section>
+<section id="conventional"><h2>5. 如果用的是 Hot Reset，能套同一套等待方式嗎？</h2>
+<p>不能只記住「Reset 後等 100 ms」。Conventional Reset 的等待起點會受 Port 速率能力與就緒通知影響。例如在無法確定可用 DRS、且沒有其他適用的提早就緒機制時：若 Downstream Port 只支援到 5 GT/s，至少從 Conventional Reset 結束等待 100 ms；若它支援高於 5 GT/s，則至少從 Link training 完成後等待 100 ms，才向緊鄰下游裝置發出 Configuration Request。</p>
+<p>作者時間例：Reset 在 t=0 ms 結束，一個支援 16 GT/s 的 Port 到 t=40 ms 才完成 Link training。上述分支的第一個 Configuration Request 最早在 t=140 ms，而不是 t=100 ms。這個時間不是保證裝置已成功完成初始化；它仍可能依法回 RRS。</p>
+<p>Immediate Readiness、DRS、Readiness Time Reporting，以及系統已知的特定裝置需求，可能改變可存取時間，必須依各自條件判斷。未使用 Readiness Notifications 時，在 Conventional Reset 結束後至少要容許 1.0 s，才能因有效 Configuration Request 尚未取得 Successful Completion 而判定裝置故障；這與前述第一次可送 Request 的等待是不同規則。</p>
+<details class="source-note"><summary>Conventional Reset 的時間分支</summary><p>§6.6.1（pp.722–723）。本例選用支援高於 5 GT/s、無提早就緒例外的分支。RRS 的 Host 可見性與合法使用時機已在 <a href="chapter-3.html">Chapter 3</a>說明；不要把 RRS 當成一般 MMIO 的重試狀態。</p></details></section>
+<section id="restore"><h2>6. FLR 後，能把整份 Configuration dump 寫回去嗎？</h2>
+<p>不能。應按欄位用途與存取屬性恢復設定，避免把 RO、RW1C、觸發控制或不應改動的共享欄位當成一般記憶體。FLR 的基本要求是把 Function Register 與專屬狀態機回到指定的初始化值，但 §6.6.2 明列了一批保留例外。</p>
+<div class="table-wrap"><table><caption>恢復設定前先分類</caption><thead><tr><th scope="col">欄位／狀態</th><th scope="col">FLR 行為或注意事項</th></tr></thead><tbody><tr><td>BME、MSI Enable 等發送許可</td><td>會清除，Function 在 Link 上停止相應的新 Request 發送；恢復工作前重新建立必要條件。</td></tr><tr><td>Max_Payload_Size、ASPM Control、RCB 等明列欄位</td><td>不因 FLR 回到初始化值。不能因為同在 Device／Link Control 就把整個 Register 一起清零。</td></tr><tr><td>HwInit、ROS／RWS／RW1CS</td><td>依屬性與 §6.6.2 保留。Sticky 不等於永遠不變；不同 Reset 與輔助電源條件須另外查表。</td></tr><tr><td>Physical／Data Link 狀態機、VC0</td><td>不被 FLR 重設；不要求重新訓練整條 Link。</td></tr><tr><td>主機記憶體與裝置特有工作介面</td><td>FLR 不替軟體重新建立 queue、DMA 映射或中斷路徑；也不能當成主機 buffer 已清除。</td></tr></tbody></table></div>
+<p>本例在確認就緒與舊交易條件後，依系統軟體保存的有效配置恢復資源，再重建裝置工作介面與中斷，最後開放新工作。哪些裝置 Register 必須重新設定，要讀該裝置介面的規格；PCIe Base 不知道每張卡的 queue 格式。</p>
+<details class="source-note"><summary>保存、初始化與欄位屬性</summary><p>§6.6.2（pp.724–726）包含完整例外清單及外部介面、秘密狀態的處理要求；Table 7-2（pp.914–915）定義 HwInit 與 sticky 類型。Flit-capable 實作另有 MUST@FLIT 的保留要求，不把本表短例當成完整清單。</p></details></section>
+<section id="practice"><h2>7. 先確認哪個條件，才能下結論？</h2>
+<details class="question"><summary>FLR 之後 Link 沒有重新訓練，是不是 Reset 失敗？</summary><p>不是。FLR 本來就不得影響 Link 狀態；應依 Function 的重設、就緒及恢復條件判斷。（§6.6.2，pp.724–726。）</p></details>
+<details class="question"><summary>FLR 後 Transactions Pending=0，可否立即回收所有 DMA buffer？</summary><p>不能只靠這個 bit。FLR 本身會清它，且它只涵蓋指定的 Non-Posted 交易。仍須滿足舊交易等待、裝置停工及平台 DMA 生命週期條件；也要防止其他軟體繼續存取。</p></details>
+<details class="question"><summary>用 D3hot→D0 代替 FLR，是否一定得到乾淨的初始狀態？</summary><p>不一定。No_Soft_Reset 會影響這個電源轉換的行為，不能把它當成通用的 Function 重設。下一章會用 PMCSR 的實際欄位說明。</p></details>
+<p>接著讀 <a href="chapter-10.html">Chapter 10：裝置與連線如何省電</a>，把 Reset、喚醒與狀態保存放回各自的條件。</p></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-8.html">← Chapter 8</a><a href="chapter-10.html">Chapter 10 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<p class="lead">省電不只是把 Enable 設為 1。系統要知道哪些工作可以暫停、哪些狀態必須保存，以及下一次傳輸要等多久。本章先分清 Function 的 D-state 與 Link 的 L-state，再從 PMCSR、ASPM、L1 PM Substates，一路讀到喚醒所需的平台條件。</p>
+<aside class="note"><strong>版本與案例邊界</strong><p>PCIe 行為以 Base 6.0 為準；平台電源資源另以 ACPI 6.6（2025-05-13）補充，兩者不是同一版次體系。本章的回傳值與時間條件均為作者假設。PMCSR 案例使用普通 Endpoint 03:00.0；L1.2 是另一個已具備所需能力的 Link 案例，不替前幾章的裝置追加未宣告功能。SR-IOV 電源管理另留專章。</p></aside>
+<section id="states"><h2>1. 裝置在 D0，Link 還能省電嗎？</h2>
+<p>可以。D-state 描述 Function 的電源管理狀態，L-state 描述 Link 的狀態。D0 是 Function 的正常工作狀態，但在沒有傳輸需求時，啟用的 Active State Power Management（ASPM）仍可讓 Link 進入較省電的狀態。新流量出現時，Link 再恢復傳輸。</p>
+<div class="table-wrap"><table><caption>先分清楚誰進入低功耗</caption><thead><tr><th scope="col">狀態</th><th scope="col">管理對象與用途</th><th scope="col">恢復時要注意</th></tr></thead><tbody>
+<tr><td>D0／D1／D2／D3hot／D3cold</td><td>Function。D1、D2 可選；D3hot 仍有主電源，D3cold 沒有主電源。</td><td>D3hot 可透過 PMCSR 回 D0；D3cold 需要平台恢復電源與相應 Reset。</td></tr>
+<tr><td>L0</td><td>Link 正常傳輸；Flit Mode 的 L0p 可讓部分 Lane 閒置。</td><td>L0p 仍至少保留雙向各一條 active Lane，不是整條 Link 停止傳輸。</td></tr>
+<tr><td>L0s</td><td>低恢復延遲的 Link 省電狀態，可分方向進入。</td><td>Flit Mode 不支援；有 Retimer 或指定的獨立 SSC 時脈條件時，也不得宣告支援。</td></tr>
+<tr><td>L1、L1.1、L1.2</td><td>Link 降低耗電；Substates 可進一步處理時脈與電氣狀態。</td><td>是否能用，取決於雙端能力、控制、時序與進入條件。</td></tr>
+<tr><td>L2／L3</td><td>主電源已移除的 Link 狀態；是否有 Vaux 區分 L2 與 L3。</td><td>L2 不傳一般封包，要先喚醒電源／時脈與 Link。</td></tr>
+</tbody></table></div>
+<p>Vaux 指輔助電源，實際供應方式取決於 form factor。D3cold 不是「完全沒有任何電源」的同義詞：若要在主電源移除後偵測喚醒事件，仍需適當的輔助供電。</p>
+<p>此外，D0 還分 uninitialized 與 active。剛完成 Conventional Reset 或 FLR 的 Function 回到 D0uninitialized，不能只因 PowerState=00b 就假定裝置工作介面已可使用。</p>
+<details class="source-note"><summary>D-state 與 L-state 的關係</summary><p>§5.2、Table 5-1（pp.600–604）；§5.3.1（pp.604–608）；Table 5-2（p.609）；D0 子狀態見 p.605。L0s 限制與 L0p 見 §4.2.6.6–§4.2.6.7（p.445）。這裡只建立狀態關係，不把圖表中的可能組合當成任意可直接轉移的操作。</p></details></section>
+<section id="pmcsr"><h2>2. 要查裝置的省電能力，先找哪個 Capability？</h2>
+<p>先走傳統 Capability 清單找 ID=0x01，再看 Figure 7-17 的 Power Management 結構。注意 Figure 7-18 把 Capability ID、Next Pointer 與能力欄位畫在同一個 32-bit 範圍內；如果只讀 +0x02 的 16-bit PMC，bit 編號要隨讀取起點調整。本例直接讀完整 DWORD，避免混用兩套編號。</p>
+<div class="table-wrap"><table><caption>PM 能力與狀態的教學讀值</caption><thead><tr><th scope="col">位置與寬度</th><th scope="col">值</th><th scope="col">先取得的資訊</th></tr></thead><tbody><tr><td>0x40，32 bits</td><td>0xC8035001</td><td>ID=0x01、Next=0x50、Version=3；D1／D2 不支援。</td></tr><tr><td>0x44，16 bits</td><td>0x810B</td><td>PowerState=3、No_Soft_Reset=1、PME_En=1、PME_Status=1。</td></tr></tbody></table></div>
+<p><code>(0xC8035001 &gt;&gt; 27) &amp; 0x1F = 0x19</code>，代表可從 D0、D3hot、D3cold 產生 PME。這是能力，不是保證系統目前已備妥所有喚醒資源。本例假設適當的輔助供電可用、沒有實作可選 Data Register，Aux_Current=0 採自供電情況；不把零解讀成所有情況都不需要供電。</p>
+<p>PME 是 Power Management Event。PME_En=1 表示允許發出通知，PME_Status=1 則記錄符合條件的事件；Status 的設定不受 Enable 值影響。因此「有事件」與「允許送通知」仍然要分開。</p>
+<p>PMCSR 的 PowerState 只有 00b=D0、01b=D1、10b=D2、11b=D3hot，沒有「再寫一個值就進 D3cold」的編碼。寫入不支援的可選 D1／D2 時，寫入本身正常完成，但資料被丟棄，狀態不改變。</p>
+<details class="source-note"><summary>能力到控制的 Figure 路徑</summary><p>Figure 7-17（p.944）→ Figure 7-18／Table 7-14（pp.945–947）→ Figure 7-19／Table 7-15（pp.947–949）。PME_Support 的 bit 31 與輔助電源條件見 p.947；Aux_Current=0 的解釋見 p.946。</p></details></section>
+<section id="resume"><h2>3. 從 D3hot 回 D0，要不要重新初始化？</h2>
+<p>先讀 No_Soft_Reset。若為 1，透過 PowerState 寫入從 D3hot 回 D0，必須保留內部 Function 狀態，回到 D0active；若為 0，內部狀態未定義，軟體必須完整重新初始化。後者也不保證舊資料都已清除，所以 D3hot→D0 不能取代 FLR 的用途。</p>
+<p>本例 PMCSR=0x810B，想回到 D0 且暫時保留 PME_Status 供後續處理。除了清 PowerState bits 1:0，還要在寫值中將 RW1CS 的 bit 15 寫零；否則把讀到的 1 原樣寫回，就會提前清掉事件。</p>
+<div class="table-wrap"><table><caption>回到 D0，但不意外清除 PME 事件</caption><thead><tr><th scope="col">動作</th><th scope="col">16-bit 值</th><th scope="col">結果或理由</th></tr></thead><tbody><tr><td>起始讀值</td><td>0x810B</td><td>D3hot、No_Soft_Reset=1、通知已啟用、事件待處理。</td></tr><tr><td>寫入 D0</td><td>0x0108</td><td>保留其他適用欄位；PowerState=0，對 PME_Status 寫 0。</td></tr><tr><td>等待適用恢復時間後讀取</td><td>0x8108</td><td>D0；PME_Status 仍是 1。</td></tr><tr><td>處理事件後，明確清除 PME_Status</td><td>0x8108</td><td>這次刻意對 bit 15 寫 1；若沒有新事件，後續讀回 0x0108。</td></tr></tbody></table></div>
+<p>這些值假設沒有其他軟體或新事件並行改動狀態。本例的 Immediate_Readiness_on_Return_to_D0=0，也未採其他就緒時間機制，所以 D3hot→D0 後至少等 10 ms，才再存取 Function，包括 Configuration Space。No_Soft_Reset=1 免除的是重新初始化，不是這段恢復等待。</p>
+<p>進入 D3hot 前，驅動程式必須處理仍等待 Completion 的交易，並準備可能因主電源移除而遺失的狀態。若是經 Fundamental Reset 回 D0，或曾進入 L2/L3 Ready 而產生 DL_Down，不能沿用本例的狀態保存結論。</p>
+<details class="source-note"><summary>保存狀態與恢復時間</summary><p>§5.3.1.4（pp.606–608）；Figure 5-18／Table 5-14（pp.654–655）；No_Soft_Reset、PME_En、PME_Status 見 Table 7-15（pp.948–949），Immediate Readiness 見 Table 7-14（p.945）。Flit-capable Function 必須設定 No_Soft_Reset，但它仍只適用指定的電源轉換。</p></details></section>
+<section id="aspm"><h2>4. ASPM 與把 Function 寫成 D3hot，有什麼不同？</h2>
+<p>ASPM 讓硬體在允許的條件下，於 D0 閒置時管理 Link。PCI-PM 軟體電源管理則先改變 Function 的 D-state，再由相關規則協調 Link。例如普通非 ARI 多 Function 裝置，不能只因其中一個 Function 離開 D0，就代表其他 Function 也都停止工作；其 Upstream Port 必須等所有 Functions 都離開 D0，才可代表 PCI-PM 發起進 L1。</p>
+<p>查 ASPM 時，先讀兩端 Link Capabilities 的 ASPM Support，再查 Link Control 的 ASPM Control。前者宣告可用機制，後者表示軟體開放哪些機制；Enable 不是「這一刻已經在 L1」的狀態回報。</p>
+<p>接著要比對恢復延遲：Link Capabilities 的 L1 Exit Latency 是 Port 恢復需要多久；Endpoint 的 Device Capabilities 則提供 Endpoint L1 Acceptable Latency，表示它可容忍多少延遲。兩者名字相近，卻不在同一個 Register。若經過多個 Switch，必須考慮整條路徑。</p>
+<details class="question"><summary>三段 Link 的 L1 exit latency，要直接相加嗎？</summary><p>不能一概相加。Figure 5-8 的三段 Link 範例中，Switch 會及早在上游開始退出，退出過程可重疊；規格的結果為最後一段在 T+34 μs 完成，而不是把所有 Port 的數字相加。先讀 p.634 的時間敘述，再對照 p.635 的拓樸，才能理解延遲如何沿路傳播。</p></details>
+<details class="source-note"><summary>ASPM 能力、政策與延遲</summary><p>§5.3.2（pp.609–610）；§5.4.1（pp.621–640）；Figure 5-8（pp.634–635）。Figure 7-27／Table 7-23（pp.967–970）、Figure 7-28／Table 7-24（pp.971–972）；Endpoint 可容忍延遲見 Figure 7-24／Table 7-20（pp.956–957），不要沿用 p.640 敘述中對其 Register 的不精確交叉指稱。</p></details></section>
+<section id="substates"><h2>5. 已支援 L1，是否就能直接開 L1.2？</h2>
+<p>還不行。L1 PM Substates 是另一個 Extended Capability，ID=0x001E。L1.0 對應原本的 L1；L1.1 保持 Link common-mode 電壓，L1.2 不要求保持；兩者以 CLKREQ# 協調進出。ASPM L1.2 還需要 Latency Tolerance Reporting（LTR）支援，讓裝置回報可容忍的服務延遲。</p>
+<p>以下換成一條<strong>獨立的作者假設 Link</strong>：兩端都支援 L1 Substates 與所需 LTR，平台已確認 CLKREQ#、時脈及時序設計可用。走訪各自的 Extended Capability 清單後，剛好都在 0x200 找到這個結構；不能把 0x200 當成固定標準位址。</p>
+<div class="table-wrap"><table><caption>L1.2 案例的兩端讀值</caption><thead><tr><th scope="col">位置與寬度</th><th scope="col">Downstream Port</th><th scope="col">Upstream Port</th></tr></thead><tbody><tr><td>Header，0x200，32 bits</td><td>0x0001001E</td><td>0x0001001E</td></tr><tr><td>Capabilities，0x204，32 bits</td><td>0x00280A1F</td><td>0x0051141F</td></tr><tr><td>已完成設定的 Control 1，0x208，32 bits</td><td>0x40801404</td><td>0x40800004</td></tr><tr><td>已完成設定的 Control 2，0x20C，32 bits</td><td>0x00000051</td><td>0x00000051</td></tr></tbody></table></div>
+<p>依 Figure 7-147／Table 7-129，Header 的 ID=0x001E、Version=1、Next=0；這一版沒有 +0x10 的 L1 PM Substates Status Register。Version=2 才表示實作該 Status Register，不能因為正在讀 Base 6.0，就假定每個 Capability 都是最高版本。</p>
+<p>依 Figure 7-148／Table 7-130，兩端 Capabilities 的低五位都是 0x1F，表示總支援位元與四種 PCI-PM／ASPM 子狀態能力均存在。Downstream Port 的 Port T_POWER_ON Value=5、Scale=0，為 10 μs；Upstream Port 的 Value=10、Scale=1，為 100 μs。Port Common_Mode_Restore_Time 分別是 10、20 μs。</p>
+<p>Control 2 的編碼位置不同：<code>(0x51 &gt;&gt; 3) &amp; 0x1F = 10</code>、<code>0x51 &amp; 3 = 1</code>，所以設定的 T_POWER_ON 是 10 × 10 μs=100 μs。不要拿 Capabilities 的 bits 23:19 去解 Control 2。</p>
+<p>Control 1 的 bit 2=1，只開 ASPM L1.2；其餘三個子狀態 Enable=0。Downstream Port 的 Common_Mode_Restore_Time=20 μs；這個欄位在 Upstream Port 是 RsvdP，因此兩端完整值不同。本例假設平台已確認上述設定適合元件與連接設計；單憑兩端宣告值取最大值，不足以保證每個平台的時序都合適。</p>
+<details class="source-note"><summary>Extended Capability 的閱讀路徑</summary><p>§7.8.3、Figure 7-146（pp.1103–1104）→ Figure 7-147／Table 7-129（p.1104）→ Figure 7-148／Table 7-130（pp.1105–1106）→ Figure 7-149／Table 7-131（pp.1106–1108）→ Figure 7-150／Table 7-132（p.1108）。多 Function Upstream Port 只在 Function 0 實作此 Capability，控制整個 Port。</p></details></section>
+<section id="configure"><h2>6. 這組 Enable 值應該如何建立？</h2>
+<p>上表是設定後快照，不是四個 DWORD 可以任意順序寫入。§5.5.4 要求先確認兩端對應的 Supported bit 都為 1；否則啟用的行為未定義。實際安排還要符合下列順序。</p>
+<ol><li>設定 ASPM L1 Substates 前，兩端先停用 ASPM L1；若要設定 PCI-PM Substates，則須在 D0 進行。</li><li>啟用 L1.2 前，先設定適用的 T_POWER_ON、Common_Mode_Restore_Time，以及 ASPM L1.2 的 LTR threshold。修改時間欄位時，相應的 L1.2 Enable 必須保持清除。</li><li>兩端 LTR threshold 必須相同。先在 Downstream Port 設定所需的 Substate Enable，才可在 Upstream Port 設定對應 bit。</li><li>完成設定後，依 ASPM 與延遲政策恢復所需的 ASPM L1。將來停用 Substate 時順序相反：先清 Upstream Port，再清 Downstream Port。</li></ol>
+<p>「位於拓樸上游的元件」與「Upstream Port」不是同一句話：在 Endpoint 與 Switch 之間，Endpoint 的 Upstream Port 位於 Link 的下游端。設定順序要認 Port 類型，不能只憑中文的上下游方向猜。</p>
+<details class="source-note"><summary>設定順序與時序條件</summary><p>§5.5.4（p.650）與 Table 5-11（p.651）；欄位可修改條件見 Tables 7-131／7-132（pp.1107–1108）。T_POWER_ON 與 common-mode 設定還取決於元件、AC 耦合電容及連接設計，規格沒有指定單一通用算式。</p></details></section>
+<section id="ltr"><h2>7. Enable 已經是 1，為什麼還不能進 L1.2？</h2>
+<p>先看 Control 1 的 threshold：Value 在 bits 25:16，Scale 在 bits 31:29。因此 <code>(0x40801404 &gt;&gt; 16) &amp; 0x3FF = 128</code>，Scale=2；依 Figure 6-15，scale 2 的單位是 1024 ns，得到 <strong>131072 ns，也就是 131.072 μs</strong>。Upstream Port 的 threshold 相同。</p>
+<p>假設已在 ASPM L1.0、CLKREQ# 已 deassert，其他進入條件都成立。兩種服務需求仍須分別檢查；不能只看 snoop 那一欄。本例的 LTR 數字是已解碼的最近有效回報，不是 Max Latency Register 的上限。</p>
+<div class="table-wrap"><table><caption>同一個 threshold 下的兩次判斷</caption><thead><tr><th scope="col">情境</th><th scope="col">Snoop 需求</th><th scope="col">No-snoop 需求</th><th scope="col">ASPM L1.2 條件</th></tr></thead><tbody><tr><td>A</td><td>204800 ns</td><td>102400 ns</td><td>No-snoop 小於 131072 ns，不滿足進入條件。</td></tr><tr><td>B</td><td>204800 ns</td><td>153600 ns</td><td>兩者皆大於或等於 threshold；在上述前提下應進入 L1.2。</td></tr></tbody></table></div>
+<p>若某一類沒有服務延遲需求，該類可用「無需求」的分支判斷；這不等於 Requirement=1、Value=0。後者代表任何延遲都會影響裝置，要求盡可能快的服務。LTR 是裝置回報的容忍度，也不是 Root Complex 保證一定做到的硬性延遲承諾。</p>
+<p>在情境 A，若另外開了 ASPM L1.1，還可以依規則進 L1.1；本例的 bit 3=0，因此不能假設有這個退路。只看到 L1.2 Enable=1，既不能證明正在 L1.2，也不能證明設定失敗。</p>
+<details class="source-note"><summary>進入條件與 LTR 單位</summary><p>§5.5.1（p.644）要求兩類 LTR 分別滿足；Figure 6-15、§6.18（pp.781–782）定義 Requirement 與 Scale。啟用 Endpoint LTR 前，Root Complex 與所有中間 Switch 必須支援，且由靠近 Root Port 者先啟用（p.781）。Control 1 threshold 的兩端一致性見 p.650。</p></details></section>
+<section id="wake"><h2>8. 主電源已移除，裝置如何通知系統醒來？</h2>
+<p>先分兩步：恢復能傳輸的環境，再送出辨識事件來源的 PM_PME Message。L2 中不能直接傳一般 TLP；支援喚醒的裝置必須利用適用的 WAKE# 或 Beacon 機制，讓平台恢復電源、時脈與 Link。具體使用哪一種，取決於 form factor。Link 重新可用後，PM_PME 帶著 Requester ID 向 Root Complex 傳遞來源。</p>
+<p>因此，PME_Support=1 只是其中一項證據。還要有 PME_En、必要的輔助供電、平台喚醒路徑，以及沿途元件的配合。這也說明為什麼 PMCSR 的 D3hot 設定不能單獨代表整個平台已完成 D3cold 電源切換。</p>
+<aside class="note"><strong>補充背景：ACPI 的分工</strong><p>ACPI 6.6 的 _PR0／_PR3 描述裝置在 D0／D3hot 所需的電源資源。_PR3 雖然與 D3cold 決策相關，名稱中的 3 並不表示它是「D3cold Register」；它也不是 PCIe Configuration Space 裡的一個欄位。作業系統還需依平台協調條件管理這些資源。</p><p>來源：<a href="https://uefi.org/sites/default/files/resources/ACPI_Spec_6.6.pdf#page=568">ACPI 6.6 §7.3.8–§7.3.11，文件 pp.497–498／PDF pp.568–569</a>。本節只補充平台分工，不展開 AML 程式或假設特定主機的電源接線。</p></aside>
+<details class="source-note"><summary>喚醒的兩個階段</summary><p>Base 6.0 §5.3.3.1–§5.3.3.2（pp.615–616）；D3cold 的供電與保存狀態見 §5.3.1.4.2（pp.608–609）。WAKE# 不是可不分插槽形式任意套用的通用接線指令。</p></details></section>
+<section id="practice"><h2>9. 用條件改變答案</h2>
+<details class="question"><summary>No_Soft_Reset=1，但裝置經歷 D3cold 再上電，還能直接沿用原先狀態嗎？</summary><p>不能。No_Soft_Reset 保證的是指定的 D3hot→D0 軟體轉換；從 D3cold 恢復需要電源與 Fundamental Reset，回到 D0uninitialized，再建立工作狀態。（§5.3.1.4，pp.606–608。）</p></details>
+<details class="question"><summary>只有 Endpoint 支援 ASPM L1.2，上游 Port 不支援，可以只開 Endpoint 嗎？</summary><p>不可以。對應能力必須兩端都支援才可啟用，否則行為未定義；還要遵守雙端設定順序與 LTR／時序前提。（§5.5.4，p.650。）</p></details>
+<p>到這裡，課程已串起裝置發現、傳輸、可靠性、Reset 與省電。下一階段依 <a href="index.html">課程路線</a>接續 Hot-Plug、錯誤回報與系統控制權，處理裝置在運作中改變狀態時，平台如何協調。</p></section>

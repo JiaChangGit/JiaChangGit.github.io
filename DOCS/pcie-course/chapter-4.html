@@ -219,6 +219,9 @@
   .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
   .pcie-surface svg { forced-color-adjust: none; }
 }
+
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
   </style>
 </head>
 <body class="pcie-surface">
@@ -328,7 +331,7 @@ Prefetchable Limit = (1 &lt;&lt; 32) | ((0x2011 &amp; 0xFFF0) &lt;&lt; 16) | 0xF
 <details class="question"><summary>三個 Bridge 的 Memory Window 都正確，Endpoint 的 MSE 卻為 0，CPU 讀 BAR0 還會成功嗎？</summary><p>不能據此期待成功。Endpoint 的 MSE=0 時，收到的 Memory Space 存取依 UR 處理；沿途可轉送不等於終點已啟用。（Table 7-4，p.918。）</p></details>
 <details class="question"><summary>Command 從 0x0002 改成 0x0006，就證明 DMA 緩衝區位址正確了嗎？</summary><p>沒有。兩者差在 BME；它不驗證裝置工作描述項、緩衝區生命週期或平台轉譯。還要建立並核對那些資料，才能讓裝置開始工作。</p></details></section>
 
-<section id="next"><h2>9. 接下來追蹤一筆真正的交易</h2><p>到這裡，系統已能選定 Function、找到能力、建立 Bus 路徑並配置資源。<a href="chapter-5.html">Chapter 5</a> 接著追蹤 CPU 的一次讀取如何形成 Request，以及 Completion 如何回到要求者。Chapter 8–19 目前仍在規劃中；完整安排見 <a href="index.html">課程閱讀路線</a>。</p></section>
+<section id="next"><h2>9. 接下來追蹤一筆真正的交易</h2><p>到這裡，系統已能選定 Function、找到能力、建立 Bus 路徑並配置資源。<a href="chapter-5.html">Chapter 5</a> 接著追蹤 CPU 的一次讀取如何形成 Request，以及 Completion 如何回到要求者。Chapter 11–19 目前仍在規劃中；完整安排見 <a href="index.html">課程閱讀路線</a>。</p></section>
 <section id="sources"><h2>版本與來源</h2><p>PCI Express Base Specification Revision 6.0 與 PCI Firmware Specification Revision 3.3。所有來源位置就近標示；大小、位址、裝置內 Register 與平台映射均為教學假設。Firmware 3.3 並非 Base 6.0 的同版配套，兩者分別用於欄位規則與交接背景。查核日期：2026-10-20。</p></section>
         </article>
         <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-3.html">← Chapter 3</a><a href="chapter-5.html">Chapter 5 →</a><a href="#content">回到本章開頭 ↑</a></nav>

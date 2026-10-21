@@ -217,6 +217,9 @@ lang: zh-TW
   .pcie-article svg { forced-color-adjust: none; }
 }
 
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 

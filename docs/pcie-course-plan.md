@@ -6,7 +6,7 @@
 
 讀者懂基本程式與 CPU、記憶體概念，但沒有 PCIe 基礎。課程先建立完整系統觀，再逐步深入韌體、軟體、交易、連線及實體機制。NVMe SSD 可以作為例子，但課程本身不以讀過 NVMe 教材為前提。
 
-目前完成 Chapter 0–7 及全系列的學習路線。Chapter 0 建立系統觀，Chapter 1 處理拓樸與識別；Chapter 2 走訪兩種 Capability 清單，Chapter 3 推演枚舉，Chapter 4 計算 BAR 與 Bridge Window；Chapter 5–7 接續交易、DMA 與中斷。Chapter 8–19 仍為規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
+目前完成 Chapter 0–10 及全系列的學習路線。Chapter 0 建立系統觀，Chapter 1 處理拓樸與識別；Chapter 2 走訪兩種 Capability 清單，Chapter 3 推演枚舉，Chapter 4 計算 BAR 與 Bridge Window；Chapter 5–7 接續交易、DMA 與中斷，Chapter 8–10 處理 Link、Reset 與電源管理。Chapter 11–19 仍為規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
 
 主要入口：
 
@@ -19,7 +19,7 @@
 - [來源登記](../.ai/pcie-course/source-register.json)保存來源版本與來源檔案識別資訊。
 - [技術主張與證據](../.ai/pcie-course/claims.json)保存 Chapter 0 已查核的結論及定位；[Chapter 1 證據](../.ai/pcie-course/chapter1-claims.json)另記錄本章的來源、讀值與計算。後續三章各有 [Chapter 2 證據](../.ai/pcie-course/chapter2-claims.json)、[Chapter 3 證據](../.ai/pcie-course/chapter3-claims.json) 與 [Chapter 4 證據](../.ai/pcie-course/chapter4-claims.json)。
 
-`curriculum.json` 的 `ready` 表示已交付的 Chapter 0–7；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
+`curriculum.json` 的 `ready` 表示已交付的 Chapter 0–10；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
 
 ## 為什麼這樣安排
 
@@ -193,7 +193,7 @@ Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清�
 
 ## Chapter 5–7 增補紀錄（2026-10-21）
 
-本批接續使用者的後續章節要求，完成交易、DMA 與中斷三章。各章提供獨立中文教學及內容對等的中英文文章。Chapter 0–7 已完成；Chapter 8–19 仍為規劃。
+本批接續使用者的後續章節要求，完成交易、DMA 與中斷三章。各章提供獨立中文教學及內容對等的中英文文章。本批完成時，Chapter 0–7 已完成；Chapter 8–19 當時仍為規劃。
 
 - [Chapter 5 證據](../.ai/pcie-course/chapter5-claims.json)記錄 Non-Flit Mode 的交易分類、配對、BE、Byte Count、RCB 與 4 KiB 邊界。單筆 MMIO 延續 Chapter 4 的位址；分段 DMA 讀取與 Chapter 6 的 MRRS 一致。
 - [Chapter 6 證據](../.ai/pcie-course/chapter6-claims.json)分開 PCIe 排序、平台位址映射與所有權交接。補充來源固定為 Linux 6.12 官方 DMA 與 memory barrier 文件，只用必要背景，不假裝已驗證某一款 IOMMU 的硬體格式。
@@ -202,6 +202,17 @@ Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清�
 - 產生器與來源／案例驗證通過，共 25 份公開產物。新驗證會重算有效 bytes、Completion 剩餘量、跨頁拆分、DMA 範圍與 MSI-X 位址，並比較正文表格。另在記憶體內故意改壞三個案例與三張正文表格，均能攔下，不以固定文字存在當作正確性證明。
 - 中英文文章的十六進位值集合相同，並人工校閱主張、前提與問題。Jekyll 建置、既有 NVMe 產物／來源／發布契約與 132 項測試通過。
 - Chrome 檢查 48 組頁面、尺寸與明暗模式，涵蓋中文教學桌面、平板直橫向、手機，以及雙語文章的桌面與窄畫面。沒有整頁水平溢出、短於 44px 的連結／summary、SVG 文字越界或頁面錯誤；來源和答案均可展開。人工檢視交易往返圖、排序表、MSI-X 位址圖及英文暗色來源段落。這是瀏覽器尺寸驗證，不是實機 iPad Safari 驗證。
+
+## Chapter 8–10 增補紀錄（2026-10-21）
+
+本批延伸使用者「繼續完成，或者繼續後續章節」的要求，完成 Link、Reset 與電源管理三章，提供三份獨立中文教學及六篇內容對等的中英文文章。目前 Chapter 0–10 可閱讀，Chapter 11–19 保留規劃狀態。
+
+- [Chapter 8 證據](../.ai/pcie-course/chapter8-claims.json)區分訓練、DL_Active 與 Function readiness。雙端速率案例新增 Target 上限與回報適用性；有限 credit 帳本、Flit layout 與模式欄位各自標示範圍，不重做 Chapter 0 的單端能力查詢。
+- [Chapter 9 證據](../.ai/pcie-course/chapter9-claims.json)以普通多 Function Endpoint 推演 FLR 範圍，另說明 PF／VF 不可泛用。FLR 觸發、100 ms 完成上限、RRS／FRS 與 stale Completion 等待分開處理；Conventional Reset 算例明列計時起點。
+- [Chapter 10 證據](../.ai/pcie-course/chapter10-claims.json)核對 PMCSR 的 RW1CS 寫值、No_Soft_Reset 的有限保證、雙端 L1SS 版本與設定順序、T_POWER_ON／LTR 單位及兩種服務需求。平台資源只補充已讀取的 ACPI 6.6 官方 PDF §7.3.8／§7.3.11，保留文件頁與 PDF 頁差異；未用無法開啟的 HTML 代替全文證據。
+- 本批新增 24 筆來源與案例，合計 133 筆；原始兩份 PDF 雜湊仍與登記版本一致。產生器／來源及算例驗證通過，共 34 份公開產物，內部證據、來源 PDF 與抽取內容未出現在站點輸出。
+- 新驗證從讀值解出速率、寬度、FLR、PMCSR 與 L1SS 欄位，重算 credit、Flit 範圍、恢復時間與 LTR 門檻，再比對正文表格。在記憶體內刻意改壞三個證據案例及三張正文表格，六種變更均被攔下。中英文十六進位值集合及主題順序相同，另人工核對條件與結論。
+- Jekyll 建置、既有 NVMe 來源／產物／發布契約及 132 項測試通過。Chrome 的 48 組尺寸與明暗檢查通過，涵蓋三章完整教學的桌面、平板直橫向、手機及雙語文章的桌面與窄畫面；沒有整頁橫向溢出、SVG 文字越界、短於 44px 的連結／summary 或頁面錯誤。寬表格在自己的容器內捲動，答案及來源可展開；人工檢視訓練圖、FLR 條件圖、L1.2 表格及英文暗色版。這是瀏覽器尺寸驗證，不是實機 iPad Safari 驗證。
 
 ## 後續逐章編寫與驗證
 

@@ -514,6 +514,154 @@ def validate_transfer_examples(claims, require):
                 'Independent MSI comparison decodes incorrectly')
 
 
+def validate_link_reset_power_examples(claims, require, documents=None):
+    """Decode new examples, then reconcile the actual published tables.
+
+    Optional documents let maintenance checks corrupt HTML in memory without
+    touching authored files. This is arithmetic/consistency, not spec proof.
+    """
+    by_id = {claim['id']: claim for claim in claims}
+    documents = documents or {}
+
+    def doc(number):
+        return documents.get(number) or Document(
+            (DATA / f'chapter{number}.zh.html').read_text(encoding='utf-8'))
+
+    def number_cells(row):
+        return [int(value) for value in re.findall(r'\d+', ' '.join(row))]
+
+    example = by_id.get('PCIE-CH8-EXAMPLE-001')
+    if example:
+        link = example['link']
+        vectors = [(int(value, 0) & 0xFE) >> 1 for value in link['cap2']]
+        current = [int(value, 0) & 0xF for value in link['status']]
+        widths = [(int(value, 0) >> 4) & 0x3F for value in link['status']]
+        target = int(link['target'], 0) & 0xF
+        require(vectors == [15, 15] and current == [3, 3] and target == 3,
+                'Chapter 8 supported/target/current speed mismatch')
+        require(widths == [4, 4] and all(w <= maximum for w, maximum in zip(widths, link['widths'])),
+                'Chapter 8 negotiated width exceeds capability or differs across Link')
+        for status, reporting in zip(link['status'], link['active_reporting']):
+            require(bool(int(status, 0) & (1 << 13)) == reporting,
+                    'Chapter 8 Link Active reporting assumption mismatch')
+        rows = table_rows(doc(8), '速率案例的兩端證據', require)
+        if len(rows) == 4:
+            base = int(link['cap_base'], 0)
+            require(hex_values(rows[0][0]) == [base + 0x2C] and
+                    [hex_values(cell)[0] for cell in rows[0][1:]] == [int(v, 0) for v in link['cap2']],
+                    'Chapter 8 published speed capability reads drifted')
+            require(number_cells(rows[1][1:]) == link['widths'], 'Chapter 8 published max widths drifted')
+            require(hex_values(rows[2][0]) == [base + 0x30] and hex_values(rows[2][1]) == [int(link['target'], 0)],
+                    'Chapter 8 published target read drifted')
+            require(hex_values(rows[3][0]) == [base + 0x12] and
+                    [hex_values(cell)[0] for cell in rows[3][1:]] == [int(v, 0) for v in link['status']],
+                    'Chapter 8 published status reads drifted')
+        else:
+            require(False, 'Chapter 8 speed table row count changed')
+        credit = example['credit']
+        demands = [(size + 15) // 16 for size in credit['payloads']]
+        ph, pd = credit['initial_ph'] - 1, credit['initial_pd'] - demands[0]
+        require(ph == 1 and pd == 1 and pd < demands[1] <= pd + credit['pd_return'],
+                'Chapter 8 credit wait/release example invalid')
+        rows = table_rows(doc(8), '有限 credit 的發送判斷', require)
+        if len(rows) == 4:
+            require(number_cells(rows[0][:2]) == [credit['payloads'][0], 1, demands[0]] and
+                    number_cells(rows[0][2:]) == [ph, pd], 'Chapter 8 first credit row drifted')
+            require(number_cells(rows[1][:2]) == [credit['payloads'][1], 1, demands[1]],
+                    'Chapter 8 blocked credit row drifted')
+            require(number_cells(rows[2]) == [credit['pd_return'], credit['payloads'][1], 1, demands[1], 0, 0],
+                    'Chapter 8 released credit row drifted')
+            require(number_cells(rows[3][:2]) == [credit['mrd_bytes'], credit['nph'], 1, 0],
+                    'Chapter 8 MRd credit row drifted')
+        else:
+            require(False, 'Chapter 8 credit table row count changed')
+        ranges = example['flit_ranges']
+        require([size for _, _, size in ranges] == [236, 6, 8, 6], 'Chapter 8 Flit partition mismatch')
+        require(sum(size for _, _, size in ranges) == 256 and ranges[0][0] == 0 and ranges[-1][1] == 255,
+                'Chapter 8 Flit total size mismatch')
+        require(all(end - start + 1 == size for start, end, size in ranges) and
+                all(a[1] + 1 == b[0] for a, b in zip(ranges, ranges[1:])),
+                'Chapter 8 Flit ranges overlap or leave gaps')
+        rows = table_rows(doc(8), '一個 Flit 的 256 bytes 分配', require)
+        require([number_cells(row[:2]) for row in rows] == ranges, 'Chapter 8 published Flit ranges drifted')
+        require([((int(v, 0) >> 12) & 7, (int(v, 0) >> 10) & 1)
+                 for v in example['flit_projections']] == [(4, 1), (3, 1)], 'Chapter 8 Presence/Flit decode mismatch')
+
+    example = by_id.get('PCIE-CH9-EXAMPLE-001')
+    if example:
+        reads = {int(offset, 0): (width, int(value, 0)) for offset, width, value in example['raw_reads']}
+        require((reads[0x74][1] >> 28) & 1 == 1 and (reads[0x7A][1] >> 5) & 1 == 1,
+                'Chapter 9 FLR support/pending decode mismatch')
+        require(reads[0x78][1] & 0x8000 == 0 and reads[0x04][1] & 6 == 6,
+                'Chapter 9 initial Control/Command mismatch')
+        require(reads[0x78][1] | 0x8000 == int(example['trigger'], 0), 'Chapter 9 trigger changes unrelated bits')
+        rows = table_rows(doc(9), 'FLR 案例的設定讀值', require)
+        require(len(rows) == len(reads), 'Chapter 9 read table row count changed')
+        for row in rows:
+            offsets, values = hex_values(row[0]), hex_values(row[1])
+            require(len(offsets) == len(values) == 1, 'Chapter 9 read cell malformed')
+            if len(offsets) == len(values) == 1:
+                width = int(re.search(r'(16|32) bits', row[0]).group(1))
+                require(reads.get(offsets[0]) == (width, values[0]), 'Chapter 9 published raw read drifted')
+        timeline = example['timeline_ms']
+        require(timeline['reset_exit'] <= timeline['training_complete'] and timeline['wait'] >= 100 and
+                timeline['first_config'] == timeline['training_complete'] + timeline['wait'],
+                'Chapter 9 Conventional Reset timing origin mismatch')
+
+    example = by_id.get('PCIE-CH10-EXAMPLE-001')
+    if example:
+        pmc = int(example['pm_reads'][0][2], 0)
+        pmcsr = int(example['pm_reads'][1][2], 0)
+        require(pmc & 0xFF == 1 and (pmc >> 16) & 7 == 3 and (pmc >> 25) & 3 == 0 and
+                (pmc >> 27) & 0x1F == 0x19 and pmc & (1 << 20) == 0,
+                'Chapter 10 PM support/readiness decode mismatch')
+        require(pmcsr & 3 == 3 and pmcsr & 0x8108 == 0x8108, 'Chapter 10 initial PMCSR mismatch')
+        write_d0 = pmcsr & ~0x8003
+        after_d0 = (pmcsr & ~3)
+        clear_event = after_d0
+        require([pmcsr, write_d0, after_d0, clear_event] == [int(v, 0) for v in example['pm_sequence']],
+                'Chapter 10 RW1CS preservation/clear sequence mismatch')
+        rows = table_rows(doc(10), 'PM 能力與狀態的教學讀值', require)
+        require([[hex_values(row[0])[0], hex_values(row[1])[0]] for row in rows] ==
+                [[int(offset, 0), int(value, 0)] for offset, _, value in example['pm_reads']],
+                'Chapter 10 published PM reads drifted')
+        rows = table_rows(doc(10), '回到 D0，但不意外清除 PME 事件', require)
+        require([hex_values(row[1])[0] for row in rows] == [int(v, 0) for v in example['pm_sequence']],
+                'Chapter 10 published PM write sequence drifted')
+        raw = [[int(v, 0) for v in row] for row in example['l1ss_reads']]
+        rows = table_rows(doc(10), 'L1.2 案例的兩端讀值', require)
+        require([[hex_values(cell)[0] for cell in row] for row in rows] == raw,
+                'Chapter 10 published L1SS snapshot drifted')
+        require([row[0] for row in raw] == [0x200, 0x204, 0x208, 0x20C], 'Chapter 10 L1SS offsets mismatch')
+        require(all(v & 0xFFFF == 0x1E and (v >> 16) & 0xF == 1 and v >> 20 == 0 for v in raw[0][1:]),
+                'Chapter 10 L1SS ID/version/next mismatch')
+        scale_us = [2, 10, 100]
+        cap_times, programmed_times, thresholds = [], [], []
+        for column in (1, 2):
+            cap, ctrl1, ctrl2 = (raw[row][column] for row in (1, 2, 3))
+            require(cap & 0x1F == 0x1F and ctrl1 & 0xF == 4,
+                    'Chapter 10 corresponding support/enable mismatch')
+            cap_scale, ctrl_scale = (cap >> 16) & 3, ctrl2 & 3
+            require(cap_scale < 3 and ctrl_scale < 3, 'Chapter 10 Reserved T_POWER_ON scale')
+            if cap_scale < 3 and ctrl_scale < 3:
+                cap_times.append(((cap >> 19) & 0x1F) * scale_us[cap_scale])
+                programmed_times.append(((ctrl2 >> 3) & 0x1F) * scale_us[ctrl_scale])
+            threshold_scale = ctrl1 >> 29
+            require(threshold_scale <= 5, 'Chapter 10 forbidden LTR scale')
+            thresholds.append(((ctrl1 >> 16) & 0x3FF) * (1 << (5 * threshold_scale)))
+        require(cap_times == [10, 100] and programmed_times == [100, 100], 'Chapter 10 T_POWER_ON units mismatch')
+        require((raw[2][1] >> 8) & 0xFF == 20 and (raw[2][2] >> 8) & 0xFF == 0,
+                'Chapter 10 UP RsvdP/DP common-mode mismatch')
+        require(thresholds == [example['threshold_ns']] * 2, 'Chapter 10 thresholds differ across Link')
+        rows = table_rows(doc(10), '同一個 threshold 下的兩次判斷', require)
+        require(len(rows) == len(example['ltr_cases']), 'Chapter 10 LTR row count changed')
+        for case, row in zip(example['ltr_cases'], rows):
+            eligible = case['snoop_ns'] >= thresholds[0] and case['no_snoop_ns'] >= thresholds[0]
+            require(eligible == case['eligible'], 'Chapter 10 LTR branch result mismatch')
+            require(number_cells(row[1:3]) == [case['snoop_ns'], case['no_snoop_ns']],
+                    'Chapter 10 published LTR inputs drifted')
+
+
 def validate(source_dir=None):
     errors = []
     def require(condition, message):
@@ -610,6 +758,11 @@ def validate(source_dir=None):
             validator(example, authored, topology_example, require)
 
     validate_transfer_examples(claims, require)
+    for number in (8, 9, 10):
+        if any(chapter['number'] == number for chapter in ready):
+            require(any(c['id'] == f'PCIE-CH{number}-EXAMPLE-001' for c in claims),
+                    f'Missing Chapter {number} worked example')
+    validate_link_reset_power_examples(claims, require)
 
     chapter_numbers = [c['number'] for c in curriculum]
     require(len(set(chapter_numbers)) == len(chapter_numbers), 'Duplicate chapter numbers')
@@ -703,6 +856,8 @@ def validate(source_dir=None):
         print('Both source PDF hashes match the registered editions.')
     if any(chapter['number'] == 7 for chapter in ready):
         print('Chapters 5–7 transfer bytes, Completion fragments, DMA ranges, and MSI-X locations match their published tables.')
+    if any(chapter['number'] == 10 for chapter in ready):
+        print('Chapters 8–10 Link fields, credits, Flit ranges, FLR, PMCSR writes, and L1.2 timing match their published tables.')
 
 
 if __name__ == '__main__':

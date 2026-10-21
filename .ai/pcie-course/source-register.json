@@ -87,6 +87,20 @@
       "purpose": "dma_wmb/dma_rmb/dma_mb and separation from MMIO ordering",
       "verification": "Relevant sections read on the versioned official documentation pages; not a hardware IOMMU specification.",
       "not_used_for": "PCIe register layouts or interrupt-controller address/data encoding"
+    },
+    {
+      "id": "ACPI-6.6-PM",
+      "title": "Advanced Configuration and Power Interface Specification: Device Power Management Objects",
+      "revision": "6.6",
+      "document_date": "2025-05-13",
+      "publisher": "UEFI Forum",
+      "type": "official_versioned_web_pdf",
+      "url": "https://uefi.org/sites/default/files/resources/ACPI_Spec_6.6.pdf",
+      "accessed": "2026-10-21",
+      "role": "supplementary_background",
+      "purpose": "Only _PR0/_PR3 power-resource dependencies and separation from PCIe Registers.",
+      "verification": "Official PDF cover and sections 7.3.8/7.3.11 read, document pp.497-498 / one-based PDF pp.568-569. HTML fetch 403; PDF fetch succeeded.",
+      "not_used_for": "PCIe field layouts, board wiring, or platform-specific timing."
     }
   ]
 }

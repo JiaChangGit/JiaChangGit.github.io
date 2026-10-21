@@ -217,6 +217,9 @@ lang: en
   .pcie-article svg { forced-color-adjust: none; }
 }
 
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
@@ -287,7 +290,7 @@ Negotiated Link Width: (0x0043 &amp; 0x03F0) &gt;&gt; 4 = 4</code></pre>
 <details class="question"><summary>If Current Link Speed is 4, does that mean two speeds are supported simultaneously?</summary><p>No. With valid Link-state conditions, code 4 means a current speed of 16 GT/s. The supported set still requires a separate vector read. (Table 7-26 and Table 7-35, pp.978 and 998.)</p></details>
 <details class="question"><summary>If the Link is down and a previously obtained value is 0x0043, can it describe the current speed and width?</summary><p>No. Table 7-26 (p.978) defines speed and width as undefined when the Link is not up. Plausible numbers do not replace the required validity condition.</p></details>
 </section>
-<p>The next step is to clarify topology, Functions, and identification scope before studying Configuration Space in depth. See the <a href="/DOCS/pcie-course/chapter-0.html">full Chapter 0 Chinese tutorial</a> for field diagrams, the expanded example, and source references. <a href="/DOCS/pcie-course/chapter-1.html">Chapter 1 is now available</a>; Chapters 2–7 are available, and Chapters 8–19 remain planned.</p>
+<p>The next step is to clarify topology, Functions, and identification scope before studying Configuration Space in depth. See the <a href="/DOCS/pcie-course/chapter-0.html">full Chapter 0 Chinese tutorial</a> for field diagrams, the expanded example, and source references. <a href="/DOCS/pcie-course/chapter-1.html">Chapter 1 is now available</a>; Chapters 2–10 are available, and Chapters 11–19 remain planned.</p>
 </article>
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-0.html">Full Chinese tutorial</a><a href="/pcie/chapter-0-zh-tw/">繁體中文</a></nav>
 </div>

@@ -89,5 +89,5 @@ PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
 <details class="question"><summary>entry 3 的 Mask 已清除，卻還有 Function Mask=1，能送出訊息嗎？</summary><p>不能。Function Mask 使所有 entries 都按被遮罩處理，不改變各 entry 自己的 Mask 值。（§6.1.4.5，p.664；Table 7-49，p.1022。）</p></details>
 <details class="question"><summary>只知道 MSI-X Enable=1，是否足以證明某項工作會通知 CPU？</summary><p>不足。還要核對目標 entry、Address／Data、兩層遮罩、BME 與平台接收資源，以及裝置是否真的產生該事件。Capability 的存在、控制位元與事件結果是不同證據。</p></details>
 <details class="question"><summary>我要更新未遮罩 entry 的 Message Data，先寫 Data 再設 Mask 可以嗎？</summary><p>不可以。未遮罩時改 Address／Data 的結果未定義。先按規定遮罩並確保更新順序，再修改內容，完成後才解除遮罩。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
-<section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。Chapter 8 將回到 Link，說明訓練、流量控制與重送的責任；後續章節仍在規劃中，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
+<section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。<a href="chapter-8.html">Chapter 8</a> 回到 Link，說明訓練、流量控制與重送的責任；Chapter 9–10 接續 Reset 與電源管理，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
 <section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-21。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>

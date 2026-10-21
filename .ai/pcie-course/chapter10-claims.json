@@ -1,0 +1,449 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 10,
+  "updated": "2026-10-21",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH10-STATES-001",
+      "claim": "D-state與L-state不同；D3cold無主電源仍可有Vaux；Flit不支援L0s，L0p只用Flit。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.2",
+        "5.3.1",
+        "4.2.6.6",
+        "4.2.6.7"
+      ],
+      "figures": [],
+      "tables": [
+        "5-1",
+        "5-2"
+      ],
+      "document_pages": [
+        445,
+        600,
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609
+      ],
+      "pdf_pages": [
+        445,
+        600,
+        601,
+        602,
+        603,
+        604,
+        605,
+        606,
+        607,
+        608,
+        609
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-PMCSR-001",
+      "claim": "PM能力Header完整DWORD與PMC16bit編號分開；PowerState無D3cold編碼，PME支持/啟用/事件分開。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.2.1",
+        "7.5.2.2"
+      ],
+      "figures": [
+        "7-17",
+        "7-18",
+        "7-19"
+      ],
+      "tables": [
+        "7-14",
+        "7-15"
+      ],
+      "document_pages": [
+        944,
+        945,
+        946,
+        947,
+        948,
+        949
+      ],
+      "pdf_pages": [
+        944,
+        945,
+        946,
+        947,
+        948,
+        949
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-RESUME-001",
+      "claim": "No_Soft_Reset只保證指定D3hot到D0轉換，不能取代Reset；除readiness例外外須10ms等待。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.3.1.4",
+        "5.8",
+        "5.9",
+        "7.5.2.2"
+      ],
+      "figures": [
+        "5-18"
+      ],
+      "tables": [
+        "5-14",
+        "7-15"
+      ],
+      "document_pages": [
+        606,
+        607,
+        608,
+        654,
+        655,
+        948
+      ],
+      "pdf_pages": [
+        606,
+        607,
+        608,
+        654,
+        655,
+        948
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-ASPM-001",
+      "claim": "ASPM與軟體PCI-PM不同；MFD條件與全路徑可容忍/退出延遲均須確認，退出可能重疊。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.3.2",
+        "5.4.1",
+        "7.5.3.3",
+        "7.5.3.6",
+        "7.5.3.7"
+      ],
+      "figures": [
+        "5-8",
+        "7-24",
+        "7-27",
+        "7-28"
+      ],
+      "tables": [
+        "7-20",
+        "7-23",
+        "7-24"
+      ],
+      "document_pages": [
+        609,
+        610,
+        621,
+        634,
+        635,
+        640,
+        956,
+        957,
+        967,
+        968,
+        969,
+        970,
+        971,
+        972
+      ],
+      "pdf_pages": [
+        609,
+        610,
+        621,
+        634,
+        635,
+        640,
+        956,
+        957,
+        967,
+        968,
+        969,
+        970,
+        971,
+        972
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-L1SS-FIELDS-001",
+      "claim": "L1SS ID001E版本決定Status存在；Capabilities和Controls不同bit位置，UP CommonMode為RsvdP。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.5",
+        "7.8.3"
+      ],
+      "figures": [
+        "7-146",
+        "7-147",
+        "7-148",
+        "7-149",
+        "7-150"
+      ],
+      "tables": [
+        "7-129",
+        "7-130",
+        "7-131",
+        "7-132"
+      ],
+      "document_pages": [
+        640,
+        1103,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108
+      ],
+      "pdf_pages": [
+        640,
+        1103,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-L1SS-ORDER-001",
+      "claim": "雙端能力、ASPM/D0設定前提、時間參數與Enable順序均必須成立；不能以max規則取代平台設計。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.5.4",
+        "5.5.5",
+        "7.8.3.3",
+        "7.8.3.4"
+      ],
+      "figures": [],
+      "tables": [
+        "5-11",
+        "7-131",
+        "7-132"
+      ],
+      "document_pages": [
+        650,
+        651,
+        1106,
+        1107,
+        1108
+      ],
+      "pdf_pages": [
+        650,
+        651,
+        1106,
+        1107,
+        1108
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-LTR-001",
+      "claim": "ASPM L1.2需CLKREQ與兩種LTR條件；無需求與Value0不同，LTR支援/啟用需沿途配合。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.5.1",
+        "6.18"
+      ],
+      "figures": [
+        "6-15"
+      ],
+      "tables": [],
+      "document_pages": [
+        644,
+        781,
+        782
+      ],
+      "pdf_pages": [
+        644,
+        781,
+        782
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-WAKE-001",
+      "claim": "L2喚醒先恢復通路再發PM_PME，需要PMEEn/供電/formfactor支援。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "5.3.1.4.2",
+        "5.3.3.1",
+        "5.3.3.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        608,
+        609,
+        615,
+        616
+      ],
+      "pdf_pages": [
+        608,
+        609,
+        615,
+        616
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH10-EXAMPLE-001",
+      "claim": "作者PMCSR RW1CS保留例、雙端L1SS欄位與LTR門檻算例。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.2",
+        "7.8.3",
+        "5.5.1",
+        "6.18"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        945,
+        946,
+        947,
+        948,
+        644,
+        781,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108
+      ],
+      "pdf_pages": [
+        945,
+        946,
+        947,
+        948,
+        644,
+        781,
+        1104,
+        1105,
+        1106,
+        1107,
+        1108
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "assumptions": [
+        "No concurrent PMCSR updates/events",
+        "Self powered, Aux_Current=0, optional Data Register absent",
+        "Separate L1SS Link with platform-validated timing, LTR enabled along path",
+        "L1SS example snapshot after required ordered configuration"
+      ],
+      "pm_reads": [
+        [
+          "0x40",
+          32,
+          "0xC8035001"
+        ],
+        [
+          "0x44",
+          16,
+          "0x810B"
+        ]
+      ],
+      "pm_sequence": [
+        "0x810B",
+        "0x0108",
+        "0x8108",
+        "0x8108"
+      ],
+      "l1ss_reads": [
+        [
+          "0x200",
+          "0x0001001E",
+          "0x0001001E"
+        ],
+        [
+          "0x204",
+          "0x00280A1F",
+          "0x0051141F"
+        ],
+        [
+          "0x208",
+          "0x40801404",
+          "0x40800004"
+        ],
+        [
+          "0x20C",
+          "0x00000051",
+          "0x00000051"
+        ]
+      ],
+      "ltr_cases": [
+        {
+          "snoop_ns": 204800,
+          "no_snoop_ns": 102400,
+          "eligible": false
+        },
+        {
+          "snoop_ns": 204800,
+          "no_snoop_ns": 153600,
+          "eligible": true
+        }
+      ],
+      "threshold_ns": 131072
+    },
+    {
+      "id": "PCIE-CH10-ACPI-001",
+      "claim": "ACPI _PR0/_PR3為D0/D3hot電源依賴資源，非PCIe Register。",
+      "kind": "supplementary_background",
+      "source_id": "ACPI-6.6-PM",
+      "revision": "6.6",
+      "sections": [
+        "7.3.8",
+        "7.3.11"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        497,
+        498
+      ],
+      "pdf_pages": [
+        568,
+        569
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    }
+  ]
+}

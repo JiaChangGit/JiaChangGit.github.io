@@ -207,3 +207,6 @@
   .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
   .pcie-surface svg { forced-color-adjust: none; }
 }
+
+/* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
+.pcie-surface .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }

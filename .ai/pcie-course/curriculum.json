@@ -1,6 +1,6 @@
 {
   "title": "PCIe 系統觀與規格閱讀課程",
-  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–7 與全課程規劃；Chapter 8–19 尚待逐章查證、撰寫與校閱。",
+  "description": "以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–10 與全課程規劃；Chapter 11–19 尚待逐章查證、撰寫與校閱。",
   "chapters": [
     {
       "number": 0,
@@ -221,10 +221,13 @@
         2,
         5
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0"
-      ]
+      ],
+      "title_en": "Link Training and Reliable Delivery",
+      "description": "從雙端速率證據、有限 credit 帳本與 replay，釐清連線訓練、流量控制及 Flit 模式的責任。",
+      "publication_date": "2026-10-21"
     },
     {
       "number": 9,
@@ -245,11 +248,13 @@
         5,
         8
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
-        "PCIE-BASE-6.0",
-        "PCI-FW-3.3"
-      ]
+        "PCIE-BASE-6.0"
+      ],
+      "title_en": "Reset Scope and Recovery Conditions",
+      "description": "從單一 Function 的 FLR 查詢，判斷重設範圍、舊 Completion、就緒時間與設定恢復。",
+      "publication_date": "2026-10-21"
     },
     {
       "number": 10,
@@ -269,12 +274,14 @@
         8,
         9
       ],
-      "status": "planned",
+      "status": "ready",
       "sources": [
         "PCIE-BASE-6.0",
-        "PCI-FW-3.3",
-        "ACPI-SPEC-TO-SELECT"
-      ]
+        "ACPI-6.6-PM"
+      ],
+      "title_en": "Device and Link Power Management",
+      "description": "用 PMCSR 讀改寫與 L1.2 雙端設定案例，串起 D-state、ASPM、LTR、恢復與平台喚醒。",
+      "publication_date": "2026-10-21"
     },
     {
       "number": 11,

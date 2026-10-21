@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 9,
+  "updated": "2026-10-21",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH9-SCOPE-001",
+      "claim": "Conventional Reset含Cold/Warm/Hot；FLR針對Function且不改Link，普通MFD隔離不可泛用PF/VF。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.1",
+        "6.6.2",
+        "4.2.5.9",
+        "7.5.3.4"
+      ],
+      "figures": [],
+      "tables": [
+        "7-21"
+      ],
+      "document_pages": [
+        441,
+        721,
+        722,
+        723,
+        724,
+        962
+      ],
+      "pdf_pages": [
+        441,
+        721,
+        722,
+        723,
+        724,
+        962
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH9-FIELDS-001",
+      "claim": "Endpoint FLR能力bit28，Initiate bit15寫1觸發讀0；Transactions Pending只涵蓋指定NP Requests。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "7.5.3.3",
+        "7.5.3.4",
+        "7.5.3.5"
+      ],
+      "figures": [
+        "7-24",
+        "7-25",
+        "7-26"
+      ],
+      "tables": [
+        "7-20",
+        "7-21",
+        "7-22"
+      ],
+      "document_pages": [
+        955,
+        958,
+        959,
+        962,
+        965,
+        966
+      ],
+      "pdf_pages": [
+        955,
+        958,
+        959,
+        962,
+        965,
+        966
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH9-QUIESCE-001",
+      "claim": "BME清除不收回既有Request；FLR清Pending不證明沒有stale Completion，停工演算法是Implementation Note。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.2",
+        "7.5.3.5"
+      ],
+      "figures": [],
+      "tables": [
+        "7-22"
+      ],
+      "document_pages": [
+        725,
+        726,
+        727,
+        966
+      ],
+      "pdf_pages": [
+        725,
+        726,
+        727,
+        966
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH9-READINESS-001",
+      "claim": "FLR100ms完成與後續初始化分開；Pending=1時須足夠等待舊回覆；FRS不證明舊交易完成。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.2"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        725,
+        726,
+        727
+      ],
+      "pdf_pages": [
+        725,
+        726,
+        727
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH9-CONVENTIONAL-TIME-001",
+      "claim": "Conventional Reset首次存取等待起點受Port速率與readiness機制影響；無通知時故障判定至少容許1s。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        722,
+        723
+      ],
+      "pdf_pages": [
+        722,
+        723
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH9-RESTORE-001",
+      "claim": "FLR清發送許可但保留明列欄位、HwInit與sticky；不可把dump當一般記憶體全寫回。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.2",
+        "7.4"
+      ],
+      "figures": [],
+      "tables": [
+        "7-2"
+      ],
+      "document_pages": [
+        724,
+        725,
+        726,
+        914,
+        915
+      ],
+      "pdf_pages": [
+        724,
+        725,
+        726,
+        914,
+        915
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH9-EXAMPLE-001",
+      "claim": "作者FLR欄位與Conventional Reset時間例；不操作實體硬體。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "6.6.1",
+        "6.6.2",
+        "7.5.3.3",
+        "7.5.3.4",
+        "7.5.3.5"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        722,
+        723,
+        724,
+        725,
+        726,
+        958,
+        962,
+        966
+      ],
+      "pdf_pages": [
+        722,
+        723,
+        724,
+        725,
+        726,
+        958,
+        962,
+        966
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "assumptions": [
+        "Ordinary Endpoint 03:00.0, no SR-IOV, PCIe capability at 0x70",
+        "No DRS or other early-readiness exception in Conventional Reset timeline"
+      ],
+      "raw_reads": [
+        [
+          "0x74",
+          32,
+          "0x10008000"
+        ],
+        [
+          "0x7A",
+          16,
+          "0x0020"
+        ],
+        [
+          "0x78",
+          16,
+          "0x2810"
+        ],
+        [
+          "0x04",
+          16,
+          "0x0006"
+        ]
+      ],
+      "trigger": "0xA810",
+      "timeline_ms": {
+        "reset_exit": 0,
+        "training_complete": 40,
+        "wait": 100,
+        "first_config": 140
+      }
+    }
+  ]
+}
