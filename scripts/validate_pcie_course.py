@@ -378,6 +378,142 @@ def validate_resource_example(example, authored, topology, require):
     require(ranges[0][0] + relative == int(example['mmio_address'], 0), 'MMIO address differs')
 
 
+def validate_transfer_examples(claims, require):
+    """Recompute transfers and MSI-X locations, then reconcile published tables."""
+    evidence = {c['id']: c for c in claims}
+    def example(n):
+        return evidence[f'PCIE-CH{n}-EXAMPLE-001']
+    def doc(n):
+        return Document((DATA / f'chapter{n}.zh.html').read_text(encoding='utf-8'))
+    def value(v):
+        return int(v, 0) if isinstance(v, str) else v
+
+    if 'PCIE-CH5-EXAMPLE-001' in evidence:
+        e, authored = example(5), doc(5)
+        single = e['single']
+        require(single['address'] == example(4)['mmio_address'], 'Chapter 5 MMIO differs from Chapter 4')
+        require(int.from_bytes(bytes.fromhex(single['payload_bytes']), 'little') == value(single['register_value']),
+                'Chapter 5 byte reconstruction mismatch')
+        for request in [single, e['partial']]:
+            address, length = value(request['address']), request['length_dw']
+            require(address % 4 == 0, 'Request address is not DWORD aligned')
+            enabled = [address + dw * 4 + bit for dw in range(length) for bit in range(4)
+                       if ((request['first_be'] if dw == 0 else request['last_be'] if dw == length-1 else 15) >> bit) & 1]
+            require(len(enabled) == request['byte_count'], 'Enabled byte count mismatch')
+            require(enabled[0] & 127 == value(request['lower_address']), 'Lower Address mismatch')
+            if length == 1:
+                require(request['last_be'] == 0, 'One-DW Last BE must be zero')
+            else:
+                require(enabled == list(range(value(request['first_enabled']), value(request['last_enabled'])+1)),
+                        'Partial read enabled range mismatch')
+        rows = table_rows(authored, '本例的單筆讀取欄位', require)
+        if len(rows) == 6:
+            require(re.findall(r'[01]+b', rows[0][1]) == ['000b', '00000b'] and
+                    re.findall(r'[01]+b', rows[0][2]) == ['010b', '01010b'], 'Published MRd/CplD encoding differs')
+            require(hex_values(rows[1][1]) == [value(single['requester']), value(single['tag'])] == hex_values(rows[1][2]),
+                    'Published transaction IDs differ')
+            require(hex_values(rows[2][1]) == [value(single['address'])] and
+                    hex_values(rows[2][2]) == [value(single['completer'])], 'Published address/Completer differs')
+            require(re.findall(r'[01]+b', rows[4][1]) == ['1111b', '0000b'], 'Published one-DW BEs differ')
+        else:
+            require(False, 'Missing single-read field rows')
+        split = e['split']
+        address, total = value(split['address']), split['length_dw'] * 4
+        require(total <= split['mrrs'] and address // 4096 == (address+total-1) // 4096, 'Illegal split-read Request')
+        rows = table_rows(authored, '同一筆 256-byte 讀取的兩個回覆', require)
+        require(len(rows) == len(split['completions']), 'Published Completion count differs')
+        remaining, cursor = total, address
+        for i, completion in enumerate(split['completions']):
+            size = completion['length_dw'] * 4
+            require(value(completion['address']) == cursor and completion['byte_count'] == remaining,
+                    'Completion address or remaining Byte Count mismatch')
+            require(size <= split['payload_limit'] and value(completion['lower_address']) == cursor & 127,
+                    'Completion payload or Lower Address mismatch')
+            if i < len(split['completions'])-1:
+                require((cursor+size) % split['rcb'] == 0, 'Completion split misses RCB boundary')
+            if i < len(rows):
+                row = rows[i]
+                require(hex_values(row[1]) == [cursor, cursor+size-1] and int(row[2]) == size//4 and
+                        int(row[3]) == remaining and hex_values(row[4]) == [cursor & 127],
+                        'Published split-read row differs from recomputed transfer')
+            cursor += size
+            remaining -= size
+        require(remaining == 0, 'Split Completions do not cover the Request')
+        b = e['boundary']; cursor = value(b['address'])
+        require(cursor // 4096 != (cursor+b['size']-1) // 4096, 'Boundary counterexample does not cross 4 KiB')
+        for part in b['pieces']:
+            require(value(part['address']) == cursor and cursor // 4096 == (cursor+part['size']-1) // 4096,
+                    'Boundary fix is noncontiguous or crosses 4 KiB')
+            cursor += part['size']
+        require(cursor == value(b['address'])+b['size'], 'Boundary fix changes requested range')
+
+    if 'PCIE-CH6-EXAMPLE-001' in evidence:
+        e, authored = example(6), doc(6)
+        base, size = value(e['dma_base']), e['mapping_size']
+        require(base % 4096 == value(e['physical_base']) % 4096 == 0, 'Teaching DMA pages misaligned')
+        for addr, length in [(e['data_address'], e['data_size']), (e['flag_address'], e['flag_size'])]:
+            require(base <= value(addr) and value(addr)+length <= base+size, 'DMA write outside valid mapping')
+        rows = table_rows(authored, '本例的 DMA 映射假設', require)
+        if len(rows) == 4:
+            physical = value(e['physical_base'])
+            require(hex_values(rows[1][1]) == [physical, physical+size-1], 'Published CPU physical range differs')
+            require(hex_values(rows[2][1]) == [base, base+size-1], 'Published DMA range differs')
+            bar = example(4)['bars'][0]
+            require(hex_values(rows[3][1]) == [value(bar['base']), value(bar['limit'])], 'Published BAR range differs')
+        else:
+            require(False, 'Missing DMA address rows')
+        control = value(e['device_control'])
+        require(128 << ((control >> 12) & 7) == e['mrrs'] == example(5)['split']['mrrs'], 'MRRS inconsistent across chapters')
+        require(control & 0x810 == 0x810 and value(e['device_control_offset']) == 0x70+8,
+                'Attribute permission example differs')
+        rows = table_rows(authored, '本例 Device Control 的能力使用許可', require)
+        require(len(rows) == 3 and [r[1] for r in rows] == ['1', '1', '010b'], 'Published Device Control decoding differs')
+
+    if 'PCIE-CH7-EXAMPLE-001' in evidence:
+        e, authored = example(7), doc(7)
+        reads = {value(r['offset']): value(r['value']) for r in e['raw_reads']}
+        cap = value(e['capability'])
+        prior = {value(r['offset']): value(r['value']) for r in example(2)['raw_reads']}
+        require(reads[cap] == prior[cap] and reads[cap] & 255 == 0x11, 'MSI-X no longer matches Chapter 2 list')
+        rows = table_rows(authored, 'MSI-X 定位案例的設定讀值', require)
+        require(len(rows) == len(e['raw_reads']), 'MSI-X read table row count differs')
+        for row, read in zip(rows, e['raw_reads']):
+            require(hex_values(row[0]) == [value(read['offset'])] and int(row[1].split()[0]) == read['width_bits'] and
+                    hex_values(row[2]) == [value(read['value'])], 'Published MSI-X read differs')
+        base, size = value(e['bar_base']), value(e['bar_size'])
+        bar = example(4)['bars'][0]
+        require(base == value(bar['base']) and size == value(bar['size']), 'MSI-X BAR differs from Chapter 4')
+        n = (reads[cap+2] & 0x7FF)+1
+        require(n == e['table_entries'] and 0 <= e['entry_index'] < n, 'Invalid table count or entry index')
+        ranges = []
+        for offset, name, length in [(4, 'table_base', n*16), (8, 'pba_base', ((n+63)//64)*8)]:
+            raw = reads[cap+offset]
+            require(raw & 7 == 0, 'Example unexpectedly selects another BAR')
+            start = base+(raw & ~7)
+            require(start == value(e[name]) and base <= start and start+length <= base+size, 'MSI-X structure outside BAR')
+            require(start // 4096 != value(example(4)['mmio_address']) // 4096, 'MSI-X shares ordinary Register page')
+            ranges.append((start, start+length))
+        require(ranges[0][1] <= ranges[1][0] or ranges[1][1] <= ranges[0][0], 'MSI-X Table/PBA overlap')
+        entry = value(e['table_base'])+e['entry_index']*16
+        require(entry == value(e['entry_base']), 'MSI-X entry address mismatch')
+        rows = table_rows(authored, 'Entry 3 的教學設定值', require)
+        require(len(rows) == 4, 'MSI-X entry table must have four DWORD fields')
+        for i, row in enumerate(rows):
+            require(hex_values(row[0]) == [entry+i*4] and hex_values(row[2]) == [value(e['entry_values'][i])],
+                    'Published entry field address or value differs')
+        require(value(e['entry_values'][0]) % 4 == 0, 'Interrupt destination is not DWORD aligned')
+        require(value(e['pending_qword']) == 1 << (e['entry_index'] % 64), 'PBA pending bit mismatch')
+        states = [value(v) for v in e['control_states']]
+        require([((v >> 15) & 1, (v >> 14) & 1, v & 0x7FF) for v in states] == [(0,1,n-1),(1,1,n-1),(1,0,n-1)],
+                'MSI-X control transitions differ')
+        rows = table_rows(authored, '讓 entry 3 安全進入可通知狀態', require)
+        require(len(rows) == 5 and [hex_values(rows[i][1]) for i in (0,2,3)] == [[v] for v in states],
+                'Published MSI-X initialization states differ')
+        msi = value(e['msi_comparison'])
+        require((msi >> 1) & 7 == 2 and (msi >> 4) & 7 == 0 and msi & 1 == 0 and (msi >> 7) & 7 == 3,
+                'Independent MSI comparison decodes incorrectly')
+
+
 def validate(source_dir=None):
     errors = []
     def require(condition, message):
@@ -473,6 +609,8 @@ def validate(source_dir=None):
             authored = Document((DATA / f'chapter{number}.zh.html').read_text(encoding='utf-8'))
             validator(example, authored, topology_example, require)
 
+    validate_transfer_examples(claims, require)
+
     chapter_numbers = [c['number'] for c in curriculum]
     require(len(set(chapter_numbers)) == len(chapter_numbers), 'Duplicate chapter numbers')
     require(0 in [c['number'] for c in ready], 'Chapter 0 must be ready')
@@ -563,6 +701,8 @@ def validate(source_dir=None):
               'allocations, and Bridge Windows match their published tables and Chapter 1.')
     if source_dir:
         print('Both source PDF hashes match the registered editions.')
+    if any(chapter['number'] == 7 for chapter in ready):
+        print('Chapters 5–7 transfer bytes, Completion fragments, DMA ranges, and MSI-X locations match their published tables.')
 
 
 if __name__ == '__main__':

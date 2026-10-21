@@ -10,7 +10,13 @@
 
 [Chapter 4 BAR 與資源配置](DOCS/pcie-course/chapter-4.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-4-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-4-en/)
 
-目前完成 Chapter 0–4；Chapter 5–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
+[Chapter 5 一次讀寫如何變成 PCIe 交易](DOCS/pcie-course/chapter-5.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-5-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-5-en/)
+
+[Chapter 6 DMA、可見性與交易順序](DOCS/pcie-course/chapter-6.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-6-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-6-en/)
+
+[Chapter 7 中斷如何把事件交給軟體](DOCS/pcie-course/chapter-7.html) · [中文文章](https://jiachanggit.github.io/pcie/chapter-7-zh-tw/) · [English](https://jiachanggit.github.io/pcie/chapter-7-en/)
+
+目前完成 Chapter 0–7；Chapter 8–19 是後續規劃。從系統全貌出發，以情境問題串接規格、欄位與流程；自訂讀值與推演另行標示。
 
 ## NVMe reports / 規格教學
 

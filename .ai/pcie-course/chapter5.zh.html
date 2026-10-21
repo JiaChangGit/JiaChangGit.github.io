@@ -1,0 +1,71 @@
+<p class="lead">Chapter 4 已經替裝置配置好位址。現在假設 CPU 要讀取 <code>0x80004120</code> 的 4 bytes：這個動作如何變成 PCIe 封包？裝置怎麼知道要回給誰？本章沿著一次讀取往返，再把同一套判讀方法用在部分位元組存取與較大的讀取上。</p>
+<aside class="note"><strong>版本與案例前提</strong><p>欄位依 PCI Express Base Specification Revision 6.0。本章明確使用 <strong>Non-Flit Mode</strong>；Flit Mode 的 Header 布局不同，不能直接套用下列 Fmt／Type 位置。沿用 Chapter 4 的普通 Endpoint <code>03:00.0</code>、BAR0 與 Bridge Window，且 Link、解碼、平台映射與裝置 Register 介面均已就緒。所有讀值與封包欄位都是作者推演，沒有擷取實機封包。案例使用 TC0、RO=0、IDO=0、No Snoop=0、TH=0，不使用 ATS、PASID、IDE、AtomicOp 或 DMWr。</p><p>本章的位址是 PCIe 交易使用的位址。CPU 指令如何轉成一個或多個交易，仍由處理器與平台決定；案例另行假設這次 4-byte 存取產生一個 Request。</p></aside>
+
+<section id="journey"><h2>1. 讀取時，誰提出要求，誰負責回覆？</h2>
+<p><strong>Transaction Layer Packet（TLP，交易層封包）</strong>承載要求與回覆。提出這筆要求的一方稱為 Requester；服務目標位址並回覆的一方稱為 Completer。這兩個名稱隨交易改變：CPU 讀裝置時，平台代表 CPU 發出要求；裝置讀主記憶體時，裝置反而是 Requester。</p>
+<div class="diagram"><svg viewBox="0 0 840 260" role="img" aria-labelledby="journey-title journey-desc"><title id="journey-title">一次 MMIO 讀取的往返</title><desc id="journey-desc">平台要求者經 Root Port 與 Switch 送 Memory Read 到 Endpoint；Endpoint 以帶資料的 Completion 回到原要求者。要求依位址路由，回覆依 Requester ID 路由。</desc><rect class="box" x="20" y="30" width="200" height="70" rx="10"/><rect class="box" x="310" y="30" width="220" height="70" rx="10"/><rect class="box" x="620" y="30" width="200" height="70" rx="10"/><text x="120" y="58" text-anchor="middle">平台的 Requester</text><text x="120" y="84" text-anchor="middle">代表 CPU 發出要求</text><text x="420" y="58" text-anchor="middle">Root Port／Switch</text><text x="420" y="84" text-anchor="middle">沿 Chapter 4 的路徑</text><text x="720" y="58" text-anchor="middle">Endpoint 03:00.0</text><text x="720" y="84" text-anchor="middle">這次是 Completer</text><path class="arrow" d="M120 125 H720 M710 119 L720 125 L710 131"/><text x="420" y="151" text-anchor="middle">MRd：依目標位址 0x80004120 向下送</text><path class="arrow" d="M720 187 H120 M130 181 L120 187 L130 193"/><text x="420" y="218" text-anchor="middle">CplD：依 Requester ID 回送，保留配對用的 Tag</text></svg></div>
+<p>本例假設平台選用 Requester ID <code>0x0000</code>，並配置尚未使用的 Tag <code>0x12</code>。這是平台端的教學假設，不能只看 Root Port 的 BDF 就推定 CPU 存取必定使用那個 ID。Endpoint 的 Completer ID 則為 <code>0x0300</code>，來自已完成設定的 <code>03:00.0</code>。</p>
+<p>Requester ID 與 Tag 合起來辨識一筆尚待完成的交易。同一 Requester 不得讓兩筆同時未完成、需要 Completion 的要求共用 Tag。本例只用較小的合法 Tag；Base 6.0 還定義較大的 Tag 能力與啟用條件，因此不能把 Tag 永遠說成 8 bits。</p>
+<details class="source-note"><summary>先看哪幾張圖？</summary><p>先看 §2.1.2 Figure 2-2（p.117），分清 Header 與可能存在的 Payload；再看 §2.2.6.1–§2.2.6.2 Figures 2-27／2-28（pp.152–154），理解 Transaction ID。Completer ID 見 §2.2.9.1 Figures 2-74／2-75（p.197）。圖中的路徑是作者整理，不是規格原圖。</p></details></section>
+
+<section id="types"><h2>2. 有寫入，就一定會有 Completion 嗎？</h2>
+<p>要先辨認交易類型。<strong>Posted Request</strong> 不要求回傳一般 Completion；<strong>Non-Posted Request</strong> 則需要 Completion 結束該要求。名稱不是在描述「軟體有沒有等待」，也不是在表示工作成功與否。</p>
+<div class="table-wrap"><table><caption>先依用途選擇交易，再判斷回覆</caption><thead><tr><th scope="col">交易</th><th scope="col">要求如何找到目標</th><th scope="col">成功時的交易層回覆</th></tr></thead><tbody>
+<tr><td>Memory Read（MRd）</td><td>依 Memory 位址</td><td>Non-Posted；以一個或多個 CplD 回傳資料。</td></tr>
+<tr><td>一般 Memory Write（MWr）</td><td>依 Memory 位址</td><td>Posted；沒有對應的普通 Completion。</td></tr>
+<tr><td>Configuration Read／Write</td><td>依目標 ID；沿 Chapter 3 的 Type 1／Type 0 規則</td><td>Non-Posted；讀取回 CplD，寫入回 Cpl。</td></tr>
+<tr><td>I/O Read／Write</td><td>依 I/O 位址，供相容用途</td><td>兩者都是 Non-Posted；不能套用 Memory Write 的結論。</td></tr>
+<tr><td>Message Request</td><td>依該 Message 規定；可能依位址、ID 或隱含目的地</td><td>交易層屬 Posted；上層協定仍可能另外定義回應。</td></tr>
+</tbody></table></div>
+<p>因此，CPU 寫入裝置的通知 Register 後，不能等待一個並不存在的 MWr Completion，也不能因為沒有 Completion 就推定錯誤。裝置何時完成工作，必須依裝置介面的狀態或通知判斷。PCIe 另外有 DMWr、AtomicOp 等交易；它們有自己的 Completion 規則，本章的「一般 MWr」不包括這些類型。</p>
+<details class="source-note"><summary>交易分類與編碼來源</summary><p>§2.1.1 Table 2-1（pp.116–117）；§2.2.1.1 Table 2-3（pp.120–122）；§2.4.1 Table 2-42 及分類說明（pp.222–223）。Memory／I/O／Configuration 的路由見 §2.2.7.1（pp.162–165），Message 路由另見 §2.2.8 Table 2-20。</p></details></section>
+
+<section id="fields"><h2>3. 如何把「讀 4 bytes」對到 Request 與 Completion？</h2>
+<p>先用 Table 2-3 找到 MRd，再看 Figure 2-31 的 32-bit 位址格式。不要因為要讀「32-bit 資料」就選 3 DW Header；Header 的選擇與<strong>目標位址格式</strong>有關。本例的位址可用 32 bits 表示，因此採 3 DW Header。DW 是 Double Word，這裡固定為 4 bytes。</p>
+<div class="table-wrap"><table><caption>本例的單筆讀取欄位</caption><thead><tr><th scope="col">欄位</th><th scope="col">MRd Request</th><th scope="col">成功的 CplD</th></tr></thead><tbody>
+<tr><td>Fmt／Type</td><td>000b／00000b</td><td>010b／01010b</td></tr>
+<tr><td>Requester ID／Tag</td><td>0x0000／0x12</td><td>0x0000／0x12</td></tr>
+<tr><td>目標位址／Completer ID</td><td>Address=0x80004120</td><td>Completer ID=0x0300</td></tr>
+<tr><td>Length</td><td>1 DW，要求 4 bytes；Request 本身沒有資料 Payload。</td><td>1 DW，這個回覆帶 4 bytes。</td></tr>
+<tr><td>First／Last DW BE</td><td>1111b／0000b</td><td>沒有這組 Request 欄位。</td></tr>
+<tr><td>Completion Status／Byte Count／Lower Address</td><td>不是 Request 欄位。</td><td>SC=000b／4 bytes／0x20</td></tr>
+</tbody></table></div>
+<p>這裡有三個必須分開的量。Request 的 Length 表示要存取多少個 DW；CplD 的 Length 表示這個回覆帶多少個 DW；Byte Count 則表示<strong>連同這個回覆在內，這筆 Memory Read 還要回傳多少 bytes</strong>。因為本例一次回完，後兩者剛好對應相同的 4 bytes。</p>
+<p>Byte Enable（BE）決定哪些位元組有效。Length=1 DW 時，First DW BE 控制唯一的 DW，Last DW BE 必須為零。Lower Address 是本次回傳第一個有效位元組位址的低 7 bits，因此 <code>0x80004120 &amp; 0x7F = 0x20</code>。它不是完整目標位址；Completion 回程依 Requester ID 路由，不靠這 7 bits 找 CPU。</p>
+<p>假設四個有效資料 bytes 按位址遞增為 <code>78 56 34 12</code>，且這個裝置 Register 定義為 little-endian，軟體便可解讀為 <code>0x12345678</code>。這個 Register 意義和數值是教學假設，不是 PCIe 為所有 MMIO 裝置統一定義的值。</p>
+<details class="source-note"><summary>從 Figure 到欄位的閱讀路線</summary><p>Figure 2-31（p.163）定位 Request；Figure 2-26／Table 2-10（pp.150–151）定位 BE；Table 2-4（p.122）確認 Length 單位；Figure 2-73（p.196）定位 Completion；Table 2-37（p.197）解讀 Status；§2.3.1.1 與 Table 2-41（pp.215、218）解讀 Byte Count 和 Lower Address。特別注意：適用 Length 的資料交易中，編碼 0 表示 1024 DW，不是「沒有資料」。</p></details></section>
+
+<section id="bytes"><h2>4. 如果只讀中間 6 bytes，Length 要填 6 嗎？</h2>
+<p>不行，Length 的單位是 DW。另作一個教學假設：裝置在這段範圍提供可合法讀取的連續 bytes，現在要讀 <code>0x80004121–0x80004126</code>。這六個 bytes 橫跨兩個對齊的 DW，因此 Request 使用對齊位址 <code>0x80004120</code>、Length=2。</p>
+<div class="table-wrap"><table><caption>部分位元組讀取的範圍</caption><thead><tr><th scope="col">對齊 DW</th><th scope="col">位址由低至高的 bytes</th><th scope="col">有效範圍與 BE</th></tr></thead><tbody>
+<tr><td>第一個 DW</td><td>0x120、0x121、0x122、0x123（BAR0 內位移）</td><td>只讀後三個 bytes；First BE=1110b。</td></tr>
+<tr><td>最後一個 DW</td><td>0x124、0x125、0x126、0x127（BAR0 內位移）</td><td>只讀前三個 bytes；Last BE=0111b。</td></tr>
+</tbody></table></div>
+<p>因為目標是 non-Prefetchable 資源，未啟用的兩個 bytes 不得在 Completer 被讀取。成功且一次回完時，CplD 的 Payload 仍占 2 DW，但有效資料只有 6 bytes；Byte Count=6，Lower Address=<code>0x21</code>。軟體不能把兩端的無效 bytes 當成額外有效 Register 資料。</p>
+<p>這個例子也提醒我們：TLP 能表示某種 byte 存取，不代表每個裝置 Register 都接受這種寬度。實際能否讀取，還要看裝置介面規格。BE 的連續性也有條件；本例符合規則，不能據此假設任意長度都可隨意挖空中間 bytes。</p>
+<details class="source-note"><summary>部分存取的依據</summary><p>§2.2.5.1，Figure 2-26／Table 2-10（pp.150–151）；§2.3.1.1，Table 2-40（p.217）及 Table 2-41（p.218）。Table 2-40 在 Length=2、First BE=1110b、Last BE=0111b 時給出 6 bytes。</p></details></section>
+
+<section id="split"><h2>5. 為什麼一次讀取可能收到兩個 Completion？</h2>
+<p>先把目標換成主記憶體，預習下一章的 DMA。假設 Endpoint <code>03:00.0</code> 要從 DMA 位址 <code>0x40001000</code> 讀 256 bytes，使用 Tag <code>0x13</code>。平台已準備好這段映射與讀取權限，Endpoint 及沿途的 BME 也已啟用。</p>
+<p>本例的 Requester 最大讀取要求為 512 bytes；Completer 的有效傳送 Payload 上限為 128 bytes，路徑接收能力也相容，Read Completion Boundary（RCB，讀取回覆切分邊界）為 128 bytes。因此 256-byte 要求可以發出，但不能塞進一個 256-byte CplD。我們選擇在 128-byte 邊界切成兩份；並不宣稱所有讀取都固定這樣切。</p>
+<div class="table-wrap"><table><caption>同一筆 256-byte 讀取的兩個回覆</caption><thead><tr><th scope="col">回覆</th><th scope="col">回傳位址範圍</th><th scope="col">Length（DW）</th><th scope="col">Byte Count（bytes）</th><th scope="col">Lower Address</th></tr></thead><tbody>
+<tr><td>第一個 CplD</td><td>0x40001000–0x4000107F</td><td>32</td><td>256</td><td>0x00</td></tr>
+<tr><td>第二個 CplD</td><td>0x40001080–0x400010FF</td><td>32</td><td>128</td><td>0x00</td></tr>
+</tbody></table></div>
+<p>Request 的 Length=64 DW；兩個回覆都帶 Requester ID=<code>0x0300</code>、Tag=<code>0x13</code>，且都假設 SC、BCM=0。第一個回覆的 Byte Count 包含尚未回傳的第二份，所以是 256，而非自己的 Payload 大小 128。第二個回覆的 Lower Address 仍為零，因為 <code>0x80 &amp; 0x7F = 0</code>；Requester 要結合原要求與已收到的資料追蹤位置。</p>
+<p>同一筆讀取的成功回覆必須依位址遞增；不同 Tag 所屬的兩筆讀取，回覆卻不必按發出順序到達。也不能把兩筆要求的資料合成一個 Completion。這就是配對不能只靠「第幾個收到」的原因。</p>
+<details class="source-note"><summary>長度、切分與順序來源</summary><p>MRRS：§2.2.7.1（p.162）；有效 Payload 上限：§2.2.2 與 §2.3.1.1（p.214）；RCB、Byte Count、遞增位址：pp.215–218；不同交易的回覆順序：§2.4.1 D5a／D5b（p.224）與 §2.4.2 的例子（p.228）。本例直接給定有效上限，沒有把 Base 6.0 的所有傳送／接收上限簡化成單一 MPS 暫存器值。</p></details></section>
+
+<section id="bounds"><h2>6. 長度沒超過上限，就一定是合法要求嗎？</h2>
+<p>還要檢查 4 KiB 邊界。假設要從 <code>0x40001FF0</code> 讀 32 bytes，結尾會落在 <code>0x4000200F</code>。即使 MRRS 容許 32 bytes，這個 Address／Length 組合跨過了 4 KiB 邊界，仍不得作為單一 Memory Request 發出。可改成兩筆 16-byte 要求：<code>0x40001FF0–0x40001FFF</code> 與 <code>0x40002000–0x4000200F</code>，各自追蹤 Tag。</p>
+<p>這裡談的是 Request 的邊界限制；上一節談的是同一 Request 的 Completion 切分，兩者發生在不同階段。</p>
+<p>收到 Completion 也要先看 Status。SC 表示這次要求成功完成；UR、CA 是不同的失敗結果，不能把無資料的 Cpl 解成讀到了零。RRS 只在規定的 Configuration 情境適用，並不是普通 MMIO 讀取的通用「稍後再試」。若分段讀取中收到失敗 Completion，該回覆會終結這筆要求，不應繼續等剩餘成功片段。</p>
+<details class="source-note"><summary>邊界與失敗回覆來源</summary><p>4 KiB 規則：§2.2.7.1，p.163。Status：Table 2-37，p.197；RRS 限制：§2.3.1，p.214 的說明；失敗讀取回覆與終止：§2.3.1.1，pp.214、218。接收端對部分非法封包的檢查是可選的，不代表發送端可以產生那些封包。</p></details></section>
+
+<section id="practice"><h2>7. 換一個條件，判讀會怎麼改變？</h2>
+<details class="question"><summary>第一個回覆帶 128 bytes，Byte Count 卻是 256，是否互相矛盾？</summary><p>不矛盾。Byte Count 是這筆要求從目前片段起尚待回傳的量，包含目前片段。用 <a href="#split">兩段回覆表</a> 可算出下一段應剩 128 bytes；Payload 大小另由 Length 表達。</p></details>
+<details class="question"><summary>收到 Requester ID 相同但 Tag 不同的 CplD，可以拿來補這筆讀取缺少的資料嗎？</summary><p>不能。它屬於另一個 Transaction ID。即使長度、數值或抵達時間恰好相符，也不能取代配對條件。（Figures 2-27／2-28，p.153。）</p></details>
+<details class="question"><summary>4-byte MWr 沒收到 Completion，應該重送嗎？</summary><p>不能以此作為重送依據。普通 MWr 是 Posted Request，本來就沒有對應的一般 Completion；重送反而可能重複觸發 Register 的副作用。應依裝置介面定義的狀態或通知判斷進度。（Table 2-42，p.222。）</p></details>
+<details class="question"><summary>在 Base 6.0 查到 Figure 2-31，就能解所有 PCIe 6.0 封包嗎？</summary><p>不能。這張圖屬於 Non-Flit Mode 的 Request 格式。先確認模式，再選 §2.2.1.1 或 §2.2.1.2 的 Header 定義；不能把版本號與模式當成同一件事。</p></details></section>
+<section id="next"><h2>8. 從封包走到資料可見性</h2><p>本章已能配對一筆交易並核對資料範圍。<a href="chapter-6.html">Chapter 6</a> 接著追問：裝置用哪種位址進行 DMA？資料先寫、通知後寫，就能讓 CPU 安全使用資料嗎？</p></section>
+<section id="sources"><h2>版本與來源</h2><p>主來源為 PCI Express Base Specification Revision 6.0，6.0-1.0-PUB。文件頁碼與 PDF 頁碼相同；查核日期為 2026-10-21。封包值、裝置 Register 與平台條件均為作者設計的教學案例，來源位置已隨各節標示。</p></section>

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "course": "pcie-course",
-  "updated": "2026-10-19",
+  "updated": "2026-10-21",
   "primary_source_policy": "技術欄位以已核對的使用者提供 PDF 為準；補充來源須保留固定版本、用途與查核限制。",
   "sources": [
     {
@@ -61,6 +61,32 @@
       "role": "supplementary_background",
       "verification": "Official indexed excerpt; full-page fetch returned HTTP 403. Search-index excerpt verification reported by the parent agent; this record does not claim a complete page review.",
       "not_used_for": "PCIe register layouts, encodings, normative handoff boundaries, or the worked example."
+    },
+    {
+      "id": "LINUX-6.12-DMA",
+      "title": "Dynamic DMA mapping Guide",
+      "revision": "6.12",
+      "publisher": "Linux kernel project",
+      "type": "official_versioned_web_page",
+      "url": "https://docs.kernel.org/6.12/core-api/dma-api-howto.html",
+      "accessed": "2026-10-21",
+      "role": "supplementary_background",
+      "purpose": "CPU/physical/DMA address distinction, mappings, coherent versus streaming synchronization",
+      "verification": "Relevant sections read on the versioned official documentation pages; not a hardware IOMMU specification.",
+      "not_used_for": "PCIe register layouts or interrupt-controller address/data encoding"
+    },
+    {
+      "id": "LINUX-6.12-BARRIERS",
+      "title": "Linux kernel memory barriers",
+      "revision": "6.12",
+      "publisher": "Linux kernel project",
+      "type": "official_versioned_web_page",
+      "url": "https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html",
+      "accessed": "2026-10-21",
+      "role": "supplementary_background",
+      "purpose": "dma_wmb/dma_rmb/dma_mb and separation from MMIO ordering",
+      "verification": "Relevant sections read on the versioned official documentation pages; not a hardware IOMMU specification.",
+      "not_used_for": "PCIe register layouts or interrupt-controller address/data encoding"
     }
   ]
 }

@@ -1,12 +1,12 @@
 # PCIe 課程編寫與來源維護計畫
 
-更新日期：2026-10-20。這是獨立的 PCIe 課程，不沿用 NVMe 系列的題數、冊數或主題排除清單。
+更新日期：2026-10-21。這是獨立的 PCIe 課程，不沿用 NVMe 系列的題數、冊數或主題排除清單。
 
 ## 讀者、目標與本次交付
 
 讀者懂基本程式與 CPU、記憶體概念，但沒有 PCIe 基礎。課程先建立完整系統觀，再逐步深入韌體、軟體、交易、連線及實體機制。NVMe SSD 可以作為例子，但課程本身不以讀過 NVMe 教材為前提。
 
-目前完成 Chapter 0–4 及全系列的學習路線。Chapter 0 建立系統觀，Chapter 1 處理拓樸與識別；Chapter 2 走訪兩種 Capability 清單，Chapter 3 推演枚舉，Chapter 4 計算 BAR 與 Bridge Window。Chapter 5–19 仍為規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
+目前完成 Chapter 0–7 及全系列的學習路線。Chapter 0 建立系統觀，Chapter 1 處理拓樸與識別；Chapter 2 走訪兩種 Capability 清單，Chapter 3 推演枚舉，Chapter 4 計算 BAR 與 Bridge Window；Chapter 5–7 接續交易、DMA 與中斷。Chapter 8–19 仍為規劃，尚未完成來源查核、正文或正式案例；規劃中的主題不是已通過查證的技術主張。也不宣稱已讀完兩份來源 PDF 的全文。
 
 主要入口：
 
@@ -19,7 +19,7 @@
 - [來源登記](../.ai/pcie-course/source-register.json)保存來源版本與來源檔案識別資訊。
 - [技術主張與證據](../.ai/pcie-course/claims.json)保存 Chapter 0 已查核的結論及定位；[Chapter 1 證據](../.ai/pcie-course/chapter1-claims.json)另記錄本章的來源、讀值與計算。後續三章各有 [Chapter 2 證據](../.ai/pcie-course/chapter2-claims.json)、[Chapter 3 證據](../.ai/pcie-course/chapter3-claims.json) 與 [Chapter 4 證據](../.ai/pcie-course/chapter4-claims.json)。
 
-`curriculum.json` 的 `ready` 表示已交付的 Chapter 0–4；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
+`curriculum.json` 的 `ready` 表示已交付的 Chapter 0–7；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
 
 ## 為什麼這樣安排
 
@@ -181,7 +181,7 @@ Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清�
 
 ## Chapter 2–4 增補紀錄
 
-本批依使用者指定範圍完成設定空間、枚舉與資源配置，新增三份完整中文教學與六篇中英文報告。Chapter 5–19 保留規劃狀態。公開入口分別為 `/DOCS/pcie-course/chapter-2.html`、`chapter-3.html`、`chapter-4.html`；每章另有 `/pcie/chapter-N-zh-tw/` 與 `/pcie/chapter-N-en/`。
+本批依使用者指定範圍完成設定空間、枚舉與資源配置，新增三份完整中文教學與六篇中英文報告。當時 Chapter 5–19 保留規劃狀態。公開入口分別為 `/DOCS/pcie-course/chapter-2.html`、`chapter-3.html`、`chapter-4.html`；每章另有 `/pcie/chapter-N-zh-tw/` 與 `/pcie/chapter-N-en/`。
 
 - 新增 33 筆來源與案例紀錄，合計 85 筆；主要依 Base 6.0，平台存取與交接另依 Firmware 3.3。兩份 PDF 的 SHA-256 與登記版本一致，來源 PDF 不公開。
 - Chapter 2 以 Null Capability 與 DSN 增加新的查詢問題，沒有重做 Chapter 0 的連線速率案例。其多功能 Header Type 與 PCIe Capability 起點和 Chapter 1 一致。DSN Register 整數與 EUI-64 書寫順序分開說明。
@@ -190,6 +190,18 @@ Chapter 1 延伸設定拓樸與識別，不重貼 Chapter 0 的 Capability 清�
 - `build_pcie_course.py --check` 與 `validate_pcie_course.py --source-dir` 通過，共 16 份產物。正文表格與案例紀錄逐筆比對；另以錯誤清單讀值、Bus Number、BAR 高 DWORD 確認檢查會失敗。雙語報告的十六進位數值集合相同，人工校閱前提、問題與結論。
 - Jekyll 建置成功；既有 NVMe 來源與發布契約、產物檢查及 132 項測試均通過。
 - Chrome 共檢查 48 組頁面、尺寸與明暗模式，涵蓋三章完整教學的桌面、平板直／橫向與手機，以及雙語文章的桌面和窄畫面。來源與答案可展開，點選高度至少 44px，SVG 文字未越界，沒有整頁水平溢出。人工檢視設定空間地圖、枚舉時間表、Window 包含圖、手機答案及英文暗色來源說明。這是瀏覽器尺寸測試，不是實機 iPad Safari 測試。
+
+## Chapter 5–7 增補紀錄（2026-10-21）
+
+本批接續使用者的後續章節要求，完成交易、DMA 與中斷三章。各章提供獨立中文教學及內容對等的中英文文章。Chapter 0–7 已完成；Chapter 8–19 仍為規劃。
+
+- [Chapter 5 證據](../.ai/pcie-course/chapter5-claims.json)記錄 Non-Flit Mode 的交易分類、配對、BE、Byte Count、RCB 與 4 KiB 邊界。單筆 MMIO 延續 Chapter 4 的位址；分段 DMA 讀取與 Chapter 6 的 MRRS 一致。
+- [Chapter 6 證據](../.ai/pcie-course/chapter6-claims.json)分開 PCIe 排序、平台位址映射與所有權交接。補充來源固定為 Linux 6.12 官方 DMA 與 memory barrier 文件，只用必要背景，不假裝已驗證某一款 IOMMU 的硬體格式。
+- [Chapter 7 證據](../.ai/pcie-course/chapter7-claims.json)沿用 Chapter 2 的 MSI-X Capability 與 Chapter 4 的 BAR0，驗算 Table、PBA、entry 3、遮罩控制與 Pending bit。MSI 對照讀值是獨立情境；中斷目的位址不擅自解碼成特定 CPU 架構。
+- 新增 24 筆來源及案例紀錄，共 109 筆；兩份原始 PDF 的 SHA-256 仍符合登記版本。未發布來源 PDF、抽取文字或內部證據資料。
+- 產生器與來源／案例驗證通過，共 25 份公開產物。新驗證會重算有效 bytes、Completion 剩餘量、跨頁拆分、DMA 範圍與 MSI-X 位址，並比較正文表格。另在記憶體內故意改壞三個案例與三張正文表格，均能攔下，不以固定文字存在當作正確性證明。
+- 中英文文章的十六進位值集合相同，並人工校閱主張、前提與問題。Jekyll 建置、既有 NVMe 產物／來源／發布契約與 132 項測試通過。
+- Chrome 檢查 48 組頁面、尺寸與明暗模式，涵蓋中文教學桌面、平板直橫向、手機，以及雙語文章的桌面與窄畫面。沒有整頁水平溢出、短於 44px 的連結／summary、SVG 文字越界或頁面錯誤；來源和答案均可展開。人工檢視交易往返圖、排序表、MSI-X 位址圖及英文暗色來源段落。這是瀏覽器尺寸驗證，不是實機 iPad Safari 驗證。
 
 ## 後續逐章編寫與驗證
 

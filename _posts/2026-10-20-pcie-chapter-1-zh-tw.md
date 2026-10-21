@@ -103,6 +103,10 @@ lang: zh-TW
 .pcie-article .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
 .pcie-article svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
 .pcie-article svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-article .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-article .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-article .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-article .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
 .pcie-article figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
 .pcie-article details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
 .pcie-article summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }

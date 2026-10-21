@@ -103,6 +103,10 @@ lang: zh-TW
 .pcie-article .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
 .pcie-article svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
 .pcie-article svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-article .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-article .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-article .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-article .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
 .pcie-article figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
 .pcie-article details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
 .pcie-article summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
@@ -255,7 +259,7 @@ size = ((~mask) &amp; 0xFFFFFFFFFFFFFFFF) + 1 = 0x200000</code></pre>
 <p>Firmware 3.3 §3.5（pp.34–35）以 I/O／Memory Enable 及 ROM Enable 判斷相應資源配置，不使用 BME 判定 BAR 是否有效。已啟用的資源必須由韌體正確配置，但驅動仍須依裝置介面準備工作。</p>
 <details class="question"><summary>16 KiB BAR 改放 0x80005000，可以嗎？</summary><p>不行。低 14 bits 不是全 0，未達自然對齊；本例正確的基底 0x80004000 才符合。（§7.5.1.2.1，p.930。）</p></details>
 <details class="question"><summary>窗口正確，Endpoint MSE=0，是否仍可成功讀 MMIO？</summary><p>不能期待成功。MSE=0 時，Endpoint 收到的 Memory Space 存取按 UR 處理；路徑可轉送不能代替終點啟用。（Table 7-4，p.918。）</p></details></section>
-<p>Chapter 5 將延伸到 Request 與 Completion；後續章節仍在規劃中。</p>
+<p><a href="/DOCS/pcie-course/chapter-5.html">Chapter 5</a> 接著追蹤 Request 與 Completion；Chapter 6–7 延伸至 DMA 與中斷。</p>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-4.html">繁中完整教學</a><a href="/pcie/chapter-4-en/">English</a></nav>
 </div>

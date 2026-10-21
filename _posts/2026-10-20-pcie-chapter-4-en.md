@@ -103,6 +103,10 @@ lang: en
 .pcie-article .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
 .pcie-article svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
 .pcie-article svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-article .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-article .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-article .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-article .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
 .pcie-article figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
 .pcie-article details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
 .pcie-article summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
@@ -255,7 +259,7 @@ size = ((~mask) &amp; 0xFFFFFFFFFFFFFFFF) + 1 = 0x200000</code></pre>
 <p>Firmware 3.3 §3.5 (pp.34–35) uses I/O/Memory Enable and ROM Enable to determine corresponding resource configuration, not BME to establish BAR validity. Enabled resources must be correctly configured by firmware, but drivers still prepare device-specific work.</p>
 <details class="question"><summary>Can the 16 KiB BAR move to 0x80005000?</summary><p>No. Its lower 14 bits are not all zero, violating natural alignment. The example's 0x80004000 base meets the requirement. (§7.5.1.2.1, p.930.)</p></details>
 <details class="question"><summary>Do correct windows permit a successful MMIO read when Endpoint MSE is clear?</summary><p>Success cannot be expected. With MSE clear, the Endpoint handles received Memory Space accesses as UR. A forwarding path does not replace target enablement. (Table 7-4, p.918.)</p></details></section>
-<p>Chapter 5 will continue with Requests and Completions; later chapters remain planned.</p>
+<p><a href="/DOCS/pcie-course/chapter-5.html">Chapter 5</a> follows Requests and Completions; Chapters 6–7 cover DMA and interrupts.</p>
 </article>
 <nav class="bottom-nav" aria-label="Course and editions"><a href="/DOCS/pcie-course/index.html">Course overview</a><a href="/DOCS/pcie-course/chapter-4.html">Full Chinese tutorial</a><a href="/pcie/chapter-4-zh-tw/">繁體中文</a></nav>
 </div>

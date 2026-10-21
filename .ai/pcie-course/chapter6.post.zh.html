@@ -1,0 +1,22 @@
+<p class="lead">合法的 PCIe 寫入，不足以單獨證明 CPU 可以安全使用結果。DMA 還需要正確位址、有效映射、裝置與軟體的所有權交接，以及適用的記憶體同步。本章用「先寫資料，再寫完成旗標」分清各層保證。</p>
+<p><a href="/DOCS/pcie-course/chapter-6.html">完整中文教學</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a> · <a href="/pcie/chapter-6-en/">English</a></p>
+<aside class="note"><strong>版本與範圍</strong><p>PCIe 採 Base 6.0、Non-Flit Mode；平台背景採 Linux 6.12 官方文件。案例為普通 Endpoint 03:00.0，不使用 ATS、PASID、SR-IOV、Peer-to-Peer 或 IDE。除另述條件外，同一 Function、同一方向、TC0，RO／IDO／No Snoop 都為零。映射、描述項、OWN 與完成旗標均為作者假設，不是 PCIe 共通介面。</p></aside>
+<section id="addresses"><h2>DMA 使用裝置可到達的位址</h2>
+<p>裝置以 MRd 讀主記憶體，資料由 CplD 回來；以普通 MWr 寫入結果，則沒有一般 Write Completion。BME 只控制相關要求的發送／轉送許可，不建立緩衝區或 DMA 映射。</p>
+<p>Linux 6.12 區分 CPU 虛擬、CPU 實體與 DMA 位址。作者案例假設 CPU 指標 p 對應實體 0x90001000–0x90001FFF，而裝置使用有效的 DMA 映射 0x40001000–0x40001FFF。因此 DMA 位址 0x40001080 對應實體 0x90001080；這組數值不是通用轉換公式。裝置 BAR0 的 0x80004000–0x80007FFF 則屬於另一項資源。</p>
+<details class="source-note"><summary>來源</summary><p>Base 6.0 §2.1.1.1（p.116）、§2.2.7.1（pp.162–164）、Table 7-4（p.919）；必要平台背景見 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html#cpu-and-dma-addresses">Linux 6.12 DMA 位址說明</a>。未展開任何特定 IOMMU 的頁表格式。</p></details></section>
+<section id="ownership"><h2>資料一致性與存取順序需要分別處理</h2>
+<p>假設描述項依序放入 DMA 位址 0x40001000、長度 256 bytes 與 OWN。裝置依介面約定取得 OWN 後才讀取其餘欄位；CPU 必須讓欄位先可見，再交出 OWN，並以正確的 MMIO 存取通知裝置。裝置交回所有權後，CPU 也要按平台規則再使用資料。</p>
+<p>Base 6.0 §2.4.2 不保證正在更新的資料會被單一 MRd 讀成原子快照。Linux 6.12 的 coherent memory 仍可能需要 barrier；dma_* barriers 也不保證 MMIO 順序。Streaming mapping 另須遵循 DMA API 的同步方式。這些是不同的責任，不能用「PCIe 有排序」一併取代。</p>
+<details class="source-note"><summary>來源與限制</summary><p>Base 6.0 §2.4.2（p.228）；<a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">Linux 6.12 DMA mapping Guide</a>；<a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">Linux 6.12 memory barriers</a>。本節說明責任，不提供通用驅動程式序列。</p></details></section>
+<section id="ordering"><h2>用 Table 2-42 判斷後一筆能否越過前一筆</h2>
+<p>假設裝置先以 MWr 寫入 0x40001000 的 64-byte 資料 D，再以 MWr 將 0x40001FF0 的旗標 F 設為 1。Table 2-42 的欄是先發交易，列是後發交易；兩者皆為 Posted Request，因此看 A2。</p>
+<div class="table-wrap"><table><caption>相同工作，不同排序條件</caption><thead><tr><th scope="col">條件</th><th scope="col">結論</th></tr></thead><tbody><tr><td>同一 Function、TC0，F 的 RO=0／IDO=0</td><td>A2a：F 不得越過 D。</td></tr><tr><td>同一 TC，F 的 RO=1，路徑容許該放寬</td><td>A2b：可能越過，但不要求一定越過。</td></tr><tr><td>D 在 TC0，F 在 TC1</td><td>這張表不提供跨 TC 順序保證。</td></tr><tr><td>只改 No Snoop</td><td>不改變排序；快取一致性條件則不同。</td></tr></tbody></table></div>
+<p>表中的 Yes 表示後者必須能越過，以避免 deadlock；No 表示禁止；Y/N 表示實作可選。這些字不是在判斷交易成敗。封包沒有互相越過，也不會自動完成 CPU 端的所有權與同步工作。</p>
+<details class="source-note"><summary>排序來源</summary><p>§2.4.1 Table 2-42（p.222）、A2a／A2b 及註解（p.223）、No Snoop 規則（p.224）。本例排除 Flow-Through IDE。</p></details></section>
+<section id="fields"><h2>控制位元是許可，不是每筆交易的實際屬性</h2>
+<p>PCIe Capability 在 0x70，Device Control 在 0x78；假設讀到 0x2810，bit 4 與 bit 11 表示允許有條件地使用 RO／No Snoop，bits 14:12=010b 表示 MRRS=512 bytes。這不表示每個 TLP 都設定了 RO 或 No Snoop。</p>
+<p>實際封包須讀 Attr[1] 的 RO、Attr[0] 的 No Snoop 與 Attr[2] 的 IDO；三個 bits 在 Non-Flit Header 中並非全部相鄰。No Snoop 不改變排序，也不是清 cache 的命令；許可使用時，仍須保證目標位址未存在系統任何 cache 中。IDO 有獨立的啟用與身分條件，本例固定為零。MSI/MSI-X 更明定 RO／No Snoop 必須為零。</p>
+<details class="source-note"><summary>欄位查詢路線</summary><p>Figure 7-25（p.959）→ Table 7-21（pp.960–962）→ Figure 2-29／Tables 2-12、2-13（pp.160–161）→ Figure 2-5（p.120）。MSI 屬性限制見 p.661。</p></details></section>
+<section id="checks"><h2>核對推論的範圍</h2><details class="question"><summary>一次讀完整描述項，就保證完整快照嗎？</summary><p>沒有。正在更新的資料需要另外的介面與同步保證；§2.4.2（p.228）不提供這項原子性。</p></details><details class="question"><summary>一次測試沒有看見 RO 重排，就能依賴永遠不重排嗎？</summary><p>不能。「允許重排」不代表每次都重排，單次結果也不會把允許改成禁止。</p></details></section>
+<p>下一章把資料順序接到 MSI-X 通知。查核日期：2026-10-21。</p>

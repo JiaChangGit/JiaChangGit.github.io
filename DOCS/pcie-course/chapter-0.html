@@ -104,6 +104,10 @@
 .pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
 .pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
 .pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
 .pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
 .pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
 .pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
@@ -392,7 +396,7 @@ Link Status        ：0x70 + 0x12 = 0x82（讀 16 bits）</code></pre>
 <section id="next">
 <h2>8. 接下來先補哪一塊？</h2>
 <p>下一章會沿著拓樸往下看：實體裝置、Function 與 Bridge 如何對應，BDF 又能辨識到什麼範圍。接著在 Chapter 2 建立設定空間的完整地圖，再追問：「這個 BDF 一開始是怎麼被發現的？BAR 的位址又是誰分配的？」</p>
-<p>完整安排見<a href="index.html">課程閱讀路線</a>；<a href="chapter-1.html">Chapter 1 已提供完整教學</a>，Chapter 2–4 已完成，Chapter 5–19 仍在規劃中。後續每個核心概念會有主要教學位置；新情境需要用到舊概念時，先給必要提示，再連回原處，避免整段重講。</p>
+<p>完整安排見<a href="index.html">課程閱讀路線</a>；<a href="chapter-1.html">Chapter 1 已提供完整教學</a>，Chapter 2–7 已完成，Chapter 8–19 仍在規劃中。後續每個核心概念會有主要教學位置；新情境需要用到舊概念時，先給必要提示，再連回原處，避免整段重講。</p>
 </section>
 
 <section id="sources">

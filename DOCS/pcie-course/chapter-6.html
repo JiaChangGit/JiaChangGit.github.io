@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。">
+  <title>DMA、可見性與交易順序 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 6</p>
+      <h1>DMA、可見性與交易順序</h1>
+      <p class="header-description">分清 DMA 位址、所有權交接與 PCIe 排序，再以資料和旗標判讀 RO、No Snoop 及其限制。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#roles">1. DMA 是另一種特殊的 PCIe 封包嗎？</a></li><li><a href="#addresses">2. CPU 手上的指標，可以直接寫進 DMA 描述項嗎？</a></li><li><a href="#publish">3. 描述項先寫好，再寫「可以開始」，為什麼仍要同步？</a></li><li><a href="#ordering">4. 資料寫入後再寫完成旗標，兩筆 TLP 能互換順序嗎？</a></li><li><a href="#attributes">5. 設定欄位允許 RO，是否代表每個封包都用了 RO？</a></li><li><a href="#practice">6. 用反例檢查自己是否混用了保證</a></li><li><a href="#next">7. 接著讓軟體知道有工作完成</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">裝置可以主動讀寫主記憶體，但「裝置已經送出寫入」與「CPU 現在能安全使用資料」之間，還隔著位址映射、交易排序與軟體同步。本章把這些責任分開，再用資料與完成旗標的先後關係，說明每一項證據能支持什麼結論。</p>
+<aside class="note"><strong>版本與範圍</strong><p>PCIe 交易依 Base 6.0，案例沿用 Non-Flit Mode、普通 Endpoint <code>03:00.0</code>。不使用 ATS、PASID、SR-IOV、Peer-to-Peer 或 IDE；除非題目另行更改，所有案例均為同一 Function、同一方向、TC0、RO=0、IDO=0、No Snoop=0。DMA 映射與記憶體同步只用 Linux 6.12 官方文件補充必要背景，不宣稱它們是 PCIe Register 定義，也不在本章展開某一款 IOMMU 的頁表格式。</p><p>位址、描述項、完成旗標與工作流程都是作者設計的抽象裝置介面。它們不是 PCIe 統一規定的 Register 或命令。</p></aside>
+
+<section id="roles"><h2>1. DMA 是另一種特殊的 PCIe 封包嗎？</h2>
+<p><strong>Direct Memory Access（DMA，直接記憶體存取）</strong>描述的是裝置搬移資料的方式。放到本章的 PCIe 案例裡，裝置讀主記憶體會發出 MRd，裝置寫主記憶體會發出一般 MWr；封包仍使用 <a href="chapter-5.html#types">Chapter 5 的交易種類</a>。CPU 先準備工作，再由裝置發出交易，不需要 CPU 逐筆把 Payload 搬進裝置 Register。</p>
+<div class="table-wrap"><table><caption>從裝置角度命名 DMA 方向</caption><thead><tr><th scope="col">目的</th><th scope="col">Endpoint 的動作</th><th scope="col">資料如何移動</th></tr></thead><tbody>
+<tr><td>裝置取得主記憶體中的輸入資料</td><td>發出 MRd，保留 Requester ID 與 Tag。</td><td>平台以 CplD 把資料回傳給裝置。</td></tr>
+<tr><td>裝置把結果放回主記憶體</td><td>發出帶 Payload 的 MWr。</td><td>資料隨 Posted Request 向平台移動，沒有普通 Write Completion。</td></tr>
+<tr><td>CPU 要求裝置開始處理</td><td>CPU 經平台寫裝置的通知 Register。</td><td>這筆 MMIO 寫入是通知，不等於結果資料已搬完。</td></tr>
+</tbody></table></div>
+<p>Endpoint 與沿途 Port 的 BME 必須允許相應的上游要求，這是 <a href="chapter-4.html#enable">Chapter 4 的啟用條件</a>。但 BME=1 不會替驅動程式配置緩衝區、不會驗證描述項，也不等於取得任意主記憶體的存取權。</p>
+<details class="source-note"><summary>PCIe 與 DMA 背景來源</summary><p>Base 6.0 §2.1.1.1（p.116）、§2.2.7.1（pp.162–164）及 Table 7-4 的 BME 定義（p.919）。DMA 位址觀點另見 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html#cpu-and-dma-addresses">Linux 6.12：CPU and DMA addresses</a>。</p></details></section>
+
+<section id="addresses"><h2>2. CPU 手上的指標，可以直接寫進 DMA 描述項嗎？</h2>
+<p>必須先確認那個數值屬於哪個位址空間。Linux 6.12 的 DMA 指引區分 CPU 虛擬位址、CPU 實體位址與裝置使用的 DMA 位址；平台可能透過 IOMMU 或 Host Bridge 映射它們。<strong>IOMMU</strong> 是處理 I/O 存取位址轉譯與保護的平台機制，本章只借用這個背景，不假設所有系統都採同一種硬體。</p>
+<div class="table-wrap"><table><caption>本例的 DMA 映射假設</caption><thead><tr><th scope="col">觀察者／位置</th><th scope="col">本例的值</th><th scope="col">應如何使用</th></tr></thead><tbody>
+<tr><td>CPU 程式</td><td>指標 p</td><td>透過 CPU 的映射存取緩衝區；不把 p 當作裝置位址。</td></tr>
+<tr><td>CPU 實體位址</td><td>0x90001000–0x90001FFF</td><td>本例假設的主記憶體範圍。</td></tr>
+<tr><td>03:00.0 的 DMA 位址</td><td>0x40001000–0x40001FFF</td><td>平台已建立有效且權限相符的映射，描述項使用這組位址。</td></tr>
+<tr><td>裝置 BAR0</td><td>0x80004000–0x80007FFF</td><td>CPU 存取裝置介面用；不是這個主記憶體緩衝區。</td></tr>
+</tbody></table></div>
+<p>例如，裝置讀 DMA 位址 <code>0x40001080</code>，本例平台會轉到 CPU 實體位址 <code>0x90001080</code>。兩個基底相差多少只是這個案例的配置，不能推成通用的加減公式。更不能因為 BAR0 已正確配置，就認為主記憶體 DMA 映射也已存在。</p>
+<p>案例中的映射在交易期間保持有效，裝置可表示這段位址，且沒有其他工作重複使用同一緩衝區。若這些前提改變，單看合法的 TLP Header 也無法證明存取一定成功。</p>
+<details class="source-note"><summary>來源與推演界線</summary><p><a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html#cpu-and-dma-addresses">Linux 6.12 Dynamic DMA mapping Guide</a> 用於區分三種位址。Base 6.0 §2.2.7.1 的 64-bit 位址產生說明（p.164）要求驅動程式確保目標落在裝置可到達的範圍。表內數值、映射範圍與存取權限全部是作者假設，未引用某款 IOMMU 的暫存器編碼。</p></details></section>
+
+<section id="publish"><h2>3. 描述項先寫好，再寫「可以開始」，為什麼仍要同步？</h2>
+<p>假設描述項包含三項資料：緩衝區位址 <code>0x40001000</code>、長度 256 bytes，以及表示裝置可以開始取用的 OWN 旗標。這個 OWN 是作者為案例命名的欄位，不是 PCIe 共通欄位。裝置介面另行規定：只有取得 OWN 後才讀取其餘欄位。</p>
+<p>若 CPU 在原始程式中依序寫入位址、長度、OWN，並不能只靠這個書寫順序，證明裝置必定按同一順序觀察到更新。Base 6.0 §2.4.2 明確指出：裝置以單筆讀取觀察到正在更新的記憶體時，更新順序與粒度不由一般 PCIe 讀取規則保證。一次讀完描述項，也不等於取得原子的完整快照。</p>
+<div class="table-wrap"><table><caption>本例的所有權交接條件</caption><thead><tr><th scope="col">階段</th><th scope="col">必須建立的關係</th><th scope="col">仍須由誰提供保證</th></tr></thead><tbody>
+<tr><td>CPU 準備</td><td>裝置看到 OWN 之前，應先能看到對應的位址與長度。</td><td>平台的記憶體同步介面與驅動程式。</td></tr>
+<tr><td>CPU 通知</td><td>描述項發布後，才讓裝置收到工作通知。</td><td>適用的 MMIO 存取與順序規則。</td></tr>
+<tr><td>裝置執行</td><td>依約取得所有權後讀取欄位，完成前不讓 CPU 重用緩衝區。</td><td>本例的裝置介面與工作協定。</td></tr>
+<tr><td>CPU 收回</td><td>確認裝置交還所有權，完成必要同步後，才讀取或重用結果。</td><td>裝置狀態定義與平台同步介面。</td></tr>
+</tbody></table></div>
+<p>以 Linux 6.12 的 consistent memory 為例，<code>dma_wmb()</code>／<code>dma_rmb()</code> 用來建立 CPU 與 DMA 裝置之間共享記憶體存取的順序；這些 barrier 本身不提供 MMIO 順序保證。Coherent allocation 也不能省略必要的 memory barrier。若使用 streaming mapping，則還要依 DMA API 處理 CPU 與裝置之間的同步。這些介面各有適用前提，不應濃縮成「加一個 barrier 就全部解決」。</p>
+<details class="source-note"><summary>同步規則的閱讀入口</summary><p>Base 6.0 §2.4.2（p.228）說明 PCIe 不保證的更新順序與粒度。平台補充採 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">Linux 6.12 memory barriers</a> 的 dma_* barrier 與 Kernel I/O barrier effects 段落，以及 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a> 的 Types of DMA mappings、Using Streaming DMA mappings。此處是責任對照，不是可直接套到任意驅動程式的初始化程式碼。</p></details></section>
+
+<section id="ordering"><h2>4. 資料寫入後再寫完成旗標，兩筆 TLP 能互換順序嗎？</h2>
+<p>換成裝置產生結果。假設同一 Function 先以一筆 MWr 寫入 64 bytes 的資料 D，再以另一筆 MWr 把完成旗標 F 設為 1。D 位於 <code>0x40001000</code>，F 位於 <code>0x40001FF0</code>；兩者都在本例有效的 DMA 映射內。此時問題是：後送出的 F 能不能越過先送出的 D？</p>
+<p>查 Table 2-42 時，<strong>欄代表先發出的交易，列代表後發出的交易</strong>。D 與 F 都是 Posted Request，因此看 A2。相同 TC、沒有適用的放寬條件時，A2a 規定後面的 Posted Request 不得越過前面的 Posted Request。本例便不能讓 F 在 PCIe 路徑中越過 D。</p>
+<div class="table-wrap"><table><caption>改變條件後，能對交易順序下什麼結論？</caption><thead><tr><th scope="col">D 與 F 的條件</th><th scope="col">適用規則</th><th scope="col">判讀</th></tr></thead><tbody>
+<tr><td>同一 Function、TC0；F 的 RO=0、IDO=0</td><td>A2a</td><td>F 不得越過 D。</td></tr>
+<tr><td>同一 TC；F 的 RO=1，且路徑允許這種放寬</td><td>A2b 及相關限制</td><td>允許越過，不表示一定會越過；不能再用 A2a 證明 D 在前。</td></tr>
+<tr><td>D 使用 TC0、F 使用 TC1</td><td>Table 2-42 的適用邊界</td><td>不同 TC 之間沒有這張表提供的順序保證。</td></tr>
+<tr><td>只把 No Snoop 從 0 改成 1</td><td>§2.2.6.5、§2.4.1</td><td>No Snoop 不改變交易排序；但快取一致性的條件已不同。</td></tr>
+</tbody></table></div>
+<p>表中的 Yes、No、Y/N 不是「成功、失敗、不確定」。Yes 表示為避免 deadlock，後者必須能越過前者；No 表示禁止越過；Y/N 表示規格容許實作選擇。也因此，「PCIe 有強排序」不等於所有種類的 TLP 都按同一總順序排隊。</p>
+<p>回到 CPU：A2a 只回答兩筆交易在適用路徑內能否互相越過。CPU 是否以正確的映射和同步方式觀察 F、再使用 D，仍要滿足上一節的交接條件。不能拿一條封包排序規則代替整套記憶體使用協定。</p>
+<details class="source-note"><summary>排序表應該連同哪些條文閱讀？</summary><p>§2.4.1 Table 2-42（p.222）給出欄列與符號；A2a／A2b（p.223）給出 Posted 對 Posted 的條件。A2b 的註解指出部分使用方式會禁止 RO-enabled Posted Request 越過先前 Posted Request，因此 RO=1 是可能放寬的條件，並非必定超車。不同 TC 的界線見 p.222；No Snoop 不影響排序見 p.224。案例排除另有規則的 Flow-Through IDE。</p></details></section>
+
+<section id="attributes"><h2>5. 設定欄位允許 RO，是否代表每個封包都用了 RO？</h2>
+<p>不是。設定空間決定允許使用的行為；真正的 TLP Attribute 才描述這筆交易。本例延續 PCIe Capability 位於 <code>0x70</code>，因此 Device Control 位於 <code>0x78</code>。假設這個 16-bit Register 讀回 <code>0x2810</code>：</p>
+<div class="table-wrap"><table><caption>本例 Device Control 的能力使用許可</caption><thead><tr><th scope="col">欄位</th><th scope="col">由 0x2810 取得的值</th><th scope="col">能證明的事情</th></tr></thead><tbody>
+<tr><td>bit 4：Enable Relaxed Ordering</td><td>1</td><td>符合條件的交易可以設定 RO；不強迫每筆設定。</td></tr>
+<tr><td>bit 11：Enable No Snoop</td><td>1</td><td>仍須符合 No Snoop 使用條件，不能讓所有交易一律設為 1。</td></tr>
+<tr><td>bits 14:12：Max_Read_Request_Size</td><td>010b</td><td>最大讀取要求為 512 bytes，與 Chapter 5 的 DMA 讀取案例相容。</td></tr>
+</tbody></table></div>
+<p>接著看 Figure 2-29：Attr[1] 是 RO、Attr[0] 是 No Snoop、Attr[2] 是 ID-Based Ordering（IDO）。它們在 Non-Flit Header 裡並不全部相鄰，必須再對 Figure 2-5 的實際位置；不可直接把這三個 bits 當成連續的欄位取值。</p>
+<p>RO=1 表示適用的順序限制可以放寬，不是「這筆資料比較不重要」。No Snoop=1 表示該交易不期待硬體強制快取一致性；Device Control 的許可還要求發送端能保證目標位址沒有存在系統任何 cache 中。它不是清除 CPU cache 的命令。反過來，No Snoop=0 也不會替軟體完成描述項所有權交接。</p>
+<p>IDO 另有獨立的 Request／Completion 啟用控制及身分條件；本章固定為零，避免把不同 Requester 或 PASID 的例外混入同一 Function 的基本案例。到了中斷章，還會看到 MSI/MSI-X 的 RO 與 No Snoop 必須為零，因此「Enable=1」也不能凌駕特定交易的禁止條件。</p>
+<details class="source-note"><summary>從設定到封包的查詢順序</summary><p>先依 Chapter 2 找到 PCIe Capability，再看 Figure 7-25（p.959）、Table 7-21 的 bits 4、11、14:12（pp.960–962）。封包屬性看 Figure 2-29／Table 2-12（p.160）、Table 2-13（p.161），最後回到 Figure 2-5（p.120）。IDO 控制與限制見 §2.2.6.4（p.160）；MSI 屬性限制見 §6.1.4（p.661）。</p></details></section>
+
+<section id="practice"><h2>6. 用反例檢查自己是否混用了保證</h2>
+<details class="question"><summary>裝置以一筆 MRd 讀完整描述項，是否保證所有欄位來自同一個更新時間點？</summary><p>沒有。單一 TLP 不會自動把正在變動的資料變成原子快照。Base 6.0 §2.4.2（p.228）甚至說明可能觀察到部分更新；需要裝置介面與平台共同建立有效的所有權及同步方式。</p></details>
+<details class="question"><summary>在同一 TC 中，先寫 D，再以 RO=1 寫 F；觀察到 D 在前，就能證明所有實作都必須如此嗎？</summary><p>不能。容許重排並不要求每次重排。這次觀察只能說明這次的結果，不能把「允許」改寫成「禁止」。要證明保序，應檢查適用的欄位與路徑限制。（A2b，p.223。）</p></details>
+<details class="question"><summary>Device Control 的 Enable No Snoop=1，可以省掉所有 cache 與 barrier 的考量嗎？</summary><p>不行。它只提供有條件的發送許可，而且 No Snoop 不改變交易順序。軟體仍須遵循平台的記憶體介面；欄位含義見 Table 7-21（p.961）。</p></details>
+<details class="question"><summary>BAR0 與 BME 都正確，裝置仍把 CPU 指標 p 當成 DMA 位址使用，問題解決了嗎？</summary><p>沒有。BAR0 解決裝置資源的存取，BME 控制要求的發送許可；兩者都不負責把 p 轉成這個裝置可用的 DMA 位址。請回到 <a href="#addresses">位址對照表</a> 確認描述項實際交給裝置的是哪一種值。</p></details></section>
+<section id="next"><h2>7. 接著讓軟體知道有工作完成</h2><p>資料與狀態已按介面約定交接後，裝置還需要通知軟體處理。<a href="chapter-7.html">Chapter 7</a> 會從 Capability 找到 MSI-X Table，設定一個 entry，並追蹤遮罩、Pending 與中斷寫入。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>PCIe 規則以 Base 6.0 為準；平台背景固定使用 Linux 6.12 的 <a href="https://docs.kernel.org/6.12/core-api/dma-api-howto.html">DMA mapping Guide</a> 與 <a href="https://docs.kernel.org/6.12/core-api/wrappers/memory-barriers.html">memory barriers 文件</a>。這些補充文件不是 IOMMU 硬體規格，也不使本章案例成為 Linux 驅動程式範本。查核日期：2026-10-21。</p></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-5.html">← Chapter 5</a><a href="chapter-7.html">Chapter 7 →</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

@@ -31,4 +31,4 @@ size = ((~mask) &amp; 0xFFFFFFFFFFFFFFFF) + 1 = 0x200000</code></pre>
 <p>Firmware 3.3 §3.5 (pp.34–35) uses I/O/Memory Enable and ROM Enable to determine corresponding resource configuration, not BME to establish BAR validity. Enabled resources must be correctly configured by firmware, but drivers still prepare device-specific work.</p>
 <details class="question"><summary>Can the 16 KiB BAR move to 0x80005000?</summary><p>No. Its lower 14 bits are not all zero, violating natural alignment. The example's 0x80004000 base meets the requirement. (§7.5.1.2.1, p.930.)</p></details>
 <details class="question"><summary>Do correct windows permit a successful MMIO read when Endpoint MSE is clear?</summary><p>Success cannot be expected. With MSE clear, the Endpoint handles received Memory Space accesses as UR. A forwarding path does not replace target enablement. (Table 7-4, p.918.)</p></details></section>
-<p>Chapter 5 will continue with Requests and Completions; later chapters remain planned.</p>
+<p><a href="/DOCS/pcie-course/chapter-5.html">Chapter 5</a> follows Requests and Completions; Chapters 6–7 cover DMA and interrupts.</p>

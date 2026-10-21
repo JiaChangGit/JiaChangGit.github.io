@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "course": "pcie-course",
+  "chapter": 5,
+  "updated": "2026-10-21",
+  "page_index_base": 1,
+  "claims": [
+    {
+      "id": "PCIE-CH5-TYPE-001",
+      "claim": "Memory Read、一般 MWr、Configuration、I/O、Message 的 Posted/Non-Posted 與路由須分開判斷。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.1.1",
+        "2.2.1.1",
+        "2.2.7.1",
+        "2.2.8",
+        "2.4.1"
+      ],
+      "figures": [],
+      "tables": [
+        "2-1",
+        "2-3",
+        "2-20",
+        "2-42"
+      ],
+      "document_pages": [
+        116,
+        117,
+        120,
+        121,
+        122,
+        162,
+        163,
+        164,
+        165,
+        170,
+        171,
+        172,
+        222,
+        223
+      ],
+      "pdf_pages": [
+        116,
+        117,
+        120,
+        121,
+        122,
+        162,
+        163,
+        164,
+        165,
+        170,
+        171,
+        172,
+        222,
+        223
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-MODE-001",
+      "claim": "Non-Flit 與 Flit Header 不同；3/4 DW 依位址格式，不是資料寬度。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.1",
+        "2.2.1.2",
+        "2.2.7.1"
+      ],
+      "figures": [
+        "2-5",
+        "2-6",
+        "2-30",
+        "2-31"
+      ],
+      "tables": [
+        "2-2",
+        "2-3"
+      ],
+      "document_pages": [
+        120,
+        121,
+        122,
+        163
+      ],
+      "pdf_pages": [
+        120,
+        121,
+        122,
+        163
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-IDENTITY-001",
+      "claim": "Requester ID 與 Tag 辨識未完成交易；Tag 不得在同一 Requester 的未完成 NP Requests 中重用。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.6.2",
+        "2.2.9.1"
+      ],
+      "figures": [
+        "2-27",
+        "2-28",
+        "2-73",
+        "2-74"
+      ],
+      "tables": [],
+      "document_pages": [
+        153,
+        154,
+        155,
+        196,
+        197
+      ],
+      "pdf_pages": [
+        153,
+        154,
+        155,
+        196,
+        197
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-BYTES-001",
+      "claim": "DW 長度與有效 bytes 不同；Non-Prefetchable 未啟用 bytes 不得在 Completer 讀取；單 DW Last BE=0。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.1.1",
+        "2.2.5.1",
+        "2.3.1.1"
+      ],
+      "figures": [
+        "2-26"
+      ],
+      "tables": [
+        "2-4",
+        "2-10",
+        "2-40",
+        "2-41"
+      ],
+      "document_pages": [
+        122,
+        150,
+        151,
+        217,
+        218
+      ],
+      "pdf_pages": [
+        122,
+        150,
+        151,
+        217,
+        218
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-COMPLETION-001",
+      "claim": "Byte Count 包含目前片段；Lower Address 是首個有效 byte 低 7 bits；BCM 不由 PCIe Completer 設定。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.9.1",
+        "2.3.1.1"
+      ],
+      "figures": [
+        "2-73"
+      ],
+      "tables": [
+        "2-40",
+        "2-41"
+      ],
+      "document_pages": [
+        196,
+        215,
+        217,
+        218
+      ],
+      "pdf_pages": [
+        196,
+        215,
+        217,
+        218
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-SPLIT-001",
+      "claim": "MRRS、有效 Payload 上限與 RCB 是不同限制；同要求回覆遞增，不同要求可重排且不可合併。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.7.1",
+        "2.3.1.1",
+        "2.4.1",
+        "2.4.2"
+      ],
+      "figures": [],
+      "tables": [
+        "2-42"
+      ],
+      "document_pages": [
+        162,
+        214,
+        215,
+        218,
+        224,
+        228
+      ],
+      "pdf_pages": [
+        162,
+        214,
+        215,
+        218,
+        224,
+        228
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-BOUNDARY-001",
+      "claim": "Memory Request 不得跨 4 KiB；失敗讀取 Completion 終結要求，不帶有效讀值；RRS 只適用特定 Configuration 情況。",
+      "kind": "specification",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.7.1",
+        "2.2.9.1",
+        "2.3.1.1"
+      ],
+      "figures": [],
+      "tables": [
+        "2-37"
+      ],
+      "document_pages": [
+        163,
+        197,
+        214,
+        218
+      ],
+      "pdf_pages": [
+        163,
+        197,
+        214,
+        218
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21"
+    },
+    {
+      "id": "PCIE-CH5-EXAMPLE-001",
+      "claim": "以 4-byte、6-byte、256-byte 與跨 4 KiB 案例驗算 Request 與 Completion。",
+      "kind": "teaching_example",
+      "source_id": "PCIE-BASE-6.0",
+      "revision": "6.0",
+      "sections": [
+        "2.2.5.1",
+        "2.3.1.1",
+        "2.2.7.1"
+      ],
+      "figures": [],
+      "tables": [],
+      "document_pages": [
+        150,
+        151,
+        163,
+        196,
+        215,
+        217,
+        218
+      ],
+      "pdf_pages": [
+        150,
+        151,
+        163,
+        196,
+        215,
+        217,
+        218
+      ],
+      "status": "verified",
+      "verified_on": "2026-10-21",
+      "assumptions": [
+        "Non-Flit、TC0、TH/RO/IDO/No Snoop=0，無 ATS/PASID/IDE。",
+        "平台指定 CPU Requester ID=0x0000；Device Register 介面允許本例存取。",
+        "DMA 映射有效，BME與路徑就緒；有效MRRS=512、Tx Payload limit=128、RCB=128。"
+      ],
+      "single": {
+        "address": "0x80004120",
+        "requester": "0x0000",
+        "tag": "0x12",
+        "completer": "0x0300",
+        "length_dw": 1,
+        "first_be": 15,
+        "last_be": 0,
+        "byte_count": 4,
+        "lower_address": "0x20",
+        "payload_bytes": "78563412",
+        "register_value": "0x12345678"
+      },
+      "partial": {
+        "address": "0x80004120",
+        "length_dw": 2,
+        "first_be": 14,
+        "last_be": 7,
+        "first_enabled": "0x80004121",
+        "last_enabled": "0x80004126",
+        "byte_count": 6,
+        "lower_address": "0x21"
+      },
+      "split": {
+        "address": "0x40001000",
+        "length_dw": 64,
+        "requester": "0x0300",
+        "tag": "0x13",
+        "mrrs": 512,
+        "payload_limit": 128,
+        "rcb": 128,
+        "completions": [
+          {
+            "address": "0x40001000",
+            "length_dw": 32,
+            "byte_count": 256,
+            "lower_address": "0x00"
+          },
+          {
+            "address": "0x40001080",
+            "length_dw": 32,
+            "byte_count": 128,
+            "lower_address": "0x00"
+          }
+        ]
+      },
+      "boundary": {
+        "address": "0x40001FF0",
+        "size": 32,
+        "pieces": [
+          {
+            "address": "0x40001FF0",
+            "size": 16
+          },
+          {
+            "address": "0x40002000",
+            "size": 16
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="data:,">
+  <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="從 MSI-X Capability 找到 Table 與 PBA，推演 entry 設定、遮罩、Pending 和中斷寫入。">
+  <title>中斷如何把事件交給軟體 · PCIe 系統與規格閱讀</title>
+  <style>
+/* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
+.pcie-surface {
+  --paper: #f2f6f8;
+  --surface: #ffffff;
+  --surface-alt: #f4f8fb;
+  --ink: #192d40;
+  --muted: #4c6479;
+  --accent: #145f9d;
+  --accent-2: #0b756c;
+  --line: #cbd9e3;
+  --blue-soft: #edf5fc;
+  --teal-soft: #edf8f5;
+  --warm-soft: #fff7e8;
+  --warm-ink: #775016;
+  --focus: #95530c;
+  --radius: 14px;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+  color-scheme: light dark;
+  overflow-wrap: break-word;
+}
+.pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { box-sizing: border-box; }
+.pcie-surface a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: .2em; display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; }
+.pcie-surface a:hover { text-decoration-thickness: 2px; }
+.pcie-surface :focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 3px; }
+.pcie-surface [id] { scroll-margin-top: 28px; }
+.pcie-surface .skip-link { position: absolute; left: 16px; top: -100px; padding: .5rem 1rem; background: var(--surface); z-index: 20; }
+.pcie-surface .skip-link:focus { top: 12px; }
+.pcie-surface .site-shell { width: min(100% - 56px, 1360px); margin: 0 auto; }
+.pcie-surface .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: max(22px, env(safe-area-inset-top)) 0 18px; border-bottom: 1px solid var(--line); }
+.pcie-surface .topbar a { font-size: .88rem; text-decoration: none; }
+.pcie-surface .series-name { font-weight: 750; letter-spacing: .04em; gap: 12px; }
+.pcie-surface .series-name span { color: var(--muted); font-weight: 450; letter-spacing: .02em; }
+.pcie-surface .page-header { padding: 50px 0 36px; max-width: 1050px; }
+.pcie-surface .eyebrow { font-size: .76rem; font-weight: 750; letter-spacing: .14em; color: var(--accent-2); margin: 0 0 15px; }
+.pcie-surface h1 { font-size: clamp(2rem, 3.4vw, 3.2rem); line-height: 1.35; letter-spacing: -.025em; font-weight: 750; margin: 0 0 20px; max-width: 24em; text-wrap: balance; }
+.pcie-surface .header-description { max-width: 49em; color: var(--muted); font-size: 1.08rem; line-height: 1.8; margin: 0; }
+.pcie-surface .edition { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .reading-layout { display: grid; gap: 30px; align-items: start; padding-bottom: 48px; }
+.pcie-surface .toc-panel { border-top: 3px solid var(--accent-2); border-bottom: 1px solid var(--line); padding: 14px 0; }
+.pcie-surface .toc-label { margin: 0 0 9px; font-size: .74rem; font-weight: 750; letter-spacing: .12em; color: var(--muted); }
+.pcie-surface .toc-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 20px; list-style: none; padding: 0; margin: 0; }
+.pcie-surface .toc-panel a { width: 100%; font-size: .84rem; line-height: 1.55; color: var(--muted); text-decoration: none; padding: 8px 0; }
+.pcie-surface .toc-panel a:hover { color: var(--accent); text-decoration: underline; }
+.pcie-surface main { min-width: 0; }
+.pcie-surface .lesson { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(24px, 4vw, 54px); }
+.pcie-surface .lesson > :first-child { margin-top: 0; }
+.pcie-surface .lesson > section { margin-top: 3.1rem; }
+.pcie-surface .lesson > section:first-child { margin-top: 0; }
+.pcie-surface .lesson > section + section { border-top: 1px solid var(--line); padding-top: 2.7rem; }
+.pcie-surface h2 { font-size: 1.6rem; line-height: 1.55; letter-spacing: -.015em; margin: 0 0 1.2rem; font-weight: 700; }
+.pcie-surface h3 { font-size: 1.17rem; line-height: 1.6; margin: 2rem 0 .7rem; font-weight: 700; }
+.pcie-surface h4 { font-size: 1rem; line-height: 1.7; margin: 1.6rem 0 .5rem; }
+.pcie-surface p, .pcie-surface ul, .pcie-surface ol, .pcie-surface dl, .pcie-surface blockquote { max-width: 76ch; }
+.pcie-surface p { margin: .85rem 0 1.1rem; }
+.pcie-surface ul, .pcie-surface ol { padding-left: 1.45rem; margin: .8rem 0 1.3rem; }
+.pcie-surface li { margin: .45rem 0; padding-left: .12rem; }
+.pcie-surface li::marker { color: var(--accent-2); }
+.pcie-surface strong { font-weight: 700; }
+.pcie-surface code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: .87em; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 4px; padding: .08em .28em; overflow-wrap: anywhere; }
+.pcie-surface pre { overflow-x: auto; padding: 1rem; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 8px; font-size: .88rem; line-height: 1.7; }
+.pcie-surface pre code { background: none; border: 0; padding: 0; }
+.pcie-surface blockquote { margin: 1.3rem 0; padding: .2rem 1.3rem; border-left: 3px solid var(--accent-2); color: var(--muted); }
+.pcie-surface .lead { font-size: 1.08rem; line-height: 1.95; }
+.pcie-surface .question { color: var(--accent); font-weight: 700; }
+.pcie-surface .answer { margin-top: 1rem; }
+.pcie-surface .question .answer { font-weight: 400; color: var(--ink); }
+.pcie-surface details.question > :not(summary) { font-weight: 400; color: var(--ink); }
+.pcie-surface .term-note { color: var(--muted); font-size: .88rem; padding-left: 1rem; border-left: 2px solid var(--line); margin: 1rem 0 1.4rem; }
+.pcie-surface .example, .pcie-surface .note, .pcie-surface .takeaway { border: 1px solid var(--line); border-left: 4px solid var(--accent-2); border-radius: 0 10px 10px 0; background: var(--teal-soft); padding: 1rem 1.3rem; margin: 1.6rem 0; }
+.pcie-surface .example > :first-child, .pcie-surface .note > :first-child, .pcie-surface .takeaway > :first-child { margin-top: 0; }
+.pcie-surface .example > :last-child, .pcie-surface .note > :last-child, .pcie-surface .takeaway > :last-child { margin-bottom: 0; }
+.pcie-surface .note { border-left-color: var(--accent); background: var(--blue-soft); }
+.pcie-surface .takeaway { font-weight: 600; }
+.pcie-surface .table-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.5rem 0; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.pcie-surface table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: .9rem; line-height: 1.75; text-align: left; }
+.pcie-surface caption { text-align: left; padding: 12px 16px; font-weight: 650; color: var(--ink); background: var(--surface-alt); border-bottom: 1px solid var(--line); }
+.pcie-surface th, .pcie-surface td { padding: 13px 16px; vertical-align: top; border-bottom: 1px solid var(--line); min-width: 9em; }
+.pcie-surface th { font-weight: 650; color: var(--ink); background: var(--blue-soft); }
+.pcie-surface thead th { position: sticky; top: 0; z-index: 2; }
+.pcie-surface tbody th, .pcie-surface tbody td:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface-alt); }
+.pcie-surface thead th:first-child { left: 0; z-index: 3; }
+.pcie-surface tbody tr:last-child td, .pcie-surface tbody tr:last-child th { border-bottom: 0; }
+.pcie-surface td p, .pcie-surface th p { margin: .2rem 0 .5rem; }
+.pcie-surface .field { font-family: "SFMono-Regular", Consolas, monospace; color: var(--accent); overflow-wrap: anywhere; }
+.pcie-surface figure { margin: 1.6rem 0; }
+.pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
+.pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
+.pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
+.pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
+.pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
+.pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
+.pcie-surface summary::marker { color: var(--accent-2); }
+.pcie-surface details[open] { padding-bottom: 8px; }
+.pcie-surface details[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.pcie-surface .source-note { background: transparent; font-size: .84rem; color: var(--muted); }
+.pcie-surface .source-note summary { font-weight: 500; }
+.pcie-surface .source-ref { font-size: .81rem; color: var(--muted); }
+.pcie-surface .route { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 0; margin: 1.5rem 0; list-style-position: inside; max-width: none; }
+.pcie-surface .route > li { margin: 0; padding: 15px; border: 1px solid var(--line); border-top: 3px solid var(--accent-2); border-radius: 7px; background: var(--surface-alt); font-size: .88rem; }
+.pcie-surface .steps > li { margin: 1rem 0; padding-left: .3rem; }
+.pcie-surface .route > li::marker, .pcie-surface .steps > li::marker { font-weight: 750; }
+.pcie-surface :target { outline: 2px solid var(--accent-2); outline-offset: 7px; }
+.pcie-surface main:target { outline: none; }
+.pcie-surface .bottom-nav { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 24px 4px 0; font-size: .88rem; }
+.pcie-surface .page-footer { border-top: 1px solid var(--line); padding: 22px 0 38px; font-size: .78rem; color: var(--muted); }
+.pcie-surface .page-footer p { margin: .3rem 0; }
+.pcie-surface .chapter-list { display: grid; gap: 18px; margin-top: 1.5rem; }
+.pcie-surface .chapter-card { padding: 21px 24px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.pcie-surface .chapter-card.ready { border-top: 4px solid var(--accent-2); background: var(--teal-soft); }
+.pcie-surface .chapter-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; font-size: .75rem; color: var(--muted); font-weight: 650; }
+.pcie-surface .status { padding: 2px 9px; border: 1px solid var(--line); border-radius: 4px; }
+.pcie-surface .ready .status { color: var(--accent-2); border-color: var(--accent-2); }
+.pcie-surface .chapter-card h3 { font-size: 1.15rem; margin: 10px 0 8px; }
+.pcie-surface .chapter-card h3 a { min-height: 44px; }
+.pcie-surface .chapter-card .chapter-question { margin: 0 0 10px; color: var(--muted); font-size: .94rem; }
+.pcie-surface .chapter-card ul { font-size: .9rem; margin: .6rem 0; }
+.pcie-surface .prerequisites { font-size: .8rem; color: var(--muted); margin-bottom: 0; }
+.pcie-surface .start-link { padding: 9px 18px; border-radius: 6px; background: var(--accent); color: var(--surface); text-decoration: none; font-weight: 650; }
+@media (min-width: 1200px) {
+  .pcie-surface .reading-layout { grid-template-columns: 232px minmax(0, 1fr); gap: 38px; }
+  .pcie-surface .toc-panel { position: sticky; top: calc(24px + env(safe-area-inset-top)); }
+  .pcie-surface .toc-panel ol { display: block; }
+  .pcie-surface .toc-panel li { margin: 2px 0; }
+  .pcie-surface .toc-panel a { padding: 7px 0; font-size: .8rem; }
+  .pcie-surface .page-header { padding-left: 270px; max-width: none; }
+}
+@media (min-width: 760px) and (max-width: 1199px) {
+  .pcie-surface .site-shell { width: min(100% - 48px, 900px); }
+}
+@media (max-width: 759px) {
+  .pcie-surface .site-shell { width: min(100% - 28px, 700px); }
+  .pcie-surface .topbar { gap: 10px; }
+  .pcie-surface .series-name { gap: 6px; }
+  .pcie-surface .series-name span { font-size: .72rem; }
+  .pcie-surface .page-header { padding: 32px 2px 26px; }
+  .pcie-surface .header-description { font-size: 1rem; }
+  .pcie-surface .toc-panel ol { grid-template-columns: 1fr; }
+  .pcie-surface .lesson { padding: 25px 19px; }
+  .pcie-surface h2 { font-size: 1.4rem; }
+  .pcie-surface .lesson > section + section { padding-top: 2rem; }
+  .pcie-surface .diagram { padding: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .pcie-surface .diagram::before { content: "圖可左右捲動"; display: block; color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
+  .pcie-surface[lang="en"] .diagram::before { content: "Scroll horizontally to view the diagram"; }
+  .pcie-surface .diagram svg { min-width: 700px; }
+  .pcie-surface .example, .pcie-surface .note { padding: 1rem; }
+  .pcie-surface .chapter-card { padding: 18px; }
+  .pcie-surface .route { grid-template-columns: 1fr; }
+}
+@media (prefers-color-scheme: dark) {
+  .pcie-surface {
+    --paper: #101b26;
+    --surface: #172635;
+    --surface-alt: #1c3041;
+    --ink: #e0ebf5;
+    --muted: #b2c4d4;
+    --accent: #8ac9ff;
+    --accent-2: #75d4c4;
+    --line: #40596b;
+    --blue-soft: #203a50;
+    --teal-soft: #183b3c;
+    --warm-soft: #3e3324;
+    --warm-ink: #edd09a;
+    --focus: #ffcf83;
+  }
+  .pcie-surface .start-link { color: #102334; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pcie-surface *, .pcie-surface *::before, .pcie-surface *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@media print {
+  .pcie-surface { --paper: #fff; --surface: #fff; --surface-alt: #f6f6f6; --ink: #111; --muted: #444; --accent: #174d73; --accent-2: #1e5a4c; --line: #aaa; --blue-soft: #f2f5f7; --teal-soft: #f0f6f3; color-scheme: light; font-size: 11pt; line-height: 1.7; background: #fff; }
+  .pcie-surface .site-shell { width: 100%; }
+  .pcie-surface .topbar, .pcie-surface .skip-link, .pcie-surface .toc-panel, .pcie-surface .bottom-nav { display: none; }
+  .pcie-surface .reading-layout { display: block; padding: 0; }
+  .pcie-surface .page-header { padding: 0 0 20px; }
+  .pcie-surface h1 { font-size: 24pt; }
+  .pcie-surface h2 { font-size: 17pt; }
+  .pcie-surface h3 { font-size: 13pt; }
+  .pcie-surface .lesson { border: 0; padding: 0; }
+  .pcie-surface a { display: inline; min-width: 0; min-height: 0; text-decoration: underline; }
+  .pcie-surface h2, .pcie-surface h3, .pcie-surface h4, .pcie-surface summary { break-after: avoid; }
+  .pcie-surface figure, .pcie-surface tr, .pcie-surface .example, .pcie-surface .chapter-card { break-inside: avoid; }
+  .pcie-surface .table-wrap { overflow: visible; }
+  .pcie-surface th, .pcie-surface td { min-width: 0; padding: 7px 9px; position: static !important; }
+  .pcie-surface details { background: transparent; }
+  .pcie-surface details > * { display: block !important; }
+  .pcie-surface details::details-content { content-visibility: visible !important; }
+  .pcie-surface .diagram { overflow: visible; }
+  .pcie-surface .diagram::before { display: none; }
+  .pcie-surface .diagram svg { min-width: 0; }
+  .pcie-surface .page-footer { margin-top: 20px; }
+  .pcie-surface :target { outline: 0; }
+}
+@media (forced-colors: active) {
+  .pcie-surface { --paper: Canvas; --surface: Canvas; --surface-alt: Canvas; --ink: CanvasText; --muted: CanvasText; --accent: LinkText; --accent-2: LinkText; --line: CanvasText; --blue-soft: Canvas; --teal-soft: Canvas; --warm-soft: Canvas; --warm-ink: CanvasText; --focus: Highlight; }
+  .pcie-surface a { text-decoration: underline; }
+  .pcie-surface .start-link { border: 1px solid LinkText; color: LinkText; background: Canvas; }
+  .pcie-surface svg { forced-color-adjust: none; }
+}
+  </style>
+</head>
+<body class="pcie-surface">
+  <a class="skip-link" href="#content">跳到正文</a>
+  <div class="site-shell">
+    <nav class="topbar" aria-label="課程導覽">
+      <a class="series-name" href="index.html">PCIe <span>系統與規格閱讀</span></a>
+      <a href="index.html">課程總覽</a>
+    </nav>
+    <header class="page-header">
+      <p class="eyebrow">PCIe · 系統與規格閱讀 / CHAPTER 7</p>
+      <h1>中斷如何把事件交給軟體</h1>
+      <p class="header-description">從 MSI-X Capability 找到 Table 與 PBA，推演 entry 設定、遮罩、Pending 和中斷寫入。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+    </header>
+    <div class="reading-layout">
+      <aside class="toc-panel" aria-label="本頁目錄">
+        <p class="toc-label">本章閱讀路徑</p>
+        <nav aria-label="章節段落"><ol><li><a href="#mechanisms">1. 都叫中斷，為什麼要分三種機制？</a></li><li><a href="#msi">2. 如果查到的是 MSI，先看哪幾個欄位？</a></li><li><a href="#locate">3. 找到 MSI-X Capability 後，怎麼走到 Table？</a></li><li><a href="#entry">4. Entry 3 的位址，和它發出中斷的位址，是同一個嗎？</a></li><li><a href="#configure">5. 是不是先把 Enable 設為 1，再慢慢填 Table？</a></li><li><a href="#pending">6. 遮罩期間發生三次事件，PBA 會記錄數字 3 嗎？</a></li><li><a href="#ordering">7. 中斷到了，先前的 DMA 資料就能使用了嗎？</a></li><li><a href="#practice">8. 把查詢與通知串起來</a></li><li><a href="#next">9. 下一步：這些封包如何可靠地通過 Link？</a></li><li><a href="#sources">版本與來源</a></li></ol></nav>
+      </aside>
+      <main id="content" tabindex="-1">
+        <article class="lesson">
+<p class="lead">裝置把資料放回記憶體後，軟體還需要知道有事情待處理。中斷提供通知；真正發生了什麼、完成了多少工作，仍要依裝置介面查閱。本章先分清 INTx、MSI 與 MSI-X，再從 Chapter 2 找到的 Capability 出發，算出 MSI-X Table entry 的位址，追蹤一次遮罩與通知。</p>
+<aside class="note"><strong>版本與案例前提</strong><p>來源為 PCI Express Base Specification Revision 6.0。沿用普通 Endpoint <code>03:00.0</code>、MSI-X Capability 基底 <code>0xD0</code>，以及 Chapter 4 的 16 KiB BAR0，基底 <code>0x80004000</code>。不使用 SR-IOV、Enhanced Allocation 或 TPH；封包採 Non-Flit Mode，案例中資料與中斷都用 TC0、IDO=0。平台已完成資源映射，Endpoint 與路徑所需的 MSE／BME 均正確。</p><p>所有欄位讀值、事件、Table 位置與中斷 Address／Data 都是作者假設。設定流程描述系統軟體與裝置的分工，不是對實機執行的指令。</p></aside>
+
+<section id="mechanisms"><h2>1. 都叫中斷，為什麼要分三種機制？</h2>
+<div class="table-wrap"><table><caption>先選對規格中的機制</caption><thead><tr><th scope="col">機制</th><th scope="col">PCIe 上如何通知</th><th scope="col">設定與判讀重點</th></tr></thead><tbody>
+<tr><td>INTx emulation</td><td>使用 Assert_INTx／Deassert_INTx Message 模擬電位式中斷。</td><td>PCI 相容機制；不是 PCIe Link 上另外拉一條傳統 INTx 訊號線。</td></tr>
+<tr><td>MSI</td><td>將系統指定的資料寫到指定的位址。</td><td>Capability ID=0x05；Address／Data 與控制欄位位於設定空間。</td></tr>
+<tr><td>MSI-X</td><td>同樣發出 DWORD Memory Write。</td><td>Capability ID=0x11；每個 entry 的 Address／Data 位於 Memory Space 的 Table。</td></tr>
+</tbody></table></div>
+<p>MSI/MSI-X 的名稱雖然有 Message，實際使用的 TLP 類型是 <strong>Memory Write</strong>，不是 Msg／MsgD。這個區別會影響封包格式、路由與 BME 條件；它也沒有對應的一般 Completion。INTx 的 assert／deassert 才是這裡使用 Message TLP 的機制。</p>
+<p>如果 Function 能產生中斷，Base 6.0 要求支援 MSI、MSI-X 或兩者；INTx 相容機制可以不實作。一個 Function 可以同時具有 MSI 與 MSI-X Capability，但系統不得同時啟用兩者；啟用 MSI 或 MSI-X 時，也不得改用 INTx 要求服務。運作中任意切換機制可能遺失或重複事件。</p>
+<details class="source-note"><summary>機制與互斥條件來源</summary><p>§6.1–§6.1.4（pp.659–661）、§6.1.4.3–§6.1.4.4（pp.663–664）。Capability ID 見 Table 7-40（p.1013）、Table 7-48（p.1022）。MSI/MSI-X 的 Memory Write 格式也見 §2.2.7.1.1 前的說明（p.166）。</p></details></section>
+
+<section id="msi"><h2>2. 如果查到的是 MSI，先看哪幾個欄位？</h2>
+<p>這一節另外使用一個<strong>獨立的 MSI 對照案例</strong>，不表示前面那個 Function 又多出未列在清單中的 Capability。先找到 ID=<code>0x05</code>，再看相對位移 <code>+0x02</code> 的 Message Control。假設讀到 <code>0x0184</code>：</p>
+<div class="table-wrap"><table><caption>MSI 對照案例的控制欄位</caption><thead><tr><th scope="col">欄位</th><th scope="col">解碼</th><th scope="col">對後續閱讀的影響</th></tr></thead><tbody>
+<tr><td>Multiple Message Capable，bits 3:1</td><td>010b：要求 4 個向量</td><td>不是直接把二進位 010 當成 2 個。</td></tr>
+<tr><td>Multiple Message Enable，bits 6:4；MSI Enable，bit 0</td><td>000b；0</td><td>MSI 尚未啟用；不能把 MME 的單向量編碼當成已在送中斷。</td></tr>
+<tr><td>64-bit Address Capable，bit 7；PVM Capable，bit 8</td><td>兩者都為 1</td><td>依 Figure 7-47 閱讀 64-bit Address 加 Per-Vector Masking 的布局。</td></tr>
+<tr><td>Extended Message Data Capable，bit 9</td><td>0</td><td>本例不使用 Base 6.0 的 Extended Message Data。</td></tr>
+</tbody></table></div>
+<p>系統若只配置 2 個向量，可在 MSI 關閉時把 MME 設為 001b，完成 Address、Data 與遮罩設定後再啟用；配置數量不得超過能力。MSI 最多支援 32 個向量，且使用 2 的冪次編碼。MSI-X 的 Table Size 則是 N−1，不能套用同一套算法。</p>
+<p>MSI 的四種布局取決於 32／64-bit Address 與是否支援 PVM。普通 PCI Express Endpoint 若實作 MSI，必須支援 64-bit Message Address；不能把 Legacy Endpoint 的選擇權原封不動套上來。MSI Message Control 的 RW 欄位由系統軟體管理，裝置驅動程式不能直接修改；本章的「配置」是指這個系統軟體流程。</p>
+<details class="source-note"><summary>MSI 的查詢路線</summary><p>先讀 Figures 7-44–7-47（pp.1011–1012），依能力選布局，再讀 Figure 7-49／Table 7-41（pp.1013–1014）解碼控制。向量配置與 Endpoint 地址能力見 §6.1.4–§6.1.4.1（pp.661–662）。本節只比較必要欄位，以下完整案例使用 MSI-X。</p></details></section>
+
+<section id="locate"><h2>3. 找到 MSI-X Capability 後，怎麼走到 Table？</h2>
+<p>回到 <code>03:00.0</code>。Chapter 2 已用傳統 Capability 清單找到 <code>0xD0</code>，這裡直接從該處往下讀，不重走清單。Figure 7-56 告訴我們：Control 在 <code>+0x02</code>，Table 定位值在 <code>+0x04</code>，PBA 定位值在 <code>+0x08</code>。</p>
+<div class="table-wrap"><table><caption>MSI-X 定位案例的設定讀值</caption><thead><tr><th scope="col">Function 內位移</th><th scope="col">寬度</th><th scope="col">假設讀值</th><th scope="col">欄位</th></tr></thead><tbody>
+<tr><td>0xD0</td><td>16 bits</td><td>0x0011</td><td>ID=0x11，Next=0。</td></tr>
+<tr><td>0xD2</td><td>16 bits</td><td>0x0007</td><td>Table Size 編碼 7；MSI-X Enable 與 Function Mask 都為 0。</td></tr>
+<tr><td>0xD4</td><td>32 bits</td><td>0x00002000</td><td>Table Offset／Table BIR。</td></tr>
+<tr><td>0xD8</td><td>32 bits</td><td>0x00003000</td><td>PBA Offset／PBA BIR。</td></tr>
+</tbody></table></div>
+<p><strong>BAR Indicator Register（BIR）</strong>的低 3 bits 選擇哪個 BAR，其餘 bits 才是位移。本例兩個 BIR 都是零，因此都使用 BAR0。位移已經以 byte 為單位；遮掉 BIR 即可，<strong>不能再把結果左移 3 bits</strong>。</p>
+<pre><code>N = (0x0007 &amp; 0x07FF) + 1 = 8
+Table BIR = 0x00002000 &amp; 0x7 = 0
+Table offset = 0x00002000 &amp; 0xFFFFFFF8 = 0x2000
+Table base = 0x80004000 + 0x2000 = 0x80006000
+PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
+<p>8 個 entries 各占 16 bytes，因此 Table 使用 <code>0x80006000–0x8000607F</code>。Pending Bit Array（PBA）每個 entry 對應 1 bit，按 QWORD 組織；8 個 entries 需要 1 個 8-byte QWORD，位於 <code>0x80007000–0x80007007</code>。兩者都落在 BAR0 內，也沒有重疊。</p>
+<p>此外，Table／PBA 與不屬於 MSI-X 的其他可用 Register 不得共用同一個自然對齊 4 KiB 範圍。本例將一般 Register 放在 BAR0 的第一頁、Table 放在第三頁、PBA 放在第四頁，因此 Chapter 5 的 <code>BAR0+0x120</code> 不會混入 MSI-X 所在的頁面。這項配置是案例的額外假設；僅知道 BAR 大小並不足以推知內部分布。</p>
+<details class="source-note"><summary>從 Capability 到 BAR 的閱讀路線</summary><p>Figure 7-56（p.1018）定位三組欄位；Figure 7-60／Table 7-49（p.1022）解 Table Size、Mask、Enable；Figures 7-61／7-62、Tables 7-50／7-51（pp.1023–1024）解 BIR 與 Offset。若選到 64-bit BAR，BIR 必須指向低 DWORD。Table／PBA 大小、對齊與頁面隔離見 §7.7.2（pp.1018–1021）。</p></details></section>
+
+<section id="entry"><h2>4. Entry 3 的位址，和它發出中斷的位址，是同一個嗎？</h2>
+<p>不是。Table entry 是 CPU 設定裝置中斷行為的位置；entry 裡存的 Message Address 則是裝置發出中斷時要寫入的平台目的地。中斷不會因為 entry 位於 BAR0，就被送回同一個 BAR。</p>
+<div class="diagram"><svg viewBox="0 0 840 285" role="img" aria-labelledby="msix-title msix-desc"><title id="msix-title">MSI-X 的兩種位址</title><desc id="msix-desc">系統軟體先設定裝置 BAR0 內的 entry 3，再由裝置依 entry 內容寫入平台中斷接收位址；Table 所在位址與訊息目標分開。</desc><rect class="box" x="25" y="25" width="300" height="95" rx="10"/><rect class="box" x="475" y="25" width="340" height="95" rx="10"/><text x="175" y="55" text-anchor="middle">系統軟體設定 Table</text><text x="175" y="84" text-anchor="middle">entry 3：0x80006030</text><text x="645" y="55" text-anchor="middle">裝置保存 Address／Data</text><text x="645" y="84" text-anchor="middle">解除遮罩後才可用它通知</text><path class="arrow" d="M325 72 H475 M465 66 L475 72 L465 78"/><rect class="box" x="475" y="180" width="340" height="80" rx="10"/><text x="645" y="211" text-anchor="middle">平台中斷接收目的地</text><text x="645" y="239" text-anchor="middle">本例：0xFEE01000</text><path class="arrow" d="M645 120 V180 M639 170 L645 180 L651 170"/><text x="270" y="208" text-anchor="middle">裝置送出 MWr</text><text x="270" y="235" text-anchor="middle">Payload：0x00000045</text></svg></div>
+<p>Entry 從零編號，所以 entry 3 是第四個。由 Equation 7-1 得到 <code>0x80006000 + 3 × 16 = 0x80006030</code>。依 Figure 7-57 的四個 DWORD，再逐一找到：</p>
+<div class="table-wrap"><table><caption>Entry 3 的教學設定值</caption><thead><tr><th scope="col">PCI Memory 位址</th><th scope="col">Entry 內位移／欄位</th><th scope="col">假設設定</th></tr></thead><tbody>
+<tr><td>0x80006030</td><td>+0x00，Message Address</td><td>0xFEE01000</td></tr>
+<tr><td>0x80006034</td><td>+0x04，Message Upper Address</td><td>0x00000000</td></tr>
+<tr><td>0x80006038</td><td>+0x08，Message Data</td><td>0x00000045</td></tr>
+<tr><td>0x8000603C</td><td>+0x0C，Vector Control</td><td>初始讀回 0x00000001；保留其他 bits，只在適當時機清除 bit 0。</td></tr>
+</tbody></table></div>
+<p>這組 Message Address／Data 假設由平台中斷配置機制提供，且已能正確導向中斷接收端。數字本身不代表本教材已定義 CPU 編號或中斷控制器格式；那些是平台規格的責任。尤其 <code>0x45</code> 不是 Table index，不能反推 entry 69。</p>
+<p>發送時，裝置向 <code>0xFEE01000</code> 送出 1 DW 的 MWr，Payload 為 <code>0x00000045</code>，四個 bytes 都啟用。MSI-X 不會自行修改 Message Data 的低位元。此例的 Upper Address 為零，因此使用 32-bit 目的位址格式；RO 與 No Snoop 必須為零，IDO 本例也設為零。</p>
+<details class="source-note"><summary>Entry 與訊息欄位來源</summary><p>Figure 7-57（p.1019）、Equation 7-1（p.1021）；Figures 7-63–7-66／Tables 7-52–7-55（pp.1024–1026）。Message Address 低 2 bits 必須寫零。傳送方式見 §6.1.4.4（p.664）；RO／No Snoop 與 TC 條件見 §6.1.4（p.661）。MSI-X Message Address 的讀取結果未定義，不能把它當作一般可讀 Register（p.1019）。</p></details></section>
+
+<section id="configure"><h2>5. 是不是先把 Enable 設為 1，再慢慢填 Table？</h2>
+<p>要先控制會不會發出訊息，再填入有效目標。以下是<strong>作者選擇的一種初始化安排</strong>，不是規格唯一指定的逐步演算法。假設裝置尚未產生活動事件，系統已配置中斷接收資源，其他 entries 保持遮罩；MSI-X Table／PBA 的 Memory 存取及中斷上行路徑都已準備好。</p>
+<div class="table-wrap"><table><caption>讓 entry 3 安全進入可通知狀態</caption><thead><tr><th scope="col">步驟</th><th scope="col">系統與裝置的狀態</th><th scope="col">原因</th></tr></thead><tbody>
+<tr><td>1. 保持遮罩</td><td>系統軟體將 Function Mask 設為 1，MSI-X 仍關閉；Message Control 讀回 0x4007。</td><td>Table Size 的 7 是 RO 讀值；此處只改可寫控制位元。</td></tr>
+<tr><td>2. 填 entry</td><td>entry 3 的 Mask=1 時，填入 Address、Upper Address 與 Data，保留 Vector Control 其他 bits。</td><td>不得在 entry 未遮罩時修改 Address／Data／適用的 Steering Tag。</td></tr>
+<tr><td>3. 啟用並確認設定可見</td><td>系統軟體啟用 MSI-X，保持 Function Mask=1；Control 讀回 0xC007。</td><td>MSI 必須關閉；並由平台 I/O 存取規則確保 Table 更新已按要求生效。</td></tr>
+<tr><td>4. 開放此 entry</td><td>清 entry 3 的 Mask bit，再清 Function Mask；Control 讀回 0x8007。</td><td>只有配置好的 entry 3 開放，其餘 entries 仍保持各自的 Mask。</td></tr>
+<tr><td>5. 允許裝置開始工作</td><td>依裝置介面啟動工作及事件來源。</td><td>避免在通知路徑尚未準備好時產生活動事件。</td></tr>
+</tbody></table></div>
+<p>Message Control 的 RW 欄位由<strong>系統軟體</strong>管理，規格不允許裝置驅動程式直接修改這些欄位；驅動程式應透過系統提供的介面協調。設定 Table／PBA 時，軟體必須使用對齊的完整 DWORD 或 QWORD 存取，不能以 byte 存取代替。若要遮罩原本未遮罩的 entry，不能同時用一個 QWORD 更新 Message Data 與 Vector Control，因為 Data 可能先改變；應先按規定以 DWORD 寫入 Mask。</p>
+<p>Function Mask=1 時，即使 entry 的 Mask=0，仍不得送出該訊息。清除 Function Mask 也不會把每個 entry 的 Mask bit 一起清零。這兩層遮罩必須分別讀取，不能只看其中一個。</p>
+<details class="source-note"><summary>初始化安排使用的規格條件</summary><p>§6.1.4.2–§6.1.4.5（pp.662–664）；QWORD 更新限制見 p.663 的 Implementation Note；Table 7-49 與系統軟體權限見 p.1022；Memory 存取寬度與對齊見 p.1020；Reserved／Steering Tag 保存條件見 Table 7-55（p.1026）。本表假設適用的 I/O 同步已完成，不把程式書寫順序當成硬體可見性證據。</p></details></section>
+
+<section id="pending"><h2>6. 遮罩期間發生三次事件，PBA 會記錄數字 3 嗎？</h2>
+<p>不會。Pending bit 表示該 entry 有待送的訊息，不是事件計數器。假設 MSI-X 已啟用、Function Mask=0，而 entry 3 的 Mask=1；在這段期間，裝置發生了本來應透過 entry 3 通知的事件。裝置不得送該訊息，必須將對應 Pending bit 設為 1。</p>
+<p>依 Equation 7-2，entry 3 對應 PBA 的 QWORD 0、bit 3。本例若其他 bits 都為零，讀到的 QWORD 是 <code>0x0000000000000008</code>。再發生兩次相同通知需求，這個值仍可能是 8，不能據此說只發生一次。實際事件數量要看裝置自己的事件佇列或狀態。</p>
+<div class="table-wrap"><table><caption>同一 Pending bit 的兩種後續情境</caption><thead><tr><th scope="col">後續條件</th><th scope="col">裝置應如何處理</th></tr></thead><tbody>
+<tr><td>事件仍待處理；軟體解除有效遮罩</td><td>裝置必須安排送出訊息，送出後清除 Pending bit。不是保證解除遮罩的當下 CPU 已進入處理常式。</td></tr>
+<tr><td>仍在遮罩期間，但底層事件已依裝置介面被處理</td><td>裝置必須清除 Pending，避免稍後解除遮罩時送出不必要的訊息；若又發生新事件，再重新設 Pending。</td></tr>
+</tbody></table></div>
+<p>PBA 不使用 RW1C 清除方式。規格建議軟體只讀、不寫 Pending bits；若寫入，結果未定義。也不能把 PBA=0 當成「CPU 已完成服務」：它可能只是訊息已經送出，CPU 還沒開始執行處理常式。</p>
+<details class="source-note"><summary>Pending 與服務次數來源</summary><p>Figure 7-58（p.1019）、Equation 7-2／7-3（p.1021）、Figure 7-67／Table 7-56（pp.1026–1027）。遮罩、事件已滿足與清除 Pending 的條件：§6.1.4.5（p.664）。同一向量重複傳送不保證每個訊息都各自獲得服務，需配合裝置與驅動程式交握：§6.1.4.6（pp.665–666）。</p></details></section>
+
+<section id="ordering"><h2>7. 中斷到了，先前的 DMA 資料就能使用了嗎？</h2>
+<p>本例讓同一 Function 的資料寫入與 MSI-X 都使用 TC0。MSI-X 是 Posted Request，且 RO 必須為零；適用的排序規則不允許它越過該 Function 先前送出的 Posted 寫入。§6.1.4.7 進一步要求系統保證：由該訊息引發的中斷處理常式，能觀察到先於該訊息到達的 Posted 更新。因此，不必為了沖出這些先前寫入，額外讀一次裝置 Register。</p>
+<p>這項保證不免除 <a href="chapter-6.html#publish">Chapter 6 的映射與同步前提</a>，也不把「收到中斷」變成所有工作都完成的通用證據。處理常式仍應依裝置介面找出完成項目。若資料與中斷使用不同 TC，裝置必須另外確保同步，不能直接沿用本例的同 TC 推理。</p>
+<p>訊息接收順序也不保證處理常式的執行順序。若裝置一定要先服務事件 A 才能服務 B，就需要相應交握，不能只以先送 A、後送 B 達成。MSI/MSI-X 本身也不保證固定的中斷延遲。</p>
+<details class="source-note"><summary>通知與資料順序的適用範圍</summary><p>§6.1.4 的跨 TC 同步說明與屬性限制（p.661）；§6.1.4.7（p.667）規定資料可見性、接收端獨立處理與服務順序；延遲不保證見 §6.1.4（p.660）。若多個 entries 共用同一向量，仍可能需要讀裝置狀態辨識事件來源；那是辨識用途，不是前述資料一致性的 flush。</p></details></section>
+
+<section id="practice"><h2>8. 把查詢與通知串起來</h2>
+<details class="question"><summary>Table Size 讀到 7，是 7 個、8 個，還是 128 個 entries？</summary><p>是 8 個，因為 MSI-X 使用 N−1 編碼。不要套用 MSI 的 2 的冪次編碼。這也只代表 Table 容量，不代表系統已配置 8 個互不相同的中斷向量。（Table 7-49，p.1022。）</p></details>
+<details class="question"><summary>entry 3 的 Mask 已清除，卻還有 Function Mask=1，能送出訊息嗎？</summary><p>不能。Function Mask 使所有 entries 都按被遮罩處理，不改變各 entry 自己的 Mask 值。（§6.1.4.5，p.664；Table 7-49，p.1022。）</p></details>
+<details class="question"><summary>只知道 MSI-X Enable=1，是否足以證明某項工作會通知 CPU？</summary><p>不足。還要核對目標 entry、Address／Data、兩層遮罩、BME 與平台接收資源，以及裝置是否真的產生該事件。Capability 的存在、控制位元與事件結果是不同證據。</p></details>
+<details class="question"><summary>我要更新未遮罩 entry 的 Message Data，先寫 Data 再設 Mask 可以嗎？</summary><p>不可以。未遮罩時改 Address／Data 的結果未定義。先按規定遮罩並確保更新順序，再修改內容，完成後才解除遮罩。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
+<section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。Chapter 8 將回到 Link，說明訓練、流量控制與重送的責任；後續章節仍在規劃中，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
+<section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-21。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>
+        </article>
+        <nav class="bottom-nav" aria-label="下一步"><a href="index.html">課程總覽</a><a href="chapter-6.html">← Chapter 6</a><a href="#content">回到本章開頭 ↑</a></nav>
+      </main>
+    </div>
+    <footer class="page-footer"><p>PCIe · 系統與規格閱讀</p><p>本頁可離線閱讀。引用的 Figure 與 Table 編號，請搭配本文標示的規格版本使用。</p></footer>
+  </div>
+</body>
+</html>

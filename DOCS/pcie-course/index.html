@@ -7,7 +7,7 @@
   <link rel="icon" href="data:,">
   <meta name="theme-color" content="#f2f6f8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101b26" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–4 與全課程規劃；Chapter 5–19 尚待逐章查證、撰寫與校閱。">
+  <meta name="description" content="以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–7 與全課程規劃；Chapter 8–19 尚待逐章查證、撰寫與校閱。">
   <title>PCIe 系統觀與規格閱讀課程 · PCIe 系統與規格閱讀</title>
   <style>
 /* Every selector is scoped so the same reading styles can be embedded in Jekyll. */
@@ -104,6 +104,10 @@
 .pcie-surface .diagram { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-alt); }
 .pcie-surface svg { display: block; width: 100%; height: auto; max-width: 100%; color: var(--ink); }
 .pcie-surface svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif; }
+.pcie-surface .diagram .box { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram .arrow { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pcie-surface .diagram svg[aria-labelledby="journey-title journey-desc"] text,
+.pcie-surface .diagram svg[aria-labelledby="msix-title msix-desc"] text { fill: var(--ink); font-size: 18px; }
 .pcie-surface figcaption { color: var(--muted); font-size: .85rem; line-height: 1.75; margin-top: 12px; }
 .pcie-surface details { border: 1px solid var(--line); border-radius: 9px; background: var(--surface-alt); padding: 0 18px; margin: 1.2rem 0; }
 .pcie-surface summary { cursor: pointer; min-height: 44px; padding: 12px 0; font-weight: 650; line-height: 1.65; }
@@ -227,8 +231,8 @@
     <header class="page-header">
       <p class="eyebrow">PCIe · 系統與規格閱讀 / COURSE GUIDE</p>
       <h1>PCIe 系統觀與規格閱讀課程</h1>
-      <p class="header-description">以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–4 與全課程規劃；Chapter 5–19 尚待逐章查證、撰寫與校閱。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-20</span></div>
+      <p class="header-description">以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–7 與全課程規劃；Chapter 8–19 尚待逐章查證、撰寫與校閱。</p>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
@@ -239,7 +243,7 @@
         <article class="lesson">
 <section id="start"><h2>先把系統看懂，再深入各領域</h2>
 <p class="lead">這套課程從裝置在系統裡的角色出發。先理解軟體為什麼要查這個欄位，再沿著規格找出答案，逐步走進裝置發現、資源配置、傳輸與系統管理。</p>
-<p>目前可以完整閱讀 Chapter 0、Chapter 1、Chapter 2、Chapter 3、Chapter 4。下列其他章節是後續課程規劃，尚未完成教材；章節主題與順序仍可能隨來源查證結果調整。</p>
+<p>目前可以完整閱讀 Chapter 0、Chapter 1、Chapter 2、Chapter 3、Chapter 4、Chapter 5、Chapter 6、Chapter 7。下列其他章節是後續課程規劃，尚未完成教材；章節主題與順序仍可能隨來源查證結果調整。</p>
 <p><a class="start-link" href="chapter-0.html">從 Chapter 0 開始 →</a></p></section>
 <section id="method"><h2>讀情境，也讀推理過程</h2>
 <p>每個情境先說明需求、對象與前提，再帶讀者找到規格中的結構、欄位及適用條件。案例會明確標示假設讀值，解答則說明能得到什麼結論，以及還缺哪些證據。</p>
@@ -250,9 +254,9 @@
 <article class="chapter-card ready" id="chapter-2"><div class="chapter-meta"><span>CHAPTER 2</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-2.html">讀取設定空間與尋找 Capability</a></h3><p class="chapter-question">我要確認某項功能是否存在，應從哪裡開始找，又如何避免讀錯欄位？</p><ul><li>設定空間存取與 Configuration Header</li><li>Type 0 與 Type 1 Header 的用途</li><li>傳統 Capability 與 Extended Capability 的清單走訪</li><li>Capability ID、Next Pointer、相對位移與絕對位址</li><li>欄位大小、位元編碼、Reserved 與存取屬性</li><li>Capability 版本與適用的 Function／Port 類型</li><li>建立可重複使用的 Figure、Table、條文查詢方法</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 0、Chapter 1</p></article>
 <article class="chapter-card ready" id="chapter-3"><div class="chapter-meta"><span>CHAPTER 3</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-3.html">從未知拓樸到完成裝置發現</a></h3><p class="chapter-question">開機時還不知道有哪些裝置，系統如何逐步找到它們？</p><ul><li>Enumeration 的前提與觀察對象</li><li>Root Bridge、Bridge 與下游匯流排的搜尋</li><li>Bus Number 配置與橋接器的轉送範圍</li><li>多功能裝置的發現方式</li><li>裝置身分、Class Code 與軟體接手的線索</li><li>無回應、尚未就緒與不存在裝置的證據區分</li><li>韌體建立初始配置與 OS 後續處理的關係</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 2</p></article>
 <article class="chapter-card ready" id="chapter-4"><div class="chapter-meta"><span>CHAPTER 4</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-4.html">BAR、位址空間與資源配置</a></h3><p class="chapter-question">找到裝置後，CPU 要把資料寫到哪裡，裝置才會收到？</p><ul><li>BAR 表示的資源需求與位址配置</li><li>Memory BAR、I/O BAR、32-bit 與 64-bit BAR</li><li>大小、對齊與 Prefetchable 屬性</li><li>Bridge Window 與上游位址空間的涵蓋關係</li><li>Memory Space Enable、I/O Space Enable 與 Bus Master Enable 的不同作用</li><li>資源分配、解碼啟用與開始使用的先後條件</li><li>MMIO 位址、主記憶體位址與裝置內部位置的區別</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 3</p></article>
-<article class="chapter-card planned" id="chapter-5"><div class="chapter-meta"><span>CHAPTER 5</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>一次讀寫如何變成 PCIe 交易</h3><p class="chapter-question">CPU 讀取裝置暫存器後，要求和回覆如何穿過 PCIe 拓樸？</p><ul><li>Transaction Layer Packet 的用途</li><li>Memory、Configuration、I/O 與 Message 交易</li><li>依位址、ID 或隱含規則進行路由</li><li>Posted、Non-Posted 與 Completion</li><li>Requester、Completer、Tag 與要求配對</li><li>資料長度、Byte Enable 與封包邊界</li><li>完成狀態與沒有一般 Completion 的交易</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 2、Chapter 4</p></article>
-<article class="chapter-card planned" id="chapter-6"><div class="chapter-meta"><span>CHAPTER 6</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>DMA、可見性與交易順序</h3><p class="chapter-question">裝置已經發出寫入，CPU 就一定看得到正確資料嗎？</p><ul><li>DMA 的要求者、目標與位址觀點</li><li>IOMMU 的必要背景與位址轉換邊界</li><li>PCIe 交易排序與作業系統記憶體模型的責任區分</li><li>Relaxed Ordering、No Snoop 與相關適用條件</li><li>資料、描述項與通知的可見性關係</li><li>軟體同步、快取一致性與 PCIe 規則不能互相代替</li><li>以兩筆交易推演允許與不允許的觀察結果</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 4、Chapter 5</p></article>
-<article class="chapter-card planned" id="chapter-7"><div class="chapter-meta"><span>CHAPTER 7</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>中斷如何把事件交給軟體</h3><p class="chapter-question">裝置有事情要處理時，如何通知 CPU？通知內容又在哪裡設定？</p><ul><li>事件、資料與通知之間的關係</li><li>INTx 的相容用途</li><li>MSI 與 MSI-X 的能力查詢與設定</li><li>MSI-X Table、PBA 與 BAR 的關係</li><li>向量、遮罩、Pending 與觸發條件</li><li>中斷寫入與先前資料交易的順序</li><li>以假設值追蹤一個向量的設定及通知結果</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 4、Chapter 5、Chapter 6</p></article>
+<article class="chapter-card ready" id="chapter-5"><div class="chapter-meta"><span>CHAPTER 5</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-5.html">一次讀寫如何變成 PCIe 交易</a></h3><p class="chapter-question">CPU 讀取裝置暫存器後，要求和回覆如何穿過 PCIe 拓樸？</p><ul><li>Transaction Layer Packet 的用途</li><li>Memory、Configuration、I/O 與 Message 交易</li><li>依位址、ID 或隱含規則進行路由</li><li>Posted、Non-Posted 與 Completion</li><li>Requester、Completer、Tag 與要求配對</li><li>資料長度、Byte Enable 與封包邊界</li><li>完成狀態與沒有一般 Completion 的交易</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 1、Chapter 2、Chapter 4</p></article>
+<article class="chapter-card ready" id="chapter-6"><div class="chapter-meta"><span>CHAPTER 6</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-6.html">DMA、可見性與交易順序</a></h3><p class="chapter-question">裝置已經發出寫入，CPU 就一定看得到正確資料嗎？</p><ul><li>DMA 的要求者、目標與位址觀點</li><li>IOMMU 的必要背景與位址轉換邊界</li><li>PCIe 交易排序與作業系統記憶體模型的責任區分</li><li>Relaxed Ordering、No Snoop 與相關適用條件</li><li>資料、描述項與通知的可見性關係</li><li>軟體同步、快取一致性與 PCIe 規則不能互相代替</li><li>以兩筆交易推演允許與不允許的觀察結果</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 4、Chapter 5</p></article>
+<article class="chapter-card ready" id="chapter-7"><div class="chapter-meta"><span>CHAPTER 7</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-7.html">中斷如何把事件交給軟體</a></h3><p class="chapter-question">裝置有事情要處理時，如何通知 CPU？通知內容又在哪裡設定？</p><ul><li>事件、資料與通知之間的關係</li><li>INTx 的相容用途</li><li>MSI 與 MSI-X 的能力查詢與設定</li><li>MSI-X Table、PBA 與 BAR 的關係</li><li>向量、遮罩、Pending 與觸發條件</li><li>中斷寫入與先前資料交易的順序</li><li>以假設值追蹤一個向量的設定及通知結果</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 4、Chapter 5、Chapter 6</p></article>
 <article class="chapter-card planned" id="chapter-8"><div class="chapter-meta"><span>CHAPTER 8</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>Link 建立與可靠傳遞</h3><p class="chapter-question">兩端都支援 PCIe，為什麼還需要訓練連線、流量控制與重送？</p><ul><li>Lane、Link、速度與寬度的關係</li><li>LTSSM 的主要狀態與訓練目的</li><li>支援速率、目標設定與協商結果</li><li>Data Link 與 Transaction Layer 的責任邊界</li><li>流量控制、緩衝空間與傳送許可</li><li>傳輸錯誤的偵測與恢復</li><li>PCIe 6.0 中 Flit Mode 與 Non-Flit Mode 的適用範圍</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 0、Chapter 2、Chapter 5</p></article>
 <article class="chapter-card planned" id="chapter-9"><div class="chapter-meta"><span>CHAPTER 9</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>Reset 的範圍與恢復條件</h3><p class="chapter-question">重設一個 Function、重設一條 Link 與重新上電，會改變同樣的狀態嗎？</p><ul><li>各種 Reset 的觸發方式與影響範圍</li><li>Fundamental Reset、Hot Reset 與 Function Level Reset</li><li>Reset 與 Link 狀態變化的關係</li><li>進行中的交易與重新存取的時機</li><li>欄位重設值、保存狀態與重新配置</li><li>裝置停止 DMA 與恢復軟體使用的條件</li><li>以狀態表比較同一欄位在不同事件後的結果</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 4、Chapter 5、Chapter 8</p></article>
 <article class="chapter-card planned" id="chapter-10"><div class="chapter-meta"><span>CHAPTER 10</span><span class="status">規劃中 · 尚未撰寫</span></div><h3>裝置與連線如何省電</h3><p class="chapter-question">裝置暫時沒有工作時，哪些部分可以休息？需要工作時又如何回來？</p><ul><li>Function 電源狀態與 Link 電源狀態的區別</li><li>PCI Power Management Capability</li><li>ASPM 與軟體主導的電源管理</li><li>L1 Substates 的能力、控制與依賴條件</li><li>PME 與喚醒路徑</li><li>進入、退出與重新可用的延遲</li><li>平台電源資源與 PCIe 電源機制的分工</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 2、Chapter 8、Chapter 9</p></article>
