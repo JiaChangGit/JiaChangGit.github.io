@@ -1,6 +1,18 @@
 # PCIe 課程編寫與來源維護計畫
 
-更新日期：2026-10-21。這是獨立的 PCIe 課程，不沿用 NVMe 系列的題數、冊數或主題排除清單。
+更新日期：2026-10-23。這是獨立的 PCIe 課程，不沿用 NVMe 系列的題數、冊數或主題排除清單。
+
+## 目前修訂範圍與停止點
+
+本次只修訂 Chapter 7–9 的完整繁中教學與中英文文章，並建立配套 skill、導圖產生器及檢查工具。完成這批後停止，等待使用者確認教學方式；其他章節保留既有發布內容。較早開始的 Chapter 0–2 草稿另存於儲存庫外，未納入本次發布。
+
+以 [pcie-spec-teaching skill](../.ai/pcie-course/skill/SKILL.md) 與 [編寫說明](../.ai/pcie-course/skill/references/authoring.md) 保存已對齊的偏好：圖後先講重點、只回顧必要前情、沿正常流程連接規格圖表、各篇前兩次就近說明術語。自問自答提供完整解說，不設測驗、評分或通過條件。腳本與 AI 校閱只能確認教材品質，不能當作真人已學會的證據。
+
+Chapter 7 先沿設定表、遮罩與通知走完一次；Chapter 8 放大到相鄰兩端，連接訓練、接收額度與可靠傳遞；Chapter 9 用功能重設時序說明停工、觸發、等待與恢復，再補充條件關係圖。完整圖和解說持續顯示，步驟控制只標示目前重點。原有案例讀值、規格版本、網址與有效錨點保留。
+
+可維護的導圖資料位於 `.ai/pcie-course/walks/`。`scripts/pcie_teaching.py --refresh-authored` 同步 authored 區塊，`validate_pcie_teaching.py` 檢查圖文定位、可見條件與已登記來源，`check_pcie_browser.cjs` 檢查實際渲染、原生鍵盤控制與窄畫面。各工具用法見 skill 編寫說明。`teaching_revision` 只對已修訂章節啟用新樣式，避免改動其他文章。
+
+本批驗證：143 項程式測試通過，包含 11 項導圖工具測試；43 份課程產物與 156 筆來源／案例紀錄一致，兩份原始 PDF 雜湊符合登記版本。Jekyll 建置及網站既有只讀契約檢查通過，沒有重新產生其他系列教材。三章共 48 組 Chrome 頁面、尺寸與明暗模式檢查通過，並實際檢視時序圖、步驟標示與窄畫面捲動；這是瀏覽器尺寸驗證，未宣稱實機 iPad Safari 驗證或真人學習成效。
 
 ## 讀者、目標與本次交付
 
@@ -19,7 +31,7 @@
 - [來源登記](../.ai/pcie-course/source-register.json)保存來源版本與來源檔案識別資訊。
 - [技術主張與證據](../.ai/pcie-course/claims.json)保存 Chapter 0 已查核的結論及定位；[Chapter 1 證據](../.ai/pcie-course/chapter1-claims.json)另記錄本章的來源、讀值與計算。後續三章各有 [Chapter 2 證據](../.ai/pcie-course/chapter2-claims.json)、[Chapter 3 證據](../.ai/pcie-course/chapter3-claims.json) 與 [Chapter 4 證據](../.ai/pcie-course/chapter4-claims.json)。
 
-`curriculum.json` 的 `ready` 表示已交付的 Chapter 0–10；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
+`curriculum.json` 的 `ready` 表示已交付的 Chapter 0–13；`planned` 表示後續規劃，不應被產生器解讀成已有可發布教材。章數可以隨實際閱讀合併或拆分，不以補滿固定數量為目標。
 
 ## 為什麼這樣安排
 

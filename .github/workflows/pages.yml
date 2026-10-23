@@ -49,6 +49,7 @@ jobs:
         run: |
           python3 -B scripts/build_pcie_course.py --check
           python3 -B scripts/validate_pcie_course.py
+          python3 -B scripts/validate_pcie_teaching.py
 
       - name: Build with Jekyll
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"

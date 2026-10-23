@@ -1,0 +1,89 @@
+{
+  "walk_id": "interrupt-walk",
+  "title": "從設定表走到一次中斷通知",
+  "svg": "<svg viewBox=\"0 0 900 390\" role=\"img\" aria-labelledby=\"notify-title notify-desc\"><title id=\"notify-title\">中斷設定與通知時序</title><desc id=\"notify-desc\">時間由上往下。系統軟體找到設定表、在遮罩下填寫項目，再啟用通知；事件發生後，裝置向平台指定的目標寫入資料。</desc><g data-walk-target=\"software\"><rect x=\"20\" y=\"20\" width=\"260\" height=\"64\" rx=\"12\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"150\" y=\"59\" text-anchor=\"middle\">系統軟體</text><path d=\"M150 84 V365\" stroke=\"var(--line)\" stroke-dasharray=\"5 5\"/></g><g data-walk-target=\"device\"><rect x=\"320\" y=\"20\" width=\"260\" height=\"64\" rx=\"12\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"450\" y=\"59\" text-anchor=\"middle\">裝置 03:00.0</text><path d=\"M450 84 V365\" stroke=\"var(--line)\" stroke-dasharray=\"5 5\"/></g><g data-walk-target=\"receiver\"><rect x=\"620\" y=\"20\" width=\"260\" height=\"64\" rx=\"12\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"750\" y=\"59\" text-anchor=\"middle\">平台中斷接收端</text><path d=\"M750 84 V365\" stroke=\"var(--line)\" stroke-dasharray=\"5 5\"/></g><g data-walk-target=\"locate\"><text x=\"300\" y=\"125\" text-anchor=\"middle\">找到中斷設定表</text><path d=\"M150 140 H450 M441 134 L450 140 L441 146\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"fill\"><text x=\"300\" y=\"195\" text-anchor=\"middle\">在遮罩下填好項目</text><path d=\"M150 210 H450 M441 204 L450 210 L441 216\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"open\"><text x=\"300\" y=\"265\" text-anchor=\"middle\">啟用並解除遮罩</text><path d=\"M150 280 H450 M441 274 L450 280 L441 286\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"notify\"><text x=\"600\" y=\"335\" text-anchor=\"middle\">事件發生：寫入指定目標</text><path d=\"M450 350 H750 M741 344 L750 350 L741 356\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g></svg>",
+  "order_html": "<p>圖由上往下表示本例的先後順序。系統先準備通知路徑，裝置再開始產生事件。</p>",
+  "caption_html": "作者依 Base 6.0 §6.1.4 與 §7.7.2 繪製。主線使用 MSI-X（Message Signaled Interrupts — Extension，以設定表分別配置中斷通知）。",
+  "language": "zh",
+  "steps": [
+    {
+      "title": "找到設定表",
+      "targets": [
+        "software",
+        "device",
+        "locate"
+      ],
+      "html": "<p>系統從 MSI-X的能力結構找到中斷設定表。先讀 Figure 7-56 的 Table 欄位，再以 Figures 7-61／7-62 的 BAR（基底位址暫存器）的選擇值與位移，定位裝置記憶體中的設定表和待送通知位元。</p>",
+      "condition_html": "<p>沿用 Chapter 2 已找到的能力結構，以及 Chapter 4 已配置的裝置記憶體範圍。</p>",
+      "source_html": "<p>Base 6.0 Figure 7-56（p.1018）、Tables 7-50／7-51（pp.1023–1024）。</p>",
+      "claim_ids": [
+        "PCIE-CH7-LOCATE-001"
+      ]
+    },
+    {
+      "title": "在遮罩下填入目標",
+      "targets": [
+        "software",
+        "device",
+        "fill"
+      ],
+      "html": "<p>系統軟體保持通知遮罩，再依 Figure 7-57 填入第 3 號項目的目的位址與資料。平台會提供這組值，裝置稍後用它發出通知。</p>",
+      "condition_html": "<p>本例事件來源尚未啟動；通知接收資源已配置，其他項目維持遮罩。</p>",
+      "source_html": "<p>Base 6.0 Figure 7-57（p.1019）、§6.1.4.2（pp.662–663）。</p>",
+      "claim_ids": [
+        "PCIE-CH7-ENTRY-001",
+        "PCIE-CH7-CONFIG-001"
+      ]
+    },
+    {
+      "title": "啟用通知路徑",
+      "targets": [
+        "software",
+        "device",
+        "open"
+      ],
+      "html": "<p>系統確認設定已依平台規則生效，啟用中斷機制，再解除第 3 號項目與整個 Function（可獨立設定的功能單位）的遮罩。Table 7-49 說明全域控制，Table 7-55 說明單一項目的遮罩。</p>",
+      "condition_html": "<p>所有必要設定就緒後，才依裝置介面啟動工作。</p>",
+      "source_html": "<p>Base 6.0 Tables 7-49／7-55（pp.1022、1026）、§6.1.4.5（pp.664–665）。</p>",
+      "claim_ids": [
+        "PCIE-CH7-CONFIG-001"
+      ]
+    },
+    {
+      "title": "由裝置發出通知",
+      "targets": [
+        "device",
+        "receiver",
+        "notify"
+      ],
+      "html": "<p>事件發生後，裝置讀取設定表中的位址與資料，發出記憶體寫入。中斷處理常式接著依裝置介面找出待處理工作；裝置介面也負責提供事件內容與數量。</p>",
+      "condition_html": "<p>本例已啟用中斷，兩層遮罩都已解除，裝置與平台間的通知路徑可用。</p>",
+      "source_html": "<p>Base 6.0 §6.1.4.4、§6.1.4.6–§6.1.4.7（pp.664–667）。</p>",
+      "claim_ids": [
+        "PCIE-CH7-MECHANISMS-001",
+        "PCIE-CH7-ORDER-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "software",
+      "title": "系統軟體",
+      "html": "<p>在設定階段配置接收資源、填入通知目標並管理控制欄位。</p>",
+      "basic_html": "<p>系統軟體管理中斷資源；裝置驅動程式透過系統介面協調通知。</p>"
+    },
+    {
+      "target": "device",
+      "title": "裝置 03:00.0",
+      "html": "<p>保存設定表，依事件與遮罩狀態決定何時發出通知。</p>",
+      "basic_html": "<p>本例的 Endpoint 是 PCIe 階層末端的裝置；03:00.0 表示這次使用的功能單位。</p>"
+    },
+    {
+      "target": "receiver",
+      "title": "平台中斷接收端",
+      "html": "<p>接收裝置送來的中斷寫入，讓軟體處理通知。</p>",
+      "basic_html": "<p>通知目的位址與資料由平台配置；其編碼須依平台規格解讀。</p>"
+    }
+  ],
+  "summary_html": "<p class=\"lead\">本章使用 MSI-X 中斷通知機制，把裝置的事件送到系統軟體。主線是找到設定表、填入通知目標、開放通知，再追蹤事件發生後的傳送。遮罩期間的待送通知與資料順序，會在主線之後說明。</p>\n<p>必要前情：Chapter 2 已找到本例的 Capability（能力與控制結構），Chapter 4 已配置 BAR0（描述裝置記憶體區域的基底位址暫存器）。本章接著使用這兩個位置，建立中斷路徑。</p>\n<aside class=\"note\"><strong>版本與案例前提</strong><p>來源為 PCI Express Base Specification Revision 6.0。沿用普通 Endpoint（階層末端裝置）<code>03:00.0</code>、MSI-X Capability（中斷能力結構）基底 <code>0xD0</code>，以及 16 KiB BAR0（裝置記憶體區域），基底 <code>0x80004000</code>。平台已完成資源映射，Memory Space Enable（MSE，允許記憶體空間回應）與 Bus Master Enable（BME，允許裝置發出適用 Request）均正確。</p><p>所有欄位讀值、事件與中斷目標皆為作者假設。案例採 Non-Flit Mode（以個別交易封包進行本章傳輸的模式）；資料與中斷使用同一 Traffic Class（TC，流量類別）0，ID-Based Ordering（IDO，依識別碼放寬排序）設為零。</p><details><summary>本例未使用的延伸功能</summary><p>本例不使用 SR-IOV（單一裝置虛擬化）、Enhanced Allocation（延伸資源配置）或 TPH（交易處理提示）。這些功能不參與以下流程。</p></details></aside>\n<p><strong>規格閱讀路線：</strong>Figure 7-56 找結構 → Figures 7-60–7-62 看容量、控制與表格位置 → Figure 7-57 看通知項目 → §6.1.4.5 看遮罩與待送事件。下文會在每一步指出本次使用的欄位。</p>"
+}

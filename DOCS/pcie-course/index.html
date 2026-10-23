@@ -235,7 +235,7 @@
       <p class="eyebrow">PCIe · 系統與規格閱讀 / COURSE GUIDE</p>
       <h1>PCIe 系統觀與規格閱讀課程</h1>
       <p class="header-description">以懂基本程式與 CPU／記憶體、但尚未學過 PCIe 的讀者為對象。先建立系統觀，再透過情境問題、規格查詢與明確標示的教學假設深入各領域。目前完成 Chapter 0–13 與全課程規劃；Chapter 14–19 尚待逐章查證、撰寫與校閱。</p>
-      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-21</span></div>
+      <div class="edition"><span>繁體中文 · 規格與情境推演</span><span>2026-10-23</span></div>
     </header>
     <div class="reading-layout">
       <aside class="toc-panel" aria-label="本頁目錄">
@@ -249,8 +249,8 @@
 <p>目前可以完整閱讀 Chapter 0、Chapter 1、Chapter 2、Chapter 3、Chapter 4、Chapter 5、Chapter 6、Chapter 7、Chapter 8、Chapter 9、Chapter 10、Chapter 11、Chapter 12、Chapter 13。下列其他章節是後續課程規劃，尚未完成教材；章節主題與順序仍可能隨來源查證結果調整。</p>
 <p><a class="start-link" href="chapter-0.html">從 Chapter 0 開始 →</a></p></section>
 <section id="method"><h2>讀情境，也讀推理過程</h2>
-<p>每個情境先說明需求、對象與前提，再帶讀者找到規格中的結構、欄位及適用條件。案例會明確標示假設讀值，解答則說明能得到什麼結論，以及還缺哪些證據。</p>
-<ul><li><strong>先想，再看答案：</strong>正文以問題串起解說，章末再用不同情境檢查理解。</li><li><strong>同一觀念集中說明：</strong>後續章節連回先備知識，再加入新的條件與判斷。</li><li><strong>依問題安排閱讀順序：</strong>Figure、Table 與條文按查詢需求串接，不要求依文件頁碼順讀。</li></ul></section>
+<p>Chapter 7–9 已先採用新版圖解教學，其他已發布章節保留原版。這三章先從總覽圖看角色與路徑，再跟著正常流程閱讀。每一步都會指出相關的規格圖表、使用的欄位，以及接下來的動作。案例中的配置與讀值標明為作者假設，適用條件則在使用前交代。</p>
+<ul><li><strong>跟著圖解走一遍：</strong>完整圖與文字持續顯示，可選擇步驟標出當下的元件與解說。</li><li><strong>接上本章需要的背景：</strong>前情提要只回顧接下來會使用的關係，延伸背景可就近展開。</li><li><strong>沿流程閱讀規格：</strong>先看簡短的閱讀路線，再逐步對照 Figure、Table 與相關條文。</li></ul></section>
 <section id="curriculum"><h2>課程安排</h2><p>章號提供一條漸進的閱讀路徑；已有相關基礎時，也可以依各章的先備知識選擇切入點。</p>
 <div class="chapter-list"><article class="chapter-card ready" id="chapter-0"><div class="chapter-meta"><span>CHAPTER 0</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-0.html">從系統全貌到第一次規格查詢</a></h3><p class="chapter-question">一個 PCIe 裝置如何被系統認識並使用？又該如何查出它支援什麼？</p><ul><li>PCIe 的用途與 CPU、記憶體、裝置之間的關係</li><li>Root Complex、Root Port、Switch、Endpoint 的角色辨識</li><li>建立連線、發現裝置、配置資源與開始使用的整體流程</li><li>Configuration Space、MMIO 與 DMA 的用途區分</li><li>支援能力、控制設定與目前狀態的差別</li><li>依序查找 Capability、Figure、Table 與欄位的完整速率判讀案例</li><li>用反例說明低於最高支援速率不等於已證明故障</li></ul><p class="prerequisites"><strong>先備知識：</strong>基本程式與 CPU／記憶體概念；不需要 PCIe 經驗</p></article>
 <article class="chapter-card ready" id="chapter-1"><div class="chapter-meta"><span>CHAPTER 1</span><span class="status">已完成 · 可閱讀</span></div><h3><a href="chapter-1.html">拓樸、Function 與識別方式</a></h3><p class="chapter-question">一張卡、一個裝置與一個 Function 是同一件事嗎？系統究竟在辨識誰？</p><ul><li>實體封裝、Device 與 Function 的區別</li><li>Root Complex 邊界與多條 PCIe 階層</li><li>Switch 上下游 Port、Bridge 與匯流排關係</li><li>Bus、Device、Function 與 Segment 的識別範圍</li><li>Requester ID 與拓樸識別的關係</li><li>以拓樸圖追蹤同一 Function，不把 BDF 當成永久身分</li></ul><p class="prerequisites"><strong>先備知識：</strong>Chapter 0</p></article>

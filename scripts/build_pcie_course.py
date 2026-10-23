@@ -14,6 +14,11 @@ from pathlib import Path
 import re
 import sys
 
+try:
+    from .pcie_teaching import expand_walks
+except ImportError:
+    from pcie_teaching import expand_walks
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / ".ai/pcie-course"
 OUTPUT = ROOT / "DOCS/pcie-course"
@@ -174,8 +179,8 @@ def curriculum_body(curriculum: dict) -> str:
         f'<p>目前可以完整閱讀 {completed}。下列其他章節是後續課程規劃，尚未完成教材；章節主題與順序仍可能隨來源查證結果調整。</p>',
         '<p><a class="start-link" href="chapter-0.html">從 Chapter 0 開始 →</a></p></section>',
         '<section id="method"><h2>讀情境，也讀推理過程</h2>',
-        '<p>每個情境先說明需求、對象與前提，再帶讀者找到規格中的結構、欄位及適用條件。案例會明確標示假設讀值，解答則說明能得到什麼結論，以及還缺哪些證據。</p>',
-        '<ul><li><strong>先想，再看答案：</strong>正文以問題串起解說，章末再用不同情境檢查理解。</li><li><strong>同一觀念集中說明：</strong>後續章節連回先備知識，再加入新的條件與判斷。</li><li><strong>依問題安排閱讀順序：</strong>Figure、Table 與條文按查詢需求串接，不要求依文件頁碼順讀。</li></ul></section>',
+        '<p>Chapter 7–9 已先採用新版圖解教學，其他已發布章節保留原版。這三章先從總覽圖看角色與路徑，再跟著正常流程閱讀。每一步都會指出相關的規格圖表、使用的欄位，以及接下來的動作。案例中的配置與讀值標明為作者假設，適用條件則在使用前交代。</p>',
+        '<ul><li><strong>跟著圖解走一遍：</strong>完整圖與文字持續顯示，可選擇步驟標出當下的元件與解說。</li><li><strong>接上本章需要的背景：</strong>前情提要只回顧接下來會使用的關係，延伸背景可就近展開。</li><li><strong>沿流程閱讀規格：</strong>先看簡短的閱讀路線，再逐步對照 Figure、Table 與相關條文。</li></ul></section>',
         '<section id="curriculum"><h2>課程安排</h2><p>章號提供一條漸進的閱讀路徑；已有相關基礎時，也可以依各章的先備知識選擇切入點。</p>',
         '<div class="chapter-list">' + '\n'.join(cards) + '</div></section>',
         '<section id="versions"><h2>版本與來源怎麼讀？</h2>',
@@ -214,7 +219,9 @@ def post(css: str, body: str, language: str, chapter: dict) -> str:
     navigation = '<nav class="bottom-nav" aria-label="' + ('課程與語言版本' if is_zh else 'Course and editions') + '">' + ''.join(f'<a href="{url}">{label}</a>' for label, url in links) + '</nav>'
     return '\n'.join([
         '---', 'layout: post', 'title: ' + json.dumps(title, ensure_ascii=False),
-        'date: ' + chapter.get('publication_date', DATE) + ' 00:00:00 +0800', f'permalink: /pcie/chapter-{number}-' + slug + '/',
+        'date: ' + chapter.get('publication_date', DATE) + ' 00:00:00 +0800',
+        *(['last_modified_at: ' + chapter['revision_date'] + ' 00:00:00 +0800'] if chapter.get('revision_date') else []),
+        f'permalink: /pcie/chapter-{number}-' + slug + '/',
         'categories: [PCIe]', 'tags: [PCIe, Specification]', 'lang: ' + ('zh-TW' if is_zh else 'en'),
         '---', '', '<style>', scoped_css.rstrip(), '</style>',
         '<div class="pcie-article" lang="' + ('zh-Hant-TW' if is_zh else 'en') + '">',
@@ -261,22 +268,23 @@ def build() -> dict[Path, str]:
     outputs = {
         OUTPUT / 'index.html': render(template, css, title=curriculum['title'], description=curriculum['description'],
                                      eyebrow='PCIe · 系統與規格閱讀 / COURSE GUIDE', body=index_body, is_index=True,
-                                     edition_date=max(chapter.get('publication_date', DATE) for chapter in ready)),
+                                     edition_date=max(chapter.get('revision_date', chapter.get('publication_date', DATE)) for chapter in ready)),
     }
     for chapter in ready:
         number = chapter['number']
-        body = read(SOURCE / f'chapter{number}.zh.html')
+        chapter_css = css + ('\n' + read(SOURCE / 'teaching.css') if chapter.get('teaching_revision') else '')
+        body = expand_walks(read(SOURCE / f'chapter{number}.zh.html'), SOURCE)
         description = chapter.get('description', CHAPTER_DESCRIPTION if number == 0 else chapter['question'])
         outputs[OUTPUT / f'chapter-{number}.html'] = render(
-            template, css, title=chapter['title'], description=description,
+            template, chapter_css, title=chapter['title'], description=description,
             eyebrow=f'PCIe · 系統與規格閱讀 / CHAPTER {number}', body=body,
-            chapter_number=number, ready_numbers=ready_numbers, edition_date=chapter.get('publication_date', DATE),
+            chapter_number=number, ready_numbers=ready_numbers, edition_date=chapter.get('revision_date', chapter.get('publication_date', DATE)),
         )
         for language in ('zh', 'en'):
             source = SOURCE / (f'post.{language}.html' if number == 0 else f'chapter{number}.post.{language}.html')
             slug = 'zh-tw' if language == 'zh' else 'en'
             publication_date = chapter.get('publication_date', DATE)
-            outputs[ROOT / f'_posts/{publication_date}-pcie-chapter-{number}-{slug}.md'] = post(css, read(source), language, chapter)
+            outputs[ROOT / f'_posts/{publication_date}-pcie-chapter-{number}-{slug}.md'] = post(chapter_css, expand_walks(read(source), SOURCE), language, chapter)
     validate_outputs(outputs)
     return outputs
 

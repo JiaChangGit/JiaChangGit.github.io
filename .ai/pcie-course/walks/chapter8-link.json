@@ -1,0 +1,95 @@
+{
+  "walk_id": "link-walk",
+  "title": "先看一個封包如何通過相鄰兩端",
+  "svg": "<svg viewBox=\"0 0 900 500\" role=\"img\" aria-labelledby=\"hop-title hop-desc\"><title id=\"hop-title\">沿相鄰兩端追蹤一次傳送</title><desc id=\"hop-desc\">時間向下。先完成訓練與空間檢查，再傳送封包。確認收到與回報釋出的空間是不同資訊；圖中兩者先後是本例安排。</desc><g data-walk-target=\"sender\"><rect x=\"20\" y=\"20\" width=\"310\" height=\"65\" rx=\"12\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"175\" y=\"60\" text-anchor=\"middle\">裝置 03:00.0</text><path d=\"M175 85 V480\" stroke=\"var(--line)\" stroke-dasharray=\"5 5\"/></g><g data-walk-target=\"receiver\"><rect x=\"570\" y=\"20\" width=\"310\" height=\"65\" rx=\"12\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"725\" y=\"60\" text-anchor=\"middle\">Switch 連接埠 02:01.0</text><path d=\"M725 85 V480\" stroke=\"var(--line)\" stroke-dasharray=\"5 5\"/></g><g data-walk-target=\"training\"><text x=\"450\" y=\"125\" text-anchor=\"middle\">連線訓練與初始化</text><path d=\"M175 140 H725 M715 134 L725 140 L715 146 M185 134 L175 140 L185 146\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"credit\"><rect x=\"35\" y=\"175\" width=\"280\" height=\"58\" rx=\"10\" fill=\"var(--blue-soft)\" stroke=\"var(--line)\"/><text x=\"175\" y=\"209\" text-anchor=\"middle\">發送端檢查接收空間額度</text></g><g data-walk-target=\"send\"><text x=\"450\" y=\"275\" text-anchor=\"middle\">傳送封包；保留重送副本</text><path d=\"M175 290 H725 M715 284 L725 290 L715 296\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"ack\"><text x=\"450\" y=\"350\" text-anchor=\"middle\">接收端檢查後回覆確認</text><path d=\"M725 365 H175 M185 359 L175 365 L185 371\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g><g data-walk-target=\"update\"><text x=\"450\" y=\"435\" text-anchor=\"middle\">本例稍後釋出空間，再回報額度</text><path d=\"M725 450 H175 M185 444 L175 450 L185 456\" fill=\"none\" stroke=\"var(--accent)\" stroke-width=\"2.5\"/></g></svg>",
+  "order_html": "<p>主案例把 Chapter 7 的通知路徑放大到裝置與 Switch（交換器）之間。時間由上往下；本圖只畫一條連線上的正常傳送。</p>",
+  "caption_html": "作者依 Base 6.0 §2.6.1、§3.1、§3.6 整理。確認收到與更新接收空間沒有固定的相對先後；圖中將空間回報安排在稍後，便於分別說明。",
+  "language": "zh",
+  "steps": [
+    {
+      "title": "建立可用連線",
+      "targets": [
+        "sender",
+        "receiver",
+        "training"
+      ],
+      "html": "<p>先沿 Figure 4-48 讀連線訓練，再接到 Figure 3-2 的資料連結初始化。兩端完成適用的初始化工作，才進入可用的資料連結狀態。</p>",
+      "condition_html": "<p>本例使用 Non-Flit Mode（以個別交易封包進行可靠傳遞的模式）。</p>",
+      "source_html": "<p>Base 6.0 Figure 4-48（p.454）、Figure 3-2（p.265）。</p>",
+      "claim_ids": [
+        "PCIE-CH8-LAYERS-001",
+        "PCIE-CH8-TRAINING-001"
+      ]
+    },
+    {
+      "title": "先檢查接收空間",
+      "targets": [
+        "sender",
+        "credit"
+      ],
+      "html": "<p>發送端依 Table 2-45 找到這種封包所需的 credit（接收緩衝額度）。接收端公布的額度足夠，並滿足排序與仲裁等條件後，封包才可送出。</p>",
+      "condition_html": "<p>本圖假設所需額度已足夠；本章稍後再看空間不足時的等待。</p>",
+      "source_html": "<p>Base 6.0 §2.6.1、Tables 2-44／2-45（pp.236–237）。</p>",
+      "claim_ids": [
+        "PCIE-CH8-CREDITS-001"
+      ]
+    },
+    {
+      "title": "傳送並保留副本",
+      "targets": [
+        "sender",
+        "receiver",
+        "send"
+      ],
+      "html": "<p>發送端為交易封包加入序號與檢查碼，保留需要重送時使用的副本。Figure 3-17 顯示交易封包外增加的這些資訊。</p>",
+      "condition_html": "<p>這裡沿用 Non-Flit Mode 的個別封包傳遞；後面的固定區塊模式比較另行說明。</p>",
+      "source_html": "<p>Base 6.0 Figure 3-17（p.288）、§3.1（p.264）。</p>",
+      "claim_ids": [
+        "PCIE-CH8-REPLAY-001"
+      ]
+    },
+    {
+      "title": "接收端回覆確認",
+      "targets": [
+        "receiver",
+        "sender",
+        "ack"
+      ],
+      "html": "<p>接收端檢查封包後回傳確認，發送端依適當的正向確認釋放副本。讀 Figure 3-22 的接收規則，再接到 Figure 3-21 的確認處理，即可把兩端的動作接起來。</p>",
+      "condition_html": "<p>本步示範正常收到的情況；需要重送時，仍由這條連線的兩端協調。</p>",
+      "source_html": "<p>Base 6.0 Figures 3-21／3-22（pp.299、303）。</p>",
+      "claim_ids": [
+        "PCIE-CH8-REPLAY-001"
+      ]
+    },
+    {
+      "title": "回報重新可用的空間",
+      "targets": [
+        "receiver",
+        "sender",
+        "update"
+      ],
+      "html": "<p>接收端釋出緩衝資源後，透過流量控制資訊更新額度。發送端之後使用更新結果，檢查下一個新封包所需的空間。</p>",
+      "condition_html": "<p>credit 是空間額度；更新採規格的累積計數方式，本圖僅表示資訊方向。</p>",
+      "source_html": "<p>Base 6.0 §2.6.1（pp.236–237）、Figures 3-9–3-11（pp.283–284）。</p>",
+      "claim_ids": [
+        "PCIE-CH8-CREDITS-001"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "target": "sender",
+      "title": "裝置：本次發送端",
+      "html": "<p>檢查接收空間、送出交易封包，並保存重送所需的副本。</p>",
+      "basic_html": "<p>Endpoint 是階層末端裝置。本例從裝置往 Switch 傳送；反方向的傳輸有自己的發送與接收責任。</p>"
+    },
+    {
+      "target": "receiver",
+      "title": "Switch：本次接收端",
+      "html": "<p>接收並檢查封包，回覆確認，也回報可供後續封包使用的空間。</p>",
+      "basic_html": "<p>Switch 的 Downstream Port（下游連接埠）是面向下游裝置的連接埠。交換器再向上游轉送時，會使用另一條連線的傳遞機制。</p>"
+    }
+  ],
+  "summary_html": "<p class=\"lead\">一個封包送出前，兩端要先建立連線，發送端也要確認接收空間。封包送出後，資料連結層負責這一跳的檢查與重送。本章依這條主線帶讀訓練狀態、速率欄位、流量控制與可靠傳遞。</p>\n<p>必要前情：前幾章已建立裝置與記憶體之間的交易路徑。本章只觀察 Switch（交換器）的 Downstream Port（下游連接埠）02:01.0 與 Endpoint（階層末端裝置）03:00.0 之間的 Link（連線）。</p>\n<aside class=\"note\"><strong>版本與範圍</strong><p>以 PCI Express Base 6.0 為準。沿用同一條連線的位置；速率讀值與額度帳本是作者教學假設。主案例採個別封包的傳遞方式，Flit Mode（以固定長度區塊傳遞）於本章後段獨立比較。</p></aside>\n<p><strong>規格閱讀路線：</strong>Figure 4-48 的訓練 → Figure 3-2 的資料連結狀態 → Figures 7-38、7-39、7-29 的支援／設定／現況 → Tables 2-44／2-45 的額度 → Figures 3-17、3-21、3-22 的可靠傳遞。</p>"
+}

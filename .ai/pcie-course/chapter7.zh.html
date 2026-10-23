@@ -1,93 +1,127 @@
-<p class="lead">裝置把資料放回記憶體後，軟體還需要知道有事情待處理。中斷提供通知；真正發生了什麼、完成了多少工作，仍要依裝置介面查閱。本章先分清 INTx、MSI 與 MSI-X，再從 Chapter 2 找到的 Capability 出發，算出 MSI-X Table entry 的位址，追蹤一次遮罩與通知。</p>
-<aside class="note"><strong>版本與案例前提</strong><p>來源為 PCI Express Base Specification Revision 6.0。沿用普通 Endpoint <code>03:00.0</code>、MSI-X Capability 基底 <code>0xD0</code>，以及 Chapter 4 的 16 KiB BAR0，基底 <code>0x80004000</code>。不使用 SR-IOV、Enhanced Allocation 或 TPH；封包採 Non-Flit Mode，案例中資料與中斷都用 TC0、IDO=0。平台已完成資源映射，Endpoint 與路徑所需的 MSE／BME 均正確。</p><p>所有欄位讀值、事件、Table 位置與中斷 Address／Data 都是作者假設。設定流程描述系統軟體與裝置的分工，不是對實機執行的指令。</p></aside>
-
-<section id="mechanisms"><h2>1. 都叫中斷，為什麼要分三種機制？</h2>
+<!-- pcie-walk: walks/chapter7-notify.json -->
+<div class="guided-walk" id="interrupt-walk" role="group" aria-labelledby="interrupt-walk-title" data-walk-version="1">
+<h3 id="interrupt-walk-title">從設定表走到一次中斷通知</h3>
+<p class="walk-help" id="interrupt-walk-help">選擇步驟後，圖中對應的元件與下方解說會加上重點標示。完整圖與所有解說會持續顯示；也可用方向鍵切換步驟。</p>
+<div class="walk-order"><p>圖由上往下表示本例的先後順序。系統先準備通知路徑，裝置再開始產生事件。</p></div>
+<input class="walk-choice" type="radio" name="interrupt-walk-step" id="interrupt-walk-choice-1" value="1" data-walk-step="1" aria-describedby="interrupt-walk-help" aria-controls="interrupt-walk-view interrupt-walk-step-1" checked="checked">
+<label class="walk-label" for="interrupt-walk-choice-1">1. 找到設定表</label>
+<input class="walk-choice" type="radio" name="interrupt-walk-step" id="interrupt-walk-choice-2" value="2" data-walk-step="2" aria-describedby="interrupt-walk-help" aria-controls="interrupt-walk-view interrupt-walk-step-2">
+<label class="walk-label" for="interrupt-walk-choice-2">2. 在遮罩下填入目標</label>
+<input class="walk-choice" type="radio" name="interrupt-walk-step" id="interrupt-walk-choice-3" value="3" data-walk-step="3" aria-describedby="interrupt-walk-help" aria-controls="interrupt-walk-view interrupt-walk-step-3">
+<label class="walk-label" for="interrupt-walk-choice-3">3. 啟用通知路徑</label>
+<input class="walk-choice" type="radio" name="interrupt-walk-step" id="interrupt-walk-choice-4" value="4" data-walk-step="4" aria-describedby="interrupt-walk-help" aria-controls="interrupt-walk-view interrupt-walk-step-4">
+<label class="walk-label" for="interrupt-walk-choice-4">4. 由裝置發出通知</label>
+<div class="walk-view" id="interrupt-walk-view">
+<figure class="diagram walk-diagram">
+<svg viewBox="0 0 900 390" role="img" aria-labelledby="notify-title notify-desc"><title id="notify-title">中斷設定與通知時序</title><desc id="notify-desc">時間由上往下。系統軟體找到設定表、在遮罩下填寫項目，再啟用通知；事件發生後，裝置向平台指定的目標寫入資料。</desc><a href="#interrupt-walk-component-software" aria-label="系統軟體"><g data-walk-target="software" class="walk-node" data-walk-steps="1 2 3"><rect x="20" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)" /><text x="150" y="59" text-anchor="middle">系統軟體</text><path d="M150 84 V365" stroke="var(--line)" stroke-dasharray="5 5" /></g></a><a href="#interrupt-walk-component-device" aria-label="裝置 03:00.0"><g data-walk-target="device" class="walk-node" data-walk-steps="1 2 3 4"><rect x="320" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)" /><text x="450" y="59" text-anchor="middle">裝置 03:00.0</text><path d="M450 84 V365" stroke="var(--line)" stroke-dasharray="5 5" /></g></a><a href="#interrupt-walk-component-receiver" aria-label="平台中斷接收端"><g data-walk-target="receiver" class="walk-node" data-walk-steps="4"><rect x="620" y="20" width="260" height="64" rx="12" fill="var(--blue-soft)" stroke="var(--line)" /><text x="750" y="59" text-anchor="middle">平台中斷接收端</text><path d="M750 84 V365" stroke="var(--line)" stroke-dasharray="5 5" /></g></a><g data-walk-target="locate" class="walk-node" data-walk-steps="1"><text x="300" y="125" text-anchor="middle">找到中斷設定表</text><path d="M150 140 H450 M441 134 L450 140 L441 146" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="fill" class="walk-node" data-walk-steps="2"><text x="300" y="195" text-anchor="middle">在遮罩下填好項目</text><path d="M150 210 H450 M441 204 L450 210 L441 216" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="open" class="walk-node" data-walk-steps="3"><text x="300" y="265" text-anchor="middle">啟用並解除遮罩</text><path d="M150 280 H450 M441 274 L450 280 L441 286" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g><g data-walk-target="notify" class="walk-node" data-walk-steps="4"><text x="600" y="335" text-anchor="middle">事件發生：寫入指定目標</text><path d="M450 350 H750 M741 344 L750 350 L741 356" fill="none" stroke="var(--accent)" stroke-width="2.5" /></g></svg>
+<figcaption>作者依 Base 6.0 §6.1.4 與 §7.7.2 繪製。主線使用 MSI-X（Message Signaled Interrupts — Extension，以設定表分別配置中斷通知）。</figcaption></figure>
+<div class="walk-summary"><p class="lead">本章使用 MSI-X 中斷通知機制，把裝置的事件送到系統軟體。主線是找到設定表、填入通知目標、開放通知，再追蹤事件發生後的傳送。遮罩期間的待送通知與資料順序，會在主線之後說明。</p>
+<p>必要前情：Chapter 2 已找到本例的 Capability（能力與控制結構），Chapter 4 已配置 BAR0（描述裝置記憶體區域的基底位址暫存器）。本章接著使用這兩個位置，建立中斷路徑。</p>
+<aside class="note"><strong>版本與案例前提</strong><p>來源為 PCI Express Base Specification Revision 6.0。沿用普通 Endpoint（階層末端裝置）<code>03:00.0</code>、MSI-X Capability（中斷能力結構）基底 <code>0xD0</code>，以及 16 KiB BAR0（裝置記憶體區域），基底 <code>0x80004000</code>。平台已完成資源映射，Memory Space Enable（MSE，允許記憶體空間回應）與 Bus Master Enable（BME，允許裝置發出適用 Request）均正確。</p><p>所有欄位讀值、事件與中斷目標皆為作者假設。案例採 Non-Flit Mode（以個別交易封包進行本章傳輸的模式）；資料與中斷使用同一 Traffic Class（TC，流量類別）0，ID-Based Ordering（IDO，依識別碼放寬排序）設為零。</p><details><summary>本例未使用的延伸功能</summary><p>本例不使用 SR-IOV（單一裝置虛擬化）、Enhanced Allocation（延伸資源配置）或 TPH（交易處理提示）。這些功能不參與以下流程。</p></details></aside>
+<p><strong>規格閱讀路線：</strong>Figure 7-56 找結構 → Figures 7-60–7-62 看容量、控制與表格位置 → Figure 7-57 看通知項目 → §6.1.4.5 看遮罩與待送事件。下文會在每一步指出本次使用的欄位。</p></div>
+<ol class="walk-steps">
+<li class="walk-step" id="interrupt-walk-step-1" data-walk-step="1" data-walk-targets="software device locate"><h4>找到設定表</h4><div class="walk-condition"><p>沿用 Chapter 2 已找到的能力結構，以及 Chapter 4 已配置的裝置記憶體範圍。</p></div><div class="walk-explanation"><p>系統從 MSI-X的能力結構找到中斷設定表。先讀 Figure 7-56 的 Table 欄位，再以 Figures 7-61／7-62 的 BAR（基底位址暫存器）的選擇值與位移，定位裝置記憶體中的設定表和待送通知位元。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-LOCATE-001"><p>Base 6.0 Figure 7-56（p.1018）、Tables 7-50／7-51（pp.1023–1024）。</p></div></li>
+<li class="walk-step" id="interrupt-walk-step-2" data-walk-step="2" data-walk-targets="software device fill"><h4>在遮罩下填入目標</h4><div class="walk-condition"><p>本例事件來源尚未啟動；通知接收資源已配置，其他項目維持遮罩。</p></div><div class="walk-explanation"><p>系統軟體保持通知遮罩，再依 Figure 7-57 填入第 3 號項目的目的位址與資料。平台會提供這組值，裝置稍後用它發出通知。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-ENTRY-001 PCIE-CH7-CONFIG-001"><p>Base 6.0 Figure 7-57（p.1019）、§6.1.4.2（pp.662–663）。</p></div></li>
+<li class="walk-step" id="interrupt-walk-step-3" data-walk-step="3" data-walk-targets="software device open"><h4>啟用通知路徑</h4><div class="walk-condition"><p>所有必要設定就緒後，才依裝置介面啟動工作。</p></div><div class="walk-explanation"><p>系統確認設定已依平台規則生效，啟用中斷機制，再解除第 3 號項目與整個 Function（可獨立設定的功能單位）的遮罩。Table 7-49 說明全域控制，Table 7-55 說明單一項目的遮罩。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-CONFIG-001"><p>Base 6.0 Tables 7-49／7-55（pp.1022、1026）、§6.1.4.5（pp.664–665）。</p></div></li>
+<li class="walk-step" id="interrupt-walk-step-4" data-walk-step="4" data-walk-targets="device receiver notify"><h4>由裝置發出通知</h4><div class="walk-condition"><p>本例已啟用中斷，兩層遮罩都已解除，裝置與平台間的通知路徑可用。</p></div><div class="walk-explanation"><p>事件發生後，裝置讀取設定表中的位址與資料，發出記憶體寫入。中斷處理常式接著依裝置介面找出待處理工作；裝置介面也負責提供事件內容與數量。</p></div><div class="walk-source" data-source-claims="PCIE-CH7-MECHANISMS-001 PCIE-CH7-ORDER-001"><p>Base 6.0 §6.1.4.4、§6.1.4.6–§6.1.4.7（pp.664–667）。</p></div></li>
+</ol></div>
+<div class="walk-components"><h4>圖中元件</h4><ul class="walk-component-links">
+<li><a href="#interrupt-walk-component-software">系統軟體</a></li>
+<li><a href="#interrupt-walk-component-device">裝置 03:00.0</a></li>
+<li><a href="#interrupt-walk-component-receiver">平台中斷接收端</a></li>
+</ul>
+<section class="walk-component" id="interrupt-walk-component-software" data-component-target="software"><h4>系統軟體</h4><div class="walk-component-action"><p>在設定階段配置接收資源、填入通知目標並管理控制欄位。</p></div><details><summary>基本責任</summary><p>系統軟體管理中斷資源；裝置驅動程式透過系統介面協調通知。</p></details></section>
+<section class="walk-component" id="interrupt-walk-component-device" data-component-target="device"><h4>裝置 03:00.0</h4><div class="walk-component-action"><p>保存設定表，依事件與遮罩狀態決定何時發出通知。</p></div><details><summary>基本責任</summary><p>本例的 Endpoint 是 PCIe 階層末端的裝置；03:00.0 表示這次使用的功能單位。</p></details></section>
+<section class="walk-component" id="interrupt-walk-component-receiver" data-component-target="receiver"><h4>平台中斷接收端</h4><div class="walk-component-action"><p>接收裝置送來的中斷寫入，讓軟體處理通知。</p></div><details><summary>基本責任</summary><p>通知目的位址與資料由平台配置；其編碼須依平台規格解讀。</p></details></section>
+</div>
+</div>
+<!-- /pcie-walk -->
+<section id="mechanisms"><h2>1. 先認識三種中斷通知方式</h2><p>MSI（Message Signaled Interrupts，訊息式中斷）將資料寫到平台指定的位址；本章主線的擴充機制另外提供逐項設定表。INTx 是傳統電位式中斷的相容介面，PCIe 用訊息模擬其有效與解除狀態。</p>
 <div class="table-wrap"><table><caption>先選對規格中的機制</caption><thead><tr><th scope="col">機制</th><th scope="col">PCIe 上如何通知</th><th scope="col">設定與判讀重點</th></tr></thead><tbody>
-<tr><td>INTx emulation</td><td>使用 Assert_INTx／Deassert_INTx Message 模擬電位式中斷。</td><td>PCI 相容機制；不是 PCIe Link 上另外拉一條傳統 INTx 訊號線。</td></tr>
-<tr><td>MSI</td><td>將系統指定的資料寫到指定的位址。</td><td>Capability ID=0x05；Address／Data 與控制欄位位於設定空間。</td></tr>
-<tr><td>MSI-X</td><td>同樣發出 DWORD Memory Write。</td><td>Capability ID=0x11；每個 entry 的 Address／Data 位於 Memory Space 的 Table。</td></tr>
+<tr><td>INTx emulation（電位式中斷模擬）</td><td>使用 Assert_INTx／Deassert_INTx Message 模擬電位式中斷。</td><td>PCI 相容機制；不是 PCIe Link 上另外拉一條傳統 INTx 訊號線。</td></tr>
+<tr><td>MSI（訊息式中斷）</td><td>將系統指定的資料寫到指定的位址。</td><td>Capability ID=0x05；Address／Data 與控制欄位位於設定空間。</td></tr>
+<tr><td>MSI-X</td><td>同樣發出 DWORD（4 bytes）的記憶體寫入。</td><td>Capability ID=0x11；每個 entry 的 Address／Data 位於 Memory Space 的 Table。</td></tr>
 </tbody></table></div>
-<p>MSI/MSI-X 的名稱雖然有 Message，實際使用的 TLP 類型是 <strong>Memory Write</strong>，不是 Msg／MsgD。這個區別會影響封包格式、路由與 BME 條件；它也沒有對應的一般 Completion。INTx 的 assert／deassert 才是這裡使用 Message TLP 的機制。</p>
+<p>MSI/MSI-X 使用 Memory Write（MWr，記憶體寫入）這一種 TLP（Transaction Layer Packet，交易層封包），依位址路由，並受 BME（裝置發送許可）控制。它屬於 Posted Request（發出後沒有一般交易回覆的請求），因此沒有對應的 Completion（完成回覆）。INTx 的有效與解除通知則使用 Message TLP（訊息類交易封包），對應表中的 Assert_INTx／Deassert_INTx。</p>
 <p>如果 Function 能產生中斷，Base 6.0 要求支援 MSI、MSI-X 或兩者；INTx 相容機制可以不實作。一個 Function 可以同時具有 MSI 與 MSI-X Capability，但系統不得同時啟用兩者；啟用 MSI 或 MSI-X 時，也不得改用 INTx 要求服務。運作中任意切換機制可能遺失或重複事件。</p>
 <details class="source-note"><summary>機制與互斥條件來源</summary><p>§6.1–§6.1.4（pp.659–661）、§6.1.4.3–§6.1.4.4（pp.663–664）。Capability ID 見 Table 7-40（p.1013）、Table 7-48（p.1022）。MSI/MSI-X 的 Memory Write 格式也見 §2.2.7.1.1 前的說明（p.166）。</p></details></section>
 
-<section id="msi"><h2>2. 如果查到的是 MSI，先看哪幾個欄位？</h2>
-<p>這一節另外使用一個<strong>獨立的 MSI 對照案例</strong>，不表示前面那個 Function 又多出未列在清單中的 Capability。先找到 ID=<code>0x05</code>，再看相對位移 <code>+0x02</code> 的 Message Control。假設讀到 <code>0x0184</code>：</p>
+<section id="msi"><h2>2. MSI 對照：先選布局，再看向量數量</h2>
+<p>這一節使用<strong>獨立的 MSI 對照案例</strong>，說明另一種通知設定方式。主線 Function（可獨立設定的功能單位）仍使用前述的 MSI-X。先找到 ID=<code>0x05</code>，再看相對位移 <code>+0x02</code> 的 Message Control。假設讀到 <code>0x0184</code>：</p>
 <div class="table-wrap"><table><caption>MSI 對照案例的控制欄位</caption><thead><tr><th scope="col">欄位</th><th scope="col">解碼</th><th scope="col">對後續閱讀的影響</th></tr></thead><tbody>
-<tr><td>Multiple Message Capable，bits 3:1</td><td>010b：要求 4 個向量</td><td>不是直接把二進位 010 當成 2 個。</td></tr>
-<tr><td>Multiple Message Enable，bits 6:4；MSI Enable，bit 0</td><td>000b；0</td><td>MSI 尚未啟用；不能把 MME 的單向量編碼當成已在送中斷。</td></tr>
-<tr><td>64-bit Address Capable，bit 7；PVM Capable，bit 8</td><td>兩者都為 1</td><td>依 Figure 7-47 閱讀 64-bit Address 加 Per-Vector Masking 的布局。</td></tr>
+<tr><td>Multiple Message Capable（MMC，可要求的向量數），bits 3:1</td><td>010b：要求 4 個向量</td><td>以 2 的冪次編碼，010b 對應 4 個。</td></tr>
+<tr><td>Multiple Message Enable（MME，已配置的向量數），bits 6:4；MSI Enable，bit 0</td><td>000b；0</td><td>Enable=0 表示通知尚未啟用；MME 的單向量編碼只描述數量。</td></tr>
+<tr><td>64-bit Address Capable，bit 7；Per-Vector Masking（PVM，個別向量遮罩）Capable，bit 8</td><td>兩者都為 1</td><td>依 Figure 7-47 閱讀 64-bit Address 加 Per-Vector Masking 的布局。</td></tr>
 <tr><td>Extended Message Data Capable，bit 9</td><td>0</td><td>本例不使用 Base 6.0 的 Extended Message Data。</td></tr>
 </tbody></table></div>
-<p>系統若只配置 2 個向量，可在 MSI 關閉時把 MME 設為 001b，完成 Address、Data 與遮罩設定後再啟用；配置數量不得超過能力。MSI 最多支援 32 個向量，且使用 2 的冪次編碼。MSI-X 的 Table Size 則是 N−1，不能套用同一套算法。</p>
-<p>MSI 的四種布局取決於 32／64-bit Address 與是否支援 PVM。普通 PCI Express Endpoint 若實作 MSI，必須支援 64-bit Message Address；不能把 Legacy Endpoint 的選擇權原封不動套上來。MSI Message Control 的 RW 欄位由系統軟體管理，裝置驅動程式不能直接修改；本章的「配置」是指這個系統軟體流程。</p>
+<p>系統若只配置 2 個向量，可在 MSI 關閉時把 MME（已配置的向量數）設為 001b，完成 Address、Data 與遮罩設定後再啟用；配置數量不得超過能力。MSI 最多支援 32 個向量，且使用 2 的冪次編碼。MSI-X 的 Table Size（設定表容量）使用 N−1 編碼，下一節會帶讀。</p>
+<p>MSI 的四種布局取決於 32／64-bit Address 與是否支援 PVM（個別向量遮罩）。普通 PCI Express Endpoint 若實作 MSI，必須支援 64-bit Message Address（訊息目的位址）。Legacy Endpoint 的地址能力規則另有規定。MSI Message Control 的 RW（可讀寫）欄位由系統軟體管理，裝置驅動程式不能直接修改；本章的「配置」是指這個系統軟體流程。</p>
 <details class="source-note"><summary>MSI 的查詢路線</summary><p>先讀 Figures 7-44–7-47（pp.1011–1012），依能力選布局，再讀 Figure 7-49／Table 7-41（pp.1013–1014）解碼控制。向量配置與 Endpoint 地址能力見 §6.1.4–§6.1.4.1（pp.661–662）。本節只比較必要欄位，以下完整案例使用 MSI-X。</p></details></section>
 
 <section id="locate"><h2>3. 找到 MSI-X Capability 後，怎麼走到 Table？</h2>
-<p>回到 <code>03:00.0</code>。Chapter 2 已用傳統 Capability 清單找到 <code>0xD0</code>，這裡直接從該處往下讀，不重走清單。Figure 7-56 告訴我們：Control 在 <code>+0x02</code>，Table 定位值在 <code>+0x04</code>，PBA 定位值在 <code>+0x08</code>。</p>
+<p>回到 <code>03:00.0</code>。Chapter 2 已用傳統 Capability 清單找到 <code>0xD0</code>，這裡直接從該處往下讀，不重走清單。Figure 7-56 告訴我們：Control 在 <code>+0x02</code>，Table 定位值在 <code>+0x04</code>，PBA（Pending Bit Array，待送通知位元陣列）定位值在 <code>+0x08</code>。</p>
 <div class="table-wrap"><table><caption>MSI-X 定位案例的設定讀值</caption><thead><tr><th scope="col">Function 內位移</th><th scope="col">寬度</th><th scope="col">假設讀值</th><th scope="col">欄位</th></tr></thead><tbody>
 <tr><td>0xD0</td><td>16 bits</td><td>0x0011</td><td>ID=0x11，Next=0。</td></tr>
-<tr><td>0xD2</td><td>16 bits</td><td>0x0007</td><td>Table Size 編碼 7；MSI-X Enable 與 Function Mask 都為 0。</td></tr>
-<tr><td>0xD4</td><td>32 bits</td><td>0x00002000</td><td>Table Offset／Table BIR。</td></tr>
-<tr><td>0xD8</td><td>32 bits</td><td>0x00003000</td><td>PBA Offset／PBA BIR。</td></tr>
+<tr><td>0xD2</td><td>16 bits</td><td>0x0007</td><td>Table Size（設定表容量）編碼 7；MSI-X Enable 與 Function Mask 都為 0。</td></tr>
+<tr><td>0xD4</td><td>32 bits</td><td>0x00002000</td><td>Table Offset／Table BIR（BAR 選擇值）。</td></tr>
+<tr><td>0xD8</td><td>32 bits</td><td>0x00003000</td><td>PBA（待送通知位元陣列）Offset／PBA BIR（BAR 選擇值）。</td></tr>
 </tbody></table></div>
-<p><strong>BAR Indicator Register（BIR）</strong>的低 3 bits 選擇哪個 BAR，其餘 bits 才是位移。本例兩個 BIR 都是零，因此都使用 BAR0。位移已經以 byte 為單位；遮掉 BIR 即可，<strong>不能再把結果左移 3 bits</strong>。</p>
+<p>先看 Tables 7-50／7-51：<strong>BAR Indicator Register（BIR，BAR 選擇值）</strong>占低 3 bits，其餘 bits 保存 byte 位移。本例兩個 BIR（BAR 選擇值）都是零，因此都選 BAR0。遮掉低 3 bits 後，將位移直接加到 BAR0 基底，就得到表格位置。</p>
 <pre><code>N = (0x0007 &amp; 0x07FF) + 1 = 8
 Table BIR = 0x00002000 &amp; 0x7 = 0
 Table offset = 0x00002000 &amp; 0xFFFFFFF8 = 0x2000
 Table base = 0x80004000 + 0x2000 = 0x80006000
 PBA base = 0x80004000 + (0x00003000 &amp; 0xFFFFFFF8) = 0x80007000</code></pre>
-<p>8 個 entries 各占 16 bytes，因此 Table 使用 <code>0x80006000–0x8000607F</code>。Pending Bit Array（PBA）每個 entry 對應 1 bit，按 QWORD 組織；8 個 entries 需要 1 個 8-byte QWORD，位於 <code>0x80007000–0x80007007</code>。兩者都落在 BAR0 內，也沒有重疊。</p>
-<p>此外，Table／PBA 與不屬於 MSI-X 的其他可用 Register 不得共用同一個自然對齊 4 KiB 範圍。本例將一般 Register 放在 BAR0 的第一頁、Table 放在第三頁、PBA 放在第四頁，因此 Chapter 5 的 <code>BAR0+0x120</code> 不會混入 MSI-X 所在的頁面。這項配置是案例的額外假設；僅知道 BAR 大小並不足以推知內部分布。</p>
+<p>8 個 entries 各占 16 bytes，因此 Table 使用 <code>0x80006000–0x8000607F</code>。待送通知陣列每個 entry（設定項目）對應 1 bit，按 QWORD（8 bytes）組織；8 個 entries 需要 1 個 8-byte QWORD，位於 <code>0x80007000–0x80007007</code>。兩者都落在 BAR0 內，也沒有重疊。</p>
+<p>此外，Table／PBA 與不屬於 MSI-X 的其他可用 Register 不得共用同一個自然對齊 4 KiB 範圍。本例將一般 Register 放在 BAR0 的第一頁、Table 放在第三頁、PBA 放在第四頁，因此 Chapter 5 的 <code>BAR0+0x120</code> 不會混入 MSI-X 所在的頁面。這項內部分布是本例另外指定的配置。</p>
 <details class="source-note"><summary>從 Capability 到 BAR 的閱讀路線</summary><p>Figure 7-56（p.1018）定位三組欄位；Figure 7-60／Table 7-49（p.1022）解 Table Size、Mask、Enable；Figures 7-61／7-62、Tables 7-50／7-51（pp.1023–1024）解 BIR 與 Offset。若選到 64-bit BAR，BIR 必須指向低 DWORD。Table／PBA 大小、對齊與頁面隔離見 §7.7.2（pp.1018–1021）。</p></details></section>
 
-<section id="entry"><h2>4. Entry 3 的位址，和它發出中斷的位址，是同一個嗎？</h2>
-<p>不是。Table entry 是 CPU 設定裝置中斷行為的位置；entry 裡存的 Message Address 則是裝置發出中斷時要寫入的平台目的地。中斷不會因為 entry 位於 BAR0，就被送回同一個 BAR。</p>
-<div class="diagram"><svg viewBox="0 0 840 285" role="img" aria-labelledby="msix-title msix-desc"><title id="msix-title">MSI-X 的兩種位址</title><desc id="msix-desc">系統軟體先設定裝置 BAR0 內的 entry 3，再由裝置依 entry 內容寫入平台中斷接收位址；Table 所在位址與訊息目標分開。</desc><rect class="box" x="25" y="25" width="300" height="95" rx="10"/><rect class="box" x="475" y="25" width="340" height="95" rx="10"/><text x="175" y="55" text-anchor="middle">系統軟體設定 Table</text><text x="175" y="84" text-anchor="middle">entry 3：0x80006030</text><text x="645" y="55" text-anchor="middle">裝置保存 Address／Data</text><text x="645" y="84" text-anchor="middle">解除遮罩後才可用它通知</text><path class="arrow" d="M325 72 H475 M465 66 L475 72 L465 78"/><rect class="box" x="475" y="180" width="340" height="80" rx="10"/><text x="645" y="211" text-anchor="middle">平台中斷接收目的地</text><text x="645" y="239" text-anchor="middle">本例：0xFEE01000</text><path class="arrow" d="M645 120 V180 M639 170 L645 180 L651 170"/><text x="270" y="208" text-anchor="middle">裝置送出 MWr</text><text x="270" y="235" text-anchor="middle">Payload：0x00000045</text></svg></div>
-<p>Entry 從零編號，所以 entry 3 是第四個。由 Equation 7-1 得到 <code>0x80006000 + 3 × 16 = 0x80006030</code>。依 Figure 7-57 的四個 DWORD，再逐一找到：</p>
+<section id="entry"><h2>4. 從 entry 3 取得通知目標</h2>
+<p>Table entry（設定表中的一個項目）位於裝置的記憶體區域，供系統軟體填寫通知設定。裝置發出通知時，會使用其中的 Message Address（訊息目的位址）寫入平台接收端。下圖將設定位置與通知目的地分別畫出。</p>
+<div class="diagram"><svg viewBox="0 0 840 285" role="img" aria-labelledby="msix-title msix-desc"><title id="msix-title">MSI-X 的兩種位址</title><desc id="msix-desc">系統軟體先設定裝置 BAR0 內的 entry 3，再由裝置依 entry 內容寫入平台中斷接收位址；Table 所在位址與訊息目標分開。</desc><rect class="box" x="25" y="25" width="300" height="95" rx="10"/><rect class="box" x="475" y="25" width="340" height="95" rx="10"/><text x="175" y="55" text-anchor="middle">系統軟體設定 Table</text><text x="175" y="84" text-anchor="middle">entry 3：0x80006030</text><text x="645" y="55" text-anchor="middle">裝置保存 Address／Data</text><text x="645" y="84" text-anchor="middle">解除遮罩後才可用它通知</text><path class="arrow" d="M325 72 H475 M465 66 L475 72 L465 78"/><rect class="box" x="475" y="180" width="340" height="80" rx="10"/><text x="645" y="211" text-anchor="middle">平台中斷接收目的地</text><text x="645" y="239" text-anchor="middle">本例：0xFEE01000</text><path class="arrow" d="M645 120 V180 M639 170 L645 180 L651 170"/><text x="270" y="208" text-anchor="middle">裝置送出記憶體寫入</text><text x="270" y="235" text-anchor="middle">資料：0x00000045</text></svg></div>
+<p>Entry 從零編號，所以 entry 3 是第四個。由 Equation 7-1 得到 <code>0x80006000 + 3 × 16 = 0x80006030</code>。依 Figure 7-57 的四個 DWORD（各 4 bytes），再逐一找到：</p>
 <div class="table-wrap"><table><caption>Entry 3 的教學設定值</caption><thead><tr><th scope="col">PCI Memory 位址</th><th scope="col">Entry 內位移／欄位</th><th scope="col">假設設定</th></tr></thead><tbody>
 <tr><td>0x80006030</td><td>+0x00，Message Address</td><td>0xFEE01000</td></tr>
 <tr><td>0x80006034</td><td>+0x04，Message Upper Address</td><td>0x00000000</td></tr>
 <tr><td>0x80006038</td><td>+0x08，Message Data</td><td>0x00000045</td></tr>
 <tr><td>0x8000603C</td><td>+0x0C，Vector Control</td><td>初始讀回 0x00000001；保留其他 bits，只在適當時機清除 bit 0。</td></tr>
 </tbody></table></div>
-<p>這組 Message Address／Data 假設由平台中斷配置機制提供，且已能正確導向中斷接收端。數字本身不代表本教材已定義 CPU 編號或中斷控制器格式；那些是平台規格的責任。尤其 <code>0x45</code> 不是 Table index，不能反推 entry 69。</p>
-<p>發送時，裝置向 <code>0xFEE01000</code> 送出 1 DW 的 MWr，Payload 為 <code>0x00000045</code>，四個 bytes 都啟用。MSI-X 不會自行修改 Message Data 的低位元。此例的 Upper Address 為零，因此使用 32-bit 目的位址格式；RO 與 No Snoop 必須為零，IDO 本例也設為零。</p>
+<p>這組 Message Address／Data 假設由平台中斷配置機制提供，且已能正確導向接收端。<code>0x45</code> 是本例寫入的 Message Data（訊息資料），其平台編碼須查平台規格；Table 中的項目編號仍是 3。</p>
+<p>發送時，裝置向 <code>0xFEE01000</code> 送出 1 DW（4 bytes）的 MWr（記憶體寫入），Payload（承載資料）為 <code>0x00000045</code>，四個 bytes 都啟用。MSI-X 不會自行修改 Message Data 的低位元。此例的 Upper Address 為零，因此使用 32-bit 目的位址格式；Relaxed Ordering（RO，放寬排序）與 No Snoop（免除一致性窺探提示）必須為零，IDO（依識別碼放寬排序）本例也設為零。</p>
 <details class="source-note"><summary>Entry 與訊息欄位來源</summary><p>Figure 7-57（p.1019）、Equation 7-1（p.1021）；Figures 7-63–7-66／Tables 7-52–7-55（pp.1024–1026）。Message Address 低 2 bits 必須寫零。傳送方式見 §6.1.4.4（p.664）；RO／No Snoop 與 TC 條件見 §6.1.4（p.661）。MSI-X Message Address 的讀取結果未定義，不能把它當作一般可讀 Register（p.1019）。</p></details></section>
 
-<section id="configure"><h2>5. 是不是先把 Enable 設為 1，再慢慢填 Table？</h2>
-<p>要先控制會不會發出訊息，再填入有效目標。以下是<strong>作者選擇的一種初始化安排</strong>，不是規格唯一指定的逐步演算法。假設裝置尚未產生活動事件，系統已配置中斷接收資源，其他 entries 保持遮罩；MSI-X Table／PBA 的 Memory 存取及中斷上行路徑都已準備好。</p>
+<section id="configure"><h2>5. 先準備通知目標，再開放事件</h2>
+<p>系統先保持遮罩，填好有效目標並確認設定生效，最後開放通知。以下是<strong>作者選擇的一種初始化安排</strong>；規格也容許符合相同條件的其他安排。假設裝置尚未產生活動事件，系統已配置中斷接收資源，其他 entries 保持遮罩；MSI-X Table／PBA 的 Memory 存取及中斷上行路徑都已準備好。</p>
 <div class="table-wrap"><table><caption>讓 entry 3 安全進入可通知狀態</caption><thead><tr><th scope="col">步驟</th><th scope="col">系統與裝置的狀態</th><th scope="col">原因</th></tr></thead><tbody>
-<tr><td>1. 保持遮罩</td><td>系統軟體將 Function Mask 設為 1，MSI-X 仍關閉；Message Control 讀回 0x4007。</td><td>Table Size 的 7 是 RO 讀值；此處只改可寫控制位元。</td></tr>
+<tr><td>1. 保持遮罩</td><td>系統軟體將 Function Mask 設為 1，MSI-X 仍關閉；Message Control 讀回 0x4007。</td><td>Table Size 的 7 是唯讀欄位的讀值；此處只改可寫控制位元。</td></tr>
 <tr><td>2. 填 entry</td><td>entry 3 的 Mask=1 時，填入 Address、Upper Address 與 Data，保留 Vector Control 其他 bits。</td><td>不得在 entry 未遮罩時修改 Address／Data／適用的 Steering Tag。</td></tr>
 <tr><td>3. 啟用並確認設定可見</td><td>系統軟體啟用 MSI-X，保持 Function Mask=1；Control 讀回 0xC007。</td><td>MSI 必須關閉；並由平台 I/O 存取規則確保 Table 更新已按要求生效。</td></tr>
 <tr><td>4. 開放此 entry</td><td>清 entry 3 的 Mask bit，再清 Function Mask；Control 讀回 0x8007。</td><td>只有配置好的 entry 3 開放，其餘 entries 仍保持各自的 Mask。</td></tr>
 <tr><td>5. 允許裝置開始工作</td><td>依裝置介面啟動工作及事件來源。</td><td>避免在通知路徑尚未準備好時產生活動事件。</td></tr>
 </tbody></table></div>
-<p>Message Control 的 RW 欄位由<strong>系統軟體</strong>管理，規格不允許裝置驅動程式直接修改這些欄位；驅動程式應透過系統提供的介面協調。設定 Table／PBA 時，軟體必須使用對齊的完整 DWORD 或 QWORD 存取，不能以 byte 存取代替。若要遮罩原本未遮罩的 entry，不能同時用一個 QWORD 更新 Message Data 與 Vector Control，因為 Data 可能先改變；應先按規定以 DWORD 寫入 Mask。</p>
-<p>Function Mask=1 時，即使 entry 的 Mask=0，仍不得送出該訊息。清除 Function Mask 也不會把每個 entry 的 Mask bit 一起清零。這兩層遮罩必須分別讀取，不能只看其中一個。</p>
+<p>Message Control 的 RW（可讀寫）欄位由<strong>系統軟體</strong>管理，規格不允許裝置驅動程式直接修改這些欄位；驅動程式應透過系統提供的介面協調。設定 Table／PBA 時，軟體必須使用對齊的完整 DWORD 或 QWORD 存取，不能以 byte 存取代替。若要遮罩原本未遮罩的 entry，不能同時用一個 QWORD 更新 Message Data 與 Vector Control，因為 Data 可能先改變；應先按規定以 DWORD 寫入 Mask。</p>
+<p>Function Mask=1 時，即使 entry 的 Mask=0，仍不得送出該訊息。清除 Function Mask 也不會把每個 entry 的 Mask bit 一起清零。因此，開放通知時要分別確認 Function Mask（整個功能的遮罩）和 entry Mask（單一項目的遮罩）。</p>
 <details class="source-note"><summary>初始化安排使用的規格條件</summary><p>§6.1.4.2–§6.1.4.5（pp.662–664）；QWORD 更新限制見 p.663 的 Implementation Note；Table 7-49 與系統軟體權限見 p.1022；Memory 存取寬度與對齊見 p.1020；Reserved／Steering Tag 保存條件見 Table 7-55（p.1026）。本表假設適用的 I/O 同步已完成，不把程式書寫順序當成硬體可見性證據。</p></details></section>
 
-<section id="pending"><h2>6. 遮罩期間發生三次事件，PBA 會記錄數字 3 嗎？</h2>
-<p>不會。Pending bit 表示該 entry 有待送的訊息，不是事件計數器。假設 MSI-X 已啟用、Function Mask=0，而 entry 3 的 Mask=1；在這段期間，裝置發生了本來應透過 entry 3 通知的事件。裝置不得送該訊息，必須將對應 Pending bit 設為 1。</p>
-<p>依 Equation 7-2，entry 3 對應 PBA 的 QWORD 0、bit 3。本例若其他 bits 都為零，讀到的 QWORD 是 <code>0x0000000000000008</code>。再發生兩次相同通知需求，這個值仍可能是 8，不能據此說只發生一次。實際事件數量要看裝置自己的事件佇列或狀態。</p>
+<section id="pending"><h2>6. 遮罩期間的事件，如何留待通知？</h2>
+<p>Pending bit（待送位元）記錄該項目是否有訊息待送；事件數量由裝置的事件佇列或狀態保存。假設 MSI-X 已啟用、Function Mask=0，而 entry 3 的 Mask=1；在這段期間，裝置發生了本來應透過 entry 3 通知的事件。裝置不得送該訊息，必須將對應 Pending bit 設為 1。</p>
+<p>依 Equation 7-2，entry 3 對應 PBA 的 QWORD 0、bit 3。本例若其他 bits 都為零，讀到的 QWORD 是 <code>0x0000000000000008</code>。再發生兩次相同通知需求，Pending bit（待送位元）仍可維持 1，因此整個值仍可能是 8。軟體要查看裝置自己的事件佇列或狀態，才知道待處理工作的數量。</p>
 <div class="table-wrap"><table><caption>同一 Pending bit 的兩種後續情境</caption><thead><tr><th scope="col">後續條件</th><th scope="col">裝置應如何處理</th></tr></thead><tbody>
 <tr><td>事件仍待處理；軟體解除有效遮罩</td><td>裝置必須安排送出訊息，送出後清除 Pending bit。不是保證解除遮罩的當下 CPU 已進入處理常式。</td></tr>
 <tr><td>仍在遮罩期間，但底層事件已依裝置介面被處理</td><td>裝置必須清除 Pending，避免稍後解除遮罩時送出不必要的訊息；若又發生新事件，再重新設 Pending。</td></tr>
 </tbody></table></div>
-<p>PBA 不使用 RW1C 清除方式。規格建議軟體只讀、不寫 Pending bits；若寫入，結果未定義。也不能把 PBA=0 當成「CPU 已完成服務」：它可能只是訊息已經送出，CPU 還沒開始執行處理常式。</p>
+<p>Pending bits 由裝置依事件狀態更新。規格建議軟體只讀、不寫；寫入的結果未定義。RW1C（寫入 1 清除）的方式不適用於這些位元。訊息送出後 PBA 可先清零，CPU 的處理常式則可能稍後才執行。</p>
 <details class="source-note"><summary>Pending 與服務次數來源</summary><p>Figure 7-58（p.1019）、Equation 7-2／7-3（p.1021）、Figure 7-67／Table 7-56（pp.1026–1027）。遮罩、事件已滿足與清除 Pending 的條件：§6.1.4.5（p.664）。同一向量重複傳送不保證每個訊息都各自獲得服務，需配合裝置與驅動程式交握：§6.1.4.6（pp.665–666）。</p></details></section>
 
-<section id="ordering"><h2>7. 中斷到了，先前的 DMA 資料就能使用了嗎？</h2>
-<p>本例讓同一 Function 的資料寫入與 MSI-X 都使用 TC0。MSI-X 是 Posted Request，且 RO 必須為零；適用的排序規則不允許它越過該 Function 先前送出的 Posted 寫入。§6.1.4.7 進一步要求系統保證：由該訊息引發的中斷處理常式，能觀察到先於該訊息到達的 Posted 更新。因此，不必為了沖出這些先前寫入，額外讀一次裝置 Register。</p>
-<p>這項保證不免除 <a href="chapter-6.html#publish">Chapter 6 的映射與同步前提</a>，也不把「收到中斷」變成所有工作都完成的通用證據。處理常式仍應依裝置介面找出完成項目。若資料與中斷使用不同 TC，裝置必須另外確保同步，不能直接沿用本例的同 TC 推理。</p>
+<section id="ordering"><h2>7. 資料寫入如何接上中斷通知？</h2>
+<p>本例讓同一 Function 的資料寫入與 MSI-X 都使用 TC0（同一流量類別）。中斷寫入是 Posted Request（沒有一般完成回覆的請求），且 RO（放寬排序）必須為零；適用的排序規則不允許它越過該 Function 先前送出的 Posted 寫入。§6.1.4.7 進一步要求系統保證：由該訊息引發的中斷處理常式，能觀察到先於該訊息到達的 Posted 更新。因此，不必為了沖出這些先前寫入，額外讀一次裝置 Register。</p>
+<p>使用資料時仍須滿足 <a href="chapter-6.html#publish">Chapter 6 的映射與同步前提</a>。處理常式依裝置介面找出完成項目，再存取對應資料。若資料與中斷使用不同 TC，裝置必須另外確保同步。</p>
 <p>訊息接收順序也不保證處理常式的執行順序。若裝置一定要先服務事件 A 才能服務 B，就需要相應交握，不能只以先送 A、後送 B 達成。MSI/MSI-X 本身也不保證固定的中斷延遲。</p>
 <details class="source-note"><summary>通知與資料順序的適用範圍</summary><p>§6.1.4 的跨 TC 同步說明與屬性限制（p.661）；§6.1.4.7（p.667）規定資料可見性、接收端獨立處理與服務順序；延遲不保證見 §6.1.4（p.660）。若多個 entries 共用同一向量，仍可能需要讀裝置狀態辨識事件來源；那是辨識用途，不是前述資料一致性的 flush。</p></details></section>
 
-<section id="practice"><h2>8. 把查詢與通知串起來</h2>
-<details class="question"><summary>Table Size 讀到 7，是 7 個、8 個，還是 128 個 entries？</summary><p>是 8 個，因為 MSI-X 使用 N−1 編碼。不要套用 MSI 的 2 的冪次編碼。這也只代表 Table 容量，不代表系統已配置 8 個互不相同的中斷向量。（Table 7-49，p.1022。）</p></details>
-<details class="question"><summary>entry 3 的 Mask 已清除，卻還有 Function Mask=1，能送出訊息嗎？</summary><p>不能。Function Mask 使所有 entries 都按被遮罩處理，不改變各 entry 自己的 Mask 值。（§6.1.4.5，p.664；Table 7-49，p.1022。）</p></details>
-<details class="question"><summary>只知道 MSI-X Enable=1，是否足以證明某項工作會通知 CPU？</summary><p>不足。還要核對目標 entry、Address／Data、兩層遮罩、BME 與平台接收資源，以及裝置是否真的產生該事件。Capability 的存在、控制位元與事件結果是不同證據。</p></details>
-<details class="question"><summary>我要更新未遮罩 entry 的 Message Data，先寫 Data 再設 Mask 可以嗎？</summary><p>不可以。未遮罩時改 Address／Data 的結果未定義。先按規定遮罩並確保更新順序，再修改內容，完成後才解除遮罩。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
+<section id="practice"><h2>8. 沿同一個事件再走一次</h2>
+<details class="question"><summary>第 3 號項目要發出通知，系統先準備哪些內容？</summary><p>先由 Figure 7-56 找設定表，再按 Figure 7-57 填入平台指定的 Address／Data。系統確認兩層遮罩、啟用控制、裝置發送許可與平台接收資源都已就緒，最後開放事件來源。Table Size=7 表示共有 8 個項目；實際向量配置由系統決定，多個項目也可能共用向量。</p></details>
+<details class="question"><summary>通知暫時被遮罩時，沿哪些欄位追蹤事件？</summary><p>先看 Table 7-49 的 Function Mask，再看 Table 7-55 的 entry Mask。任一層遮罩有效，裝置就按 §6.1.4.5 將通知留待處理，以 Table 7-56 的 Pending bit 表示。事件仍待處理而遮罩解除後，裝置安排送出通知，送出後清除 Pending。</p></details>
+<details class="question"><summary>之後要更改通知目標，如何接回設定流程？</summary><p>先依規定遮罩，確認更新順序，再改 Address／Data，完成後解除遮罩。對原本未遮罩的項目，先以 DWORD 更新 Mask，避免用同一次 QWORD 寫入同時更動 Data 與遮罩；未遮罩時更改目的資料的結果未定義。（§6.1.4.2、§6.1.4.5，pp.662–665。）</p></details></section>
 <section id="next"><h2>9. 下一步：這些封包如何可靠地通過 Link？</h2><p>到這裡，已能從設定空間走到資料搬移與通知。<a href="chapter-8.html">Chapter 8</a> 回到 Link，說明訓練、流量控制與重送的責任；Chapter 9–10 接續 Reset 與電源管理，可由 <a href="index.html">課程路線</a> 查看安排。</p></section>
 <section id="sources"><h2>版本與來源</h2><p>本章以 PCI Express Base Specification Revision 6.0 的 §6.1、§7.7.1–§7.7.2 為準；文件頁碼與 PDF 頁碼一致。查核日期：2026-10-21。未把其他版本的中斷欄位或特定 CPU 的中斷編碼混入通用規則；數值案例與初始化安排均已標示為作者推演。</p></section>

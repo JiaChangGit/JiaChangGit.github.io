@@ -2,6 +2,7 @@
 layout: post
 title: "PCIe Chapter 8：Link 建立與可靠傳遞"
 date: 2026-10-21 00:00:00 +0800
+last_modified_at: 2026-10-23 00:00:00 +0800
 permalink: /pcie/chapter-8-zh-tw/
 categories: [PCIe]
 tags: [PCIe, Specification]
@@ -220,6 +221,93 @@ lang: zh-TW
 /* Self-contained teaching diagrams use the same theme in standalone pages and posts. */
 .pcie-article .course-diagram text { fill: var(--ink); font-family: inherit; font-size: 18px; }
 
+/* Native reading guides: selection highlights; it never hides teaching content.
+   build_pcie_course.py changes .pcie-article to .pcie-article for the posts. */
+.pcie-article .guided-walk { margin: 1.8rem 0; padding: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); min-width: 0; }
+.pcie-article .guided-walk > h3 { margin-top: 0; }
+.pcie-article .walk-help { color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-order { margin-bottom: 1.1rem; }
+/* Keep native radio semantics and keyboard handling; the associated label is
+   the visible control, so a radio cannot wrap away from its own label. */
+.pcie-article .walk-choice { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pcie-article .walk-label { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .7rem; margin: .25rem .8rem .25rem 0; border: 2px solid var(--line); border-radius: 8px; cursor: pointer; font-size: .9rem; line-height: 1.5; color: var(--ink); background: var(--surface-alt); }
+.pcie-article .walk-choice:checked + .walk-label { border-color: var(--accent); background: var(--blue-soft); font-weight: 700; }
+.pcie-article .walk-choice:focus-visible + .walk-label { outline: 3px solid var(--focus); outline-offset: 3px; }
+.pcie-article .walk-view { margin-top: 1rem; min-width: 0; }
+.pcie-article .walk-diagram { margin: 0 0 1.2rem; }
+.pcie-article .walk-diagram svg { width: 100%; height: auto; display: block; }
+.pcie-article .walk-diagram svg a { cursor: pointer; }
+.pcie-article .walk-diagram svg a:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.pcie-article .walk-diagram figcaption { margin-top: .8rem; }
+.pcie-article .walk-steps { max-width: none; padding-left: 1.6rem; }
+.pcie-article .walk-step { padding: .6rem .9rem; margin: .7rem 0; border: 2px solid transparent; border-left: 5px solid var(--line); border-radius: 5px; background: var(--surface); }
+.pcie-article .walk-step h4 { margin: .2rem 0 .5rem; }
+.pcie-article .walk-condition { font-size: .9rem; color: var(--muted); }
+.pcie-article .walk-source { border-top: 1px solid var(--line); padding-top: .35rem; color: var(--muted); font-size: .85rem; }
+.pcie-article .walk-step p:last-child { margin-bottom: .3rem; }
+.pcie-article .walk-components { border-top: 1px solid var(--line); margin-top: 1.4rem; padding-top: .4rem; }
+.pcie-article .walk-component-links { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; list-style: none; padding-left: 0; }
+.pcie-article .walk-component-links a { min-height: 44px; min-width: 44px; }
+.pcie-article .walk-component { padding: .7rem 1rem; margin: 1rem 0; border: 1px solid var(--line); border-radius: 8px; }
+.pcie-article .walk-component > h4 { margin-top: .2rem; }
+.pcie-article .walk-component:target { outline: 3px solid var(--accent-2); outline-offset: 3px; }
+.pcie-article .walk-component details { margin-bottom: .3rem; }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-step[data-walk-step="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-step[data-walk-step="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-step[data-walk-step="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-step[data-walk-step="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-step[data-walk-step="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-step[data-walk-step="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-step[data-walk-step="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-step[data-walk-step="8"] { border-color: var(--accent); background: var(--blue-soft); }
+
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"],
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"],
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"],
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"],
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"],
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"],
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"],
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] { --walk-active-weight: 750; }
+.pcie-article .walk-choice[data-walk-step="1"]:checked ~ .walk-view .walk-node[data-walk-steps~="1"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="2"]:checked ~ .walk-view .walk-node[data-walk-steps~="2"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="3"]:checked ~ .walk-view .walk-node[data-walk-steps~="3"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="4"]:checked ~ .walk-view .walk-node[data-walk-steps~="4"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="5"]:checked ~ .walk-view .walk-node[data-walk-steps~="5"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="6"]:checked ~ .walk-view .walk-node[data-walk-steps~="6"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="7"]:checked ~ .walk-view .walk-node[data-walk-steps~="7"] > :is(rect, circle, ellipse, polygon, path, line, polyline),
+.pcie-article .walk-choice[data-walk-step="8"]:checked ~ .walk-view .walk-node[data-walk-steps~="8"] > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: var(--accent); stroke-width: 3.5px; vector-effect: non-scaling-stroke; }
+.pcie-article .walk-node text { font-weight: var(--walk-active-weight, inherit); }
+
+@media (max-width: 620px) {
+  .pcie-article .guided-walk { padding: .8rem; }
+  .pcie-article .walk-label { margin-right: .45rem; padding-left: .45rem; padding-right: .45rem; }
+  .pcie-article .walk-steps { padding-left: 1.15rem; }
+  .pcie-article .walk-step { padding: .5rem .6rem; }
+  .pcie-article .walk-diagram { overflow-x: auto; }
+  .pcie-article .walk-diagram svg { min-width: 700px; }
+}
+@media (forced-colors: active) {
+  .pcie-article .walk-choice:checked + .walk-label { border-color: Highlight; }
+  .pcie-article .walk-step { border-color: CanvasText; }
+}
+@media print {
+  .pcie-article .guided-walk { border: 1px solid #999; padding: .7rem; break-inside: auto; }
+  .pcie-article .walk-choice, .pcie-article .walk-label, .pcie-article .walk-help { display: none; }
+  .pcie-article .walk-step { display: list-item !important; border-color: #999 !important; background: transparent !important; }
+  .pcie-article .walk-node { --walk-active-weight: 500 !important; }
+  .pcie-article .walk-node > :is(rect, circle, ellipse, polygon, path, line, polyline) { stroke: #333 !important; stroke-width: 1.5px !important; }
+  .pcie-article .walk-diagram { overflow: visible; }
+  .pcie-article .walk-diagram svg { min-width: 0; }
+  .pcie-article .walk-component details > * { display: block !important; }
+  .pcie-article .walk-component details::details-content { content-visibility: visible !important; }
+}
+
+/* SVG text follows the selected reading theme. */
+.pcie-article svg text { fill: var(--ink); }
+.pcie-article .walk-summary { margin: 1rem 0 1.5rem; }
+
 html:not([data-theme="dark"]) .pcie-article { color-scheme: light; }
 html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 
@@ -229,14 +317,16 @@ html[data-theme="dark"] .pcie-article { color-scheme: dark; }
 <div class="pcie-article" lang="zh-Hant-TW">
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-8.html">繁中完整教學</a><a href="/pcie/chapter-8-en/">English</a></nav>
 <article class="lesson">
-<p class="lead">PCIe 封包能否傳送，取決於連線訓練、接收緩衝額度與可靠傳遞機制。本章用同一條 Link 的兩端證據，區分支援速率、設定上限與目前結果，再說明 credit 與 replay 分別解決什麼問題。</p>
+<figure class="diagram"><svg viewBox="0 0 900 500" role="img" aria-labelledby="hop-title hop-desc"><title id="hop-title">沿相鄰兩端追蹤一次傳送</title><desc id="hop-desc">時間向下。先完成訓練與空間檢查，再傳送封包。確認收到與回報釋出的空間是不同資訊；圖中兩者先後是本例安排。</desc><g><rect x="20" y="20" width="310" height="65" rx="12" fill="var(--blue-soft)" stroke="var(--line)"/><text x="175" y="60" text-anchor="middle">裝置 03:00.0</text><path d="M175 85 V480" stroke="var(--line)" stroke-dasharray="5 5"/></g><g><rect x="570" y="20" width="310" height="65" rx="12" fill="var(--blue-soft)" stroke="var(--line)"/><text x="725" y="60" text-anchor="middle">Switch 連接埠 02:01.0</text><path d="M725 85 V480" stroke="var(--line)" stroke-dasharray="5 5"/></g><g><text x="450" y="125" text-anchor="middle">連線訓練與初始化</text><path d="M175 140 H725 M715 134 L725 140 L715 146 M185 134 L175 140 L185 146" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><rect x="35" y="175" width="280" height="58" rx="10" fill="var(--blue-soft)" stroke="var(--line)"/><text x="175" y="209" text-anchor="middle">發送端檢查接收空間額度</text></g><g><text x="450" y="275" text-anchor="middle">傳送封包；保留重送副本</text><path d="M175 290 H725 M715 284 L725 290 L715 296" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><text x="450" y="350" text-anchor="middle">接收端檢查後回覆確認</text><path d="M725 365 H175 M185 359 L175 365 L185 371" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g><g><text x="450" y="435" text-anchor="middle">本例稍後釋出空間，再回報額度</text><path d="M725 450 H175 M185 444 L175 450 L185 456" fill="none" stroke="var(--accent)" stroke-width="2.5"/></g></svg><figcaption>依 Base 6.0 整理的正常傳送範例，使用 Non-Flit Mode（以個別交易封包進行可靠傳遞）。確認接收與更新額度各有用途；圖中的相對先後是案例安排。</figcaption></figure>
+<p class="lead">封包送出前，兩端先建立 Link（連線），發送端再檢查接收空間；送出後，由相鄰兩端完成確認與必要的重送。本章沿同一條連線帶讀訓練、速率欄位、credit（接收緩衝額度）與 replay（重送）。</p>
 <p><a href="/DOCS/pcie-course/chapter-8.html">完整中文教學</a> · <a href="/pcie/chapter-8-en/">English</a> · <a href="/DOCS/pcie-course/index.html">課程路線</a></p>
-<aside class="note"><strong>版本與前提</strong><p>採 Base 6.0。案例為 Switch Downstream Port 02:01.0 與 Endpoint 03:00.0，兩端 PCI Express Capability 均假設在 0x70、版本 2；使用 Non-Flit Mode。以下數值是作者假設，Flit 比較另行處理。</p></aside>
-<section id="layers"><h2>訓練 Link 與準備 Function 是不同階段</h2><p>Physical Layer 的 LTSSM 負責建立接收同步、Lane 關係與 Link 寬度。初次建立的主要路徑為 Detect、Polling、Configuration、L0；這裡的 Configuration 是訓練狀態，不是配置 BAR。Recovery 可恢復同步或變更速率，出現該狀態本身不足以證明故障。</p><p>Physical Layer 可運作後，Data Link Layer 還需完成適用的 Feature Exchange 與 VC0 Flow Control 初始化，進入 DL_Active。Function 能否接受設定、BAR 與 DMA 是否準備完成，是後續不同的條件。DLLP 僅在相鄰 Link 兩端交換，TLP 才可能跨越 Switch 到另一個元件。</p><details class="source-note"><summary>狀態機閱讀位置</summary><p>§3.1–§3.4、Figures 3-1／3-2（pp.263–276）；§4.2.6.1–§4.2.6.5（pp.444–445）、Figure 4-48（p.454）、Table 4-48（p.453）；§6.6.1（p.721）。</p></details></section>
-<section id="speed"><h2>16 GT/s 的能力，不代表目前必須跑到該速率</h2><div class="table-wrap"><table><caption>同一條 Link 的兩端資料</caption><thead><tr><th scope="col">欄位</th><th scope="col">Downstream Port</th><th scope="col">Endpoint</th></tr></thead><tbody><tr><td>Link Capabilities 2，0x9C</td><td>0x0180001E</td><td>0x0180001E</td></tr><tr><td>Maximum Link Width，解碼值</td><td>8 lanes</td><td>4 lanes</td></tr><tr><td>Link Control 2，0xA0</td><td>0x0003</td><td>本例不採其 Target 作正常速率控制</td></tr><tr><td>Link Status，0x82</td><td>0x2043</td><td>0x0043</td></tr></tbody></table></div><p>Figure 7-38／Table 7-35：<code>(0x0180001E &amp; 0xFE) &gt;&gt; 1 = 0x0F</code>，兩端均支援 2.5、5、8、16 GT/s。Figure 7-39／Table 7-36：Downstream Port 的 Target=3，將正常速率限制在 8 GT/s。Figure 7-29／Table 7-26：Current=3、Width=4，結果為 8 GT/s ×4，符合本例上限與 Endpoint 寬度能力。Port 宣告的最大寬度也不保證實際佈線寬度。</p><p>本例 Downstream Port 支援 Link Active 回報，Status bit 13=1 表示 DL_Active；Endpoint 未實作該回報，不能把它的零當成斷線。Link 未 up 時，Current Speed／Width 未定義。Retrain Link 寫 1 觸發、讀值永遠為零；需要觀察適用的 Training／Active 與最終 Speed／Width，不能靠該 bit 的讀值確認完成。Link Training 在 Endpoint 為 Reserved。</p><details class="source-note"><summary>欄位與限制</summary><p>Figure 7-27／Table 7-23（p.967）；Figure 7-29／Table 7-26（pp.978–979）；Figures 7-38／7-39、Tables 7-35／7-36（pp.998–1002）；Retrain Link：Table 7-24（pp.972–973）。</p></details></section>
-<section id="credits"><h2>credit 控制空間，replay 處理這一跳的傳輸</h2><p>Non-Flit Mode 中，每個 Virtual Channel 分別追蹤 Posted、Non-Posted、Completion 的 Header 與 Data，共六類 credits。Data 一單位為 16 bytes，Header 另計。作者假設 VC0 目前有有限、未縮放的 PH=2、PD=5，沒有其他競爭：64-byte MWr 消耗 1 PH、4 PD，剩 1／1；隨後 32-byte MWr 需要 1／2，必須等待。若可用 PD 增加 1，才通過這項檢查。這是可用額度帳本，不是標準可讀 Register 或最低初始宣告。</p><p>256-byte MRd 本身沒有資料 Payload，只需 1 NPH；回覆在反方向消耗 Completion credits。credit 足夠仍不保證立即排到傳送，排序與仲裁也要成立。</p><p>Non-Flit 的 sequence number、LCRC、ACK／NAK 與 replay，保障相鄰兩端傳輸。發送端保留副本，NAK 或確認逾時可引發重送；接收端辨識重複副本，Transaction Layer 不再為同一 TLP 扣一輪新 credit。某一跳收到 ACK，不是最終交易 Completion，也不是裝置工作完成；Posted MWr 沒有一般 Completion，仍有 Link 層可靠傳遞。</p><details class="source-note"><summary>FC 與重送</summary><p>§2.6.1、Tables 2-44／2-45（pp.236–237）；Figures 3-9–3-11（pp.283–284）；§3.1（p.264）、Figure 3-17（p.288）、Figures 3-21／3-22（pp.299、303）。</p></details></section>
-<section id="flit"><h2>Flit Mode 另有固定傳輸單位</h2><p>64 GT/s 使用 Flit Mode，較低速率也可能使用。每個 Flit 為 256 bytes：236 bytes TLP 區、6 bytes DLP、8 bytes CRC、6 bytes ECC。TLP 可跨 Flit，也可多筆共用一個 Flit；236 bytes 不能全部當成使用者資料。可靠傳遞改以 Flit 為 replay 單位，FEC 不代表取消重送或能修正所有錯誤。</p><p>查模式先確認 PCI Express Capabilities 的 Flit Mode Supported，再看 Downstream Port 的 Link Status 2。只擷取 Presence 與 Flit bit 得到 0x4400，表示 Presence=100b、Flit=1，Link up 但尚未收到 DRS；0x3400 則是協商已完成、Data Link Layer 尚未 active。這是欄位投影，非完整 dump；Flit bit 只在 Presence=011b、100b、101b 有意義。</p><details class="source-note"><summary>Flit 來源</summary><p>§4.2.3（p.340）、§4.2.3.3–§4.2.3.4（pp.351–390）、Figure 4-33（p.383）；Table 7-19（p.955）、Figure 7-40／Table 7-37（pp.1004–1007）。僅採 Base 6.0，未自動納入後續 ECN。</p></details></section>
-<section id="questions"><h2>用問題確認邊界</h2><details class="question"><summary>PD=0，就表示 MRd 也不能送嗎？</summary><p>不一定。MRd 檢查 NPH，仍須滿足其他傳送條件。（Table 2-45，p.237。）</p></details><details class="question"><summary>ACK 能當成 CPU 已使用 DMA 資料的證據嗎？</summary><p>不能。它的範圍是相鄰 Link 的傳輸確認；最終資料可見性、所有權與工作完成仍須依各自介面判斷。</p></details></section>
+<aside class="note"><strong>版本與前提</strong><p>採 Base 6.0。案例為 Switch（交換器）的 Downstream Port（下游連接埠）02:01.0 與 Endpoint（階層末端裝置）03:00.0，兩端 PCI Express Capability 均假設在 0x70、版本 2；使用 Non-Flit Mode（個別交易封包傳遞模式）。以下數值是作者假設，Flit 比較另行處理。</p></aside>
+<p><strong>規格閱讀路線：</strong>Figure 4-48 看訓練 → Figure 3-2 看資料連結初始化 → Figures 7-38、7-39、7-29 看速率 → Tables 2-44／2-45 看額度 → Figures 3-17、3-21、3-22 看傳送與確認。</p>
+<section id="layers"><h2>訓練 Link 與準備 Function 是不同階段</h2><p>Physical Layer（實體層）的 Link Training and Status State Machine（LTSSM，連線訓練狀態機）負責建立接收同步、Lane（通道）關係與 Link 寬度。初次建立的主要路徑為 Detect、Polling、Configuration、L0；這裡的 Configuration 是訓練狀態，不是配置 BAR（Base Address Register，基底位址暫存器）。Recovery 可恢復同步或變更速率，須連同進入原因與後續狀態閱讀。</p><p>Physical Layer（實體層）可運作後，Data Link Layer（資料連結層）還需完成適用的 Feature Exchange（功能交換）與 VC0（預設虛擬通道）的 Flow Control（流量控制）初始化，進入 DL_Active（資料連結可用）。Function 能否接受設定、BAR（裝置資源的基底位址）與 DMA（Direct Memory Access，直接記憶體存取）是否準備完成，是後續不同的條件。DLLP（Data Link Layer Packet，資料連結層封包）在相鄰 Link（連線）兩端交換；TLP（Transaction Layer Packet，交易層封包）則可穿越 Switch（交換器）到另一個元件。</p><details class="source-note"><summary>狀態機閱讀位置</summary><p>§3.1–§3.4、Figures 3-1／3-2（pp.263–276）；§4.2.6.1–§4.2.6.5（pp.444–445）、Figure 4-48（p.454）、Table 4-48（p.453）；§6.6.1（p.721）。</p></details></section>
+<section id="speed"><h2>依序查看支援速率、設定上限與目前速率</h2><div class="table-wrap"><table><caption>同一條 Link 的兩端資料</caption><thead><tr><th scope="col">欄位</th><th scope="col">Downstream Port</th><th scope="col">Endpoint</th></tr></thead><tbody><tr><td>Link Capabilities 2，0x9C</td><td>0x0180001E</td><td>0x0180001E</td></tr><tr><td>Maximum Link Width，解碼值</td><td>8 lanes</td><td>4 lanes</td></tr><tr><td>Link Control 2，0xA0</td><td>0x0003</td><td>本例不採其 Target 作正常速率控制</td></tr><tr><td>Link Status，0x82</td><td>0x2043</td><td>0x0043</td></tr></tbody></table></div><p>Figure 7-38／Table 7-35：<code>(0x0180001E &amp; 0xFE) &gt;&gt; 1 = 0x0F</code>，兩端均支援 2.5、5、8、16 GT/s。Figure 7-39／Table 7-36：Downstream Port 的 Target=3，將正常速率限制在 8 GT/s。Figure 7-29／Table 7-26：Current=3、Width=4，結果為 8 GT/s ×4，符合本例上限與 Endpoint 寬度能力。Port 宣告的最大寬度也不保證實際佈線寬度。</p><p>本例 Downstream Port 支援 Link Active 回報，Status bit 13=1 表示 DL_Active；Endpoint 未實作該回報，不能把它的零當成斷線。Link 未 up 時，Current Speed／Width 未定義。Retrain Link 寫 1 觸發、讀值永遠為零；需要觀察適用的 Training／Active 與最終 Speed／Width，不能靠該 bit 的讀值確認完成。Link Training 在 Endpoint 為 Reserved。</p><details class="source-note"><summary>欄位與限制</summary><p>Figure 7-27／Table 7-23（p.967）；Figure 7-29／Table 7-26（pp.978–979）；Figures 7-38／7-39、Tables 7-35／7-36（pp.998–1002）；Retrain Link：Table 7-24（pp.972–973）。</p></details></section>
+<section id="credits"><h2>接收空間與這一跳的可靠傳遞</h2><p>Non-Flit Mode 中，每個 Virtual Channel（虛擬通道）分別追蹤 Posted、Non-Posted、Completion 的 Header 與 Data，共六類 credits。Data 一單位為 16 bytes，Header 另計。作者假設 VC0 （預設虛擬通道）目前有有限、未縮放的 PH（Posted 標頭額度）=2、PD（Posted 資料額度）=5，沒有其他競爭：64-byte Memory Write（MWr，記憶體寫入）消耗 1 PH（Posted 標頭額度）、4 PD（Posted 資料額度），剩 1／1；隨後 32-byte MWr（記憶體寫入）需要 1／2，必須等待。若可用 PD 增加 1，才通過這項檢查。這是可用額度帳本，不是標準可讀 Register 或最低初始宣告。</p><p>256-byte Memory Read（MRd，記憶體讀取）請求本身沒有資料 Payload（承載資料），只需 1 NPH（Non-Posted 標頭額度）；回覆在反方向消耗 Completion credits。credit 足夠仍不保證立即排到傳送，排序與仲裁也要成立。</p><p>Non-Flit 的 sequence number（序號）、LCRC（Link Cyclic Redundancy Check，連線檢查碼）、ACK／NAK（正向／負向確認）與 replay（重送），保障相鄰兩端傳輸。發送端保留副本，NAK（負向確認）或確認逾時可引發重送；接收端辨識重複副本，Transaction Layer 不再為同一 TLP（交易層封包）扣一輪新 credit。某一跳收到 ACK（正向確認），代表這一跳已取得相應的接收確認；最終交易的 Completion（完成回覆）與裝置工作完成則由各自介面處理。Posted MWr 沒有一般 Completion，仍有 Link 層可靠傳遞。</p><details class="source-note"><summary>FC 與重送</summary><p>§2.6.1、Tables 2-44／2-45（pp.236–237）；Figures 3-9–3-11（pp.283–284）；§3.1（p.264）、Figure 3-17（p.288）、Figures 3-21／3-22（pp.299、303）。</p></details></section>
+<section id="flit"><h2>Flit Mode 另有固定傳輸單位</h2><p>64 GT/s 使用 Flit Mode（固定區塊傳遞模式），較低速率也可能使用。每個 Flit 為 256 bytes：236 bytes TLP 區、6 bytes DLP（Data Link Layer Payload，資料連結層內容）、8 bytes CRC（Cyclic Redundancy Check，錯誤檢查碼）、6 bytes ECC（Error Correction Code，錯誤修正碼）。TLP 可跨 Flit，也可多筆共用一個 Flit；236 bytes 不能全部當成使用者資料。可靠傳遞改以 Flit 為 replay 單位，FEC（Forward Error Correction，前向錯誤更正）不代表取消重送或能修正所有錯誤。</p><p>查模式先確認 PCI Express Capabilities 的 Flit Mode Supported，再看 Downstream Port 的 Link Status 2。只擷取 Presence 與 Flit bit 得到 0x4400，表示 Presence=100b、Flit=1，Link up 但尚未收到 DRS（Device Readiness Status，裝置就緒通知）；0x3400 則是協商已完成、Data Link Layer 尚未 active。這是欄位投影，非完整 dump；Flit bit 只在 Presence=011b、100b、101b 有意義。</p><details class="source-note"><summary>Flit 來源</summary><p>§4.2.3（p.340）、§4.2.3.3–§4.2.3.4（pp.351–390）、Figure 4-33（p.383）；Table 7-19（p.955）、Figure 7-40／Table 7-37（pp.1004–1007）。僅採 Base 6.0，未自動納入後續 ECN（規格變更通知）。</p></details></section>
+<section id="questions"><h2>沿同一連線換看另一種封包</h2><details class="question"><summary>讀取請求使用哪種接收額度？</summary><p>MRd（記憶體讀取）檢查 NPH（Non-Posted 標頭額度），仍須滿足其他傳送條件。（Table 2-45，p.237。）</p></details><details class="question"><summary>一條連線的確認，位於完整路徑的哪裡？</summary><p>確認涵蓋相鄰連線的傳輸；最終資料可見性、所有權與工作完成仍須依各自介面判斷。</p></details></section>
 </article>
 <nav class="bottom-nav" aria-label="課程與語言版本"><a href="/DOCS/pcie-course/index.html">課程總覽</a><a href="/DOCS/pcie-course/chapter-8.html">繁中完整教學</a><a href="/pcie/chapter-8-en/">English</a></nav>
 </div>

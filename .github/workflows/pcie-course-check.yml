@@ -9,6 +9,10 @@ on:
       - "docs/pcie-course-plan.md"
       - "scripts/build_pcie_course.py"
       - "scripts/validate_pcie_course.py"
+      - "scripts/pcie_teaching.py"
+      - "scripts/validate_pcie_teaching.py"
+      - "scripts/check_pcie_browser.cjs"
+      - "tests/test_pcie_teaching.py"
       - ".github/workflows/pcie-course-check.yml"
   pull_request:
     paths:
@@ -18,6 +22,10 @@ on:
       - "docs/pcie-course-plan.md"
       - "scripts/build_pcie_course.py"
       - "scripts/validate_pcie_course.py"
+      - "scripts/pcie_teaching.py"
+      - "scripts/validate_pcie_teaching.py"
+      - "scripts/check_pcie_browser.cjs"
+      - "tests/test_pcie_teaching.py"
       - ".github/workflows/pcie-course-check.yml"
   workflow_dispatch:
 
@@ -34,3 +42,5 @@ jobs:
         run: |
           python3 -B scripts/build_pcie_course.py --check
           python3 -B scripts/validate_pcie_course.py
+          python3 -B scripts/validate_pcie_teaching.py
+          python3 -B -m unittest discover -s tests -p 'test_pcie_teaching.py' -v

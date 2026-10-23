@@ -1,0 +1,4 @@
+interface:
+  display_name: "PCIe 規格教學"
+  short_description: "以連貫圖解、規格帶讀與自然繁體中文維護 PCIe 教材"
+  default_prompt: "使用 $pcie-spec-teaching 修訂指定 PCIe 章節，先以圖解建立全貌，再串聯規格閱讀路線與正常流程。"
